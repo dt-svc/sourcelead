@@ -5,11 +5,16 @@
 package com.bis.sourcelead;
 
 import java.beans.PropertyVetoException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
 
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -51,7 +56,19 @@ public class DatabaseConfig {
 
 	@Value("${jdbc.password}")
 	private String password;
+	
+	@Value("${elk.cluster}")
+	private String cluster;
 
+	@Value("${elk.node}")
+	private String node;
+
+	@Value("${elk.path}")
+	private String path;
+
+	@Value("${elk.host}")
+	private String host;
+	
 	@Bean
 	public PlatformTransactionManager txManager() {
 		HibernateTransactionManager hibernateTransactionManager = new HibernateTransactionManager();

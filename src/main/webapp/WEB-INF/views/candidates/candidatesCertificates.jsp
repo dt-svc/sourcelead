@@ -22,6 +22,11 @@ function candidateCertificate(candidateId){
 	var result = "";
 	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
 	
+	result  = result + '<div class="success_pop" id="selector5" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="cerMsgDiv"></span>';
+    result  = result + '</div>';
+    
+	result = result +'<div id="msgDiv"></div>';
 	if(window.candidateStatusGlobal == '0'){
 		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\')"> ';
 		 result  = result + '   	<a href="javascript:void(0)" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
@@ -51,6 +56,16 @@ function candidateCertificate(candidateId){
     
 }
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function cerMsgFadein() {
+		$("#selector5").fadeIn(200);
+        $('#selector5').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->
+
 <%-- 
      @author : Ajith Matta, Shiva yogi.
      this script is for validationSettings.
@@ -109,8 +124,12 @@ function storeCertificate(candidateId){
 									location.replace(sourceleadUrl+ "/errorPage");
 								}
 								else{
-				               			$("#popUpDivEmp").removeClass("edit-details-active");
-				               			candidateCertificateList(candidateId);
+									$("#popUpDivEmp").removeClass("edit-details-active");
+			            			$("#selector5").removeAttr("style");
+			            			$("#selector5").css({ display: "block" });
+			            			$("#cerMsgDiv").html("Success!! New Certification added");
+				               		candidateCertificateList(candidateId);
+				               		cerMsgFadein();
 							    	}
 							   }
 						},
@@ -174,8 +193,23 @@ function candidateCertificateList(candidateId){
              			 location.replace(sourceleadUrl+"/errorPage");
              		 }
              		 else{
+             			 
+             			var json = JSON.parse(data);
+	                      for (var i = 0; i < 1; i++) {
+	                             var val= json[i];
+	                             var opt = "";
+	                                     if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+	                                             opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
+	                                             opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+	                                             opt  = opt + '</div>';
+	                                             }
+	                                     $("#msgDiv").empty();
+	                                     $("#msgDiv").append(opt);
+	                             }
+	                      
 	                	 $("#candidateCertificateList").empty();
 	                	 var result = "";
+	                	
 	                	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
@@ -190,7 +224,7 @@ function candidateCertificateList(candidateId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                      var json = JSON.parse(data);
+	                      
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 var score = "";
@@ -245,11 +279,11 @@ function candidateCertificateList(candidateId){
 	                    	 }
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_CERTIFICATION\')"> ';
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\')"> ';
 	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
 	                    		 result = result +' </sec:authorize>';
 	                    	}else{
-	                    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';
+	                    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';
 	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i>';
 	                    		 result = result +' </sec:authorize>';
 	                    	}
@@ -260,6 +294,7 @@ function candidateCertificateList(candidateId){
 	                     result = result +"</table>";
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
+	                     msgFadein(); 
 			    	} 
                }else{
 	    	         var result ="";
@@ -268,7 +303,7 @@ function candidateCertificateList(candidateId){
 					 result = result+"		<div class='content-area clearfix'>"; 
 					 result = result+"			<div class='blank-pages'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No CandidatesCertifications Found</p>";
+					 result = result+"			        <p>No Candidate Certifications Found</p>";
 					 result = result+"			 </div>";
 					 result = result+"		</div>"; 
 					 result = result+"	</div>"; 
@@ -324,7 +359,7 @@ function addCertification(candidateId) {
 		result  = result + '                 <div class="clearfix mb10">';
 		result  = result + '                   <div class="col-md-12">';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="provider" placeholder="Provider *" id="candidateProvider"';
-		result  = result + '                      data-validation="required validate_Name validate_length length2-100" field-name="Provider">';
+		result  = result + '                      data-validation="required validate_Space validate_length length2-250" field-name="Provider">';
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		
@@ -459,7 +494,7 @@ function addCertification(candidateId) {
 								result  = result + '                 <div class="clearfix mb10">';
 								result  = result + '                   <div class="col-md-12">';
 								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.provider+ '" name="provider" placeholder="Provider *" id="candidateProvider"';
-								result  = result + '                      data-validation="required validate_Name validate_length length2-100" field-name="Provider">';
+								result  = result + '                      data-validation="required validate_Space validate_length length2-250" field-name="Provider">';
 								result  = result + '                   </div>';
 								result  = result + '                 </div>';
 								
@@ -638,7 +673,11 @@ function addCertification(candidateId) {
 								+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateCertificationId"+ candidateCertificationId,
 						success : function(data) {
 							closeCertificatePopup();
+	            			$("#selector5").removeAttr("style");
+	            			$("#selector5").css({ display: "block" });
+	            			$("#cerMsgDiv").html("Certification details updated");
 							candidateCertificateList(candidateId);
+							cerMsgFadein();
 						},
 					});
 			return true;
@@ -679,8 +718,12 @@ function removeCertification(candidateCertificationId,candidateId){
              			 location.replace(sourceleadUrl+"/errorPage");
              		}
              		else{
-             			 $("#popUpDivEmp").removeClass("edit-details-active");
+             		     $("#popUpDivEmp").removeClass("edit-details-active");
+            			 $("#selector5").removeAttr("style");
+             			 $("#selector5").css({ display: "block" });
+             			 $("#cerMsgDiv").html("Certification deleted");
              			candidateCertificateList(candidateId);
+             			cerMsgFadein();
 			    	}
                } 
         },
@@ -775,4 +818,12 @@ function clearSearchKey() {
 	   $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
 
 }
-</script>                     
+</script>  
+
+
+<script>
+       function msgFadein() {
+           setTimeout(function(){
+                   $('#selector1').fadeOut('slow'); }, 1000);
+       }
+</script>                   

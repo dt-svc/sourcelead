@@ -116,7 +116,8 @@ public class ClientController {
 				User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
 
 				if(user != null){
-					orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
+					StringBuilder userNameSB = new StringBuilder();
+					orgRelation.setVendorCreateduserName(userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 				}
 				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLocations.getId());
 

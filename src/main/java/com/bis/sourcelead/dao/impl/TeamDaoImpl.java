@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -109,14 +110,26 @@ public class TeamDaoImpl  implements TeamDao{
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Team getTeamByTeamId(Long teamId) throws Exception {
+		
 		logger.debug("In Team getTeamByTeamId method");
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		return (Team) session.get(Team.class, teamId);
+		String query = "from Team tm  where tm.id =:teamId";
+		List<Team> teamList = session.createQuery(query).setLong("teamId", teamId).setCacheable(true).list();
+		
+		Team team = null;
+		if(teamList != null && !teamList.isEmpty())
+		{
+			team = (Team) teamList.iterator().next();
+		}
+		return team;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Boolean getTeamOwnersListByUserId(User user,Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -124,13 +137,54 @@ public class TeamDaoImpl  implements TeamDao{
 		teamList = session.createQuery("from Team team where team.ownerUserId.id =:userId and team.orgLocationsId =:orgLocationId and team.status <> 0")
 						   .setLong("userId", user.getId())
 						   .setLong("orgLocationId", orgLocationId)
-						   .setCacheable(true).list();
+						   .setCacheable(true)
+						   .list();
 		
 		Boolean flag = false;
 		if (teamList.size() > 0) {
 			flag = true;
 		} 
 		return flag;
+		
+	}
+
+	@Override
+	@Transactional
+	public Integer getTeamCountByTeamOwner(Long userId, Long orgLocationId) throws Exception {
+		logger.debug("getTeamCountByTeamOwner start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(team.id) from Team team "
+					+ "where team.ownerUserId.id = :userId and team.orgLocationsId.id = :orgLocationId ";
+			
+			List<Long> teamCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			Integer count = 0;
+			if(teamCount != null && !teamCount.isEmpty()){
+					count = teamCount.get(0).intValue();
+			}
+			return count;
+        
+	}
+
+	@Override
+	@Transactional
+	public List<Team> getTeamListByTeamOwner(Long userId, Long orgLocationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Team team "
+					+ "where team.ownerUserId.id = :userId and team.orgLocationsId.id = :orgLocationId";
+		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+	}
+
+	@Override
+	@Transactional
+	public List<Team> getUserAssignedTeamListByOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Team team "
+					+ "where (team.ownerUserId.id = :userId and team.orgLocationsId.id = :orgLocationId and team.status = '1') OR "
+					+ " (team.id IN (select tm.teamId.id from TeamMembers tm where tm.memberUserId.id = :userId and tm.status = '1'))";
+		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
 	}
 

@@ -26,6 +26,8 @@ public class OrgSettings {
 	
 	private String fax;
 	
+	private String address;
+	
 	
 
 	public Integer getId() {
@@ -114,6 +116,14 @@ public class OrgSettings {
 
 	public void setFax(String fax) {
 		this.fax = fax;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 }

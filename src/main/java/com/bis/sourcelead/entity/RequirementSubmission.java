@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -21,6 +22,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.SubmissionRateStatus;
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION")
@@ -50,11 +52,11 @@ public class RequirementSubmission implements Serializable{
 	@JoinColumn(name = "CANDIDATE_RESUEME_ID")
    	private CandidateResumes candidateResumes;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocations;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "VENDOR_LOCATION_ID")
    	private OrgLocations vendorLocationId;
 	
@@ -68,6 +70,42 @@ public class RequirementSubmission implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private ApplicantSubmissionStatus submissionStatus;
 	
+	@Column(name = "NEED_APPLICANT_PERMIT")
+    private String needApplicantPermit;
+	
+	@Column(name = "SUBMISSION_RATE_STATUS")
+	@Enumerated(EnumType.STRING)
+	private SubmissionRateStatus submissionRateStatus;
+	
+	@Column(name = "SUBMISSION_RATE_COMMENT", columnDefinition = "TEXT default NULL")
+	private String submissionRateComment;
+	
+	@Column(name = " SUBMISSION_RATE_DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] submissionRateDocFile;
+	
+	@Column(name = "SUBMISSION_RATE_FILE_CONTENT_TYPE")
+	private String submissionRateFileContentType;
+	
+	@Column(name = "SUBMISSION_RATE_FILE_NAME", columnDefinition = "TEXT default NULL")
+	private String submissionRateFileName;
+
+	@Column(name = "SUBMISSION_REQUEST_COMMENT")
+	private String submissionRequestComment;
+	
+	@Column(name = "SUBMISSION_REQUEST_USER")
+	private String submissionRequestUser;
+	
+	@Column(name = " SUBMISSION_REQUEST_DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] submissionRequestDocFile;
+	
+	@Column(name = "SUBMISSION_REQUEST_FILE_CONTENT_TYPE")
+	private String submissionRequestFileContentType;
+	
+	@Column(name = "SUBMISSION_REQUEST_FILE_NAME", columnDefinition = "TEXT default NULL")
+	private String submissionRequestFileName;
+	
 	@Column(name = "PREVIOUS_SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
     private ApplicantSubmissionStatus previousSubmissionStatus;
@@ -75,6 +113,12 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "REJECTED_REASON", columnDefinition = "TEXT default NULL")
     private String rejectedReason;
 	
+	@Column(name = "FINALIZED_RATE")
+	private String finalizedRate;
+	
+	@Column(name = "FINALIZED_RATE_TYPE")
+	private String finalizedRateType;
+		
 	@Column(name = "STATUS")
     private Integer status;
 	
@@ -110,6 +154,10 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
    	private String createdDateStr;
+    
+    @Transient
+   	private String upDatedStr;
+    
     
     @Transient
 	private String skillsList;
@@ -154,7 +202,13 @@ public class RequirementSubmission implements Serializable{
 	private int totalNoOfInterviews;
 	
 	@Transient
+	private int numofrequestsent;
+	
+	@Transient
 	List<RequirementInterview> requirementInterviewList;
+	
+	@Transient
+	List<RequirementInterviewHistory> requirementInterviewHistoryList;
 	
 	@Transient
 	private String offerJoinDate;
@@ -175,7 +229,44 @@ public class RequirementSubmission implements Serializable{
 	private String submittedBy;
 	
 	@Transient
+	private String proposedSubmissionRate;
+	
+	@Transient
+	private String clientSubmissionId;
+	
+	@Transient
 	private String submittedOn;
+	
+	@Transient
+	private String state;
+	
+	@Transient
+	private String city;
+	
+	@Transient
+	private String country;
+	
+	@Transient
+	private String ownerName;
+	
+	@Transient
+	private String clientName;
+	
+	@Transient
+	private String rate;
+	
+	@Transient
+	private String employeeType;
+	
+	@Transient
+	private String orgLocationId;
+	
+	@Transient
+	private String filename;
+
+	@Transient
+	private int duplicateCount;
+	
 
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -322,6 +413,110 @@ public class RequirementSubmission implements Serializable{
 		this.submissionStatus = submissionStatus;
 	}
 
+	public String getNeedApplicantPermit() {
+		return needApplicantPermit;
+	}
+
+	public void setNeedApplicantPermit(String needApplicantPermit) {
+		this.needApplicantPermit = needApplicantPermit;
+	}
+
+	public SubmissionRateStatus getSubmissionRateStatus() {
+		return submissionRateStatus;
+	}
+
+	public void setSubmissionRateStatus(SubmissionRateStatus submissionRateStatus) {
+		this.submissionRateStatus = submissionRateStatus;
+	}
+
+	public String getSubmissionRateComment() {
+		return submissionRateComment;
+	}
+
+	public void setSubmissionRateComment(String submissionRateComment) {
+		this.submissionRateComment = submissionRateComment;
+	}
+
+	public byte[] getSubmissionRateDocFile() {
+		return submissionRateDocFile;
+	}
+
+	public void setSubmissionRateDocFile(byte[] submissionRateDocFile) {
+		this.submissionRateDocFile = submissionRateDocFile;
+	}
+
+	public String getSubmissionRateFileContentType() {
+		return submissionRateFileContentType;
+	}
+
+	public void setSubmissionRateFileContentType(String submissionRateFileContentType) {
+		this.submissionRateFileContentType = submissionRateFileContentType;
+	}
+
+	public String getSubmissionRequestComment() {
+		return submissionRequestComment;
+	}
+
+	public void setSubmissionRequestComment(String submissionRequestComment) {
+		this.submissionRequestComment = submissionRequestComment;
+	}
+
+	public String getSubmissionRequestUser() {
+		return submissionRequestUser;
+	}
+
+	public void setSubmissionRequestUser(String submissionRequestUser) {
+		this.submissionRequestUser = submissionRequestUser;
+	}
+
+	public byte[] getSubmissionRequestDocFile() {
+		return submissionRequestDocFile;
+	}
+
+	public void setSubmissionRequestDocFile(byte[] submissionRequestDocFile) {
+		this.submissionRequestDocFile = submissionRequestDocFile;
+	}
+
+	public String getSubmissionRequestFileContentType() {
+		return submissionRequestFileContentType;
+	}
+
+	public void setSubmissionRequestFileContentType(String submissionRequestFileContentType) {
+		this.submissionRequestFileContentType = submissionRequestFileContentType;
+	}
+
+	public String getSubmissionRequestFileName() {
+		return submissionRequestFileName;
+	}
+
+	public void setSubmissionRequestFileName(String submissionRequestFileName) {
+		this.submissionRequestFileName = submissionRequestFileName;
+	}
+
+	public String getSubmissionRateFileName() {
+		return submissionRateFileName;
+	}
+
+	public void setSubmissionRateFileName(String submissionRateFileName) {
+		this.submissionRateFileName = submissionRateFileName;
+	}
+
+	public String getFinalizedRate() {
+		return finalizedRate;
+	}
+
+	public void setFinalizedRate(String finalizedRate) {
+		this.finalizedRate = finalizedRate;
+	}
+
+	public String getFinalizedRateType() {
+		return finalizedRateType;
+	}
+
+	public void setFinalizedRateType(String finalizedRateType) {
+		this.finalizedRateType = finalizedRateType;
+	}
+
 	public Integer getStatus() {
 		return status;
 	}
@@ -344,6 +539,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setSkillsList(String skillsList) {
 		this.skillsList = skillsList;
+	}
+	
+	public List<RequirementInterviewHistory> getRequirementInterviewHistoryList() {
+		return requirementInterviewHistoryList;
+	}
+
+	public void setRequirementInterviewHistoryList(List<RequirementInterviewHistory> requirementInterviewHistoryList) {
+		this.requirementInterviewHistoryList = requirementInterviewHistoryList;
 	}
 
 	public String getCreatedBy() {
@@ -523,6 +726,22 @@ public class RequirementSubmission implements Serializable{
 		this.submittedBy = submittedBy;
 	}
 
+	public String getProposedSubmissionRate() {
+		return proposedSubmissionRate;
+	}
+
+	public void setProposedSubmissionRate(String proposedSubmissionRate) {
+		this.proposedSubmissionRate = proposedSubmissionRate;
+	}
+
+	public String getClientSubmissionId() {
+		return clientSubmissionId;
+	}
+
+	public void setClientSubmissionId(String clientSubmissionId) {
+		this.clientSubmissionId = clientSubmissionId;
+	}
+
 	public String getSubmittedOn() {
 		return submittedOn;
 	}
@@ -530,7 +749,6 @@ public class RequirementSubmission implements Serializable{
 	public void setSubmittedOn(String submittedOn) {
 		this.submittedOn = submittedOn;
 	}
-	
 
 	public String getRejectedReason() {
 		return rejectedReason;
@@ -546,6 +764,103 @@ public class RequirementSubmission implements Serializable{
 
 	public void setPreviousSubmissionStatus(ApplicantSubmissionStatus previousSubmissionStatus) {
 		this.previousSubmissionStatus = previousSubmissionStatus;
+	}
+
+	public String getUpDatedStr() {
+		return upDatedStr;
+	}
+
+	public void setUpDatedStr(String upDatedStr) {
+		this.upDatedStr = upDatedStr;
+	}
+
+	public int getNumofrequestsent() {
+		return numofrequestsent;
+	}
+
+	public void setNumofrequestsent(int numofrequestsent) {
+		this.numofrequestsent = numofrequestsent;
+	}
+
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+
+	public String getRate() {
+		return rate;
+	}
+
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
+
+	public String getEmployeeType() {
+		return employeeType;
+	}
+
+	public void setEmployeeType(String employeeType) {
+		this.employeeType = employeeType;
+	}
+
+	public String getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+	public int getDuplicateCount() {
+		return duplicateCount;
+	}
+
+	public void setDuplicateCount(int duplicateCount) {
+		this.duplicateCount = duplicateCount;
 	}
 
 }

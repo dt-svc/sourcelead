@@ -37,7 +37,7 @@ public class Candidate implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
@@ -84,6 +84,9 @@ public class Candidate implements Serializable{
 	
 	@Column(name = "EXPERIENCE_MONTHS")
 	private String experienceMonths;
+	
+	@Column(name = "NOTICE_PERIOD")
+	private String noticePeriod;
 	
 	@Column(name = "DESIGNATION")
 	private String designation;
@@ -143,23 +146,39 @@ public class Candidate implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
+	@Transient
+	private String skills;
+	
+	@Transient
+	private String totalExp;
+	
+	@Transient
+	private String rate;
+	
+	@Transient
+	private String candidateName;
+	
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateResumes> candidateResumes = new HashSet<CandidateResumes>(0);
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
+	
+	
+	@Transient
+	private String candidateEdu;
 	
 	@Transient
 	private String skillsList;
@@ -184,6 +203,9 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private String reqSubmissionId;
+	 
+	 @Transient
+	 private String isFavourite;
 	 
 	 
 	 
@@ -599,6 +621,15 @@ public class Candidate implements Serializable{
 		this.noOfReq = noOfReq;
 	}
 
+	public String getCandidateEdu() {
+		return candidateEdu;
+	}
+
+
+	public void setCandidateEdu(String candidateEdu) {
+		this.candidateEdu = candidateEdu;
+	}
+
 
 	public String getCandidateResume() {
 		return candidateResume;
@@ -665,6 +696,71 @@ public class Candidate implements Serializable{
 
 	public void setCandidateType(String candidateType) {
 		this.candidateType = candidateType;
+	}
+
+
+	public String getIsFavourite() {
+		return isFavourite;
+	}
+
+
+	public void setIsFavourite(String isFavourite) {
+		this.isFavourite = isFavourite;
+	}
+
+
+	public String getNoticePeriod() {
+		return noticePeriod;
+	}
+
+
+	public void setNoticePeriod(String noticePeriod) {
+		this.noticePeriod = noticePeriod;
+	}
+
+
+	public String getSkills() {
+		return skills;
+	}
+
+
+	public void setSkills(String skills) {
+		this.skills = skills;
+	}
+
+
+	public String getTotalExp() {
+		return totalExp;
+	}
+
+
+	public void setTotalExp(String totalExp) {
+		this.totalExp = totalExp;
+	}
+
+
+	public String getRate() {
+		return rate;
+	}
+
+
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
+
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+
+	public void setCandidateAdedd(boolean isCandidateAdedd) {
+		this.isCandidateAdedd = isCandidateAdedd;
 	}
 	
 	

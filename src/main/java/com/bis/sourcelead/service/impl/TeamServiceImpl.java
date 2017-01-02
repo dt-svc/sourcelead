@@ -11,11 +11,8 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dao.TeamMemberDao;
-import com.bis.sourcelead.dao.UserDao;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
-import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
@@ -140,6 +137,26 @@ public class TeamServiceImpl implements TeamService {
 		Team team = teamDao.getTeamByTeamId(teamId);
 		team.setStatus(Constants.TEAM_IN_ACTIVE);
 		return teamDao.storeTeam(team);
+	}
+
+	@Override
+	public Integer getTeamCountByTeamOwner(Long userId, Long orgLocationId) throws Exception {
+		return teamDao.getTeamCountByTeamOwner(userId, orgLocationId);
+	}
+
+	@Override
+	public List<Team> getTeamListByTeamOwner(Long userId, Long orgLocationId) throws Exception {
+		return teamDao.getTeamListByTeamOwner(userId, orgLocationId);
+	}
+
+	@Override
+	public Team saveTeam(Team team) throws Exception {
+		return teamDao.storeTeam(team);
+	}
+
+	@Override
+	public List<Team> getUserAssignedTeamListByOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		return teamDao.getUserAssignedTeamListByOrgLocationId(userId, orgLocationId);
 	}
 	
 }

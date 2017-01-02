@@ -13,6 +13,10 @@ public class EmailAttachment implements Serializable{
 	private String content;
 	
 	private Boolean binary;
+	
+	private byte[] docFile;
+	
+	private String UUID;
 
 	public String getName() {
 		return name;
@@ -44,6 +48,22 @@ public class EmailAttachment implements Serializable{
 
 	public void setBinary(Boolean binary) {
 		this.binary = binary;
+	}
+
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
+	public String getUUID() {
+		return UUID;
+	}
+
+	public void setUUID(String uUID) {
+		UUID = uUID;
 	}
 
 }

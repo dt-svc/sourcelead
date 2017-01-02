@@ -14,8 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -60,7 +58,6 @@ import com.google.gson.GsonBuilder;
 @Service
 public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(TimesheetEntriesServiceImpl.class);
 	@Autowired
 	TimesheetEntriesDao timesheetEntriesDao;
 	
@@ -217,13 +214,13 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		 String weekStartDate = format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime());
 		 startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
          endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
-         sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
-         sb1.append("<th>Tue<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"TUE").getTime())+"</i></th>"); 
-         sb1.append("<th>Wed<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"WED").getTime())+"</i></th>"); 
-         sb1.append("<th>Thu<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"THU").getTime())+"</i></th>"); 
-         sb1.append("<th>Fri<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"FRI").getTime())+"</i></th>"); 
-         sb1.append("<th>Sat<i>"+format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SAT").getTime())+"</i></th>"); 
-         sb1.append("<th>Sun<i>"+endDateBuilder+"</i></th>"); 
+         sb1.append("<th>Mon<i>").append(startDateBuilder).append("</i></th>"); 
+         sb1.append("<th>Tue<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"TUE").getTime())).append("</i></th>"); 
+         sb1.append("<th>Wed<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"WED").getTime())).append("</i></th>"); 
+         sb1.append("<th>Thu<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"THU").getTime())).append("</i></th>"); 
+         sb1.append("<th>Fri<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"FRI").getTime())).append("</i></th>"); 
+         sb1.append("<th>Sat<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SAT").getTime())).append("</i></th>"); 
+         sb1.append("<th>Sun<i>").append(endDateBuilder).append("</i></th>"); 
          timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId());
          currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
          currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
@@ -236,7 +233,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("           <li><i class='glyphicon glyphicon-export'></i><span>Export</span><i class='glyphicon glyphicon-play' id='export-pop' onclick='exportType();'></i>|");
 			sb.append("           	<div class='export_pop'>");
 			sb.append("               	<ul>");
-			sb.append("                   	<li onclick='exportPdf();'>PDF &nbsp;&nbsp;<i class='fa fa-file-pdf-o'></i></li>");
+			sb.append("                   	<li onclick='exportPdf(\""+weekStartDate+"\");'>PDF &nbsp;&nbsp;<i class='fa fa-file-pdf-o'></i></li>");
 			sb.append("                       <li onclick='exportExcel(\""+weekStartDate+"\");'>Excel &nbsp;&nbsp;<i class='fa fa-file-excel-o'></i></li>");
 			sb.append("                   </ul>");
 			sb.append("               </div>");
@@ -251,7 +248,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		if(leftNavStartDate != null && (leftNavStartDate.after(employeeStartDate) || leftNavStartDate.equals(employeeStartDate))){
 			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\");'></i>");
 		}
-		sb.append("            <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
+		sb.append("            <span class='res_date'><i class='fa fa-calendar'></i>").append(startDateBuilder).append(" To ").append(endDateBuilder).append("</span>");
 		
 		/**
 		 * check whether next submission records are available or not
@@ -379,9 +376,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
             	combinedApprovalStatus.add(approvalStatus);
             }
 		   	
-			sb.append("	<input type='hidden' name='submissionId'  value='"+ts.getId()+"'/>");
+			sb.append("	<input type='hidden' name='submissionId'  value='").append(ts.getId()).append("'/>");
 			sb.append("<tr id='timesheetRow1'>");
-			sb.append("<td class='timesheetrProject pname "+submissionStatus+" ' id='"+ts.getId()+"' > <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
+			sb.append("<td class='timesheetrProject pname ").append(submissionStatus).append(" ' id='").append(ts.getId()).append("' > <div>").append(ts.getProjectMembers().getProjects().getProjectName()).append("</div> </td>");
 			sb.append("<td>");
 			
 			Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
@@ -405,7 +402,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              
 						              if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
 						            	  if(timesheetEntries.getProjectTask() != null){
-						            		  sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
+						            		  sb.append("<p>").append(timesheetEntries.getProjectTask().getTaskName()).append("</p>");
 						            	  }
 						              }
 						              else{
@@ -413,11 +410,11 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						            	      sb.append("<option value=''>--select task--</option>");
 						            	      for(ProjectTasks pt   : ProjectTasksList){
 										    	       if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
-										    	    	   sb.append("<option value='"+pt.getId()+"' selected>"+pt.getTaskName()+"</option>");
+										    	    	   sb.append("<option value='"+pt.getId()+"' selected>").append(pt.getTaskName()).append("</option>");
 										    	       }
 										    	       else{
 										    	    	   if(isFillMyTimeSheet){
-										    	    		   sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");
+										    	    		   sb.append("<option value='"+pt.getId()+"'>").append(pt.getTaskName()).append("</option>");
 										    	    	   }
 										    	       }
 										                
@@ -439,7 +436,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 					            	  if(!isNullOrEmpty(timesheetEntries.getMoncomments())){
 						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>");
-						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"submission"+ts.getId()+"comment1Id' >"+timesheetEntries.getMoncomments()+"</textarea></span></div>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"submission"+ts.getId()+"comment1Id' >").append(timesheetEntries.getMoncomments()).append("</textarea></span></div>");
 					            	  }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>");
 						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"submission"+ts.getId()+"comment1Id'  id='"+rowCount+"submission"+ts.getId()+"textArea1Id' ></textarea></span></div>");
@@ -451,7 +448,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>");
 						              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
 						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
-						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"submission"+ts.getId()+"comment2Id'>"+timesheetEntries.getTuecomments()+"</textarea></span></div>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"submission"+ts.getId()+"comment2Id'>").append(timesheetEntries.getTuecomments()).append("</textarea></span></div>");
 						              }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
 						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"submission"+ts.getId()+"comment2Id' id='"+rowCount+"submission"+ts.getId()+"textArea2Id'></textarea></span></div>");
@@ -463,7 +460,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 						              if(!isNullOrEmpty(timesheetEntries.getWedcomments())){
 						                  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>");  
-						                  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"submission"+ts.getId()+"comment3Id'>"+timesheetEntries.getWedcomments()+"</textarea></span></div>");
+						                  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"submission"+ts.getId()+"comment3Id'>").append(timesheetEntries.getWedcomments()).append("</textarea></span></div>");
 						              }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>");
 						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"submission"+ts.getId()+"comment3Id' id='"+rowCount+"submission"+ts.getId()+"textArea3Id'></textarea></span></div>");
@@ -476,7 +473,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 					            	  if(!isNullOrEmpty(timesheetEntries.getThucomments())){
 						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>"); 
-						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"submission"+ts.getId()+"comment4Id'>"+timesheetEntries.getThucomments()+"</textarea></span></div>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"submission"+ts.getId()+"comment4Id'>").append(timesheetEntries.getThucomments()).append("</textarea></span></div>");
 					            	  }
 						              else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>");
@@ -489,7 +486,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 					            	  if(!isNullOrEmpty(timesheetEntries.getFricomments())){
 						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>");
-						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"submission"+ts.getId()+"comment5Id'>"+timesheetEntries.getFricomments()+"</textarea></span></div>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"submission"+ts.getId()+"comment5Id'>").append(timesheetEntries.getFricomments()).append("</textarea></span></div>");
 					            	  }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>");
 						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"submission"+ts.getId()+"comment5Id' id='"+rowCount+"submission"+ts.getId()+"textArea5Id'></textarea></span></div>");
@@ -501,7 +498,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>"); 
 					            	  if(!isNullOrEmpty(timesheetEntries.getSatcomments())){
 						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
-						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"submission"+ts.getId()+"comment6Id'>"+timesheetEntries.getSatcomments()+"</textarea></span></div>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"submission"+ts.getId()+"comment6Id'>").append(timesheetEntries.getSatcomments()).append("</textarea></span></div>");
 					            	  }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
 						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"submission"+ts.getId()+"comment6Id' id='"+rowCount+"submission"+ts.getId()+"textArea6Id'></textarea></span></div>");
@@ -513,7 +510,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              sb.append(" <div class='timesheet_comm'>");
 					            	  if(!isNullOrEmpty(timesheetEntries.getSuncomments())){
 						            	  sb.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>");
-						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"submission"+ts.getId()+"comment7Id' >"+timesheetEntries.getSuncomments()+"</textarea></span></div>");
+						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"submission"+ts.getId()+"comment7Id' >").append(timesheetEntries.getSuncomments()).append("</textarea></span></div>");
 					            	  }else{
 						            	  sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>");
 						            	  sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"submission"+ts.getId()+"comment7Id' id='"+rowCount+"submission"+ts.getId()+"textArea7Id'></textarea></span></div>");
@@ -527,27 +524,27 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						        sb.append("</td> "); 
 						        sb.append("<td class='pname last_td'> <div>");
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
-							        	sb.append("<b>"+submissionStatus+"</b>");
+							        	sb.append("<b>").append(submissionStatus).append("</b>");
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
-							        	sb.append("<b class='proj_draft'>"+submissionStatus+"</b>");
+							        	sb.append("<b class='proj_draft'>").append(submissionStatus).append("</b>");
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-							        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
+							        	sb.append("<b class='proj_process'>").append(submissionStatus).append("</b>");
 							        	if(isSah == null && isModifyMyTimeSheet){
 							                String startDateStr = format.format(ts.getStartDate());
 							        		sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >Modify</b>");
 							        	}
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
-							        	sb.append("<b class='proj_active'>"+submissionStatus+"</b>");
+							        	sb.append("<b class='proj_active'>").append(submissionStatus).append("</b>");
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
-							        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b>");
+							        	sb.append("<b class='proj_closed'>").append(submissionStatus).append("</b>");
 							        	
 							        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
 						                sb.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+submissionApproverHierarchy.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+submissionApproverHierarchy.getId()+"\");'>");
-						                sb.append(" <div class='app_error_mes' id='rejectedMessage"+submissionApproverHierarchy.getId()+"'>"+submissionApproverHierarchy.getRejectedReason()+"</div>");
+						                sb.append(" <div class='app_error_mes' id='rejectedMessage"+submissionApproverHierarchy.getId()+"'>").append(submissionApproverHierarchy.getRejectedReason()).append("</div>");
 						                sb.append(" </i>");
 							        }
 						        sb.append("</div> </td>");
@@ -571,7 +568,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	                                          sb.append("     <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
 	                                          sb.append("<option value=''>--select task--</option>");
 	                                          for(ProjectTasks pt   : ProjectTasksList){
-										              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
+										              sb.append("<option value='"+pt.getId()+"'>").append(pt.getTaskName()).append("</option>");   
 										      }
 								              sb.append(" </select>"); 
 								              if(rowCount == 1){
@@ -651,27 +648,27 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								      sb.append("<td class='pname last_td'> <div>");
 								      
 								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
-								        	sb.append("<b>"+submissionStatus+"</b>");
+								        	sb.append("<b>").append(submissionStatus).append("</b>");
 								        }
 								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
-								        	sb.append("<b class='proj_draft'>"+submissionStatus+"</b>");
+								        	sb.append("<b class='proj_draft'>").append(submissionStatus).append("</b>");
 								        }
 								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-								        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
+								        	sb.append("<b class='proj_process'>").append(submissionStatus).append("</b>");
 								        	if(isSah == null && isModifyMyTimeSheet){
 								        		String startDateStr = format.format(ts.getStartDate());
 								        	    sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >Modify</b>");
 								        	}
 								        }
 								        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
-								        	sb.append("<b class='proj_active'>"+submissionStatus+"</b>");
+								        	sb.append("<b class='proj_active'>").append(submissionStatus).append("</b>");
 								        }
 								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
-								        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b>");
+								        	sb.append("<b class='proj_closed'>").append(submissionStatus).append("</b>");
 								        	
 								        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
 							                sb.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+submissionApproverHierarchy.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+submissionApproverHierarchy.getId()+"\");'>");
-							                sb.append(" <div class='app_error_mes' id='rejectedMessage"+submissionApproverHierarchy.getId()+"'>"+submissionApproverHierarchy.getRejectedReason()+"</div>");
+							                sb.append(" <div class='app_error_mes' id='rejectedMessage"+submissionApproverHierarchy.getId()+"'>").append(submissionApproverHierarchy.getRejectedReason()).append("</div>");
 							                sb.append(" </i>");
 								        }
 								        sb.append("</div> </td>");
@@ -723,7 +720,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
 					if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
 						sb.append("<div class='commentTime'>");
-						sb.append("<textarea  name='weekComment'  id='weekComment' readonly='readonly' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+						sb.append("<textarea  name='weekComment'  id='weekComment' readonly='readonly' placeholder='comments here...'>").append(tsFirst.getWeekcomments()).append("</textarea>");
 						sb.append("</div>");
 					}else{
 						sb.append("<div class='commentTime'>");
@@ -734,9 +731,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
 						sb.append("<div class='commentTime'>");
 						if(isFillMyTimeSheet){
-							sb.append("<textarea  name='weekComment'  id='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+							sb.append("<textarea  name='weekComment'  id='weekComment' placeholder='comments here...'>").append(tsFirst.getWeekcomments()).append("</textarea>");
 						}else{
-							sb.append("<textarea  name='weekComment'  readonly='readonly' id='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+							sb.append("<textarea  name='weekComment'  readonly='readonly' id='weekComment' placeholder='comments here...'>").append(tsFirst.getWeekcomments()).append("</textarea>");
 						}
 						sb.append("</div>");
 					}else{
@@ -757,7 +754,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
 							if(!isNullOrEmpty(tsd.getFileName())){
 									documentBuffer.append("<strong>");
-									documentBuffer.append(" <a class='downicon' href=\'"+sourceleadUrl+"/downloadDocument?submissionDocumentId="+tsd.getId()+"\'>");
+									documentBuffer.append(" <a class='downicon' href=\'").append(sourceleadUrl).append("/downloadDocument?submissionDocumentId=").append(tsd.getId()).append("\'>");
 									documentBuffer.append("<i class='glyphicon glyphicon-save'></i>");
 									documentBuffer.append(" <input type='button' value='"+tsd.getFileName()+"'>");
 									documentBuffer.append("</a>");
@@ -881,13 +878,13 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
         sb.append("<th> ");
         sb.append(" <table id='1' cellpadding='0' cellspacing='0'>");
         sb.append("<th>Tasks </th>");
-        sb.append("<th>Mon<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"</i></th>"); 
-        sb.append("<th>Tue<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,1).getTime())+"</i></th>"); 
-        sb.append("<th>Wed<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,2).getTime())+"</i></th>"); 
-        sb.append("<th>Thu<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,3).getTime())+"</i></th>"); 
-        sb.append("<th>Fri<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,4).getTime())+"</i></th>"); 
-        sb.append("<th>Sat<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,5).getTime())+"</i></th>"); 
-        sb.append("<th>Sun<i>"+format.format(CalendarUtil.getDateIncrementByincrement(startCal,6).getTime())+"</i></th>");
+        sb.append("<th>Mon<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())).append("</i></th>"); 
+        sb.append("<th>Tue<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,1).getTime())).append("</i></th>"); 
+        sb.append("<th>Wed<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,2).getTime())).append("</i></th>"); 
+        sb.append("<th>Thu<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,3).getTime())).append("</i></th>"); 
+        sb.append("<th>Fri<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,4).getTime())).append("</i></th>"); 
+        sb.append("<th>Sat<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,5).getTime())).append("</i></th>"); 
+        sb.append("<th>Sun<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,6).getTime())).append("</i></th>");
         sb.append("         </table>");
         sb.append("        </th> ");
         sb.append("<th>Status</th>");
@@ -952,7 +949,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 			sb.append("	<input type='hidden' name='submissionId'  value='"+ts.getId()+"'/>");
 			sb.append("<tr id='timesheetRow1'>");
-			sb.append("<td class='timesheetrProject pname "+submissionStatus+"' id='"+ts.getId()+"'> <div>"+ts.getProjectMembers().getProjects().getProjectName()+"</div> </td>");
+			sb.append("<td class='timesheetrProject pname "+submissionStatus+"' id='"+ts.getId()+"'> <div>").append(ts.getProjectMembers().getProjects().getProjectName()).append("</div> </td>");
 			sb.append("<td>");
 			
 			Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
@@ -981,7 +978,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              
 						              if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
 							              if(timesheetEntries.getProjectTask() != null){
-							            	  sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
+							            	  sb.append("<p>").append(timesheetEntries.getProjectTask().getTaskName()).append("</p>");
 							              }
 							              else{
 							            	  sb.append("<p>No Data</p>");
@@ -993,11 +990,11 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									      
 									      for(ProjectTasks pt   : ProjectTasksList){
 									    	   if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
-								    	    	   sb.append("<option value='"+pt.getId()+"' selected>"+pt.getTaskName()+"</option>");
+								    	    	   sb.append("<option value='"+pt.getId()+"' selected>").append(pt.getTaskName()).append("</option>");
 								    	       }
 								    	       else{
 								    	    	  if(isFillMemberTimeSheet){ 
-								    	    		  sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");
+								    	    		  sb.append("<option value='"+pt.getId()+"'>").append(pt.getTaskName()).append("</option>");
 								    	    	  }
 								    	       }  
 									      }
@@ -1023,7 +1020,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>");
 					               }
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"submission"+ts.getId()+"comment1Id' id='"+rowCount+"submission"+ts.getId()+"textArea1Id'>"+timesheetEntries.getMoncomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"submission"+ts.getId()+"comment1Id' id='"+rowCount+"submission"+ts.getId()+"textArea1Id'>").append(timesheetEntries.getMoncomments()).append("</textarea></span></div>"); 
 					               sb.append(" </div> </td>"); 
 					               
 								   sb.append(" <td> <div>"); 
@@ -1034,7 +1031,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
 					               }
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"submission"+ts.getId()+"comment2Id' id='"+rowCount+"submission"+ts.getId()+"textArea2Id'>"+timesheetEntries.getTuecomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"submission"+ts.getId()+"comment2Id' id='"+rowCount+"submission"+ts.getId()+"textArea2Id'>").append(timesheetEntries.getTuecomments()).append("</textarea></span></div>"); 
 					               sb.append(" </div> </td>"); 
 					               
 					 			   sb.append(" <td> <div>"); 
@@ -1045,7 +1042,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>");
 					               }
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"submission"+ts.getId()+"comment3Id' id='"+rowCount+"submission"+ts.getId()+"textArea3Id'>"+timesheetEntries.getWedcomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"submission"+ts.getId()+"comment3Id' id='"+rowCount+"submission"+ts.getId()+"textArea3Id'>").append(timesheetEntries.getWedcomments()).append("</textarea></span></div>"); 
 					               sb.append(" </div> "); 
 					               sb.append(" </td>"); 
 				
@@ -1057,7 +1054,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>");
 					               }
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"submission"+ts.getId()+"comment4Id' id='"+rowCount+"submission"+ts.getId()+"textArea4Id'>"+timesheetEntries.getThucomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"submission"+ts.getId()+"comment4Id' id='"+rowCount+"submission"+ts.getId()+"textArea4Id'>").append(timesheetEntries.getThucomments()).append("</textarea></span></div>"); 
 					               sb.append(" </div> </td>"); 
 					               
 					               sb.append(" <td> <div>"); 
@@ -1068,7 +1065,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment5Id\");' ></i>");
 					               }
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"submission"+ts.getId()+"comment5Id' id='"+rowCount+"submission"+ts.getId()+"textArea5Id' >"+timesheetEntries.getFricomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"submission"+ts.getId()+"comment5Id' id='"+rowCount+"submission"+ts.getId()+"textArea5Id' >").append(timesheetEntries.getFricomments()).append("</textarea></span></div>"); 
 					               sb.append(" </div> </td>"); 
 					               
 								   sb.append("<td> <div>"); 
@@ -1079,7 +1076,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
 					               }
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"submission"+ts.getId()+"comment6Id' id='"+rowCount+"submission"+ts.getId()+"textArea6Id'>"+timesheetEntries.getSatcomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"submission"+ts.getId()+"comment6Id' id='"+rowCount+"submission"+ts.getId()+"textArea6Id'>").append(timesheetEntries.getSatcomments()).append("</textarea></span></div>"); 
 					               sb.append(" </div> </td>"); 
 					               
 								   sb.append("						<td> <div>"); 
@@ -1090,7 +1087,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					               }else{
 					            	   sb.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>");
 					               } 
-					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"submission"+ts.getId()+"comment7Id' id='"+rowCount+"submission"+ts.getId()+"textArea7Id' >"+timesheetEntries.getSuncomments()+"</textarea></span></div>"); 
+					               sb.append(" <span class='teskcomment' id='"+rowCount+"submission"+ts.getId()+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"submission"+ts.getId()+"comment7Id' id='"+rowCount+"submission"+ts.getId()+"textArea7Id' >").append(timesheetEntries.getSuncomments()).append("</textarea></span></div>"); 
 					               sb.append(" </div> </td>"); 
 					               
 					               sb.append(" </tr> ");      
@@ -1112,7 +1109,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					              sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
 							      
 							      for(ProjectTasks pt   : ProjectTasksList){
-							              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
+							              sb.append("<option value='"+pt.getId()+"'>").append(pt.getTaskName()).append("</option>");   
 							      }
 					              sb.append(" </select>");
 				              }else{
@@ -1198,19 +1195,19 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
             /*sb.append(" <input type='text' disabled  value='"+ts.getSubmissionStatus()+"'  class='inline_field_withoutMask' />");*/ 
             /*sb.append("<b class='proj_active'>'"+ts.getSubmissionStatus()+"'</b>"); */
             if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
-	        	sb.append("<b>"+submissionStatus+"</b>");
+	        	sb.append("<b>").append(submissionStatus).append("</b>");
 	        }
             if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
-	        	sb.append("<b class='proj_draft'>"+submissionStatus+"</b>");
+	        	sb.append("<b class='proj_draft'>").append(submissionStatus).append("</b>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-	        	sb.append("<b class='proj_process'>"+submissionStatus+"</b></div> </td>");
+	        	sb.append("<b class='proj_process'>").append(submissionStatus).append("</b></div> </td>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
-	        	sb.append("<b class='proj_active'>"+submissionStatus+"</b></div> </td>");
+	        	sb.append("<b class='proj_active'>").append(submissionStatus).append("</b></div> </td>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
-	        	sb.append("<b class='proj_closed'>"+submissionStatus+"</b></div> </td>");
+	        	sb.append("<b class='proj_closed'>").append(submissionStatus).append("</b></div> </td>");
 	        }
 	        
             sb.append(" </div> </td> "); 
@@ -1263,9 +1260,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
 				sb.append("<div class='commentTime'>");
 				if(isFillMemberTimeSheet){ 
-					sb.append("<textarea   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");	
+					sb.append("<textarea   name='weekComment' placeholder='comments here...'>").append(tsFirst.getWeekcomments()).append("</textarea>");	
 				}else{
-					sb.append("<textarea   name='weekComment' readonly='readonly' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+					sb.append("<textarea   name='weekComment' readonly='readonly' placeholder='comments here...'>").append(tsFirst.getWeekcomments()).append("</textarea>");
 				}
 				
 				sb.append("</div>");
@@ -1311,7 +1308,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
 						if(!isNullOrEmpty(tsd.getFileName())){
 								documentBuffer.append("<strong>");
-								documentBuffer.append(" <a class='downicon' href=\'"+sourceleadUrl+"/downloadDocument?submissionDocumentId="+tsd.getId()+"\'>");
+								documentBuffer.append(" <a class='downicon' href=\'").append(sourceleadUrl).append("/downloadDocument?submissionDocumentId=").append(tsd.getId()).append("\'>");
 								documentBuffer.append("<i class='glyphicon glyphicon-save'></i>");
 								documentBuffer.append(" <input type='button' value='"+tsd.getFileName()+"'>");
 								documentBuffer.append("</a>");

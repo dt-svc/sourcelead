@@ -82,21 +82,22 @@ public class BoComericaTransDaoImpl implements BoComericaTransDao{
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		Date fromTransDate = null;
 		Date toTransDate = null;
+		StringBuilder querySB = new StringBuilder();
 		if(jsonObj.has("fromTransDate") && jsonObj.getString("fromTransDate") != null && !"".equals(jsonObj.getString("fromTransDate")) 
 				&& jsonObj.has("toTransDate") && "".equals(jsonObj.getString("toTransDate"))){
 			    fromTransDate = sdf.parse(jsonObj.getString("fromTransDate"));
-			return session.createQuery("from BoComericaTrans bt where bt.status = '1' "+whereString+" ").setDate("fromTransDate", fromTransDate).setCacheable(true).list();
+			return session.createQuery(querySB.append("from BoComericaTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("fromTransDate", fromTransDate).setCacheable(true).list();
 		}else if(jsonObj.has("toTransDate") && jsonObj.getString("toTransDate") != null && !"".equals(jsonObj.getString("toTransDate")) 
 					&& jsonObj.has("fromTransDate") && "".equals(jsonObj.getString("fromTransDate"))){
 			toTransDate = sdf.parse(jsonObj.getString("toTransDate"));
-			return session.createQuery("from BoComericaTrans bt where bt.status = '1' "+whereString+" ").setDate("toTransDate", toTransDate).setCacheable(true).list();
+			return session.createQuery(querySB.append("from BoComericaTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("toTransDate", toTransDate).setCacheable(true).list();
 		}else if(jsonObj.has("toTransDate") && jsonObj.getString("toTransDate") != null && !"".equals(jsonObj.getString("toTransDate")) && 
 				jsonObj.has("fromTransDate") && jsonObj.getString("fromTransDate") != null && !"".equals(jsonObj.getString("fromTransDate"))){
 			fromTransDate = sdf.parse(jsonObj.getString("fromTransDate"));
 			toTransDate = sdf.parse(jsonObj.getString("toTransDate"));
-			return session.createQuery("from BoComericaTrans bt where bt.status = '1' "+whereString+" ").setDate("fromTransDate", fromTransDate).setDate("toTransDate", toTransDate).setCacheable(true).list();
+			return session.createQuery(querySB.append("from BoComericaTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("fromTransDate", fromTransDate).setDate("toTransDate", toTransDate).setCacheable(true).list();
 		}
-		return session.createQuery("from BoComericaTrans bt where bt.status = '1' "+whereString+" ").setCacheable(true).list();
+		return session.createQuery(querySB.append("from BoComericaTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setCacheable(true).list();
 	}
 	
 	

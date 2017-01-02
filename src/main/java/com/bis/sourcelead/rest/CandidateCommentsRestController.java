@@ -6,8 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCommentsService;
 import com.bis.sourcelead.service.CandidateService;
@@ -38,7 +37,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 public class CandidateCommentsRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(CandidateCommentsRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -70,7 +68,7 @@ public class CandidateCommentsRestController {
 	
 	@PreAuthorize("hasRole('ROLE_POST_COMMENTS')")
 	@RequestMapping(value = "/saveCandidateComment", method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateComment(@RequestParam(value = "json", required = false) String json, String candidateId, HttpServletRequest request) throws Exception {
+	public @ResponseBody String saveCandidateComment(@RequestParam(value = "json", required = false) String json, String candidateId, String submissionId, HttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
@@ -80,9 +78,19 @@ public class CandidateCommentsRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		if(StringUtils.isNotEmpty(candidateId)){
-			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
+			Candidate candidate = null;
+			if(StringUtils.isNumeric(candidateId)){
+				candidate = new Candidate();
+				candidate.setId(Long.parseLong(candidateId));
+			}
 			
-			candidateCommentsService.storeCandidateComments(jsonObj, user, candidate, orgLocation);
+			RequirementSubmission submission = null;
+			if(StringUtils.isNotEmpty(submissionId) && StringUtils.isNumeric(submissionId)){
+				submission = new RequirementSubmission();
+				submission.setId(Long.parseLong(submissionId));
+			}
+			
+			candidateCommentsService.storeCandidateComments(jsonObj, user, candidate, orgLocation, submission);
 
 			SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage",
 					"Successfully you have added");
@@ -112,13 +120,43 @@ public class CandidateCommentsRestController {
 	public @ResponseBody String getAllCommentsOnCandidateByCandidateIdAndOrgLocation(String candidateId, HttpServletRequest request) throws Exception {
 
 
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		if(StringUtils.isNotEmpty(candidateId)){
-			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
 			
-			List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(candidate, orgLocation);
+			List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Long.parseLong(candidateId), orgLocation);
+
+			String resultJson = commonUtil.toJSON(candidateCommentsList);
+			return resultJson;
+		}else{
+			return "exception";
+		}
+	}
+	
+	
+	/**
+	* @author Venkat Kesav 
+	* 
+	* Handles Comment list for Candidate
+	* 
+	* @param candidateId
+	* 
+	* @param request
+	* 
+	* @return ResponseBody
+	* 
+	* @throws Exception
+	*/
+	@RequestMapping(value = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId", method = RequestMethod.POST)
+	public @ResponseBody String getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId(String candidateId, String submissionId, HttpServletRequest request) throws Exception {
+
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		if(StringUtils.isNumeric(candidateId) && StringUtils.isNotEmpty(candidateId) && StringUtils.isNumeric(submissionId) && StringUtils.isNotEmpty(submissionId)){
+			
+			List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId(Long.parseLong(candidateId), Long.parseLong(submissionId), orgLocation);
 
 			String resultJson = commonUtil.toJSON(candidateCommentsList);
 			return resultJson;

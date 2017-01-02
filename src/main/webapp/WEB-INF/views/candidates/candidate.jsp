@@ -75,7 +75,7 @@
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Add Candidate Details</h2>
+      <h2>Parse Resume</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Create Candidate</div>
   </section>
@@ -177,19 +177,22 @@
         
         <div class="form-group">
          <label class="col-md-3">Designation</label>
-         <div class="col-md-9">
-          <div class="input-group ratetype">
+         <div class="col-md-9 ratetype">
              <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
-             <div class="input-group-btn selp-custom-min">
-             <select class="selectpicker" id="designationType" name="designationType">
+         </div>
+       </div>
+       
+        <div class="form-group">
+         <label class="col-md-3">Employment type</label>
+         <div class="col-md-9">
+             <select class="selectpicker form-control" id="designationType" name="designationType">
+                <option value=""><a href="#">Select</a></option>
                  <option><a href="#">C2C</a></option>
                  <option><a href="#">W-2</a></option>
                  <option><a href="#">Part Time</a></option>
                  <option><a href="#">Full Time</a></option>
                  <option><a href="#">Other</a></option>
              </select>
-             </div>
-           </div>
          </div>
        </div>
 
@@ -198,8 +201,8 @@
           <div class="col-md-9">
             <div class="row">
              <div class="col-xs-6 col-md-6">
-             		<select class="form-control" id="experienceYears" name="experienceYears" onchange="disableMonths();">
-             		  <option selected disabled>Year</option>
+             		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
+             		  <option selected disabled>Years</option>
              		  <c:forEach begin="0" end="24" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -208,8 +211,8 @@
              </div>
              
              <div class="col-xs-6 col-md-6">
-             		<select class="form-control" id="experienceMonths" name="experienceMonths">
-             		<option selected disabled>Month</option>
+             		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
+             		<option selected disabled>Months</option>
              		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -219,26 +222,7 @@
           </div>
         </div>
        
-         <%-- <div class="form-group">
-         <label class="col-md-3">Current Rate</label>
-         <div class="col-md-9">
-           <div class="input-group ratetype">
-             <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
-             <div class="input-group-btn selp-custom-min">
-             <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
-                 
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
-                 
-             </select>
-             </div>
-           </div>
-         </div>
-       </div> --%>
+       
        
        
        <div class="form-group">
@@ -249,12 +233,12 @@
                   
                   <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
                  
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
                 </select>
                 
@@ -287,12 +271,12 @@
                   
                   <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
                  
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
                 </select>
                 
@@ -322,6 +306,31 @@
             <input type="text" class="form-control" id="candidateEmployers" name="candidateEmployers" value="${candidateEmployers}"  field-name="Employers" data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="">
           </div>
         </div>
+
+        <div class="form-group">
+         <label class="col-md-3">Notice Period</label>
+          <div class="col-md-9">
+               <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
+                 <option value="">--Select--</option>
+                 <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately available</option>
+                 <option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
+                 <option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1 Month</option>
+                 <option ${noticePeriod  == '2 Months' ? 'selected' : ''}>2 Months</option>
+                 <option ${noticePeriod  == '3 Months' ? 'selected' : ''}>3 Months</option>
+               </select>
+           </div>
+         </div>
+<div class="clearfix">
+          <div class="form-group">
+              <label class="col-md-3">Skills</label>
+              <div class="col-md-9">
+                <select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
+                <c:forEach var="skill" items="${skillsList}">
+	                     <option value="${skill.name}">${skill.name}</option>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
         
         
          <div class="form-group">
@@ -334,20 +343,9 @@
                 </select>
               </div>
             </div>
-       
-        
-        <div class="form-group">
-              <label class="col-md-3">Skills</label>
-              <div class="col-md-9">
-                <select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
-                <c:forEach var="skill" items="${skillsList}">
-	                     <option value="${skill.name}">${skill.name}</option>
-                </c:forEach>
-                </select>
-              </div>
             </div>
-        
-        <div class="form-group">
+
+        <div class="form-group mb">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
@@ -367,7 +365,7 @@
     </div>
     
     
-    <div class="form-footer clearfix">
+    <div class="form-footer clearfix mt">
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
@@ -624,6 +622,7 @@ function getCities(){
 	       $("#city").chosen();
 	       
 	       
+	       
 	        //Adding Customized Skills to the list
 	        var select, chosen;
 		    select = $("#candidateSkills");
@@ -638,6 +637,11 @@ function getCities(){
 		            var option = $("<option>").val(newSkill).text(newSkill);
 		            select.append(option);
 		            select.find(option).prop('selected', true);
+		          //to doesn't allow duplicates
+                    $("#candidateSkills option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+                    //end
 	        		$("#candidateSkills").trigger("chosen:updated");
 	        		
 		        }
@@ -658,6 +662,11 @@ function getCities(){
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);
 		            selectone.find(option).prop('selected', true);
+		          //to doesn't allow duplicates
+                    $("#candidateEducation option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+                    //end
 	        		$("#candidateEducation").trigger("chosen:updated");
 	        		
 		        }
@@ -678,6 +687,9 @@ function getCities(){
 			var $this = $(this);
 			$this.next().css({'width': '100%'});
 			})
+			
+			$("#candidateSkills").val('').trigger("chosen:updated");
+	       $("#candidateEducation").val('').trigger("chosen:updated");
 				
 				
 </script> 
@@ -744,12 +756,12 @@ function getCities(){
 	     			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
 	     			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
 	     	      }else{
+	     	    	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	     	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
 	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
 	     		var form = $('#candidate_form')[0];
 	       		var formData = new FormData(form); 
 	     		var sourceleadUrl = '${sourceleadUrl}';
-	      	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	     		   $.ajax({
 	     					type : "POST",
 	     	        	    data: formData,
@@ -793,7 +805,7 @@ function getCities(){
 	     						}
 	     						$("#candidateSkills").append(internalOutput);
 	     		        		$("#candidateSkills").trigger("chosen:updated");
-	     		        		
+	     		        		$("#candidateEducation").trigger("chosen:updated");
 	     		        		
 	     		        		$("#candidateEducation").empty();
 	     						 var internalOutput = "";
@@ -809,7 +821,7 @@ function getCities(){
 	     							}
 	     						}
 	     						$("#candidateEducation").append(internalOutput);
-	     		        		$("#candidateEducation").trigger("chosen:updated");
+	     		        		
 	     		        		
 	     		        		
 	     						$("#loading").removeAttr("style");

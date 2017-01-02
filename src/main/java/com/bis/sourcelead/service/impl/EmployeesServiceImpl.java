@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.service.EmployeesService;
 
 @Service

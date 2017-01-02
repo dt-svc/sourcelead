@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,7 +15,6 @@ import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 @Service
 public class RequirementApproverHierarchyServiceImpl implements RequirementApproverHierarchyService{
 	
-	private static final Logger logger = LoggerFactory.getLogger(RequirementApproverHierarchyServiceImpl.class);
 
 	
 	@Value("${sourceleadUrl}")
@@ -64,9 +61,10 @@ public class RequirementApproverHierarchyServiceImpl implements RequirementAppro
 	}
 
 	@Override
-	public Boolean deleteTheRequirementApproverByRequirementIdAndApproverId(RequirementApproverHierarchy requirementApproverHierarchy)
+	public Boolean deleteTheRequirementApproverByRequirementIdAndApproverId(Long userId,Long requirementId)
 			throws Exception {
-		return requirementApproverHierarchyDao.deleteTheRequirementApproverByRequirementIdAndApproverId(requirementApproverHierarchy);
+		RequirementApproverHierarchy rah = requirementApproverHierarchyDao.getRequirementApproverHierarchyByRequirementId(requirementId, userId);
+		return requirementApproverHierarchyDao.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
 	}
 
 	@Override
@@ -74,6 +72,17 @@ public class RequirementApproverHierarchyServiceImpl implements RequirementAppro
 			Long requirementId) throws Exception {
 		
 		return requirementApproverHierarchyDao.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
+	}
+
+	@Override
+	public List<RequirementApproverHierarchy> getRequirementsAsApprover(Long userId, Long orgLocationId)
+			throws Exception {
+		return requirementApproverHierarchyDao.getRequirementsAsApprover(userId, orgLocationId);
+	}
+
+	@Override
+	public RequirementApproverHierarchy getApproverHierarchyByRequirementId(Long requirementId) {
+		return requirementApproverHierarchyDao.getApproverHierarchyByRequirementId(requirementId);
 	}
 	
 }

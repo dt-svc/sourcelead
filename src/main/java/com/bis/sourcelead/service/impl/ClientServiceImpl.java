@@ -29,15 +29,12 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -76,9 +73,6 @@ public class ClientServiceImpl implements ClientService{
 
 	@Autowired
 	private OrgRelationsService orgRelationsService;
-
-	@Autowired
-	private ProjectsService projectsService;
 
 	@Autowired
 	ProjectApproverHierarchyService projectApproverHierarchyService;
@@ -253,8 +247,10 @@ public class ClientServiceImpl implements ClientService{
 			if(org.getOrgType().equalsIgnoreCase("Guest")){
 				submissionTemplate = new SubmissionTemplate();
 				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
-				submissionTemplate.setTemplateName(org.getOrgName()+" Default Template");
-				submissionTemplate.setDescription(org.getOrgName()+" Default Template");
+				StringBuilder nameBuilder=new StringBuilder();
+				StringBuilder descBuilder=new StringBuilder();
+				submissionTemplate.setTemplateName(nameBuilder.append(org.getOrgName()).append(" Default Template").toString());
+				submissionTemplate.setDescription(descBuilder.append(org.getOrgName()).append(" Default Template").toString());
 				submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 				submissionTemplate.setOrgLocationId(clientOrgLocations);
 				submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -396,6 +392,8 @@ public class ClientServiceImpl implements ClientService{
 		}
 		
 		
+		
+		// This method is not in use  so commented by David S
 		/**
 		 * populating OrgLocations Data
 		 * @param jsonObj
@@ -405,7 +403,7 @@ public class ClientServiceImpl implements ClientService{
 		 * @return OrgLocations
 		 * @throws JSONException
 		 */
-			private OrgLocations populateOrgLocations(JSONObject jsonObj, Org addOrg, String locationCode, String loginUserCode)
+			/*private OrgLocations populateOrgLocations(JSONObject jsonObj, Org addOrg, String locationCode, String loginUserCode)
 					throws JSONException {
 				OrgLocations orgLocations = new OrgLocations();
 				orgLocations.setOrg(addOrg);
@@ -428,15 +426,21 @@ public class ClientServiceImpl implements ClientService{
 				}
 				
 				String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
-				orgLocations.setLocationCode(addOrg.getOrgCode() + clientCountry);
+				StringBuilder countryBuilder=new StringBuilder();
+				orgLocations.setLocationCode(countryBuilder.append(addOrg.getOrgCode()).append(clientCountry).toString());
 				orgLocations.setCreatedDate(new Date());
 				orgLocations.setCreatedBy(loginUserCode);
 				orgLocations.setUpdatedBy(loginUserCode);
 				orgLocations.setUpdatedDate(new Date());
 				return orgLocations;
 			}
+			*/
 			
-			
+		
+		
+		// This method is not in use  so commented by David S
+		
+		
 			/**
 			 * populate OrgRelations Data
 			 * @param orgLocations
@@ -444,7 +448,7 @@ public class ClientServiceImpl implements ClientService{
 			 * @param loginUserCode
 			 * @return
 			 */
-				private OrgRelations populateOrgRelations(OrgLocations clientOrgLocation, OrgLocations orgLocations,String loginUserCode) {
+			/*	private OrgRelations populateOrgRelations(OrgLocations clientOrgLocation, OrgLocations orgLocations,String loginUserCode) {
 
 					OrgRelations orgRelations = new OrgRelations();
 					orgRelations.setResponderLocationId(clientOrgLocation);
@@ -455,7 +459,7 @@ public class ClientServiceImpl implements ClientService{
 					orgRelations.setCreatedBy(loginUserCode);
 					orgRelations.setCreatedDate(new Date());
 					return orgRelations;
-				}
+				}*/
 		
 		
 
@@ -477,13 +481,15 @@ public class ClientServiceImpl implements ClientService{
 		    return host;
 		}
 		
+		
+		// This method is not in use  so commented by David S
 		/**
 		 * Returns Date
 		 * 
 		 * @param startDateString
 		 * @return
 		 */
-		private Date getDateFormat(String startDateString) {
+	/*	private Date getDateFormat(String startDateString) {
 
 			Date formatedDate = null;
 			try {
@@ -494,7 +500,7 @@ public class ClientServiceImpl implements ClientService{
 				e.printStackTrace();
 			}
 			return formatedDate;
-		}
+		}*/
 
 		/**
 		 * check given string empty or null
@@ -515,13 +521,13 @@ public class ClientServiceImpl implements ClientService{
 				
 				 OrgLocations orgLocations = null;
 					//if login user org id is equals to client location id then we get vendor list of ResponderLocationId Org details 
-					 if(orgRelation.getLocationId().getId() == loginLocationId){ 
+					 if(orgRelation.getLocationId().getId().longValue()== loginLocationId.longValue()){ 
 						 orgLocations = orgRelation.getResponderLocationId();
 						 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
 								orgRelation.setInitiatorLevel(jsonObj.getString(level));
 							}
 					 }
-					 if(orgRelation.getResponderLocationId().getId() == loginLocationId){ 
+					 if(orgRelation.getResponderLocationId().getId().longValue() == loginLocationId.longValue()){ 
 						 orgLocations = orgRelation.getLocationId();
 						 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
 								orgRelation.setResponderLevel(jsonObj.getString(level));
@@ -594,13 +600,13 @@ public class ClientServiceImpl implements ClientService{
 			if(null != orgRelation){
 				 OrgLocations orgLocations = null;
 				//if login user org id is equals to vendor location id then we get vendor list of ResponderLocationId Org details 
-				 if(orgRelation.getLocationId().getId()== loginOrgId){ 
+				 if(orgRelation.getLocationId().getId().longValue()== loginOrgId.longValue()){ 
 					 orgLocations = orgRelation.getResponderLocationId();
 					 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
 							orgRelation.setInitiatorLevel(jsonObj.getString(level));
 						}
 				 }
-				 if(orgRelation.getResponderLocationId().getId()== loginOrgId){ 
+				 if(orgRelation.getResponderLocationId().getId().longValue()== loginOrgId.longValue()){ 
 					 orgLocations = orgRelation.getLocationId();
 					 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
 							orgRelation.setResponderLevel(jsonObj.getString(level));
@@ -712,7 +718,7 @@ public class ClientServiceImpl implements ClientService{
 					}
 				}*/
 				User user = orgSpoc.getSpocUser();
-				if(user.getId() == spocUserId){
+				if(user.getId().longValue()== spocUserId.longValue()){
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
@@ -720,7 +726,7 @@ public class ClientServiceImpl implements ClientService{
 					}
 				}
 				
-				else if(user.getId() == ownerId){
+				else if(user.getId().longValue()== ownerId.longValue()){
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
@@ -737,7 +743,7 @@ public class ClientServiceImpl implements ClientService{
 				}
 				orgSpocService.addOrgSpoc(orgSpoc);
 				
-				if(orgSpoc.getTempOwnerId() != orgSpoc.getOwnerUser().getId()){
+				if(orgSpoc.getTempOwnerId().longValue() != orgSpoc.getOwnerUser().getId().longValue()){
 					user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
 					sendEmailToClientContact(user,editUser,orgLocation,loginUser);
 				}
@@ -757,7 +763,8 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setToEmail(editUser.getEmail());
 			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
-			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+			 StringBuilder fromName=new StringBuilder();
+			 emailMessage.setFromName(fromName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			 
 			 
 			//setting the class filed values
@@ -773,7 +780,7 @@ public class ClientServiceImpl implements ClientService{
 				 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 				 EmailRecipient emailRecipient = new EmailRecipient();
 				 emailRecipient.setEmail(emailMessage.getToEmail());
-				 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+				 emailRecipient.setName(fromName.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 				 emailRecipientList.add(emailRecipient);
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type

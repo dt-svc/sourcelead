@@ -16,4 +16,6 @@ public interface EmailMessageService {
 	
 	void sendEmail(EmailMessage emailMessage,Long locationsId, ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList) throws Exception;
 
+	void sendEmailWithAttachment(EmailMessage emailMessage, Long locationsId,ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList, String[] submissionIds) throws Exception;
+
 }

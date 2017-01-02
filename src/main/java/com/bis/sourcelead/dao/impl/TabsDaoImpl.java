@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -28,16 +29,21 @@ public class TabsDaoImpl implements TabsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Tabs> getTabsListByLoginUserRoleIdAndOrgLocationId(Long roleId, Long orgLocationId) throws Exception {
 		
-	     Session session = this.sessionFactory.getCurrentSession();
 	     
-		 return session.createQuery("from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct tabActions.tabs.id from TabActions tabActions "
-		 		+ "where tabActions.id IN (select actionRoles.tabActions.id from ActionRoles actionRoles where "
-		 		+ "actionRoles.roles.id = :roleId and actionRoles.orgLocations.id = :orgLocationId and actionRoles.isNotify = 'Y' )) order by tabs.tabOrder asc")
-					  .setLong("roleId", roleId)
-					  .setLong("orgLocationId", orgLocationId)
-					  .setCacheable(true).list();
-		 
-		 
+	     
+	     Session session = this.sessionFactory.getCurrentSession();
+         List<Roles> rolesList = new ArrayList<Roles>();
+		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		 List<Long> roleActionsList = new ArrayList<Long>();
+		 for(Roles roles : rolesList){
+			 for (String s : roles.getActionId().split(",")){
+				 roleActionsList.add(Long.parseLong(s));
+			 }
+		 }
+		
+	    String query = "from Tabs tabs where tabs.id IN (select sa.tabs.id from SourceleadActions sa where sa.id IN (:roleActionsList)) ";
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("roleActionsList", roleActionsList).setCacheable(true).list();
+        return tabsList;	
 		 
 	}
 
@@ -71,7 +77,7 @@ public class TabsDaoImpl implements TabsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Tabs> getTabsListByOrgLocationId(List<Long> modulesId, Long roleId, Long orgLocationId)
+	public Collection<Tabs> getTabsListByOrgLocationId(List<Long> modulesId, Long roleId, Long orgLocationId)
 			throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
@@ -85,8 +91,39 @@ public class TabsDaoImpl implements TabsDao{
 			 }
 		 }
 		
-		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN (:modulesId) and moduleActions.sourceleadActions.id IN (:roleActonList))) ";
+		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN (:modulesId) and moduleActions.sourceleadActions.id IN (:roleActonList))) ORDER BY tabs.tabOrder ASC ";
 	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesId).setParameterList("roleActonList", roleActonList).setCacheable(true).list();
+	    return tabsList;
+	}
+
+	@Override
+	@Transactional
+	public List<Long> getTabsIdsListByUserRoleIdAndOrgLocationId(Long roleId, Long orgLocationId)
+			throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+         List<Roles> rolesList = new ArrayList<Roles>();
+		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		 List<Long> roleActionsList = new ArrayList<Long>();
+		 for(Roles roles : rolesList){
+			 for (String s : roles.getActionId().split(",")){
+				 roleActionsList.add(Long.parseLong(s));
+			 }
+		 }
+		
+	    String query = "select tabs.id from Tabs tabs where tabs.id IN (select sa.tabs.id from SourceleadActions sa where sa.id IN (:roleActionsList)) ";
+	    List<Long> tabIds = session.createQuery(query.toString()).setParameterList("roleActionsList", roleActionsList).setCacheable(true).list();
+    
+	    return tabIds;
+	}
+
+	@Override
+	@Transactional
+	public List<Tabs> getTabsListByIds(List<Long> tabIds) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Tabs tabs where tabs.id IN (:tabIds) ";
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("tabIds", tabIds).setCacheable(true).list();
 	    return tabsList;
 	}
 

@@ -23,6 +23,7 @@
 $(document).ready(function() {
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
+		$(".export_pop, .action-pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
@@ -115,6 +116,9 @@ overflow: visible;
 .timesheet_head ul {
 padding: 1px 280px 2px 0;
 }
+.require_wrap_table select {
+width:100% !important;
+}
  </style>
  
  
@@ -174,11 +178,12 @@ function requirementList(){
 	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>Title</th>"; 
+	                     result = result +"    <th>ID-Title</th>"; 
 	                     result = result +"    <th>Client</th>"; 
 	                     result = result +"    <th>Position type</th>"; 
 	                     result = result +"    <th>Location</th>"; 
 	                     result = result +"    <th>No.of<br> Positions</th>"; 
+	                     result = result +"    <th>Applicants</th>"; 
 	                     result = result +"    <th>Owner</th>"; 
 	                     result = result +"    <th>Status</th>"; 
 	                     result = result +"    <th>Release</th>"; 
@@ -186,31 +191,46 @@ function requirementList(){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     var json = JSON.parse(data);
+	                     for (var i = 0; i < 1; i++) {
+	                            var val= json[i];
+	                            var opt = "";
+	                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+	                                            opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
+	                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+	                                            opt  = opt + '</div>';
+	                                            }
+	                                    $("#msgDiv").empty();
+	                                    $("#msgDiv").append(opt);
+	                            }
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
 	                    	 if(opt.jobId != '' && opt.jobId != null){
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-		                     	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"-"+opt.jobId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+		                     	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		                     '</sec:authorize>';
 		                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-		                     	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"-"+opt.jobId+"</span></div></td>";
+		                     	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></div></td>";
 		                     '</sec:authorize>';
 	                    	 }else{
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-			                     	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+			                     	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 			                     '</sec:authorize>';
 			                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-			                     	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"</span></div></td>";
+			                     	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
 			                     '</sec:authorize>';
 	                    	 }
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
+		                    	 result = result +"<td><div title="+opt.clientName+"><span>"+opt.clientName+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
-		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
+		                    	 if(opt.jobType=='Other'){
+		                    		 result = result +"<td><div>"+opt.otherJobType+"</div></td>";
+		                    	 }else{
+		                    		 result = result +"<td><div>"+opt.jobType+"</div></td>";
+		                    	 }
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
@@ -225,6 +245,11 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
+		                     if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){
+		                    	 result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div>"+opt.totalApplicantsForRequirement+"</div></a></td>";
+		                     }else{
+		                    	 result = result +"<td><div>0</div></td>";
+		                     }
 		                     if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
 		                    	 result = result +"<td><div>"+opt.manager+"</div></td>";
 		                     }else{
@@ -235,7 +260,8 @@ function requirementList(){
 		                        if(opt.requirementSubmissionStatus == "DRAFT"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 									'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-										result = result +"<option value='ONHOLD'>ONHOLD</option>";
+						
+									result = result +"<option value='ONHOLD'>ONHOLD</option>";
 									'</sec:authorize>';
 									'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
 										result = result +"<option value='CANCEL'>CANCEL</option>";
@@ -347,6 +373,7 @@ function requirementList(){
 	                     $("#noReq").val('');
 	                     $("#requirementList").append(result); 
 	                     pagination(); 
+	                     msgFadein1(); 
 			    	} 
                  }else{
                 	 $("#requirementList").empty();
@@ -1129,6 +1156,11 @@ function requirementPipeline(requirementId){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
+   <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector2"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
     <div class="pull-left">
       <h2>Requirement List</h2>
     </div>
@@ -1158,6 +1190,23 @@ function requirementPipeline(requirementId){
           <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
           	<li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Team</a></li>
           </sec:authorize>
+          
+          <li>
+          <a class="action" href="javascript:void(0)">Template
+          	<i onclick="getActions();" class="fa fa-caret-down"></i>
+          </a>
+          <div class="action-pop">
+          <span>
+              <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
+                 <a href="<c:url value='/template'/>"><i class="fa fa-plus"></i>Requirement</a>
+               </sec:authorize> 
+
+              <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
+                 <a href="<c:url value='/interViewFeedBackTemplate'/>"><i class="fa fa-plus"></i>Interview</a>
+             </sec:authorize> 
+          </span>
+          </div>
+          </li>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
            <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop" onClick="mypop();"></i>
             <div class="export_pop">
@@ -1168,6 +1217,7 @@ function requirementPipeline(requirementId){
             </div>
           </li>
           </sec:authorize>
+          
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
@@ -1186,6 +1236,7 @@ function requirementPipeline(requirementId){
       				<div id="requirementSideDiv">
 				     </div>  
       </div>
+      <div id ="msgDiv"></div>
     </div>
     <!-- Project --> 
   </div>
@@ -1223,7 +1274,7 @@ function requirementPipeline(requirementId){
 });
  		</script> 
 <script>
-
+$('#selector').delay(2000).fadeOut('slow');
 // Error pop
 $(document).ready(function() {
     $(".glyphicon-trash").click(function(){
@@ -1249,21 +1300,6 @@ $(document).ready(function() {
     });	
 });
 
-// Export Popup
-$(document).ready(function() {
-    $("#export-pop").click(function(){
-		$(".export_pop").slideToggle(200);
-	});
-    $("html").click(function() {
-        $(".export_pop").slideUp(200);
-    });
-    $(".export_pop, #export-pop").click(function(e) {
-        e.stopPropagation();
-    });	
-});
-
-
-	
 // project side bar
 $(document).ready(function() {
     $(".proj_show").click(function(){
@@ -1369,7 +1405,6 @@ function changeStatus(requirementId){
           success :function(data) { 
         	  $("#changeStatusId" +requirementId).val('');
         	  location.replace(sourceleadUrl+"/requirementList");
-        	  requirementListIndividualStatusCounts();
           }
 }); 
 }
@@ -1397,6 +1432,7 @@ function changeStatus(requirementId){
 <script>
     $("#export-pop").click(function(){
 		$(".export_pop").slideToggle(200);
+		$(" #filter2ApprovedPop, .action-pop").slideUp(200);
 	});
     $("html").click(function() {
         $(".export_pop").slideUp(200);
@@ -1476,6 +1512,25 @@ function exportToExcel(){
 function cancel(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+<script>
+       function msgFadein1() {
+           setTimeout(function(){
+                   $('#selector2').fadeOut('slow'); }, 1000);
+       }
+</script>
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".export_pop, #filter2ApprovedPop").slideUp(200);
+	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
 }
 </script>
 <jsp:include page="../masterFooter.jsp" />
