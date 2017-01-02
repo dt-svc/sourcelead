@@ -1082,9 +1082,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Projects pr = projectsDao.getProjectById(projectId);
 		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
-		StringBuilder membersListStringBuilder=new StringBuilder();
 		 for(ProjectMembers pm : projectMembersList){
 			 if(pm.getEmployee() != null){
+				 StringBuilder membersListStringBuilder=new StringBuilder();
 				 pm.setEmpName(membersListStringBuilder.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());	 
 				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	 
 			 }
