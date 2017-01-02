@@ -172,6 +172,8 @@ public class VendorRestController {
 					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
 					List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
 					orgRelation.setNoOfContatcs(contactsList.size()); 
+					List<Requirement> vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(),orgRelation.getId(),user,orgLocations);
+					orgRelation.setNoOfReleasedJobs(vendorReleasedJobsList.size());
 					if(orgRelation.getResponderLevel()!=null){
 						orgRelation.setLevel(orgRelation.getResponderLevel());
 					}
