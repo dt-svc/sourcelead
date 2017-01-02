@@ -6,7 +6,9 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserMailBoxDao;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.service.UserMailBoxService;
@@ -40,7 +42,7 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 	}
 
 	@Override
-	public void setRequestForResumeDetails(JSONObject jsonObj,String candidatesIds,String UUID) throws Exception {
+	public void setRequestForResumeDetails(JSONObject jsonObj,String candidatesIds,String UUID,MultipartFile multiFile) throws Exception {
 		
 		UserMailBox mailBox = userMailBoxDao.getUserMailBoxByUUID(UUID);
 		
@@ -49,7 +51,7 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			UserMailBox userMailBox = new UserMailBox();
 			userMailBox.setToMail(mailBox.getFromMail());
 			userMailBox.setFromMail(jsonObj.getString("email"));
-			userMailBox.setMailStatus("Requested");
+			userMailBox.setMailStatus(Constants.MAIL_REQUESTED);
 			userMailBox.setCandidateId(candidatesIds);
 			userMailBox.setUserId(mailBox.getUserId());
 			userMailBox.setOrgLocationId(mailBox.getOrgLocationId());
@@ -70,6 +72,18 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			userMailBox.setStatus(1);
 			userMailBox.setCreatedDate(new Date());
 			userMailBox.setUpdatedDate(new Date());
+			
+			 if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
+			   	  try {
+			   		userMailBox.setFileContentType(multiFile.getContentType());
+			   		userMailBox.setDocFile(multiFile.getBytes());
+			   		userMailBox.setFileName(multiFile.getOriginalFilename());
+			   	   
+				       }catch (Exception e) {
+			   	      	 e.printStackTrace();
+						    }
+			       }
+			
 			userMailBoxDao.saveUserMailBox(userMailBox);
 			
 			mailBox.setIsMailRead(1);
