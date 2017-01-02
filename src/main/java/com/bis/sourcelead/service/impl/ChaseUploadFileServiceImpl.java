@@ -28,9 +28,11 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.AmexUploadFile;
 import com.bis.sourcelead.entity.BOTransactions;
 import com.bis.sourcelead.entity.BoJmpcTrans;
+import com.bis.sourcelead.entity.BoPaymentTypes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.BoJmpcTransService;
 import com.bis.sourcelead.service.ChaseUploadFileService;
+import com.bis.sourcelead.util.PaymentAnalytics;
 
 @Service
 public class ChaseUploadFileServiceImpl implements ChaseUploadFileService {
@@ -40,6 +42,8 @@ public class ChaseUploadFileServiceImpl implements ChaseUploadFileService {
 	@Autowired
 	BoJmpcTransService boJmpcTransService;
 	
+	@Autowired
+	PaymentAnalytics paymentAnalytics;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -103,6 +107,13 @@ public class ChaseUploadFileServiceImpl implements ChaseUploadFileService {
 						
 						if(!isNullOrEmpty(record.get(2))){
 							boJmpcTrans.setTransDesc(record.get(2));
+							
+							//find out the payment type by description 
+							BoPaymentTypes boPaymentTypes = paymentAnalytics.paymentAnalytics(record.get(2));
+							if(boPaymentTypes.getId() != null && !boPaymentTypes.getId().equals("")){
+								boJmpcTrans.setPaymentTypeId(boPaymentTypes);
+							}
+							
 						}
 						
 						if(!isNullOrEmpty(record.get(3))){

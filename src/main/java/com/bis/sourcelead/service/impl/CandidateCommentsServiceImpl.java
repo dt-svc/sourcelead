@@ -97,10 +97,10 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Candidate candidate, OrgLocations orgLocation) throws Exception {
+	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Long candidateId, OrgLocations orgLocation) throws Exception {
 		
-		List<CandidateComments> candidateCommentsList = candidateCommentsDao.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(candidate.getId(), orgLocation.getId());
-		
+		List<CandidateComments> candidateCommentsList = candidateCommentsDao.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(candidateId, orgLocation.getId());
+
 		for(CandidateComments candidateComments: candidateCommentsList){
 			
 			User user = userService.getUserByUserCode(candidateComments.getUpdatedBy());

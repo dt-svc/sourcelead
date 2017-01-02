@@ -85,7 +85,6 @@ import com.bis.sourcelead.util.PdfUtil;
 @Service
 public class RequirementServiceImpl implements RequirementService {
 
-	private static final Logger logger = LoggerFactory.getLogger(RequirementServiceImpl.class);
 
 	@Autowired
 	RequirementDao requirementDao;
@@ -117,9 +116,6 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	OrgService orgService;
-	
-	@Autowired
-	private RolesService rolesService;
 	
 	@Autowired
 	private UserRoleService userRoleService;
@@ -428,7 +424,8 @@ public class RequirementServiceImpl implements RequirementService {
 			     for(String approver : approvers){
 					  
 					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
-					  User approverUser = userService.getUserById(Long.parseLong(approver));
+					  // commented as it is not in use by David Raju
+					  //User approverUser = userService.getUserById(Long.parseLong(approver));
 					  
 					  //to delete the  unselected approvers in edit Mode
 					  removedApproversInRequirementForParallel(approvers,requirement);			  
