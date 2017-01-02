@@ -3,18 +3,24 @@
 
 
 <script>
-function candidateCommentsList(candidateId){
+function candidateCommentsList(candidateId,submissionId){
 	$("#tab-7").show();
 	$('.current').each(function() {
 		    var currentId = this.id;
 		    $("#"+currentId).removeClass("current");
 	});
 	$("#candidateCommentTab").addClass("current");
+	var urlForm = "";
+	if(submissionId != null && submissionId != '' && submissionId != 'undefined'){
+		urlForm = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&submissionId="+submissionId;
+    }else{
+    	urlForm = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId;
+    }
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: sourceleadUrl+urlForm,        
          success :function(data) {
         	 var result = "";
               if(data != null && data != 'undefined' && data != ""){

@@ -231,14 +231,12 @@
 						<div class="form-group">
 							<label class="col-md-3">Client</label>
 							<div class="col-md-9">
-								<div class="form-icon">
 									<select class="form-control select-bg chosen-select" name="selectClient" id="addClientId">
 										<option value=''>-- Select Client --</option>
 										<c:forEach var="option" items="${add_clientList}">
 											<option value="${option.orgid}">${option.orgName}</option>
 										</c:forEach>
 									</select> 
-								</div>
 								<span class="hidden">Enter Project Id</span>
 							</div>
 						</div>
@@ -251,12 +249,10 @@
 							<input type="hidden" name="team" value="" />
 
 							<div class="col-md-9">
-								<div class="form-icon">
 									<span class="icon-inside"> <i class="fa fa-search-plus"></i>
-										<input type="text" value="" placeholder="Select Assign Team" id ="assignTeamModal"class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();flushEmployee();" readonly="readonly">
-									</span> <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushEmployee();"></i>
+										<input type="text" value="" placeholder="Select Assign Team" id ="assignTeamModal"class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();" readonly="readonly">
+									</span> <span data-target="#addTeam" data-toggle="modal"> 
 									</span>
-								</div>
 								<span class="hidden">Select Team</span>
 								<!-- Modal content Assign Team-->
 								<div role="dialog" id="assignTeam" class="modal fade">
@@ -294,8 +290,8 @@
 						
 						<div class="form-group">
 							<label class="col-md-3" for="Project Id">Status</label>
-							<div class="col-md-9">
-								<select class="form-control select-bg" name="Satatus" id="Satatus">
+							<div class="col-md-9 select-field">
+								<select class="form-control" name="Satatus" id="Satatus">
 									<option>Started</option>
 									<option>In-Progress</option>
 									<option>Completed</option>
@@ -348,129 +344,6 @@
 </section>
 <!-- Content Area Ends-->
 
-
-<!-- Modal content Add Team-->
-<div role="dialog" id="addTeam" class="modal fade">
-	<div class="modal-dialog">
-		<form:form id="addEmployee_form" name="addEmployee_form" method="post">
-			<div class="modal-content" id="newEmployee">
-				<div class="modal-header">
-					<button data-dismiss="modal" class="close" type="button">x</button>
-					<h4 class="modal-title">Add Employees</h4>
-				</div>
-				<div class="modal-body clearfix">
-					<div class="form-horizontal custom-form clearfix">
-						<div class="col-xs-12 col-md-12 col-lg-12">
-							<div class="form-group">
-								<label class="col-lg-3">Frist Name<span
-									class="text-danger">*</span></label>
-								<div class="col-lg-9">
-									<input type="text" class="form-control" value="" name="firstName" id="firstName"
-										field-name="Frist Name" data-validation="required validate_Space validate_length length2-100">
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-lg-3">Last Name</label>
-								<div class="col-lg-9">
-									<input type="text" class="form-control" value="" name="lastName" id="lastName">
-								</div>
-							</div>
-							<div class="form-group" id="EmailIdDiv">
-								<label class="col-lg-3">Email <span class="text-danger">*</span></label>
-								<div class="col-lg-9">
-									<input type="text" class="form-control" value="" name="email" id="EmailId" field-name="Email"
-										data-validation="required validate_email" onblur="emailVerification();">
-								</div>
-							</div>
-							<!-- <div class="form-group">
-								<label class="col-lg-3">Invoice Frequency<span
-									class="text-danger">*</span></label>
-								<div class="col-lg-9">
-									<select class="form-control" name="invoiceFrequency" id="invoiceFrequency" field-name="Invoice Frequency" data-validation="required">
-										<option value="">-Select Frequency-</option>
-										<option>Weekly</option>
-										<option>Bi-Weekly</option>
-										<option>Semi-Monthly</option>
-										<option>Monthly</option>
-									</select>
-								</div>
-							</div> -->
-							<div class="form-group">
-								<label class="col-lg-3"></label>
-								<div class="col-lg-9">
-									<div class="checkbox">
-										<label> <input type="checkbox" value="Y"
-											name="isMailSent" checked="checked"> Send Invitation
-										</label>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" id="add_employee" class="btn btn-primary" onclick="addEmployee();">Save</button>
-					<button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-				</div>
-			</div>
-		</form:form>
-	</div>
-</div>
-<!-- Add Team modal popup ends -->
-
-<!-- Add Client Model DialogBox Start-->
-<div class="modal fade" id="addClient" role="dialog">
-	<div class="modal-dialog">
-		<form:form id="addClient_form" name="addClient_form" method="post">
-			
-			<div class="modal-dialog" id="newClient">
-               <div class="modal-content">
-                 <div class="modal-header">
-                   <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                   <h4 class="modal-title">Select Client</h4>
-                 </div>
-                 <div class="modal-body clearfix">
-                   <div class="form-horizontal custom-form clearfix">
-                     <div class="col-xs-12 col-md-12 col-lg-12">
-                       <div class="form-group" id="org_dialog">
-                         <label class="col-lg-3">Client Name <span class="text-danger">&nbsp;*</span></label>
-                         <div class="col-lg-9" id="clientNameDiv">
-                           <input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
-                           <input type="hidden" id="orgLocationId" />
-                         </div>
-                       </div>
-                       <div class="form-group">
-                         <label class="col-lg-3">Website</label>
-                         <div class="col-lg-9">
-                           <input type="text" placeholder="client website" id="companyWebsite"  name="companyWebsite" class="form-control" data-validation="validate_Space validate_length length2-100 validate_domain" data-validation-optional="true">
-                         </div>
-                       </div>
-                       
-                       <div class="form-group">
-			              <label class="col-md-3">Tier</label>
-			              <div class="col-md-9">
-			                  <select class="form-control selectpicker" id="level" name="level">
-			                    <option value="Tier-1">Tier-1</option>
-			                    <option value="Tier-2">Tier-2</option>
-			                    <option value="Tier-3">Tier-3</option>
-			                    <option value="Tier-4">Tier-4</option>
-			                    <option selected="selected" value="Tier-5">Tier-5</option>
-			                  </select>
-			              </div>
-                      </div>
-                    </div>
-                 </div>
-              </div>
-             <div class="modal-footer">
-              <button type="button" id="save_client" class="btn btn-primary" onclick="addclient();">Save</button>
-              <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-             </div>
-          </div>
-        </div>
-		</form:form>
-	</div>
-</div>
-
 <!-- Add Client Model DialogBox ends-->
 
 <jsp:include page="../masterFooter.jsp" />
@@ -493,90 +366,6 @@
 			return o;
 		};
 	})(jQuery);
-</script>
-
-
-
-
-<script type="text/javascript">
-function getOrgName(){
-	var orgCode = '${SourceLeadWeb_orgCode}';
-	var sourceleadUrl = '${sourceleadUrl}';
-	
-	
-	$( "#orgName" ).val( '' );
-	$( "#orgLocationId" ).val( '' );
-	
-	$("#companyWebsite").attr("disabled", false);
-	$("#companyWebsite" ).val('');
-	
-	$.ajax({                           
-    	type: "POST",
-    	url : sourceleadUrl+"/getOrgs?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode,
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	var org = [];
-        	for(var i=0;i<json.length;i++){
-       		 var label = json[i][0]; 
-       		 var value = json[i][1];
-       	     tmp = {
-       	        'label': label,
-       	        'value': value
-       	      };
-       	  	org.push(tmp);
-       		}
-        	$("#orgName").autocomplete({
-                
-                minLength: 0,
-                source: org,
-                appendTo: "#org_dialog",
-                focus: function( event, ui ) {
-                       $( "#orgName" ).val( ui.item.label );
-                       $( "#orgLocationId" ).val( ui.item.value );
-                       return false;
-                   },
-                select: function( event, ui ) {
-                    return false;
-                }  
-             })
-        },
-        error: function(e){
-           alert('Ajax Error: ' + e.value);
-        }
-    });
-}
-</script>
-
-
-<script type="text/javascript">
-function getOrgDetails()
-{
-	var orgName = document.getElementById("orgName").value;
-	var orgLocationId = document.getElementById("orgLocationId").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	if(orgName && orgLocationId){
-   	 $.ajax({
-   	    	type: "POST",
-   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
-   	        contentType: "application/json; charset=utf-8",
-   	        dataType: "json",
-   	        success: function(data) {
-   	        	if(data != null && data != ''){
-   	        		var json = JSON.parse(data);
-			      	if(json[3] != null && json[3] != ''){
-			      		$("#companyWebsite").val(json[3]);
-			      		$("#companyWebsite").attr("disabled", true);
-			      	}
-			      	 
-   	        	}
-   			 },
-   	        error: function(e){
-   	            alert('Ajax Error: ' + e.value);
-   	        }
-   	    });
-	}
-	
-}
 </script>
 
 
@@ -785,55 +574,6 @@ function getOrgDetails()
 <!-- Add Task Script Ends -->
 
 
-<script type="text/javascript">
-	function addclient() {
-		
-		if ($('#addClient_form').validate(false, validationSettings)) {
-			var orgLocationId = document.getElementById("orgLocationId").value;
-			var frm = $('#addClient_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	    	//It will escape all the special characters
-		    var jsonData = encodeURIComponent(con);
-			 
-			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_client").attr("disabled", "disabled");
-
-			$.ajax({
-				type : "GET",
-				url : sourceleadUrl + "/saveClientFromProject?json="+jsonData+"&orgLocationId="+orgLocationId+"&responderType=Client",
-				success : function(data) {
-					var json = JSON.parse(data);
-					var output = "";
-					output = output
-							+ "<option value=''>-- Select Client --</option>";
-					for (var i = 0; i < json.length; i++) {
-						var opt = json[i];
-						output = output + "<option value='" +opt.orgid+ "'>"
-								+ opt.orgName + "</option>";
-					}
-					$("#addClientId").empty();
-					$("#addClientId").append(output);
-					$('#addClient').modal('hide');
-				},
-				error : function(e) {
-
-				}
-			});
-
-			$('#orgName').attr('');
-			$('#webSite').attr('');
-			return true;
-		} else {
-			return false;
-		}
-	}
-	$('body').on('blur', '#addClient_form', function() {
-		$("#addClient_form").showHelpOnFocus();
-		$("#addClient_form").validateOnBlur(false, validationSettings);
-	});
-</script>
-
 
 <script type="text/javascript">
 	function saveProject() {
@@ -884,48 +624,6 @@ function getOrgDetails()
 	}
 </script>
 
-<!-- this script is for Save Employee functionality Start-->
-<script type="text/javascript">
-	function addEmployee() {
-		var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		};
-		if ($('#addEmployee_form').validate(false, validationSettings)) {
-			var frm = $('#addEmployee_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			
-			 //It will escape all the special characters
-		     var jsonData = encodeURIComponent(con);
-			  
-			var sourceleadUrl = '${sourceleadUrl}';
-			$("#add_employee").attr("disabled", "disabled");
-
-			$.ajax({
-					type : "POST",
-					url : sourceleadUrl
-							+ "/addNewEmployee?${_csrf.parameterName}=${_csrf.token}&json="
-							+ jsonData,
-					success : function(data) {
-						$('#addTeam').modal('hide');
-					},
-					});
-			return true;
-		} else {
-			return false;
-		}
-	}
-	$('body').on('blur', '#addEmployee_form', function() {
-		$("#addEmployee_form").showHelpOnFocus();
-		;
-		$("#addEmployee_form").validateOnBlur(false, validationSettings);
-	});
-</script>
-
-<!-- this script is for Save Employee functionality Ends -->
 
 <!-- this script is for Get the TeamMembers functionality Start -->
 <script type="text/javascript">
@@ -1124,53 +822,6 @@ function assignEmployeespagination(){
 </script>
 <!-- this script is for Assign Employee functionality Ends -->
 
-<!-- this script is for website validation functionality Start -->
-<script type="text/javascript">
-	function validateWebsite() {
-		var website = document.getElementById("companyWebsite").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		if(website.match(/^[^\s-](.*)*$/) !== null){
-		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
-		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-		
-		if (website != null && website != '') {
-
-			//$("#save_client").attr("disabled", "disabled");
-			// $( "#save_client" ).addClass('button').val('Processing..');
-			$.ajax({
-				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
-				success : function(data) {
-					var result = data;
-					if (result == "Website Duplicated" || result == "Invalid Website") {
-						//existed website
-						$("#save_client").attr("disabled", "disabled");
-						$("input#companyWebsite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
-						document.getElementById("companyWebsite").setAttribute('record-exist', 'yes');
-						document.getElementById("companyWebsite").setAttribute('record-exist-errorMsg',website + ' is '+result);
-						$('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");
-						
-					} else {
-						//New WebSite class="form-control"
-					    $("#save_client").removeAttr("disabled");
-						$('input#companyWebsite').removeAttr("class record-exist record-exist-errormsg");
-						$('input#companyWebsite').attr('class','valid form-control');
-						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-				
-						$("#save_client").click(function() {
-							if ($(this).validate(false, validationSettings)) {
-							}
-						});
-					}
-				},
-
-			});
-		}
-	  }
-	}
-</script>
-<!-- this script is for website validation functionality Ends -->
-
 <script type="text/javascript">
 	function flushProject() {
 		$("#save_client").removeAttr("disabled");
@@ -1178,18 +829,6 @@ function assignEmployeespagination(){
 		$('#companyWebsite').val('');
 		$(".error").removeClass("error");
 		$('#newClient').find('p.jquery_form_error_message').remove();
-	}
-</script>
-
-<script type="text/javascript">
-	function flushEmployee() {
-		$("#add_employee").removeAttr("disabled");
-		$('#firstName').val('');
-		$('#EmailId').val('');
-		$('#lastName').val('');
-		$('#invoiceFrequency').val('');
-		$(".error").removeClass("error");
-		$('#newEmployee').find('p.jquery_form_error_message').remove();
 	}
 </script>
 
@@ -1312,7 +951,7 @@ function getChildLevel1Approvers(currentApproverId){
 		    });
 	 }else{
 		 getApproversLevel2();
-		 flushEmployee();
+		
 	 }
 } 
 </script>
@@ -1325,41 +964,6 @@ function getChildLevel1Approvers(currentApproverId){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
-
-<script type="text/javascript">
-function validateClientName(){
-	 var clientName = document.getElementById("orgName").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
-	$('#clientNameDiv').find('p.jquery_form_error_message').remove();
-	if (clientName != null && clientName != '') {
-		$.ajax({
-			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName,
-			success : function(data) {
-				var result = data;
-				if (result == true) {
-					//duplicate client
-					$("input#orgName").after("<p class='jquery_form_error_message'>"+ clientName+ " is Already Existed</span>");
-					document.getElementById("orgName").setAttribute('record-exist', 'yes');
-					document.getElementById("orgName").setAttribute('record-exist-errorMsg',clientName +"  already existed");
-					$('input#orgName').removeAttr( "record-exist record-exist-errormsg");
-					
-				} else {
-					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
-					$('input#orgName').attr('class','valid form-control');
-					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
-					$("#save_client").click(function() {
-						if ($(this).validate(false, validationSettings)) {
-						}
-					});
-				}
-			},
-
-		});
-	} 
-}
-</script>
 <script src="resources/js/chosen.jquery.min.js"></script> 
 <script type="text/javascript">
 			var config = {

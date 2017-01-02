@@ -11,7 +11,11 @@
 <script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
-
+<style type="text/css">
+.mt10 {
+    margin-top: 10px !important;
+}
+</style>
 
 
 
@@ -24,40 +28,51 @@ function getAddApplicant(requirementId){
 	var result = "";
 	result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Add Applicant</h3>';
-	result = result + '<div class="form-horizontal clearfix">';
+	result = result + '<div class="form-horizontal clearfix select-field">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 	
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
-	result = result + '<div class="col-md-5">';
-	result = result + '<label>Select Candiate</label>';
-	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" name="candidateId" id="candidateId" field-name="Candidate" class="form-control  block">';
-	result = result + '<option value="">--Select Candidate--</option>';
-	result = result + '</select>';
-	result = result + '</div>';		
-	result = result + '<div id="orConditionDiv" class="text-center text-info col-md-2" style="display: block;">';
-	result = result + '------- ( OR ) -------';
-	result = result + '</div>';
+	result = result + '<div class="col-md-7 radioInline">';
+	result = result + '<label class="mr"><input type="radio" checked="checked" value="Candidates" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Candidate\');">Candidates</label>';
+	result = result + '<label class="mr"><input type="radio" value="Consultants" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Consultant\');">Consultants</label>';
+	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');">Add New Candidate</label>';
+	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');">Parse Candidate</label>';
+	result = result + '</div>';	
 	
 	result = result + '<div class="col-md-5 pull-right">';
-	result = result + '<div class="panel-border col-md-12">';
-	result = result + '<div class="" id="browseDiv"  style="display: block;">';
-
+	result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
 	result = result + '<div class="input-group" id="uploadFileGroup">';
 	result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
 	result = result + '</span> </label>';
-	result = result + '<input type="text" class="form-control" data-validation="required validatedoc" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
-	result = result + '</div>';
-
+	result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 	result = result + '</div>';
 	result = result + '</div>';	
-                    
-	result = result + '<div class="panel-border_a col-md-12" id="resumesDiv"  style="display: none;">';
+	result = result + '</div>';
+	
+	result = result + '<div class="clearfix"></div>';
+	result = result + '<div class="col-md-6">';
+	result = result + '<div id="selectCandidateDiv" style="display: block;">';
+	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" name="candidateId" id="candidateId" data-validation="required" field-name="Applicant" class="form-control  block mt10">';
+	result = result + '<option value="">--Select Candidate--</option>';
+	result = result + '</select>';
+	result = result + '</div>';	
+	result = result + '</div>';	
+	
+	result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv"  style="display: none;">';
 	result = result + '<select id="candidateResumesList" name="candidateResume" field-name="Resume" class="form-control block">';
 	result = result + '</select>';
 	result = result + '</div>';
-	result = result + '</div></div>';
+	
+	result = result + '<div id="orConditionDiv" class="text-center text-info col-md-2" style="display: none;">';
+	result = result + '------- ( OR ) -------';
+	result = result + '</div>';
+	
+	
+	
+	
+	result = result + '</div>';
 	
 	result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div> <div id="emailDiv"></div>';
 	
@@ -65,15 +80,38 @@ function getAddApplicant(requirementId){
 	
                         
 	result = result + '</div>';
-	 result = result + '<div class="form-footer clearfix">';
+	result = result + '<div class="row">';
+	result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
+	result = result + '<label class="col-md-4">Add Resume &nbsp;*</label>';
+	result = result + '		<div class="col-md-8">';
+	result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
+	result = result + '			        <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result + '                   <input type="file" style="display: none;" name="newUploadBtn" id="newUploadBtn"  class="upload">';
+	result = result + '			          </span> </label>';
+	result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
+	result = result + '			    </div>';
+	result = result + '		 </div>';
+	result = result + '	 </div>';
+	
+	
+	result = result + '	<div class="col-md-6 upresume mb">';
+	result = result + '<label class="col-md-4">&nbsp;</label>';
+	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need Applicant Permit</strong></span> ';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
 	result = result + '<button type="submit" id="save_button"  class="btn btn-sm btn-primary ">SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
 	result = result + '</form>';
+	
+	
 	 
-	getCandidatesList(requirementId);
+	getCandidatesList(requirementId,'Candidate');
+	
 	
 	$("#addApplicantDiv").empty();
 	$("#addApplicantDiv").append(result);
@@ -82,39 +120,142 @@ function getAddApplicant(requirementId){
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	
+	var selectedFile = document.getElementById("newUploadBtn");
+    selectedFile.addEventListener("change", function() {
+    	 $("#newUploadFile").focus();
+    	 if(validate_fileupload(this.value)){
+    		 var docSize = this.files[0].size;
+   	      $("#uploadFileGroup1").find('p.jquery_form_error_message').remove();
+   	      if(docSize > 2097152){
+   	    	  document.getElementById("newUploadFile").value = '';
+   	    	  $('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
+   			  $("input#newUploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+   			  document.getElementById("newUploadFile").setAttribute('record-exist','yes');
+   			  document.getElementById("newUploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+   	      }else{
+   	    	 $('input#newUploadFile').removeAttr( "record-exist record-exist-errormsg");
+      		 $('#uploadFileGroup1').find('p.jquery_form_error_message').remove(); 
+    	    }
+    	 }
+    });
+	
+	document.getElementById("newUploadBtn").onchange = function () {
+		$('#newUploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+	};
+	
+}
+</script>
+
+<script type="text/javascript">
+function ApplicantPermit(){
+	 if($("#needApplicantPermit").is(':checked')){
+		  $("#needApplicantPermit").val("Y");
+	 }else{
+		 $("#needApplicantPermit").val("N");
+	 }
 }
 </script>
 
 
-
 <script type="text/javascript">
- function getCandidatesList(requirementId) {
+ function getCandidatesList(requirementId,candidateType) {
+	 $('#sjfb-fields').find('p.jquery_form_error_message').remove();
+	 $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+	 $('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
+	 
+	 $('#candidateId').removeAttr('data-validation-optional');
+	 $("#candidateId").attr("data-validation", "required");
+	 
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(requirementId != null && requirementId != "" && requirementId != 'undefined'){
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidatesList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	output = output + "<option value=''>-- Select Candidate --</option>"; 
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
-					}
-		        	$("#candidateId").empty();
-			        $("#candidateId").append(output);
-			        $('#candidateId').trigger("chosen:updated");
-		        },
-		    });
+	 if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType != 'New' && candidateType != 'parseCandidate'){
+		 $("#selectCandidateDiv").css("display","block");
+		 if(requirementId != null && requirementId != "" && requirementId != 'undefined'){
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/getCandidatesList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateType="+candidateType, 
+			        success: function(data) {
+			        	var json = JSON.parse(data);
+			        	var output = "";
+			        	output = output + "<option value=''>-- Select "+candidateType+" --</option>"; 
+			        	for (var i=0; i<json.length; i++)
+						{
+				        		var opt = json[i];
+				        		var lastName = "";
+				        		if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
+				        			lastName = opt.lastName;
+				        		}
+				        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+lastName+"</option>";
+						}
+			        	$("#candidateId").empty();
+				        $("#candidateId").append(output);
+				        $('#candidateId').trigger("chosen:updated");
+				        
+				        getCandidateResumes();
+			        },
+			    }); 
+		 }else{
+			 var output = "";
+	     	 output = output + "<option value=''>-- Select Candidate --</option>"; 
+	     	 $("#candidateId").empty();
+		     $("#candidateId").append(output);
+		     $('#candidateId').trigger("chosen:updated");
+		 }
 	 }else{
 		 var output = "";
-     	 output = output + "<option value=''>-- Select Candidate --</option>"; 
      	 $("#candidateId").empty();
 	     $("#candidateId").append(output);
 	     $('#candidateId').trigger("chosen:updated");
+	     $("#selectCandidateDiv").css("display","none");
+	     
+	     $("#candidateId").removeAttr("data-validation");
+	     $('#candidateId').attr("data-validation-optional","true"); 
+	     
+	     $("#candidateResumesList").removeAttr("data-validation");
+	     $('#candidateResumesList').attr("data-validation-optional","true"); 
+	     
+	     if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'parseCandidate'){
+	    	 document.getElementById("browseDiv").style.display="";
+	    	 $('#uploadFile').removeAttr('data-validation-optional');
+			 $('#uploadFile').attr("data-validation","required validatedoc "); 
+			 
+			 document.getElementById("newResumeDiv").style.display="none";
+			 $('#newUploadFile').removeAttr('data-validation');
+			 $('#newUploadFile').attr("data-validation-optional","true"); 
+	     }else if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'New'){
+	    	 document.getElementById("browseDiv").style.display="none";
+	    	 $('#uploadFile').removeAttr('data-validation');
+			 $('#uploadFile').attr("data-validation-optional","true"); 
+	    	 
+	    	 document.getElementById("newResumeDiv").style.display="";
+			 $('#newUploadFile').removeAttr('data-validation-optional');
+			 $("#newUploadFile").attr("data-validation", "required validatedoc");
+			 
+			
+	     }
+	     document.getElementById("resumesDiv").style.display="none";
+		 document.getElementById("orConditionDiv").style.display="none";
+		
 	 }
+	 
+	 $("input[name=FirstName]").val('');
+	 $("input[name=LastName]").val('');
+	 $("input[name=EmailId]").val('');
+	 $("input[name=EmailId]").removeAttr("readonly");
+	 
+	 
+	 $("input[name=PhoneNumber]").val('');
+	 $("input[name=Designation]").val('');
+	 //$("select[name=country]").val('');
+	 $("select[name=state]").val('');
+	 $("select[name=city]").val('');
+	 $("select[name=NoticePeriod]").val('');
+	 $("select[name=WorkExperience]").val('');
+	 $("input[name=ExpectedCTC]").val('');
+	 $("input[name=CurrentCTC]").val('');
+	 $("input[name=Education]").val('');
+	 
+	 $("#newUploadFile").val('');
+	 $("#uploadFile").val('');
 	
  }
 </script>
@@ -174,6 +315,10 @@ $('body').on('submit', '#addApplicant_form', function(e){
      	    	 inputValue = $this.find('select').val();
      	      }
      	      
+     	     if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+     	    	 inputValue = $this.find('textarea').val();
+     	      }
+     	      
      	    
      	     
      	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
@@ -200,8 +345,9 @@ $('body').on('submit', '#addApplicant_form', function(e){
             });
        });
       var con = JSON.stringify(fields);
-      con = encodeURIComponent(con);
       
+      con = encodeURIComponent(con);
+     
       
 		
        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
@@ -280,7 +426,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	 var candidateId = document.getElementById("candidateId").value
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
-		 $("#candidateResumesList").attr("data-validation", "required");
+		
 		 document.getElementById("resumesDiv").style.display="";
 		 document.getElementById("browseDiv").style.display="none";
 		 document.getElementById("orConditionDiv").style.display="none";
@@ -292,19 +438,44 @@ $('body').on('submit', '#addApplicant_form', function(e){
 		        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	output = output + "<option value=''>-- Select Resume --</option>"; 
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
-			        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
-			            	}else{
-			            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
-			            	}
-					}
-		        	$("#candidateResumesList").empty();
-			        $("#candidateResumesList").append(output);
+		        	if( json.length > 0){
+			        	var output = "";
+			        	output = output + "<option value=''>-- Select Resume --</option>"; 
+			        	for (var i=0; i<json.length; i++)
+						{
+				        		var opt = json[i];
+				        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
+				        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+				            	}else{
+				            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
+				            	}
+						}
+			        	$("#candidateResumesList").empty();
+				        $("#candidateResumesList").append(output);
+				        
+				        document.getElementById("newResumeDiv").style.display="none";
+				        $('#newUploadFile').removeAttr('data-validation');
+		        		$('#newUploadFile').attr("data-validation-optional","true"); 
+		        		
+		        		 $('#candidateResumesList').removeAttr('data-validation-optional');
+		    			 $("#candidateResumesList").attr("data-validation", "required");
+		        	}else{
+		        		
+		        		 $('#candidateResumesList').removeAttr('data-validation');
+		        		 $('#candidateResumesList').attr("data-validation-optional","true"); 
+		        		
+		        		 document.getElementById("resumesDiv").style.display="none";
+		        		 document.getElementById("browseDiv").style.display="none";
+		        		 document.getElementById("orConditionDiv").style.display="none";
+		        		
+		        		 document.getElementById("newResumeDiv").style.display="";
+		        		 $('#newUploadFile').removeAttr('data-validation-optional');
+		        		 $("#newUploadFile").attr("data-validation", "required validatedoc");
+		        		 
+		        		 $('#uploadFile').removeAttr('data-validation');
+		        		 $('#uploadFile').attr("data-validation-optional","true"); 
+		        	}
+		        	
 		        },
 		    });
 	 }else{
@@ -313,9 +484,10 @@ $('body').on('submit', '#addApplicant_form', function(e){
      	 $("#candidateResumesList").empty();
      	 $("#candidateResumesList").removeAttr("data-validation");
 		 document.getElementById("resumesDiv").style.display="none";
-		 document.getElementById("browseDiv").style.display="";
-		 document.getElementById("orConditionDiv").style.display="";
-		 $("#uploadFile").attr("data-validation", "required");
+		 document.getElementById("browseDiv").style.display="none";
+		 document.getElementById("orConditionDiv").style.display="none";
+		 $('#uploadFile').removeAttr('data-validation');
+		 $('#uploadFile').attr("data-validation-optional","true"); 
 	     $("#candidateResumesList").append(output);
 	 }
 	
@@ -324,6 +496,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 
 <script type="text/javascript">
 function getCandidateDetails(){
+	
 	var candidateId = document.getElementById("candidateId").value
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
@@ -333,19 +506,94 @@ function getCandidateDetails(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	 $("input[name=FirstName]").val(json['firstName']);
-		        	 $("input[name=LastName]").val(json['lastName']);
 		        	 $("input[name=EmailId]").val(json['email']);
-		        	 $("input[name=PhoneNumber]").val(json['mobilePhone']);
+		        	 $("input[name=EmailId]").attr('readonly', 'readonly');
+		        	 
+		        	 if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] != 'undefined'){
+		        		 $("input[name=LastName]").val(json['lastName']);
+		        	 }else{
+		        		 $("input[name=LastName]").val(''); 
+		        	 }
+		        	 
+		        	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] != 'undefined'){
+		        		 $("input[name=PhoneNumber]").val(json['mobilePhone']);
+		        	 }else{
+		        		 $("input[name=PhoneNumber]").val(''); 
+		        	 }
+		        	 
 		        	 if(json['designation'] != null && json['designation'] != "" && json['designation'] != 'undefined'){
 		        		 $("input[name=Designation]").val(json['designation']);
+		        	 }else{
+		        		 $("input[name=Designation]").val(''); 
 		        	 }
+		        	 
+		        	 if(json['candidateEdu'] != null && json['candidateEdu'] != "" && json['candidateEdu'] != 'undefined'){
+		        		 $("input[name=Education]").val(json['candidateEdu']);
+		        	 }else{
+		        		 $("input[name=Education]").val(''); 
+		        	 }
+		        	 
+		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
+		        		 $("select[name=country]").val(json['country']);
+		        	 }else{
+		        		 $("select[name=country]").val('');
+		        	 }
+		        	 
+		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
+		        		 $("select[name=state]").val(json['state']);
+		        	 }else{
+		        		 $("select[name=state]").val('');
+		        	 }
+		        	 
+		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
+		        		 $("select[name=city]").val(json['city']);
+		        	 }else{
+		        		 $("select[name=city]").val('');
+		        	 }
+		        
+		        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){
+		        		 $("select[name=NoticePeriod]").val(json['noticePeriod']);
+		        	 }else{
+		        		 $("select[name=NoticePeriod]").val('');
+		        	 }
+		        	 
+		        	 if(json['experienceYears'] != null && json['experienceYears'] != "" && json['experienceYears'] != 'undefined'){
+		        		 $("select[name=WorkExperience]").val(json['experienceYears']);
+		        	 }else{
+		        		 $("select[name=WorkExperience]").val('');
+		        	 }
+		        	 
+		        	 if(json['expectedRate'] != null && json['expectedRate'] != "" && json['expectedRate'] != 'undefined'){
+		        		 $("input[name=ExpectedCTC]").val(json['expectedRate']);
+		        	 }else{
+		        		 $("input[name=ExpectedCTC]").val(''); 
+		        	 }
+		        	 
+		        	 if(json['currentRate'] != null && json['currentRate'] != "" && json['currentRate'] != 'undefined'){
+		        		 $("input[name=CurrentCTC]").val(json['currentRate']);
+		        	 }else{
+		        		 $("input[name=CurrentCTC]").val(''); 
+		        	 }
+		        	 
 		        },
 		    });
 	 }else{
 		 $("input[name=FirstName]").val('');
     	 $("input[name=LastName]").val('');
     	 $("input[name=EmailId]").val('');
+    	 $("input[name=EmailId]").removeAttr("readonly");
+    	 
+    	 
     	 $("input[name=PhoneNumber]").val('');
+    	 $("input[name=Designation]").val('');
+    	 $("select[name=country]").val('');
+    	 $("select[name=state]").val('');
+    	 $("select[name=city]").val('');
+    	 $("select[name=NoticePeriod]").val('');
+    	 $("select[name=WorkExperience]").val('');
+    	 $("input[name=ExpectedCTC]").val('');
+    	 $("input[name=CurrentCTC]").val('');
+    	 $("input[name=Education]").val('');
 	 }
 }
 </script>
@@ -548,11 +796,12 @@ function validate_fileupload(fileName)
 	 var email =   $("input[name=EmailId]").val();
 	$('#emailDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var requirementId = $("#requirementId").val();
 	 if(email != null && email != ""){
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
+		        url: sourceleadUrl+"/validateRequirementCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
 		        success: function(data) {
 		         	if(data == 'true'){
 		         		  $("#save_button").attr("disabled", "disabled");

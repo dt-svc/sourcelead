@@ -23,7 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity
 @Table(name = "CANDIDATE_EDUCATION", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "CandidateEducation")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEducation")
 public class CandidateEducation implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -85,6 +85,9 @@ public class CandidateEducation implements Serializable{
 	
 	@Transient
     private String startDateStr;
+	
+	@Transient
+	private String msg;
 	
 	@Transient
 	private String endDateStr;
@@ -250,6 +253,14 @@ public class CandidateEducation implements Serializable{
 
 	public void setEducationList(List<LookUpData> educationList) {
 		this.educationList = educationList;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 	
 }

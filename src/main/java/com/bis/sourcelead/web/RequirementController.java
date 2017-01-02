@@ -1,11 +1,17 @@
 package com.bis.sourcelead.web;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,8 +33,13 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
+import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -35,9 +47,14 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -77,15 +94,27 @@ public class RequirementController {
 	@Autowired
 	SubmissionTemplateService submissionTemplateService;
 	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
+	RequirementOffersService requirementOffersService;
+	
+	@Autowired
+	RequirementOfferHistoryService requirementOfferHistoryService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
 		Requirement requirement ;
-		RequirementAssignTo requirementAssignTo;
 		ModelAndView model = new ModelAndView();
 		
-		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
@@ -107,7 +136,8 @@ public class RequirementController {
 				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
 				for(RequirementAssignTo rat : requirementAssignToList){
 					if(requirementAssignedIds != null && !requirementAssignedIds.isEmpty()  && requirementAssignedIds != "" ){
-						requirementAssignedIds = requirementAssignedIds +"&"+rat.getAssignUserId().getId().toString();
+						StringBuilder assignUserIdsSB = new StringBuilder();
+						requirementAssignedIds = assignUserIdsSB.append(requirementAssignedIds).append("&").append(rat.getAssignUserId().getId().toString()).toString();
 					}else{
 						requirementAssignedIds =   rat.getAssignUserId().getId().toString();
 					}
@@ -153,7 +183,8 @@ public class RequirementController {
 				if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty()){
 					for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
 						if(parallelApproverIds != null && parallelApproverIds != ""){
-							parallelApproverIds =  parallelApproverIds +","+ requirementApproverHierarchy.getApproverUserId().getId().toString();
+							StringBuilder parallelApproverIdsSB = new StringBuilder();
+							parallelApproverIds =  parallelApproverIdsSB.append(parallelApproverIds).append(",").append(requirementApproverHierarchy.getApproverUserId().getId().toString()).toString();
 						}else{
 							parallelApproverIds =  requirementApproverHierarchy.getApproverUserId().getId().toString();
 						}
@@ -233,8 +264,10 @@ public class RequirementController {
 	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
-		 
+
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		
@@ -242,12 +275,22 @@ public class RequirementController {
 		model.setViewName("requirement/requirementSummary");
 		model.addObject("requirementId",requirementId);
 		
+		Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+		model.addObject("isTeamMember",isTeamMember);
+		
+		Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
+		model.addObject("isManager",isManager);
+
+		model.addObject("sourceleadUrl", sourceleadUrl);
+
+		// This code is commented as not in use 
+
 		//to get time zone list
-		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(countries != null){
 			String[] timezonesList = com.ibm.icu.util.TimeZone.getAvailableIDs(countries.getCode2());
 			model.addObject("timezonesList", timezonesList);
-		}
+		}*/
 		
 		if(requirement.getIsClientJob() != null && requirement.getIsClientJob().equalsIgnoreCase("Y")){
 			model.addObject("clientSubmissions","Y");
@@ -261,10 +304,204 @@ public class RequirementController {
         }else{
             model.addObject("parentRequirement","N");
         }
+        
+        
+        if(requirement.getSpocId() != null && requirement.getSpocId().getId() != null){
+			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+			if(orgSpoc != null && orgSpoc.getSpocStatus() != null && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
+				model.addObject("isSpocActive", Constants.NO);
+			}else{
+				model.addObject("isSpocActive", Constants.YES);
+			}
+		}
 		
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
+		}
+		return model;
+	}
+	
+	@RequestMapping(value = "/reqPipelineSubmitToClientMail")
+	public ModelAndView reqPipelineSubmitToClientMail(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
+		ModelAndView model = new ModelAndView();
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String fullName = null;
+   	      if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName() !=null){
+   	    	     StringBuilder userNameSB = new StringBuilder();
+   		         fullName = userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		   	 }else{
+		   		 fullName = user.getFirstName();
+		   	 }
+         StringBuilder sb = new StringBuilder();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("loginUserEmail",user.getEmail());
+		 model.setViewName("requirement/mail-compose");
+		Requirement req =requirementService.getRequirementByRequirementId(requirementId);
+	    if(req != null && req.getParentRequirement() !=null){
+			 model.addObject("toEmailId",req.getParentRequirement().getManagerUserId().getEmail());
+			 StringBuilder toFullNameSB = new StringBuilder();
+			 model.addObject("toFullName",toFullNameSB.append(req.getParentRequirement().getManagerUserId().getFirstName()).append(" ").append(req.getParentRequirement().getManagerUserId().getLastName()).toString());
+			 sb.append("Hi,").append(req.getParentRequirement().getManagerUserId().getFirstName()).append("").append(req.getParentRequirement().getManagerUserId().getLastName()).toString();
+			 sb.append("\n");
+			 sb.append(fullName).append(" submitted the applicants for the").append(req.getJobTitle()).append(".\n");
+			 sb.append("Best Regards,\n");
+			 sb.append(fullName);
+			 model.addObject("body",sb.toString());
+			 
+	    }
+		return model.addObject("requirement", req);
+	
+	}
+	
+
+//	/candiCount
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
+	@RequestMapping(value = "/template")
+	public ModelAndView AllTemplates(HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("requirement/template");
+		
+		return model;
+
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE')")
+	@RequestMapping(value = "/addTemplate")
+	public ModelAndView AddTemplates(HttpServletRequest request,@RequestParam(value="requirementId", required=false) Long requirementId) throws Exception {
+		
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		Requirement requirement =null;
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("requirement/addTemplate");
+			if(requirementId != null){
+				requirement = requirementService.getRequirementTemplateByRequirementId(requirementId, orgLocations.getId());
+			 model.addObject("requirement", requirement);
+			 
+			 if(requirement.getEducation() != null){
+					String[] educationList = requirement.getEducation().split(",");
+					requirement.setReqEducationList(educationList);
+					requirement.setReqEducationListString(requirement.getEducation());
+			}
+			
+			if(requirement.getSkills() != null){		
+					String[] skillsList = requirement.getSkills().split(",");
+					requirement.setReqSkillsList(skillsList);
+					requirement.setReqSkillsListString(requirement.getSkills());
+			}
+			 
+			}
+		
+		    List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+			
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);
+			
+		
+		   return model;
+
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
+	@RequestMapping(value = "/requirementTemplateSummary")
+	public ModelAndView requirementTemplateSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
+		 
+		ModelAndView model = new ModelAndView();
+		model.setViewName("requirement/requirementTemplateSummary");
+		model.addObject("requirementId",requirementId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
+	}
+	
+	@RequestMapping(value = "/acceptOrRejectRequirementOffer")
+	public ModelAndView acceptOrRejectRequirementOffer(HttpServletRequest request,@RequestParam(value="offerStatus", required=false)String offerStatus,@RequestParam(value="offerId", required=false)Long offerId) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
+		List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
+		
+		ModelAndView model = new ModelAndView();
+		model.setViewName("requirement/offerAcceptOrReject");
+		model.addObject("offerStatus",offerStatus);
+		model.addObject("offerId",offerId);
+		model.addObject("requirementOffers",requirementOffers);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		if(offerStatus.equalsIgnoreCase("Accepted")){
+			
+		    if(requirementOfferHistories != null && !requirementOfferHistories.isEmpty() ){  
+			    if(offerStatus.equalsIgnoreCase("Accepted")){
+			    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
+			    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
+				    		if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+				    		}else{
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+				    		}
+							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+							 
+							//Strote RequirementSubmissionHistory
+						    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+							requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+							requirementSubmissionHistory.setFromStage("OFFERMADE");
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+					  }
+			    	
+					
+			    	  //Changing the status of offerTable 
+				      if(requirementOffers  != null){
+						    requirementOffers.setOfferStatus("OFFERACCEPTED");
+						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
+						    requirementOffersService.saveOfferStatus(requirementOffers);
+				     }
+			    }
+		    }
+		}
+		return model;
+	}
+	
+	@RequestMapping(value = "/downloadRequestDocumentBySubmissionId", method = RequestMethod.GET)
+    public void downloadRequestDocumentBySubmissionId(@RequestParam(value="submissionId", required=false) String submissionId ,HttpServletResponse response) throws Exception {
+		
+			RequirementSubmission requirementSubmission =  requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+	        StringBuilder filename = new StringBuilder();
+	        
+		    response.setContentType("application/octet-stream");
+	        response.setHeader("content-disposition", filename.append("attachment; filename=\"").append(requirementSubmission.getSubmissionRequestFileName()).append("\"").toString());
+	        
+			InputStream inputStream = new ByteArrayInputStream(requirementSubmission.getSubmissionRequestDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+
+				inputStream.close();
+				outStream.close();
+
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+		}
+	
+
+	private boolean isNullOrEmpty(String msg) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

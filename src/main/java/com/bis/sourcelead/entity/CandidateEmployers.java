@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,7 +43,7 @@ public class CandidateEmployers implements Serializable{
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
 	private Candidate candidateId;
 		
@@ -95,6 +96,9 @@ public class CandidateEmployers implements Serializable{
 
 	@Transient
 	private Long candidateEmployeeId;
+	
+	@Transient
+	private String msg;
 	
 	public Long getId() {
 		return id;
@@ -250,6 +254,14 @@ public class CandidateEmployers implements Serializable{
 
 	public void setCandidateEmployeeId(Long candidateEmployeeId) {
 		this.candidateEmployeeId = candidateEmployeeId;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 	
 }

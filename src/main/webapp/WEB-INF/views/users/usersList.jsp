@@ -8,10 +8,21 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-
+<style type="text/css">
+#loadMoreDiv{
+text-align: center;
+font-size: 18px;
+font-weight: bold;
+vertical-align: middle;
+padding: 30px 15px;
+}
+#loadMoreDiv .fa-spinner{
+margin-right: 15px;
+}
+</style>
 <script type="text/javascript">
 window.onload = function () {
-	getUsersList();
+	getUsersList('manual');
  };
 </script>
 
@@ -44,8 +55,9 @@ window.onload = function () {
     </section>
       <section class="clearfix section-action-btns">
         <ul class="pull-right list-unstyled list-inline">
+        <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           <li><i class="fa fa-filter"></i>&nbsp;
-               <select id="userState" onchange="getUsersList();">
+               <select id="userState" onchange="getUsersList('manual');">
 				<option value="">--Select Status--</option>
 				<option value="ACTIVE" >Active</option>
 				<option value="INACTIVE" >In Active</option>
@@ -55,7 +67,7 @@ window.onload = function () {
           </li>
           
 		   <li><i class="fa fa-filter"></i>&nbsp;
-				<select id="userRole" onchange="getUsersList();">
+				<select id="userRole" onchange="getUsersList('manual');">
 				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
 				<!-- <option value="All" >All Roles</option> -->
 				<c:forEach var="roles" items="${rolesList}">
@@ -68,7 +80,7 @@ window.onload = function () {
 			  <a href="javascript:void(0)">
 			  <i class="fa fa-user"></i></a>
 				<span class="action-search"><input type="text" placeholder="Name / Email" id="searchByName"></span>
-				<span class="action-search" onclick="getUsersList();"><i class="fa fa-search"></i></span>
+				<span class="action-search" onclick="getUsersList('manual');"><i class="fa fa-search"></i></span>
 		  </li> 
 		
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
@@ -94,6 +106,7 @@ window.onload = function () {
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
       <div class="row">
           <div id="usersListBody"></div> 
+          <div id="loadMoreDiv"></div> 
       </div>
       <div id="usersListEmptyBody"></div>
       <div id="popUp"></div>
@@ -170,9 +183,47 @@ function exportToPdf(){
 	
 }
 </script>
-      
+   
+   
+   
+ <!--  David
+  Script is used scroll based userList -->   
+<script>
+	$(document).scroll(function(e){
+	    // grab the scroll amount and the window height
+	    var scrollAmount = $(window).scrollTop();
+	    var documentHeight = $(document).height();
+	    offset = $("#usersOffset").val();
+	    var UsersCount = $("#totalUsersCount").val(); 
+	    // calculate the percentage the user has scrolled down the page
+	    if($(window).scrollTop() == $(document).height() - $(window).height()) {
+	    	var avilableCount = $("#usersOffset").val();
+	    	
+	    	avilableCount = parseInt(avilableCount) + parseInt(10); 
+	    	$("#usersOffset").val(avilableCount);
+	    	getUsersList("scroll");
+	    }
+	});
+</script>
+
+
+<!--  David
+  Script is used search  based on search key if Enter Key is Pressed -->
+  
+ <script type="text/javascript">
+   
+    $("#searchByName").keydown(function (e) {
+			  if (e.keyCode == 13) {
+			    $('input[name = searchByName]').click();
+			    getUsersList("manual");
+			  }
+			});
+  </script> 
+ 
+ <!--  David
+  Script is used search  based on search key if Enter Key is Pressed -->    
 <script type="text/javascript">
-	function getUsersList(){
+	function getUsersList(type){
 		
 		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
@@ -181,34 +232,86 @@ function exportToPdf(){
 		var searchByName = document.getElementById("searchByName").value;
 		var userState = document.getElementById("userState").value;
 		
-	    $('#usersListBody').empty();
-        $('#usersListEmptyBody').empty();
+		offset = $("#usersOffset").val();
+		
+		if(type == "manual"){
+    		$('#usersListBody').empty();
+    	}
 		
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		
 		 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole,
+	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset,
 	    			 
             success: function(data) {
-	        var json = JSON.parse(data);
-	        var result = "";
-	        
-	    	if(json.length > 0)
+            	 var json = JSON.parse(data);
+            	 var result = "";
+          if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
+	       	
+	    	if(json.length > 0)	
 	   		{
-	    		
 	 			for(var i=0; i<json.length; i++){
-		       	 
-	 				var userRole = json[i];
-	 				var mobilePhone = ""
-	 			    
-	 			    if(userRole.user.mobilePhone != null && userRole.user.mobilePhone != ''){
-	 			    	mobilePhone = userRole.user.mobilePhone;
-	 			    }else{
-	 			    	mobilePhone = "No Data"
-	 			    }
 	 				
-	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
+			 				var userRole = json[i];
+			 				var mobilePhone = ""
+			 			    
+			 			    if(userRole.user.mobilePhone != null && userRole.user.mobilePhone != ''){
+			 			    	mobilePhone = userRole.user.mobilePhone;
+			 			    }else{
+			 			    	mobilePhone = "No Data"
+			 			    }
+			 				
+			       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
+			       	    	result = result +"<div class='user-profile'>";
+			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
+			       	    	result = result +"<div class='text-center image-parent'>";
+			       	    	result = result +"<div class='imageParent'>";
+			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
+			       	    	result = result +"</div>";
+			       	    	
+			       	    	
+			       	    	result = result +"</div>";
+			       	    	result = result +"</div>";
+			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
+			       	    	
+			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
+			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.user.id+"'/>''> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </h4>";
+			       	    	'</sec:authorize>';
+			       	    	
+			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
+		       	         	   result = result +"<h4><a href='#'> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </h4>";
+		       	    	    '</sec:authorize>';
+			       	    	
+			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+userRole.user.email+" </lable></p>";
+			       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
+			       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp; "+userRole.userRoleName+" </label></p>";
+			       	        
+			       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N' && userRole.userState != 'INACTIVE'){
+			       	    	  result = result +"<p><label id='user"+userRole.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;&nbsp;Invite</a></label></p>";
+			 			    }else if((userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'Y') &&
+			 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
+			 			    	 result = result +"<p><label id='user"+userRole.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
+			 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
+			 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
+			 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
+			 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
+			 			    } 
+			       	    	
+			       	    	result = result +"</div>";
+			       	    	result = result +"<div class='clearfix'></div>";
+			       	    	result = result +"</div>";
+			       	    	result = result +"</div>";
+			       	    	$("#loading").removeAttr("style"); 
+			       	    	if(type == "manual"){
+			            		$('#usersListBody').append(result);
+			            		 $("#searchByName").val("");
+			            	}else{
+			            		$('#usersListBody').append(result);
+			            		 $("#searchByName").val("");
+			            	}
+			
+	       	    	/*result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
 	       	    	result = result +"<div class='user-profile'>";
 	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 	       	    	result = result +"<div class='text-center image-parent'>";
@@ -251,18 +354,23 @@ function exportToPdf(){
 	       	    	
 	       	    	$("#loading").removeAttr("style"); 
 	       	 	    $('#usersListBody').append(result);
-	       	 	    $("#searchByName").val("");
-				   }
-	   		    }
-	    	else{
-	    		$("#noUsers").val("nousers");
-	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Users List is Empty</h3></div>";
-	    		$('#usersListBody').empty();
-	    		$("#loading").removeAttr("style");
-	    		$('#usersListEmptyBody').append(result);
-       	 	    $("#searchByName").val("");
-	    	}
+	       	 	    $("#searchByName").val("");*/
 
+				   }
+	 			result = result + '<div class="clear"></div>';
+	   		    }else{
+	   		    	$("#loading").removeAttr("style");
+	   		    	$('#loadMoreDiv').empty(); 
+		         	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No More Records..</div>';
+		         	$('#loadMoreDiv').append(result);
+	   		    }
+            }else{
+            	$('#loadMoreDiv').empty(); 
+            	$("#loading").removeAttr("style");
+	         	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No More Records..</div>';
+	         	$('#loadMoreDiv').append(result);
+            }
+	    	
 			 },
 	        error: function(e){
 	        }
@@ -300,7 +408,6 @@ function getUserSummary(userId){
 			    	type: "POST",
 			        url: sourceleadUrl+"/userSummary?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
 			        success: function(result) {
-			        	alert("hiii"+result);
 			        	 
 			        },
 			    });

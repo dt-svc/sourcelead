@@ -54,4 +54,10 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 		return requirementSubmissionHistoryDao.getRequirementSubmissionHistoryBySubmissionId(submissionId);
 	}
 
+	@Override
+	public List<RequirementSubmissionHistory> getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(
+			Long candidateId, Long orgLocationId, Long requirementId, Long submissionId) throws Exception {
+		return requirementSubmissionHistoryDao.getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(candidateId,orgLocationId,requirementId,submissionId);
+	}
+
 }

@@ -30,6 +30,9 @@ overflow-x: auto;
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
+	     <div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv1"></span>
+       </div>
           <div class="pull-left">
             <h2>Vendors<span class="select-fild">
                 	<select id="listOfVendors" onchange="listChange(this);">
@@ -214,7 +217,7 @@ function getVendorLists(){
    	        		result = result +'<tr>';
    	        		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
    	        			result = result +'<td>';
-   	        			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
    	        		'</sec:authorize>';
@@ -378,7 +381,7 @@ function getVendorContactLists(){
    	        			result = result +'<td><div>--</div></td>';
    	        		}
    	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
-   	        		result = result +'<td><div><span>'+report.orgName+'</span></div></td>';
+   	        		result = result +'<td><div title='+report.orgName+'><span>'+report.orgName+'</span></div></td>';
    	        		
    	        		
    	        		result = result + ' <td><div>';
@@ -970,7 +973,7 @@ $(document).ready(function() {
     
     $("#filter1ApprovePop").click(function(){
 		$("#filter1ApprovedPop").slideToggle(200);
-		$("#filter2ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
+		$("#filter3ApprovedPop, #filter4ApprovedPop, .export_pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter1ApprovedPop").slideUp(200);
@@ -981,7 +984,7 @@ $(document).ready(function() {
     
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
-		$("#filter1ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
+		$(".export_pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
@@ -992,7 +995,7 @@ $(document).ready(function() {
     
     $("#filter3ApprovePop").click(function(){
 		$("#filter3ApprovedPop").slideToggle(200);
-		$("#filter1ApprovedPop, #filter2ApprovedPop, #filter4ApprovedPop").slideUp(200);
+		$("#filter1ApprovedPop, #filter4ApprovedPop, .export_pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter3ApprovedPop").slideUp(200);
@@ -1003,7 +1006,7 @@ $(document).ready(function() {
     
     $("#filter4ApprovePop").click(function(){
 		$("#filter4ApprovedPop").slideToggle(200);
-		$("#filter2ApprovedPop, #filter3ApprovedPop, #filter1ApprovedPop").slideUp(200);
+		$("#filter3ApprovedPop, #filter1ApprovedPop, .export_pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter4ApprovedPop").slideUp(200);
@@ -1017,7 +1020,7 @@ $(document).ready(function() {
 // Export Popup
 $(document).ready(function() {
     $("#export-pop").click(function(){
-		$(".export_pop").slideToggle(200);
+    	$(".export_pop").slideToggle(200);
 	});
     $("html").click(function() {
         $(".export_pop").slideUp(200);
@@ -1105,7 +1108,11 @@ function acceptInvitation(spocId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
+		    	$("#selector1").removeAttr("style");
+    			$("#selector1").css({ display: "block" });
+    			$("#msgDiv1").html("Accept Invitation Successfully");
 		    	getVendorContactLists();
+		    	msgFadein();
 		    }
 	   });
 }
@@ -1118,7 +1125,11 @@ function rejectInvitation(spocId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
+		    	$("#selector1").removeAttr("style");
+    			$("#selector1").css({ display: "block" });
+    			$("#msgDiv1").html("Reject Invitation Successfully");
 		    	getVendorContactLists();
+		    	msgFadein();
 		    }
 	   });
 }
@@ -1130,9 +1141,10 @@ function rejectInvitation(spocId){
   $(document).ready(function() {
 	   $("#export-popcon").click(function(){
 	               $(".export_pop").toggle();
+	               $("#filter4ApprovedPop, #filter1ApprovedPop, #filter3ApprovedPop").slideUp();
 	       });
 	   $("html").click(function() {
-	       $(".export_pop").hide();
+	       $(".export_pop").slideUp();
 	   });
 	   $(".export_pop, #export-popcon").click(function(e) {
 	       e.stopPropagation();
@@ -1144,9 +1156,10 @@ function rejectInvitation(spocId){
   $(document).ready(function() {
 	   $("#vendor-imports").click(function(){
 	    $(".export_pop").toggle();
+	    $("#filter2ApprovedPop").slideUp();
 	       });
 	   $("html").click(function() {
-	       $(".export_pop").hide();
+	       $(".export_pop").slideUp();
 	   });
 	   $(".export_pop, #vendor-imports").click(function(e) {
 	       e.stopPropagation();
@@ -1285,7 +1298,8 @@ function exportVendorContactToExcel(){
 <!-- Show success message after form submission script -->
 <script>
 	function msgFadein() {
-	    setTimeout(function(){ 
+		$("#selector1").fadeIn(200);
+    setTimeout(function(){ 
 	    	$('#selector1').fadeOut('slow'); }, 300);
 	}
 </script> 

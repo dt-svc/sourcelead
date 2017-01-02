@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
@@ -70,6 +72,9 @@ public class TeamRestController {
 	 @Autowired
 	 private UserRoleService userRoleService;
 	 
+	 @Autowired
+	 private CandidateHotListService candidateHotListService;
+	 
 	 /**
 	   * @author sarath kumar
 	   * @since  sep 14 2016
@@ -92,12 +97,12 @@ public class TeamRestController {
 		List<Team> teamList = teamService.getTeamListByOrgLocationID(loginOrgLocation.getId());
 		String teamMembers="";
 		for(Team team : teamList){
-			
-			team.setTeamOwnerName(team.getOwnerUserId().getFirstName()+""+team.getOwnerUserId().getLastName());
+			StringBuilder ownerNameSB = new StringBuilder();
+			team.setTeamOwnerName(ownerNameSB.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString());
 			Collection<TeamMembers>	teamMembersList  = teamMembersService.getTeamMembersListByTeamID(team.getId(),loginOrgLocation.getId());
 			team.setTeamMembersCount(teamMembersList.size());
-			
-			 
+			List<CandidateHotList> candidateHotList = candidateHotListService.getHotCandidateListForTeamByTeamId(team.getId(), loginOrgLocation.getId());
+			team.setCandidateHotlistCount(candidateHotList.size());
 		}
 		resultJson = commonUtil.toJSON(teamList);
 		return resultJson;
@@ -151,11 +156,11 @@ public class TeamRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(Long.parseLong(teamId),orgLocation.getId());
 		for(TeamMembers  teamMembers : teamMembersList){
-			
-			
+			 StringBuilder ownerNameSB = new StringBuilder();
+			 StringBuilder memberNameSB = new StringBuilder();
  			 teamMembers.setTeamName(teamMembers.getTeamId().getName());
-			 teamMembers.setOwnerName(teamMembers.getTeamId().getOwnerUserId().getFirstName() +""+teamMembers.getTeamId().getOwnerUserId().getLastName() );
-			 teamMembers.setMemberName(teamMembers.getMemberUserId().getFirstName()+""+teamMembers.getMemberUserId().getLastName());
+			 teamMembers.setOwnerName(ownerNameSB.append(teamMembers.getTeamId().getOwnerUserId().getFirstName()).append(" ").append(teamMembers.getTeamId().getOwnerUserId().getLastName()).toString());
+			 teamMembers.setMemberName(memberNameSB.append(teamMembers.getMemberUserId().getFirstName()).append(" ").append(teamMembers.getMemberUserId().getLastName()).toString());
 			 teamMembers.setEmail(teamMembers.getMemberUserId().getEmail());
 			 UserRole userRole = userRoleService.getUserRoleByUserId(teamMembers.getMemberUserId().getId());
 			 teamMembers.setUserType(userRole.getUserType());
@@ -269,7 +274,8 @@ public class TeamRestController {
 			
 			JSONObject jsonObj = new JSONObject(json1);
 			teamService.storeTeam(jsonObj,orgLocations);
-			
+			 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Team Created Successfully");
+
 			return "success";
 		}
 	   
@@ -316,8 +322,8 @@ public class TeamRestController {
 			  String  resultJson =null;
 			  
 			  Team team  = teamService.getTeamByTeamId(teamId);
-			  team.setTeamOwnerName(team.getOwnerUserId().getFirstName()+" "+team.getOwnerUserId().getLastName());
-			  
+			  StringBuilder ownerNameSB = new StringBuilder();
+			  team.setTeamOwnerName(ownerNameSB.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString());
 			  resultJson = commonUtil.toJSON(team);
 			  return resultJson;
 		  }
@@ -360,6 +366,48 @@ public class TeamRestController {
 				teamService.storeTeam(jsonObj,orgLocations);
 				return "success";
 			}
+		  
+		  
+		  @RequestMapping(value = "/getHotCandidateListForTeamByTeamId")
+		  public @ResponseBody String getHotCandidateListForTeamByTeamId(@RequestParam(value = "teamId", required = false) Long teamId, HttpServletRequest request) throws Exception {
+			  String resultJson;
+			  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			    
+			  List<CandidateHotList> candidateHotList = candidateHotListService.getHotCandidateListForTeamByTeamId(teamId, orgLocations.getId());
+			  for(CandidateHotList hotCandidate : candidateHotList){
+				  if(hotCandidate.getCandidateId() != null){
+					  if(hotCandidate.getCandidateId().getFirstName() != null){
+						  hotCandidate.setCandidateFullName(hotCandidate.getCandidateId().getFirstName());
+						  if(StringUtils.isNotEmpty(hotCandidate.getCandidateId().getLastName())){
+							  StringBuilder canNameSB = new StringBuilder();
+							  hotCandidate.setCandidateFullName(canNameSB.append(hotCandidate.getCandidateFullName()).append(" ").append(hotCandidate.getCandidateId().getLastName()).toString());
+						  }
+					  }
+					  
+					  hotCandidate.setCandidateDesignation(hotCandidate.getCandidateId().getDesignation());
+					  hotCandidate.setPositionType(hotCandidate.getCandidateId().getDesignationType());
+					  hotCandidate.setCandidateEmail(hotCandidate.getCandidateId().getEmail());
+					  hotCandidate.setCandidateMobileNumber(hotCandidate.getCandidateId().getMobilePhone());
+					  hotCandidate.setCandidateType(hotCandidate.getCandidateId().getCandidateType());
+					  
+					  if(StringUtils.isNotEmpty(hotCandidate.getCandidateId().getCountry())){
+						  hotCandidate.setCandidateLocation(hotCandidate.getCandidateId().getCountry());
+						  if(StringUtils.isNotEmpty(hotCandidate.getCandidateId().getState())){
+							  StringBuilder canStateSB = new StringBuilder();
+							  hotCandidate.setCandidateLocation(canStateSB.append(hotCandidate.getCandidateLocation()).append(", ").append(hotCandidate.getCandidateId().getState()).toString());
+							  if(StringUtils.isNotEmpty(hotCandidate.getCandidateId().getCity())){
+								  StringBuilder canCitySB = new StringBuilder();
+								  hotCandidate.setCandidateLocation(canCitySB.append(hotCandidate.getCandidateLocation()).append(", ").append(hotCandidate.getCandidateId().getCity()).toString());
+							  }
+						  }
+					  }
+					  
+				  }
+			  }
+			    
+			  resultJson = commonUtil.toJSON(candidateHotList);
+			  return resultJson;
+		}
 
-	 
+		  
 }

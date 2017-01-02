@@ -27,17 +27,13 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.enums.Primary;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import com.bis.sourcelead.enums.Status;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "PROJECT_MEMBERS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectMembers")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ProjectMembers implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -47,12 +43,12 @@ public class ProjectMembers implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projects;
 	
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="EMPLOYEE_ID", nullable=false )	
 	private Employees employee;
 	
@@ -130,7 +126,7 @@ public class ProjectMembers implements Serializable{
     private String terminateReason;
     
     @JsonIgnore
-    @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonBackReference
 	@Fetch(FetchMode.SELECT)
 	private Set<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(0);

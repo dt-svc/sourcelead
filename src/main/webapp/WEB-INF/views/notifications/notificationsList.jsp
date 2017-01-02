@@ -123,7 +123,7 @@ function getNotificationtLists(){
 				{
         		var report = json[i];
 				    result = result +'	<tr>';
-					result = result +'	  <td class="noti-checkbox">';
+					result = result +'	  <td class="noti-checkbox tblminwidth-50">';
 					result = result +'			<label>';
 					result = result +'			   <input type="checkbox" class="checkbox1 left" name="check[]" value="'+report.id+'" />';
 					result = result +'			  <span></span>';
@@ -137,18 +137,18 @@ function getNotificationtLists(){
 					result = result +'		</td>';
 					
 		 			 result = result +'	<td>';
-					result = result +'		<div class="mailbox-name">';
+					result = result +'		<div class="mailbox-name tbldata-dotdot-me">';
 					result = result +		report.notificationFirstName;
 					result = result +'		</div>';
 				    result = result +'  </td>';
 				    
 				   result = result +'   <td>';
-					result = result +'			<div class="mailbox-subject">';
-					result = result +'				<a href="#"><b>'+report.body+'</b></a>';
+					result = result +'			<div class="mailbox-subject tbldata-dotdot-big">';
+					result = result +'				<span><a href="#" title='+report.body+'><b>'+report.body+'</b></a></span>';
 					result = result +'			</div>';
 				    result = result +'   </td>';
 				    
-				    result = result +'   <td><div class="mailbox-date">'+report.calDays+' days ago</div></td>';
+				    result = result +'   <td><div class="mailbox-date tbldata-dotdot-vsm">'+report.calDays+' days ago</div></td>';
 				    result = result +'   <td>';
 				     if(report.userNotificationStatus != "Accepted"){
 				    	result = result +'<span class="mailbox-trash"><a href="'+report.actionLink+'" title="Accept"><i class="text-muted fa fa-check-circle"></i></a></span>';

@@ -29,13 +29,14 @@ overflow-x: auto;
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
-
-		<div id="msgDiv" ></div>
-		<c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector" style="display: block;">
+		  <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: none;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
+	    <div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+       </div>
 			<div class="pull-left">
 				<h2>Clients<span class="select-fild">
 				    <select id="listOfVendors" onchange="listChange(this);">
@@ -200,7 +201,6 @@ function getClientDetails(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
    		    	var json = JSON.parse(data);
    	        	var result = "";
    	        	/* if(json.length != null && json.length != ''){ */
@@ -298,26 +298,19 @@ function getClientDetails(){
    	    	    $("#clientList").append(result)
    	    	    $("#emptyClientList").val(json.length);
    	    	    pagination();
-   		    }else{
-  		    	 var result ="";
-	   		    	result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Clients Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> ";  
-	        	     $("#clientList").empty();  
- 	    	         $("#clientList").append(result)
-	        	}   
+   	    	    
    		    }
 	 }); 
 	
 	
 }	
+</script> 
+
+<script>
+	function msgFadein() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
 </script> 
 
 <script>
@@ -425,20 +418,7 @@ function getVendorContactLists(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getClientContactLists?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
    		    	var json = JSON.parse(data);
-   		    	for (var i = 0; i < 1; i++) { 
-     				var val= json[i];
-     				var opt = "";
-     					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-         					opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
-         					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-         					opt  = opt + '</div>';
-     						}
-     					$("#msgDiv").empty();
-     					$("#msgDiv").append(opt);
-     				} 
-   		    	
    	        	var result = "";
    	        	/* if(json.length != null && json.length != ''){ */
    	        	result = result +'<thead>';
@@ -564,7 +544,6 @@ function getVendorContactLists(){
    	    	    $("#vendorContactList").append(result)
    	    	    $("#clientContactLength").val(json.length);
    	    	    pagination1(); 
-   	    	    msgFadein();
    	        	/* }else{
    	        		result = result +'<div class="row">';
    	        		result = result +'<div class="col-lg-12">';
@@ -582,21 +561,7 @@ function getVendorContactLists(){
     	    	    $("#vendorContactList").append(result)
    	        	} */
    	        	
-   		    }else{
-	   		    	 var result ="";
-	   		    	result = result+"   <div class='row'>"; 
- 					 result = result+"	<div class='col-lg-12'>"; 
- 					 result = result+"		<div class='content-area clearfix'>"; 
- 					 result = result+"			<div class='blank-pages'>";
- 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
- 					 result = result+"			        <p>No Contacts Found</p>";
- 					 result = result+"			 </div>";
- 					 result = result+"		</div>"; 
- 					 result = result+"	</div>"; 
- 					 result = result+"  </div> ";  
-   	        	     $("#vendorContactList").empty();  
-    	    	     $("#vendorContactList").append(result)
-   	        	}  
+   	    	    
    		    }
 	 });
 	
@@ -948,7 +913,7 @@ function getEndDatePickerById(projectId,localFieldName){
 		
 		$("#filter1ApprovePop").click(function(){
 			$("#filter1ApprovedPop").slideToggle(200);
-			$("#filter2ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
+			$(".export_pop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
 		});
 	    $("html").click(function() {
 	        $("#filter1ApprovedPop").slideUp(200);
@@ -959,7 +924,7 @@ function getEndDatePickerById(projectId,localFieldName){
 		
 		$("#filter2ApprovePop").click(function(){
 			$("#filter2ApprovedPop").slideToggle(200);
-			$("#filter1ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
+			$(" .export_pop").slideUp(200);
 		});
 	    $("html").click(function() {
 	        $("#filter2ApprovedPop").slideUp(200);
@@ -970,7 +935,7 @@ function getEndDatePickerById(projectId,localFieldName){
 	    
 	    $("#filter3ApprovePop").click(function(){
 			$("#filter3ApprovedPop").slideToggle(200);
-			$("#filter1ApprovedPop, #filter2ApprovedPop, #filter4ApprovedPop").slideUp(200);
+			$("#filter1ApprovedPop, .export_pop, #filter4ApprovedPop").slideUp(200);
 		});
 	    $("html").click(function() {
 	        $("#filter3ApprovedPop").slideUp(200);
@@ -981,7 +946,7 @@ function getEndDatePickerById(projectId,localFieldName){
 	    
 	    $("#filter4ApprovePop").click(function(){
 			$("#filter4ApprovedPop").slideToggle(200);
-			$("#filter1ApprovedPop, #filter2ApprovedPop, #filter3ApprovedPop").slideUp(200);
+			$("#filter1ApprovedPop, .export_pop, #filter3ApprovedPop").slideUp(200);
 		});
 	    $("html").click(function() {
 	        $("#filter4ApprovedPop").slideUp(200);
@@ -1035,7 +1000,11 @@ function acceptInvitation(spocId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
+		    	$("#selector1").removeAttr("style");
+    			$("#selector1").css({ display: "block" });
+    			$("#msgDiv").html("Accept Invitation Successfully");
 		    	getVendorContactLists();
+		    	msgFadein();
 		    }
 	   });
 }
@@ -1089,7 +1058,11 @@ function rejectInvitation(spocId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
+		    	$("#selector1").removeAttr("style");
+    			$("#selector1").css({ display: "block" });
+    			$("#msgDiv").html("Reject Invitation Successfully");
 		    	getVendorContactLists();
+		    	msgFadein();
 		    }
 	   });
 }
@@ -1241,6 +1214,7 @@ $(document).ready(function() {
  $('#selector').delay(2000).fadeOut('slow');
 	   $("#client-imports").click(function(){
 	       $(".export_pop").toggle();
+	       $("#filter2ApprovedPop").slideUp();
 	       });
 	   $("html").click(function() {
 	       $(".export_pop").hide();
@@ -1255,6 +1229,7 @@ $('#selector').delay(2000).fadeOut('slow');
   $(document).ready(function() {
 	   $("#export-popcon").click(function(){
 		   $(".export_pop").toggle();
+		   $("#filter1ApprovedPop, #filter4ApprovedPop, #filter3ApprovedPop").slideUp();
 	       });
 	   $("html").click(function() {
 	       $(".export_pop").hide(200);
@@ -1264,15 +1239,6 @@ $('#selector').delay(2000).fadeOut('slow');
 	   });        
 	});
 </script> 
-
-<!-- Show success message after form submission script -->
-<script>
-	function msgFadein() {
-	    setTimeout(function(){ 
-	    	$('#selector1').fadeOut('slow'); }, 300);
-	}
-</script> 
-<!-- End -->
 
 
 <jsp:include page="editClientSpocDetails.jsp" />

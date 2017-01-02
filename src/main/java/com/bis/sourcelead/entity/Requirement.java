@@ -31,7 +31,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Entity
 	@Table(name = "REQUIREMENT", catalog = "sourcelead")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement")
+	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement1")
 	public class Requirement implements Serializable{
 
 	
@@ -111,7 +111,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
 	    
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId;
 	
@@ -161,7 +161,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String clientSubmissionTemplateJsonString;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="PARENT_REQUIREMENT_ID")        
     private Requirement parentRequirement;
 	
@@ -189,11 +189,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private  Long  requirementId;
 	
-	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@Transient
+	private String msg;
+	
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
 	
-	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
 	
@@ -263,6 +266,24 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String isLoginUserAsManager;
+	
+	@Transient
+	private String mailBody;
+	
+	@Transient
+	private String submitToClientFromMailId;
+	
+	@Transient
+	private String submitToClientToMailId;
+	
+	@Transient
+	private String submitToClientMailSubject;
+	
+	@Transient
+	private Integer totalApplicantsForRequirement;
+	
+	@Transient
+	private String approvedBy;
 	
 
 	public String getRequirementCreatedDateToString() {
@@ -801,6 +822,15 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public String getIsLoginUserAsManager() {
 		return isLoginUserAsManager;
 	}
+	
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
 
 	public void setIsLoginUserAsManager(String isLoginUserAsManager) {
 		this.isLoginUserAsManager = isLoginUserAsManager;
@@ -821,4 +851,53 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setOtherJobType(String otherJobType) {
 		this.otherJobType = otherJobType;
 	}
+
+	public String getMailBody() {
+		return mailBody;
+	}
+
+	public void setMailBody(String mailBody) {
+		this.mailBody = mailBody;
+	}
+
+	public String getSubmitToClientFromMailId() {
+		return submitToClientFromMailId;
+	}
+
+	public void setSubmitToClientFromMailId(String submitToClientFromMailId) {
+		this.submitToClientFromMailId = submitToClientFromMailId;
+	}
+
+	public String getSubmitToClientToMailId() {
+		return submitToClientToMailId;
+	}
+
+	public void setSubmitToClientToMailId(String submitToClientToMailId) {
+		this.submitToClientToMailId = submitToClientToMailId;
+	}
+
+	public String getSubmitToClientMailSubject() {
+		return submitToClientMailSubject;
+	}
+
+	public void setSubmitToClientMailSubject(String submitToClientMailSubject) {
+		this.submitToClientMailSubject = submitToClientMailSubject;
+	}
+
+	public Integer getTotalApplicantsForRequirement() {
+		return totalApplicantsForRequirement;
+	}
+
+	public void setTotalApplicantsForRequirement(Integer totalApplicantsForRequirement) {
+		this.totalApplicantsForRequirement = totalApplicantsForRequirement;
+	}
+
+	public String getApprovedBy() {
+		return approvedBy;
+	}
+
+	public void setApprovedBy(String approvedBy) {
+		this.approvedBy = approvedBy;
+	}
+	
 }

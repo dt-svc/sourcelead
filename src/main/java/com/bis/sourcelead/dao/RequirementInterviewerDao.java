@@ -9,5 +9,7 @@ public interface RequirementInterviewerDao {
 	RequirementInterviewer storeRequirementInterviewer(RequirementInterviewer interviewer) throws Exception;
 
 	List<RequirementInterviewer> getInterviwersListByInterviewId(Long requirementInterviewId);
-
+	
+	RequirementInterviewer getInterviwerstByInterviewId(Long requirementInterviewerId);
+	
 }

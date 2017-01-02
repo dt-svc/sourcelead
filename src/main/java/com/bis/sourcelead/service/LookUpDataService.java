@@ -10,5 +10,9 @@ public interface LookUpDataService {
 	
 	public List<String> getAllSkillsBySkillCategory()throws Exception;
 	
+	public List<LookUpData> getSkillsBySkillsName(List<String> skillNames) throws Exception;
+
+
+	
 
 }

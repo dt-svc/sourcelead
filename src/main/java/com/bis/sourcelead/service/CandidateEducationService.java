@@ -52,6 +52,12 @@ public interface CandidateEducationService {
 	 */
 	public CandidateEducation removeCandidateEducationBycandidateIdandcandidateEducationId(Long candidateId, Long candidateEducationId) throws Exception;
 
+	/**
+	 * @author Prasad Salina
+	 * @param candidateId
+	 * @return
+	 */
+	public CandidateEducation getCandidateEducationByCandidateId(Long candidateId) throws Exception;
 	
 	/**
 	 * @param candidateId
@@ -61,5 +67,6 @@ public interface CandidateEducationService {
 	 */
 	public CandidateEducation getCandidateEducationBycandidateIdandEducationId(Long candidateId,Long candidateCertificateId)  throws Exception;
 
+	public Boolean validateEducationName(Long candidateId, String candidateEducation) throws Exception;
 
 }

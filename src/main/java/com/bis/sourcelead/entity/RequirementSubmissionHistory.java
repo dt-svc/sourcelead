@@ -2,15 +2,18 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -26,10 +29,14 @@ public class RequirementSubmissionHistory implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID", nullable=false )        
     private RequirementSubmission submissionId;
 	
+	@ManyToOne
+    @JoinColumn(name="INTERVIEWER_ID", nullable=false )        
+    private RequirementInterviewer interviewerId;
+
 	@Column(name = "FROM_STAGE")
 	private String fromStage;
 	
@@ -47,7 +54,62 @@ public class RequirementSubmissionHistory implements Serializable{
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
-
+	
+    @Transient
+    private String fileName;
+	 
+    @Transient
+    private Long resumeid;
+    
+    @Transient
+    private String createdDateStr;
+    
+    @Transient
+    private String orgLocationId;
+    
+    @Transient
+    private Long offerResumeid;
+    
+    @Transient
+    private String loginUserName;
+    
+    @Transient
+    private String userName;
+    
+    @Transient
+    private String submissionStage;
+    
+    @Transient
+    private String requirementReson;
+    
+    @Transient
+    private String interviewStartTime;
+    
+    @Transient
+    private String interviewEndTime;
+    
+    @Transient
+    private String interviewDateStr;
+    
+    @Transient
+    private String interviewType;
+    
+    @Transient
+    private String interviewerName;
+    
+    @Transient
+    private String intervieweSourceType;
+    
+    @Transient
+    private String clientName;
+    
+    
+    @Transient
+	List<RequirementInterviewHistory> requirementInterviewHistoryList;
+    
+    @Transient
+	List<RequirementOfferHistory> requirementOfferHistoryList;
+    
 	public Long getId() {
 		return id;
 	}
@@ -62,6 +124,14 @@ public class RequirementSubmissionHistory implements Serializable{
 
 	public void setSubmissionId(RequirementSubmission submissionId) {
 		this.submissionId = submissionId;
+	}
+
+	public RequirementInterviewer getInterviewerId() {
+		return interviewerId;
+	}
+
+	public void setInterviewerId(RequirementInterviewer interviewerId) {
+		this.interviewerId = interviewerId;
 	}
 
 	public String getFromStage() {
@@ -111,6 +181,148 @@ public class RequirementSubmissionHistory implements Serializable{
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
-	
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public Long getResumeid() {
+		return resumeid;
+	}
+
+	public void setResumeid(Long resumeid) {
+		this.resumeid = resumeid;
+	}
+
+	public String getCreatedDateStr() {
+		return createdDateStr;
+	}
+
+	public void setCreatedDateStr(String createdDateStr) {
+		this.createdDateStr = createdDateStr;
+	}
+
+	public String getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public Long getOfferResumeid() {
+		return offerResumeid;
+	}
+
+	public void setOfferResumeid(Long offerResumeid) {
+		this.offerResumeid = offerResumeid;
+	}
+
+	public String getLoginUserName() {
+		return loginUserName;
+	}
+
+	public void setLoginUserName(String loginUserName) {
+		this.loginUserName = loginUserName;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getSubmissionStage() {
+		return submissionStage;
+	}
+
+	public void setSubmissionStage(String submissionStage) {
+		this.submissionStage = submissionStage;
+	}
+
+	public String getRequirementReson() {
+		return requirementReson;
+	}
+
+	public void setRequirementReson(String requirementReson) {
+		this.requirementReson = requirementReson;
+	}
+
+	public String getInterviewStartTime() {
+		return interviewStartTime;
+	}
+
+	public void setInterviewStartTime(String interviewStartTime) {
+		this.interviewStartTime = interviewStartTime;
+	}
+
+	public String getInterviewEndTime() {
+		return interviewEndTime;
+	}
+
+	public void setInterviewEndTime(String interviewEndTime) {
+		this.interviewEndTime = interviewEndTime;
+	}
+
+	public String getInterviewDateStr() {
+		return interviewDateStr;
+	}
+
+	public void setInterviewDateStr(String interviewDateStr) {
+		this.interviewDateStr = interviewDateStr;
+	}
+
+	public String getInterviewType() {
+		return interviewType;
+	}
+
+	public void setInterviewType(String interviewType) {
+		this.interviewType = interviewType;
+	}
+
+	public String getInterviewerName() {
+		return interviewerName;
+	}
+
+	public void setInterviewerName(String interviewerName) {
+		this.interviewerName = interviewerName;
+	}
+
+	public String getIntervieweSourceType() {
+		return intervieweSourceType;
+	}
+
+	public void setIntervieweSourceType(String intervieweSourceType) {
+		this.intervieweSourceType = intervieweSourceType;
+	}
+
+	public List<RequirementInterviewHistory> getRequirementInterviewHistoryList() {
+		return requirementInterviewHistoryList;
+	}
+
+	public void setRequirementInterviewHistoryList(List<RequirementInterviewHistory> requirementInterviewHistoryList) {
+		this.requirementInterviewHistoryList = requirementInterviewHistoryList;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+
+	public List<RequirementOfferHistory> getRequirementOfferHistoryList() {
+		return requirementOfferHistoryList;
+	}
+
+	public void setRequirementOfferHistoryList(List<RequirementOfferHistory> requirementOfferHistoryList) {
+		this.requirementOfferHistoryList = requirementOfferHistoryList;
+	}
 }

@@ -526,6 +526,21 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		clientsList = clientsListQuery.setString("orgName", orgName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return clientsList;
 	}
+
+	@Override
+	@Transactional
+	public List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId, String type) {
+		
+		if(type.equalsIgnoreCase("Vendor")){
+			type = "Client";
+		}else{
+			type = "Vendor";
+		}
+		    Session session = this.sessionFactory.getCurrentSession();
+			Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type )");
+			List<OrgRelations> relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setString("type", type).setCacheable(true).list();
+			return relationsList;
+	}
 	
 	
 }

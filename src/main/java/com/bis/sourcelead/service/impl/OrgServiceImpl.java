@@ -1,20 +1,16 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgService;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * 
@@ -69,6 +65,7 @@ public class OrgServiceImpl implements OrgService {
 		System.out.println(multiFile.getContentType());
 		org.setOrgName(orgSettings.getCompanyName());
 		org.setOrgDescription(orgSettings.getAboutCompany());
+		org.setOrgAddress(orgSettings.getAddress());
 		
         if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
     	  try {

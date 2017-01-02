@@ -35,8 +35,8 @@ overflow-x: auto;
        <section class="content-wraper">
         <section class="content-header clearfix">
         
-        <c:if test="${not empty msg}">
-	        <div class="success_pop" id="selector">
+        <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector" style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
@@ -291,6 +291,7 @@ $(document).ready(function() {
 $(document).ready(function() {
     $("#filter1ApprovePop").click(function(){
 		$("#filter1ApprovedPop").slideToggle(200);
+		 $("#filter2ApprovedPop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter1ApprovedPop").slideUp(200);
@@ -302,6 +303,7 @@ $(document).ready(function() {
     
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
+		$("#filter1ApprovedPop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);

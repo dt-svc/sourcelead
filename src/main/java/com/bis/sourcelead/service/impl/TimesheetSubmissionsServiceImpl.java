@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -433,7 +432,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			       ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
 			       ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
 	        	   if(ts.getProjectMembers() != null && ts.getProjectMembers().getEmployee() != null && ts.getProjectMembers().getEmployee().getUser() != null){
-	        		   ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
+	        		   StringBuilder stringBuilder = new StringBuilder();
+	        		   ts.setFullName(stringBuilder.append(ts.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(ts.getProjectMembers().getEmployee().getUser().getLastName()).toString());
 	        	   }
 	        	   
 	        	   currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
@@ -448,7 +448,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	        	   
 	        	   
 	        	  String rows = dynamicTimesheet(user, "left", startDate, ts.getProjectMembers().getId(), ts.getProjectMembers().getEmployee().getUser().getId(), ts.getProjectMembers().getEmployee().getId(),locationsId);
-	        	  sb.append("<tr id='row"+ts.getProjectMembers().getEmployee().getUser().getId()+"'>");
+	        	  sb.append("<tr id='row").append(ts.getProjectMembers().getEmployee().getUser().getId()).append("'>");
 	        	  sb.append(rows);
 	        	  sb.append("</tr>");
 	         }
@@ -587,12 +587,13 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	  	   ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
 	       ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
 		   if(ts.getProjectMembers() != null && ts.getProjectMembers().getEmployee() != null && ts.getProjectMembers().getEmployee().getUser() != null){
-			   ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
+			   StringBuilder stringBuilder = new StringBuilder();	
+			   ts.setFullName(stringBuilder.append(ts.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(ts.getProjectMembers().getEmployee().getUser().getLastName()).toString());
 		   }
 		   		
 	         sb.append("  <td><div class='time_appr_user tbldata-dotdot-me'>");
-	         sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='"+request.getContextPath()+"/displayUserImage/"+ts.getProjectMembers().getEmployee().getUser().getId()+"' alt='Profile Image' class='img-circle img-responsive'>");
-	         sb.append("    <span><b>"+ts.getFullName()+"</b></span>");
+	         sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(ts.getProjectMembers().getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
+	         sb.append("    <span><b>").append(ts.getFullName()).append("</b></span>");
 	         sb.append(" <div></td>");
 	         
 	           sb.append("<td><div id='datefrequency"+ts.getUserId()+ts.getStartDateStr().replaceAll("-", "")+"'>");
@@ -603,7 +604,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	           else{
 	        	   sb.append("       	<i class='glyphicon glyphicon-none'></i>");
 	           }
-	     	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
+	     	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>").append(startDateBuilder).append(" To ").append(endDateBuilder).append("</span>");
 	     	   Date rightNavStartDate = getRightNavStartDateForApproverBasedOnCurrentStartDate(user.getId(), ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
 	           if(rightNavStartDate != null){
 		     		Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
@@ -623,14 +624,14 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	     	 
 	         sb.append("    <td><div> " );
 	         if(isViewMemberTimeSheet){
-	        	 sb.append(" <a onclick='myTimesheet(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'  id='timesheetPopup"+ts.getId()+"'> "+ts.getCombinedTotalHours()+"</a>");
+	        	 sb.append(" <a onclick='myTimesheet(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'  id='timesheetPopup"+ts.getId()+"'> ").append(ts.getCombinedTotalHours()).append("</a>");
 	         }else{
 	        	 sb.append(ts.getCombinedTotalHours());
 	         }
 	         sb.append("    </div>");
 	         sb.append("    </td>");
 	         
-	         sb.append("  <td><div id='status"+ts.getUserId()+"'>"+ts.getCombinedStatus()+"</div></td>");
+	         sb.append("  <td><div id='status"+ts.getUserId()+"'>").append(ts.getCombinedStatus()).append("</div></td>");
 	         
 	         sb.append("    <td><div id='action"+ts.getUserId()+"'> " );
 	             if( (ts.getCombinedStatus() !=null && ts.getCombinedStatus().equalsIgnoreCase("NEW")) || ( ts.getCombinedStatus() != null && ts.getCombinedStatus().equalsIgnoreCase("SUBMITTED FOR APPROVAL")) ){
@@ -640,7 +641,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	             if(ts.getCombinedStatus() !=null && ts.getCombinedStatus().equalsIgnoreCase("REJECTED")){
 	               sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
 	               sb.append(" <i class='glyphicon glyphicon-comment' id='"+ts.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+ts.getId()+"\");'>");
-	               sb.append(" <div class='app_error_mes' id='rejectedMessage"+ts.getId()+"'>"+ts.getRejectedReason()+"</div>");
+	               sb.append(" <div class='app_error_mes' id='rejectedMessage"+ts.getId()+"'>").append(ts.getRejectedReason()).append("</div>");
 	               sb.append(" </i>");
 	               sb.append(" </div>");
 	            }
@@ -1095,9 +1096,20 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
  * 
  */
 		@Override
-		public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId,Long locationsId) throws Exception {
-			return timesheetSubmissionsDao.getWeekFrequency(userId,locationsId);
+		public HashSet<TimesheetSubmissions> getWeekFrequency(Long projectId,Long locationsId,Long userId) throws Exception {
+			return timesheetSubmissionsDao.getWeekFrequency(projectId,locationsId,userId);
 		}
+
+
+	@Override
+	public HashSet<TimesheetSubmissions> getWeekFrequencyByProjMemId(Long projectId) throws Exception {
+		return timesheetSubmissionsDao.getWeekFrequencyByProjMemId(projectId);
+	}
+
+	@Override
+	public List<TimesheetSubmissions> getTimeSheetSubmissionByProjectMemberId(Long pojectMemberId) throws Exception {
+		return timesheetSubmissionsDao.getTimeSheetSubmissionByProjectMemberId(pojectMemberId);
+	}
 
 
 		

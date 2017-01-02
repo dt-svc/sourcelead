@@ -104,7 +104,9 @@ public class TimesheetEntriesServiceTest {
 		projectTask.setId(1l);
 		timesheetEntries.setProjectTask(projectTask);
 		timesheetEntries.setDocFile(new byte[123]);
-		timesheetSubmissions.setId(2l);
+		timesheetSubmissions.setId(1l);
+		String sunHours="10";
+		timesheetEntries.setSunHours(sunHours);
 		timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
 		timesheetEntriesService.updateTimesheetEntries(timesheetEntries);
 
@@ -113,7 +115,7 @@ public class TimesheetEntriesServiceTest {
 
 	@Test
 	public void getTimesheetEntries() throws Exception {
-		TimesheetEntries timesheetEntries = timesheetEntriesService.getTimesheetEntries("2");
+		TimesheetEntries timesheetEntries = timesheetEntriesService.getTimesheetEntries("1");
 		logger.info("Successfully retrived!!!!" + timesheetEntries.getStatus());
 	}
 
@@ -144,6 +146,18 @@ public class TimesheetEntriesServiceTest {
 		String id = "1";  
 		Boolean deleteTimesheet = timesheetEntriesService.deleteTimesheetEntries(id);
 		logger.info("Deleted Successfully!!!!"+deleteTimesheet);
+	}
+	
+	
+	@Test
+	public void newTimesheet() throws Exception{
+		User user= new User();
+		user.setId(1l);
+		String navigation="RIGHT";
+		String startDate="1991-02-02";
+		Long locationsId=1l;
+		String newTimesheet = timesheetEntriesService.newTimesheet(user, navigation, startDate, locationsId);
+		logger.info("Success!!!!"+newTimesheet);
 	}
 
 }

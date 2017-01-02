@@ -5,18 +5,19 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateResumesDao;
-import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -39,6 +40,10 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	
 	@Autowired
 	private CandidateResumesDao candidateResumesDao;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	
 
 	/**
 	 * @author Venkat Kesav
@@ -104,6 +109,11 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 			 }
 		}
 		candidateResumesDao.updateCandidateResume(candidateResume);
+		
+		/*
+		 * updating Candidate Resume DB data in existing candidateindex
+		 */
+		saveOrUpdateCandidateElkDocumentWithResumeDetails(candidate);
 		return candidateResume;
 	}
 	
@@ -111,7 +121,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	 * @author prasad.k
 	 * @since  aug 30 2016
 	 * @version 0.0.1
-	 * 
+	 *  
 	 * This method is used to get CandidateResumesDetails from candidate_Resumes table.
 	 *  
 	 * 
@@ -164,6 +174,12 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		 return candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
 	}
 	
+	@Override
+	public List<CandidateResumes> getCandidateResumesByIds(List<Long> submissionResumeIds) {
+		return candidateResumesDao.getCandidateResumesByIds(submissionResumeIds);
+	}
+	
+	
 	/**
 	 * @author Venkat Kesav
 	 * @since  aug 30 2016
@@ -181,7 +197,13 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception {
 		logger.debug("In CandidateResumeServiceImpl class updateCandidateResume method...");
-		return candidateResumesDao.updateCandidateResume(candidateResumes);
+		candidateResumes = candidateResumesDao.updateCandidateResume(candidateResumes);
+				
+		 /*
+		 * updating Candidate Resume DB data in existing candidateindex
+		 */
+	    saveOrUpdateCandidateElkDocumentWithResumeDetails(candidateResumes.getCandidateId());
+		return candidateResumes;
 		
 	}
 
@@ -209,6 +231,22 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public CandidateResumes getCandidateLatesResumes(Long candidateId, int status) throws Exception {
 		return candidateResumesDao.getCandidateLatesResumes(candidateId,status);
+	}
+
+	@Override
+	@Async
+	public void saveOrUpdateCandidateElkDocumentWithResumeDetails(Candidate candidate) throws Exception {
+		if(null != candidate && null != candidate.getId()){
+			CandidateIndex candidateIndex = new CandidateIndex();
+			candidateIndex.setCandidateId(candidate.getId());
+			CandidateResumes candidateResumes =getCandidateLatesResumes(candidate.getId(),Constants.CANDIDATE_SKILL_ACTIVE);
+			if(null != candidateResumes){
+				candidateIndex.setCurrentResumeId(candidateResumes.getId());
+				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
+				candidateIndex.setResumeContent("");
+			}
+			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+		}
 	}
 
 }

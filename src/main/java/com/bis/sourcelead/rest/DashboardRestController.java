@@ -7,8 +7,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,11 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.DashboardCounts;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
-import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -33,6 +31,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
+import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -52,7 +51,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 public class DashboardRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(DashboardRestController.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -76,11 +74,15 @@ public class DashboardRestController {
 	 RequirementApproverHierarchyService requirementApproverHierarchyService;
 	 
 	 @Autowired
+	 RequirementInterviewHistoryService requirementInterviewHistoryService;
+	 
+	 @Autowired
 	 UserService userService;
 	 
 	 @Autowired
      UserRoleService userRoleService;
-	
+	 
+	 
 	@Autowired
 	CommonUtil commonUtil;
 	/****
@@ -93,7 +95,6 @@ public class DashboardRestController {
 	public String getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,HttpServletRequest request) throws Exception {
 
 		String resultJson;
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -114,7 +115,8 @@ public class DashboardRestController {
 	
 	@RequestMapping(value = "/totalTimesheetList/{status}")
 	public @ResponseBody void tiesheetStatusList(@PathVariable("status") String status,HttpServletResponse response) throws Exception {
-		response.sendRedirect("/sourcelead/timesheetlistByStatus?status=" + status);
+		 StringBuilder redirectUrl = new StringBuilder();
+		 response.sendRedirect(redirectUrl.append("/sourcelead/timesheetlistByStatus?status=").append(status).toString());
 	}
 	
 	
@@ -128,7 +130,8 @@ public class DashboardRestController {
    			    userRole.setUserState(Status.ACTIVE);
    			    userRoleService.addUserRole(userRole);
    		      }
-		     response.sendRedirect("/sourcelead/dashboardLinks?orgLocationId="+orgLocationId);
+		     StringBuilder redirectUrl = new StringBuilder();
+		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).toString());
 			
 	}
 	
@@ -155,7 +158,6 @@ public class DashboardRestController {
 	 public String getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
 
 		String resultJson;
-		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -173,9 +175,20 @@ public class DashboardRestController {
 		
 		//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
 		for(Requirement requirement : requirementList){
-			if(requirement.getClientId() != null){
+			/*if(requirement.getClientId() != null){
 				requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+			}*/
+			//changed ny prasad salina
+			if(requirement.getClientId() != null){
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+				}
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+				}
 			}
+			
+			
 			
 			int applicantsCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "APPLICANTS");
 			int shortlistedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SHORTLISTED");
@@ -216,13 +229,12 @@ public class DashboardRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 
 		String userType = null;
-		List<Requirement>  requirementList = null;
 		
 		if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
 			userType = "ADMIN";
 		} 
 		
-		int toDayReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION",daterange,userType,user);
+		int toDayReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMIT_TO_CLIENT",daterange,userType,user);
 		//int previousReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
 		
 		int toDayReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION",daterange,userType,user);
@@ -266,7 +278,6 @@ public class DashboardRestController {
 	 public String getAssignedRequirementApproverListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
 
 		String resultJson;
-		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -305,11 +316,10 @@ public class DashboardRestController {
 	   * @throws NullPointer
 	   */
 	 
-	 @RequestMapping(value = "/getApproverRequirementApproverListByOrgLocationIDAndUserId")
-	 public String getApproverRequirementApproverListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
+	 @RequestMapping(value = "/getApproverRequirementApproverListByOrgLocationIDAndUserId",  method = RequestMethod.GET)
+	 public String getApproverRequirementApproverListByOrgLocationIDAndUserId(@RequestParam(value="statusType", required=false) String statusType,HttpServletRequest request) throws Exception {
 
 		String resultJson;
-		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -320,9 +330,9 @@ public class DashboardRestController {
 		
 		if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
 			userType = "ADMIN";
-			requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+			requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode,statusType);
 		}else{
-			requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+			requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode,statusType);
 		}
 		
 		//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(),user.getId());
@@ -330,7 +340,13 @@ public class DashboardRestController {
 			// to get the RequirementApproverHierarchy to set the Status
 			RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), user.getId());
 			if(requirementApproverHierarchy!=null){
-				requirement.setRequirementApproverHierarchyStatus(requirementApproverHierarchy.getRequirementApproverStatus().toString());
+				       requirement.setRequirementApproverHierarchyStatus(requirementApproverHierarchy.getRequirementApproverStatus().toString());
+				       // to set the approved/rejected by user
+				       User approvedUser = userService.getUserByUserCode(requirementApproverHierarchy.getUpdatedBy());
+			                    if(approvedUser !=null ){
+			                    	StringBuilder sb = new StringBuilder();
+									requirement.setApprovedBy(sb.append(approvedUser.getFirstName()).append(" ").append(approvedUser.getLastName()).toString());
+			                    }
 			}
 		}	
 		resultJson = commonUtil.toJSON(requirementList);
@@ -355,7 +371,7 @@ public class DashboardRestController {
 		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
-			List<RequirementInterview> requirementInterviewList = null;
+			List<RequirementInterviewHistory> requirementInterviewList = null;
 			
 			String currentTime = null;
 			String userType = null;
@@ -365,47 +381,66 @@ public class DashboardRestController {
 			
 			if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
 				userType = "ADMIN";
-				requirementInterviewList = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
+				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
 			}else{
-				requirementInterviewList = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
+				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
 			}
 			
-			for(RequirementInterview requirementInterview : requirementInterviewList){
+			for(RequirementInterviewHistory interviewHistory : requirementInterviewList){
 				String candidateFirstName = "";
 				String candidateLastName = "";
 				String requirementTitle = "";
-				if(requirementInterview.getSubmissionId() != null && requirementInterview.getSubmissionId().getCandidate() != null){
-					if(requirementInterview.getSubmissionId().getCandidate().getFirstName() != null){
+				StringBuilder candidateName = new StringBuilder();
+				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getCandidate() != null){
+					if(interviewHistory.getSubmissionId().getCandidate().getFirstName() != null){
 						
-						candidateFirstName = requirementInterview.getSubmissionId().getCandidate().getFirstName();
+						candidateFirstName = interviewHistory.getSubmissionId().getCandidate().getFirstName();
 					}
-					if(requirementInterview.getSubmissionId().getCandidate().getLastName() != null){
+					if(interviewHistory.getSubmissionId().getCandidate().getLastName() != null){
 						
-						candidateLastName = requirementInterview.getSubmissionId().getCandidate().getLastName();
+						candidateLastName = interviewHistory.getSubmissionId().getCandidate().getLastName();
 					}
 				}
 				
-				if(requirementInterview.getSubmissionId() != null && requirementInterview.getSubmissionId().getRequirement().getJobTitle() != null){
-					requirementTitle = requirementInterview.getSubmissionId().getRequirement().getJobTitle();
+				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getJobTitle() != null){
+					requirementTitle = interviewHistory.getSubmissionId().getRequirement().getJobTitle();
 				}
 				
-				requirementInterview.setCandidateName(candidateFirstName+" "+candidateLastName);
+				interviewHistory.setCandidateName(candidateName.append(candidateFirstName).append(" ").append(candidateLastName).toString());
 				
-				requirementInterview.setRequirementTitle(requirementTitle);
+				interviewHistory.setRequirementTitle(requirementTitle);
 				
-				requirementInterview.setRequirementId(requirementInterview.getSubmissionId().getRequirement().getId().toString());
+				interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
 				
 				//requirementInterview.setInterviewStartDateTimeStr(requirementInterview.getStartTime().toString());
 				
 				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
-				String commonDateFormat = standardFormat.format(requirementInterview.getStartTime());
-				requirementInterview.setInterviewStartDateTimeStr(commonDateFormat.toString());
+				String commonDateFormat = standardFormat.format(interviewHistory.getInterviewId().getStartTime());
+				interviewHistory.setInterviewStartDateTimeStr(commonDateFormat.toString());
 				
 				
-				if(requirementInterview.getSubmissionId().getRequirement().getClientId() != null){
+				/*if(interviewHistory.getSubmissionId().getRequirement().getClientId() != null){
 					
-					requirementInterview.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
-				}
+					interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+				}*/
+				 if(interviewHistory.getSubmissionId().getRequirement().getClientId() != null){
+						if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
+							interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+						}
+						if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+							interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getLocationId().getOrg().getOrgName());
+						}
+					}else{
+						RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getId(),loginOrgLocations.getId());
+					    if(requirementSubmission != null){
+					    	interviewHistory.setClientName(requirementSubmission.getOrgLocations().getOrg().getOrgName());
+					    }else if(interviewHistory.getSubmissionId().getSourceSubmission() != null && interviewHistory.getSubmissionId().getSourceSubmission().getId() != null){
+					    	RequirementSubmission parentRequirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getSourceSubmission().getId(),loginOrgLocations.getId());
+					    	 if(parentRequirementSubmission != null){
+							     interviewHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrg().getOrgName());
+					    	 }
+					    }
+					}
 				
 			}
 			
@@ -441,13 +476,13 @@ public class DashboardRestController {
 			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 			RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
 		    
-			// to get  RequirementApproverHierarchy with maximum Level
+			/*// to get  RequirementApproverHierarchy with maximum Level
 			Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
 
 			if(status.equalsIgnoreCase("APPROVED")){ 
 			    if(maxLevel!=null){
 			    	 if(maxLevel == requirementApproverHierarchy.getLevel()){
-			    		 requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.APPROVED);
+			    		 requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
 					   }else{
 					    	List<RequirementApproverHierarchy> list1  =  requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
 					    	for(RequirementApproverHierarchy rah :list1){
@@ -479,9 +514,81 @@ public class DashboardRestController {
 			}
 			requirementService.addRequirement(requirement);
 			requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
+			*/
 			
+			
+			// requirement created user
+			User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
+
+			// to get RequirementApproverHierarchy with maximum Level
+			Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
+
+			if (maxLevel != null) {
+				if (maxLevel.equals(requirementApproverHierarchy.getLevel())) {
+						if (status.equalsIgnoreCase("APPROVED")) {
+							requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+						} else if (status.equalsIgnoreCase("REJECTED")) {
+							requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+						}
+							requirement.setUpdatedBy(loginUser.getUserCode());
+							requirement.setUpdatedDate(commonUtil.currentDate());
+							requirementService.addRequirement(requirement);
+							List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+							for (RequirementApproverHierarchy rah : list1) {
+								if (status.equalsIgnoreCase("APPROVED")) {
+									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+								} else if (status.equalsIgnoreCase("REJECTED")) {
+									rah.setRejectedReason(reason);
+									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+								}
+								rah.setUpdatedBy(loginUser.getUserCode());
+								rah.setUpdatedDate(commonUtil.currentDate());
+								requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
+							}
+						// this is for sending email to requirement initiator
+						if (status.equalsIgnoreCase("APPROVED")) {
+							requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement, orgLocation);
+						} else if (status.equalsIgnoreCase("REJECTED")) {
+							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
+						}
+				}else{
+
+					    RequirementApproverHierarchy level2approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
+						User approverUser = userService.getUserById(level2approver.getApproverUserId().getId());
+						if (status.equalsIgnoreCase("APPROVED")) {
+							if (level2approver != null) {
+								// this is for sending email to second level approver
+								requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, null,	orgLocation);
+							}
+							requirementApproverHierarchy
+									.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+						} else if (status.equalsIgnoreCase("REJECTED")) {
+							// this is for sending email to requirement initiator
+							requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+							requirementApproverHierarchy.setRejectedReason(reason);
+							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
+	
+						}
+						requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());
+						requirementApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
+						requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
+						requirementService.addRequirement(requirement);
+				}
+			}
+
 			return "success";
 			
 		}
+		
+		@RequestMapping(value = "/getApplicantsByStatus", method = RequestMethod.POST)
+		public String getApplicantsByStatus(@RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception {
 
+		 String resultJson;
+
+		 OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 List<RequirementSubmission> requirementSubmissionList = requirementSubmissionService.getApplicantsByStatus(loginOrgLocations.getId(), status);
+		 resultJson = commonUtil.toJSON(requirementSubmissionList);
+		 return resultJson;
+
+		}
 }

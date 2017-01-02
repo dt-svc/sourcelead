@@ -43,6 +43,8 @@ public interface ProjectMembersService {
 	
 	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId,Long projectId) throws Exception;
 	
+	public ProjectMembers getProjectMemberByEmpIdAndProjectId(Long empId,Long projectId) throws Exception;
+	
 	public Integer  getAllProjectMembersCountByProjectId(Long id) throws Exception;
 	
 	public Integer updateProjectMemberDeletedReason(Long projectMemberId, String reason);
@@ -57,4 +59,6 @@ public interface ProjectMembersService {
 
 	/*by sarath*/
     public Set<ProjectMembers> prepareProjectMembersListByJson(JSONObject jsonObj,HttpServletRequest request,Projects projects) throws Exception;
+    
+    public List<ProjectMembers> getAllProjectsAssigendToUserByIdAndStatus(Long userId, String status) throws Exception;
 }

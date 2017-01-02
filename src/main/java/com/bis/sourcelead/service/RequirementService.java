@@ -53,7 +53,7 @@ public interface RequirementService {
 	
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
-	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
+	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode,String statusType) throws Exception;
 	
 	public List<Requirement> getAssignedRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId,Long  userId) throws Exception;
 
@@ -72,5 +72,20 @@ public interface RequirementService {
 	Boolean checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long requirementId,Long userId)  throws Exception;
 
 	public List<Requirement> getAllReleasedJobsForVendor(Long orgLocationId, Long orgRelationId, User user, OrgLocations orgLocations) throws Exception;
+    
+	List<Requirement> getAllRequirementTeplateJobsByOrgLocationId(Long orgLocationId, User user) throws Exception;
+	
+	public Requirement storeRequirementTemplate(JSONObject jsonObj,OrgLocations orgLocations,User user) throws Exception;
+	
+	public Requirement getRequirementTemplateByRequirementId(Long requirementId,Long orgLocationId) throws Exception;
+	
+	public Requirement updateRequirementTemplate(Requirement requirement) throws Exception;
+	
+	Integer getManagerAssignedRequirementsCount(Long userId,Long orgLocationId) throws Exception;
+	
+	public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception;
+	
+	public List<Requirement> getManagerAssignedRequirementsList(Long userId,Long orgLocationId) throws Exception;
+	
 
 }
