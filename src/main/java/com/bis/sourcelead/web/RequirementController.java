@@ -198,7 +198,9 @@ public class RequirementController {
 		
 		if(orgLocations != null && StringUtils.isNotEmpty(orgLocations.getCountry())){
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(countries != null){
 			model.addObject("loginCountryName", countries.getName());
+			}
 	        model.addObject("currencyCode", countries.getCurrency());
 		}
         
