@@ -1232,7 +1232,7 @@ public class RequirementServiceImpl implements RequirementService {
 			 StringBuilder userBuild = new StringBuilder();
 			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("LoginUser","--"); 
+				 globalVarsMap.put("LoginUser",loginUser.getFirstName()); 
 			 }
 		 if(loginUser.getUserType()!= null && !"".equalsIgnoreCase(loginUser.getUserType())){
 			 globalVarsMap.put("Role", loginUser.getUserType());
@@ -1470,7 +1470,7 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 	@Override
-	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype,StringBuilder location) throws Exception {
+	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype) throws Exception {
 		User  vendorContactUser = null;
 		
 		if(releasetype.equalsIgnoreCase("VENDORS")){
@@ -1496,11 +1496,18 @@ public class RequirementServiceImpl implements RequirementService {
 			 } else {
 				 globalVarsMap.put("RequirementTitle", "--");
 			}
-		 if (location != null) {
-			 globalVarsMap.put("RequirementLocation",  location.toString());
-			 } else {
-				 globalVarsMap.put("RequirementLocation", "--");
-			}
+		 
+		 StringBuilder stringBuild = new StringBuilder();
+		 if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
+			 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
+		 }else if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
+			 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
+		 }else if(requirement.getCountry()!= null && !"".equalsIgnoreCase(requirement.getCountry())){
+			 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).toString());
+		 }else{
+			 globalVarsMap.put("RequirementLocation", "--");
+		 }
+		 
 		 if (requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) ) {
 			 globalVarsMap.put("RequirementRate", requirement.getRate());
 			 } else {
