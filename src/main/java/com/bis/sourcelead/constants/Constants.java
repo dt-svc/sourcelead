@@ -338,6 +338,7 @@ public class Constants {
     
     public static String MAIL_TRASH = "Trash";
     public static String MAIL_DELETE = "Deleted";
+    public static String MAIL_REQUESTED = "Requested";
     
     
     public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	
