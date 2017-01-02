@@ -126,7 +126,8 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 						 StringBuilder interviewerBuilder=new StringBuilder();
 						InterviewersList = interviewerBuilder.append(InterviewersList).append(interviewer.getInterviewerUser().getFirstName()).append(" ").append(interviewer.getInterviewerUser().getLastName()).toString();
 						if(i != Interviewers.size()-1){
-							InterviewersList = interviewerBuilder.append(InterviewersList).append(",").toString();
+							 StringBuilder strBuilder=new StringBuilder();
+							InterviewersList = strBuilder.append(InterviewersList).append(",").toString();
 						}
 					}
 					i++;
@@ -150,5 +151,10 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 		return list;
 
 			}
+
+	@Override
+	public List<RequirementInterviewHistory> getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception {
+		return requirementInterviewHistoryDao.getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId,  orgLocationsId);
+	}
 
 }

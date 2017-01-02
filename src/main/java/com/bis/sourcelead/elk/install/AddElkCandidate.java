@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import javax.sql.DataSource;
 
@@ -132,8 +131,8 @@ public class AddElkCandidate{
 							ResultSet rs3 = stmt3.executeQuery(sql3);
 							if(rs3 != null){
 								ArrayList<String> educationList = new ArrayList<>();
-								 while(rs1.next()){
-									 educationList.add(rs1.getString("NAME"));
+								 while(rs3.next()){
+									 educationList.add(rs3.getString("NAME"));
 							    }
 							    if(null != educationList && !educationList.isEmpty()){
 									candidateIndex.setEducation(educationList);

@@ -39,6 +39,10 @@ public interface RequirementSubmissionDao {
 	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long id,Long requirementId) throws Exception;
 	
 	RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,String submissionStatus)throws Exception;
+	
+	List<RequirementSubmission>   getRequirementHistoryListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+	
+	List<RequirementSubmission>   getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementId(Long candidateId, Long orgLocationId,Long requirementId) throws Exception;
 
 	/**
 	 * @author Prasad Salina
@@ -76,5 +80,7 @@ public interface RequirementSubmissionDao {
 	RequirementSubmission getClientSubmissionsBySubmissionIdAndOrgLocationId(Long submissionId, Long orgLocationId);
 
 	List<RequirementSubmission> duplicateCandidateCountList(Long requirementId, User user, OrgLocations loginOrgLocation) throws Exception;
+	
+	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status);
 
 }

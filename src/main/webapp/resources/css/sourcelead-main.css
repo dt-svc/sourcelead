@@ -4778,6 +4778,8 @@ import-tranhd  [class*="col-md-"]{
 	left: 0;
 	display: none;
 	z-index: 999;
+	height: 500px;
+    overflow-y: auto;	
 }
 .cand-advsrch-popup .close-div{
 	right: 0;
@@ -5359,7 +5361,7 @@ border-bottom: 1px solid #ccc;
 .bg-purple {
     background: #d1c4e9;
 }
-.bg-green {
+.bgGreen {
     background: #b2ebf2;
 }
 .bg-yellow {
@@ -5423,9 +5425,6 @@ padding:10px 10px; display:none; box-shadow:0px 0px 3px rgba(0,0,0,0.3); z-index
 }
 .email-button .btn {
     padding: 4px 16px;
-}
-.email-button div.positionRelative{
-	margin-right: 26px;
 }
 .colpadding [class*="col-md-"] {
 padding:0 5px;	
@@ -5501,7 +5500,7 @@ padding:0 5px;
     height: 30px;
 }
 label.btn-styles{
-    margin-right: 0px;margin-bottom: 0;
+    margin-right:0px;margin-bottom: 0;
 }
 .btn-styles input[type="checkbox"] {
     border: 1px solid red;
@@ -5511,9 +5510,8 @@ label.btn-styles{
 .btn-styles .btn{
     position: absolute;
     top: 0;
-    padding: 7px 0px !important;
+    padding: 7px 15px;
     left: 0;
-    width: 38px;
 }
 .mail-body{
 padding: 0 15px !important;
@@ -5525,11 +5523,24 @@ width: 65%;
 padding: 0;
 }
 .disable-choosen-dropdown .chosen-container .chosen-drop{
-	display: none !important
+display: none !important
 }
-
+table tr.redtxt td{
+    color:#f60;
+}
+table tr.greentxt td{
+    color:#5fba7d;
+}
+.navbar-fixed-top {
+    position: fixed !important;
+    background: rgba(54,142,224,0.8);
+    box-shadow: none;
+}
 .mail-next-previous-muted{
-	color: #ccc
+color: #ccc
+}
+.chosen-container .chosen-results{
+max-height: 150px !important;
 }
 /* media 320px */
 @media (max-width: 320px) {

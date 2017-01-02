@@ -900,8 +900,10 @@ $(".export_pop, #export-pop").click(function(e) {
 </script>
 
 <script>
-function exportPdf(){
-	alert("Pdf");
+function exportPdf(startDate){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var navigation = "left";
+	 window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&exportType=pdf";
 }
 </script>
 
@@ -909,7 +911,7 @@ function exportPdf(){
 function exportExcel(startDate){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var navigation = "left";
-	 window.location.href = sourceleadUrl+"/exportTimeShhet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate;
+	 window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&exportType=xls";
 }
 </script>
 

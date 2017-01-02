@@ -119,7 +119,7 @@ public class UserRoleServiceTest {
 			Long locationId = 1l;
 			String userState = "ACTIVE";
 			Long userId = 3l;
-			List<UserRole> userslist =userRoleService.getUsersListByRoleAndNameAndLocationId(roleId,userName,locationId,userState,userId,"SOURCELEAD_ADMIN","sladmin");
+			List<UserRole> userslist =userRoleService.getUsersListByRoleAndNameAndLocationId(roleId,userName,locationId,userState,userId,"SOURCELEAD_ADMIN","sladmin",0);
 			assertNotNull(userslist);
 		}
 		

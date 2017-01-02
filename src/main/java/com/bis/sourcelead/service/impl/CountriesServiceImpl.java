@@ -48,5 +48,7 @@ public class CountriesServiceImpl implements CountriesService{
 		List<String> countriesList = countriesDao.getAllStatesAndCitiesByCountryCode(countries.getCode2());
 		return countriesList;
 	}
+	
+	//query.addFilterQuery("country:\""+orgLocationCountry.getCountry()+"\"");
 
 }

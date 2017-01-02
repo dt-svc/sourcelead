@@ -27,7 +27,6 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
-import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -42,7 +41,6 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -1084,9 +1082,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Projects pr = projectsDao.getProjectById(projectId);
 		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
-		StringBuilder membersListStringBuilder=new StringBuilder();
 		 for(ProjectMembers pm : projectMembersList){
 			 if(pm.getEmployee() != null){
+				 StringBuilder membersListStringBuilder=new StringBuilder();
 				 pm.setEmpName(membersListStringBuilder.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());	 
 				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	 
 			 }

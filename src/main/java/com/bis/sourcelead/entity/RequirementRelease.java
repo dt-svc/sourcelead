@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,11 +32,11 @@ public class RequirementRelease implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )        
     private Requirement requirementId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="ORG_SPOC_ID", nullable=false )        
     private User orgSpocId;
 	
