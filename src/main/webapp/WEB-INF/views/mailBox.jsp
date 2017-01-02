@@ -623,7 +623,6 @@ function deleteReadMail(uuid,nextMailUUID,type){
 			}else{
 				getMails(type);
 			}
-			$("#mailContentLoading").removeAttr("style"); 
 		},
 	});   
 }
