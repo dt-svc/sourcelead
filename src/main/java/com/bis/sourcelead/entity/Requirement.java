@@ -281,6 +281,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private Integer totalApplicantsForRequirement;
+	
+	@Transient
+	private String approvedBy;
+	
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -886,6 +890,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setTotalApplicantsForRequirement(Integer totalApplicantsForRequirement) {
 		this.totalApplicantsForRequirement = totalApplicantsForRequirement;
+	}
+
+	public String getApprovedBy() {
+		return approvedBy;
+	}
+
+	public void setApprovedBy(String approvedBy) {
+		this.approvedBy = approvedBy;
 	}
 	
 }

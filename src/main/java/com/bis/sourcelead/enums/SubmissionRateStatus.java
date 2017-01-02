@@ -8,6 +8,7 @@ public enum SubmissionRateStatus {
 	ORG("org"),
 	NEWRATE("newRate"),
 	REJECTED("rejected"),
+	REQUEST("request"),
     ACCEPTED("accepted");
 	
     private String value;
