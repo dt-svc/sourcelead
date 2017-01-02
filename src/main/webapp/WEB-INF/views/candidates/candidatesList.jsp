@@ -372,9 +372,8 @@ function candidateSideBar(candidateId){
              			 		state = '';
              			 	}
          			 	
-         			 	if(json.ciy != null && json.city != '' && json.city != 'undefined'){
+         			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
          			 		city =json.city+',';
-         			 		alert("city="+json.city);
              			 	}else{
              			 		city = '';
              			 	}
