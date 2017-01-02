@@ -13,6 +13,8 @@ public interface RequirementInterviewHistoryDao {
 
 	RequirementInterviewHistory getRequirementInterviewHistoryById(Long id);
 	
+	List<RequirementInterviewHistory> getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
+	
 	List<RequirementInterviewHistory> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 	
 	/**

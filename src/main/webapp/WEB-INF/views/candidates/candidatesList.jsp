@@ -54,7 +54,7 @@
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidatesActivities.jsp"></jsp:include>
-
+<jsp:include page="requirementHistory.jsp"></jsp:include>
  <sec:authorize access="hasRole(\'ROLE_POST_COMMENTS\')">
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize>
@@ -338,6 +338,9 @@ function candidateSideBar(candidateId){
 			             
 			            var experienceMonths = '';
 			            var designationType = '';
+			            var country = '';
+			            var state = '';
+			            var city = '';
 			            
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'-'+'Months';            			 		
@@ -356,6 +359,33 @@ function candidateSideBar(candidateId){
          			 	}else{
          			 		designationType = '';
          			 	}
+
+         			 	if(json.lastName != null && json.lastName !='' && json.lastName != 'undefined'){
+         			 		lastName = json.lastName;
+         			 	}else{
+         			 		lastName = "";
+         			 	}
+
+         			 	
+         			 	if(json.country != null && json.country != '' && json.country != 'undefined'){
+         			 		country = ','+json.country;
+             			 	}else{
+             			 		country = '';
+             			 	}
+         			 	
+         			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
+         			 		state =json.state;
+             			 	}else{
+             			 		state = '';
+             			 	}
+         			 	
+         			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
+         			 		city =json.city+',';
+             			 	}else{
+             			 		city = '';
+             			 	}
+         			 	
+
 	                	 var result = "";
 	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -403,7 +433,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                     </div>'; */
 			             result = result+'                     <div class="media-body candidate-details">';
 			             
-			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+json.lastName+'</h4>';
+			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
 			            
 			             result = result+'                       <ul class="list-unstyled">';
 			             
@@ -481,11 +511,8 @@ function candidateSideBar(candidateId){
 			                                                	  
 			             result = result+'<li><i class="fa fa-phone"></i>----</li>';         	  
 			                                                  }
-			                                                  if(json.address != null && json.address != '' && json.address != 'undefined'){
-			             result = result+' <li><i class="fa fa-location-arrow"></i>'+json.address+'</li>';
-			                                                  }else{
-			             result = result+'<li><i class="fa fa-location-arrow"></i>----</li>';                                  	  
-			                                                  }
+			             result = result+' <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
+			             
 			             result = result+'<li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
 			             
 		             	 if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
@@ -567,6 +594,9 @@ function candidateSideBar(candidateId){
 			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
 			              '</sec:authorize>';
 			              
+			              
+			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateId+');">Requirement History</a></li>';
+			              
 			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
@@ -584,6 +614,9 @@ function candidateSideBar(candidateId){
 						 result = result + '</div>';
 						 
 						 result = result + '<div id="tab-5" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-8" class="project_tabs_inn" style="min-height:450px">';
 						 result = result + '</div>';
 						 
 						 result = result + '<div id="tab-6" class="project_tabs_inn">';

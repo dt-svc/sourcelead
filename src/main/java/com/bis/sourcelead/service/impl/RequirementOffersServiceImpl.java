@@ -31,9 +31,6 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.RequirementInterview;
-import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -42,7 +39,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
@@ -81,9 +77,6 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     private String sourceleadUrl;
 	
 	@Autowired
-	private RequirementAssignToService requirementAssignToService;
-	
-	@Autowired
 	RequirementOfferHistoryService requirementOfferHistoryService;
 	
 	@Autowired
@@ -100,7 +93,6 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		String maxAdminTimeTypeRowNum = jsonObj.getString("maxOfferRowNum");
 		int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
-		RequirementInterview requirementInterview  = null;
 		
 		RequirementOffers requirementOffers = null;
 		
@@ -180,6 +172,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           }else{
 					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
 					           }
+					           requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           
 					           
@@ -214,6 +207,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					        		   if(jsonObj.has("notifyToVendor") && !jsonObj.getString("notifyToVendor").isEmpty() && sourcesubmission != null){
 					        			   requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
 		                                	sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
+		                                	sourcesubmission.setUpdatedDate(commonUtil.currentDate());
 		                                	requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
 		                                	
 		                                	//to save offer history
@@ -682,6 +676,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								        	   if(sourcesubmission != null){
 								        		   
 								        		   sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
+								        		   sourcesubmission.setUpdatedDate(commonUtil.currentDate());
 									        	   requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
 								        		   
 								        		   RequirementOfferHistory vendorOfferHistory = new RequirementOfferHistory();

@@ -35,10 +35,10 @@ public class SourceleadELKTransportClient {
 	    	  Settings settings = Settings.settingsBuilder()
 	    			  .put("cluster.name", "sourcelead")
 	                  .put("node.name", "sourcelead_node")
-	         		  .put("path.home", "/usr/share/elasticsearch")
+	         		  .put("path.home", "/home/sourcelead_es")
 	                  .build();
 			client = TransportClient.builder().settings(settings).build().
-					addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("192.168.1.125"), 9300));
+					addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("192.168.1.156"), 9300));
 	     } catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}

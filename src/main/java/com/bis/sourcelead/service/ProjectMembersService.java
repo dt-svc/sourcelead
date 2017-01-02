@@ -43,6 +43,8 @@ public interface ProjectMembersService {
 	
 	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId,Long projectId) throws Exception;
 	
+	public ProjectMembers getProjectMemberByEmpIdAndProjectId(Long empId,Long projectId) throws Exception;
+	
 	public Integer  getAllProjectMembersCountByProjectId(Long id) throws Exception;
 	
 	public Integer updateProjectMemberDeletedReason(Long projectMemberId, String reason);

@@ -1,17 +1,21 @@
-#Client negotiate to the Requirement Rate.
-
-INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('VendorRateNegotiation','Email');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'loginUser', '{{VendorRateNegotiation.loginUser}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'vendorContact', '{{VendorRateNegotiation.vendorContact}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'requirementName', '{{VendorRateNegotiation.requirementName}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'loginOrgName', '{{VendorRateNegotiation.loginOrgName}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'candidateName', '{{VendorRateNegotiation.candidateName}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'negotiationTable', '{{VendorRateNegotiation.negotiationTable}}');
-
-INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES 
-											('VendorRateNegotiation','Email', 'VendorRateNegotiation', 'Used mail from Client to Vendor. ', 'New rate request from {{VendorRateNegotiation.vendorContact}} for {{VendorRateNegotiation.requirementName}}.','org', 'Best Regards,\n{{VendorRateNegotiation.loginUser}}\n{{VendorRateNegotiation.loginOrgName}}.', 'Dear {{VendorRateNegotiation.vendorContact}},\n\n {{VendorRateNegotiation.loginOrgName}} requested new rate for the {{VendorRateNegotiation.requirementName}} for {{VendorRateNegotiation.candidateName}}.\n     Please find out the details,if you acknowledge with it click on the accept link.\n {{VendorRateNegotiation.negotiationTable}}','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
-				
-											
-UPDATE `sourcelead`.`email_scenario` SET `SUBJECT`='New rate request from {{ClientRateNegotiation.clientContact}} for {{ClientRateNegotiation.requirementName}}.' WHERE `ID`='80';
-
-											
+DROP TABLE IF EXISTS `sourcelead`.`PAYROLL`;
+CREATE TABLE `sourcelead`.`PAYROLL` (
+  ID BIGINT NOT NULL AUTO_INCREMENT,
+  EMPLOYEE_NAME VARCHAR(50) DEFAULT NULL,
+  CHECK_DATE DATE,
+  CHECK_NUMBER VARCHAR(50) DEFAULT NULL,
+  GROSS VARCHAR(50) DEFAULT NULL,
+  FWT VARCHAR(50) DEFAULT NULL,
+  SSEC VARCHAR(50) DEFAULT NULL,
+  MED VARCHAR(50) DEFAULT NULL,
+  SWT VARCHAR(50) DEFAULT NULL,
+  SDI_SUI VARCHAR(50) DEFAULT NULL,
+  LOCAL VARCHAR(50) DEFAULT NULL,
+  DEDS VARCHAR(50) DEFAULT NULL,
+  NET VARCHAR(50) DEFAULT NULL,
+  CREATED_DATE DATE,
+  CREATED_BY VARCHAR(10),
+  UPDATED_DATE DATE,
+  UPDATED_BY VARCHAR(10),
+  PRIMARY KEY (`ID`)
+) ;

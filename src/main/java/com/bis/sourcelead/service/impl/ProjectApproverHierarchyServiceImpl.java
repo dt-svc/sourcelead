@@ -1,10 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,13 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
-import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHierarchyService {
@@ -27,9 +22,6 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	@Autowired
 	private  ProjectApproverHierarchyDao  projectApproverHierarchyDao;
 	
-	@Autowired
-	private UserService userService;
-
 	
 	@Override
 	public ProjectApproverHierarchy saveProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy)
@@ -86,7 +78,6 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	public Set<ProjectApproverHierarchy> prepareProjectApproverHierarchyListByJson(JSONObject jsonObj, HttpServletRequest request,
 			Projects projects) throws Exception {
 		    
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    Long[] ids = new Long[1000];
 			HashSet<ProjectApproverHierarchy> projectMemberList = new HashSet<ProjectApproverHierarchy>();
 	    	

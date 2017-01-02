@@ -29,6 +29,15 @@ public interface ProjectMembersDao {
 	
 	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId, Long projectId) throws Exception;
 	
+	/**
+	 * @author Prasad Salina
+	 * @param empId
+	 * @param projectId
+	 * @return
+	 * @throws Exception
+	 */
+	public ProjectMembers getProjectMemberByEmpIdAndProjectId(Long empId,Long projectId) throws Exception;
+	
 	List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
 	
     List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;

@@ -35,15 +35,16 @@ public class RequirementListController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementList");
 		
-		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
+	    	/*
+		    *  This code is commented as  the client  based requirement   is not in use 
+		    */
 		
-		  List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
-	        for(OrgRelations orgRelations:orgClientList){
-	        	orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
-	        }
+		   /* List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+	         for(OrgRelations orgRelations:orgClientList){
+	         	orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
+	         }
 	        model.addObject("add_client", orgClientList);
-	        model.addObject(orgClientList);
+	        model.addObject(orgClientList);*/
 	        
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");

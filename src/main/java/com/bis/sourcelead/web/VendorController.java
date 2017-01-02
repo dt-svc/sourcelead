@@ -146,7 +146,9 @@ public class VendorController {
 			request.getSession().setAttribute("sessionData",sessionData);
 			
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-			model.addObject("loginCountryName", countries.getName());	
+			if(countries != null){
+			model.addObject("loginCountryName", countries.getName());
+			}
 		}catch(Exception e){
 			logger.error(ExceptionUtils.getFullStackTrace(e)); 
 		}

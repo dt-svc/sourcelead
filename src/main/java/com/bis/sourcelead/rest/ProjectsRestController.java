@@ -5,8 +5,6 @@ import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -45,7 +43,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @PropertySource("${propertyLocation:app.properties}")
 public class ProjectsRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ProjectsRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -178,7 +175,7 @@ public class ProjectsRestController {
 		return isDeleted;
 	  }
 	  
-	@RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
+	/*@RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
 	public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		    
 		    String json1 = "{"+json+"}";	
@@ -188,7 +185,7 @@ public class ProjectsRestController {
 		 	userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS","",new Org());
 			return "SUCCESS";
 		}
-	  
+	  */
 	  /**
 		  * This method for getEmployeesList by by excluding  Level1 and Level2 Managers 
 		  * @param id

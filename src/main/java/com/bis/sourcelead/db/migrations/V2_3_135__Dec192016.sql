@@ -1,4 +1,6 @@
 
+
+
 #Notification                        
                                
 INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('ClienttoVendorAcceptence', 'Notification');
@@ -36,4 +38,5 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES 
 											('EmailToUsers','Email', 'EmailToUsers', 'used for Email to users', 'Email To Users.','org', '{{EmailToUsers.signature}}', '{{EmailToUsers.salutation}},\n\n {{EmailToUsers.body}}\n  ','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
+
 

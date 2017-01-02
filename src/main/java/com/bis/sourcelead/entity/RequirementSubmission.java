@@ -52,11 +52,11 @@ public class RequirementSubmission implements Serializable{
 	@JoinColumn(name = "CANDIDATE_RESUEME_ID")
    	private CandidateResumes candidateResumes;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocations;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "VENDOR_LOCATION_ID")
    	private OrgLocations vendorLocationId;
 	
@@ -90,6 +90,22 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "SUBMISSION_RATE_FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String submissionRateFileName;
 
+	@Column(name = "SUBMISSION_REQUEST_COMMENT")
+	private String submissionRequestComment;
+	
+	@Column(name = "SUBMISSION_REQUEST_USER")
+	private String submissionRequestUser;
+	
+	@Column(name = " SUBMISSION_REQUEST_DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] submissionRequestDocFile;
+	
+	@Column(name = "SUBMISSION_REQUEST_FILE_CONTENT_TYPE")
+	private String submissionRequestFileContentType;
+	
+	@Column(name = "SUBMISSION_REQUEST_FILE_NAME", columnDefinition = "TEXT default NULL")
+	private String submissionRequestFileName;
+	
 	@Column(name = "PREVIOUS_SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
     private ApplicantSubmissionStatus previousSubmissionStatus;
@@ -217,13 +233,41 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private String clientSubmissionId;
-
+	
 	@Transient
 	private String submittedOn;
 	
 	@Transient
+	private String state;
+	
+	@Transient
+	private String city;
+	
+	@Transient
+	private String country;
+	
+	@Transient
+	private String ownerName;
+	
+	@Transient
+	private String clientName;
+	
+	@Transient
+	private String rate;
+	
+	@Transient
+	private String employeeType;
+	
+	@Transient
+	private String orgLocationId;
+	
+	@Transient
+	private String filename;
+
+	@Transient
 	private int duplicateCount;
 	
+
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
 	}
@@ -407,6 +451,46 @@ public class RequirementSubmission implements Serializable{
 
 	public void setSubmissionRateFileContentType(String submissionRateFileContentType) {
 		this.submissionRateFileContentType = submissionRateFileContentType;
+	}
+
+	public String getSubmissionRequestComment() {
+		return submissionRequestComment;
+	}
+
+	public void setSubmissionRequestComment(String submissionRequestComment) {
+		this.submissionRequestComment = submissionRequestComment;
+	}
+
+	public String getSubmissionRequestUser() {
+		return submissionRequestUser;
+	}
+
+	public void setSubmissionRequestUser(String submissionRequestUser) {
+		this.submissionRequestUser = submissionRequestUser;
+	}
+
+	public byte[] getSubmissionRequestDocFile() {
+		return submissionRequestDocFile;
+	}
+
+	public void setSubmissionRequestDocFile(byte[] submissionRequestDocFile) {
+		this.submissionRequestDocFile = submissionRequestDocFile;
+	}
+
+	public String getSubmissionRequestFileContentType() {
+		return submissionRequestFileContentType;
+	}
+
+	public void setSubmissionRequestFileContentType(String submissionRequestFileContentType) {
+		this.submissionRequestFileContentType = submissionRequestFileContentType;
+	}
+
+	public String getSubmissionRequestFileName() {
+		return submissionRequestFileName;
+	}
+
+	public void setSubmissionRequestFileName(String submissionRequestFileName) {
+		this.submissionRequestFileName = submissionRequestFileName;
 	}
 
 	public String getSubmissionRateFileName() {
@@ -698,6 +782,79 @@ public class RequirementSubmission implements Serializable{
 		this.numofrequestsent = numofrequestsent;
 	}
 
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+
+	public String getRate() {
+		return rate;
+	}
+
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
+
+	public String getEmployeeType() {
+		return employeeType;
+	}
+
+	public void setEmployeeType(String employeeType) {
+		this.employeeType = employeeType;
+	}
+
+	public String getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
 	public int getDuplicateCount() {
 		return duplicateCount;
 	}
@@ -706,7 +863,4 @@ public class RequirementSubmission implements Serializable{
 		this.duplicateCount = duplicateCount;
 	}
 
-	
-	
-	
 }

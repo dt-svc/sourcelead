@@ -80,10 +80,8 @@ text-align:left;
 <script>
 function editCandidate(candidateId){
 	$("#profileEditPopup").show();
-	
+	 var loginCountryName = '${loginCountryName}';
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  var loginCountryName = '${loginCountryName}';
-	  
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -183,8 +181,8 @@ function editCandidate(candidateId){
 							
 							 
 							result = result + '<input type="hidden" name="updateState" id="updateState" value="'+json.state+'" />'; 
-							result = result + '<input type="hidden" name="updateCountry" id="updateCountry" value='+json.country+' />';
-							result = result + '<input type="hidden" name="updateCity" id="updateCity" value='+json.city+' />';
+							result = result + '<input type="hidden" name="updateCountry" id="updateCountry" value="'+json.country+'" />';
+							result = result + '<input type="hidden" name="updateCity" id="updateCity" value="'+json.city+'" />';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="state" value="'+json.state+'" id="candidateState" field-name="State">';

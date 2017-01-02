@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.InterviewFeedbackTemplateDao;
 import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
-import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository

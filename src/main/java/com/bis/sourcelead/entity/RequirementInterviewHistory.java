@@ -107,6 +107,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Transient
 	private String interviewStartDateTimeStr;
+	
+	@Transient
+	private String  interviewHistoryCreatedDate;
+	
+	@Transient
+	private String  interviewType;
 
 
 	public Long getId() {
@@ -318,5 +324,21 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setFeedbackStartTime(String feedbackStartTime) {
 		this.feedbackStartTime = feedbackStartTime;
+	}
+
+	public String getInterviewHistoryCreatedDate() {
+		return interviewHistoryCreatedDate;
+	}
+
+	public void setInterviewHistoryCreatedDate(String interviewHistoryCreatedDate) {
+		this.interviewHistoryCreatedDate = interviewHistoryCreatedDate;
+	}
+
+	public String getInterviewType() {
+		return interviewType;
+	}
+
+	public void setInterviewType(String interviewType) {
+		this.interviewType = interviewType;
 	}
 }
