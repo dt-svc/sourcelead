@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
@@ -38,9 +36,7 @@ import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
-import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -62,7 +58,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 public class ProjectsDashboardRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -72,9 +67,7 @@ public class ProjectsDashboardRestController {
 	 
 	 @Autowired
 	 private ProjectTasksService tasksService;
-	 
-	 @Autowired
-	 private ProjectMembersHistoryService projectMembersHistoryService;
+
 	 
 	 @Autowired
 	 public UserService userService;
@@ -93,9 +86,6 @@ public class ProjectsDashboardRestController {
 	 
 	 @Autowired
 	 private OrgLocationService orgLocationService;
-	 
-	 @Autowired
-	 private OrgRelationsService orgRelationsService;
 	 
 	 @Autowired
 	 public RolesService rolesService;
@@ -136,6 +126,11 @@ public class ProjectsDashboardRestController {
 				String resultJson;
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    List<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
+			   
+			    
+			    
+			    
+			    
 			    for(Projects ps : projectsList){
 			    	ps.setManagerLevel1(ps.getManagerLevel1());
 			    	if(ps.getManagerLevel2() != null){
