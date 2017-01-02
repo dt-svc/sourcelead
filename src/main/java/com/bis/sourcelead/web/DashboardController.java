@@ -33,6 +33,7 @@ public class DashboardController {
 		logger.debug("display the dash board page");
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		
 		model.setViewName("/dashboard");
 		return model;
 	}

@@ -585,7 +585,8 @@ public class RequirementServiceTest {
 			String userType="";
 			Long userId=1l;
 			String userCode="";
-			List<Requirement> reqList =requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(orgLocationId, userType, userId, userCode);
+			String statusType="";
+			List<Requirement> reqList =requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(orgLocationId, userType, userId, userCode,statusType);
 			for(Requirement req : reqList){
 				req.getId();
 			}
