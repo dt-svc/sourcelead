@@ -14,8 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -60,7 +58,6 @@ import com.google.gson.GsonBuilder;
 @Service
 public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(TimesheetEntriesServiceImpl.class);
 	@Autowired
 	TimesheetEntriesDao timesheetEntriesDao;
 	
@@ -236,7 +233,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("           <li><i class='glyphicon glyphicon-export'></i><span>Export</span><i class='glyphicon glyphicon-play' id='export-pop' onclick='exportType();'></i>|");
 			sb.append("           	<div class='export_pop'>");
 			sb.append("               	<ul>");
-			sb.append("                   	<li onclick='exportPdf();'>PDF &nbsp;&nbsp;<i class='fa fa-file-pdf-o'></i></li>");
+			sb.append("                   	<li onclick='exportPdf(\""+weekStartDate+"\");'>PDF &nbsp;&nbsp;<i class='fa fa-file-pdf-o'></i></li>");
 			sb.append("                       <li onclick='exportExcel(\""+weekStartDate+"\");'>Excel &nbsp;&nbsp;<i class='fa fa-file-excel-o'></i></li>");
 			sb.append("                   </ul>");
 			sb.append("               </div>");

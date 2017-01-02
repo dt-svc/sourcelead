@@ -5,7 +5,6 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -21,12 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.exception.NoRecordsFoundException;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
-import com.bis.sourcelead.exception.SourceLeadObjectStatusException;
 
 /**
  * 
@@ -100,7 +96,7 @@ public class OrgDaoImpl implements OrgDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		logger.debug("findOrgByID start");
-		List<Org> orgList = session.createQuery("from Org where id=:id" ).setCacheable(true).setLong( "id", id ).setCacheable(true).list();
+		List<Org> orgList = session.createQuery("from Org where id=:id" ).setLong( "id", id ).setCacheable(true).list();
 		return orgList.get(0);
 		}
 		
@@ -183,7 +179,7 @@ public class OrgDaoImpl implements OrgDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Org.class);
-		List<Org> orgList = crit.list();
+		List<Org> orgList = crit.setCacheable(true).list();
 		return orgList;
 	}
 
@@ -209,7 +205,7 @@ public class OrgDaoImpl implements OrgDao {
         boolean isWebSiteFound = false;
         Session session = this.sessionFactory.getCurrentSession();
         String query = "from Org org where org.webSite = :host";
-         List<Org> orglist = session.createQuery(query.toString()).setString("host", host).setCacheable(true).setCacheable(true).list();
+         List<Org> orglist = session.createQuery(query.toString()).setString("host", host).setCacheable(true).list();
             if (orglist != null && orglist.size() >0) {
                 isWebSiteFound = true;
             }

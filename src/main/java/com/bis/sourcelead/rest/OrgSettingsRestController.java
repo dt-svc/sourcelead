@@ -119,15 +119,22 @@ public class OrgSettingsRestController {
   	 Org org = null;
 			try {
 				org = orgService.getOrgByOrgCode(orgCode);
-				
-				if(org != null && org.getDocFile() != null)
+				//org.getDocFile() is not used 
+				//change the org.getDocFile() to org.getUser().getDocFile() because not store in OrgDocFile
+				if(org != null)
 				{
-					org.setFileContentType("image/jpeg");
-					InputStream in = new ByteArrayInputStream(org.getDocFile());
-					BufferedImage bi = ImageIO.read(in);
-					OutputStream out = response.getOutputStream();
-					ImageIO.write(bi, "jpg", out);
-					out.close();
+					if(org.getUser() != null){
+						if(org.getUser().getDocFile() != null){
+							org.setFileContentType("image/jpeg");
+							InputStream in = new ByteArrayInputStream(org.getUser().getDocFile());
+							BufferedImage bi = ImageIO.read(in);
+							OutputStream out = response.getOutputStream();
+							ImageIO.write(bi, "jpg", out);
+							out.close();
+						}
+						
+					}
+					
 				}
 				
 			} catch (IOException e) {

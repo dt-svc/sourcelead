@@ -9,7 +9,4 @@ public interface RequirementInterviewerService {
 	List<RequirementInterviewer> getInterviwersListByInterviewId(Long requirementInterviewId);
 	
 	RequirementInterviewer getInterviwerstByInterviewId(Long requirementInterviewerId);
-	
-	
-
 }

@@ -19,6 +19,8 @@ public interface RequirementSubmissionHistoryService {
 	RequirementSubmissionHistory updateRequirementHistory(RequirementSubmission requirementSubmission, User user, RequirementSubmissionHistory requirementSubmissionHistory)throws Exception;
 
 	List<RequirementSubmissionHistory> getRequirementHistoryByLocationIdAndStage(Long orgLocationID,String submissionType, Long submissionId)throws Exception;
+	
+	List<RequirementSubmissionHistory> getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(Long candidateId, Long orgLocationId, Long requirementId,Long submissionId)throws Exception; 
 
 	RequirementSubmissionHistory getRequirementSubmissionHistoryBySubmissionId(Long submissionId);
 

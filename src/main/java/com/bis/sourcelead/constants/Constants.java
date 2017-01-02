@@ -248,10 +248,9 @@ public class Constants {
 	public static String SALES_MANAGER = "ROLE_SALES_MANAGER";
 	public static String RECRUITER = "ROLE_RECRUITER";
 	public static String ROLE_MANAGER = "ROLE_MANAGER";
-
-
 	
-	
+	public static String Applicant_Acceptance_By_Manager_Of_Requirement = "ApplicantAcceptanceByManagerOfRequirement";
+	public static String Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "ApplicantWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
 	
 	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
 	
@@ -317,6 +316,8 @@ public class Constants {
     public static String[] REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Rejected On","Rejected By","Rejected Stage","Status"};
     
     public static String[] TIMESHEET_EXCEL_HEADERS = {"Projects","Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Status"};
+    public static String[] TIMESHEET_EXCEL_HEADERS2 = {"Tasks","Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
+    public static String[] TIMESHEET_EXCEL_HEADERS3 = {"Status"};
    
     public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts"};
     
@@ -338,6 +339,7 @@ public class Constants {
     
     public static String MAIL_TRASH = "Trash";
     public static String MAIL_DELETE = "Deleted";
+    public static String MAIL_REQUESTED = "Requested";
     
     
     public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	

@@ -37,7 +37,6 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
-import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
@@ -78,8 +77,6 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
 	
-	@Autowired
-	private RequirementInterviewerService requirementInterviewerService;
 	
 	@Autowired
 	private RequirementInterviewHistoryService requirementInterviewHistoryService;
@@ -174,6 +171,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           }else{
 					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
 					           }
+					           requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 					           
@@ -181,6 +179,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					        	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
 						           if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty() && parentSubmission != null){
 						        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW);
+						        	   parentSubmission.setUpdatedDate(commonUtil.currentDate());
 						        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
 						           }
 					           }
@@ -883,6 +882,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	public RequirementInterview getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(Long requirementInterviewId,
 			Long submissionId, Long orgLocationsId) {
 		return requirementInterviewDao.getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(requirementInterviewId, submissionId, orgLocationsId);
+	}
+	@Override
+	public List<RequirementInterview> getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(Long submissionId,
+			Long orgLocationsId) throws Exception {
+		return requirementInterviewDao.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
 	}
 	
 	/*@Override

@@ -1,16 +1,10 @@
 package com.bis.sourcelead.dao;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-
-import org.hibernate.annotations.Cache;
-import org.springframework.cache.annotation.Cacheable;
 
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
-import com.bis.sourcelead.entity.User;
 
 public interface ProjectsDao {
 

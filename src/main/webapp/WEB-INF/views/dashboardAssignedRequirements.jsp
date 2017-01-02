@@ -65,7 +65,7 @@ function requirementList(){
 	                     result = result +"    <th>Priority</th>"; 
 	                     result = result +"    <th>Applicants</th>"; 
 	                     result = result +"    <th>Shortlisted</th>"; 
-	                     result = result +"    <th>Submited</th>"; 
+	                     result = result +"    <th>Submitted</th>"; 
 	                     result = result +"    <th>Interviewed</th>"; 
 	                     result = result +"    <th>Offered</th>"; 
 	                     result = result +"    <th>Action</th>"; 
