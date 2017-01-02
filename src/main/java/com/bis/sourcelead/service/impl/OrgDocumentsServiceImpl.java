@@ -19,7 +19,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgDocumentsService;
 import com.bis.sourcelead.service.UserRoleService;
-import com.bis.sourcelead.service.UserService;
 
 
 /**
@@ -39,8 +38,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 	@Autowired
 	UserRoleService userRoleService;
 	
-	@Autowired
-	private UserService userService;
+	
 	
 	@Override
 	public void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,String docId, OrgLocations orgLocation,User user, String sourceType) throws  Exception {

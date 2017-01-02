@@ -19,7 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -106,10 +105,8 @@ public class RequirementController {
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
 		Requirement requirement ;
-		RequirementAssignTo requirementAssignTo;
 		ModelAndView model = new ModelAndView();
 		
-		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
@@ -260,20 +257,22 @@ public class RequirementController {
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
 		 
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		
 		ModelAndView model = new ModelAndView();
 		model.setViewName("requirement/requirementSummary");
 		model.addObject("requirementId",requirementId);
-		
+		model.addObject("sourceleadUrl", sourceleadUrl);
+
+		// This code is commented as not in use 
+
 		//to get time zone list
-		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(countries != null){
 			String[] timezonesList = com.ibm.icu.util.TimeZone.getAvailableIDs(countries.getCode2());
 			model.addObject("timezonesList", timezonesList);
-		}
+		}*/
 		
 		if(requirement.getIsClientJob() != null && requirement.getIsClientJob().equalsIgnoreCase("Y")){
 			model.addObject("clientSubmissions","Y");
@@ -288,6 +287,7 @@ public class RequirementController {
             model.addObject("parentRequirement","N");
         }
         
+        
         if(requirement.getSpocId() != null && requirement.getSpocId().getId() != null){
 			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
 			if(orgSpoc != null && orgSpoc.getSpocStatus() != null && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
@@ -297,14 +297,12 @@ public class RequirementController {
 			}
 		}
 		
-		model.addObject("sourceleadUrl", sourceleadUrl);
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
 		if(!isNullOrEmpty(msg)){
 			model.addObject("msg", msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
 		}
 		return model;
-
 	}
 	
 	@RequestMapping(value = "/reqPipelineSubmitToClientMail")

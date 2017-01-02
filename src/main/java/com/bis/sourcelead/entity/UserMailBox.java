@@ -143,6 +143,12 @@ public class UserMailBox implements Serializable{
 	
 	@Transient
 	List<Candidate> candidatesList;
+	
+	@Transient
+	private String nextMailUUID;
+	
+	@Transient
+	private String previousMailUUID;
 		
 	
 	
@@ -403,6 +409,22 @@ public class UserMailBox implements Serializable{
 
 	public void setTotalUnReadMailsCount(Integer totalUnReadMailsCount) {
 		this.totalUnReadMailsCount = totalUnReadMailsCount;
+	}
+
+	public String getNextMailUUID() {
+		return nextMailUUID;
+	}
+
+	public void setNextMailUUID(String nextMailUUID) {
+		this.nextMailUUID = nextMailUUID;
+	}
+
+	public String getPreviousMailUUID() {
+		return previousMailUUID;
+	}
+
+	public void setPreviousMailUUID(String previousMailUUID) {
+		this.previousMailUUID = previousMailUUID;
 	}
 
 	
