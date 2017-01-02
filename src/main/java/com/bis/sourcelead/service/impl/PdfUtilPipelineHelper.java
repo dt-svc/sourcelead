@@ -1,8 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
-
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -10,12 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.sis.internal.jaxb.metadata.EX_Extent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -55,14 +51,15 @@ public class PdfUtilPipelineHelper  {
 	
 	public File getRequirementPipelenePdf(java.util.List<RequirementSubmission> requirementStatusList, String orgName,
 			String requirementId,String submissionType,RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
-		
+		StringBuilder fileStringBuilder=new StringBuilder();
 		if(submissionType.equals("SUBMIT_TO_CLIENT")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS;
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			StringBuilder sbClientPipe = new StringBuilder();
 			sbClientPipe.append(orgName).append("_Requirements_").append(dateFormat.format(new Date()));
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(sbClientPipe.toString(),".pdf");
+
+		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
 		    StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
@@ -101,7 +98,7 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS;
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
 		    StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
@@ -139,7 +136,7 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS;
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
 		    StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
@@ -177,7 +174,7 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS;
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
 		    StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
@@ -215,7 +212,7 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS;
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
 		    StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
@@ -253,7 +250,7 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS;
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
 		    StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
@@ -291,7 +288,7 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_EXCEL_HEADERS;
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
 		    StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
@@ -386,7 +383,8 @@ public class PdfUtilPipelineHelper  {
 			requirementArray[8] = "--";
 		}
 		if(requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())){
-			requirementArray[9] = requirementsub.getWorkExperience()+" years";
+			StringBuilder expSB = new StringBuilder();
+			requirementArray[9] = expSB.append(requirementsub.getWorkExperience()).append(" years").toString();
 		}else{
 			requirementArray[9] = "--";
 		}
@@ -527,6 +525,7 @@ public class PdfUtilPipelineHelper  {
  */
 	private Document prepareHeadres(String orgName, String requirementId, int count, String headerName, File file) {
 		    Document document = new Document(PageSize.LETTER.rotate());
+		    StringBuilder orderedListStringBuilder=new StringBuilder();
 		    try {
 		    	Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
 		    	PdfWriter.getInstance(document, new FileOutputStream(file));
@@ -537,29 +536,29 @@ public class PdfUtilPipelineHelper  {
 		        StringBuilder sbPipeHearder = new StringBuilder();
 		        sbPipeHearder.append(orgName).append(" ").append("Requirements");
 	            Paragraph para = new Paragraph(sbPipeHearder.toString(),boldFont);
+		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+		        boldFont.setColor(myColor1);
+	            Paragraph para = new Paragraph(orderedListStringBuilder.append(orgName).append(" Requirements.").toString(),boldFont);
 	            para.setAlignment(Element.ALIGN_CENTER);
 	            document.add(para);
 		        // Create an instance of PdfPTable. After that we transform the header and
 	            List orderedList = new List(List.ORDERED);
-		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
-		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
+	            StringBuilder reqNameBuilder=new StringBuilder();
+	            StringBuilder locBuilder=new StringBuilder();
+	            StringBuilder expBuilder=new StringBuilder();
+		        orderedList.add(new ListItem(reqNameBuilder.append("Requirement Name :").append(requirement.getJobTitle()).toString()));
+		        orderedList.add(new ListItem(locBuilder.append("Location :").append(requirement.getCountry()).toString()));
 		        if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
-					
-			        orderedList.add(new ListItem("Experience :"+requirement.getMinExp()+"-"+requirement.getMaxExp()));
-					
+			        orderedList.add(new ListItem(expBuilder.append("Experience :").append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString()));
 				}else if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())){
-					
-			        orderedList.add(new ListItem("Experience :" +"0 -" +requirement.getMinExp() + "years"));
-					
-					}else if(requirement.getMaxExp() != null && !"".equalsIgnoreCase(requirement.getMaxExp())){
-						
-				        orderedList.add(new ListItem("Experience :" +"0 -" +requirement.getMaxExp() + "years"));
-						
-					}else{
+			        orderedList.add(new ListItem(expBuilder.append("Experience :" ).append("0 -").append(requirement.getMinExp()).append("years").toString()));
+				}else if(requirement.getMaxExp() != null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+				        orderedList.add(new ListItem(expBuilder.append("Experience :").append("0 -").append(requirement.getMaxExp()).append("years").toString()));
+				}else{
 				        orderedList.add(new ListItem("Experience : --"));
-						}
-		        
-		        orderedList.add(new ListItem(headerName+" "+count));
+				}
+		        StringBuilder headerNameBuilder=new StringBuilder();
+		        orderedList.add(new ListItem(headerNameBuilder.append(headerName).append(" ").append(count).toString()));
 
 		        document.add(orderedList);
 		    }catch(Exception ex){
@@ -884,7 +883,8 @@ public class PdfUtilPipelineHelper  {
 				requirementArray[7] = "--";
 			}
 			if(requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())){
-				requirementArray[8] = requirementsub.getWorkExperience()+" years";
+				StringBuilder expSB = new StringBuilder();
+				requirementArray[8] = expSB.append(requirementsub.getWorkExperience()).append(" years").toString();
 			}else{
 				requirementArray[8] = "--";
 			}

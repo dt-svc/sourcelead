@@ -18,12 +18,9 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 @Entity
 @Table(name="EMPLOYEE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="employees")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Employees implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -33,7 +30,7 @@ public class Employees implements Serializable{
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="USER_ID", nullable=false )        
     private User user;
 	
@@ -58,7 +55,7 @@ public class Employees implements Serializable{
 	@Column(name="EMPLOYEE_STATE")
 	private String employeeState;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="ORG_LOCATIONS_ID", nullable=false )        
     private OrgLocations orgLocations;
 	

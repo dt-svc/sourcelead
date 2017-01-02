@@ -20,9 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
-import com.bis.sourcelead.dao.impl.ProjectsDaoImpl.FilterNameValueMap;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -341,7 +339,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 
 		String query = "from Candidate candidate  where candidate.id NOT IN "
-				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.orgLocationId.id = :orgLocationId and hotlist.status <> '1' ) "
+				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.orgLocationId.id = :orgLocationId and hotlist.status = '1') "
 				+ "and candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.candidateType = :type ";  
 		List<Candidate> candidateList = session.createQuery(query)
 				               .setLong("orgLocationId", orgLocationId).setString("type", type).setCacheable(true).list();

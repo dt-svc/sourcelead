@@ -66,7 +66,8 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			Workbook wb = new XSSFWorkbook();
 			CellStyle style = commonUtil.getCellStyle(wb);
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-			Sheet sheet = wb.createSheet(orgName + "_Clients_" + dateFormat.format(new Date()));
+			StringBuilder nameBuilder=new StringBuilder();
+			Sheet sheet = wb.createSheet(nameBuilder.append(orgName).append("_Clients_").append(dateFormat.format(new Date())).toString());
 			Row writeRow = null;
 			sheet = commonUtil.setExcelHeaders(sheet, style, clientHeaders,0);
 			int row = 0;
@@ -75,8 +76,8 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				sheet = createXlsSheet(sheet, writeRow, orgRelations);
 				row++;
 			}
-			 /*file = new File(orgName + "_Clients_" + dateFormat.format(new Date()) + ".xls");*/
-			 file = File.createTempFile(orgName + "_Clients_" + dateFormat.format(new Date()),".xls");
+			StringBuilder orgNameBuilder=new StringBuilder();
+			 file = File.createTempFile(orgNameBuilder.append(orgName).append("_Clients_").append(dateFormat.format(new Date())).toString(),".xls");
 			 file.setReadable(true);
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
@@ -135,7 +136,8 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			Workbook wb = new XSSFWorkbook();
 			CellStyle style = commonUtil.getCellStyle(wb);
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-			Sheet sheet = wb.createSheet(orgName + "_Clients Contacts_" + dateFormat.format(new Date()));
+			StringBuilder clientContact=new StringBuilder();
+			Sheet sheet = wb.createSheet(clientContact.append(orgName).append("_Clients Contacts_" ).append(dateFormat.format(new Date())).toString());
 			Row writeRow = null;
 			sheet = commonUtil.setExcelHeaders(sheet, style, headers,0);
 			int row = 0;
@@ -145,7 +147,8 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				row++;
 			}
 			/* file = new File(orgName + "_Clients Contact_" + dateFormat.format(new Date()) + ".xls");*/
-			file = File.createTempFile(orgName + "_Clients Contact_" + dateFormat.format(new Date()),".xls");
+			StringBuilder orgNameSB=new StringBuilder();
+			file = File.createTempFile(orgNameSB.append(orgName).append("_Clients Contacts_" ).append(dateFormat.format(new Date())).toString(),".xls");
 			file.setReadable(true);
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
@@ -210,7 +213,8 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			Workbook wb = new XSSFWorkbook();
 			CellStyle style = commonUtil.getCellStyle(wb);
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-			Sheet sheet = wb.createSheet(orgName + "_Vendor_" + dateFormat.format(new Date()));
+			StringBuilder vendor=new StringBuilder();
+			Sheet sheet = wb.createSheet(vendor.append(orgName).append("_Vendor_").append(dateFormat.format(new Date())).toString());
 			Row writeRow = null;
 			sheet = commonUtil.setExcelHeaders(sheet, style, vendorHeaders,0);
 			int row = 0;
@@ -219,7 +223,8 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				sheet = createXlsSheet(sheet, writeRow, orgRelations);
 				row++;
 			}
-			 file = File.createTempFile(orgName + "_Vendor_" + dateFormat.format(new Date()),".xls");
+			  StringBuilder orgNameSB=new StringBuilder();
+			 file = File.createTempFile(orgNameSB.append(orgName).append("_Vendor_").append(dateFormat.format(new Date())).toString(),".xls");
 			 file.setReadable(true);
 			/* file = new File(orgName + "_Vendor_" + dateFormat.format(new Date()) + ".xls");*/
 			FileOutputStream fos = new FileOutputStream(file);
@@ -252,7 +257,8 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			Workbook wb = new XSSFWorkbook();
 			CellStyle style = commonUtil.getCellStyle(wb);
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-			Sheet sheet = wb.createSheet(orgName + "_Vendor Contacts_" + dateFormat.format(new Date()));
+			StringBuilder vendorContacts=new StringBuilder();
+			Sheet sheet = wb.createSheet(vendorContacts.append(orgName).append("_Vendor Contacts_").append(dateFormat.format(new Date())).toString());
 			Row writeRow = null;
 			sheet = commonUtil.setExcelHeaders(sheet, style, headers,0);
 			int row = 0;
@@ -261,7 +267,8 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				sheet = createContactXlsSheet(sheet, writeRow, OrgSpoc);
 				row++;
 			}
-			 file = File.createTempFile(orgName + "_Vendor Contact_" + dateFormat.format(new Date()),".xls");
+			 StringBuilder orgNameSB=new StringBuilder();
+			 file = File.createTempFile(orgNameSB.append(orgName).append("_Vendor Contacts_").append(dateFormat.format(new Date())).toString(),".xls");
 			 file.setReadable(true);
 			 /*file = new File(orgName + "_Vendor Contact_" + dateFormat.format(new Date()) + ".xls");*/
 			FileOutputStream fos = new FileOutputStream(file);
@@ -288,14 +295,15 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		Set<ProjectApproverHierarchy> projectApproverHierarchySet = project.getProjectApprovers();
 		 StringBuilder sb = new StringBuilder();
 		 for(ProjectApproverHierarchy ProjectApproverHierarchy:projectApproverHierarchySet ){
-			 sb.append(ProjectApproverHierarchy.getApproverUserId().getFirstName()+",");
+			 sb.append(ProjectApproverHierarchy.getApproverUserId().getFirstName()).append(",");
 		 }
 		 String projectManager = sb.substring(0, sb.length()-1);
 		if(!"pdf".equalsIgnoreCase(exportType)){
 			Workbook wb = new XSSFWorkbook();
 			CellStyle style = commonUtil.getCellStyle(wb);
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-			Sheet sheet = wb.createSheet(projectName +"_"+ dateFormat.format(new Date()));
+			StringBuilder projName=new StringBuilder();
+			Sheet sheet = wb.createSheet(projName.append(projectName).append("_").append(dateFormat.format(new Date())).toString());
 			Row writeRow = null;
 			setExcelTitle(sheet,projectName,project,wb,writeRow,projectManager);
 			int rowCount = 7;
@@ -306,7 +314,8 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				sheet = createprojectMembersXlsSheet(sheet, writeRow, projectMembers);
 				row++;
 			}
-			 file = File.createTempFile(projectName +"_" + dateFormat.format(new Date()),".xls");
+			 StringBuilder projNameSB=new StringBuilder();
+			 file = File.createTempFile(projNameSB.append(projectName).append("_").append(dateFormat.format(new Date())).toString(),".xls");
 			 file.setReadable(true);
 			 /*file = new File(projectName +"_" + dateFormat.format(new Date()) + ".xls");*/
 			FileOutputStream fos = new FileOutputStream(file);
@@ -375,10 +384,11 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		 cell5.setCellStyle(style);
 		 
 		 Cell cell6 = writeRow.createCell(1);
+		 StringBuilder value=new StringBuilder();
 		 if(project.getStartDate()!=null && project.getEndDate() !=null){
-			 cell6.setCellValue(project.getStartDate()+" to "+project.getEndDate()); 
+			 cell6.setCellValue(value.append(project.getStartDate()).append(" to ").append(project.getEndDate()).toString()); 
 		 }else{
-			 cell6.setCellValue(project.getStartDate()+" to "+"--"); 
+			 cell6.setCellValue(value.append(project.getStartDate()).append(" to ").append("--").toString()); 
 		 }
 		 cell6.setCellStyle(style);
 	}

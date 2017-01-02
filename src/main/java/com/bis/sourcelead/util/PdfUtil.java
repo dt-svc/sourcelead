@@ -60,16 +60,21 @@ public class PdfUtil {
 		String[] headers = Constants.USER_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
 	    /*File file = new File("users_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbUser =  new StringBuilder();
 	    sbUser.append("users_").append(dateFormat.format(new Date()));
-	    File file = File.createTempFile(sbUser.toString(),".pdf");
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append("users_").append(dateFormat.format(new Date())).toString(),".pdf");
+
 	    file.setReadable(true);
 	    
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
+
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
@@ -77,6 +82,9 @@ public class PdfUtil {
 	        userStyle.append(orgName).append(" ").append("Users");
             Paragraph para = new Paragraph(userStyle.toString(),boldFont);
             para.setAlignment(Element.ALIGN_CENTER);
+
+	        StringBuilder orgNameSB = new StringBuilder();
+            Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(orgName).toString());
             document.add(para);
 	        
 	        int inActiveCount = 0; 
@@ -176,7 +184,8 @@ public class PdfUtil {
 				 userArray[5] = "--";
 			 }
 			 if(emp.getRate() !=null && !"".equalsIgnoreCase(emp.getRate())){
-				 userArray[6] = emp.getRate()+"/"+emp.getRatePer();
+				 StringBuilder ratePerSB = new StringBuilder();
+				 userArray[6] = ratePerSB.append(emp.getRate()).append("/").append(emp.getRatePer()).toString();
 			 }else{
 				 userArray[6] = "--";
 			 }
@@ -241,10 +250,15 @@ public class PdfUtil {
 		String[] headers = Constants.CANDIDATE_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
 	    StringBuilder sbCand = new StringBuilder();
 	    sbCand.append(orgName).append("_Candidate_").append(dateFormat.format(new Date()));
 	    /*File file = new File(orgName+"_Candidate_"+dateFormat.format(new Date())+".pdf");*/
-	    File file = File.createTempFile(sbCand.toString(),".pdf");
+
+	    
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append(orgName).append("_Candidate_").append(dateFormat.format(new Date())).toString(),".pdf");
+
 	    file.setReadable(true);
 	    
 	    try {
@@ -252,11 +266,18 @@ public class PdfUtil {
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+
 	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myBordColor);
 	        StringBuilder sbCandStyle = new StringBuilder();
 	        sbCandStyle.append(orgName).append(" ").append("Candidates");
             Paragraph para = new Paragraph(sbCandStyle.toString(),boldFont);
+
+	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+	        boldFont.setColor(myColor1);
+	        StringBuilder orgNameSB = new StringBuilder();
+            Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" Candidates.").toString(),boldFont);
+
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header and
@@ -342,21 +363,22 @@ public class PdfUtil {
 			Set<CandidateEducation> candidateEducation = candidate.getCandidateEducation();
 			StringBuilder educations = new StringBuilder();
 			for(CandidateEducation candidateEdu : candidateEducation){
-				educations.append(candidateEdu.getName()+",");
+				educations.append(candidateEdu.getName()).append(",");
 			}
 			String educationList = educations.toString();
 			candidateArray[6] = educationList.substring(0, educations.length()-1);
 		}else{
 			candidateArray[6] = "--";
 		}
+		StringBuilder expSB = new StringBuilder();
 		if(candidate.getExperienceYears() !=null && !"".equalsIgnoreCase(candidate.getExperienceYears()) && candidate.getExperienceMonths() !=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
-			candidateArray[7] = candidate.getExperienceYears()+"."+candidate.getExperienceMonths()+"years";
+			candidateArray[7] = expSB.append(candidate.getExperienceYears()).append(".").append(candidate.getExperienceMonths()).append("years").toString();
 		}else{
 			if(candidate.getExperienceYears() !=null && !"".equalsIgnoreCase(candidate.getExperienceYears())){
-				candidateArray[7] = candidate.getExperienceYears()+"years";
+				candidateArray[7] = expSB.append(candidate.getExperienceYears()).append("years").toString();
 			}else{
 				if(candidate.getExperienceMonths() !=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
-					candidateArray[7] = candidate.getExperienceMonths()+"Months";
+					candidateArray[7] = expSB.append(candidate.getExperienceMonths()).append("Months").toString();
 				}else{
 					candidateArray[7] = "--";
 				}
@@ -366,14 +388,15 @@ public class PdfUtil {
 			StringBuilder skills = new StringBuilder();
 			Set<CandidateSkills> candidateSkillsList = candidate.getCandidateSkills();
 		    for(CandidateSkills candidateSkills : candidateSkillsList){
-		    	skills.append(candidateSkills.getName()+",");
+		    	skills.append(candidateSkills.getName()).append(",");
 		    }
 		    candidateArray[8] = skills.toString().substring(0, skills.length()-1);
 		}else{
 			candidateArray[8] = "--";
 		}
 		if(candidate.getExpectedRate() !=null && !"".equalsIgnoreCase(candidate.getExpectedRate()) && candidate.getRateType() !=null && !"".equalsIgnoreCase(candidate.getRateType())){
-			candidateArray[9] = candidate.getExpectedRate()+"/"+candidate.getRateType();
+			StringBuilder rateSB = new StringBuilder();
+			candidateArray[9] = rateSB.append(candidate.getExpectedRate()).append("/").append(candidate.getRateType()).toString();
 		}else{
 			candidateArray[9] = "--";
 		}
@@ -386,21 +409,32 @@ public class PdfUtil {
 		String[] headers = Constants.REQUIREMENT_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
 	    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbReq =new StringBuilder();
 	    sbReq.append(orgName).append("_Requirements_").append(dateFormat.format(new Date()));
-	    File file = File.createTempFile(sbReq.toString(),".pdf");
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+
 	    file.setReadable(true);
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+
 	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myBordColor);
 	        StringBuilder sbReqStyle = new StringBuilder();
 	        sbReqStyle.append(orgName).append(" ").append("Requirements");
             Paragraph para = new Paragraph(sbReqStyle.toString(),boldFont);
+
+	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+	        boldFont.setColor(myColor1);
+	        StringBuilder orgNameSB = new StringBuilder();
+            Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" Requirements.").toString(),boldFont);
+
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header and
@@ -473,21 +507,22 @@ public class PdfUtil {
 		}else{
 			requirementArray[1] = "--";
 		}
-		
+		StringBuilder expSB = new StringBuilder();
 		if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
-			requirementArray[2] = requirement.getMinExp()+"-"+requirement.getMaxExp()+" years"; 
+			requirementArray[2] = expSB.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).append(" years").toString(); 
 		}else{
 			if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())){
-				requirementArray[2] = "0 - "+requirement.getMinExp()+"years";
+				requirementArray[2] =  expSB.append("0 - ").append(requirement.getMinExp()).append("years").toString();
 			}else{
 				if(requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
-					requirementArray[2] = "0 - "+requirement.getMaxExp()+"years";
+					requirementArray[2] = expSB.append("0 - ").append(requirement.getMaxExp()).append("years").toString();
 				}
 			}
 		}
 		
 		if(requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) && requirement.getRateType() != null && !"".equalsIgnoreCase(requirement.getRateType())){
-			requirementArray[3] =  requirement.getRate()+" / "+requirement.getRateType();
+			StringBuilder rateSB = new StringBuilder();
+			requirementArray[3] =  rateSB.append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString();
 		}else{
 			requirementArray[3] = "--";
 		}
@@ -536,22 +571,33 @@ public class PdfUtil {
 	public File getClientVendorPdfFile(java.util.List<OrgRelations> clientsList, String orgName, String[] clientHeaders, String vendorType) throws DocumentException, IOException {
 		Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
 	    /*File file = new File(orgName+"_"+vendorType+"_"+dateFormat.format(new Date())+".pdf");*/
 	    
 	    StringBuilder sbcv = new StringBuilder();
 	    sbcv.append(orgName).append("_").append(vendorType).append("_").append(dateFormat.format(new Date()));
-	    File file = File.createTempFile(sbcv.toString(),".pdf");
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append(orgName).append("_").append(vendorType).append("_").append(dateFormat.format(new Date())).toString(),".pdf");
+
 	    file.setReadable(true);
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
 	        StringBuilder titleName = new StringBuilder();
 	        titleName.append(orgName).append(" ").append(vendorType);
             Paragraph para = new Paragraph(titleName.toString(),boldFont);
+
+	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+	        boldFont.setColor(myColor1);
+	        StringBuilder orgNameSB = new StringBuilder();
+            Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" ").append(vendorType).toString(),boldFont);
+
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header 
@@ -644,21 +690,33 @@ public class PdfUtil {
 	public File getClientVendorContactsPdfFile(java.util.List<OrgSpoc> vandorsContactList, String orgName,String vendorType, String[] headers) throws DocumentException, IOException {
 		Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
 	    /*File file = new File(orgName+"_"+vendorType+" Contacts_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sb = new StringBuilder();
 	    sb.append(orgName).append("_").append(vendorType).append("Contacts_").append(dateFormat.format(new Date()));
-		  File file = File.createTempFile(sb.toString(),".pdf");
+
+
+	      StringBuilder fileSB = new StringBuilder();
+		  File file = File.createTempFile(fileSB.append(orgName).append("_").append(vendorType).append(" Contacts_").append(dateFormat.format(new Date())).toString(),".pdf");
+
 		  file.setReadable(true);
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
 	        StringBuilder titleName = new StringBuilder();
 	        titleName.append(orgName).append(" ").append(vendorType).append(" ").append("Contacts");
             Paragraph para = new Paragraph(titleName.toString(),boldFont);
+
+	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+	        boldFont.setColor(myColor1);
+	        StringBuilder orgNameSB = new StringBuilder();
+            Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" ").append(vendorType).append(" Contacts.").toString(),boldFont);
+
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header 
@@ -735,15 +793,27 @@ public class PdfUtil {
 		String[] headers = Constants.PROJECT_ASSIGNED_EMPLOYEES;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
 	    /*File file = new File(projectName+"_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbpe = new StringBuilder();
 	    sbpe.append(projectName).append("_").append(dateFormat.format(new Date()));
-	    File file = File.createTempFile(sbpe.toString(),".pdf");
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append(projectName).append("_").append(dateFormat.format(new Date())).toString(),".pdf");
+
 	    file.setReadable(true);
 	    try {
 	    	// Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
+
+	        Font blue = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLUE);
+	        StringBuilder projectNameSB = new StringBuilder();
+	        Chunk blueText = new Chunk(projectNameSB.append("Project Name : " ).append(projectName).toString(), blue);
+            Paragraph para = new Paragraph();
+            para.add(blueText);
+            document.add(para);
+
 	        
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
 	        BaseColor myColor1 = WebColors.getRGBColor("#000000");
@@ -758,7 +828,8 @@ public class PdfUtil {
 	        orderedList.add(new ListItem("Project Name :"+projectName));
 	        orderedList.add(new ListItem("Manager :"+projectManager));
 	        if(project.getStartDate()!=null && project.getEndDate() !=null){
-	        	orderedList.add(new ListItem("Date :"+project.getStartDate()+" to "+project.getEndDate()));
+	        	StringBuilder dateSB = new StringBuilder();
+	        	orderedList.add(new ListItem("Date :"+dateSB.append(project.getStartDate()).append(" to ").append(project.getEndDate()).toString()));
 			 }else{
 				 orderedList.add(new ListItem("Date :"+project.getStartDate()));
 			 }

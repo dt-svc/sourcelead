@@ -72,24 +72,24 @@ width: auto;
   <section class="container">
 		<div class="row">
 		  		<div id="accept" style="display:none">
-					          <c:choose>
-							    <c:when test="${permission=='YES'}">
+					          <%-- <c:choose>
+							    <c:when test="${permission=='YES'}"> --%>
 								    <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 						          		<i class="fa fa-check-circle fa-3x"></i>
 							        	<p class="reason-msg">You Have accepted the Requirement for <B>${requirementSubmission.requirement.jobTitle}</B></p>
 							 			<p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
-							    </c:when>    
-							    <c:otherwise>
-							    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+							    <%-- </c:when>    
+							    <c:otherwise> --%>
+							   <%--  	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 						          		<i class="fa fa-clock-o fa-3x"></i>
 							        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
 							    </c:otherwise>
-							  </c:choose>
+							  </c:choose> --%>
 						  </div>
 		  		</div>
 		  		<div id="reject" style="display:none">
-			  		<c:choose>
-					    <c:when test="${permission=='YES'}">
+			  		<%-- <c:choose>
+					    <c:when test="${permission=='YES'}"> --%>
 						    <form id="reject_form" name="reject_form" method="post" >
 					          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
 								  <div class="col-md-6">
@@ -106,18 +106,18 @@ width: auto;
 								  </div>
 							  </div>
 							</form>
-					    </c:when>    
-					    <c:otherwise>
-					    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+					    <%-- </c:when>    
+					    <c:otherwise> --%>
+					    	<%-- <div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 				          		<i class="fa fa-clock-o fa-3x"></i>
 					        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
-					        </div>
-					    </c:otherwise>
-					  </c:choose>
+					        </div> --%>
+					    <%-- </c:otherwise>
+					  </c:choose> --%>
 		  		</div>
 		  		<div id="negotiation" style="display:none">
-		  			 <c:choose>
-					    <c:when test="${permission=='YES'}">
+		  			 <%-- <c:choose>
+					    <c:when test="${permission=='YES'}"> --%>
 						    <form id="negotiation_form" name="negotiation_form" method="post" >
 						          <div class="col-md-8 rate-negotiation project_wrap_table" id="negotiationDivId">
 									  <div class="clearfix">
@@ -160,14 +160,14 @@ width: auto;
 									  </div>
 								 </div>
 							</form>
-					    </c:when>    
+					    <%-- </c:when>    
 					    <c:otherwise>
 					    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 				          		<i class="fa fa-clock-o fa-3x"></i>
 					        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
 					        </div>
 					    </c:otherwise>
-					  </c:choose>
+					  </c:choose> --%>
 		  		</div>
 		 <div>
   </section>
@@ -341,7 +341,7 @@ function pagination(){
 function isShowForm(actionUsertype){
 	 var lastProposedBy = $("#lastProposedBy").val();
      if(lastProposedBy != null && lastProposedBy != "" && lastProposedBy !='undefined' && lastProposedBy == actionUsertype){
-    	 $('#negotiationDivId').append("<span>Rate submitted successfully !! Kindly wait for the Response...</span>");
+    	 $('#negotiationDivId').append("<b>Rate submitted successfully !! Kindly wait for the Response...</b>");
     	 document.getElementById("fieldsDiv").style.display="none";
      }else{
     	 document.getElementById("fieldsDiv").style.display="";

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -76,7 +77,7 @@ public class TabsDaoImpl implements TabsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Tabs> getTabsListByOrgLocationId(List<Long> modulesId, Long roleId, Long orgLocationId)
+	public Collection<Tabs> getTabsListByOrgLocationId(List<Long> modulesId, Long roleId, Long orgLocationId)
 			throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
@@ -90,7 +91,7 @@ public class TabsDaoImpl implements TabsDao{
 			 }
 		 }
 		
-		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN (:modulesId) and moduleActions.sourceleadActions.id IN (:roleActonList))) ";
+		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN (:modulesId) and moduleActions.sourceleadActions.id IN (:roleActonList))) ORDER BY tabs.tabOrder ASC ";
 	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesId).setParameterList("roleActonList", roleActonList).setCacheable(true).list();
 	    return tabsList;
 	}

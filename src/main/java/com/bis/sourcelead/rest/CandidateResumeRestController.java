@@ -31,9 +31,11 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -64,6 +66,9 @@ public class CandidateResumeRestController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	RequirementOffersService requirementOffersService;
 	
 	/**
 	* @author Venkat Kesav 
@@ -124,12 +129,12 @@ public class CandidateResumeRestController {
 		String msg = "";
 		String resultJson = null;
 		Integer status = Constants.CANDIDATE_ACTIVE;
-		StringBuilder name = new StringBuilder();
 		if(candidateId != null){
 			List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(Long.parseLong(candidateId), status);
 			for(CandidateResumes candidateResume : candidateResumesList){
 				User createdUser = userService.getUserByUserCode(candidateResume.getCreatedBy());
 				if(createdUser != null){
+					StringBuilder name = new StringBuilder();
 					candidateResume.setCreatedBy(name.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
 				}
 			}
@@ -236,6 +241,32 @@ public class CandidateResumeRestController {
 			} catch (FileNotFoundException e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
+		}
+	
+	@RequestMapping(value = "/offerDownloadDocument", method = RequestMethod.GET)
+    public void candidateAndOfferDownloadDocument(@RequestParam(value="resumeId", required=false) Long resumeId,HttpServletResponse response) throws Exception {
+			RequirementOffers  requirementOffers = requirementOffersService.getRequirementOfferId(resumeId);
+	    	response.setContentType("application/octet-stream");
+	    	response.setHeader("Content-Disposition", "attachment;filename="+requirementOffers.getFileName());
+			InputStream inputStream = new ByteArrayInputStream(requirementOffers.getDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+	
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+	
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+	
+				inputStream.close();
+				outStream.close();
+	
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+			    
+		   
 		}
 	
 }

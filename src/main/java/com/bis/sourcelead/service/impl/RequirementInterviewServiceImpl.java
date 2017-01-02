@@ -37,7 +37,6 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
-import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
@@ -78,8 +77,6 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
 	
-	@Autowired
-	private RequirementInterviewerService requirementInterviewerService;
 	
 	@Autowired
 	private RequirementInterviewHistoryService requirementInterviewHistoryService;
@@ -301,14 +298,16 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		else{
 			 emailMessage.setLastName("");
 		}
+		 StringBuilder interviewStringBuilder=new StringBuilder();
 		 emailMessage.setToEmail(interviewerUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 emailMessage.setFromName(interviewStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 		 String candidateName = candidate.getFirstName();
 		 if(candidate.getLastName()!=null){
-			 candidateName=candidateName+" "+candidate.getLastName();
+			 StringBuilder nameBuilder=new StringBuilder();
+			 candidateName=nameBuilder.append(candidateName).append(" ").append(candidate.getLastName()).toString();
 		 }
 		 
 		 String dateOfInterviewValue ="";
@@ -325,19 +324,23 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 if(requirementInterview.getStartTime() != null){
 	    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
 	    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
-	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    	 StringBuilder startTimeBuilder=new StringBuilder();
+	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(startTimeBuilder.append(hours).append(":").append(minutes).toString());
 	    }
 	    
 	    if(requirementInterview.getEndTime() != null){
+	    	 StringBuilder endTimeBuilder=new StringBuilder();
 	    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
 	    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
-	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(endTimeBuilder.append(hours).append(":").append(minutes).toString());
 	    }
 		 
 		 if(endTime!=null){
-			  time=time+" - "+endTime;
+			  StringBuilder sb=new StringBuilder();
+			  time=sb.append(time).append(" - ").append(endTime).toString();
 		 }
-		 dateOfInterviewValue = dateOfInterviewValue +" "+time;
+		 StringBuilder dateOfInterviewSB=new StringBuilder();
+		 dateOfInterviewValue = dateOfInterviewSB.append(dateOfInterviewValue).append(" ").append(time).toString();
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("interviewerFirstName", emailMessage.getFirstName());
@@ -353,7 +356,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder nameSB=new StringBuilder();
+		 emailRecipient.setName(nameSB.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -394,7 +398,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setToEmail(candidate.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 StringBuilder timeStringBuilder=new StringBuilder();
+		 emailMessage.setFromName(timeStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 		 String time = "";
 		 String endTime = "";
@@ -403,21 +408,23 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		  dateOfInterviewStr = Constants.DMY.format(requirementInterview.getDateOfInterview());
 		 }
 
-		 
 		 if(requirementInterview.getStartTime() != null){
 	    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
 	    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
-	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    	 StringBuilder startBuilder=new StringBuilder();
+	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(startBuilder.append(hours).append(":").append(minutes).toString());
 	    }
 	    
 	    if(requirementInterview.getEndTime() != null){
 	    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
 	    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
-	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    	 StringBuilder endBuilder=new StringBuilder();
+	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(endBuilder.append(hours).append(":").append(minutes).toString());;
 	    }
 		 
 		 if(endTime!=null){
-			  time=time+" - "+endTime;
+			 StringBuilder timeBuilder=new StringBuilder();
+			  time=timeBuilder.append(time).append(" - ").append(endTime).toString();
 		 }
 		 String interviewTypeValue="--";
 		 if(requirementInterview.getInterviewType() !=null){
@@ -450,7 +457,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder nameStrBuilder = new StringBuilder();
+		 emailRecipient.setName(nameStrBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -499,7 +507,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				if(requirementInterview.getRemainedBefore() != null && !requirementInterview.getRemainedBefore().isEmpty()){
 					Integer hours = (Integer.parseInt(requirementInterview.getRemainedBefore()) / 60);
 					Integer minutes = (Integer.parseInt(requirementInterview.getRemainedBefore()) % 60);
-				    requirementInterview.setRemainderTime(hours + " : " + minutes + " minutes");
+					StringBuilder requirementBuilder = new StringBuilder();
+				    requirementInterview.setRemainderTime(requirementBuilder.append(hours).append(" : ").append(minutes).append(" minutes").toString());
 				}
 				
 			    if(requirementInterview.getDateOfInterview() != null){
@@ -509,13 +518,15 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			    if(requirementInterview.getStartTime() != null){
 			    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
 			    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
-			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    	 StringBuilder startBuilder = new StringBuilder();
+			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(startBuilder.append(hours).append(":").append(minutes).toString()));
 			    }
 			    
 			    if(requirementInterview.getEndTime() != null){
 			    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
 			    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
-			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    	 StringBuilder endBuilder = new StringBuilder();
+			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(endBuilder.append(hours).append(":").append(minutes).toString()));
 			    }
 			    
 			    String InterviewersList = "";
@@ -523,9 +534,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				int i = 0;
 				for(RequirementInterviewer interviewer: Interviewers){
 					if(i <= 50){
-						InterviewersList = InterviewersList+interviewer.getInterviewerUser().getFirstName()+" "+interviewer.getInterviewerUser().getLastName();
+						 StringBuilder interviewerBuilder = new StringBuilder();
+						InterviewersList = interviewerBuilder.append(InterviewersList).append(interviewer.getInterviewerUser().getFirstName()).append(" ").append(interviewer.getInterviewerUser().getLastName()).toString();
 						if(i != Interviewers.size()-1){
-							InterviewersList = InterviewersList+",";
+							 StringBuilder interviewBuilder = new StringBuilder();
+							InterviewersList = interviewBuilder.append(InterviewersList).append(",").toString();
 						}
 					}
 					i++;
@@ -548,7 +561,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				if(requirementInterview.getRemainedBefore() != null && !requirementInterview.getRemainedBefore().isEmpty()){
 					Integer hours = (Integer.parseInt(requirementInterview.getRemainedBefore()) / 60);
 					Integer minutes = (Integer.parseInt(requirementInterview.getRemainedBefore()) % 60);
-				    requirementInterview.setRemainderTime(hours + " : " + minutes + " minutes");
+					 StringBuilder interviewslistBuilder = new StringBuilder();
+				    requirementInterview.setRemainderTime(interviewslistBuilder.append(hours).append(" : ").append(minutes).append(" minutes").toString());
 				}
 				
 			    if(requirementInterview.getDateOfInterview() != null){
@@ -558,13 +572,15 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			    if(requirementInterview.getStartTime() != null){
 			    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
 			    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
-			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    	 StringBuilder startBuilder = new StringBuilder();
+			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(startBuilder.append(hours).append(":").append(minutes).toString()));
 			    }
 			    
 			    if(requirementInterview.getEndTime() != null){
 			    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
 			    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
-			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    	 StringBuilder endBuilder = new StringBuilder();
+			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(endBuilder.append(hours).append(":").append(minutes).toString()));
 			    }
 			    
 			    if(requirementInterview.getSubmissionId().getRequirement().getClientId() != null){
@@ -581,9 +597,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				int i = 0;
 				for(RequirementInterviewer interviewer: Interviewers){
 					if(i <= 50){
-						InterviewersList = InterviewersList+interviewer.getInterviewerUser().getFirstName()+" "+interviewer.getInterviewerUser().getLastName();
+						 StringBuilder interviewersBuilder = new StringBuilder();
+						InterviewersList = interviewersBuilder.append(InterviewersList).append(interviewer.getInterviewerUser().getFirstName()).append(" ").append(interviewer.getInterviewerUser().getLastName()).toString();
 						if(i != Interviewers.size()-1){
-							InterviewersList = InterviewersList+",";
+							 StringBuilder intervieBuilder = new StringBuilder();
+							InterviewersList = intervieBuilder.append(InterviewersList).append(",").toString();
 						}
 					}
 					i++;
@@ -606,24 +624,28 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 StringBuilder nameStringBuilder=new StringBuilder();
+		 emailMessage.setFromName(nameStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 		 String time = "";
 		 String endTime = "";
 		 if(requirementInterview.getStartTime() != null){
 	    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
 	    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
-	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    	 StringBuilder startBuilder=new StringBuilder();
+	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(startBuilder.append(hours).append(":").append(minutes).toString());
 	    }
 	    
 	    if(requirementInterview.getEndTime() != null){
 	    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
 	    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
-	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    	 StringBuilder endBuilder=new StringBuilder();
+	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(endBuilder.append(hours).append(":").append(minutes).toString());
 	    }
 		 
 		 if(endTime!=null){
-			  time=time+" - "+endTime;
+			 StringBuilder endTimeBuilder=new StringBuilder();
+			  time=endTimeBuilder.append(time).append(" - ").append(endTime).toString();
 		 }
 		 
 		 
@@ -648,14 +670,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("interviewTime",time);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
 			 globalVarsMap.put("location",requirementInterview.getLocation());
-			 globalVarsMap.put("applicantName",emailMessage.getFirstName() +" "+emailMessage.getLastName());
+			 globalVarsMap.put("applicantName",nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
-		
+		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = null;
 			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_INTERVIEW,Constants.ENTITY_TYPE_EMAIL);
@@ -717,11 +739,13 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setToEmail(interviewerUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 StringBuilder timeBuilder = new StringBuilder();
+		 emailMessage.setFromName(timeBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 		 String candidateName = candidate.getFirstName();
 		 if(candidate.getLastName()!=null){
-			 candidateName=candidateName+" "+candidate.getLastName();
+			 StringBuilder nameBuilder = new StringBuilder();
+			 candidateName=nameBuilder.append(candidateName).append(" ").append(candidate.getLastName()).toString();
 		 }
 		 
 		 String dateOfInterviewValue ="";
@@ -738,17 +762,20 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 if(requirementInterview.getStartTime() != null){
 	    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
 	    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());;
-	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    	 StringBuilder startBuilder = new StringBuilder();
+	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(startBuilder.append(hours).append(":").append(minutes).toString());
 	    }
 	    
 	    if(requirementInterview.getEndTime() != null){
 	    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
 	    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
-	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    	 StringBuilder endBuilder = new StringBuilder();
+	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(endBuilder.append(hours).append(":").append(minutes).toString());
 	    }
 		 
 		 if(endTime!=null){
-			  time=time+" - "+endTime;
+			 StringBuilder endTimeStrBuilder = new StringBuilder();
+			  time=endTimeStrBuilder.append(time).append(" - ").append(endTime).toString();
 		 }
 		 String interviewTime =  time;
 		//setting the class filed values
@@ -769,7 +796,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder nameStrBuilder = new StringBuilder();
+		 emailRecipient.setName(nameStrBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -826,13 +854,15 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			    if(requirementInterview.getStartTime() != null){
 			    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
 			    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
-			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    	 StringBuilder startBuilder=new StringBuilder();
+			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(startBuilder.append(hours).append(":").append(minutes).toString()));
 			    }
 			    
 			    if(requirementInterview.getEndTime() != null){
 			    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
 			    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
-			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    	 StringBuilder endBuilder=new StringBuilder();
+			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(endBuilder.append(hours).append(":").append(minutes).toString()));
 			    }
 			    
 			    RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementInterview.getSubmissionId().getId(),orgLocationsId);
@@ -850,6 +880,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	public RequirementInterview getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(Long requirementInterviewId,
 			Long submissionId, Long orgLocationsId) {
 		return requirementInterviewDao.getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(requirementInterviewId, submissionId, orgLocationsId);
+	}
+	@Override
+	public List<RequirementInterview> getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(Long submissionId,
+			Long orgLocationsId) throws Exception {
+		return requirementInterviewDao.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
 	}
 	
 	/*@Override

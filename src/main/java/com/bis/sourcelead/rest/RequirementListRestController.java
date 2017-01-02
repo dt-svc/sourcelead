@@ -47,21 +47,18 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementOffersService;
-import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementPipelineExportService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -88,12 +85,6 @@ public class RequirementListRestController {
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
 		
-	 @Autowired
-	 private OrgService orgService;
-	 
-	 @Autowired
-	 private OrgLocationService orgLocationService;
-	
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
@@ -163,10 +154,10 @@ public class RequirementListRestController {
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
 		 String msg = "";
 		String resultJson;
-		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
+		
 		for(Requirement requirement : requirementList){
 			
 			int totalApplicatsCountForRequirement = 0;
@@ -203,6 +194,9 @@ public class RequirementListRestController {
 			
 		}
 		
+		/*
+		 * filter based search for requirement  List
+		 */
 		ArrayList<Requirement>  requirementList1 = new ArrayList<Requirement>();
 		String[] status1 = status.split(",");
 		if (status1[0] != null && status1[0].length() > 0) {
@@ -229,7 +223,6 @@ public class RequirementListRestController {
 							 StringBuilder managerSB = new StringBuilder();
 							requirement.setManager(managerSB.append(managerFirstName).append(" ").append(managerLastName).toString());
 						}
-						
 						requirementList1.add(requirement);
 					}
 				}
@@ -237,12 +230,8 @@ public class RequirementListRestController {
 			}
 			resultJson = commonUtil.toJSON(requirementList1);
 		}else{
-			
 			resultJson = commonUtil.toJSON(requirementList);
 		}
-		
-		
-		
 		return resultJson;
 	 }
 	    
@@ -264,9 +253,9 @@ public class RequirementListRestController {
 	 @RequestMapping(value = "/getRequirementById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getRequirementById(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
 			String resultJson = null;
-		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
 			if(requirementId !=null && !requirementId.isEmpty()){
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 				
@@ -288,7 +277,7 @@ public class RequirementListRestController {
 						}
 					//requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
 					
-					if(requirement.getSpocId().getInitiatorLocationId().getId() == loginOrgLocation.getId() ){
+					if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
 						
 						if(requirement.getSpocId().getSpocUser().getFirstName() != null && requirement.getSpocId().getSpocUser().getFirstName() != "" && requirement.getSpocId().getSpocUser().getLastName() != null && requirement.getSpocId().getSpocUser().getLastName() != "" ){
 							StringBuilder spocSB = new StringBuilder();
@@ -297,7 +286,7 @@ public class RequirementListRestController {
 							requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName());
 						}
 					 }
-					if(requirement.getSpocId().getResponderLocationId().getId() == loginOrgLocation.getId()){
+					if(requirement.getSpocId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
 						StringBuilder spocSB1 = new StringBuilder();
 						requirement.setSpocName(spocSB1.append(requirement.getSpocId().getOwnerUser().getFirstName()).append(" ").append(requirement.getSpocId().getOwnerUser().getLastName()).toString());
 					}
@@ -530,7 +519,8 @@ public class RequirementListRestController {
 		 
 		 @RequestMapping(value = "/saveChangedStatus" , method = RequestMethod.POST)
 		 @ResponseBody  String saveChangedStatus(@RequestParam(value="requirementId", required=false) Long  requirementId,
-				 @RequestParam(value="status", required=false) String  status,HttpServletRequest request) throws Exception {
+				                                 @RequestParam(value="status", required=false) String  status,
+				                                 HttpServletRequest request) throws Exception {
 			
 			 
 			 
@@ -773,7 +763,6 @@ public class RequirementListRestController {
 		public String getRequirementByListCountBasedOnStatus(HttpServletRequest request) throws Exception {
 
 			String resultJson;
-			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
@@ -946,7 +935,6 @@ public class RequirementListRestController {
 		 public @ResponseBody  String getRequirementTemplateByRequirementId(@RequestParam(value="requirementId", required=false) Long  requirementId,
 				 HttpServletRequest request) throws Exception {
 			 
-				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				Requirement requirement = requirementService.getRequirementTemplateByRequirementId(requirementId,loginOrgLocation.getId());
 			    String resultJson;

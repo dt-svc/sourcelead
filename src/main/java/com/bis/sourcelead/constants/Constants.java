@@ -157,6 +157,7 @@ public class Constants {
 	public static String APPLICANT_NEGOTIATE_REQUIREMENT = "ApplicantNegotiateRequirement";
 	public static String USER_RATE_NEGOTIATION = "UserRateNegotiation";
 	public static String CLIENT_RATE_NEGOTIATION = "ClientRateNegotiation";
+	public static String USER_ACCEPT_RATE_NEGOTIATION = "UserAcceptRateNegotiation";
 
 
 
@@ -336,6 +337,10 @@ public class Constants {
     public static String ELK_CANDIDATE_TYPE = "candidate";
     
     public static String ELK_CANDIDATE_ID_PREFIX = "CND";
+    
+    public static String MAIL_TRASH = "Trash";
+    public static String MAIL_DELETE = "Deleted";
+    public static String MAIL_REQUESTED = "Requested";
     
     
     public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	

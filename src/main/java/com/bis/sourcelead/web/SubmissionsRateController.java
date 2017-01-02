@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
@@ -28,6 +29,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -73,6 +75,9 @@ public class SubmissionsRateController {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
  
 	/**
 	 * this method is used to Accept or reject or to negotiate rate from Candidate
@@ -104,7 +109,7 @@ public class SubmissionsRateController {
 		model.addObject("requirementSubmission",requirementSubmission);
 		model.setViewName("requirement/submissionRate");
 		
-		if("Accepted".equalsIgnoreCase(rateStatus) && "YES".equalsIgnoreCase(permission)){
+		if("Accepted".equalsIgnoreCase(rateStatus)){
 			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 			UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
 			
@@ -129,6 +134,12 @@ public class SubmissionsRateController {
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			}
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			//requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+			requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION_ACCEPT);
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 			
 			Requirement requirement = requirementSubmission.getRequirement();
 			Candidate candidate = requirementSubmission.getCandidate();
@@ -166,7 +177,7 @@ public class SubmissionsRateController {
 		model.addObject("requirementSubmission",requirementSubmission);
 		model.setViewName("requirement/submissionRate");
 		
-		if("Accepted".equalsIgnoreCase(rateStatus) && permission.equalsIgnoreCase("YES")){
+		if("Accepted".equalsIgnoreCase(rateStatus)){
 			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 			UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
 			
@@ -195,7 +206,7 @@ public class SubmissionsRateController {
 			Requirement requirement = requirementSubmission.getRequirement();
 			Candidate candidate = requirementSubmission.getCandidate();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
-			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations);
+			requirementSubmissionService.userAcceptRateNegotiation(requirement,userRole.getUser(),candidate,orgLocations,requirementRateSubmissionNegotiation);
 			
 		}
 		return model;

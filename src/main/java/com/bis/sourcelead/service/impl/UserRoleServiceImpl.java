@@ -103,9 +103,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 
 	@Override
 	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId, String userName,
-			Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception {
+			Long locationId,String userState,Long userId,String loginUserRole,String userCode,Integer offset) throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByRoleAndNameAndLocationId(roleId, userName, locationId,userState,userId,loginUserRole,userCode);
+		return userRoleDao.getUsersListByRoleAndNameAndLocationId(roleId, userName, locationId,userState,userId,loginUserRole,userCode,offset);
 	}
 
 	@Override
@@ -267,7 +267,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 				 writeRow.createCell(5).setCellValue(dateOfJoin); 
 			 }
 			 if(emp.getRate() !=null && !"".equalsIgnoreCase(emp.getRate())){
-				 writeRow.createCell(6).setCellValue(emp.getRate()+"/"+emp.getRatePer());
+				 StringBuilder sb = new StringBuilder();
+				 writeRow.createCell(6).setCellValue(sb.append(emp.getRate()).append("/").append(emp.getRatePer()).toString());
 			 }
   	    } 
 		   if(userRoles.getUser().getFirstName() !=null){

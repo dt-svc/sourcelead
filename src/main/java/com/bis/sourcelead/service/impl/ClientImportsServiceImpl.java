@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,7 +55,6 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
-import com.bis.sourcelead.service.UserService;
 /**
  * 
  * @author Rajashekar
@@ -351,10 +349,11 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		  if(vandorsListByOrgLocationId != null){
 			  jsonObj.put("roleTypeId", roleTypeId);
 		    OrgRelations  orgRelation = vandorsListByOrgLocationId.get(0);
-			  if(orgLocation.getId() == orgRelation.getLocationId().getId() ){
-				  jsonObj.put("vendorName", orgRelation.getId()+","+orgRelation.getResponderLocationId().getId());  
+		     StringBuilder vendorName = new StringBuilder();
+			  if(orgLocation.getId().longValue() == orgRelation.getLocationId().getId().longValue() ){
+				  jsonObj.put("vendorName", vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getResponderLocationId().getId()));
 			  }else{
-				  jsonObj.put("vendorName", orgRelation.getId()+","+orgRelation.getLocationId().getId());
+				  jsonObj.put("vendorName", vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getLocationId().getId()));
 			  }
 			  
 		  }else{
@@ -440,7 +439,8 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 					if(isValidated){
 						boolean found = validateClient(row.getCell(0).toString(), client,orgLocation,responderType);
 						if(found == false){
-							client.setReason(responderType+" does not exist");
+							 StringBuilder type = new StringBuilder();
+							client.setReason(type.append(responderType).append(" does not exist").toString());
 							return false;
 						}
 					}else{
@@ -508,7 +508,8 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 						}
 						UserRole user = userRoleService.getUserDetailsByEmailAndLocationId(emails[i], orgLocation.getId());
 						if(user == null){
-							client.setReason("Owner doesn't exist with email "+emails[i]);
+							StringBuilder owner = new StringBuilder();
+							client.setReason(owner.append("Owner doesn't exist with email ").append(emails[i]).toString());
 				            return false;	
 						}
 				}
@@ -839,7 +840,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			List<String> list = new ArrayList<>();
 			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgLocationId(orgLocationId);
 			for(OrgRelations orgRelations :vandorsListByOrgLocationId){
-			if(orgLocationId == orgRelations.getLocationId().getId() ){
+			if(orgLocationId.longValue() == orgRelations.getLocationId().getId().longValue() ){
 				list.add(orgRelations.getResponderLocationId().getOrg().getOrgName());
 			}else{
 				list.add(orgRelations.getLocationId().getOrg().getOrgName());
@@ -891,7 +892,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			List<String> list = new ArrayList<>();
 			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocationId);
 			for(OrgRelations orgRelations :vandorsListByOrgLocationId){
-			if(orgLocationId == orgRelations.getLocationId().getId() ){
+			if(orgLocationId.longValue() == orgRelations.getLocationId().getId().longValue() ){
 				list.add(orgRelations.getResponderLocationId().getOrg().getOrgName());
 			}else{
 				list.add(orgRelations.getLocationId().getOrg().getOrgName());

@@ -15,11 +15,16 @@
 <link rel="stylesheet" href="resources/css/jquery.timepicker.css">
 <script src="resources/js/jquery.timepicker.js"></script> 
 
+
+<!--  No auto completes are used in addInterview -->
+
 <!-- these files for autocomplete with tagit -->
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> -->
+
 <!-- end files for autocomplete with tagit -->
 
 
