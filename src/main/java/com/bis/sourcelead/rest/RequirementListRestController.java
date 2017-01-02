@@ -1066,7 +1066,7 @@ public class RequirementListRestController {
 					}
 					//file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId,submissionType, requirementSubmissionCounts);
 				}
-					 file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId,submissionType,requirementSubmissionCounts);
+					 file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation,exportType,requirementId,submissionType,requirementSubmissionCounts);
 				
 				 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 					if (mimeType == null) {
