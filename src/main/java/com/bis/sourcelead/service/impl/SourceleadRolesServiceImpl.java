@@ -20,4 +20,10 @@ public class SourceleadRolesServiceImpl implements SourceleadRolesService{
 		return sourceleadRolesDao.getSourceleadRoles();
 	}
 
+	@Override
+	public boolean roleHaveActionAccessOrNot(String actionId,String roleName) {
+		
+		return sourceleadRolesDao.roleHaveActionAccessOrNot(actionId,roleName);
+	}
+
 }

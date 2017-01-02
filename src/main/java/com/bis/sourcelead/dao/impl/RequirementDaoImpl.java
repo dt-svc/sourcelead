@@ -301,14 +301,19 @@ public class RequirementDaoImpl implements RequirementDao {
 			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
 			params.put("managerUserId",userId);
 			
-			if(subQuery1 != "" || subQuery2 != ""){
-				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")  ) ";
+			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
+			params.put("userId",userId);
+			
+			if(subQuery1 != "" || subQuery2 != "" || subQuery3 !=""){
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")  or ("+subQuery3+") ) ";
 				params.put("orgLocationId",orgLocationId);
 			}
 		}else{
 			subQuery = "where requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT')  and requirement.orgLocationId.id =:orgLocationId  ";
 			params.put("orgLocationId",orgLocationId);
 		}
+		
+		
 		
 		
 		String whereCondition = subQuery;
@@ -330,43 +335,77 @@ public class RequirementDaoImpl implements RequirementDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode)
+	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode,String statusType)
 			throws Exception {
 
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		User user = userDao.getUserById(userId);
 		
-				
+		 String subQuery1  = null;
+		 String subQuery2 = null;
 		Map<String, Object> params = new HashMap<String,Object>();
 		
 		String from = "from Requirement requirement"; 
-		String subQuery = "";
+		String subQuery3 = "";
+		String finalQuery = "";
 		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
 			
-			
-			 String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  rah.requirementApproverStatus <> 'APPROVED' and  (requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'OPEN' )) ";
+			if(StringUtils.equalsIgnoreCase(statusType, "SUBMITTED")){
+				
+				    subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  rah.requirementApproverStatus <> 'APPROVED' and  (requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus = '"+statusType+"' )) ";
+		            params.put("userId",userId);
+		            params.put("level",1);
+		        
+		            subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2 and  rah.requirementApproverStatus <> 'APPROVED'  and  (requirement.requirementSubmissionStatus <> 'DRAFT' AND requirement.requirementSubmissionStatus <> 'OPEN' ) and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED')) )";
+		            params.put("approverUserId",userId);
+		            params.put("level1",1);
+		            params.put("level2",2);
+		            
+			}
+            if(StringUtils.equalsIgnoreCase(statusType, "APPROVED")){
+				
+            	subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  rah.requirementApproverStatus = '"+statusType+"' and  (requirement.requirementSubmissionStatus <> 'DRAFT')) ";
 	            params.put("userId",userId);
 	            params.put("level",1);
 	        
-	            
-	            String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2 and  rah.requirementApproverStatus <> 'APPROVED'  and  (requirement.requirementSubmissionStatus <> 'DRAFT' AND requirement.requirementSubmissionStatus <> 'OPEN' ) and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED')) )";
+	            subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2 and  rah.requirementApproverStatus = 'APPROVED'  and  (requirement.requirementSubmissionStatus <> 'DRAFT') and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED')) )";
 	            params.put("approverUserId",userId);
 	            params.put("level1",1);
 	            params.put("level2",2);
-	
-		
-			if(subQuery1 != "" || subQuery2 != ""){
-				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")  ) ";
-				params.put("orgLocationId",orgLocationId);
 			}
+           if(StringUtils.equalsIgnoreCase(statusType, "REJECTED")){
+				
+        	    subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  rah.requirementApproverStatus = 'REJECTED' and  (requirement.requirementSubmissionStatus <> 'DRAFT')) ";
+	            params.put("userId",userId);
+	            params.put("level",1);
+	        
+	            subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2 and  rah.requirementApproverStatus = 'REJECTED'  and  (requirement.requirementSubmissionStatus <> 'DRAFT' ) and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED')) )";
+	            params.put("approverUserId",userId);
+	            params.put("level1",1);
+	            params.put("level2",2);
+			}
+		
+			
 		}else{
-			subQuery = "where requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where (requirement.requirementSubmissionStatus <> 'DRAFT' AND requirement.requirementSubmissionStatus <> 'APPROVED' )) and requirement.orgLocationId.id =:orgLocationId ";
-			params.put("orgLocationId",orgLocationId);
+			    if(StringUtils.equalsIgnoreCase(statusType, "REJECTED")){
+			    	statusType = "REJECTED";
+			    }
+			    if(StringUtils.equalsIgnoreCase(statusType, "APPROVED")){
+			    	statusType = "OPEN";
+			    }
+				subQuery3 = " requirement.requirementSubmissionStatus <> 'DRAFT' and  requirement.requirementSubmissionStatus = '"+statusType+"' ";
 		}
 		
+		if(subQuery1 != null || subQuery2 != null ){
+			 finalQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")) ";
+			 params.put("orgLocationId",orgLocationId);
+		}else{
+			 finalQuery = "where requirement.orgLocationId.id =:orgLocationId and  ("+subQuery3+") ";
+			 params.put("orgLocationId",orgLocationId);
+		}
 		
-		String whereCondition = subQuery;
+		String whereCondition = finalQuery;
 		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
 		for (String str : query.getNamedParameters())
         {

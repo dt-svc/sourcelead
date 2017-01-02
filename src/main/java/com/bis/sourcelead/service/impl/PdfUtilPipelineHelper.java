@@ -56,13 +56,19 @@ public class PdfUtilPipelineHelper  {
 		if(submissionType.equals("SUBMIT_TO_CLIENT")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS;
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			StringBuilder sbClientPipe = new StringBuilder();
+			sbClientPipe.append(orgName).append("_Requirements_").append(dateFormat.format(new Date()));
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
+
 		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
+			StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfSubmitToClient(),Constants.SUBMIT_TO_CLIENT_COUNT,file);
+
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,3,5,5,5};
-		    	PdfPTable table = getPdfTable(headers,width);
+		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -96,10 +102,13 @@ public class PdfUtilPipelineHelper  {
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
+			StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfRequestSent(),Constants.REQUEST_SENT_COUNT,file);
+
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5};
-		    	PdfPTable table = getPdfTable(headers,width);
+		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -132,10 +141,13 @@ public class PdfUtilPipelineHelper  {
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
+			StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfShortList(),Constants.SHORTLIST_COUNT,file);
+
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,3};
-		    	PdfPTable table = getPdfTable(headers,width);
+		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -168,10 +180,13 @@ public class PdfUtilPipelineHelper  {
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
+			StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfInterview(),Constants.INTERVIEW_COUNT,file);
+	   
 		    try {
 		    	int [] width = new int[]{3,5, 3,5};
-		    	PdfPTable table = getPdfTable(headers,width);
+		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -204,11 +219,13 @@ public class PdfUtilPipelineHelper  {
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
-		    
+	        StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfOffers(),Constants.OFFER_COUNT,file);
+
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5};
-		    	PdfPTable table = getPdfTable(headers,width);
+		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -241,10 +258,13 @@ public class PdfUtilPipelineHelper  {
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
+			StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfRejected(),Constants.REJECTED_COUNT,file);
+
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5};
-		    	PdfPTable table = getPdfTable(headers,width);
+		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -277,10 +297,12 @@ public class PdfUtilPipelineHelper  {
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
-		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getSubmittedCount(),Constants.SUBMITTED_APPLICANTS_COUNT,file);
+			StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");(loginOrgLocation,requirementId,requirementSubmissionCounts.getSubmittedCount(),Constants.SUBMITTED_APPLICANTS_COUNT,file);
+
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,5};
-		    	PdfPTable table = getPdfTable(headers,width);
+		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -503,11 +525,17 @@ public class PdfUtilPipelineHelper  {
 	 * prepares column names for pdf table
 	 * @param headers
 	 * @param width
+	 * @param title 
 	 * @return PdfPTable
 	 */
-	private PdfPTable getPdfTable(String[] headers, int[] width) {
+	private PdfPTable getPdfTable(String[] headers, int[] width, String titleName) {
 		PdfPTable table = new PdfPTable(headers.length);
 		try{
+			Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(titleName.toString(),font));
+	        cell1.setColspan(14);
+	        headerCellStyle(cell1);
+            table.addCell(cell1);
 			table.setWidthPercentage(100);
 	        table.setWidths(width);
 	        for (int i = 0; i < headers.length; i++) {
@@ -545,6 +573,11 @@ public class PdfUtilPipelineHelper  {
 		    	PdfWriter.getInstance(document, new FileOutputStream(file));
 		        document.open();
 		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+		        BaseColor myBordColor = WebColors.getRGBColor("#000000");
+		        boldFont.setColor(myBordColor);
+		        StringBuilder sbPipeHearder = new StringBuilder();
+		        sbPipeHearder.append(orgName).append(" ").append("Requirements");
+//	            Paragraph para = new Paragraph(sbPipeHearder.toString(),boldFont);
 		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
 		        boldFont.setColor(myColor1);
 	            Paragraph para = new Paragraph(orderedListStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append(" Requirements.").toString(),boldFont);
@@ -916,6 +949,15 @@ public class PdfUtilPipelineHelper  {
 			
 			return requirementArray;
 		}
+	
+	private static void headerCellStyle(PdfPCell cell){
+	    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    cell.setPaddingTop(0f);
+	    cell.setPaddingBottom(7f);
+	    cell.setBackgroundColor(new BaseColor(0,121,182));
+	    cell.setBorder(0);
+	    cell.setBorderWidthBottom(2f);
+	    }
 
 
 }

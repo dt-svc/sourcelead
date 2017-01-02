@@ -287,6 +287,9 @@ overflow-x: auto;
 			    	 </sec:authorize>
 			    </div>
 		    </c:if>
+		     <div class="clearfix row mb"> 
+		     <jsp:include page="dashboardApplicants.jsp"></jsp:include>
+		     </div>
 	    <%-- </c:if> --%>
 	    
 	   			 <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">

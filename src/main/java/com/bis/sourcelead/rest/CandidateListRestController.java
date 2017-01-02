@@ -274,11 +274,12 @@ public class CandidateListRestController {
 				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
 				educationArray.removeAll(excludeEducationArray);
 				if(educationArray != null && !educationArray.isEmpty()){
-					BoolQueryBuilder edunBoolQueryBuilder = QueryBuilders.boolQuery();
+					boolQueryBuilder.must(QueryBuilders.termsQuery("education", (String[])educationArray.toArray()));
+				/*	BoolQueryBuilder edunBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : educationArray){
 						edunBoolQueryBuilder.should(QueryBuilders.matchQuery("education", keywd));
 					}
-					boolQueryBuilder.must(edunBoolQueryBuilder);
+					boolQueryBuilder.must(edunBoolQueryBuilder);*/
 				} 
 				
 				//Certifications

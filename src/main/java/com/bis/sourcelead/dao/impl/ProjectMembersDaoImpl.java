@@ -333,6 +333,20 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		return pm;  
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectMembers getProjectMemberByEmpIdAndProjectId(Long empId, Long projectId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where pm.employee.id = :empId and pm.projects.id = :projectId" ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("empId", empId).setLong("projectId", projectId).setCacheable(true).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

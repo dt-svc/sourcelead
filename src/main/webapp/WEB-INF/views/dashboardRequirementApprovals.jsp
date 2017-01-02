@@ -6,6 +6,11 @@
           <h4 class="clearfix">Requirement Approvals &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
           <div class="clearfix require_wrap_table dashboard-data" style="margin-top: 55px;">
+            <ul class="nav nav-tabs">
+              <li class="active" id="waitingTab"><a data-toggle="tab" onclick="requirementApproverList('SUBMITTED');">Waiting </a></li>
+              <li id="approvedTab"><a data-toggle="tab" onclick="requirementApproverList('APPROVED');">Approved </a></li>
+              <li id="rejectedTab"><a data-toggle="tab" onclick="requirementApproverList('REJECTED');">Rejected</a></li>
+            </ul>
           		 <div id="requirementApproverList"></div>
           </div>
         </div>
@@ -21,22 +26,27 @@
      3.ajax url implementation in requirementApproverListRestController.
 --%>
 
-<script> 
+  <script> 
 $(document).ready(function(){
-	requirementApproverList();
+	
+	requirementApproverList('SUBMITTED');
+	
 });
 </script>
 
+
 <script>
-function requirementApproverList(){  
+
+function requirementApproverList(statusType){  
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  
 	  $("#requirementApproverList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
-           type : "POST",
-           url: sourceleadUrl+"/getApproverRequirementApproverListByOrgLocationIDAndUserId?${_csrf.parameterName}=${_csrf.token}",    
+           type : "GET",
+           url: sourceleadUrl+"/getApproverRequirementApproverListByOrgLocationIDAndUserId?statusType="+statusType,    
             success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+                 if(data != null && data != 'undefined' && data != "" && data != '[]'){  
                		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
@@ -45,7 +55,6 @@ function requirementApproverList(){
                		 }
                		 else{
 			    	     $("#requirementApproverList").removeAttr("style");
-			    	     
 	                	 $("#requirementApproverList").empty();
 	                	 var result = "";
 	                	 result = result+'<div id="rejectRequirementAlert" ></div>  ';
@@ -55,7 +64,12 @@ function requirementApproverList(){
 	                     result = result +"    <th>ID-Title</th>"; 
 	                     result = result +"    <th>Rate</th>"; 
 	                     result = result +"    <th>Exp</th>"; 
-	                     result = result +"    <th>Action</th>"; 
+	                     
+	                     if(statusType == "APPROVED" || statusType == "REJECTED"){
+	                    	 result = result +"    <th>"+statusType+" By</th>";
+	                     }else{
+	                    	 result = result +"    <th>Action</th>";
+	                     }
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -85,15 +99,15 @@ function requirementApproverList(){
                              var APPROVED = "APPROVED";     
  				             var REJECTED = "REJECTED";
  				            result = result +"<td>";
-				             if(opt.requirementSubmissionStatus  !='DRAFT'  &&  opt.requirementApproverHierarchyStatus !='APPROVED' &&  opt.requirementApproverHierarchyStatus != 'REJECTED' && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
+				             if(opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementSubmissionStatus  !='OPEN'  &&  opt.requirementApproverHierarchyStatus !='APPROVED' &&  opt.requirementApproverHierarchyStatus != 'REJECTED' && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
 				            	
 				            	 result = result + '<a  href="javascript:void(0)"  onClick="updateReuqirementStatus(\''+ APPROVED+ '\','+opt.id+');"   ><i class="fa fa-check text-success"></i></a>';
 		                    	 result = result + '<a  href="javascript:void(0)"  onClick="rejectRequirementAlertMessage(\''+ REJECTED+ '\','+opt.id+');"  ><i class="fa fa-close text-danger"></i></a>';
    				           	 
-				             }else if(opt.requirementApproverHierarchyStatus == 'APPROVED'  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
-      						      result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">'+opt.requirementApproverHierarchyStatus+'</button>';
+				             }else if((opt.requirementApproverHierarchyStatus == 'APPROVED' ||  opt.requirementApproverHierarchyStatus == 'OPEN')  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
+				            	 result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">'+opt.approvedBy+'</button>';
     				         }else if( opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementApproverHierarchyStatus == 'REJECTED'  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
-					              result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">'+opt.requirementApproverHierarchyStatus+'</button>';
+    				        	 result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">'+opt.approvedBy+'</button>';
 		                     }else{
 		                    	 result = result +"<div>-----</div>";
 		                     }  
@@ -108,14 +122,15 @@ function requirementApproverList(){
 			    	} 
                  }else{
                 	 $("#requirementApproverList").removeAttr("style");
-  	    	        /*  var result ="";
-		    	    
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Requirement Found</p>";
-					 result = result+"			 </div>"; */
-					
 					$("#requirementApproverList").empty();
+					
+					 var result ="";
+						result = result+"			<div class='blank-pages'>";
+						result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+						result = result+"			        <p>No Records For "+statusType+" Found</p>";
+						result = result+"			 </div>";
+						
+						
 				    $("#requirementApproverList").append(result); 
                 }
           },
@@ -175,7 +190,7 @@ function updateReuqirementStatus(status,requirementId){
           			 location.replace(sourceleadUrl+"/errorPage");
           		 }
           		 else{ 
-          			requirementApproverList();
+          			requirementApproverList('SUBMITTED');
           		 }
             }
        },
