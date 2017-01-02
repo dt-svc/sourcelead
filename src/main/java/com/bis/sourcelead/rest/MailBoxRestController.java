@@ -187,14 +187,20 @@ public class MailBoxRestController {
 	public String sendRequestForResume(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "candidatesIds", required = false) String candidatesIds,
 			@RequestParam(value = "UUID", required = false) String UUID,
-			HttpServletRequest request) throws Exception {
+			MultipartHttpServletRequest request) throws Exception {
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		}
 		
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		userMailBoxService.setRequestForResumeDetails(jsonObj,candidatesIds,UUID);
+		userMailBoxService.setRequestForResumeDetails(jsonObj,candidatesIds,UUID,multiFile);
 		
 		
 		return "success";
