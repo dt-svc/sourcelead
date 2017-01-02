@@ -135,7 +135,7 @@ public class MailBoxController {
 		return resultJson;
 	}
 	
-	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/getUserMails")
 	public @ResponseBody String getUserMails(@RequestParam(value = "type", required = false) String type,
 			HttpServletRequest request) throws Exception {
