@@ -82,8 +82,6 @@ function editCandidate(candidateId){
 	$("#profileEditPopup").show();
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  var loginCountryName = '${loginCountryName}';
-	  
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -183,8 +181,8 @@ function editCandidate(candidateId){
 							
 							 
 							result = result + '<input type="hidden" name="updateState" id="updateState" value="'+json.state+'" />'; 
-							result = result + '<input type="hidden" name="updateCountry" id="updateCountry" value='+json.country+' />';
-							result = result + '<input type="hidden" name="updateCity" id="updateCity" value='+json.city+' />';
+							result = result + '<input type="hidden" name="updateCountry" id="updateCountry" value="'+json.country+'" />';
+							result = result + '<input type="hidden" name="updateCity" id="updateCity" value="'+json.city+'" />';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="state" value="'+json.state+'" id="candidateState" field-name="State">';
@@ -445,7 +443,6 @@ function editCandidate(candidateId){
 function getAllCandidateCountries(){
 	setTimeout(function(){ 
 	var countryName = $("#updateCountry").val();
-	var loginCountryName = '${loginCountryName}';
 	$.ajax({
     	type: "POST",
     	dataType: "json",
@@ -457,7 +454,7 @@ function getAllCandidateCountries(){
             for(var i=0;i<json.length;i++){
             	if(json[i] == countryName){
             		$('#candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}else if(json[i] == '${loginCountryName}' && countryName ==null && countryName ==''){
+            	}else if(json[i] == '${candidateCountry}' && countryName ==null && countryName ==''){
             		$('#candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{ 
