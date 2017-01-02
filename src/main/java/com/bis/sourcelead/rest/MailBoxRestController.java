@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Org;
@@ -252,6 +253,7 @@ public class MailBoxRestController {
 	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/getEmailDetails")
 	public @ResponseBody String getEmailDetails(@RequestParam(value = "UUID", required = false) String UUID,
+			@RequestParam(value = "type", required = false) String type,
 			HttpServletRequest request) throws Exception {
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -264,6 +266,10 @@ public class MailBoxRestController {
 	    List<UserMailBox> mailBoxList = new ArrayList<UserMailBox>();
 	    
 	    if(userMailbox != null){
+	    	
+	    	UserMailBox previousMail = userMailBoxService.getUserPreviousMail(userMailbox.getId(), user.getId(), orgLocation.getId(), type);
+	    	
+	    	UserMailBox nextMail = userMailBoxService.getUserNextMail(userMailbox.getId(), user.getId(), orgLocation.getId(), type);
 	    	
 	    	List<Long> candidateId = new ArrayList<Long>();
 	    	if(null !=  userMailbox.getCandidateId()){
@@ -321,6 +327,15 @@ public class MailBoxRestController {
 				userMailbox.setUnreadRequestedCount(requestedUnreadMailsCount);
 				userMailbox.setTotalUnReadMailsCount(inboxUnreadMailsCount+requestedUnreadMailsCount);
 				userMailbox.setCandidatesList(reqCandidatesList);
+				if(null != nextMail){
+					userMailbox.setNextMailUUID(nextMail.getUuid());
+				}
+				
+				if(null != previousMail){
+					userMailbox.setPreviousMailUUID(previousMail.getUuid());
+				}
+				
+				
 				
 				mailBoxList.add(userMailbox);
 				calculateDays(mailBoxList);
@@ -393,6 +408,25 @@ public class MailBoxRestController {
 			resultJson = toJSON(singaturesList);
 			return resultJson;
 		}
+	 
+	 
+	 @PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	 @RequestMapping(value = "/deleteReadMail", method = RequestMethod.POST)
+		public String deleteReadMail(@RequestParam(value = "UUID", required = false) String UUID,
+				@RequestParam(value = "type", required = false) String type,HttpServletRequest request) throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			UserMailBox mailbox = userMailBoxService.getUserMailBoxByUUID(UUID);
+			if(null != mailbox && null != type){
+				if(type.equalsIgnoreCase(Constants.MAIL_TRASH)){
+					mailbox.setMailStatus(Constants.MAIL_DELETE);
+					mailbox.setStatus(0);
+				}else{
+					mailbox.setMailStatus(Constants.MAIL_TRASH);
+				}
+				userMailBoxService.saveUserMailBox(mailbox);
+			}
+			return "success";
+		}
 
 	 
 	 
@@ -415,17 +449,17 @@ public class MailBoxRestController {
 			
 				for(Candidate candidate : candidatesList){
 					StringBuilder skills = new StringBuilder();
-					StringBuilder candidateSkills = null; 
+					String candidateSkills = null;
 					List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
 					 if(skillsList.size() > 0){
 						 for(CandidateSkills skill : skillsList){
 							 skills.append(skill.getName()).append(", ");
 						 }
-						 
 						 skills.toString();
-						 candidateSkills = new StringBuilder();
-						 candidateSkills.append(skills);
+						 candidateSkills =  skills.substring(0,skills.length()-2);
 					 }
+					 
+					
 					 
 					
 					 StringBuilder candidateName = new StringBuilder();
@@ -497,7 +531,7 @@ public class MailBoxRestController {
 					 candidate.setCandidateName(candidateName.toString());
 					 candidate.setTotalExp(totalExp.toString());
 					 candidate.setRate(rate.toString());
-					 candidate.setSkills(candidateSkills.toString());
+					 candidate.setSkills(candidateSkills);
 					 
 					 reqCandidatesList.add(candidate);
 				}

@@ -95,5 +95,14 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 		return userMailBoxDao.getUnReadMessagesByUserIdAndLocationIdAndType(userId, orgLocationId, type);
 	}
 
+	@Override
+	public UserMailBox getUserPreviousMail(Long Id, Long userId, Long orgLocationId,String type) throws Exception {
+		return userMailBoxDao.getUserPreviousMail(Id, userId, orgLocationId,type);
+	}
+	
+	@Override
+	public UserMailBox getUserNextMail(Long Id, Long userId, Long orgLocationId,String type) throws Exception {
+		return userMailBoxDao.getUserNextMail(Id, userId, orgLocationId,type);
+	}
 	
 }
