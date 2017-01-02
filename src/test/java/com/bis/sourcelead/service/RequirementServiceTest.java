@@ -425,7 +425,7 @@ public class RequirementServiceTest {
 			orgSpoc.setId(1l);
 			
 			String releasetype="VENDORS";
-			requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation, releasetype, location);
+			requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation, releasetype);
 		}	
 		
 		@Test
