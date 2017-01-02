@@ -64,7 +64,7 @@ public class RequirementOfferHistoryDaoImpl implements RequirementOfferHistoryDa
 			Session session = this.sessionFactory.getCurrentSession();
 			return (RequirementOfferHistory) session.get(RequirementOfferHistory.class, Id);
 	}
-
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementOfferHistory> getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(
@@ -87,7 +87,18 @@ public class RequirementOfferHistoryDaoImpl implements RequirementOfferHistoryDa
 		
 		return offersList;
 	}
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementOfferHistory> getRequirementInternalAndIsClientOffersHistoryBySubmissionIdAndOrgLocationsId(
+			Long submissionId, Long orgLocationsId) throws Exception {
+		logger.debug("In RequirementOfferHistoryDaoImpl class getRequirementInternalAndIsClientOffersHistoryBySubmissionIdAndOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementOfferHistory roh where roh.submissionId.id = :submissionId and roh.orgLocationId.id = :orgLocationsId ";
+		List<RequirementOfferHistory> offersHistoryList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		
+		return offersHistoryList;
+	}
 
 	
 }

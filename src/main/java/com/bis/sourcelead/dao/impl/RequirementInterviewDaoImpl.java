@@ -187,6 +187,18 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		//return requirementInterviewList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementInterview> getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(Long submissionId,
+			Long orgLocationsId) throws Exception {
+		logger.debug("In RequirementInterviewDaoImpl class getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterview interview where (interview.submissionId.id = :submissionId and interview.submissionId.orgLocations.id = :orgLocationsId)  OR (interview.submissionId.sourceSubmission.id = :submissionId and interview.submissionId.vendorLocationId.id = :orgLocationsId) ";
+		List<RequirementInterview> interviewsHistoryList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		
+		return interviewsHistoryList;
+	}
+
 	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime) {

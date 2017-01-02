@@ -90,5 +90,10 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 	public List<RequirementOfferHistory> getAllRequirementOfferHistoriesByOfferId(Long offerId) {
 		return requirementOfferHistoryDao.getAllRequirementOfferHistoriesByOfferId(offerId);
 	}
+
+	@Override
+	public List<RequirementOfferHistory> getRequirementInternalAndIsClientOffersHistoryBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception {
+		return requirementOfferHistoryDao.getRequirementInternalAndIsClientOffersHistoryBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
+	}
 	
 }

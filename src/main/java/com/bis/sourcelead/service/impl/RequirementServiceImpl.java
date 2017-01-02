@@ -627,14 +627,14 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					//send mail to Assigned Team 
 					//condition : if login user as team member then mail not send
-					Set<RequirementAssignTo> updatedRequirementAssignToList = requirement.getRequirementAssignTo();
+					/*Set<RequirementAssignTo> updatedRequirementAssignToList = requirement.getRequirementAssignTo();
 					if(updatedRequirementAssignToList != null  ){
 						for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
 							if(requirementAssignTo.getAssignUserId() != null && !user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
 								AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
 							}
 						}
-					}
+					}*/
 					
 					
 					//send mail to manger 

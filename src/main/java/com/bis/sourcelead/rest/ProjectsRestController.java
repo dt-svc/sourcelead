@@ -178,7 +178,7 @@ public class ProjectsRestController {
 		return isDeleted;
 	  }
 	  
-	@RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
+	/*@RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
 	public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		    
 		    String json1 = "{"+json+"}";	
@@ -188,7 +188,7 @@ public class ProjectsRestController {
 		 	userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS","",new Org());
 			return "SUCCESS";
 		}
-	  
+	  */
 	  /**
 		  * This method for getEmployeesList by by excluding  Level1 and Level2 Managers 
 		  * @param id
