@@ -268,7 +268,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		
 		
 		 String tempHTML = null;
-		 StringBuilder candidateSkills = null;
+		 
 		 
 		 tempHTML = "<table style='display:table-cell;vertical-align:middle'>";
 		 tempHTML = tempHTML+"<tr align='center'>";
@@ -286,13 +286,15 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		 
 		 for(String email : candidateEmailsList){
 			 StringBuilder skills = new StringBuilder();
+			 StringBuilder candidateSkills = new StringBuilder();
 			 List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(email);
 			 if(skillsList.size() > 0){
 				 for(CandidateSkills skill : skillsList){
 					 skills.append(skill.getName()).append(", ");
 				 }
-				 candidateSkills = new StringBuilder();
 				 candidateSkills.append(skills);
+			 }else{
+				 candidateSkills.append("-----");
 			 }
 			 
 			 

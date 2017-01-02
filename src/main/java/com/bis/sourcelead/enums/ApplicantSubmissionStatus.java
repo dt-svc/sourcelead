@@ -3,17 +3,26 @@ package com.bis.sourcelead.enums;
 public enum ApplicantSubmissionStatus {
 
 	SUBMISSION("submission"),
+	SUBMISSION_ACCEPT("submission_accept"),
 	SHORTLIST("shortList"),
 	INTERVIEW("interview"),
+	INTERVIEW_ACCEPT("interview_accept"),
+	INTERVIEW_REJECT("interview_reject"),
+	INTERVIEW_TENTATIVE("interview_tentative"),
 	CLIENT_INTERVIEW("client_interview"),
 	/*OFFER("offer"),*/
-	REQUEST_SENT("request_sent”"),
+	REQUEST_SENT("request_sent"),
 	REJECTED("rejected"),
     SUBMIT_TO_CLIENT("submit_to_client"),
     OFFERMADE("offer_made"),
     OFFERACCEPTED("offer_accepted"),
     OFFERREJECTED("offer_rejected"),
     OFFERHIRED("hired"),
+    FEEDBACK("feedback"),
+    
+    ATTENDING("Attending"),
+    NOT_ATTENDING("Not_Attending"),
+    MAYBE("Maybe"),
     
     CLIENT_OFFERMADE("client_offer_made"),
     CLIENT_OFFERACCEPTED("client_offer_accepted"),

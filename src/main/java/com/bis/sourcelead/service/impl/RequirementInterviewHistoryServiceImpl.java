@@ -151,4 +151,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 
 			}
 
+	@Override
+	public List<RequirementInterviewHistory> getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception {
+		return requirementInterviewHistoryDao.getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId,  orgLocationsId);
+	}
+
 }

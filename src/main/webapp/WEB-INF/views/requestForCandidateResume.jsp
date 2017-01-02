@@ -38,6 +38,11 @@ background-color:#e1e6fa;
 .project_wrap_table table tr td:last-child {
 width: auto;
 }
+
+.project_wrap_table table tr th:first-child{
+text-align: left;
+}
+
 </style>
 <body>
 <div class="wraper"> 
@@ -71,8 +76,17 @@ width: auto;
 								  <input type="text" class="form-control input-sm" field-name="Email" placeholder="Email" id="email" onblur="validateEmail();" name="email" data-validation="required validate_Space validate_email">
 								  </div> 
 								  <div class="col-md-3 ">
-								  <input type="text" class="form-control input-sm" data-validation-optional="true" field-name="Phone" placeholder="Phone" id="phone" name="phone" data-validation="validate_Space">
+								  <input type="text" class="form-control input-sm" data-validation-optional="true" field-name="Phone" placeholder="Phone" id="phone" name="phone" data-validation="validate_Space validate_int validate_length length9-20">
 								  </div>
+								    <div class="clearfix"></div>
+						          <div class="col-md-6 mt">
+						            <div class="input-group">
+						              <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
+						                <input type="file" name="attachfile" style="display: none;" multiple id="attachfileBtn" class="upload">
+						                </b> </label>
+						              <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="File Attachment">
+						            </div>
+						          </div>
 								  <div class="clearfix"></div>
 								  <div class="col-md-6 mt">
 									  <textarea class="form-control" rows="5" data-validation-optional="true" name="comment" placeholder="Comment" id="comment"></textarea>	
@@ -140,6 +154,9 @@ function cancel(){
 			var frm = $('#candidate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			var jsonData = encodeURIComponent(con);
+		    var form = $('#candidate_form')[0];
+	  		var formData = new FormData(form)
 			
 			var candidatesIds = [];
 			 $("input[name='candidatesIds[]']:checked").each( function (i) {
@@ -147,19 +164,27 @@ function cancel(){
 			});
 			 
 			if(candidatesIds.length > 0){
+				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 				  $.ajax({
-							type : "POST",
-							url : sourceleadUrl+"/sendRequestForResume?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidatesIds="+candidatesIds+"&UUID="+UUID,
+					    type : "POST",
+			    	    data: formData,
+			    	    contentType : 'application/json; charset=utf-8',
+			    	    enctype: 'multipart/form-data',
+				        processData: false,
+				        contentType:false, 
+			    	    dataType : 'json',
+							url : sourceleadUrl+"/sendRequestForResume?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidatesIds="+candidatesIds+"&UUID="+UUID,
 							success : function(result) {
 								
 								if(result == 'success'){
+									$("#loading").removeAttr("style"); 
 									$("#campaigncandidatesList").empty(); 
 									document.getElementById("fromEmailDetails").style.display="none";
-									$('#campaigncandidatesList').append("<div class='text-center success-message'><i class='fa fa-handshake-o'></i>Request sent successfully. Kindly wait for the Response.</div>");
+									$('#campaigncandidatesList').append("<div class='text-center success-message'><i class='fa fa-handshake-o'></i>Request sent successfully. Kindly wait for the response.</div>");
 								}
 								 
 							},
-				});   
+				});  
 			}else{
 				
 				alertCandidates();
@@ -244,11 +269,19 @@ $.ajax({
 			                     result = result +"<tbody>"; 
 			                     for (var i = 0; i < json.length; i++) { 
 			                    	 var opt = json[i];  
+			                    	 var skills  =  "";
+			                    	 
+			                    	 if(opt.skills == 'undefined' || opt.skills == null || opt.skills == ''){
+			                    		 skills = "-------"
+			                    	 }else{
+			                    		 skills = opt.skills;
+			                    	 }
+			                    	 
 			                    	 result  = result + ' <td><div><span>&nbsp;&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="candidatesIds[]" class="myCheckbox" ></span></div></td>';
 			                    	 result  = result + ' <td><div><span>'+opt.candidateName+'</span></div></td>';
 			                    	 result  = result + ' <td><div><span>'+opt.totalExp+'</span></div></td>';
 			                    	 result  = result + ' <td><div><span>'+opt.rate+'</span></div></td>';
-			                    	 result  = result + ' <td><div>'+opt.skills+'</div></td>';
+			                    	 result  = result + ' <td><div>'+skills+'</div></td>';
 			                    	
 			                    	 result  = result + '</tr>';
 			                      } 
@@ -296,6 +329,12 @@ $('input:checkbox:not(#checkAllCandidates)').click(function() {
     }
 });
 }
+</script>
+
+<script>
+document.getElementById("attachfileBtn").onchange = function () {
+	$('#attachfile-mail').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+};
 </script>
 
 

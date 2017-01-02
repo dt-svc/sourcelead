@@ -319,7 +319,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	        
 	        
 		List<Employees> addItemsList = null;
-		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId  "
+		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers pm where projects = :projectId and pm.status = '1') and emp.orgLocations = :orgLocationsId  "
 				+ "and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationsId and userRole.userState <> 'INACTIVE' and userRole.userType <> 'Admin' and userRole.roles.id IN (:ownerRolesList))) "+search+"");
 		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).setParameterList("ownerRolesList", ownerRolesList).list();
 		return addItemsList;

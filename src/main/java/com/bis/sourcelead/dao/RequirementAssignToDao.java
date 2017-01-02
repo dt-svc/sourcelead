@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 
 public interface RequirementAssignToDao {
@@ -18,5 +19,7 @@ public interface RequirementAssignToDao {
 	public RequirementAssignTo getRequirementAssignToByRequirementId(Long requirementId)  throws Exception;
 
 	Boolean checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long requirementId,Long userId)  throws Exception;
+
+	public List<RequirementAssignTo> getAssignedToMembersByRequirementIdAndOrgLocationId(Long requirementId,Long orgLocationId);
 	
 }

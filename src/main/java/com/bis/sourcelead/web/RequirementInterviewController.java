@@ -16,7 +16,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * Handles requests for the Requirement Interview.
  * 
@@ -35,7 +42,12 @@ public class RequirementInterviewController {
 	@Autowired
 	RequirementInterviewService requirementInterviewService;
 	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService; 
 
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
+	
 	@RequestMapping(value = "/acceptOrRejectInterview")
 	 @ResponseBody  ModelAndView acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
@@ -59,6 +71,22 @@ public class RequirementInterviewController {
 			    	 }
 	    	     }
 			     
+			     //stroe  requirementSubmissionHistoryService 
+			     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			     RequirementSubmission  requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementInterview.getSubmissionId().getId());
+			     RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+				 requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.INTERVIEW.toString());
+				 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.ATTENDING.toString())){
+					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_ACCEPT);
+				 }
+				 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.NOT_ATTENDING.toString())){
+					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_REJECT);
+				 }
+				 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.MAYBE.toString())){
+					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_TENTATIVE);
+				 }
+				 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+					
 				model.setViewName("requirement/interviewAcceptOrRejectOrTentative");
 				model.addObject("interviewStatus",interviewStatus);
 				model.addObject("requirementInterviewId",requirementInterviewId);

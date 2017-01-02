@@ -78,7 +78,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 			Long submissionId, Long orgLocationsId) throws Exception {
 		logger.debug("In RequirementInterviewHistoryDaoImpl class getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementInterviewHistory rih where rih.submissionId.id = :submissionId and rih.orgLocationId.id = :orgLocationsId ";
+		String query = "from RequirementInterviewHistory rih where rih.submissionId.id = :submissionId and rih.orgLocationId.id = :orgLocationsId ORDER BY rih.createdDate DESC";
 		List<RequirementInterviewHistory> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 		
 		return interviewsList;
@@ -144,6 +144,18 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
         }
 		
 		return queryExe.setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementInterviewHistory> getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(
+			Long submissionId, Long orgLocationsId) throws Exception {
+		logger.debug("In RequirementInterviewHistoryDaoImpl class getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterviewHistory rih where rih.submissionId.id = :submissionId and rih.orgLocationId.id = :orgLocationsId ORDER BY rih.createdDate DESC";
+		List<RequirementInterviewHistory> interviewsHistoryList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		
+		return interviewsHistoryList;
 	}
 
 	

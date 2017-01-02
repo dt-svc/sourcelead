@@ -627,14 +627,14 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					//send mail to Assigned Team 
 					//condition : if login user as team member then mail not send
-					Set<RequirementAssignTo> updatedRequirementAssignToList = requirement.getRequirementAssignTo();
+					/*Set<RequirementAssignTo> updatedRequirementAssignToList = requirement.getRequirementAssignTo();
 					if(updatedRequirementAssignToList != null  ){
 						for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
 							if(requirementAssignTo.getAssignUserId() != null && !user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
 								AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
 							}
 						}
-					}
+					}*/
 					
 					
 					//send mail to manger 
@@ -1952,7 +1952,8 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					skillId = skillId.replaceAll("\"", "");
 					reqTemplate.setSkills(skillId);
-				
+				}else{
+					reqTemplate.setSkills(null);	
 				}
 				
 				if(jsonObj.has("education")){
@@ -1969,7 +1970,8 @@ public class RequirementServiceImpl implements RequirementService {
 					educationId = educationId.replaceAll("\"", "");
 					
 					reqTemplate.setEducation(educationId);
-				
+				 }else{
+					 reqTemplate.setEducation(null);
 				 }
 				reqTemplate.setStatus(Constants.MEMBER_ACTIVE);
 				reqTemplate.setCreatedDate(commonUtil.currentDate());
