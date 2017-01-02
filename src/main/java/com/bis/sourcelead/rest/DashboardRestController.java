@@ -353,7 +353,8 @@ public class DashboardRestController {
 				       // to set the approved/rejected by user
 				       User approvedUser = userService.getUserByUserCode(requirementApproverHierarchy.getUpdatedBy());
 			                    if(approvedUser !=null ){
-									requirement.setApprovedBy(approvedUser.getFirstName() + ""+ approvedUser.getLastName());
+			                    	StringBuilder sb = new StringBuilder();
+									requirement.setApprovedBy(sb.append(approvedUser.getFirstName()).append(" ").append(approvedUser.getLastName()).toString());
 			                    }
 			}
 		}	
