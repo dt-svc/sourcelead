@@ -74,6 +74,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Transient
     private String isNotifyToVendorRequired;
+	
+	@Transient
+    private String createDateStr;
+	
+	@Transient
+    private Long offerResumeId;
 
 	public Long getId() {
 		return id;
@@ -194,5 +200,20 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setIsNotifyToVendorRequired(String isNotifyToVendorRequired) {
 		this.isNotifyToVendorRequired = isNotifyToVendorRequired;
 	}
-	
+
+	public String getCreateDateStr() {
+		return createDateStr;
+	}
+
+	public void setCreateDateStr(String createDateStr) {
+		this.createDateStr = createDateStr;
+	}
+
+	public Long getOfferResumeId() {
+		return offerResumeId;
+	}
+
+	public void setOfferResumeId(Long offerResumeId) {
+		this.offerResumeId = offerResumeId;
+	}
 }

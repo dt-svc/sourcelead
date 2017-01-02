@@ -467,7 +467,6 @@ function sideBar(requirementId){
                				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'<i></i></h4></a>';
                			}
 				        result = result+'<div class="hide-row">';
-				        
 				       /*result = result+'    <div class="profile_details requirement_details clearfix">'; */
 				        result = result+'<div class="col-md-9">';
 				        result = result+'<div class="row">';
@@ -1220,9 +1219,13 @@ function requirementPipeline(requirementId,submissionType){
 				        	   result = result + '<th>Applied on</th>';
 					           result = result + '<th>Rate</th>';
 					           
+					         if(clientSubmissions == 'Y'){
 					           if(submissionType != 'REQUEST_SENT'){
 					           result = result + '<th>Sub. Rate</th>';
 					           }
+					         }else{
+					        	result = result + '<th>Sub. Rate</th>';
+					         }
 					           result = result + '<th>Source</th>';
 				            }
 						  
@@ -1313,12 +1316,14 @@ function requirementPipeline(requirementId,submissionType){
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							           }else{
+							        	   if(clientSubmissions == 'Y'){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
 							        	   }else{
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							        	   }
+							           }
 							           }
 							           
 							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
@@ -2227,13 +2232,13 @@ function getRateListDiv(submissionId, candidateId){
 					    	 var report = json[i];
 					    	 if(i == json.length-1){
 		                    	 divState = report.rateInitiatorType;
-		                    	 if((report.rateInitiatorType != "ORG" && report.rateInitiatorType != "CANDIDATE") && (report.initiatorOrgLocationIdStr==orgLocationId)){
+		                    	 if(report.rateInitiatorType != "CANDIDATE" && report.initiatorOrgLocationIdStr==orgLocationId && report.createdBy!='' && report.createdBy!='undefined' && report.createdBy!=null){
 		                    		 isLastNegotiator = "true";
 		                    	 }else{
 		                    		 isLastNegotiator = "false";
 		                    	 }
 	                    	 }
-		                     result = result + '      <tr>';
+		                     result = result + '      <tr class="redtxt">';
 		                     result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
 		                     result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
 		                     result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';

@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 
 public interface RequirementAssignToService {
@@ -17,5 +18,7 @@ public interface RequirementAssignToService {
 	public RequirementAssignTo getRequirementAssignToByRequirementId(Long requirementId)  throws Exception;
 	
 	Boolean checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long requirementId,Long userId)  throws Exception;
+
+	public List<RequirementAssignTo> getAssignedToMembersByRequirementIdAndOrgLocationId(Long requirementId,Long orgLocation) throws Exception;
 	
 }

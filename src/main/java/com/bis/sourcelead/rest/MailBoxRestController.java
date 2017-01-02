@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Org;
@@ -186,14 +187,20 @@ public class MailBoxRestController {
 	public String sendRequestForResume(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "candidatesIds", required = false) String candidatesIds,
 			@RequestParam(value = "UUID", required = false) String UUID,
-			HttpServletRequest request) throws Exception {
+			MultipartHttpServletRequest request) throws Exception {
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		}
 		
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		userMailBoxService.setRequestForResumeDetails(jsonObj,candidatesIds,UUID);
+		userMailBoxService.setRequestForResumeDetails(jsonObj,candidatesIds,UUID,multiFile);
 		
 		
 		return "success";
@@ -406,6 +413,25 @@ public class MailBoxRestController {
 			List<UserSignature> singaturesList = userSignatureService.getUserSignatureListByUserIdAndLocationId(user.getId(), orgLocations.getId());
 			resultJson = toJSON(singaturesList);
 			return resultJson;
+		}
+	 
+	 
+	 @PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	 @RequestMapping(value = "/deleteReadMail", method = RequestMethod.POST)
+		public String deleteReadMail(@RequestParam(value = "UUID", required = false) String UUID,
+				@RequestParam(value = "type", required = false) String type,HttpServletRequest request) throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			UserMailBox mailbox = userMailBoxService.getUserMailBoxByUUID(UUID);
+			if(null != mailbox && null != type){
+				if(type.equalsIgnoreCase(Constants.MAIL_TRASH)){
+					mailbox.setMailStatus(Constants.MAIL_DELETE);
+					mailbox.setStatus(0);
+				}else{
+					mailbox.setMailStatus(Constants.MAIL_TRASH);
+				}
+				userMailBoxService.saveUserMailBox(mailbox);
+			}
+			return "success";
 		}
 
 	 

@@ -36,7 +36,7 @@ import org.hibernate.annotations.FetchMode;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="SUBMISSION_ID", nullable=false )        
     private RequirementSubmission submissionId;
 	
@@ -119,8 +119,7 @@ import org.hibernate.annotations.FetchMode;
 	@Transient
 	private String clientName;
 	
-	
-	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementInterviewer> requirementInterviewers = new HashSet<RequirementInterviewer>(0);
 
