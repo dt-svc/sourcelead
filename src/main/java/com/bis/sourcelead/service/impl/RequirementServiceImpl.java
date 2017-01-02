@@ -816,10 +816,10 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
 			}
-		 if(loginUser.getUserType()!=null && !"".equalsIgnoreCase(loginUser.getUserType())){
-			 globalVarsMap.put("role", loginUser.getUserType());
-			 }else{
-				 globalVarsMap.put("role","--");
+		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
+			 globalVarsMap.put("role",loginOrgLocation.getOrg().getOrgName() );
+			 } else {
+				 globalVarsMap.put("role", "--");
 			}
 		 
 		 if(requirement.getFileName() != null && !requirement.getFileName().isEmpty() ){
@@ -1238,11 +1238,11 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("LoginUser",loginUser.getFirstName()); 
 			 }
-		 if(loginUser.getUserType()!= null && !"".equalsIgnoreCase(loginUser.getUserType())){
-			 globalVarsMap.put("Role", loginUser.getUserType());
-			 }else{
-				 globalVarsMap.put("Role","--"); 
-			 }
+		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
+			 globalVarsMap.put("Role",loginOrgLocation.getOrg().getOrgName() );
+			 } else {
+				 globalVarsMap.put("Role", "--");
+			}
 		 StringBuilder linkBuild = new StringBuilder();
 		 StringBuilder attachBuild = new StringBuilder();
 		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
