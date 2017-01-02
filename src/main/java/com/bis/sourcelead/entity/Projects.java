@@ -62,7 +62,7 @@ public class Projects implements Serializable{
     @Column(name = "TIMESHEET_FREQUENCY")
     private String timesheetFrequency;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SUPERIOR_USER_ID")
    	private User superiorUser;
     
@@ -83,12 +83,12 @@ public class Projects implements Serializable{
     private Integer isPrimary;
 	
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
    
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
     
@@ -109,15 +109,15 @@ public class Projects implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
-    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
     
-    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL,fetch=FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectApproverHierarchy> projectApprovers;
     
-    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL,fetch=FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectTasks> projectTasks;
     

@@ -5,12 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,10 +40,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 public class RequirementInterviewRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(RequirementInterviewRestController.class);
-	
-	@Autowired
-	private ApplicationContext applicationContext;
 	
 	
 	@Autowired

@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
@@ -175,7 +173,7 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 		 @SuppressWarnings("unchecked")
 		List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectApproverHierarchy", projectApproverHierarchy)
 				                                                                                     .setCacheable(true)
-	    																					 .list();
+	    																					         .list();
 		 
 		 ProjectApproverHierarchy pah = null;
 		 if(projectHirachyList != null && !projectHirachyList.isEmpty()){

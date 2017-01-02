@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 
@@ -47,6 +48,14 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 private CandidateSkillsService candidateSkillsService;
+	 
+	 
+	 
+	 
+	 
 	 
 	@Override
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId) throws Exception {
@@ -118,8 +127,14 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			boolean isCandidateAdded = false;
 			float expPercentage = 0; //  experience = 20%
 			int matchedSkillCount = 0;
-//			List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
-			Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
+    //		List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
+			
+			
+			List<CandidateSkills> candidateSkillList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
+			
+			  // Changed the below method by  bringing from  service as cache is implemented  for  the above method
+			
+			   // Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
 			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
 			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
 			

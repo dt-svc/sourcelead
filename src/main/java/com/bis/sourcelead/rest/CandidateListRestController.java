@@ -60,8 +60,6 @@ import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.LookUpDataService;
-import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -80,13 +78,6 @@ public class CandidateListRestController {
 	
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
-		
-	 
-	 @Autowired
-	 private OrgService orgService;
-	 
-	 @Autowired
-	 private OrgLocationService orgLocationService;
 	
 	 @Autowired
 	 CommonUtil commonUtil;
@@ -423,9 +414,13 @@ public class CandidateListRestController {
 			 HttpServletRequest request) throws Exception {
 
 		String resultJson;
-		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<Candidate> candList = new ArrayList<Candidate>();
+		
+		      // UnUsed Code 
+			   /*	Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+				List<Candidate> candList = new ArrayList<Candidate>();*/
+		
+		
 		List<Candidate>   candidatesList = candidateService.getHotListCandidatesListByOrgLocationID(loginOrgLocation.getId(), candidateType);
 		
 		resultJson = commonUtil.toJSON(candidatesList);
@@ -510,7 +505,6 @@ public class CandidateListRestController {
 	
 			String resultJson;
 			
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			List<CandidateSkills>  candidateSkillsList =  candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
 			Set<CandidateSkills> candidateSkillsSet = new HashSet<>(candidateSkillsList);
 			resultJson = commonUtil.toJSON(candidateSkillsSet);
@@ -534,13 +528,9 @@ public class CandidateListRestController {
 	   public String saveSkilsBycandidateID(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="skillName", required=false) String  skillName,HttpServletRequest request) throws Exception {
 
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			String resultJson;
 			
 			String[] skills = skillName.split(",");
-			
-   
 			//skills = new HashSet<String>(Arrays.asList(skills)).toArray(new String[0]);
-			
 			
 			for(String skill   : skills){
 				
@@ -565,8 +555,7 @@ public class CandidateListRestController {
 	   @RequestMapping(value = "/getSkillsExcludeExistingSkills")
 	   public String getSkillsExcludeExistingSkills(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 
-		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			String resultJson;
+			     String resultJson;
 			
 				List<String> candidateSkillNames = candidateSkillsService.getCandidateSkillNamesByCandidateId(candidateId);
 				List<LookUpData> skills = lookUpDataService.getSkillsBySkillsName(candidateSkillNames);
