@@ -126,7 +126,7 @@ a { cursor:pointer;}
     border:none;
     }      
 .timesheet_table table tr th {
-    background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center; padding:0px; height:35px;
+    background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center; padding:0px; height:40px;
     }
 .timesheet_table table tr th i {
     display:block; font-style:normal; font-size:12px; line-height:14px;
@@ -420,12 +420,12 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .timesheet_appr_table table tr:nth-child(even) {background: #eef1fc;}
 .timesheet_appr_table table tr:nth-child(odd) {background: #fff;}          
 .timesheet_appr_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:45px;
+    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:40px;
     border-right:1px solid #4576a4;
     }
 .timesheet_appr_table table tr th:last-child { text-align:center; border-left:none; }  
 .timesheet_appr_table table tr td {
-    color:#333; padding:7px 15px; border-left:1px solid #eae6e6; height:25px; font-weight:500; text-align:center;
+    color:#333; padding:7px 15px; border-left:1px solid #eae6e6; height:35px; font-weight:500; text-align:center;
     }
 .timesheet_appr_table table tr td:last-child {
     width:120px; text-align:left; padding:7px 5px;
@@ -608,12 +608,12 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .project_wrap_table table tr:nth-child(even) {background: #fff;}
 .project_wrap_table table tr:nth-child(odd) {background: #eef1fc;}         
 .project_wrap_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:45px;
+    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:40px;
     border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
     }
 .project_wrap_table table tr th:last-child { text-align:center;}   
 .project_wrap_table table tr td {
-    color:#333; padding:0px 15px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; height:25px; font-weight:400;
+    color:#333; padding:0px 15px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; height:35px; font-weight:400;
     }
 .project_wrap_table table tr td:last-child {
     width:100px; padding:0px 10px; text-align:center;
@@ -730,7 +730,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .project_tabs_inn_table table tr:nth-child(even) {background: #fff;}
 .project_tabs_inn_table table tr:nth-child(odd) {background: #eef1fc;}         
 .project_tabs_inn_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; padding:0px 10px; text-align:left; height:45px;
+    background-color:#375d81 !important; font-weight:500; color:#FFF; padding:0px 10px; text-align:left; height:40px;
     border-right:1px solid #4576a4; font-size:14px;
     }
 .project_tabs_inn_table table tr th:last-child { text-align:center;}
@@ -885,14 +885,14 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .clients_wrap_table table tr:nth-child(even) {background: #fff;}
 .clients_wrap_table table tr:nth-child(odd) {background: #eef1fc;}         
 .clients_wrap_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 12px; height:45px;
+    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 12px; height:40px;
     border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
     }
 .clients_wrap_table table tr th:last-child {
     width: auto;
     }  
 .clients_wrap_table table tr td {
-    color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; height:40px; font-weight:400;
+    color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; height:35px; font-weight:400;
     }
 .clients_wrap_table table tr td:last-child {
     width: auto; text-align:center;
@@ -1086,7 +1086,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .user_summ_wrap_table table tr:nth-child(even) {background: #fff;}
 .user_summ_wrap_table table tr:nth-child(odd) {background: #eef1fc;}           
 .user_summ_wrap_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; padding:0px 10px; text-align:left; height:45px;
+    background-color:#375d81 !important; font-weight:500; color:#FFF; padding:0px 10px; text-align:left; height:35px;
     border-right:1px solid #4576a4; font-size:14px;
     }
 .user_summ_wrap_table table tr th:last-child { text-align:center;} 
@@ -1418,7 +1418,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     background-color:#ff4b4b;
     }          
 .project_tabs_inn_table.vendor_wrap_inn_table div span {
-    max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;
+    max-width:250px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;
     }  
 .project_tabs_inn_table.vendor_wrap_inn_table div span.mid-span {
     max-width:300px;
@@ -1457,11 +1457,11 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .candidate_wrap_table table tr:nth-child(even) {background: #fff;}
 .candidate_wrap_table table tr:nth-child(odd) {background: #eef1fc;}           
 .candidate_wrap_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 12px; height:45px;
+    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 12px; height:40px;
     border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
     }  
 .candidate_wrap_table table tr td {
-    color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:25px;
+    color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:35px;
     }  
 .candidate_wrap_table table tr td div {
     position:relative;
@@ -1499,11 +1499,11 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .require_wrap_table table tr:nth-child(even) {background: #fff;}
 .require_wrap_table table tr:nth-child(odd) {background: #eef1fc;}         
 .require_wrap_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 9px; height:35px;
+    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 9px; height:40px;
     border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
     }  
 .require_wrap_table table tr td {
-    color:#333; padding:0px 10px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:25px;
+    color:#333; padding:0px 10px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:35px;
     }  
 .require_wrap_table table tr td div {
     position:relative;
@@ -1941,7 +1941,7 @@ width: 100%;
     border:none; box-shadow:0px 0px 0px rgba(0,0,0,0); border-radius:none;
     }  
 .profile_details h4 {
-    font-size: 18px; margin:0px; color: #3081cb; display:block; cursor:pointer;
+    font-size: 18px; margin:0px; color: #3081cb; display:block; cursor:pointer; width: 250px;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding:0px 15px 0px 15px;
     }
 .profile_details h4 i {
@@ -1986,7 +1986,7 @@ width: 100%;
 .add_inter table tr:nth-child(odd) {background: #f5f5f5;}      
          
 .add_inter table tr th {
-    background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center; padding:0px; height:35px; border-right:1px solid #4a77a3;
+    background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center; padding:0px; height:40px; border-right:1px solid #4a77a3;
     }
 .add_inter table tr td {
     color:#333; padding:5px 10px; border-left:1px solid #eae6e6;
@@ -2225,17 +2225,23 @@ margin-bottom:15px !important;
 }
 .reqPopInn ul li {
 	list-style-type: none; font-size: 14px; font-weight: 500; color: #666; padding: 10px 15px;
-	border-bottom: 1px solid #f1f1f1; width: 100%; display: inline-block;
+	border-bottom: 1px solid #f1f1f1; display: inline-table; width: 100%;
 }
 .reqPopInn ul li img {
 	width: 38px; height: 38px; border: 2px solid #ccc; display: block; margin: 0px 15px 0px 0px; float: left;
 }
 .reqPopInn ul li span {
-	font-size: 14px; font-weight: 500; color: #333; display: block; max-width: 50%; overflow: hidden;
-	text-overflow: ellipsis; white-space: nowrap; float: left; padding: 8px 5px 0px 0px;
+	font-size: 14px; font-weight: 400; color: #333; display: block !important; max-width: 80% !important; overflow: visible !important;
+	text-overflow:unset !important; white-space:normal !important; float: left; padding: 0px 5px 0px 0px; width: 80%;
 }
 .reqPopInn ul li b {
-	font-size: 14px; font-weight: 500; color: #666; display: block; float: left; padding: 9px 5px 0px 0px;
+	font-size: 13px; font-weight: 400; color: #787878; display: inline-block; padding: 0px 0px 0px 3px;
+}
+.reqPopInn ul li h6 {
+	font-size: 13px; font-weight: 400; color: #787878; display: block; padding: 2px 0px 0px 0px; margin: 0px 0px;
+}
+.reqPopInn ul li h7 {
+	font-size: 13px; font-weight: 400; color: #787878; display: block; padding: 2px 0px 0px 0px; margin: 0px 0px;
 }
 .reqPopInn ul li a {
 	font-size: 18px; color: #5CB85C; display: inline-block; float: right; padding: 5px 0px 0px 0px; cursor: pointer;
@@ -2266,4 +2272,13 @@ margin-bottom:15px !important;
 }
 .reqPopInn .blank-data {
 	min-height: 220px;
+}
+
+.cusScore {}
+.cusScore .cand-advsrch {
+	margin: 8px 15px;
+}
+
+.recPop {
+	width: 600px;
 }
