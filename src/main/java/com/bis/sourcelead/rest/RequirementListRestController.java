@@ -838,7 +838,7 @@ public class RequirementListRestController {
 				if(requirementId !=null && !requirementId.isEmpty()){
 					List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
 					
-					List<RequirementSubmission> duplicatecount = requirementSubmissionService.duplicateCandidateCountList(Long.parseLong(requirementId), user, loginOrgLocation);
+					List<RequirementSubmission> duplicateCount = requirementSubmissionService.duplicateCandidateCountList(Long.parseLong(requirementId), user, loginOrgLocation);
 					
 					for(RequirementSubmission rmentSubmission :requirementSubmissions){
 						
@@ -875,8 +875,8 @@ public class RequirementListRestController {
 						rmentSubmission.setNumOfOffers(numOfOffers);
 						rmentSubmission.setNumOfRejected(numOfRejected);
 						rmentSubmission.setNumofrequestsent(numofrequestsent);
-						if(duplicatecount.size()!= 0 && duplicatecount != null){
-						rmentSubmission.setDuplicateCount(duplicatecount.size());
+						if(duplicateCount.size() > 0 && duplicateCount != null){
+						rmentSubmission.setDuplicateCount(duplicateCount.size());
 						}
 					}
 					resultJson = commonUtil.toJSON(requirementSubmissions);
