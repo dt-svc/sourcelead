@@ -112,6 +112,16 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    		   city = " ";
 	    	   }
 	    	   
+	    	   if(json.candidate.lastName != null && json.candidate.lastName != '' && json.candidate.lastName != 'undefined'){
+	    		   lastName = json.candidate.lastName;
+	    	   }else{
+	    		   lastName = "";
+	    	   }
+	    	   if(json.candidate.country != null && json.candidate.country != null && json.candidate.country != 'undefined'){
+	    		   country = json.candidate.country;
+	    	   }else{
+	    		   country = "";
+	    	   }
 	    	   var result = "";
           	   result = result + ' <div class="req_hide">';
                result = result + '<div class="profile_details clearfix">';
@@ -121,7 +131,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '<div class="imageParent"><img onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+json.candidate.id+'"/>" alt="candidate" title="Candidate"></div>';
                result = result + ' </div>';
                result = result + ' <div class="media-body candidate-details">';
-               result = result + ' <h4 class="media-heading">'+json.candidate.firstName+' '+json.candidate.lastName+'</h4>';
+               result = result + ' <h4 class="media-heading">'+json.candidate.firstName+' '+lastName+'</h4>';
                result = result + ' <ul class="list-unstyled">';
                result = result + ' <li><strong>'+designation+'</strong></li>';
                result = result + ' <li>'+experience+'</li>';
@@ -155,7 +165,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.candidate.email+'</a></li>';
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.candidate.mobilePhone+'</li>';
 		       result = result + '<li><i class="fa fa-location-arrow"></i>';
-		       result = result +json.candidate.country +''+ state +''+ city
+		       result = result +country +''+ state +''+ city
 		       result = result +'</li>';
 		       result = result + '<li><i class="fa fa-rupee"></i>'+currentRate+' / '+currentRateCurrency+' - Current Rate / Salary</li>';
 		       result = result + '<li><i class="fa fa-rupee"></i>'+expectedRate+' / '+rateType+' - Expected Rate / Salary</li>';

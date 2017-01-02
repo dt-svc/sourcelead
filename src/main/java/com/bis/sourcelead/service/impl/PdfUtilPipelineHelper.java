@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -49,28 +50,29 @@ public class PdfUtilPipelineHelper  {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtilPipelineHelper.class);
 	
-	public File getRequirementPipelenePdf(java.util.List<RequirementSubmission> requirementStatusList, String orgName,
+	public File getRequirementPipelenePdf(java.util.List<RequirementSubmission> requirementStatusList, OrgLocations loginOrgLocation,
 			String requirementId,String submissionType,RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
 		StringBuilder fileStringBuilder=new StringBuilder();
 		if(submissionType.equals("SUBMIT_TO_CLIENT")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS;
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			StringBuilder sbClientPipe = new StringBuilder();
-			sbClientPipe.append(orgName).append("_Requirements_").append(dateFormat.format(new Date()));
+			sbClientPipe.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date()));
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 
-		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
-		    StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
-		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfSubmitToClient(),Constants.SUBMIT_TO_CLIENT_COUNT,file);
+			StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
+		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfSubmitToClient(),Constants.SUBMIT_TO_CLIENT_COUNT,file);
+
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,3,5,5,5};
 		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
-		        	requirements.add(prepareRequirementPipelineToArraySubmitClient(requirementsub));
+		        	requirements.add(prepareRequirementPipelineToArraySubmitClient(requirementsub,loginOrgLocation));
 		        }
 		        
 		        for (String[] reqArray: requirements) {
@@ -98,11 +100,12 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS;
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
-		    StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
-		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfRequestSent(),Constants.REQUEST_SENT_COUNT,file);
+			StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
+		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfRequestSent(),Constants.REQUEST_SENT_COUNT,file);
+
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5};
 		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
@@ -136,11 +139,12 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS;
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
-		    StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
-		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfShortList(),Constants.SHORTLIST_COUNT,file);
+			StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
+		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfShortList(),Constants.SHORTLIST_COUNT,file);
+
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,3};
 		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
@@ -174,11 +178,12 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS;
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
-		    StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
-		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfInterview(),Constants.INTERVIEW_COUNT,file);
+			StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
+		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfInterview(),Constants.INTERVIEW_COUNT,file);
+	   
 		    try {
 		    	int [] width = new int[]{3,5, 3,5};
 		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
@@ -212,11 +217,12 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS;
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
-		    StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
-		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfOffers(),Constants.OFFER_COUNT,file);
+	        StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
+		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfOffers(),Constants.OFFER_COUNT,file);
+
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5};
 		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
@@ -250,11 +256,12 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS;
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
-		    StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
-		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfRejected(),Constants.REJECTED_COUNT,file);
+			StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
+		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfRejected(),Constants.REJECTED_COUNT,file);
+
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5};
 		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
@@ -288,11 +295,11 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_EXCEL_HEADERS;
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
-		    StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(orgName).append(" ").append("Requirements");
-		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getSubmittedCount(),Constants.SUBMITTED_APPLICANTS_COUNT,file);
+			StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
+	        Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getSubmittedCount(),Constants.SUBMITTED_APPLICANTS_COUNT,file);
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,5};
 		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
@@ -326,7 +333,7 @@ public class PdfUtilPipelineHelper  {
 		}
 		
 	
-	private String[] prepareRequirementPipelineToArraySubmitClient(RequirementSubmission requirementsub) {
+	private String[] prepareRequirementPipelineToArraySubmitClient(RequirementSubmission requirementsub,OrgLocations loginOrgLocation) {
 		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS.length];
 		
 		
@@ -403,11 +410,46 @@ public class PdfUtilPipelineHelper  {
 		}else{
 			requirementArray[12] = "--";
 		}
-		if(requirementsub.getRequirement().getSpocId().getSpocUser().getMobilePhone() != null){
+		
+		//client contact name related code start
+		 if(requirementsub.getRequirement().getSpocId().getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
+			 if(requirementsub.getRequirement().getId() != null){
+				 if(requirementsub.getRequirement().getSpocId().getId() != null){
+					 if(requirementsub.getRequirement().getSpocId().getOwnerUser().getId() != null){
+						 StringBuilder spocSB = new StringBuilder();
+						 if(requirementsub.getRequirement().getSpocId().getSpocUser().getLastName() != null ){
+							 requirementArray[13] = spocSB.append(requirementsub.getRequirement().getSpocId().getSpocUser().getFirstName()).append(" ").append(requirementsub.getRequirement().getSpocId().getSpocUser().getLastName()).toString();
+						 }else{
+							 requirementArray[13] =spocSB.append(requirementsub.getRequirement().getSpocId().getSpocUser().getFirstName()).toString();
+						 }
+					 }
+				 }
+			 }
+		 }
+		  
+		 if(requirementsub.getRequirement().getSpocId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
+			 if(requirementsub.getRequirement().getId() != null){
+				 if(requirementsub.getRequirement().getSpocId().getId() != null){
+					 if(requirementsub.getRequirement().getSpocId().getOwnerUser().getId() != null){
+						 StringBuilder spocSB1 = new StringBuilder();
+						 if(requirementsub.getRequirement().getSpocId().getOwnerUser().getLastName() != null){
+							 requirementArray[13] = spocSB1.append(requirementsub.getRequirement().getSpocId().getOwnerUser().getFirstName()).append(" ").append(requirementsub.getRequirement().getSpocId().getOwnerUser().getLastName()).toString();
+						 }else{
+							 requirementArray[13] = spocSB1.append(requirementsub.getRequirement().getSpocId().getOwnerUser().getFirstName()).toString();
+						 }
+					 }
+				 }
+			 }
+			
+				
+		}
+		 //client contact name related code end
+		 
+		/*if(requirementsub.getRequirement().getSpocId().getSpocUser().getMobilePhone() != null){
 			requirementArray[13] = requirementsub.getRequirement().getSpocId().getSpocUser().getMobilePhone();
 		}else{
 			requirementArray[13] = "--";
-		}
+		}*/
 		
 		
 		return requirementArray;
@@ -523,7 +565,7 @@ public class PdfUtilPipelineHelper  {
  * @return Document
  * 
  */
-	private Document prepareHeadres(String orgName, String requirementId, int count, String headerName, File file) {
+	private Document prepareHeadres(OrgLocations loginOrgLocation, String requirementId, int count, String headerName, File file) {
 		    Document document = new Document(PageSize.LETTER.rotate());
 		    StringBuilder orderedListStringBuilder=new StringBuilder();
 		    try {
@@ -534,11 +576,11 @@ public class PdfUtilPipelineHelper  {
 		        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 		        boldFont.setColor(myBordColor);
 		        StringBuilder sbPipeHearder = new StringBuilder();
-		        sbPipeHearder.append(orgName).append(" ").append("Requirements");
+		        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
 //	            Paragraph para = new Paragraph(sbPipeHearder.toString(),boldFont);
 		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
 		        boldFont.setColor(myColor1);
-	            Paragraph para = new Paragraph(orderedListStringBuilder.append(orgName).append(" Requirements.").toString(),boldFont);
+	            Paragraph para = new Paragraph(orderedListStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append(" Requirements.").toString(),boldFont);
 	            para.setAlignment(Element.ALIGN_CENTER);
 	            document.add(para);
 		        // Create an instance of PdfPTable. After that we transform the header and
