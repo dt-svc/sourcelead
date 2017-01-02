@@ -85,7 +85,14 @@ public class CandidateIndex implements Serializable {
 	private String currentResumeName;
 	
 	private String resumeContent;
-	
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
 
 	public Long getOrgLocationId() {
 		return orgLocationId;
@@ -271,14 +278,6 @@ public class CandidateIndex implements Serializable {
 		this.invitationstatus = invitationstatus;
 	}
 
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-
 	public String getTerminateReason() {
 		return terminateReason;
 	}
@@ -286,40 +285,6 @@ public class CandidateIndex implements Serializable {
 	public void setTerminateReason(String terminateReason) {
 		this.terminateReason = terminateReason;
 	}
-
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public Date getUpdatedDate() {
-		return updatedDate;
-	}
-
-	public void setUpdatedDate(Date updatedDate) {
-		this.updatedDate = updatedDate;
-	}
-
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
-
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-
-	
 
 	public ArrayList<String> getEducation() {
 		return education;
@@ -361,12 +326,44 @@ public class CandidateIndex implements Serializable {
 		this.candidateType = candidateType;
 	}
 
-	public Long getCandidateId() {
-		return candidateId;
+	public Integer getStatus() {
+		return status;
 	}
 
-	public void setCandidateId(Long candidateId) {
-		this.candidateId = candidateId;
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 
 	public Integer getNoticePriod() {
@@ -400,6 +397,13 @@ public class CandidateIndex implements Serializable {
 	public void setResumeContent(String resumeContent) {
 		this.resumeContent = resumeContent;
 	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+
+	
 
 	
 

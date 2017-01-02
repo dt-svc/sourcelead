@@ -133,6 +133,7 @@ public class SubmissionsRateRestController {
 				/*requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				requirementSubmission.setSubmissionRateComment(rejectreason);*/
 			}
+			requirementSubmission.setCreatedDate(commonUtil.currentDate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();

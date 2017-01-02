@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,12 +17,9 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 @Entity
 @Table(name="ORG_RELATIONS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgRelation")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class OrgRelations implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -31,11 +29,11 @@ public class OrgRelations implements Serializable{
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )        
     private OrgLocations responderLocationId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="LOCATION_ID", nullable=false )        
     private OrgLocations locationId;
     

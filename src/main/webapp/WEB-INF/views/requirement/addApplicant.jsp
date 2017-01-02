@@ -216,7 +216,7 @@ function ApplicantPermit(){
 	     if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'parseCandidate'){
 	    	 document.getElementById("browseDiv").style.display="";
 	    	 $('#uploadFile').removeAttr('data-validation-optional');
-			 $('#uploadFile').attr("data-validation","required validate_Space validatedoc "); 
+			 $('#uploadFile').attr("data-validation","required validatedoc "); 
 			 
 			 document.getElementById("newResumeDiv").style.display="none";
 			 $('#newUploadFile').removeAttr('data-validation');

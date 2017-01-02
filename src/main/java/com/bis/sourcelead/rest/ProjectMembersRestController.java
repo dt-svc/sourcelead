@@ -18,7 +18,6 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.web.AutoCompleteController;
 
 @RestController
 @RequestMapping(value = "/projectMembers")

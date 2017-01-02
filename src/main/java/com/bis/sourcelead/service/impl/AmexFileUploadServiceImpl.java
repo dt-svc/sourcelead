@@ -28,9 +28,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.AmexUploadFile;
 import com.bis.sourcelead.entity.BOTransactions;
 import com.bis.sourcelead.entity.BoAmexTrans;
+import com.bis.sourcelead.entity.BoPaymentTypes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AmexFileUploadService;
 import com.bis.sourcelead.service.BoAmexTransService;
+import com.bis.sourcelead.service.BoPaymentTypesService;
+import com.bis.sourcelead.util.PaymentAnalytics;
 
 @Service
 public class AmexFileUploadServiceImpl implements AmexFileUploadService{
@@ -39,6 +42,9 @@ public class AmexFileUploadServiceImpl implements AmexFileUploadService{
 	
 	@Autowired
 	BoAmexTransService boAmexTransService;
+	
+	@Autowired
+	PaymentAnalytics paymentAnalytics;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -98,8 +104,16 @@ public class AmexFileUploadServiceImpl implements AmexFileUploadService{
 						
 						BoAmexTrans boAmexTrans = new BoAmexTrans();
 						boAmexTrans.setTransDate(csvDate);
+						
 						if(!isNullOrEmpty(record.get(1))){
 							boAmexTrans.setTransDesc(record.get(1));
+							//find out the payment type by description
+							BoPaymentTypes boPaymentTypes = paymentAnalytics.paymentAnalytics(record.get(1));
+							if(boPaymentTypes.getId() != null && !boPaymentTypes.getId().equals("")){
+								boAmexTrans.setPaymentTypeId(boPaymentTypes);
+							}
+				        
+								
 						}
 						boAmexTrans.setAmount(Float.parseFloat(record.get(2)));
 						if(record.get(2).startsWith("-")){
@@ -107,6 +121,8 @@ public class AmexFileUploadServiceImpl implements AmexFileUploadService{
 						}else{
 							boAmexTrans.setTransType("CREDIT");
 						}
+						
+						
 						boAmexTrans.setStatus(1);
 						boAmexTrans.setCreatedDate(new Date());
 						boAmexTrans.setCreatedBy(user.getUserCode());

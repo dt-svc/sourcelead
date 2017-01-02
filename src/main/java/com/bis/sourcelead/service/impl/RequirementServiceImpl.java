@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.entity.Candidate;
@@ -85,7 +86,6 @@ import com.bis.sourcelead.util.PdfUtil;
 @Service
 public class RequirementServiceImpl implements RequirementService {
 
-	private static final Logger logger = LoggerFactory.getLogger(RequirementServiceImpl.class);
 
 	@Autowired
 	RequirementDao requirementDao;
@@ -115,11 +115,13 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	EmailScenarioService emailScenarioService;
 	
-	@Autowired
-	OrgService orgService;
 	
 	@Autowired
-	private RolesService rolesService;
+	RequirementApproverHierarchyDao requirementApproverHierarchyDao;
+	
+	
+	@Autowired
+	OrgService orgService;
 	
 	@Autowired
 	private UserRoleService userRoleService;
@@ -423,15 +425,17 @@ public class RequirementServiceImpl implements RequirementService {
 			     String[] approvers = parallelApprovers.split(",");
 			  	  
 			     
-			     
+			     //to delete the  unselected approvers in edit Mode
+				  removedApproversInRequirementForParallel(approvers,requirement);	
+				  
 			     
 			     for(String approver : approvers){
 					  
 					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
-					  User approverUser = userService.getUserById(Long.parseLong(approver));
+					  // commented as it is not in use by David Raju
+					  //User approverUser = userService.getUserById(Long.parseLong(approver));
 					  
-					  //to delete the  unselected approvers in edit Mode
-					  removedApproversInRequirementForParallel(approvers,requirement);			  
+					 		  
 					 
 					   
 					    // if  the Requirement is in Edit Mode
@@ -553,7 +557,7 @@ public class RequirementServiceImpl implements RequirementService {
 						Team team = null;
 						if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
 							String assignedTeamId = jsonObj.getString("assignedTeamId");
-					    	if(!assignedTeamId.contains("role")){
+					    	if(!assignedTeamId.contains("role") && !assignedTeamId.contains("All")){
 					    		teamId = Long.parseLong(assignedTeamId);
 							    team = teamService.getTeamByTeamId(teamId);
 					    	}
@@ -1597,10 +1601,10 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 	@Override
-	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode)
+	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode,String statusType)
 			throws Exception {
 		
-			return requirementDao.getApproverRequirementApproverListByOrgLocationIDAndUserId(orgLocationId, userType, userId, userCode);
+			return requirementDao.getApproverRequirementApproverListByOrgLocationIDAndUserId(orgLocationId, userType, userId, userCode,statusType);
 		
 	}
 	
@@ -1815,9 +1819,48 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	
 
-	
-	
 	public void removedApproversInRequirementForParallel(String[] approver , Requirement requirement) throws Exception{
+		
+		if(requirement.getId() !=null){
+			ArrayList<String> oldApproversList = new ArrayList<String>();
+			ArrayList<String> newApproversList = new ArrayList<String>();
+			ArrayList<String> uniqueApproversList = new ArrayList<String>();
+			ArrayList<String> removedApproversList = new ArrayList<String>();
+			
+			for(String app : approver){
+				 newApproversList.add(app);
+			 }
+			
+			// bringing the old  requirementapprovalHierarachy  list based on the requirementID
+			
+			List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
+			for(RequirementApproverHierarchy rah :requirementApproverHierarchies){
+				oldApproversList.add(rah.getApproverUserId().getId().toString());
+			}
+			
+			// seperating the lists
+			for (String item : oldApproversList) {
+	    	    if (newApproversList.contains(item)) {
+	    	    	uniqueApproversList.add(item);
+	    	    } else {
+	    	    	removedApproversList.add(item);
+	    	    }
+	    	}
+			
+			
+			// Removing  the unselected approvals from  the RequirementApprovalHierarachy
+			for (String item : removedApproversList) {
+				requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(Long.parseLong(item),requirement.getId());
+			}
+		}
+		
+		
+		
+	}
+	
+	
+	
+	/*public void removedApproversInRequirementForParallel(String[] approver , Requirement requirement) throws Exception{
 		
 		if(requirement.getId() !=null){
 			
@@ -1836,7 +1879,7 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		
 		
-	}
+	}*/
 
 	public void removedApproversInRequirementForSequential(User approver , Requirement requirement,Integer level) throws Exception{
 		
@@ -1845,7 +1888,7 @@ public class RequirementServiceImpl implements RequirementService {
 				    	if(requirementApproverHierarchies != null ){
 							     for(RequirementApproverHierarchy rah:requirementApproverHierarchies){
 							            if(approver.getId() != rah.getApproverUserId().getId() && level.equals(rah.getLevel())){
-								                requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
+							            	requirementApproverHierarchyDao.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
 							              }
 							
 								    }

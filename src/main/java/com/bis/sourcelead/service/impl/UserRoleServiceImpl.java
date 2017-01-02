@@ -103,9 +103,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 
 	@Override
 	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId, String userName,
-			Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception {
+			Long locationId,String userState,Long userId,String loginUserRole,String userCode,Integer offset) throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByRoleAndNameAndLocationId(roleId, userName, locationId,userState,userId,loginUserRole,userCode);
+		return userRoleDao.getUsersListByRoleAndNameAndLocationId(roleId, userName, locationId,userState,userId,loginUserRole,userCode,offset);
 	}
 
 	@Override

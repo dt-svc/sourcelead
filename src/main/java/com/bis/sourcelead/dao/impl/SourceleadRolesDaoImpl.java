@@ -2,6 +2,8 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -40,6 +42,31 @@ public class SourceleadRolesDaoImpl implements SourceleadRolesDao {
 	public List<SourceleadRoles> getSourceleadRoles() {
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("from SourceleadRoles sourceleadRoles where sourceleadRoles.status = '1' ").setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional
+
+	public boolean roleHaveActionAccessOrNot(String actionId,String roleName) {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		 String actionI= actionId;
+		//actionlist =  session.createQuery("from SourceleadRoles sourceleadRoles where    FIND_IN_SET("+actionI+",sourceleadRoles.actionId) and sourceleadRoles.SDisplayName = roleName ").setCacheable(true).list();
+		/* DISPLAY_NAME  ='"+roleName+"' and */
+		
+		String sql = "SELECT * FROM sourcelead.SOURCELEAD_ROLES where DISPLAY_NAME  ='"+roleName+"' and  FIND_IN_SET("+actionId+",ACTION_ID)";
+		SQLQuery query = session.createSQLQuery(sql);
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		List<SourceleadRoles> actionlist  = query.list();
+		Boolean flag = false;
+		if (actionlist.size() > 0) {
+			flag = true;
+		} 
+		return flag;
+		
+		
+		
+
 	}
 
 }

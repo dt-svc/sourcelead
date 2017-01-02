@@ -1,25 +1,16 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
-
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
-
 import java.util.List;
-
+import java.util.Set;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
-
 import com.bis.sourcelead.entity.OrgLocations;
-
-import com.bis.sourcelead.entity.Employees;
-
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;

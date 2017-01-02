@@ -52,11 +52,11 @@ public class RequirementSubmission implements Serializable{
 	@JoinColumn(name = "CANDIDATE_RESUEME_ID")
    	private CandidateResumes candidateResumes;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocations;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "VENDOR_LOCATION_ID")
    	private OrgLocations vendorLocationId;
 	
@@ -90,6 +90,22 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "SUBMISSION_RATE_FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String submissionRateFileName;
 
+	@Column(name = "SUBMISSION_REQUEST_COMMENT")
+	private String submissionRequestComment;
+	
+	@Column(name = "SUBMISSION_REQUEST_USER")
+	private String submissionRequestUser;
+	
+	@Column(name = " SUBMISSION_REQUEST_DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] submissionRequestDocFile;
+	
+	@Column(name = "SUBMISSION_REQUEST_FILE_CONTENT_TYPE")
+	private String submissionRequestFileContentType;
+	
+	@Column(name = "SUBMISSION_REQUEST_FILE_NAME", columnDefinition = "TEXT default NULL")
+	private String submissionRequestFileName;
+	
 	@Column(name = "PREVIOUS_SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
     private ApplicantSubmissionStatus previousSubmissionStatus;
@@ -435,6 +451,46 @@ public class RequirementSubmission implements Serializable{
 
 	public void setSubmissionRateFileContentType(String submissionRateFileContentType) {
 		this.submissionRateFileContentType = submissionRateFileContentType;
+	}
+
+	public String getSubmissionRequestComment() {
+		return submissionRequestComment;
+	}
+
+	public void setSubmissionRequestComment(String submissionRequestComment) {
+		this.submissionRequestComment = submissionRequestComment;
+	}
+
+	public String getSubmissionRequestUser() {
+		return submissionRequestUser;
+	}
+
+	public void setSubmissionRequestUser(String submissionRequestUser) {
+		this.submissionRequestUser = submissionRequestUser;
+	}
+
+	public byte[] getSubmissionRequestDocFile() {
+		return submissionRequestDocFile;
+	}
+
+	public void setSubmissionRequestDocFile(byte[] submissionRequestDocFile) {
+		this.submissionRequestDocFile = submissionRequestDocFile;
+	}
+
+	public String getSubmissionRequestFileContentType() {
+		return submissionRequestFileContentType;
+	}
+
+	public void setSubmissionRequestFileContentType(String submissionRequestFileContentType) {
+		this.submissionRequestFileContentType = submissionRequestFileContentType;
+	}
+
+	public String getSubmissionRequestFileName() {
+		return submissionRequestFileName;
+	}
+
+	public void setSubmissionRequestFileName(String submissionRequestFileName) {
+		this.submissionRequestFileName = submissionRequestFileName;
 	}
 
 	public String getSubmissionRateFileName() {
