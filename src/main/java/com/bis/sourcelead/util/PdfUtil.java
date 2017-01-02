@@ -61,14 +61,22 @@ public class PdfUtil {
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 	    /*File file = new File("users_"+dateFormat.format(new Date())+".pdf");*/
-	    File file = File.createTempFile("users_"+dateFormat.format(new Date()),".pdf");
+	    StringBuilder sbUser =  new StringBuilder();
+	    sbUser.append("users_").append(dateFormat.format(new Date()));
+	    File file = File.createTempFile(sbUser.toString(),".pdf");
 	    file.setReadable(true);
 	    
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
-            Paragraph para = new Paragraph("Organization : " +orgName);
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder userStyle = new StringBuilder();
+	        userStyle.append(orgName).append(" ").append("Users");
+            Paragraph para = new Paragraph(userStyle.toString(),boldFont);
+            para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        
 	        int inActiveCount = 0; 
@@ -97,21 +105,26 @@ public class PdfUtil {
 					 notLoggedInCount = notLoggedInList.size();
 				 }
 			 }
-	        orderedList.add(new ListItem("Active :"+activeCount));
-	        orderedList.add(new ListItem("Inactive :"+inActiveCount));
-	        orderedList.add(new ListItem("Not Loggedin :"+notLoggedInCount));
+	        orderedList.add(new ListItem("Active:"+activeCount));
+	        orderedList.add(new ListItem("Inactive:"+inActiveCount));
+	        orderedList.add(new ListItem("Not Loggedin:"+notLoggedInCount));
 	        document.add(orderedList);
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        PdfPTable table = new PdfPTable(headers.length);
+	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+	        cell1.setColspan(11);
+	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
             table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3});
+            table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
 	            PdfPCell cell = new PdfPCell();
 	            cell.setGrayFill(0.9f);
 	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
-	            BaseColor myColor = WebColors.getRGBColor("#33caff");
-	            cell.setBackgroundColor(myColor);
+	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+	            cell.setBackgroundColor(myBorderColor);
 	            table.addCell(cell);
 	        }
 	        table.completeRow();
@@ -228,9 +241,10 @@ public class PdfUtil {
 		String[] headers = Constants.CANDIDATE_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-	    
+	    StringBuilder sbCand = new StringBuilder();
+	    sbCand.append(orgName).append("_Candidate_").append(dateFormat.format(new Date()));
 	    /*File file = new File(orgName+"_Candidate_"+dateFormat.format(new Date())+".pdf");*/
-	    File file = File.createTempFile(orgName+"_Candidate_"+dateFormat.format(new Date()),".pdf");
+	    File file = File.createTempFile(sbCand.toString(),".pdf");
 	    file.setReadable(true);
 	    
 	    try {
@@ -238,15 +252,22 @@ public class PdfUtil {
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-	        boldFont.setColor(myColor1);
-            Paragraph para = new Paragraph(orgName+ " Candidates.",boldFont);
+	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myBordColor);
+	        StringBuilder sbCandStyle = new StringBuilder();
+	        sbCandStyle.append(orgName).append(" ").append("Candidates");
+            Paragraph para = new Paragraph(sbCandStyle.toString(),boldFont);
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        PdfPTable table = new PdfPTable(headers.length);
+	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(sbCandStyle.toString(),font));
+	        cell1.setColspan(11);
+	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
             table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5});
+            table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
 	            PdfPCell cell = new PdfPCell();
@@ -366,16 +387,20 @@ public class PdfUtil {
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 	    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-	    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+	    StringBuilder sbReq =new StringBuilder();
+	    sbReq.append(orgName).append("_Requirements_").append(dateFormat.format(new Date()));
+	    File file = File.createTempFile(sbReq.toString(),".pdf");
 	    file.setReadable(true);
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-	        boldFont.setColor(myColor1);
-            Paragraph para = new Paragraph(orgName+" Requirements.",boldFont);
+	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myBordColor);
+	        StringBuilder sbReqStyle = new StringBuilder();
+	        sbReqStyle.append(orgName).append(" ").append("Requirements");
+            Paragraph para = new Paragraph(sbReqStyle.toString(),boldFont);
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header and
@@ -388,8 +413,13 @@ public class PdfUtil {
 	        orderedList.add(new ListItem("Closed :"+requirementSubCount.getCancelRequirementCount()));
 	        document.add(orderedList);
             PdfPTable table = new PdfPTable(headers.length);
+            Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(sbReqStyle.toString(),font));
+	        cell1.setColspan(12);
+	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
             table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3});
+            table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
 	            PdfPCell cell = new PdfPCell();
@@ -507,21 +537,26 @@ public class PdfUtil {
 		Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 	    /*File file = new File(orgName+"_"+vendorType+"_"+dateFormat.format(new Date())+".pdf");*/
-	    File file = File.createTempFile(orgName+"_"+vendorType+"_"+dateFormat.format(new Date()),".pdf");
+	    
+	    StringBuilder sbcv = new StringBuilder();
+	    sbcv.append(orgName).append("_").append(vendorType).append("_").append(dateFormat.format(new Date()));
+	    File file = File.createTempFile(sbcv.toString(),".pdf");
 	    file.setReadable(true);
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-	        boldFont.setColor(myColor1);
-            Paragraph para = new Paragraph(orgName+" "+vendorType,boldFont);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder titleName = new StringBuilder();
+	        titleName.append(orgName).append(" ").append(vendorType);
+            Paragraph para = new Paragraph(titleName.toString(),boldFont);
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header 
             int[] columnWidths = new int[]{3, 5, 3,5, 2};
-            PdfPTable table = getPdfTable(clientHeaders,columnWidths); 
+            PdfPTable table = getPdfTable(clientHeaders,columnWidths,titleName.toString()); 
 	        table.completeRow();
 	        java.util.List<String[]> clientList = new ArrayList<>();
 	        for(OrgRelations orgRelations : clientsList){
@@ -582,10 +617,15 @@ public class PdfUtil {
 	
 		return clientArray;
 	}
-	private PdfPTable getPdfTable(String[] headers, int[] columnWidths) {
+	private PdfPTable getPdfTable(String[] headers, int[] columnWidths, String title) {
 		PdfPTable table = new PdfPTable(headers.length);
         table.setWidthPercentage(100);
         try {
+        	    Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+		        PdfPCell cell1 = new PdfPCell(new Phrase(title,font));
+		        cell1.setColspan(8);
+		        headerCellStyle(cell1);
+	            table.addCell(cell1);
 			table.setWidths(columnWidths);
 			for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -605,21 +645,25 @@ public class PdfUtil {
 		Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 	    /*File file = new File(orgName+"_"+vendorType+" Contacts_"+dateFormat.format(new Date())+".pdf");*/
-		  File file = File.createTempFile(orgName+"_"+vendorType+" Contacts_"+dateFormat.format(new Date()),".pdf");
+	    StringBuilder sb = new StringBuilder();
+	    sb.append(orgName).append("_").append(vendorType).append("Contacts_").append(dateFormat.format(new Date()));
+		  File file = File.createTempFile(sb.toString(),".pdf");
 		  file.setReadable(true);
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-	        boldFont.setColor(myColor1);
-            Paragraph para = new Paragraph(orgName+" "+vendorType+" Contacts.",boldFont);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder titleName = new StringBuilder();
+	        titleName.append(orgName).append(" ").append(vendorType).append(" ").append("Contacts");
+            Paragraph para = new Paragraph(titleName.toString(),boldFont);
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header 
             int[] columnWidths = new int[]{3, 5, 3,5, 2,3,3};
-            PdfPTable table = getPdfTable(headers,columnWidths); 
+            PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
 	        table.completeRow();
 	        java.util.List<String[]> cantactsList = new ArrayList<>();
 	        for(OrgSpoc orgSpoc : vandorsContactList){
@@ -692,20 +736,25 @@ public class PdfUtil {
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 	    /*File file = new File(projectName+"_"+dateFormat.format(new Date())+".pdf");*/
-	    File file = File.createTempFile(projectName+"_"+dateFormat.format(new Date()),".pdf");
+	    StringBuilder sbpe = new StringBuilder();
+	    sbpe.append(projectName).append("_").append(dateFormat.format(new Date()));
+	    File file = File.createTempFile(sbpe.toString(),".pdf");
 	    file.setReadable(true);
 	    try {
 	    	// Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
-	        Font blue = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLUE);
-	        Chunk blueText = new Chunk("Project Name : " +projectName, blue);
-            Paragraph para = new Paragraph();
-            para.add(blueText);
+	        
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor1 = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor1);
+	        StringBuilder titleName = new StringBuilder();
+	        titleName.append("Project Name : ").append(projectName);
+            Paragraph para = new Paragraph(titleName.toString(),boldFont);
+            para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
-	        
+            
 	        List orderedList = new List(List.ORDERED);
-	        
 	        orderedList.add(new ListItem("Project Name :"+projectName));
 	        orderedList.add(new ListItem("Manager :"+projectManager));
 	        if(project.getStartDate()!=null && project.getEndDate() !=null){
@@ -716,7 +765,7 @@ public class PdfUtil {
 	        document.add(orderedList);
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        int[] columnWidths = new int[]{3, 5, 3,5, 2,3,3,5};
-            PdfPTable table = getPdfTable(headers,columnWidths); 
+            PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
             java.util.List<String[]> assignedEmpList = new ArrayList<>();
             for(ProjectMembers projectMembers : employeeList){
             	assignedEmpList.add(prepareEmployeeArray(projectMembers,headers));
@@ -793,5 +842,14 @@ public class PdfUtil {
 			}
 		return empArray;
 	}
+	
+	private static void headerCellStyle(PdfPCell cell){
+	    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    cell.setPaddingTop(0f);
+	    cell.setPaddingBottom(7f);
+	    cell.setBackgroundColor(new BaseColor(0,121,182));
+	    cell.setBorder(0);
+	    cell.setBorderWidthBottom(2f);
+	    }
 	
 	}

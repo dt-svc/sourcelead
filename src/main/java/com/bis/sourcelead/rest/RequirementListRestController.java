@@ -578,9 +578,11 @@ public class RequirementListRestController {
 			for(Requirement requirement : requirementList){
 				if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
-						requirement.setClientContactName(requirement.getClientId().getResponderLocationId().getUser().getFirstName());
-						requirement.setClientContactEmail(requirement.getClientId().getResponderLocationId().getUser().getEmail());
+						if(requirement.getClientId().getResponderLocationId() != null  && requirement.getClientId().getResponderLocationId().getUser() !=null){
+							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+							requirement.setClientContactName(requirement.getClientId().getResponderLocationId().getUser().getFirstName());
+							requirement.setClientContactEmail(requirement.getClientId().getResponderLocationId().getUser().getEmail());
+						}
 					}
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
 						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
