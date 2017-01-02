@@ -72,14 +72,25 @@ width: auto;
   <section class="container">
 		<div class="row">
 		  		<div id="accept" style="display:none">
-				          <div class="col-md-8 col-md-offset-2 inner-widget success-user">
-					          <i class="fa fa-check-circle fa-3x"></i>
-							  <p class="reason-msg">You Have accepted the Requirement for ${requirementSubmission.requirement.jobTitle}</p>
-							  <p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
+					          <%-- <c:choose>
+							    <c:when test="${permission=='YES'}"> --%>
+								    <div class="col-md-8 col-md-offset-2 inner-widget success-user">
+						          		<i class="fa fa-check-circle fa-3x"></i>
+							        	<p class="reason-msg">You Have accepted the Requirement for <B>${requirementSubmission.requirement.jobTitle}</B></p>
+							 			<p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
+							    <%-- </c:when>    
+							    <c:otherwise> --%>
+							   <%--  	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+						          		<i class="fa fa-clock-o fa-3x"></i>
+							        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+							    </c:otherwise>
+							  </c:choose> --%>
 						  </div>
 		  		</div>
 		  		<div id="reject" style="display:none">
-		  			<form id="reject_form" name="reject_form" method="post" >
+			  		<%-- <c:choose>
+					    <c:when test="${permission=='YES'}"> --%>
+						    <form id="reject_form" name="reject_form" method="post" >
 					          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
 								  <div class="col-md-6">
 									  <i class="fa fa-ban fa-3x"></i>
@@ -94,55 +105,69 @@ width: auto;
 								  	
 								  </div>
 							  </div>
-					</form>							  
+							</form>
+					    <%-- </c:when>    
+					    <c:otherwise> --%>
+					    	<%-- <div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+				          		<i class="fa fa-clock-o fa-3x"></i>
+					        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+					        </div> --%>
+					    <%-- </c:otherwise>
+					  </c:choose> --%>
 		  		</div>
 		  		<div id="negotiation" style="display:none">
-		  		
-		  			<form id="negotiation_form" name="negotiation_form" method="post" >
-				          <div class="col-md-8 rate-negotiation project_wrap_table" id="negotiationDivId">
-				          
-							  <div class="clearfix">
-							  <h4>Rate Negotiation</h4>
-							  </div>
-							  <div id="ratehistoryDiv"></div>
-							  <div class="clearfix mt" id="fieldsDiv" style="display:none">
-								  <div class="col-md-12 mb10 hidden">
-								   Requirement Rate : ${requirementSubmission.requirement.rate}
-								  </div>
-								  
-								   <div class="clearfix">
-								  <div class="row">
-								  <div class="col-md-3">
-								  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-8">
-								  </div> 
-								  <input type="hidden" name="candidateId" id="candidateId" value="${requirementSubmission.candidate.id}"/> 
-								  <div class="col-md-3 select-field">
-								  <select  class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type" data-validation="required">
-										<option value="">Rate Per</option>
-					                    <option>Hourly</option>
-					                    <option>Weekly</option>
-					                    <option>Bi-weekly</option>
-					                    <option>Semi-Monthly</option>
-					                    <option>Monthly</option>
-					                    <option>Bi-Monthly</option>
-					                    <option>Yearly</option>
-								  </select>
-								  </div>
-								  <div class="clearfix"></div>
-								  <div class="col-md-6 mt">
-									  <textarea class="form-control" rows="2" name="comment" placeholder="Comment" id="comment"></textarea>	
-								  </div>
-								  </div>
-								  </div>
-								 
-								 <!--  <div class="col-md-12 mb10">
-									  <textarea row="1" class="form-control" placeholder="Comments" name="comments"></textarea>
-								  </div> -->
-								  <div class="col-md-6 mt10"><input type="button" class="btn btn-sm btn-primary pull-right" id="negotiationButtonId" onclick="storeNegotiation();" value="Submit"></div>
-							  	
-							  </div>
-						 </div>
-					</form>
+		  			 <%-- <c:choose>
+					    <c:when test="${permission=='YES'}"> --%>
+						    <form id="negotiation_form" name="negotiation_form" method="post" >
+						          <div class="col-md-8 rate-negotiation project_wrap_table" id="negotiationDivId">
+									  <div class="clearfix">
+									  <h4>Rate Negotiation</h4>
+									  </div>
+									  <div id="ratehistoryDiv"></div>
+									  <div class="clearfix mt" id="fieldsDiv" style="display:none">
+										  <div class="col-md-12 mb10 hidden">
+										   Requirement Rate : ${requirementSubmission.requirement.rate}
+										  </div>
+										  
+										   <div class="clearfix">
+										  <div class="row">
+										  <div class="col-md-3">
+										  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-8">
+										  </div> 
+										  <input type="hidden" name="candidateId" id="candidateId" value="${requirementSubmission.candidate.id}"/> 
+										  <div class="col-md-3 select-field">
+										  <select  class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type" data-validation="required">
+												<option value="">Rate Per</option>
+							                    <option>Hourly</option>
+							                    <option>Weekly</option>
+							                    <option>Bi-weekly</option>
+							                    <option>Semi-Monthly</option>
+							                    <option>Monthly</option>
+							                    <option>Bi-Monthly</option>
+							                    <option>Yearly</option>
+										  </select>
+										  </div>
+										  <div class="clearfix"></div>
+										  <div class="col-md-6 mt">
+											  <textarea class="form-control" rows="2" name="comment" placeholder="Comment" id="comment"></textarea>	
+										  </div>
+										  </div>
+										  </div>
+										 <!--  <div class="col-md-12 mb10">
+											  <textarea row="1" class="form-control" placeholder="Comments" name="comments"></textarea>
+										  </div> -->
+										  <div class="col-md-6 mt10"><input type="button" class="btn btn-sm btn-primary pull-right" id="negotiationButtonId" onclick="storeNegotiation();" value="Submit"></div>
+									  </div>
+								 </div>
+							</form>
+					    <%-- </c:when>    
+					    <c:otherwise>
+					    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+				          		<i class="fa fa-clock-o fa-3x"></i>
+					        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+					        </div>
+					    </c:otherwise>
+					  </c:choose> --%>
 		  		</div>
 		 <div>
   </section>
@@ -172,11 +197,13 @@ width: auto;
 						type : "POST",
 						url : sourceleadUrl+"/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason+"&type="+type,
 						success : function(data) {
-							if("success"){
+							if(data == "success"){
 								$('#rejectIdDiv').empty();
 								$('#rejectIdDiv').append("<span>Your Rejected Reason is submitted successfully !!</span>");	
+							}else if(data == "failure"){
+								$('#rejectIdDiv').empty();
+								$('#rejectIdDiv').append("<span>Your decision is already submitted !!</span>");	
 							}
-							
 						},
 					});
 			       
@@ -314,7 +341,7 @@ function pagination(){
 function isShowForm(actionUsertype){
 	 var lastProposedBy = $("#lastProposedBy").val();
      if(lastProposedBy != null && lastProposedBy != "" && lastProposedBy !='undefined' && lastProposedBy == actionUsertype){
-    	 $('#negotiationDivId').append("<span><center>Rate submitted successfully !! Kindly wait for the Response...</center></span>");
+    	 $('#negotiationDivId').append("<b>Rate submitted successfully !! Kindly wait for the Response...</b>");
     	 document.getElementById("fieldsDiv").style.display="none";
      }else{
     	 document.getElementById("fieldsDiv").style.display="";

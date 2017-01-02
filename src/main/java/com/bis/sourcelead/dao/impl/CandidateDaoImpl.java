@@ -288,14 +288,14 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId) throws Exception {
+	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId, String candidateType) throws Exception {
 		logger.debug("In getCandidatesByOrgLocationID method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Candidate> candidatesList = null;
-		Query candidateListQuery= session.createQuery("from Candidate candidate where candidate.orgLocationId.id = :orgLocationId "
+		Query candidateListQuery= session.createQuery("from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :candidateType "
 				+ "and candidate.status = '1' and candidate.id NOT IN (select submission.candidate.id from RequirementSubmission submission "
 				+ "where submission.requirement.id = :requirementId) ORDER BY candidate.id DESC ");
-		candidatesList = candidateListQuery.setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setCacheable(true).list();
+		candidatesList = candidateListQuery.setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setString("candidateType", candidateType).setCacheable(true).list();
 		return candidatesList;
 	}
 
@@ -339,7 +339,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 
 		String query = "from Candidate candidate  where candidate.id NOT IN "
-				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.orgLocationId.id = :orgLocationId and hotlist.teamId IS NOT NULL) "
+				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.orgLocationId.id = :orgLocationId and hotlist.status = '1') "
 				+ "and candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.candidateType = :type ";  
 		List<Candidate> candidateList = session.createQuery(query)
 				               .setLong("orgLocationId", orgLocationId).setString("type", type).setCacheable(true).list();
@@ -371,6 +371,20 @@ public class CandidateDaoImpl implements CandidateDao {
 		String query = "from Candidate candidate  where candidate.id IN (:candidateId)";  
 		List<Candidate> candidateList = session.createQuery(query)
 				               .setParameterList("candidateId", candidateId).setCacheable(true).list();
+		return candidateList;
+	}
+
+	@Override
+	@Transactional
+	public List<Candidate> getAllHotlistCandidatesAndNotAssignedToTeamByLocation(Long orgLocationId) throws Exception {
+		logger.debug("In getAllActiveCandidatesByLocation method");
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "from Candidate candidate  where candidate.id IN "
+				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.orgLocationId.id = :orgLocationId and hotlist.status = '1' and hotlist.teamId IS NULL) "
+				+ "and candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' ";  
+		List<Candidate> candidateList = session.createQuery(query)
+				               .setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return candidateList;
 	}
 	

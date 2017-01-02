@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,7 +72,7 @@ public class CandidateServiceImpl implements CandidateService {
 	@Autowired
 	CandidateSkillsService candidateSkillsService;
 	
-	@Autowired
+	@Autowired @Lazy
 	CandidateResumesService candidateResumesService;
 	
 	@Autowired
@@ -189,13 +190,17 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("experienceYears") && jsonObj.getString("experienceYears") !=null){
 		candidate.setExperienceYears(jsonObj.getString("experienceYears"));
 		}
+		
+		
 		if(jsonObj.has("experienceMonths") && jsonObj.getString("experienceMonths") !=null){
-		candidate.setExperienceMonths(jsonObj.getString("experienceMonths"));	
+			candidate.setExperienceMonths(jsonObj.getString("experienceMonths"));	
+		}else{
+			candidate.setExperienceMonths("");
 		}
 		
 		if(jsonObj.has("noticePeriod") && jsonObj.getString("noticePeriod") !=null){
 			candidate.setNoticePeriod(jsonObj.getString("noticePeriod"));	
-			}
+		}
 		
 		if(jsonObj.has("address") && jsonObj.getString("address") !=null){
 			candidate.setAddress(jsonObj.getString("address"));
@@ -212,11 +217,11 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 		candidate.setCandidateResumes(candidateResumesList);
-		if(multiFile != null){
+		/*if(multiFile != null){
 			if(multiFile.getOriginalFilename()!=null){
 				candidate.setFileName(multiFile.getOriginalFilename());
 			}
-		}
+		}*/
 		
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
@@ -330,8 +335,8 @@ public class CandidateServiceImpl implements CandidateService {
 	}
 
 	@Override
-	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId) throws Exception {
-		return candidateDao.getCandidatesByOrgLocationID(orgLocationId,requirementId);
+	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId, String candidateType) throws Exception {
+		return candidateDao.getCandidatesByOrgLocationID(orgLocationId,requirementId,candidateType);
 	}
 
 	@Override
@@ -349,8 +354,9 @@ public class CandidateServiceImpl implements CandidateService {
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
         
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		Sheet createExcelsheet = createExcelworkbook.createSheet(orgName+"_candidate_"+dateFormat.format(new Date()));
-		Row writeRow = null;
+		 StringBuilder excelSheet = new StringBuilder();
+		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSheet.append(orgName).append("_candidate_").append(dateFormat.format(new Date())).toString());
+    	Row writeRow = null;
 		String headers [] = Constants.CANDIDATE_EXCEL_HEADERS;
 		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
 		 int column=0;
@@ -359,8 +365,10 @@ public class CandidateServiceImpl implements CandidateService {
 	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,candidate);
 	       	 column++;
 	        }
-	        
-	        File file = new File(orgName+"_candidates_"+dateFormat.format(new Date())+".xls");
+	        StringBuilder orgNameSB = new StringBuilder();
+	        File file = File.createTempFile(orgNameSB.append(orgName).append("_candidates_").append(dateFormat.format(new Date())).toString(),".xls");
+	        file.setReadable(true);
+	        /*File file = new File(orgName+"_candidates_"+dateFormat.format(new Date())+".xls");*/
 			 FileOutputStream fos = new FileOutputStream(file);
 			 try {
 				 createExcelworkbook.write(fos);
@@ -392,8 +400,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	if(candidate.getMobilePhone() !=null && !"".equalsIgnoreCase(candidate.getMobilePhone())){
 		writeRow.createCell(3).setCellValue(candidate.getMobilePhone());
 	}
-	if(candidate.getCity() !=null && !"".equalsIgnoreCase(candidate.getCity())){
-		writeRow.createCell(4).setCellValue(candidate.getCity());
+	if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
+		writeRow.createCell(4).setCellValue(candidate.getCountry());
 	}
 	if(candidate.getDesignation() !=null && !"".equalsIgnoreCase(candidate.getDesignation())){
 		writeRow.createCell(5).setCellValue(candidate.getDesignation());
@@ -402,19 +410,20 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		Set<CandidateEducation> candidateEducation = candidate.getCandidateEducation();
 		StringBuilder educations = new StringBuilder();
 		for(CandidateEducation candidateEdu : candidateEducation){
-			educations.append(candidateEdu.getName()+",");
+			educations.append(candidateEdu.getName()).append(",");
 		}
 		String educationList = educations.toString();
 		writeRow.createCell(6).setCellValue(educationList.substring(0, educations.length()-1));
 	}
+	 StringBuilder exp = new StringBuilder();
 	if(candidate.getExperienceYears() !=null && !"".equalsIgnoreCase(candidate.getExperienceYears()) && candidate.getExperienceMonths() !=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
-		writeRow.createCell(7).setCellValue(candidate.getExperienceYears()+"."+candidate.getExperienceMonths()+"years");
+		writeRow.createCell(7).setCellValue(exp.append(candidate.getExperienceYears()).append(".").append(candidate.getExperienceMonths()).append("years").toString());
 	}else{
 		if(candidate.getExperienceYears() !=null && !"".equalsIgnoreCase(candidate.getExperienceYears())){
-			writeRow.createCell(7).setCellValue(candidate.getExperienceYears()+"years");
+			writeRow.createCell(7).setCellValue(exp.append(candidate.getExperienceYears()).append("years").toString());
 		}else{
 			if(candidate.getExperienceMonths() !=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
-				writeRow.createCell(7).setCellValue(candidate.getExperienceMonths()+"Months");
+				writeRow.createCell(7).setCellValue(exp.append(candidate.getExperienceMonths()).append("Months").toString());
 			}
 		}
 	}
@@ -422,11 +431,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		StringBuilder skills = new StringBuilder();
 		Set<CandidateSkills> candidateSkillsList = candidate.getCandidateSkills();
 	    for(CandidateSkills candidateSkills : candidateSkillsList){
-	    	skills.append(candidateSkills.getName()+",");
+	    	skills.append(candidateSkills.getName()).append(",");
 	    }
 	    writeRow.createCell(8).setCellValue(skills.toString().substring(0, skills.length()-1));
-	}if(candidate.getExpectedRate() !=null && !"".equalsIgnoreCase(candidate.getExpectedRate()) && candidate.getRateType() !=null && !"".equalsIgnoreCase(candidate.getRateType())){
-		 writeRow.createCell(9).setCellValue(candidate.getExpectedRate()+"/"+candidate.getRateType());
+	}
+	if(candidate.getExpectedRate() !=null && !"".equalsIgnoreCase(candidate.getExpectedRate()) && candidate.getRateType() !=null && !"".equalsIgnoreCase(candidate.getRateType())){
+		StringBuilder rateBuilder = new StringBuilder();
+		writeRow.createCell(9).setCellValue(rateBuilder.append(candidate.getExpectedRate()).append("/").append(candidate.getRateType()).toString());
 	}else{
 		writeRow.createCell(9).setCellValue(candidate.getExpectedRate());
 	}
@@ -470,5 +481,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Long getCandidatesCountByOrgLocationID(Long orgLocationId) {
 		return candidateDao.getCandidatesCountByOrgLocationID(orgLocationId);
+	}
+
+	@Override
+	public List<Candidate> getAllHotlistCandidatesAndNotAssignedToTeamByLocation(Long orgLocationId) throws Exception {
+		return candidateDao.getAllHotlistCandidatesAndNotAssignedToTeamByLocation(orgLocationId);
 	}
 }

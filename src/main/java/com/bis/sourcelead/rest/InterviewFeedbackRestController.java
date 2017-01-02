@@ -86,6 +86,12 @@ public class InterviewFeedbackRestController {
 	
 	@Autowired
 	RequirementInterviewerService requirementInterviewerService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
   
 	
 	/**
@@ -138,6 +144,14 @@ public class InterviewFeedbackRestController {
 			   ift.setCreatedBy(user.getUserCode());
 			   ift.setCreatedDate(new Date());
 			   interviewFeedbackTemplateService.addInterviewFeedbackTemplate(ift);
+			   
+			   RequirementSubmission  requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(rqr.getRequirementInterview().getSubmissionId().getId());
+		       RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		       requirementSubmissionHistory.setInterviewerId(rqr);
+		       requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.INTERVIEW.toString());
+			   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.FEEDBACK);
+			   requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			   
 			   return "publicInterviewFeedBackTemplate";
 	    
 	   }
@@ -225,6 +239,14 @@ public class InterviewFeedbackRestController {
 			   ift.setCreatedBy(user.getUserCode());
 			   ift.setCreatedDate(new Date());
 			   interviewFeedbackTemplateService.addInterviewFeedbackTemplate(ift);
+			   
+		      RequirementSubmission  requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(rqr.getRequirementInterview().getSubmissionId().getId());
+		      RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		      requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.INTERVIEW.toString());
+			  requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.FEEDBACK);
+			  requirementSubmissionHistory.setInterviewerId(rqr);
+			  requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+				 
 			   return "publicInterviewFeedBackTemplate";
 	    
 	   }
@@ -253,7 +275,8 @@ public class InterviewFeedbackRestController {
 						List<RequirementInterviewer> interviewers = requirementInterviewerService.getInterviwersListByInterviewId(interviewId);
 						
 						for(RequirementInterviewer interviewer: interviewers){
-							interviewer.setInterviewerName(interviewer.getInterviewerUser().getFirstName()+" "+interviewer.getInterviewerUser().getLastName());
+							StringBuilder name = new StringBuilder();
+							interviewer.setInterviewerName(name.append(interviewer.getInterviewerUser().getFirstName()).append(" ").append(interviewer.getInterviewerUser().getLastName()).toString());
 							InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
 							if(feedbackTemplate != null){
 								interviewer.setFeedbackDate(Constants.DMY.format(feedbackTemplate.getCreatedDate()));

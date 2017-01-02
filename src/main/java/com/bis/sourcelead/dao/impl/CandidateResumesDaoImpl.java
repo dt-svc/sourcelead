@@ -101,6 +101,17 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 		return candidateResumesList;
 		
 	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateResumes> getCandidateResumesByIds(List<Long> submissionResumeIds) {
+		logger.debug("In get Resumes list by candidateid and status method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateResumes candidateResumes where candidateResumes.id IN (:submissionResumeIds)";  
+		List<CandidateResumes> candidateResumesList = session.createQuery(query).setParameterList("submissionResumeIds", submissionResumeIds).setCacheable(true).list();
+		return candidateResumesList;
+	}
 
 	/**
 	 * @author Venkat Kesav

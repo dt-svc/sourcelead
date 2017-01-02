@@ -60,7 +60,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		
 		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
 		
-		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-84);
 		Date previousDate = previousMonday.getTime();
 		java.sql.Date  previousDayDate = new java.sql.Date(previousDate.getTime());
 		

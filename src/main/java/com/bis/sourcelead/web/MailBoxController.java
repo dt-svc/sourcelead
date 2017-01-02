@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,16 +73,35 @@ public class MailBoxController {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/mailBox")
- 	public ModelAndView mailBox(HttpServletRequest request) {
+ 	public ModelAndView mailBox(HttpServletRequest request) throws Exception {
 		    ModelAndView model = new ModelAndView();
+		   
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    
+		    Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Inbox");
+			Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Requested");
+			
  			model.setViewName("mailBox");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			model.addObject("inboxUnreadMailsCount", inboxUnreadMailsCount);
+ 			model.addObject("requestedUnreadMailsCount", requestedUnreadMailsCount);
  			return model;
  	}
 
 	
+	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/composeMail")
+ 	public ModelAndView composeMail(HttpServletRequest request) {
+		    ModelAndView model = new ModelAndView();
+ 			model.setViewName("composeMail");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			return model;
+ 	}
+	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/hotlistMail")
  	public ModelAndView hotlistMail(HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();
@@ -102,7 +122,7 @@ public class MailBoxController {
  			return model;
  	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getClientContacts")
 	public @ResponseBody String getClientContacts(HttpServletRequest request) throws Exception {
 
@@ -115,7 +135,7 @@ public class MailBoxController {
 		return resultJson;
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/getUserMails")
 	public @ResponseBody String getUserMails(@RequestParam(value = "type", required = false) String type,
 			HttpServletRequest request) throws Exception {
@@ -139,7 +159,7 @@ public class MailBoxController {
 	}
 	
 	
-	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getClientsListForHotlist")
 	public @ResponseBody String getClientsListForHotlist(HttpServletRequest request) throws Exception {
 
@@ -152,6 +172,7 @@ public class MailBoxController {
 		return resultJson;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getCandidatesForCampaign")
 	public @ResponseBody String getCandidatesForCampaign(@RequestParam(value = "candidatesListType", required = false) String candidatesListType,
 			HttpServletRequest request) throws Exception {
@@ -169,6 +190,10 @@ public class MailBoxController {
 	    	}else if(candidatesListType.equalsIgnoreCase("candidates")){
 	    		 candidatesList = candidateService.getAllActiveCandidatesForCampaignByLocation(orgLocations.getId(),"Candidate");
 	    	}
+	    	else if(candidatesListType.equalsIgnoreCase("openHotlist")){
+	    		candidatesList = candidateService.getAllHotlistCandidatesAndNotAssignedToTeamByLocation(orgLocations.getId());
+	    	}
+	    	
 	    	else if(candidatesListType.equalsIgnoreCase("hotlistConsultants") || candidatesListType.equalsIgnoreCase("hotlistCandidates")){
 	    		UserRole userRole = userRoleService.getUserByUserId(user.getId());
 	    		if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN") || userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
@@ -189,21 +214,7 @@ public class MailBoxController {
 	    	
 	    }
 	    
-	   
-	    
-	    
-	    if(null != candidatesList){
-	    	for(Candidate candidate : candidatesList){
-	    		boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), orgLocations.getId());
-	    		if(flag == true){
-	    			candidate.setIsFavourite(Constants.YES);
-	    		}else{
-	    			candidate.setIsFavourite(Constants.NO);
-	    		}
-	    		candList.add(candidate);
-	    	}
-	    }
-	    resultJson = commonUtil.toJSON(candList);
+	    resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
 	}
 	

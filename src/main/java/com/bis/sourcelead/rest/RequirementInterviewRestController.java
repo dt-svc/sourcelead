@@ -142,7 +142,7 @@ public class RequirementInterviewRestController {
 		 return resultJson;
 	   }
 	 
-	 @RequestMapping(value = "/acceptOrRejectInterview")
+	 /*@RequestMapping(value = "/acceptOrRejectInterview")
 	 @ResponseBody  String acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {
@@ -150,7 +150,7 @@ public class RequirementInterviewRestController {
 		 RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
 		 
 		 String message = " ";
-/*		 if(requirementInterview.getInterviewStatus() == null && !("").equals(requirementInterview.getInterviewStatus())){*/
+		 if(requirementInterview.getInterviewStatus() == null && !("").equals(requirementInterview.getInterviewStatus())){
 			 requirementInterview.setInterviewStatus(interviewStatus);
 			 requirementInterviewService.saveRequirementInterview(requirementInterview);
 			 if(interviewStatus.equalsIgnoreCase("Attending")){
@@ -163,7 +163,7 @@ public class RequirementInterviewRestController {
 				 message = "Not sure for the Interview.";
 			 }
 		return message;
-	 }	
+	 }	*/
 	 
 	 @RequestMapping(value = "/sendMailToapplicant")
 	 @ResponseBody String sendMailToapplicant(@RequestParam(value="submissionId", required=false) String submissionId,

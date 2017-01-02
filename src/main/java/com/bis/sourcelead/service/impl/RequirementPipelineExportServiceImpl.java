@@ -54,9 +54,18 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		if (!"pdf".equalsIgnoreCase(exportType)) {
 			Workbook createExcelworkbook = new XSSFWorkbook();
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
+			StringBuilder excelStringBuilder=new StringBuilder();
+			Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(orgName).append("_").append(dateFormat.format(new Date())).toString());
 			Row writeRow = null;
-			if (submissionType.equals("REQUEST_SENT")) {
+			if (submissionType.equals("SUBMIT_TO_CLIENT")) {
+				createExcelsheet = getExcelSheetWithHeaderSubmitClient(createExcelsheet, writeRow, createExcelworkbook,requirementId,requirementSubmissionCounts);
+				int column = 0;
+				for (RequirementSubmission requirementsub : requirementStatusList) {
+					writeRow = createExcelsheet.createRow(column + 8);
+					createExcelsheet = createXlsSheetSubmitClient(createExcelsheet, writeRow, requirementsub,submissionType);
+					column++;
+				}
+			}else if (submissionType.equals("REQUEST_SENT")) {
 				createExcelsheet = getExcelSheetWithHeaderRequestSent(createExcelsheet, writeRow, createExcelworkbook,requirementId,requirementSubmissionCounts);
 				int column = 0;
 				for (RequirementSubmission requirementsub : requirementStatusList) {
@@ -111,7 +120,11 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 					column++;
 				}
 			}
-			file = new File(orgName + "_Requirements_" + dateFormat.format(new Date()) + ".xls");
+			/*file = new File(orgName + "_Requirements_" + dateFormat.format(new Date()) + ".xls");*/
+			StringBuilder tempFileBuilder=new StringBuilder();
+			file = File.createTempFile(tempFileBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".xls");
+			file.setReadable(true);
+
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
 				createExcelworkbook.write(fos);
@@ -123,6 +136,72 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			file = pdfUtilPipelineHelper.getRequirementPipelenePdf(requirementStatusList, orgName, requirementId,submissionType,requirementSubmissionCounts);
 		}
 		return file;
+	}
+
+	private Sheet createXlsSheetSubmitClient(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub,
+			String submissionType) {
+		if (requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())) {
+			writeRow.createCell(0).setCellValue(requirementsub.getCandidateName());
+		}
+
+		if (requirementsub.getCandidateEmail() != null && !"".equalsIgnoreCase(requirementsub.getCandidateEmail())) {
+			writeRow.createCell(1).setCellValue(requirementsub.getCandidateEmail());
+		}
+		if (requirementsub.getPhoneNumber() != null && !"".equalsIgnoreCase(requirementsub.getPhoneNumber())) {
+			writeRow.createCell(2).setCellValue(requirementsub.getPhoneNumber());
+		}
+		if (requirementsub.getResumeName() != null && !"".equalsIgnoreCase(requirementsub.getResumeName())) {
+			writeRow.createCell(3).setCellValue(requirementsub.getResumeName());
+		}
+		if (requirementsub.getCreatedDate() != null) {
+			writeRow.createCell(4).setCellValue(requirementsub.getCreatedDate().toString());
+		}
+		if (requirementsub.getCandidate().getExpectedRate() != null && !"".equalsIgnoreCase(requirementsub.getCandidate().getExpectedRate())) {
+			writeRow.createCell(5).setCellValue(requirementsub.getCandidate().getExpectedRate());
+		}
+		if (requirementsub.getProposedSubmissionRate() != null && !"".equalsIgnoreCase(requirementsub.getProposedSubmissionRate())) {
+			writeRow.createCell(6).setCellValue(requirementsub.getProposedSubmissionRate());
+		}
+		if (requirementsub.getUserName() != null && !"".equalsIgnoreCase(requirementsub.getUserName())) {
+			writeRow.createCell(7).setCellValue(requirementsub.getUserName());
+		}
+		if (requirementsub.getScore() != null && !"".equalsIgnoreCase(requirementsub.getScore())) {
+			writeRow.createCell(8).setCellValue(requirementsub.getScore());
+		}
+		if (requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())) {
+			writeRow.createCell(9).setCellValue(requirementsub.getWorkExperience());
+		}
+		if (requirementsub.getSubmissionStatus() != null
+				&& !"".equalsIgnoreCase(requirementsub.getSubmissionStatus().toString())) {
+			writeRow.createCell(10).setCellValue(requirementsub.getSubmissionStatus().toString());
+		}
+		
+		/*String submittedon = "--";*/
+		/*String submittedBy = "--";*/
+		if(!submissionType.equals("REQUEST_SENT")){
+		 if(requirementsub.getSubmittedOn() != null && !"".equalsIgnoreCase(requirementsub.getSubmittedOn())){
+			writeRow.createCell(11).setCellValue(requirementsub.getSubmittedOn());
+		}
+		 if(requirementsub.getSubmittedBy() != null && !"".equalsIgnoreCase(requirementsub.getSubmittedBy())){
+		writeRow.createCell(12).setCellValue(requirementsub.getSubmittedBy());
+		 }
+		 if(requirementsub.getRequirement().getSpocId().getSpocUser().getMobilePhone() != null && !"".equalsIgnoreCase(requirementsub.getRequirement().getSpocId().getSpocUser().getMobilePhone())){
+				writeRow.createCell(13).setCellValue(requirementsub.getRequirement().getSpocId().getSpocUser().getMobilePhone());
+		}
+	}
+		return createExcelsheet;
+	}
+
+	private Sheet getExcelSheetWithHeaderSubmitClient(Sheet createExcelsheet, Row writeRow,
+			Workbook createExcelworkbook, String requirementId,
+			RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
+		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+        prepareHeaders(writeRow, createExcelsheet, style, requirement, Constants.SUBMIT_TO_CLIENT_COUNT, requirementSubmissionCounts.getNumOfSubmitToClient());
+		String headers[] = Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 7);
+
+		return createExcelsheet;
 	}
 
 	private Sheet getExcelSheetWithHeaderRequestSent(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,
@@ -424,8 +503,9 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		cell3.setCellStyle(style);
 
 		String location = "";
+		StringBuilder requirementBuilder=new StringBuilder();
 		if(requirement.getCountry() !=null && requirement.getState() !=null){
-			location = requirement.getCountry() + " " + requirement.getState();
+			location = requirementBuilder.append(requirement.getCountry()).append(" ").append(requirement.getState()).toString();
 		}else{
 			location = requirement.getCountry();
 		}
@@ -442,8 +522,25 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		cell5.setCellStyle(style);
 
 		Cell cell6 = writeRow.createCell(1);
-		cell6.setCellValue(requirement.getMaxExp() + " " + requirement.getMinExp());
-		cell6.setCellStyle(style);
+		if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+			
+			cell6.setCellValue(requirementBuilder.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString());
+			cell6.setCellStyle(style);
+			
+		}else if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())){
+			
+			cell6.setCellValue(requirementBuilder.append("0 -").append(requirement.getMinExp()).append("years").toString());
+			cell6.setCellStyle(style);	
+			
+			}else if(requirement.getMaxExp() != null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+				
+				cell6.setCellValue(requirementBuilder.append("0 -").append(requirement.getMaxExp()).append("years").toString());
+				cell6.setCellStyle(style);
+				
+			}else{
+					cell6.setCellValue("--");
+					cell6.setCellStyle(style);
+				}
 
 		writeRow = createExcelsheet.createRow(4);
 		createExcelsheet.setColumnWidth(0, 10000);

@@ -13,6 +13,9 @@
 
 		var result = "";
 		result = result	+ '    <div class="project_tabs_inn_head addUser-org">  ';
+		result  = result + '<div class="success_pop" id="selector3" style="display: none;">';
+	    result  = result + '<i class="fa fa-check-circle"></i><span id="empMsgDiv"></span>';
+	    result  = result + '</div>';
 		result =result +'<div id = "msgDiv2"></div>';
 		if(window.candidateStatusGlobal == '0'){
 		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\')">'; 	
@@ -41,6 +44,15 @@
 
 	}
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function empMsgFadein() {
+		$("#selector3").fadeIn(200);
+        $('#selector3').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->
 
 <script>
 function closeCertificatePopup(){
@@ -88,9 +100,12 @@ function closeCertificatePopup(){
 								} else if (data.indexOf('exception') >= 0) {
 									location.replace(sourceleadUrl  + "/errorPage");
 								} else {
-									$("#popUpDivEmp").removeClass(
-											"edit-details-active");
+									$("#popUpDivEmp").removeClass("edit-details-active");
+			            			$("#selector3").removeAttr("style");
+			            			$("#selector3").css({ display: "block" });
+			            			$("#empMsgDiv").html("Success!! New Employer added");
 									candidateEmployersList(candidateId);
+									empMsgFadein();
 								}
 							}
 
@@ -220,11 +235,9 @@ function closeCertificatePopup(){
 <script>
 
 	function editEmployer(candidateEmpId, candidateId) {
-
 		
 		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax({
+		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
 							+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?${_csrf.parameterName}=${_csrf.token}&candidateId="
@@ -419,7 +432,7 @@ function closeCertificatePopup(){
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
 								var json = JSON.parse(data);
-		             			for (var i = 0; i < 1; i++) {
+		             			/* for (var i = 0; i < 1; i++) {
 		                            var val= json[i];
 		                            var opt = "";
 		                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
@@ -429,7 +442,7 @@ function closeCertificatePopup(){
 		                                            }
 		                                    $("#msgDiv2").empty();
 		                                    $("#msgDiv2").append(opt);
-		                            }
+		                            } */
 								$("#candidateEmployersList").empty();
 								var result = "";
 								result = result	+ "<table id='candidateEmployersPagination' class='display' cellspacing='0' width='100%' >";
@@ -502,7 +515,7 @@ function closeCertificatePopup(){
 							result = result
 									+ "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 							result = result
-									+ "			        <p>No CandidatesCertifications Found</p>";
+									+ "			        <p>No Candidate Employers Found</p>";
 							result = result + "			 </div>";
 							result = result + "		</div>";
 							result = result + "	</div>";
@@ -557,8 +570,12 @@ function employeePagination(){
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
-								$("#popUpDivEmp").removeClass("edit-details-active");
-								candidateEmployersList(candidateId);
+			        			 $("#selector3").removeAttr("style");
+			         			 $("#selector3").css({ display: "block" });
+			         			 $("#empMsgDiv").html("Employer deleted");
+								 $("#popUpDivEmp").removeClass("edit-details-active");
+								 candidateEmployersList(candidateId);
+								 empMsgFadein();
 							}
 						}
 					},
@@ -609,7 +626,11 @@ function employeePagination(){
 									.click(function(e) {
 										e.stopPropagation();
 									});
-							candidateEmployersList(candidateId)
+							$("#selector3").removeAttr("style");
+	            			$("#selector3").css({ display: "block" });
+	            			$("#empMsgDiv").html("Employer details updated");
+							candidateEmployersList(candidateId);
+							empMsgFadein();
 						},
 					});
 			return true;
@@ -743,10 +764,3 @@ function validYearEdit(){
 }
 
 </script>
-
-<script>
-       function msgFadein2() {
-           setTimeout(function(){
-                   $('#selector3').fadeOut('slow'); }, 1000);
-       }
-</script>  

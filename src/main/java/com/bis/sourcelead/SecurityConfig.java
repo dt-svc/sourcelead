@@ -98,6 +98,7 @@ public class SecurityConfig  {
     			.antMatchers("/acceptClientOrVendorInvitation").permitAll() 
     			.antMatchers("/acceptOrRejectInterview").permitAll() 
     			.antMatchers("/acceptOrRejectOffer").permitAll()
+    			.antMatchers("/acceptOrRejectRequirementOffer").permitAll()
     			.antMatchers("/downloadOfferAttachment").permitAll()
     			.antMatchers("/publicInterviewFeedBackTemplate").permitAll()
     			.antMatchers("/downloadRequirementAttachment").permitAll()
@@ -112,6 +113,7 @@ public class SecurityConfig  {
     			.antMatchers("/getRequestedCandidates").permitAll() 
     			.antMatchers("/validateCampaignToEmail").permitAll() 
     			.antMatchers("/sendRequestForResume").permitAll() 
+    			.antMatchers("/displayOrgImageInMail").permitAll() 
     			/*.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER') OR hasRole('ROLE_SOURCELEAD_ADMIN') OR hasRole('ROLE_HR_MANAGER') OR hasRole('ROLE_ACCOUNT_MANAGER') OR hasRole('ROLE_SALES_MANAGER') OR hasRole('ROLE_RECRUITER') ")*/ 
     			.antMatchers("/**").fullyAuthenticated()
     			.anyRequest().authenticated()                                                   

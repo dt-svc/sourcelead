@@ -13,5 +13,9 @@ public interface TabsService {
 	List<Tabs> getTabsList(List<Long> modulesId,Long roleId,Long orgId) throws Exception;
 	
 	List<Tabs> getTabsListByOrgLocationId(List<Long> modulesId,Long roleId,Long orgLocationId) throws Exception;
+	
+	List<Long> getTabsIdsListByUserRoleIdAndOrgLocationId(Long roleId,Long orgLocationId) throws Exception;
+	
+	List<Tabs> getTabsListByIds(List<Long> tabIds) throws Exception;
 
 }

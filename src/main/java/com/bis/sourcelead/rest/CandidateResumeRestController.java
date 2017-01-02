@@ -31,9 +31,11 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -64,6 +66,9 @@ public class CandidateResumeRestController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	RequirementOffersService requirementOffersService;
 	
 	/**
 	* @author Venkat Kesav 
@@ -100,18 +105,6 @@ public class CandidateResumeRestController {
 			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
 			
 			candidateResumesService.storeCandidateResume(jsonObj, user, candidate, resumeId, orgLocation, multiFile);
-
-			
-			if(resumeId != null && !"null".equalsIgnoreCase(resumeId)){
-				SourceLeadSessionManager.setSessionAttribute(request, "editResume", "Resume details updated");
-			}else{
-				SourceLeadSessionManager.setSessionAttribute(request, "addResume", "New Resume added for "+candidate.getFirstName()+"");
-				
-			}
-			
-			
-			
-			
 			return "success";
 		}else{
 			return "exception";
@@ -141,21 +134,9 @@ public class CandidateResumeRestController {
 			for(CandidateResumes candidateResume : candidateResumesList){
 				User createdUser = userService.getUserByUserCode(candidateResume.getCreatedBy());
 				if(createdUser != null){
-					candidateResume.setCreatedBy(createdUser.getFirstName()+" "+createdUser.getLastName());
+					StringBuilder name = new StringBuilder();
+					candidateResume.setCreatedBy(name.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
 				}
-				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addResume");
-				 if(msg == null){
-						msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editResume");
-					}
-					if(msg == null){
-						msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteResume");
-					}
-					if(msg !=null && msg != ""){
-						candidateResume.setMsg(msg);
-					}
-					 	SourceLeadSessionManager.removeSessionAttribute(request, "addResume");
-					    SourceLeadSessionManager.removeSessionAttribute(request, "editResume");
-					    SourceLeadSessionManager.removeSessionAttribute(request, "deleteResume");
 			}
 			resultJson = commonUtil.toJSON(candidateResumesList);
 		}
@@ -190,7 +171,7 @@ public class CandidateResumeRestController {
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
 			candidateResumesService.updateCandidateResume(candidateResume);
-			SourceLeadSessionManager.setSessionAttribute(request, "deleteResume", "Resume deleted");
+			//SourceLeadSessionManager.setSessionAttribute(request, "deleteResume", "Resume deleted");
 		}
 		return "success";
 	}
@@ -240,8 +221,8 @@ public class CandidateResumeRestController {
 			CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(resumeId));
 		    
 		    response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition",
-	                "attachment;filename="+candidateResume.getFileName());
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
 		    
 			InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
 			try {
@@ -260,6 +241,32 @@ public class CandidateResumeRestController {
 			} catch (FileNotFoundException e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
+		}
+	
+	@RequestMapping(value = "/offerDownloadDocument", method = RequestMethod.GET)
+    public void candidateAndOfferDownloadDocument(@RequestParam(value="resumeId", required=false) Long resumeId,HttpServletResponse response) throws Exception {
+			RequirementOffers  requirementOffers = requirementOffersService.getRequirementOfferId(resumeId);
+	    	response.setContentType("application/octet-stream");
+	    	response.setHeader("Content-Disposition", "attachment;filename="+requirementOffers.getFileName());
+			InputStream inputStream = new ByteArrayInputStream(requirementOffers.getDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+	
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+	
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+	
+				inputStream.close();
+				outStream.close();
+	
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+			    
+		   
 		}
 	
 }

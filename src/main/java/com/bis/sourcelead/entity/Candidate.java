@@ -176,6 +176,10 @@ public class Candidate implements Serializable{
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
 	
+	
+	@Transient
+	private String candidateEdu;
+	
 	@Transient
 	private String skillsList;
 	
@@ -615,6 +619,15 @@ public class Candidate implements Serializable{
 
 	public void setNoOfReq(int noOfReq) {
 		this.noOfReq = noOfReq;
+	}
+
+	public String getCandidateEdu() {
+		return candidateEdu;
+	}
+
+
+	public void setCandidateEdu(String candidateEdu) {
+		this.candidateEdu = candidateEdu;
 	}
 
 

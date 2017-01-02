@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -40,6 +39,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
+import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TeamService;
@@ -83,18 +83,24 @@ public class RequirementRestController {
 	@Autowired
 	OrgSpocService orgSpocService;
 
-	@Autowired
-	CommonUtil commonUtil;
-
-	@Autowired
-	private UserRoleService userRoleService;
-
-	@Autowired
-	private RecommendationsService recommendationsService;
-
-	@Autowired
-	private RolesService roleService;
-
+	 @Autowired
+	 CommonUtil commonUtil;
+	 
+	 @Autowired
+	 private CandidateService candidateService;
+	 
+	 @Autowired
+	 private UserRoleService userRoleService;
+	 
+	 @Autowired
+	 private RecommendationsService recommendationsService;
+	 
+	 @Autowired
+	 private RolesService roleService;
+	 
+	 @Autowired
+	 private RequirementAssignToService requirementAssignToService;
+	 
 	/**
 	 * @author prasad k
 	 * @since sept 13 2016
@@ -136,15 +142,21 @@ public class RequirementRestController {
 
 		Requirement requirement = requirementService.storeRequirement(jsonObj, orgLocation, user, multiFile);
 		
+		StringBuilder reqCreateMsg = new StringBuilder();
 		if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  saved to Draft");
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved to Draft").toString());
+		}else if(jsonObj.getString("saveType").equalsIgnoreCase("save")){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved").toString());
+		}else if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  submitted for approval").toString());
+		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("save"))){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg",  reqCreateMsg.append("Success!! ").append(requirement.getJobTitle()).append(" details updated").toString());
+		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval"))){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! ").append(requirement.getJobTitle()).append(" Updated and Submitted "));
+		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("draft"))){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!!  ").append(requirement.getJobTitle()).append(" Updated in Draft Stage").toString());
 		}
-		if(jsonObj.getString("saveType").equalsIgnoreCase("save")){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  saved");
-		}
-		if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  submitted for approval");
-		}
+		
 		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("save"))){
 			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! "+requirement.getJobTitle()+" details updated");
 		}
@@ -275,6 +287,7 @@ public class RequirementRestController {
 				requirementApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 				requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
 			}
+	
 		}
 
 		/*
@@ -414,10 +427,12 @@ public class RequirementRestController {
 			if (orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null) {
 				ownerLastName = orgSpoc.getOwnerUser().getLastName();
 			}
-			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName() + " " + orgSpoc.getSpocUser().getLastName());
+			StringBuilder spocNameSB = new StringBuilder();
+			StringBuilder ownerNameSB = new StringBuilder();
+			orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName() + " " + ownerLastName);
+			orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(ownerLastName).toString());
 			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
 			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
 		}
@@ -519,38 +534,59 @@ public class RequirementRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/validateJobId", method = RequestMethod.POST)
-	public @ResponseBody String validateJobId(@RequestParam(value = "jobId", required = false) String jobId,
-			HttpServletRequest request) throws Exception {
-		String result;
-		String resultJson;
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Integer jobIdCount = requirementService.validateJobId(jobId, orgLocation.getId());
-		if (jobIdCount > 0) {
-			result = "duplicate";
-		} else {
-			result = "unique";
-		}
-		resultJson = commonUtil.toJSON(result);
-		return resultJson;
-	}
 
-	private String toJSON(Object obj) {
-		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-			public HierarchicalStreamWriter createWriter(Writer writer) {
-				return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+	 @RequestMapping(value = "/validateJobId",  method = RequestMethod.POST)
+	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) String jobId,HttpServletRequest request) throws Exception {
+		    	String result;
+				String resultJson;
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Integer jobIdCount = requirementService.validateJobId(jobId,orgLocation.getId());
+				if(jobIdCount>0){
+					result = "duplicate";
+				}
+				else{
+					result = "unique";
+				}
+				resultJson = commonUtil.toJSON(result);
+				return resultJson;
+		    }
+	
+	private String toJSON(Object obj){
+        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+            public HierarchicalStreamWriter createWriter(Writer writer) {
+                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+            }
+        });
+        return xstream.toXML(obj);
+    }
+	 @RequestMapping(value = "/validatetemplateName",  method = RequestMethod.POST)
+	    public @ResponseBody String validatejobName(@RequestParam(value="templateName", required=false) String templateName,HttpServletRequest request) throws Exception {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Boolean validatejobName = requirementService.validateRequirementTitle(templateName,orgLocation.getId());
+				return validatejobName.toString();
+		    }
+	 
+	 
+	 @RequestMapping(value = "/terminateRequirementTemplate", method = RequestMethod.POST)
+		public @ResponseBody String terminateRequirementTemplate(String requirementId, String status, HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			Requirement rt =  requirementService.getRequirementTemplateByRequirementId(Long.parseLong(requirementId),orgLocation.getId());
+			if(rt != null){
+				
+				if(status.equalsIgnoreCase("remove")){
+					rt.setStatus(Constants.MEMBER_IN_ACTIVE);
+				}else if(status.equalsIgnoreCase("reActive")){
+					rt.setStatus(Constants.MEMBER_ACTIVE);
+				}
+				
+				rt.setUpdatedBy(user.getUserCode());
+				rt.setUpdatedDate(commonUtil.currentDate());
+				requirementService.updateRequirementTemplate(rt);
 			}
-		});
-		return xstream.toXML(obj);
-	}
-
-	@RequestMapping(value = "/validatetemplateName", method = RequestMethod.POST)
-	public @ResponseBody String validatejobName(
-			@RequestParam(value = "templateName", required = false) String templateName, HttpServletRequest request)
-			throws Exception {
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Boolean validatejobName = requirementService.validateRequirementTitle(templateName, orgLocation.getId());
-		return validatejobName.toString();
-	}
+			return "success";
+		}
 
 }

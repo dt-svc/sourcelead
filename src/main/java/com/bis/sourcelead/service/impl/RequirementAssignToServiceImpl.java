@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.RequirementAssignToDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.service.RequirementAssignToService;
 
@@ -62,6 +63,11 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 		 
 		return requirementAssignToDao.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, userId);
 	
+	}
+
+	@Override
+	public List<RequirementAssignTo> getAssignedToMembersByRequirementIdAndOrgLocationId(Long requirementId,Long orgLocationId) throws Exception {
+		return requirementAssignToDao.getAssignedToMembersByRequirementIdAndOrgLocationId(requirementId,orgLocationId);
 	}
 	
 }

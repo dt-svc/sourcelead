@@ -275,7 +275,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setToEmail(clientrequirement.getSpocId().getSpocUser().getEmail());
             emailMessage.setFromEmail("peopleaxisindia@gmail.com");
             emailMessage.setCreatedBy(loginUser.getUserCode());
-            emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
+            StringBuilder nameBuilder=new StringBuilder();
+            emailMessage.setFromName(nameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
             // setting the class filed values
             Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -308,20 +309,21 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                 globalVarsMap.put("clientOrgnanizationName", "--");
             }
             
-            
-            globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+            StringBuilder linkSB=new StringBuilder();
+            globalVarsMap.put("link",linkSB.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 
             // setting the Recipient information
             ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
             EmailRecipient emailRecipient = new EmailRecipient();
             emailRecipient.setEmail(emailMessage.getToEmail());
-            emailRecipient.setName(emailMessage.getFirstName() + " " + emailMessage.getLastName());
+            StringBuilder nameStringBuilder=new StringBuilder();
+            emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
             emailRecipientList.add(emailRecipient);
 
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
             EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_EMAIL);
-           // EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_NOTIFICATION);
+            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_NOTIFICATION);
 
 
             // covert subject,body and signature
@@ -330,13 +332,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
             String url = "";
             
-            //String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
-           // notificationScenario.setBody(notificationbody);
+            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+           notificationScenario.setBody(notificationbody);
 
 
             // construct HTML template using required data
-            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-                            signature, url, new Org());
+            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, new Org());
             emailMessage.setSubject(subject);
             emailMessage.setMessageBody(emailTemplate);
 
@@ -345,9 +346,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             try {
     			
                 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
-                 String actionLink="";
-                 OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
-				//emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
+                String actionLink="";
+               OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
+				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
         		}catch (MessagingException e) {
         			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
         		} catch (UnsupportedEncodingException e) {
@@ -366,7 +367,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setToEmail(applicant.getCandidate().getEmail());
             emailMessage.setFromEmail("peopleaxisindia@gmail.com");
             emailMessage.setCreatedBy(loginUser.getUserCode());
-            emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
+            StringBuilder attachmentBuilder=new StringBuilder();
+            emailMessage.setFromName(attachmentBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
             // setting the class filed values
             Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -415,26 +417,25 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
        /* globalVarsMap.put("acceptLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Accepted&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
         globalVarsMap.put("rejectLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Rejected&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");*/
 
-         globalVarsMap.put("acceptLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Accepted&offerId="+requirementOffers.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
-         globalVarsMap.put("rejectLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Rejected&offerId="+requirementOffers.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
+         StringBuilder acceptLinkBuilder=new StringBuilder();
+         StringBuilder rejectLinkBuilder=new StringBuilder();
+         globalVarsMap.put("acceptLink",acceptLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirementOffer?offerStatus=Accepted&offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+         globalVarsMap.put("rejectLink",rejectLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirementOffer?offerStatus=Rejected&offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
         
-        
+        StringBuilder attachmentLinkBuilder=new StringBuilder();
         if(requirementOffers.getFileName() != null && !requirementOffers.getFileName().isEmpty() ){
-            globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"downloadOfferAttachment?offerId="+requirementOffers.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/></div></a>");
-
+            globalVarsMap.put("attachment",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("downloadOfferAttachment?offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
         }else{
-            globalVarsMap.put(" ","<a href='"+sourceleadUrl+"/"+"downloadOfferAttachment?offerId="+requirementOffers.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/></div></a>");
+            globalVarsMap.put(" ",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("downloadOfferAttachment?offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
 
         }
-
-            
-            
 
             // setting the Recipient information
             ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
             EmailRecipient emailRecipient = new EmailRecipient();
             emailRecipient.setEmail(emailMessage.getToEmail());
-            emailRecipient.setName(emailMessage.getFirstName() + " " + emailMessage.getLastName());
+            StringBuilder nameBuilder=new StringBuilder();
+            emailRecipient.setName(nameBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
             emailRecipientList.add(emailRecipient);
 
             // getting the current EmailScenario by EmailScenario unique name and
@@ -490,13 +491,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		emailMessage.setLastName(touser.getLastName());
 		emailMessage.setToEmail(touser.getEmail());
 		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-		emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		StringBuilder contactBuilder=new StringBuilder();
+		emailMessage.setFromName(contactBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 			
 			if(requirementSubmission.getCandidate() != null){
-				globalVarsMap.put("ApplicantName", requirementSubmission.getCandidate().getFirstName() +""+requirementSubmission.getCandidate().getLastName());	
+				StringBuilder applicantNameBuilder=new StringBuilder();
+				globalVarsMap.put("ApplicantName",applicantNameBuilder.append(requirementSubmission.getCandidate().getFirstName()).append("").append(requirementSubmission.getCandidate().getLastName()).toString());	
 			}
 			else{
 				globalVarsMap.put("ApplicantName", "---");	
@@ -523,21 +526,24 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	
 			}
 			if(requirement.getParentRequirement()!= null ){
-			globalVarsMap.put("ClientContactName", touser.getFirstName()+ " " +touser.getLastName());
+			StringBuilder clientContactNameBuilder=new StringBuilder();
+			globalVarsMap.put("ClientContactName",clientContactNameBuilder.append(touser.getFirstName()).append(" ").append(touser.getLastName()).toString());
 
 			}
 			else{
 			globalVarsMap.put("ClientContactName", "---");
 	
 			}
-			globalVarsMap.put("VendorContact",loginUser.getFirstName()+" "+loginUser.getLastName() );
+			StringBuilder vendorContactBuilder=new StringBuilder();
+			globalVarsMap.put("VendorContact",vendorContactBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		
 		
 		// setting the Recipient information
 		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		EmailRecipient emailRecipient = new EmailRecipient();
 		emailRecipient.setEmail(emailMessage.getToEmail());
-		emailRecipient.setName(emailMessage.getFirstName() + " " + emailMessage.getLastName());
+		StringBuilder contactsBuilder=new StringBuilder();
+		emailRecipient.setName(contactsBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		emailRecipientList.add(emailRecipient);
 
 		// getting the current EmailScenario by EmailScenario unique name and
@@ -574,13 +580,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		emailMessage.setLastName(touser.getLastName());
 		emailMessage.setToEmail(touser.getEmail());
 		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-		emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		StringBuilder nameStringBuilder=new StringBuilder();
+		emailMessage.setFromName(nameStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		
 		if(requirementSubmission.getCandidate() != null){
-			globalVarsMap.put("applicantName", requirementSubmission.getCandidate().getFirstName() +""+requirementSubmission.getCandidate().getLastName());	
+			StringBuilder applicantNameBuilder=new StringBuilder();
+			globalVarsMap.put("applicantName",applicantNameBuilder.append(requirementSubmission.getCandidate().getFirstName()).append("").append(requirementSubmission.getCandidate().getLastName()).toString());	
 		}
 		
 		else{
@@ -608,20 +616,23 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
 		}
 		if(requirement.getParentRequirement()!= null ){
-			globalVarsMap.put("clientContactName", touser.getFirstName()+ " " +touser.getLastName());
+			StringBuilder clientContactNameBuilder=new StringBuilder();
+			globalVarsMap.put("clientContactName", clientContactNameBuilder.append(touser.getFirstName()).append(" " ).append(touser.getLastName()).toString());
 
 			}	else{
 			globalVarsMap.put("clientContactName", "---");
 	
 			}		
-		globalVarsMap.put("vendorContact", loginUser.getFirstName()+" "+loginUser.getLastName());
+		StringBuilder vendorContactBuilder=new StringBuilder();
+		globalVarsMap.put("vendorContact", vendorContactBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		
 		
 		// setting the Recipient information
 		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		EmailRecipient emailRecipient = new EmailRecipient();
 		emailRecipient.setEmail(emailMessage.getToEmail());
-		emailRecipient.setName(emailMessage.getFirstName() + " " + emailMessage.getLastName());
+		StringBuilder nameStrBuilder=new StringBuilder();
+		emailRecipient.setName(nameStrBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		emailRecipientList.add(emailRecipient);
 
 		// getting the current EmailScenario by EmailScenario unique name and

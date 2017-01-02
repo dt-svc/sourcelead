@@ -98,5 +98,7 @@ public interface UserRoleService {
 	 List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId);
 	 
 	 List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId,Long orgLocationId);
+	 
+	 UserRole getChangeRolePermissions(List<Long> userRoletabIds,Long userId,Long orgLocationId) throws Exception;
 	
 }

@@ -56,7 +56,7 @@ width: auto;
   <!-- Content Area -->
   <section class="container">
 		<div class="row">
-		  		
+		  		<div id="loading"></div>
 		  			<form id="candidate_form" name="candidate_form" method="post" >
 				          <div class="col-md-8  project_wrap_table" id="candidateDivId">
 				          
@@ -184,7 +184,7 @@ function validateEmail(){
 var UUID = '${UUID}';
 var email = document.getElementById("email").value; 
 var sourceleadUrl = '${sourceleadUrl}';
-
+$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 if(email){
 $.ajax({
 		type : "POST",
@@ -199,12 +199,14 @@ $.ajax({
 				document.getElementById("email").setAttribute( 'record-exist', 'yes');
 				document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Invalid Email");
 				$('input#email').removeAttr( "record-exist record-exist-errorMsg");
+				$("#loading").removeAttr("style"); 
 				
 			}else {
 				$("#candidateButtonId").removeAttr("disabled");
 				$('input#email').removeAttr("class record-exist record-exist-errormsg");
 				$('input#email').attr('class','valid form-control');
 				$('#emailDiv').find('p.jquery_form_error_message').remove();
+				$("#loading").removeAttr("style"); 
 				$("#candidateButtonId").click(function() {
 					
 				});
@@ -242,11 +244,19 @@ $.ajax({
 			                     result = result +"<tbody>"; 
 			                     for (var i = 0; i < json.length; i++) { 
 			                    	 var opt = json[i];  
+			                    	 var skills  =  "";
+			                    	 
+			                    	 if(opt.skills == 'undefined' || opt.skills == null || opt.skills == ''){
+			                    		 skills = "-------"
+			                    	 }else{
+			                    		 skills = opt.skills;
+			                    	 }
+			                    	 
 			                    	 result  = result + ' <td><div><span>&nbsp;&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="candidatesIds[]" class="myCheckbox" ></span></div></td>';
 			                    	 result  = result + ' <td><div><span>'+opt.candidateName+'</span></div></td>';
 			                    	 result  = result + ' <td><div><span>'+opt.totalExp+'</span></div></td>';
 			                    	 result  = result + ' <td><div><span>'+opt.rate+'</span></div></td>';
-			                    	 result  = result + ' <td><div>'+opt.skills+'</div></td>';
+			                    	 result  = result + ' <td><div>'+skills+'</div></td>';
 			                    	
 			                    	 result  = result + '</tr>';
 			                      } 

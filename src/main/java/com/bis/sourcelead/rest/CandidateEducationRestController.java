@@ -83,7 +83,6 @@ public class CandidateEducationRestController {
 
 		candidateEducationService.storeCandidateEducation(jsonObject,Long.parseLong(candidateId),loginOrgLocation.getId(), user);
 		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
-		SourceLeadSessionManager.setSessionAttribute(request, "addEducation", "New Education added for "+candidate.getFirstName()+" ");
 		return "success";
 	}
 	
@@ -107,7 +106,7 @@ public class CandidateEducationRestController {
 		 String resultJson;
 		 List<CandidateEducation>   candidatesEducationList = candidateEducationService.getCandidateEducationListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loginOrgLocation.getId());
 		 for(CandidateEducation candidateEducation :candidatesEducationList){
-			 msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addEducation");
+			/* msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addEducation");
 			 if(msg == null){
 					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editEducation");
 				}
@@ -119,7 +118,7 @@ public class CandidateEducationRestController {
 				}
 				 	SourceLeadSessionManager.removeSessionAttribute(request, "addEducation");
 				    SourceLeadSessionManager.removeSessionAttribute(request, "editEducation");
-				    SourceLeadSessionManager.removeSessionAttribute(request, "deleteEducation");
+				    SourceLeadSessionManager.removeSessionAttribute(request, "deleteEducation");*/
 			 
 		 }
 		 resultJson = commonUtil.toJSON(candidatesEducationList);
@@ -149,7 +148,7 @@ public class CandidateEducationRestController {
 		String resultJson;
 		CandidateEducation  candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, candidateEducationId);
 		 resultJson = commonUtil.toJSON(candidateEducation);
-			SourceLeadSessionManager.setSessionAttribute(request, "deleteEducation", "Education deleted");
+		//SourceLeadSessionManager.setSessionAttribute(request, "deleteEducation", "Education deleted");
 
 		 return resultJson;
 	}

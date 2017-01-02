@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -26,8 +27,10 @@ public interface CandidateCommentsService {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public CandidateComments storeCandidateComments(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation) throws JSONException,Exception;
+	public CandidateComments storeCandidateComments(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation, RequirementSubmission submissionId) throws JSONException,Exception;
 	
 	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Long candidateId, OrgLocations orgLocation) throws Exception;
+	
+	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId(Long candidate, Long submissionId, OrgLocations orgLocation) throws Exception;
 	
 }

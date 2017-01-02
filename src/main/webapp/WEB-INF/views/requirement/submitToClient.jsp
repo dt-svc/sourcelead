@@ -1,29 +1,18 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
+
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
 
 <!-- newly added -->
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
 
 <script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -31,14 +20,21 @@
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
-<link rel="stylesheet" href="css/bootstrap3-wysihtml5.min.css">
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="css/bootstrap-select.min.css">
-<link rel="stylesheet" href="css/jquery-ui.css">
-<link rel="stylesheet" href="css/chosen.min.css">
-<link href="css/font-awesome.min.css" rel="stylesheet">
-<link href="css/sourcelead-main.css" rel="stylesheet">
-<link href="css/timesheet.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="resources/css/jquery-ui.css">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<link href="resources/css/font-awesome.min.css" rel="stylesheet">
+<link href="resources/css/sourcelead-main.css" rel="stylesheet">
+<link href="resources/css/timesheet.css" rel="stylesheet">
+
+
+<script src="resources/js/jquery-1.11.3.min.js"></script>
+  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
+  <script src="resources/js/bootstrap.min.js"></script> 
+  <script src="resources/js/masterHeaderAction.js"></script> 
+  <script src="resources/js/chosen.jquery.min.js"></script> 
 
 <!-- newly added end -->
 
@@ -283,11 +279,16 @@ function cancel(){
 
 <script>
 function addEmailtemplate(requirementId){
- 	var result ="";
+ 	
+	var result ="";
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 var selectedShortlists = [];
+		 var selectedShortlistsRate = [];
 		 $("input[name='shortlist[]']:checked").each( function (i) {
 			 selectedShortlists[i] = $(this).val();
+			 var rateId = $(this).val();
+			 var selectedRate = $("#submissionRate"+rateId).val();
+			 selectedShortlistsRate[i] = selectedRate;
 		});
 		 if(selectedShortlists.length >0){
 		 $.ajax({ 
@@ -296,6 +297,7 @@ function addEmailtemplate(requirementId){
 		        success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	result = result +'<section class="clearfix">';
+		        	result = result +'<div id="loading"></div>';
 		        	result = result +'<form id="submitToClientMailTemplate" name="submitToClient" enctype="multipart/form-data">';
 		        	result = result +'<section class="content-header clearfix">';	
 					result = result +'  <div class="pull-left">';
@@ -364,6 +366,12 @@ function addEmailtemplate(requirementId){
 					result = result +'                 <div class="col-md-3">';
 					result = result +'	                  <lable><input type="checkbox" name="sendTracker" checked>&nbsp;Send tracker</label>';
 					result = result +'	                  </div>';
+					
+					result = result +'                 <div class="col-md-3">';
+					result = result +'	                  <lable><input type="checkbox" name="sendResumes" checked>&nbsp;Send resumes</label>';
+					result = result +'	                  </div>';
+					
+					
 					result = result +'	                  </div>';
 					result = result +'			<div class="col-md-12 clearfix mt">';
 					result = result +'				<div class="col-md-6">';
@@ -371,10 +379,10 @@ function addEmailtemplate(requirementId){
 					result = result +'				<div class="col-md-6">';
 					result = result +'					<div class="pull-right">';
 					result = result +'						<button type="button" id="sendMail"';
-					result = result +'							class="btn btn-sm btn-success" onclick="submitToClientMail(\''+selectedShortlists+'\',\''+json.id+'\');">';
+					result = result +'							class="btn btn-sm btn-success" onclick="submitToClientMail(\''+selectedShortlists+'\',\''+json.id+'\',\''+selectedShortlistsRate+'\');">';
 					result = result +'							<i class="fa fa-envelope-o"></i>&nbsp;Send</button>';
-					result = result +'						<button type="button" class="btn btn-sm btn-default">';
-					result = result +'							<i class="fa fa-times"></i>&nbsp;Cancel';
+					result = result +'						<button type="button" class="btn btn-sm btn-default" onclick="cancelSubmit();">';
+					result = result +'							<i class="fa fa-times" ></i>&nbsp;Cancel';
 					result = result +'						</button>';
 					result = result +'					</div>';
 					result = result +'				</div>';
@@ -386,7 +394,8 @@ function addEmailtemplate(requirementId){
                     $("#submitToClientDiv").empty();
                     $("#emailTemplateDiv").empty();
                     $("#emailTemplateDiv").append(result);
-                    
+					$("#compose-textarea").wysihtml5();
+					$("#create-signature").wysihtml5();
                     $('#mailsTagit').tagit({
                         singleField: true,
                         singleFieldNode: $('#othersMailId')
@@ -452,14 +461,14 @@ function checkEmails(){
 </script> 
 
   
- <script>
+<script>
   $(function () {
     //Add text editor
 	  $("#compose-textarea").wysihtml5();
 	  $("#create-signature").wysihtml5();
   });
 
-</script>
+</script> 
  
 <script>
 function addAttachment(){  
@@ -510,7 +519,7 @@ function addAttachment(){
 
 
 <script>
-function submitToClientMail(selectedIds,requirementId){
+function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate){
 	 if ($('#submitToClientMailTemplate').validate(false, validationSettings)){ 
 			var frm = $('#submitToClientMailTemplate').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -518,8 +527,9 @@ function submitToClientMail(selectedIds,requirementId){
 			var jsonData = encodeURIComponent(con);
 			var form = $('#submitToClientMailTemplate')[0];
     		var formData = new FormData(form); 
-    		
 			var sourceleadUrl = '${sourceleadUrl}';
+			$("#sendMail").addClass('button').val('Processing..');
+     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 				$.ajax({
 					 type : "POST",
 					 data: formData,
@@ -528,7 +538,7 @@ function submitToClientMail(selectedIds,requirementId){
 	      	         processData: false,
 	      	         contentType:false,
 	          	     dataType : 'json',
-					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId,
+					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate,
 					success : function(result) {
 							location.replace(sourceleadUrl+"/requirementList");
 					},
@@ -537,8 +547,14 @@ function submitToClientMail(selectedIds,requirementId){
 }
 </script>
 
-<script src="js/jquery-1.11.3.min.js"></script>
-  <script src="js/bootstrap3-wysihtml5.all.min.js"></script> 
-  <script src="js/bootstrap.min.js"></script> 
-  <script src="js/masterHeaderAction.js"></script> 
-  <script src="js/chosen.jquery.min.js"></script> 
+
+<script>
+function cancelSubmit(){
+    	$("#submitToClientDiv").empty();
+    	$("#emailTemplateDiv").empty();
+    	$(".submitnew-wrap").removeClass("submitnew-wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+}
+</script>
+

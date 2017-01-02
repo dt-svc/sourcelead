@@ -170,7 +170,7 @@ public class CandidateServiceTest {
 		@Test
 		public void getCandidatesByOrgLocationID() throws Exception {
 			
-			List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(1l,1l);
+			List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(1l,1l,"Candidate");
 			for(Candidate candidate : candidatesList){
 				candidate.getId();
 				System.out.println("rakshith"+candidate.getId());

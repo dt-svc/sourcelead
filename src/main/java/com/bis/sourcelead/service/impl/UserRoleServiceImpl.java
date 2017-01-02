@@ -19,9 +19,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dao.RequirementDao;
+import com.bis.sourcelead.dao.TabsDao;
+import com.bis.sourcelead.dao.TeamDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Tabs;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -40,6 +48,24 @@ public class UserRoleServiceImpl implements UserRoleService{
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	TabsDao tabsDao;
+	
+	@Autowired
+	UserDao userDao;
+	
+	@Autowired
+	OrgSpocDao orgSpocDao;
+	
+	@Autowired
+	RequirementDao requirementDao;
+	
+	@Autowired
+	TeamDao teamDao;
+
+	@Autowired
+	ProjectsDao projectsDao;
 
 	@Override
 	public UserRole addUserRole(UserRole userRole) throws Exception {
@@ -241,7 +267,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 				 writeRow.createCell(5).setCellValue(dateOfJoin); 
 			 }
 			 if(emp.getRate() !=null && !"".equalsIgnoreCase(emp.getRate())){
-				 writeRow.createCell(6).setCellValue(emp.getRate()+"/"+emp.getRatePer());
+				 StringBuilder sb = new StringBuilder();
+				 writeRow.createCell(6).setCellValue(sb.append(emp.getRate()).append("/").append(emp.getRatePer()).toString());
 			 }
   	    } 
 		   if(userRoles.getUser().getFirstName() !=null){
@@ -256,8 +283,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 		   if(userRoles.getUser().getMobilePhone() != null){
 			   writeRow.createCell(4).setCellValue(userRoles.getUser().getMobilePhone());
 		   }
-		   if(userRoles.getUserType() != null){
-			   writeRow.createCell(8).setCellValue(userRoles.getUserType());
+		   if(userRoles.getRoles() != null){
+			   writeRow.createCell(8).setCellValue(userRoles.getRoles().getDisplayName());
 		   }
 		   if(userRoles.getUser().getLocation() !=null){
 			   writeRow.createCell(7).setCellValue(userRoles.getUser().getLocation());
@@ -322,6 +349,149 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId, Long orgLocationId) {
 		return userRoleDao.getAllAssignedUsersByReportingManagerId(reportingManagerId, orgLocationId);
+	}
+
+	@Override
+	public UserRole getChangeRolePermissions(List<Long> userRoletabIds, Long userId, Long orgLocationId) throws Exception {
+		
+		UserRole userRole = new UserRole();
+		if(userRoletabIds.size() > 0){
+		List<Tabs> tabsList = tabsDao.getTabsListByIds(userRoletabIds);
+		if(tabsList != null){
+			for(Tabs tabs : tabsList){
+				if(tabs.getTabName().equalsIgnoreCase(Constants.Users)){
+					
+					/*To change reporting manager*/
+					 List<Long> userIds = userRoleDao.getAllAssignedUsersIdsByReportingManagerId(userId,orgLocationId);
+					 userRole.setAssignedUsersCountToReportingManager(userIds.size());
+					 List<User> reportManagerUsersList = new ArrayList<User>();
+					 if(userIds.size() > 0){
+						 userIds.add(userId);
+						 List<User> managerUsersList = userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(orgLocationId, userIds, Long.valueOf(Constants.TAB_USER));
+						 for(User user :managerUsersList){
+							 UserRole role = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationId);
+							 if(role != null){
+								 user.setUserType(role.getRoles().getDisplayName());
+								 reportManagerUsersList.add(user);
+							 }
+						 }
+					 }
+					 
+					 userRole.setReportingManagers(reportManagerUsersList);
+				}
+				
+				else if(tabs.getTabName().equalsIgnoreCase(Constants.Clients)){
+
+					 /*To change vendor owner and spoc*/
+					 List<Long> vendorSpocIds = orgSpocDao.getAssignedAsClientOrVendorSpocCountByUserId(userId, orgLocationId,"Vendor");
+					 userRole.setAssignedAsVendorOwnerOrSpocCount(vendorSpocIds.size());
+					 List<User> vendorTabUsersList = new ArrayList<User>();;
+					 if(vendorSpocIds.size() > 0){
+						 List<User> vendorUsersList = userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocationId, userId, Long.valueOf(Constants.TAB_VENDOR));
+						 for(User user :vendorUsersList){
+							 UserRole role = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+							 if(role != null){
+								 user.setUserType(role.getRoles().getDisplayName());
+								 vendorTabUsersList.add(user);
+							 }
+						 }
+					 }
+					 userRole.setVendorUsersList(vendorTabUsersList);
+				}
+				
+				
+				else if(tabs.getTabName().equalsIgnoreCase(Constants.Vendors)){
+					
+					
+					 /*To change client owner and spoc*/
+					 List<Long> cleintSpocIds = orgSpocDao.getAssignedAsClientOrVendorSpocCountByUserId(userId, orgLocationId,"Client");
+					 userRole.setAssignedAsClientOwnerOrSpocCount(cleintSpocIds.size());
+					 List<User> clientTabUsersList = new ArrayList<User>();
+					 if(cleintSpocIds.size() > 0){
+						 List<User> clientUsersList = userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocationId, userId, Long.valueOf(Constants.TAB_CLIENT));
+						 for(User user :clientUsersList){
+							 UserRole role = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+							 if(role != null){
+								 user.setUserType(role.getRoles().getDisplayName());
+								 clientTabUsersList.add(user);
+							 }
+						 }
+					 }
+					 userRole.setClientUsersList(clientTabUsersList);
+					
+				}
+				
+				
+				else if(tabs.getTabName().equalsIgnoreCase(Constants.Requirement)){
+					
+					 /*To change requirement Manager*/
+					 Integer requirementsCountAsManager = requirementDao.getManagerAssignedRequirementsCount(userId, orgLocationId);
+					 userRole.setRequirementsCountAsManager(requirementsCountAsManager);
+					 List<User> requirementManagersList = new ArrayList<User>();
+					 if(requirementsCountAsManager > 0){
+						 List<User> requirementManagersUsersList = userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocationId, userId, Long.valueOf(Constants.TAB_REQUIREMENT));
+						 for(User user :requirementManagersUsersList){
+							 UserRole role = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+							 if(role != null){
+								 user.setUserType(role.getRoles().getDisplayName());
+								 requirementManagersList.add(user);
+							 }
+						 }
+					 }
+					 userRole.setRequirementManagersList(requirementManagersList);
+					 
+					 Integer requirementsCountAsApprover = requirementDao.getRequirementsCountAsApprover(userId, orgLocationId);
+					 userRole.setRequirementsCountAsApprover(requirementsCountAsApprover);
+					 List<User> requirementApproversList = new ArrayList<User>();
+					 if(requirementsCountAsApprover > 0){
+						 List<User> requirementApproversUsersList = userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocationId, userId, Long.valueOf(Constants.TAB_REQUIREMENT));
+						 for(User user :requirementApproversUsersList){
+							 UserRole role = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+							 if(role != null){
+								 user.setUserType(role.getRoles().getDisplayName());
+								 requirementApproversList.add(user);
+							 }
+						 }
+					 }
+					 userRole.setRequirementApproversList(requirementApproversList);
+					 
+					 Integer teamsCountAsOwner = teamDao.getTeamCountByTeamOwner(userId, orgLocationId);
+					 userRole.setTeamsCountAsOwner(teamsCountAsOwner);
+					 List<User> teamOwnersList = new ArrayList<User>();
+					 if(teamsCountAsOwner > 0){
+						 List<User> teamUsersList = userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocationId, userId, Long.valueOf(Constants.TAB_REQUIREMENT));
+						 for(User user :teamUsersList){
+							 UserRole role = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+							 if(role != null){
+								 user.setUserType(role.getRoles().getDisplayName());
+								 teamOwnersList.add(user);
+							 }
+						 }
+					 }
+					 userRole.setTeamOwnersList(teamOwnersList);
+				}
+				
+				else if(tabs.getTabName().equalsIgnoreCase(Constants.TimeSheet_Approval)){
+					
+					 Integer projectApproverCount = projectsDao.getProjectApproversCountByUserIdAndOrgLocationId(userId, orgLocationId);
+					 userRole.setProjectApproverCount(projectApproverCount);
+					 List<User> approversOwnersList = new ArrayList<User>();
+					 if(projectApproverCount > 0){
+						 List<User> projectApproversList = userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocationId, userId, Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+						 for(User user :projectApproversList){
+							 UserRole role = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+							 if(role != null){
+								 user.setUserType(role.getRoles().getDisplayName());
+								 approversOwnersList.add(user);
+							 }
+						 }
+					 }
+					 userRole.setProjectApproversList(approversOwnersList);
+				}
+			}
+		}
+	}
+		return userRole;
 	}
 	
 

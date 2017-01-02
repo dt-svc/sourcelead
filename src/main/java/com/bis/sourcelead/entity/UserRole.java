@@ -19,6 +19,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
 
@@ -68,8 +69,15 @@ public class UserRole implements Serializable{
 	@Column(name = "USER_TYPE")
 	private String userType;
 	
+	@Column(name = "ROLE_CHANGE_REASON")
+	@Type(type="text")
+	private String roleChangeReason;
+	
 	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
 	private String terminateReason;
+	
+    @Column(name = "DESIGNATION")
+	private String designation;
     
     @Column(name = "STATUS")
 	private String status;
@@ -149,6 +157,10 @@ public class UserRole implements Serializable{
 	
 	@Transient
 	List<User> projectApproversList;
+	
+
+	@Transient
+	List<Roles> rolesList;
 	
 	
 	@Transient
@@ -520,6 +532,30 @@ public class UserRole implements Serializable{
 
 	public void setProjectApproverCount(Integer projectApproverCount) {
 		this.projectApproverCount = projectApproverCount;
+	}
+
+	public List<Roles> getRolesList() {
+		return rolesList;
+	}
+
+	public void setRolesList(List<Roles> rolesList) {
+		this.rolesList = rolesList;
+	}
+
+	public String getRoleChangeReason() {
+		return roleChangeReason;
+	}
+
+	public void setRoleChangeReason(String roleChangeReason) {
+		this.roleChangeReason = roleChangeReason;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
 	}
 
 

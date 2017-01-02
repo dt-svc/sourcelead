@@ -341,16 +341,17 @@ public class BackOfficeRestController {
     public void downloadAssetFile(@RequestParam(value="fileType", required=false) String fileType ,@RequestParam(value="assetId", required=false) Long assetId ,HttpServletResponse response) throws Exception {
 		
 		     Asset asset = assetService.getAssetById(assetId);
+		     StringBuilder fileName = new StringBuilder();
 		    
 		     InputStream inputStream;
 		     if(null != fileType && "shiftAfile".equals(fileType)){
-		    	 response.setHeader("content-disposition", "attachment; filename=\"" + asset.getShiftAFileName() + "\"");
+		    	 response.setHeader("content-disposition", fileName.append("attachment; filename=\"").append(asset.getShiftAFileName()).append("\"").toString());
 				 inputStream = new ByteArrayInputStream(asset.getShiftADocFile()); 
 		     }else if(null != fileType && "shiftBfile".equals(fileType)){
-		    	 response.setHeader("content-disposition", "attachment; filename=\"" + asset.getShiftBFileName() + "\"");
+		    	 response.setHeader("content-disposition", fileName.append("attachment; filename=\"").append(asset.getShiftBFileName()).append("\"").toString());
 				 inputStream = new ByteArrayInputStream(asset.getShiftBDocFile()); 
 		     }else{
-		    	 response.setHeader("content-disposition", "attachment; filename=\"" + asset.getFileName() + "\"");
+		    	 response.setHeader("content-disposition", fileName.append("attachment; filename=\"").append(asset.getFileName()).append("\"").toString());
 				 inputStream = new ByteArrayInputStream(asset.getDocFile()); 
 		     }
 		     
@@ -468,11 +469,11 @@ public class BackOfficeRestController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
-		
+		StringBuilder name = new StringBuilder();
 		List<AssetCategory> assetCategoryList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
 		for(AssetCategory assetCategory : assetCategoryList){
 			User user = userService.getUserByUserCode(assetCategory.getCreatedBy());
-			assetCategory.setCreatedUser(user.getFirstName()+" "+user.getLastName());
+			assetCategory.setCreatedUser(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			assetCategory.setOrgLocationId(assetCategory.getOrgLocations().getId());
 			 if(assetCategory.getUpdatedDate() != null){
 				 assetCategory.setDateStr(Constants.DF_DMY.format(assetCategory.getUpdatedDate()));

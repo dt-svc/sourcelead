@@ -68,7 +68,7 @@ public  class SourceleadELKBaseIndexer<T> {
 	public void deleteElkDocument(T entityClass,String index,String type,String id) {
 		try {
 			 sourceleadELKTransportClient.getClient().prepareDelete(index, type,id).execute().actionGet();
-			 sourceleadELKTransportClient.shutdown();
+			 //sourceleadELKTransportClient.shutdown();
 			 logger.info(index+" Document With id :"+ id +" has been deleted.");
 		}
 		catch (Exception e) {

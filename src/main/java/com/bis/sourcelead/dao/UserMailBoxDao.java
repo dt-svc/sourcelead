@@ -15,4 +15,10 @@ public interface UserMailBoxDao {
 	UserMailBox getUserMailBoxById(String Id) throws Exception;
 	
 	List<UserMailBox> getUserFavouriteMailsByUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
+	public Integer getUnReadMessagesByUserIdAndLocationIdAndType(Long userId,Long orgLocationId,String type) throws Exception;
+	
+	UserMailBox getUserPreviousMail(Long Id,Long userId,Long orgLocationId,String type) throws Exception;
+	
+	UserMailBox getUserNextMail(Long Id,Long userId,Long orgLocationId,String type) throws Exception;
 }

@@ -25,8 +25,13 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
+import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -34,10 +39,14 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -80,6 +89,18 @@ public class RequirementController {
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
 	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
+	RequirementOffersService requirementOffersService;
+	
+	@Autowired
+	RequirementOfferHistoryService requirementOfferHistoryService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
@@ -107,7 +128,8 @@ public class RequirementController {
 				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
 				for(RequirementAssignTo rat : requirementAssignToList){
 					if(requirementAssignedIds != null && !requirementAssignedIds.isEmpty()  && requirementAssignedIds != "" ){
-						requirementAssignedIds = requirementAssignedIds +"&"+rat.getAssignUserId().getId().toString();
+						StringBuilder assignUserIdsSB = new StringBuilder();
+						requirementAssignedIds = assignUserIdsSB.append(requirementAssignedIds).append("&").append(rat.getAssignUserId().getId().toString()).toString();
 					}else{
 						requirementAssignedIds =   rat.getAssignUserId().getId().toString();
 					}
@@ -153,7 +175,8 @@ public class RequirementController {
 				if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty()){
 					for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
 						if(parallelApproverIds != null && parallelApproverIds != ""){
-							parallelApproverIds =  parallelApproverIds +","+ requirementApproverHierarchy.getApproverUserId().getId().toString();
+							StringBuilder parallelApproverIdsSB = new StringBuilder();
+							parallelApproverIds =  parallelApproverIdsSB.append(parallelApproverIds).append(",").append(requirementApproverHierarchy.getApproverUserId().getId().toString()).toString();
 						}else{
 							parallelApproverIds =  requirementApproverHierarchy.getApproverUserId().getId().toString();
 						}
@@ -257,14 +280,22 @@ public class RequirementController {
 			model.addObject("clientSubmissions","N");
 		}
 		
-		// This code is commented as not in use 
-		
-		/*Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
+		Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
         if(parentRequirement != null){
             model.addObject("parentRequirement","Y");
         }else{
             model.addObject("parentRequirement","N");
-        }*/
+        }
+        
+        
+        if(requirement.getSpocId() != null && requirement.getSpocId().getId() != null){
+			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+			if(orgSpoc != null && orgSpoc.getSpocStatus() != null && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
+				model.addObject("isSpocActive", Constants.NO);
+			}else{
+				model.addObject("isSpocActive", Constants.YES);
+			}
+		}
 		
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
 		if(!isNullOrEmpty(msg)){
@@ -281,7 +312,8 @@ public class RequirementController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String fullName = null;
    	      if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName() !=null){
-   		 fullName = user.getFirstName()+" "+user.getLastName();
+   	    	     StringBuilder userNameSB = new StringBuilder();
+   		         fullName = userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
 		   	 }else{
 		   		 fullName = user.getFirstName();
 		   	 }
@@ -292,10 +324,11 @@ public class RequirementController {
 		Requirement req =requirementService.getRequirementByRequirementId(requirementId);
 	    if(req != null && req.getParentRequirement() !=null){
 			 model.addObject("toEmailId",req.getParentRequirement().getManagerUserId().getEmail());
-			 model.addObject("toFullName",req.getParentRequirement().getManagerUserId().getFirstName() +"" +req.getParentRequirement().getManagerUserId().getLastName());
-			 sb.append("Hi,"+req.getParentRequirement().getManagerUserId().getFirstName() +"" +req.getParentRequirement().getManagerUserId().getLastName());
+			 StringBuilder toFullNameSB = new StringBuilder();
+			 model.addObject("toFullName",toFullNameSB.append(req.getParentRequirement().getManagerUserId().getFirstName()).append(" ").append(req.getParentRequirement().getManagerUserId().getLastName()).toString());
+			 sb.append("Hi,").append(req.getParentRequirement().getManagerUserId().getFirstName()).append("").append(req.getParentRequirement().getManagerUserId().getLastName()).toString();
 			 sb.append("\n");
-			 sb.append(fullName+" submitted the applicants for the"+req.getJobTitle()+".\n");
+			 sb.append(fullName).append(" submitted the applicants for the").append(req.getJobTitle()).append(".\n");
 			 sb.append("Best Regards,\n");
 			 sb.append(fullName);
 			 model.addObject("body",sb.toString());
@@ -369,6 +402,54 @@ public class RequirementController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
+	}
+	
+	@RequestMapping(value = "/acceptOrRejectRequirementOffer")
+	public ModelAndView acceptOrRejectRequirementOffer(HttpServletRequest request,@RequestParam(value="offerStatus", required=false)String offerStatus,@RequestParam(value="offerId", required=false)Long offerId) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
+		List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
+		
+		ModelAndView model = new ModelAndView();
+		model.setViewName("requirement/offerAcceptOrReject");
+		model.addObject("offerStatus",offerStatus);
+		model.addObject("offerId",offerId);
+		model.addObject("requirementOffers",requirementOffers);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		if(offerStatus.equalsIgnoreCase("Accepted")){
+			
+		    if(requirementOfferHistories != null && !requirementOfferHistories.isEmpty() ){  
+			    if(offerStatus.equalsIgnoreCase("Accepted")){
+			    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
+			    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
+				    		if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+				    		}else{
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+				    		}
+							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+							 
+							//Strote RequirementSubmissionHistory
+						    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+							requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+							requirementSubmissionHistory.setFromStage("OFFERMADE");
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+					  }
+			    	
+					
+			    	  //Changing the status of offerTable 
+				      if(requirementOffers  != null){
+						    requirementOffers.setOfferStatus("OFFERACCEPTED");
+						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
+						    requirementOffersService.saveOfferStatus(requirementOffers);
+				     }
+			    }
+		    }
+		}
+		return model;
 	}
 	
 

@@ -1,9 +1,10 @@
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
  window.onload = function() {
@@ -16,7 +17,7 @@
       <div class="pull-left">
         <h2>Mailbox</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Mailbox</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Mailbox</div>
     </section>
     <div class="content-dashboard clearfix">
       <section class="action-btns clearfix hidden">
@@ -30,10 +31,26 @@
 		<!-- Mail view area -->
 			<!-- Mail side-bar -->
 			<div class="col-md-3">
-          <a class="btn btn-primary btn-block mb compose" href="${sourceleadUrl}/hotlistMail">
+           <%-- <a class="btn btn-primary btn-block mb compose" href="${sourceleadUrl}/hotlistMail">
 		  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 			Compose
-		  </a>
+		  </a>  --%>
+		  
+		  <div class="dropdown mb10 mailBtn">
+					<button class="btn-block btn btn-primary dropdown-toggle display-block" type="button" data-toggle="dropdown"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+					Compose
+						&nbsp;&nbsp;<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+					 <sec:authorize access="hasRole('ROLE_MAIL_BOX')">
+					  <li><a href="${sourceleadUrl}/composeMail">Mail</a></li>
+					  </sec:authorize>
+					  <sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
+					  	<li><a href="${sourceleadUrl}/hotlistMail">Hotlist Campaign</a></li>
+					  </sec:authorize>
+					  <!-- <li><a href="#">Requirements</a></li> -->
+					</ul>
+				  </div> 
 
           <div class="mail-box">
             <div class="mail-box-header">
@@ -41,11 +58,11 @@
             </div>
             <div>
               <ul class="nav nav-pills nav-stacked">
-                <li id="inboxActive" class=""><a href="#" onclick="getMails('Inbox');"><i class="fa fa-inbox"></i> Inbox
-                <li id="sentActive" class=""><a href="#" onclick="getMails('Sent');"><i class="fa fa-envelope-o"></i> Sent</a></li>
-                <li id="starredActive" class=""><a href="#" onclick="getMails('Starred');"><i class="fa fa-star"></i> Starred</a></li>
-                <li id="requestedActive" class=""><a href="#" onclick="getMails('Requested');"><i class="fa fa-file-text-o"></i> Requested</a></li>
-                <li id="trashActive" class=""><a href="#" onclick="getMails('Trash');"><i class="fa fa-trash-o"></i> Trash</a></li>
+                <li id="inboxActive" class=""><a href="#inbox" onclick="getMails('Inbox');"><i class="fa fa-inbox"></i> Inbox <span class="label label-primary pull-right" id="inboxUnread">${inboxUnreadMailsCount}</span>
+                <li id="sentActive" class=""><a href="#sent" onclick="getMails('Sent');"><i class="fa fa-envelope-o"></i> Sent</a></li>
+                <li id="starredActive" class=""><a href="#starred" onclick="getMails('Starred');"><i class="fa fa-star"></i> Starred</a></li>
+                <li id="requestedActive" class=""><a href="#requested" onclick="getMails('Requested');"><i class="fa fa-file-text-o"></i> Requested <span class="label label-info pull-right" id="requestedUnread">${requestedUnreadMailsCount}</span></a></li> 
+                <li id="trashActive" class=""><a href="#trash" onclick="getMails('Trash');"><i class="fa fa-trash-o"></i> Trash</a></li>
               </ul>
             </div>
             <!-- /.box-body -->
@@ -68,6 +85,7 @@
         </div>
 			<!-- mail side-bar ends -->
 			<div class="col-md-9" id="inbox">
+			<div id="mailLoading"></div>
 			 <div class="mail-box mail-content">
 			 <div class="mail-box-header">
               <h3 class="box-title" id="mailboxLabel"></h3>
@@ -86,7 +104,7 @@
 			<input id="checkAllEmails" class="checkbox-custom" onclick="toggleEmails(this);deleteMail();" name="checkAllEmails" type="checkbox">
 			<label for="checkAllEmails" class="checkbox-custom-label"></label>
 			</div>
-				<button class="btn btn-danger mailbtn-custom" type="button" onclick="getMailBoxIds();" id="trashBtn" style="display: none;"><i class="fa fa-trash-o"></i></button>
+				<button class="btn btn-danger mailbtn-custom" type="button" onclick="getMailBoxIds();" id="trashBtn" style="display: none;"><i class="fa fa-trash-o" id="trashtype"></i></button>
                 <button class="btn btn-default mailbtn-custom" type="button" onclick="refreshList();"><i class="fa fa-refresh"></i></button>
                
                <!--  <div class="pull-right">
@@ -112,8 +130,8 @@
 			
 			<div class="col-md-9" id="details">
 			 <div class="mail-box mail-content">
+			 <div id="mailContentLoading"></div>
 			 <div class="mail-widget">
-              <h3 class="box-title">Read Mail</h3>
               <div id="mailDetails"></div>
               </div>
               </div>
@@ -136,9 +154,20 @@
 	  
 	  document.getElementById("inbox").style.display="";
 	  document.getElementById("details").style.display="none";
+	  document.getElementById("trashBtn").style.display="none";
+	  $('#checkAllEmails').removeAttr('checked');
 	  $('#mailboxLabel').html(type);
 	  
+	  if(type == "Trash"){
+		  $('#trashtype').html(' <b>Delete For Ever</b>');
+	  }else{
+		  $('#trashtype').html('');
+	  }
+	  
 	  setActiveTab(type)
+	  
+	  
+	  $("#mailLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	  
 	  $.ajax({
           type : "POST",
@@ -157,6 +186,16 @@
               			var result = '';
               			result = result +'<input type="hidden" id="emailListType" value='+type+'>';
               			result = result +'<table id="mails" class="table table-hover table-striped">';
+              			
+                		result = result +'<thead>';
+                		result = result +'<tr>';
+                		result = result +'<th></th>';
+                		result = result +'<th></th>';
+                		result = result +'<th></th>';
+                		result = result +'<th></th>';
+                		result = result +'</tr>';
+                		result = result +'</thead>';
+                		
               			result = result +'<tbody>';
               			
               			 var json = JSON.parse(data);
@@ -165,38 +204,56 @@
 		                    	 
 		                    	 var isFavourite = "";
 		                    	 var isFavClass = "";
+		                    	 var isMailRead = "";
 		                    	 
 	                    		 if(opt.isFavourite == 1){
 				            		isFavourite = "checked";
 				            		isFavClass = "activestar-rating";
 				            	 }
+	                    		 
+	                    		 if(opt.isMailRead == 1){
+	                    			 isMailRead = "mail-read"
+	                    		 }else{
+	                    			 isMailRead = "mail-unread"
+	                    		 }
 		                    	 
 		                    	result = result +' <tr id="checkbox'+opt.id+'">';
-		              			result = result +'<td>';
-		              			result = result +'<input id="'+opt.id+'" value="'+opt.id+'" onclick="deleteMail();"  type="checkbox" name="mailIds[]" class="myCheckbox mrleft8" ></td>';
+		              			result = result +'<td style="width : 20px;">';
+		              			result = result +'<div class="mrleft8">';
+		              			result = result +'<input id="check'+opt.id+'" value="'+opt.id+'" class="checkbox-custom" onclick="deleteMail();" name="mailIds[]" type="checkbox">';
+		              			result = result +'<label for="check'+opt.id+'" class="checkbox-custom-label"></label>';
+		              			result = result +'</div>';
 		              			result = result +'</td>';
 		              			
 	              			    if(opt.mailStatus != 'Trash'){
 	              			    	result = result +"<td style='width : 25px;'>";
 			                        result = result +"<div class='star-rating mailbox-rating positionRelative "+isFavClass+"' id='favourite"+opt.id+"'>";
 			                        result = result +"<input type='checkbox' id='fav"+opt.id+"' "+isFavourite+" onclick='addFavourite("+opt.id+")'></input>";
-	              			    }
 		              			
 		                        result = result +" <label></label>";
 		                        result = result +"</div>";
 		                        result = result +"</td>";
+	              			  }
+		                        
+		                        if(opt.mailStatus == 'Trash'){
+		                        	result = result +'<td></td>';
+		              			 }
+			              			
 		              			
-		              			result = result +'<td class="mailbox-subject"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\')">'+opt.subject+'</a></td>';
+		              			result = result +'<td class="mailbox-subject '+isMailRead+'"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\',\''+type+'\')">'+opt.subject+'</a></td>';
 		              			result = result +'<td class="mailbox-date">'+opt.calDays+' days ago</td>';
 		              			result = result +'</tr>';
 		                    }
 		                    
-		                    
+		                     result = result +"</tbody>";
+		                     result = result +"</table>"; 
+		                     result = result +'</div>'; 
               			
 	                 	 $("#mailBoxList").empty(); 
 	                 	 $("#mailDetails").empty(); 
 	                     $("#mailBoxList").append(result); 
 	                     pagination(); 
+	                     $("#mailLoading").removeAttr("style"); 
 			    	} 
                 }else{
  	    	         
@@ -205,7 +262,7 @@
 	    	        result = result +'<div class="modal-body clearfix">';
 	           		result = result +'     </div>';
 	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
-	           		result = result +'<table id="mails" class="table table-hover table-striped">';
+	           		result = result +'<table class="table table-hover table-striped">';
 	           		result = result +'           <thead>';
 	           		result = result +'           <p class="text-center text-muted"><i class="fa fa-envelope fa-3x"></i><br/><br/>No Mails In Your '+type+' </p>';
 	           		result = result +'           </thead>';
@@ -215,7 +272,7 @@
 					$("#mailBoxList").empty();
 					$("#mailDetails").empty(); 
 				    $("#mailBoxList").append(result); 
-				    pagination();  
+				    $("#mailLoading").removeAttr("style"); 
                }
          },
            
@@ -229,7 +286,7 @@
 function pagination(){
     $("#mails").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"lengthMenu": [[20, 10, 15, -1], [20, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -394,28 +451,48 @@ function refreshList(){
 
 
 <script>
-function getEmailDetails(uuid){
+function getEmailDetails(uuid,type){
+	
+	
 	var sourceleadUrl = '${sourceleadUrl}';
 	
 	 document.getElementById("details").style.display="";
 	 document.getElementById("inbox").style.display="none";
 	 
-	
+	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
+	 
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getEmailDetails?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid,
+		url : sourceleadUrl+"/getEmailDetails?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid+"&type="+type,
 		success : function(data) {
 			
 			 var json = JSON.parse(data);
              for (var i = 0; i < json.length; i++) { 
              	 var opt = json[i]; 
+             	 
+           	     $('#inboxUnread').html(opt.unreadInboxCount);
+           	     $('#requestedUnread').html(opt.unreadRequestedCount);
+           	     $('#unreadMailsCount').html(opt.totalUnReadMailsCount);
+            	     
                  var result =""; 
+                 
              	 
               	result = result +'<div class="box-tools pull-right">';
               	result = result +'<div class="btn-group">';
-              	result = result +'<button class="btn btn-default btn-sm" type="button"><i class="fa fa-chevron-left"></i></button>';
-              	result = result +'<button class="btn btn-default btn-sm" type="button"><i class="fa fa-chevron-right"></i></button>';
-              	result = result +'</div>';
+              	if(opt.previousMailUUID != null && opt.previousMailUUID != '' && opt.previousMailUUID != 'undefined'){
+              		result = result +'<button class="btn btn-default btn-sm" type="button" onclick="getEmailDetails(\''+opt.previousMailUUID+'\',\''+type+'\')"><i class="fa fa-chevron-left"></i></button>';
+              	}else{
+              		result = result +'<button class="btn btn-default btn-sm" type="button" ><i class="fa fa-chevron-left mail-next-previous-muted"></i></button>';
+              	}
+              	
+              	if(opt.nextMailUUID != null && opt.nextMailUUID != '' && opt.nextMailUUID != 'undefined'){
+              		result = result +'<button class="btn btn-default btn-sm" type="button" onclick="getEmailDetails(\''+opt.nextMailUUID+'\',\''+type+'\')"><i class="fa fa-chevron-right"></i></button>';
+              	}else{
+              		result = result +'<button class="btn btn-default btn-sm" type="button" ><i class="fa fa-chevron-right mail-next-previous-muted"></i></button>';
+              	}
+              	
+              	
+              	result = result +'</div>'; 
                 result = result +'</div>';
                 result = result +'</div>';
 			    result = result +'<div class="mailbox-read-info">';
@@ -428,16 +505,16 @@ function getEmailDetails(uuid){
 	   			result = result +'<div class="mailbox-controls clearfix">';
 	   			result = result +'<div class="pull-left">';
 	   			result = result +'<div class="btn-group">';
-	   			result = result +'<button class="btn btn-danger" type="button" title="Delete"><i class="fa fa-trash-o"></i></button>';
-	   			result = result +'<button class="btn btn-warning" type="button" title="Reply"><i class="fa fa-reply"></i></button>';
-	   			result = result +'<button class="btn btn-info" type="button" title="Forward"><i class="fa fa-share"></i></button>';
+	   			result = result +'<button class="btn btn-danger" type="button" title="Delete" onclick="deleteReadMail(\''+uuid+'\',\''+opt.nextMailUUID+'\',\''+type+'\');"><i class="fa fa-trash-o"></i></button>';
+	   		 /* result = result +'<button class="btn btn-warning" type="button" title="Reply"><i class="fa fa-reply"></i></button>';
+	   			result = result +'<button class="btn btn-info" type="button" title="Forward"><i class="fa fa-share"></i></button>'; */
 	   			result = result +'</div>';
 	   			result = result +'</div>';
-	   			result = result +'<div class="pull-right">';
+	   			/* result = result +'<div class="pull-right">';
 	   			result = result +'<button class="btn btn-default" type="button" title="Refresh"><i class="fa fa-refresh"></i></button>';
 	   			result = result +'<button class="btn btn-default" type="button" title="Print"><i class="fa fa-print"></i></button>';
-	   			result = result +'</div>';
-	   			result = result +'</div>';
+	   			result = result +'</div>'; */
+	   			result = result +'</div>'; 
 	   			  
 	   			result = result +'<div class="mailbox-read-message clearfix borderbottm-none">';
 	   			
@@ -450,8 +527,9 @@ function getEmailDetails(uuid){
 	   			}
 	   			
 	   			
-
-	   			result = result +'<div class="clearfix project_wrap_table mail-table  mb">';
+				if(opt.candidatesList.length > 0 ){
+	   			
+				result = result +'<div class="clearfix project_wrap_table mail-table  mb">';
 	   			result = result +'<table>';
 			  	
 	   			result = result +'<thead>';
@@ -496,6 +574,7 @@ function getEmailDetails(uuid){
 	   			result = result +'</thead>';
 	   			result = result +'</table>';
 	   			result = result +'</div>';
+				}
 	   			
 	   			if(opt.fileName != null && opt.fileName != "" && opt.fileName != 'undefined'){
 	   				result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+opt.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadMailAttachment?UUID='+opt.uuid+'\"></a> ';
@@ -505,8 +584,8 @@ function getEmailDetails(uuid){
 	   			}
 	            
                 
-              if(opt.signatureId != null && opt.signatureId != "" && opt.signatureId != 'undefined'){
-            	  result = result +'<p>'+opt.signatureId.signature+'</p>';
+              if(opt.signature != null && opt.signature != "" && opt.signature != 'undefined'){
+            	  result = result +'<p>'+opt.signature+'</p>';
               }else{
             	  result = result +'<p>Thanks,<br>'+opt.fromMail+'</p>';
               }
@@ -517,7 +596,7 @@ function getEmailDetails(uuid){
             $("#mailBoxList").empty(); 
             $("#mailDetails").empty(); 
             $("#mailDetails").append(result);
-            
+            $("#mailContentLoading").removeAttr("style"); 
    				  
 
              }
@@ -527,6 +606,26 @@ function getEmailDetails(uuid){
 	
 }
 
+</script>
+
+<script>
+function deleteReadMail(uuid,nextMailUUID,type){
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
+	 
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/deleteReadMail?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid+"&type="+type,
+		success : function(data) {
+			if(nextMailUUID != null && nextMailUUID != '' && nextMailUUID != 'undefined'){
+				getEmailDetails(nextMailUUID,type);
+			}else{
+				getMails(type);
+			}
+		},
+	});   
+}
 </script>
 
 

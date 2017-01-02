@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name="EMAIL_NOTIFICATION")
 //@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="emailNotifications")
@@ -24,6 +26,7 @@ public class EmailNotification implements Serializable{
 	private Long id;
 	
 	@Column(name="EMAIL_TO")
+	@Type(type="text")
 	private String emailTo;
 	
 	@Column(name="EMAIL_FORM")

@@ -63,7 +63,7 @@ bottom:-14px;
 									<input type="text" id="jobTitle" name="jobTitle"
 										value="${requirement.jobTitle}" field-name="Job Title"
 										data-validation="required validate_Space validate_length length2-250"
-										value="" class="form-control" onblur="getTemplateVal();">
+										value="" class="form-control" >
                                      <input type="hidden" value="${requirement.id}" name="requirementId">
                                       <input type="hidden" value="Y" name="isTemplate">
 									<div class="input-group-btn selp-custom-min">
@@ -329,6 +329,7 @@ bottom:-14px;
            });
            //Adding Customized Skills to the list
            
+	       
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}

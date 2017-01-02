@@ -46,5 +46,7 @@ public interface OrgRelationsDao {
 	public List<OrgRelations> getAllVendorsListByOrgName(String orgName,Long orgLocationId);
 
 	public List<OrgRelations> getAllClientsByOrgNameOrgLocationId(String orgName, Long orgLocationId);
+	
+	List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId,String type);
 
 }

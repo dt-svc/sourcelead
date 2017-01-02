@@ -55,7 +55,8 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			userMailBox.setOrgLocationId(mailBox.getOrgLocationId());
 			userMailBox.setIsFavourite(0);
 			userMailBox.setUuid(SourceLeadRandomCodeHelper.generateUUID());
-			userMailBox.setSubject("Request For Candidates / Consultants Profiles");
+			StringBuilder sb = new StringBuilder();
+			userMailBox.setSubject(sb.append("Rep: ").append(mailBox.getSubject()).toString());
 			
 			if(jsonObj.has("phone") && !isNullOrEmpty(jsonObj.getString("phone"))){
 				userMailBox.setPhno(jsonObj.getString("phone"));
@@ -65,10 +66,14 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 				userMailBox.setComments(jsonObj.getString("comment"));
 			}
 			
+			userMailBox.setIsMailRead(0);
 			userMailBox.setStatus(1);
 			userMailBox.setCreatedDate(new Date());
 			userMailBox.setUpdatedDate(new Date());
 			userMailBoxDao.saveUserMailBox(userMailBox);
+			
+			mailBox.setIsMailRead(1);
+			userMailBoxDao.saveUserMailBox(mailBox);
 		}
 		
 	}
@@ -84,5 +89,20 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 		return userMailBoxDao.getUserFavouriteMailsByUserIdAndOrgLocationId(userId, orgLocationId);
 	}
 
+	@Override
+	public Integer getUnReadMessagesByUserIdAndLocationIdAndType(Long userId, Long orgLocationId, String type)
+			throws Exception {
+		return userMailBoxDao.getUnReadMessagesByUserIdAndLocationIdAndType(userId, orgLocationId, type);
+	}
+
+	@Override
+	public UserMailBox getUserPreviousMail(Long Id, Long userId, Long orgLocationId,String type) throws Exception {
+		return userMailBoxDao.getUserPreviousMail(Id, userId, orgLocationId,type);
+	}
+	
+	@Override
+	public UserMailBox getUserNextMail(Long Id, Long userId, Long orgLocationId,String type) throws Exception {
+		return userMailBoxDao.getUserNextMail(Id, userId, orgLocationId,type);
+	}
 	
 }

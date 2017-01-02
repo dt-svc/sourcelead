@@ -167,11 +167,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 						userImport.setDateOfJoin(null);
 					}
 					userImport.setRole(record.get(Constants.ROLE));
-					if(record.get(Constants.INVOICE_FREQUENCY) !=null || !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))){
+					/*if(record.get(Constants.INVOICE_FREQUENCY) !=null || !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))){
 						userImport.setInvoiceFrequency(record.get(Constants.INVOICE_FREQUENCY));
 					}else{
 						userImport.setInvoiceFrequency("");
-					}if(record.get(Constants.DAY_HOURS) !=null || !"".equalsIgnoreCase(record.get(Constants.DAY_HOURS))){
+					}*/
+					if(record.get(Constants.DAY_HOURS) !=null || !"".equalsIgnoreCase(record.get(Constants.DAY_HOURS))){
 						userImport.setDayHours(record.get(Constants.DAY_HOURS));
 					}else{
 						userImport.setDayHours("");
@@ -323,13 +324,13 @@ public class UploadFileServiceImpl implements UploadFileService {
 								userImport.setDateOfJoin(hireDate);
 							}
 							userImport.setRole(row.getCell(8).toString());
-							if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
+							/*if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
 								userImport.setInvoiceFrequency("");
 							} else {
 								userImport.setInvoiceFrequency(row.getCell(9).toString());
-							}
-							if (row.getCell(10) != null) {
-								String dayHours = getCellValueAsString(row.getCell(10),fileName);
+							}*/
+							if (row.getCell(9) != null) {
+								String dayHours = getCellValueAsString(row.getCell(9),fileName);
 								userImport.setDayHours(dayHours);
 							} else {
 								userImport.setDayHours("");
@@ -587,7 +588,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 			writeRow.createCell(8).setCellValue("");
 		}
-		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+	/*	if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 			if(!fileName.endsWith("xlsx")){
 				createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,fileName));
 			}else{
@@ -601,16 +602,16 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.INVOICE_FREQUENCY_LIST,9,createExcelsheet));
 			}
 		     writeRow.createCell(9).setCellValue("");
-		}
-			if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
+		}*/
+			if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 
-                String dayHours = getCellValueAsString(row.getCell(10), fileName);
-                  writeRow.createCell(10).setCellValue(dayHours);
+                String dayHours = getCellValueAsString(row.getCell(9), fileName);
+                  writeRow.createCell(9).setCellValue(dayHours);
 			} else {
-				writeRow.createCell(10).setCellValue("");
+				writeRow.createCell(9).setCellValue("");
 			}
 		if (userImport.getReason() !=null) {
-			writeRow.createCell(11).setCellValue(userImport.getReason());
+			writeRow.createCell(10).setCellValue(userImport.getReason());
 		} 
 	}
 	/**
@@ -795,9 +796,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		excelHeader.createCell(6).setCellValue(Constants.RATEPER);
 		excelHeader.createCell(7).setCellValue(Constants.DATEOFJOIN);
 		excelHeader.createCell(8).setCellValue(Constants.ROLE);
-		excelHeader.createCell(9).setCellValue(Constants.INVOICE_FREQUENCY);
-		excelHeader.createCell(10).setCellValue(Constants.DAY_HOURS);
-		excelHeader.createCell(11).setCellValue(Constants.FAILED_REASON);
+		excelHeader.createCell(9).setCellValue(Constants.DAY_HOURS);
+		excelHeader.createCell(10).setCellValue(Constants.FAILED_REASON);
 		return createExcelsheet;
 	}
 	
@@ -818,8 +818,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		excelHeader.createCell(6).setCellValue(Constants.RATEPER);
 		excelHeader.createCell(7).setCellValue(Constants.DATEOFJOIN);
 		excelHeader.createCell(8).setCellValue(Constants.ROLE);
-		excelHeader.createCell(9).setCellValue(Constants.INVOICE_FREQUENCY);
-		excelHeader.createCell(10).setCellValue(Constants.DAY_HOURS);
+		excelHeader.createCell(9).setCellValue(Constants.DAY_HOURS);
 		return sheet;
 	}
 	
@@ -899,22 +898,22 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			Cell cell8 = writeRow.createCell(8);
 			cell8.setCellValue("");
 		}
-		if (record.get(Constants.INVOICE_FREQUENCY) != null && !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))) {
+		/*if (record.get(Constants.INVOICE_FREQUENCY) != null && !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))) {
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue(record.get(Constants.INVOICE_FREQUENCY));
 		} else {
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue("");
-		}
+		}*/
 		if (record.get(Constants.DAY_HOURS) != null && !"".equalsIgnoreCase(record.get(Constants.DAY_HOURS))) {
-			Cell cell10 = writeRow.createCell(10);
-			cell10.setCellValue(record.get(Constants.DAY_HOURS));
+			Cell cell9 = writeRow.createCell(9);
+			cell9.setCellValue(record.get(Constants.DAY_HOURS));
 		} else {
-			Cell cell10 = writeRow.createCell(10);
-			cell10.setCellValue("");
+			Cell cell9 = writeRow.createCell(9);
+			cell9.setCellValue("");
 		}
 		if (userImport.getReason() !=null) {
-			writeRow.createCell(11).setCellValue(userImport.getReason());
+			writeRow.createCell(10).setCellValue(userImport.getReason());
 		} 
 	
 	}
@@ -1043,7 +1042,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		sheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6,"xls"));
 		String[] rolesList = getRolesList(org,orgLocationId,roleHierarchyId);
 	    sheet.addValidationData(getDropDownListForCell(rolesList,8,"xls"));
-		sheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,"xls"));
+		//sheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,"xls"));
 		File file = new File("createuser.xls");
 		FileOutputStream fos = new FileOutputStream(file);
 		try {

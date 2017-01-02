@@ -51,6 +51,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 		
 		List<RequirementInterviewHistory> interviewslist = null;
 		interviewslist = requirementInterviewHistoryDao.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
+		
 		if (interviewslist != null && !interviewslist.isEmpty() ) {
 			for (RequirementInterviewHistory interviewHistory : interviewslist) {
 				
@@ -59,7 +60,8 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				if(requirementInterview.getRemainedBefore() != null && !requirementInterview.getRemainedBefore().isEmpty()){
 					Integer hours = (Integer.parseInt(requirementInterview.getRemainedBefore()) / 60);
 					Integer minutes = (Integer.parseInt(requirementInterview.getRemainedBefore()) % 60);
-					interviewHistory.setRemainderTime(hours + " : " + minutes + " minutes");
+					StringBuilder interviewStringBuilder=new StringBuilder();
+					interviewHistory.setRemainderTime(interviewStringBuilder.append(hours).append(" : ").append( minutes).append(" minutes").toString());
 				}
 				
 			    if(requirementInterview.getDateOfInterview() != null){
@@ -67,15 +69,20 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    }
 			    
 			    if(requirementInterview.getStartTime() != null){
-			    	 String hours = requirementInterview.getStartTime().getHours()+"";
-			    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
-			    	 interviewHistory.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
+			    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
+			    	 StringBuilder startTimeBuilder=new StringBuilder();
+			    	 interviewHistory.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(startTimeBuilder.append(hours).append(":").append(minutes).toString()));
+			    	 if(requirementInterview.getStartTime().compareTo(new Date())<0){
+			    		 interviewHistory.setFeedbackStartTime("feedbackStartTime");
+			    	 }
 			    }
 			    
 			    if(requirementInterview.getEndTime() != null){
-			    	 String hours = requirementInterview.getEndTime().getHours()+"";
-			    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
-			    	 interviewHistory.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
+			    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
+			    	 StringBuilder endTimeBuilder=new StringBuilder();
+			    	 interviewHistory.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(endTimeBuilder.append(hours).append(":").append(minutes).toString()));
 			    	 if(requirementInterview.getEndTime().compareTo(new Date())<0){
 			    		 interviewHistory.setFeedbackEndTime("feedbackEndTime");
 			    	 }
@@ -116,9 +123,10 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				int i = 0;
 				for(RequirementInterviewer interviewer: Interviewers){
 					if(i <= 50){
-						InterviewersList = InterviewersList+interviewer.getInterviewerUser().getFirstName()+" "+interviewer.getInterviewerUser().getLastName();
+						 StringBuilder interviewerBuilder=new StringBuilder();
+						InterviewersList = interviewerBuilder.append(InterviewersList).append(interviewer.getInterviewerUser().getFirstName()).append(" ").append(interviewer.getInterviewerUser().getLastName()).toString();
 						if(i != Interviewers.size()-1){
-							InterviewersList = InterviewersList+",";
+							InterviewersList = interviewerBuilder.append(InterviewersList).append(",").toString();
 						}
 					}
 					i++;
@@ -142,5 +150,10 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 		return list;
 
 			}
+
+	@Override
+	public List<RequirementInterviewHistory> getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception {
+		return requirementInterviewHistoryDao.getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId,  orgLocationsId);
+	}
 
 }

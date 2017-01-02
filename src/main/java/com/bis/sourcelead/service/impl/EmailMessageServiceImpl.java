@@ -1,11 +1,19 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -27,19 +35,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailNotification;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionXls;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.EmailMessageService;
 import com.bis.sourcelead.service.EmailNotificationService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionXlsService;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
 *
@@ -82,6 +96,12 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired @Lazy
+	private CandidateResumesService candidateResumesService;
+	
+	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
 
 	@Value("${sendMailForNonProd}")
 	private String sendMailForNonProd;
@@ -96,7 +116,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	private String defaultFromEmailAddressPwd;
 
 	@Override
-	@Async
+	//@Async
 	public void sendEmail(EmailMessage emailMessage, Long locationsId, ArrayList<EmailRecipient> emailRecipientList,
 			List<EmailAttachment> attachmentList) throws Exception {
 
@@ -174,12 +194,18 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			for (int i = 0; i < recipients.length; i++) {
 				addressTo[i] = new InternetAddress(recipients[i]);
 			}
-			message.setRecipients(Message.RecipientType.TO, addressTo);
+			
+			
+			if(null != emailMessage.getEmailType() && emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)){
+				message.setRecipients(Message.RecipientType.BCC, addressTo);
+			}else{
+				message.setRecipients(Message.RecipientType.TO, addressTo);
+			}
 
 			message.setHeader("Content-Type", "text/html; charset=UTF-8");
 			message.setSubject(emailMessage.getSubject());
 
-			if (attachmentList.size() > 0) {
+			if (null != attachmentList && attachmentList.size() > 0) {
 				for (EmailAttachment attachment : attachmentList) {
 					
 					DataSource dataSource = null;
@@ -218,6 +244,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 						mimeMultipart.addBodyPart(bodyPart);
 					}
 					
+				
 
 					message.setContent(mimeMultipart);
 					Transport.send(message);
@@ -275,7 +302,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	@Override
 	@Async
 	public void sendEmailWithAttachment(EmailMessage emailMessage, Long locationsId,
-			ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList) throws Exception {
+			ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList, String[] submissionIds) throws Exception {
 
 
 		logger.info("############## sending mail ###########");
@@ -296,13 +323,13 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 					logger.info("######## if production email/password not correct then email sent from default email address ###########");
 				}
 				emailNotificationId = storeEmailInfoInDB(emailMessage, emailRecipientList);
-				sendMessageAttachment(emailMessage, emailRecipientList, attachmentList);
+				sendMessageAttachment(emailMessage, emailRecipientList, attachmentList,submissionIds);
 			} else {
 				if (sendMailForNonProd.equalsIgnoreCase("true")) {
 					emailMessage.setUserName(defaultFromEmailAddress);
 					emailMessage.setPassword(defaultFromEmailAddressPwd);
 					emailNotificationId = storeEmailInfoInDB(emailMessage, emailRecipientList);
-					sendMessageAttachment(emailMessage, emailRecipientList, attachmentList);
+					sendMessageAttachment(emailMessage, emailRecipientList, attachmentList,submissionIds);
 				}
 			}
 
@@ -317,9 +344,11 @@ public class EmailMessageServiceImpl implements EmailMessageService {
  * @param emailMessage
  * @param emailRecipientList
  * @param attachmentList
+ * @param submissionIds
+ * @throws Exception 
  */
 	private void sendMessageAttachment(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList,
-			List<EmailAttachment> attachmentList) {
+			List<EmailAttachment> attachmentList, String[] submissionIds) throws Exception {
 
 		Properties props = new Properties();
 		final String username = emailMessage.getUserName();
@@ -365,9 +394,16 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			message.setSubject(emailMessage.getSubject());
 			MimeMultipart mimeMultipart = new MimeMultipart();
 			BodyPart messageBodyPart = new MimeBodyPart();
+			
+			//create resumes zip.
+			if(emailMessage != null && Constants.YES.equalsIgnoreCase(emailMessage.getSendResumes())){
+				mimeMultipart = createResumeZipFile(submissionIds);
+			}
+			 
 			if (attachmentList.size() > 0) {
 				messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
 				mimeMultipart.addBodyPart(messageBodyPart);
+				
 				for (EmailAttachment attachment : attachmentList) {
 					UUID = attachment.getName();
 					SubmissionXls xls = submissionXlsService.getSubmissionXlsByUUID(UUID);
@@ -375,28 +411,87 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 					MimeBodyPart xlsBodyPart = new MimeBodyPart();
 					xlsBodyPart.setDataHandler(new DataHandler(dataSource));
 					xlsBodyPart.setFileName(attachment.getName());
-
 					mimeMultipart.addBodyPart(xlsBodyPart);
-
 					message.setContent(mimeMultipart);
+					
 				}
-				Transport.send(message);
 			} else {
-				
 				messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
-				Multipart multipart = new MimeMultipart();
-				multipart.addBodyPart(messageBodyPart);
-
-				message.setContent(multipart);
-				Transport.send(message);
+				mimeMultipart.addBodyPart(messageBodyPart);
+				message.setContent(mimeMultipart);
 			}
-
+			Transport.send(message);
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 	
+	}
+	
+	private MimeMultipart createResumeZipFile(String[] submissionIds) throws Exception {
+		MimeMultipart mimeMultipart = new MimeMultipart();
+		if( submissionIds != null && !"".equals(submissionIds) && submissionIds.length > 0){
+			 List<Long> tempSubmissionIds = new ArrayList<>();
+			 for(int i = 0; i < submissionIds.length; i++){
+				 tempSubmissionIds.add(Long.valueOf(submissionIds[i]));
+			 }
+	   		 List<Long> submissionResumeIds = requirementSubmissionService.getResumeIdsByRequirementSubmissionId(tempSubmissionIds);
+	   		 if(submissionResumeIds != null && !submissionResumeIds.isEmpty()){
+	   			try {
+	   				 List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesByIds(submissionResumeIds);
+			    	 if(candidateResumesList != null && !candidateResumesList.isEmpty()){
+			    		     ByteArrayOutputStream zipBytes = new ByteArrayOutputStream();
+			    	         ZipOutputStream outZip = new ZipOutputStream(zipBytes);
+			    	         
+					    	 int i= 0;
+					    	 for(CandidateResumes wte : candidateResumesList){
+			    	        	  addToZipFile(wte.getDocFile(), outZip , wte.getFileName());
+			    	        	  i++;
+			    	         }
+					    	 
+					    	 outZip.closeEntry();
+			    	         outZip.close();
+			    	         DataSource source = new ByteArrayDataSource(zipBytes.toByteArray(), "application/zip" );
+			    	         MimeBodyPart messageBodyPart1 = new MimeBodyPart();
+			    	         messageBodyPart1.setDataHandler(new DataHandler( source ));
+			    	         DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy"); 
+			    	         StringBuilder fName= new StringBuilder();
+			    	         String fileName = fName.append("resumes").append(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode()).append(" ").append(dateFormat.format(new Date())).append(".zip").toString();
+			    	         messageBodyPart1.setFileName(fileName);
+			 				 mimeMultipart.addBodyPart(messageBodyPart1);
+			    	 }
+		    	}catch (Exception e) {
+					e.printStackTrace();
+				} 
+	   		 }
+		 }
+		return mimeMultipart;
+	
+}
+
+	public static void addToZipFile(byte[] by, ZipOutputStream zos , String fileName) throws FileNotFoundException, IOException {
+	    byte[] content = by;
+	    if(content != null){
+	    	 int size = content.length;
+       
+		        ByteArrayInputStream ins = null;
+		        ins = new ByteArrayInputStream(content);
+        
+		        ZipEntry zipEntry = new ZipEntry(fileName); 
+				zos.putNextEntry(zipEntry);
+		
+				final int BUFFER = 4096;
+				byte[] bytes = new byte[2048];
+				byte data[] = new byte[BUFFER];
+		
+				int length = 0;
+				while ((length = ins.read(bytes)) >= 0) {
+					zos.write(bytes, 0, length);
+				}
+		
+        }
+		zos.closeEntry();
 	}
 
 }

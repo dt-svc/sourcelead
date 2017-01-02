@@ -199,11 +199,12 @@
              <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
              <div class="input-group-btn selp-custom-min">
              <select class="selectpicker" id="designationType" name="designationType">
-                 <option><a href="#">C2C</a></option>
-                 <option><a href="#">W-2</a></option>
-                 <option><a href="#">Part Time</a></option>
-                 <option><a href="#">Full Time</a></option>
-                 <option><a href="#">Other</a></option>
+             <option value="">--Select--</option>
+                 <option>C2C</option>
+                 <option>W-2</option>
+                 <option>Part Time</option>
+                 <option>Full Time</option>
+                 <option>Other</option>
              </select>
              </div>
            </div>
@@ -266,12 +267,12 @@
                   
                   <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
                  
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
                 </select>
                 
@@ -304,12 +305,12 @@
                   
                   <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
                  
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
                 </select>
                 
@@ -379,12 +380,12 @@
          <label class="col-md-3">Notice Period</label>
           <div class="col-md-9">
                <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
-                <option value=""><a href="#">Select</a></option>
-                 <option ${noticePeriod  == 'Immediately' ? 'selected' : ''}><a href="#">Immediately</a></option>
-                 <option ${noticePeriod  == '15 days' ? 'selected' : ''}><a href="#">15 days</a></option>
-                 <option ${noticePeriod  == 'Month' ? 'selected' : ''}><a href="#">Month</a></option>
-                 <option ${noticePeriod  == '2 months' ? 'selected' : ''}><a href="#">2 months</a></option>
-                 <option ${noticePeriod  == '3 months' ? 'selected' : ''}><a href="#">3 months</a></option>
+                <option value="">--Select--</option>
+                 <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately available</option>
+                 <option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
+                 <option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1 Month</option>
+                 <option ${noticePeriod  == '2 Months' ? 'selected' : ''}>2 Months</option>
+                 <option ${noticePeriod  == '3 Months' ? 'selected' : ''}>3 Months</option>
                 </select>
              
            </div>
@@ -659,6 +660,8 @@ function getCities(){
 	       $("#state").chosen();
 	       $("#city").chosen();
 	       
+	       $("#candidateSkills").val('').trigger("chosen:updated");
+	       $("#candidateEducation").val('').trigger("chosen:updated");
 	       
 	        //Adding Customized Skills to the list
 	        var select, chosen;
@@ -674,6 +677,13 @@ function getCities(){
 		            var option = $("<option>").val(newSkill).text(newSkill);
 		            select.append(option);
 		            select.find(option).prop('selected', true);
+		            
+		            //to doesn't allow duplicates
+                    $("#candidateSkills option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+                    //end
+		            
 	        		$("#candidateSkills").trigger("chosen:updated");
 	        		
 		        }
@@ -694,6 +704,13 @@ function getCities(){
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);
 		            selectone.find(option).prop('selected', true);
+		            
+		            //to doesn't allow duplicates
+                    $("#candidateEducation option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+                    //end
+		            
 	        		$("#candidateEducation").trigger("chosen:updated");
 	        		
 		        }
@@ -932,7 +949,9 @@ function getUsersByRole(){
     $("#email").val('');
     $("#mobilePhone").val('');
     $("#uploadFile").val('');
-   
+    
+    /* Clear the skills */
+    $("#candidateSkills").val('').trigger("chosen:updated");
 }
 
 </script>
