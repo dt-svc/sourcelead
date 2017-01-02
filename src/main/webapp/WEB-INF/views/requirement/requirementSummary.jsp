@@ -1891,6 +1891,11 @@ function clientSideBar(candidateId){
 			             
 	                	 var result = "";
 	                	 
+	                	 if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
+	                		 lastName  = json.lastName;
+	                	 }else{
+	                		 lastName = "";
+	                	 }
 	                	 result = result+'<div id="popUp" ></div>  ';
 	                	
 	                	 
@@ -1937,7 +1942,7 @@ function clientSideBar(candidateId){
 			             result = result+'                     </div>'; */
 			             result = result+'                     <div class="media-body candidate-details">';
 			             
-			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+json.lastName+'</h4>';
+			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
 			            
 			             result = result+'                       <ul class="list-unstyled">';
 			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){

@@ -17,10 +17,10 @@
  .clsDatePicker {
    z-index: 100000 !important;
 }
-.side-bar .side-nav ul li span{
+/* .side-bar .side-nav ul li span{
   display: inline-block;
   float: none;
-}
+} */
 /* .project_wrap_table span{
 display: inline;
 } */
