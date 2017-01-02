@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import java.util.List;
 
 import org.json.JSONObject;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.UserMailBox;
 
@@ -14,12 +15,16 @@ public interface UserMailBoxService {
 	
 	UserMailBox getUserMailBoxByUUID(String UUID);
 	
-	public void setRequestForResumeDetails(JSONObject jsonObj,String candidatesIds,String UUID) throws Exception;
+	public void setRequestForResumeDetails(JSONObject jsonObj,String candidatesIds,String UUID,MultipartFile multiFile) throws Exception;
 	
 	UserMailBox getUserMailBoxById(String Id) throws Exception;
 	
 	List<UserMailBox> getUserFavouriteMailsByUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 	
 	public Integer getUnReadMessagesByUserIdAndLocationIdAndType(Long userId,Long orgLocationId,String type) throws Exception;
+	
+	UserMailBox getUserPreviousMail(Long Id,Long userId,Long orgLocationId,String type) throws Exception;
+	
+	UserMailBox getUserNextMail(Long Id,Long userId,Long orgLocationId,String type) throws Exception;
 	
 }

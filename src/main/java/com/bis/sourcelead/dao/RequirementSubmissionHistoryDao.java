@@ -13,5 +13,7 @@ public interface RequirementSubmissionHistoryDao {
 	List<RequirementSubmissionHistory> getRequirementHistoryByLocationIdAndStage(Long orgLocationID,String submissionType, Long submissionId) throws Exception;
 
 	RequirementSubmissionHistory getRequirementSubmissionHistoryBySubmissionId(Long submissionId);
+	
+	List<RequirementSubmissionHistory> getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(Long candidateId, Long orgLocationId, Long requirementId,Long submissionId)throws Exception;
 
 }

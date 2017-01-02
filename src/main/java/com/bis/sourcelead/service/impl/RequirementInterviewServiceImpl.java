@@ -37,7 +37,6 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
-import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
@@ -78,8 +77,6 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
 	
-	@Autowired
-	private RequirementInterviewerService requirementInterviewerService;
 	
 	@Autowired
 	private RequirementInterviewHistoryService requirementInterviewHistoryService;
@@ -883,6 +880,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	public RequirementInterview getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(Long requirementInterviewId,
 			Long submissionId, Long orgLocationsId) {
 		return requirementInterviewDao.getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(requirementInterviewId, submissionId, orgLocationsId);
+	}
+	@Override
+	public List<RequirementInterview> getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(Long submissionId,
+			Long orgLocationsId) throws Exception {
+		return requirementInterviewDao.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
 	}
 	
 	/*@Override

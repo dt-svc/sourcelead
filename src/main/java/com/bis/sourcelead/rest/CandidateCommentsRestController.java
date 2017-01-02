@@ -6,8 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -39,7 +37,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 public class CandidateCommentsRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(CandidateCommentsRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -123,13 +120,11 @@ public class CandidateCommentsRestController {
 	public @ResponseBody String getAllCommentsOnCandidateByCandidateIdAndOrgLocation(String candidateId, HttpServletRequest request) throws Exception {
 
 
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		if(StringUtils.isNotEmpty(candidateId)){
-			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
 			
-			List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(candidate, orgLocation);
+			List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Long.parseLong(candidateId), orgLocation);
 
 			String resultJson = commonUtil.toJSON(candidateCommentsList);
 			return resultJson;

@@ -5,8 +5,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,7 +34,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 public class CandidateEmployersRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(CandidateEmployersRestController.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -51,6 +48,8 @@ public class CandidateEmployersRestController {
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	
 
 	/*------------Create a Candidate Employers details--------------------------------*/
 	

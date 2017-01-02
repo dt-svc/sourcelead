@@ -1,23 +1,16 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
-import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 

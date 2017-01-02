@@ -36,6 +36,7 @@ import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.TimeSheetPdfUtil;
  
 
 @RestController 
@@ -61,6 +62,9 @@ public class TimesheetEntriesRestController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	TimeSheetPdfUtil timeSheetPdfUtil;
 	
 	/**
 	 * @author sarath kumar punnana
@@ -267,12 +271,18 @@ public class TimesheetEntriesRestController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value = "/exportTimeShhet")  
+	@RequestMapping(value = "/exportTimeSheet")  
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS')")
-	public void ExportTimeShhet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate,HttpServletResponse response) throws Exception {
+	public void ExportTimeShhet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate,@RequestParam(value="exportType", required=false) String exportType,HttpServletResponse response) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		File file = exportTimesheetEntries.exportTimesheets(user, navigation, startDate,orgLocations);
+		File file = null;
+		if(!"pdf".equalsIgnoreCase(exportType)){
+			file = exportTimesheetEntries.exportTimesheets(user, navigation, startDate,orgLocations);
+		}else{
+			file = timeSheetPdfUtil.exportTimesheetPdf(user, navigation, startDate,orgLocations);
+		}
+		
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";

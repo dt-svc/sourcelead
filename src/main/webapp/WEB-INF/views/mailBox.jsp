@@ -240,7 +240,7 @@
 		              			 }
 			              			
 		              			
-		              			result = result +'<td class="mailbox-subject '+isMailRead+'"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\')">'+opt.subject+'</a></td>';
+		              			result = result +'<td class="mailbox-subject '+isMailRead+'"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\',\''+type+'\')">'+opt.subject+'</a></td>';
 		              			result = result +'<td class="mailbox-date">'+opt.calDays+' days ago</td>';
 		              			result = result +'</tr>';
 		                    }
@@ -451,7 +451,8 @@ function refreshList(){
 
 
 <script>
-function getEmailDetails(uuid){
+function getEmailDetails(uuid,type){
+	
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	
@@ -462,7 +463,7 @@ function getEmailDetails(uuid){
 	 
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getEmailDetails?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid,
+		url : sourceleadUrl+"/getEmailDetails?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid+"&type="+type,
 		success : function(data) {
 			
 			 var json = JSON.parse(data);
@@ -474,11 +475,23 @@ function getEmailDetails(uuid){
            	     $('#unreadMailsCount').html(opt.totalUnReadMailsCount);
             	     
                  var result =""; 
+                 
              	 
               	result = result +'<div class="box-tools pull-right">';
               	result = result +'<div class="btn-group">';
-              	result = result +'<button class="btn btn-default btn-sm" type="button"><i class="fa fa-chevron-left"></i></button>';
-              	result = result +'<button class="btn btn-default btn-sm" type="button"><i class="fa fa-chevron-right"></i></button>';
+              	if(opt.previousMailUUID != null && opt.previousMailUUID != '' && opt.previousMailUUID != 'undefined'){
+              		result = result +'<button class="btn btn-default btn-sm" type="button" onclick="getEmailDetails(\''+opt.previousMailUUID+'\',\''+type+'\')"><i class="fa fa-chevron-left"></i></button>';
+              	}else{
+              		result = result +'<button class="btn btn-default btn-sm" type="button" ><i class="fa fa-chevron-left mail-next-previous-muted"></i></button>';
+              	}
+              	
+              	if(opt.nextMailUUID != null && opt.nextMailUUID != '' && opt.nextMailUUID != 'undefined'){
+              		result = result +'<button class="btn btn-default btn-sm" type="button" onclick="getEmailDetails(\''+opt.nextMailUUID+'\',\''+type+'\')"><i class="fa fa-chevron-right"></i></button>';
+              	}else{
+              		result = result +'<button class="btn btn-default btn-sm" type="button" ><i class="fa fa-chevron-right mail-next-previous-muted"></i></button>';
+              	}
+              	
+              	
               	result = result +'</div>'; 
                 result = result +'</div>';
                 result = result +'</div>';
@@ -489,19 +502,19 @@ function getEmailDetails(uuid){
 			    result = result +'<span class="mailbox-read-time pull-right">'+opt.calDays+' days ago</span></h5>';
 			    result = result +'</div>	';
 
-	   			/* result = result +'<div class="mailbox-controls clearfix">';
+	   			result = result +'<div class="mailbox-controls clearfix">';
 	   			result = result +'<div class="pull-left">';
 	   			result = result +'<div class="btn-group">';
-	   			result = result +'<button class="btn btn-danger" type="button" title="Delete"><i class="fa fa-trash-o"></i></button>';
-	   			result = result +'<button class="btn btn-warning" type="button" title="Reply"><i class="fa fa-reply"></i></button>';
-	   			result = result +'<button class="btn btn-info" type="button" title="Forward"><i class="fa fa-share"></i></button>';
+	   			result = result +'<button class="btn btn-danger" type="button" title="Delete" onclick="deleteReadMail(\''+uuid+'\',\''+opt.nextMailUUID+'\',\''+type+'\');"><i class="fa fa-trash-o"></i></button>';
+	   		 /* result = result +'<button class="btn btn-warning" type="button" title="Reply"><i class="fa fa-reply"></i></button>';
+	   			result = result +'<button class="btn btn-info" type="button" title="Forward"><i class="fa fa-share"></i></button>'; */
 	   			result = result +'</div>';
 	   			result = result +'</div>';
-	   			result = result +'<div class="pull-right">';
+	   			/* result = result +'<div class="pull-right">';
 	   			result = result +'<button class="btn btn-default" type="button" title="Refresh"><i class="fa fa-refresh"></i></button>';
 	   			result = result +'<button class="btn btn-default" type="button" title="Print"><i class="fa fa-print"></i></button>';
-	   			result = result +'</div>';
 	   			result = result +'</div>'; */
+	   			result = result +'</div>'; 
 	   			  
 	   			result = result +'<div class="mailbox-read-message clearfix borderbottm-none">';
 	   			
@@ -593,6 +606,26 @@ function getEmailDetails(uuid){
 	
 }
 
+</script>
+
+<script>
+function deleteReadMail(uuid,nextMailUUID,type){
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
+	 
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/deleteReadMail?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid+"&type="+type,
+		success : function(data) {
+			if(nextMailUUID != null && nextMailUUID != '' && nextMailUUID != 'undefined'){
+				getEmailDetails(nextMailUUID,type);
+			}else{
+				getMails(type);
+			}
+		},
+	});   
+}
 </script>
 
 
