@@ -2137,14 +2137,18 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
         
         for(RequirementSubmission reqsub :submittedApplicantsList){
             
-            reqsub.setCandidateName(reqsub.getCandidate().getFirstName() +""+ reqsub.getCandidate().getLastName());
-            reqsub.setRequirementName(reqsub.getRequirement().getJobTitle());
+        	if(reqsub.getCandidate() != null){
+        		 reqsub.setCandidateName(reqsub.getCandidate().getFirstName() +""+ reqsub.getCandidate().getLastName());
+        	}
+        	if(reqsub.getRequirement() != null){
+        		reqsub.setRequirementName(reqsub.getRequirement().getJobTitle());
+        	}
             
             User  submittedSourceUser = userDao.getUserByUserCode(reqsub.getCreatedBy());
-            
             reqsub.setSubmittedBy(submittedSourceUser.getFirstName() +"" + submittedSourceUser.getLastName());
-            reqsub.setSubmittedOn(Constants.DF_DMY.format(reqsub.getCreatedDate()));
-
+            if(reqsub.getUpdatedDate() != null){
+            	reqsub.setSubmittedOn(Constants.DF_DMY.format(reqsub.getUpdatedDate()));
+            }
         }
         return submittedApplicantsList;
 	}

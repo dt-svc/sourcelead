@@ -288,7 +288,9 @@ overflow-x: auto;
 			    </div>
 		    </c:if>
 		     <div class="clearfix row mb"> 
-		     <jsp:include page="dashboardApplicants.jsp"></jsp:include>
+		    	 <c:if test = "${isManagerWithSubmissionRateStatusAsRequestOrAccept == true}">  
+		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
+		     	</c:if>
 		     </div>
 	    <%-- </c:if> --%>
 	    

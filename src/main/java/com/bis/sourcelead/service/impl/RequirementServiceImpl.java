@@ -2051,6 +2051,15 @@ public class RequirementServiceImpl implements RequirementService {
 	public List<Requirement> getManagerAssignedRequirementsList(Long userId, Long orgLocationId) throws Exception {
 		return requirementDao.getManagerAssignedRequirementsList(userId, orgLocationId);
 	}
+	
+
+	@Override
+	public Boolean checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(Long userId,
+			Long orgLocationId) throws Exception {
+		
+		return requirementDao.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(userId, orgLocationId);
+	
+	}
 
 }
 
