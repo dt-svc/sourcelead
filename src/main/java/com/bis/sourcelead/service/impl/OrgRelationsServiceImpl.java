@@ -142,17 +142,18 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		OrgRelations orgRelation =  orgRelationsDao.getClientAndVendorOrgDeatilsById(orgLocationId,orgRelationId);
 		if(orgRelation != null){
 			//if login user org id is equals to vendor location id then we get vendor list of ResponderLocationId Org details 
-			 if(orgRelation.getLocationId().getId().longValue()== loginOrgLocationId.longValue()){ 
-					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
-					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
-					orgRelation.setState(orgRelation.getResponderLocationId().getState());
-					orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
-					orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
+			 if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== loginOrgLocationId.longValue()){ 
+					if(orgRelation.getResponderLocationId() !=  null){
+						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
+						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
+						orgRelation.setState(orgRelation.getResponderLocationId().getState());
+						orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
+						orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
+						orgRelation.setOrgType(orgRelation.getResponderLocationId().getOrg().getOrgType());
+					}
 					orgRelation.setLevel(orgRelation.getInitiatorLevel());
-					orgRelation.setOrgType(orgRelation.getResponderLocationId().getOrg().getOrgType());
-					
 			 }
 			 //to fetch user details by usercode 
 			User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
@@ -160,16 +161,18 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			orgRelation.setVendorCreateduserName(vendorName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			
 			//if login user org id is equals to vendor ResponderLocationId id then we get vendor list of location Org details 
-			 if(orgRelation.getResponderLocationId().getId().longValue()== loginOrgLocationId.longValue()){ 
-					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
-					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
-					orgRelation.setCity(orgRelation.getLocationId().getCity());
-					orgRelation.setState(orgRelation.getLocationId().getState());
-					orgRelation.setPhone(orgRelation.getLocationId().getPhone());
-					orgRelation.setEmail(orgRelation.getLocationId().getEmail());
+			 if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue()== loginOrgLocationId.longValue()){ 
+					if(orgRelation.getLocationId() != null){
+						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
+						orgRelation.setCity(orgRelation.getLocationId().getCity());
+						orgRelation.setState(orgRelation.getLocationId().getState());
+						orgRelation.setPhone(orgRelation.getLocationId().getPhone());
+						orgRelation.setEmail(orgRelation.getLocationId().getEmail());
+						orgRelation.setOrgType(orgRelation.getLocationId().getOrg().getOrgType());
+					}
 					orgRelation.setLevel(orgRelation.getResponderLevel());
-					orgRelation.setOrgType(orgRelation.getLocationId().getOrg().getOrgType());
 			 } 
 		}
 		return orgRelation;
@@ -205,14 +208,16 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				}
 				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(),loginUserId,orgLocationId);
 				orgRelation.setNoOfContatcs(orgSpocs.size());
-				if(orgRelation.getLocationId().getId().longValue()== orgLocationId.longValue()){
+				if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocationId.longValue()){
+					if(orgRelation.getResponderLocationId() != null){
+						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
+						orgRelation.setState(orgRelation.getResponderLocationId().getState());
+						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
+						orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+					}
 					
-					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
-					orgRelation.setState(orgRelation.getResponderLocationId().getState());
-					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
-					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
 					if(orgRelation.getInitiatorLevel()!=null){
 						orgRelation.setLevel(orgRelation.getInitiatorLevel());
 					}
@@ -221,13 +226,16 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					}
 				}
 				
-				if(orgRelation.getResponderLocationId().getId().longValue()== orgLocationId.longValue()){
-					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
-					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
-					orgRelation.setState(orgRelation.getLocationId().getState());
-					orgRelation.setCity(orgRelation.getLocationId().getCity());
-					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+				if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue()== orgLocationId.longValue()){
+					if(orgRelation.getLocationId() != null){
+						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
+						orgRelation.setState(orgRelation.getLocationId().getState());
+						orgRelation.setCity(orgRelation.getLocationId().getCity());
+						orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+					}
+					
 					if(orgRelation.getInitiatorLevel()!=null){
 						orgRelation.setLevel(orgRelation.getInitiatorLevel());
 					}
@@ -253,9 +261,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		List<OrgSpoc> vandorsContactsList =  orgRelationsDao.getAllVendorsContactFilterListByOrgLocationId(loginUserId,userIds,orgLocationId, relationType,status,vendorIds,invitationStatus);
 		if(vandorsContactsList != null && !vandorsContactsList.isEmpty()){
 		   for (OrgSpoc orgSpoc : vandorsContactsList) {
-				if(orgSpoc.getSpocUser().getId().longValue() == loginUserId.longValue() || orgSpoc.getOwnerUser().getId().longValue() == loginUserId.longValue()){
+				if((orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getId() != null && orgSpoc.getSpocUser().getId().longValue() == loginUserId.longValue()) || (orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getId() != null && orgSpoc.getOwnerUser().getId().longValue() == loginUserId.longValue())){
 					//if login user is spoc
-					if(orgSpoc.getSpocUser().getId().longValue() == loginUserId.longValue()){
+					if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getId() != null && orgSpoc.getSpocUser().getId().longValue() == loginUserId.longValue()){
 						 StringBuilder spocNameSB = new StringBuilder();
 						 StringBuilder ownerNameSB = new StringBuilder();
 	    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
@@ -266,7 +274,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
 					}
 					//if login user is Owner
-					else if(orgSpoc.getOwnerUser().getId().longValue() == loginUserId.longValue()){
+					else if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getId() != null && orgSpoc.getOwnerUser().getId().longValue() == loginUserId.longValue()){
 						 StringBuilder spocNameSB1 = new StringBuilder();
 						    if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
 								orgSpoc.setSpocName(spocNameSB1.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
@@ -283,7 +291,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 						
 					 
 				}else{
-					if(orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocationId.longValue() ){
+					if(orgSpoc.getInitiatorLocationId() != null && orgSpoc.getInitiatorLocationId().getId() != null && orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocationId.longValue() ){
 						 StringBuilder spocNameSB2 = new StringBuilder();
 						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
 							orgSpoc.setSpocName(spocNameSB2.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
@@ -298,7 +306,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 						 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 						 
 					 }
-					if(orgSpoc.getResponderLocationId().getId().longValue() == orgLocationId.longValue()){
+					if(orgSpoc.getResponderLocationId() !=  null && orgSpoc.getResponderLocationId().getId() != null && orgSpoc.getResponderLocationId().getId().longValue() == orgLocationId.longValue()){
 						StringBuilder spocNameSB3 = new StringBuilder();
 						StringBuilder ownerNameSB3 = new StringBuilder();
 					 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
@@ -309,17 +317,27 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
 					}
 				}
-				if(orgSpoc.getResponderLocationId().getId().longValue() == orgLocationId.longValue()){
-					orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
-					 orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+				if(orgSpoc.getResponderLocationId() != null && orgSpoc.getResponderLocationId().getId() != null && orgSpoc.getResponderLocationId().getId().longValue() == orgLocationId.longValue()){
+					if(orgSpoc.getInitiatorLocationId() != null){
+						 orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
+						 orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+					}
 				}
-				if(orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocationId.longValue()){
-					 orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
-					orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
+				if(orgSpoc.getInitiatorLocationId() != null && orgSpoc.getInitiatorLocationId().getId() != null && orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocationId.longValue()){
+					if(orgSpoc.getResponderLocationId() != null){
+						 orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
+						 orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
+					}
 				}
-				orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
-				orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
-				orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
+				if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getId() != null){
+					orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
+				}
+				if(orgSpoc.getSpocUser() !=  null){
+					orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+				}
+				if(orgSpoc.getOrgRelations() != null){
+					orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
+				}
 			}
 	   }
 		
@@ -350,14 +368,16 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				}
 				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(),loginUserId,orgLocationId);
 				orgRelation.setNoOfContatcs(orgSpocs.size());
-				if(orgRelation.getLocationId().getId().longValue() == orgLocationId.longValue()){
+				if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == orgLocationId.longValue()){
+					if(orgRelation.getResponderLocationId() != null){
+						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
+						orgRelation.setState(orgRelation.getResponderLocationId().getState());
+						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
+						orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+					}
 					
-					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
-					orgRelation.setState(orgRelation.getResponderLocationId().getState());
-					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
-					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
 					if(orgRelation.getInitiatorLevel()!=null){
 						orgRelation.setLevel(orgRelation.getInitiatorLevel());
 					}
@@ -366,13 +386,15 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					}
 				}
 				
-				if(orgRelation.getResponderLocationId().getId().longValue() == orgLocationId.longValue()){
-					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
-					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
-					orgRelation.setState(orgRelation.getLocationId().getState());
-					orgRelation.setCity(orgRelation.getLocationId().getCity());
-					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+				if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue() == orgLocationId.longValue()){
+					if(orgRelation.getLocationId() != null){
+						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
+						orgRelation.setState(orgRelation.getLocationId().getState());
+						orgRelation.setCity(orgRelation.getLocationId().getCity());
+						orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+					}
 					if(orgRelation.getInitiatorLevel()!=null){
 						orgRelation.setLevel(orgRelation.getInitiatorLevel());
 					}

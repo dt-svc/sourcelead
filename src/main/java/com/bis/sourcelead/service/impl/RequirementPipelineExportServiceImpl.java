@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionCounts;
@@ -25,6 +26,7 @@ import com.bis.sourcelead.service.RequirementPipelineExportService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class RequirementPipelineExportServiceImpl implements RequirementPipelineExportService {
@@ -48,21 +50,21 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 	 * @throws NumberFormatException
 	 */
 	@Override
-	public File getExportRequirementFile(List<RequirementSubmission> requirementStatusList, String orgName,
+	public File getExportRequirementFile(List<RequirementSubmission> requirementStatusList, OrgLocations loginOrgLocation,
 			String exportType, String requirementId, String submissionType,RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
 			Workbook createExcelworkbook = new XSSFWorkbook();
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			StringBuilder excelStringBuilder=new StringBuilder();
-			Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(orgName).append("_").append(dateFormat.format(new Date())).toString());
+			Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_").append(dateFormat.format(new Date())).toString());
 			Row writeRow = null;
 			if (submissionType.equals("SUBMIT_TO_CLIENT")) {
 				createExcelsheet = getExcelSheetWithHeaderSubmitClient(createExcelsheet, writeRow, createExcelworkbook,requirementId,requirementSubmissionCounts);
 				int column = 0;
 				for (RequirementSubmission requirementsub : requirementStatusList) {
 					writeRow = createExcelsheet.createRow(column + 8);
-					createExcelsheet = createXlsSheetSubmitClient(createExcelsheet, writeRow, requirementsub,submissionType);
+					createExcelsheet = createXlsSheetSubmitClient(createExcelsheet, writeRow, requirementsub,submissionType,loginOrgLocation);
 					column++;
 				}
 			}else if (submissionType.equals("REQUEST_SENT")) {
@@ -122,7 +124,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			}
 			/*file = new File(orgName + "_Requirements_" + dateFormat.format(new Date()) + ".xls");*/
 			StringBuilder tempFileBuilder=new StringBuilder();
-			file = File.createTempFile(tempFileBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".xls");
+			file = File.createTempFile(tempFileBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".xls");
 			file.setReadable(true);
 
 			FileOutputStream fos = new FileOutputStream(file);
@@ -133,13 +135,13 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 				e.printStackTrace();
 			}
 		} else {
-			file = pdfUtilPipelineHelper.getRequirementPipelenePdf(requirementStatusList, orgName, requirementId,submissionType,requirementSubmissionCounts);
+			file = pdfUtilPipelineHelper.getRequirementPipelenePdf(requirementStatusList, loginOrgLocation, requirementId,submissionType,requirementSubmissionCounts);
 		}
 		return file;
 	}
 
 	private Sheet createXlsSheetSubmitClient(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub,
-			String submissionType) {
+			String submissionType,OrgLocations loginOrgLocation) {
 		if (requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())) {
 			writeRow.createCell(0).setCellValue(requirementsub.getCandidateName());
 		}
@@ -185,9 +187,40 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		 if(requirementsub.getSubmittedBy() != null && !"".equalsIgnoreCase(requirementsub.getSubmittedBy())){
 		writeRow.createCell(12).setCellValue(requirementsub.getSubmittedBy());
 		 }
-		 if(requirementsub.getRequirement().getSpocId().getSpocUser().getMobilePhone() != null && !"".equalsIgnoreCase(requirementsub.getRequirement().getSpocId().getSpocUser().getMobilePhone())){
-				writeRow.createCell(13).setCellValue(requirementsub.getRequirement().getSpocId().getSpocUser().getMobilePhone());
+		 
+		 //client contact name related code start
+		 if(requirementsub.getRequirement().getSpocId().getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
+			 if(requirementsub.getRequirement().getId() != null){
+				 if(requirementsub.getRequirement().getSpocId().getId() != null){
+					 if(requirementsub.getRequirement().getSpocId().getOwnerUser().getId() != null){
+						 StringBuilder spocSB = new StringBuilder();
+						 if(requirementsub.getRequirement().getSpocId().getSpocUser().getLastName() != null ){
+							 writeRow.createCell(13).setCellValue(spocSB.append(requirementsub.getRequirement().getSpocId().getSpocUser().getFirstName()).append(" ").append(requirementsub.getRequirement().getSpocId().getSpocUser().getLastName()).toString());
+						 }else{
+							 writeRow.createCell(13).setCellValue(spocSB.append(requirementsub.getRequirement().getSpocId().getSpocUser().getFirstName()).toString());
+						 }
+					 }
+				 }
+			 }
+		 }
+		  
+		 if(requirementsub.getRequirement().getSpocId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
+			 if(requirementsub.getRequirement().getId() != null){
+				 if(requirementsub.getRequirement().getSpocId().getId() != null){
+					 if(requirementsub.getRequirement().getSpocId().getOwnerUser().getId() != null){
+						 StringBuilder spocSB1 = new StringBuilder();
+						 if(requirementsub.getRequirement().getSpocId().getOwnerUser().getLastName() != null){
+							 writeRow.createCell(13).setCellValue(spocSB1.append(requirementsub.getRequirement().getSpocId().getOwnerUser().getFirstName()).append(" ").append(requirementsub.getRequirement().getSpocId().getOwnerUser().getLastName()).toString()); 
+						 }else{
+							 writeRow.createCell(13).setCellValue(spocSB1.append(requirementsub.getRequirement().getSpocId().getOwnerUser().getFirstName()).toString());
+						 }
+					 }
+				 }
+			 }
+			
+				
 		}
+		 //client contact name related code end
 	}
 		return createExcelsheet;
 	}
