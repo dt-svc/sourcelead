@@ -116,4 +116,7 @@ public interface RequirementSubmissionService {
 			OrgLocations loginOrgLocation)throws Exception;
 
 	void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation) throws Exception;
+
+	void sendEmailtoVendor(Org loginOrg, User users, User pastUser, Requirement requirement, Candidate candidate,
+			StringBuilder tempHTML, OrgLocations orgLocations) throws Exception;
 }

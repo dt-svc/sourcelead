@@ -188,6 +188,11 @@ public class SubmissionsRateRestController {
 		requirementRateSubmissionNegotiation.setUpdatedDate(commonUtil.currentDate());
 		requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
 		
+		if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		}
+		
 		 Requirement requirement = requirementSubmission.getRequirement();
 		 
 		 Candidate candidate = requirementSubmission.getCandidate();
@@ -347,14 +352,14 @@ public class SubmissionsRateRestController {
 				requirementRateSubmissionNegotiation.setCurrentRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
 			}
 			
-			if(requirementSubmission.getVendorLocationId() != null && requirementSubmission.getVendorLocationId() == loginOrgLocation){
+			if(requirementSubmission.getVendorLocationId() != null && requirementSubmission.getVendorLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
-				if(isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
+				if(!isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
 					pastUser = userService.getUserByUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
 				}
-			}else if(requirementSubmission.getVendorLocationId() != null &&  requirementSubmission.getVendorLocationId() != loginOrgLocation){
+			}else if(requirementSubmission.getVendorLocationId() != null &&  requirementSubmission.getVendorLocationId().getId().longValue() != loginOrgLocation.getId().longValue()){
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.CLIENT);
-				if(isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
+				if(!isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
 					pastUser = userService.getUserByUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
 				}
 			}else{
@@ -384,7 +389,11 @@ public class SubmissionsRateRestController {
 				 RequirementRateSubmissionNegotiation neogtation = requirementSubmissionService.getRequirementRateBySubmissionById(submissionId);
 				 List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidate.getId());
 				 StringBuilder tempHTML = buildNegotiationHistory(negotiationList,requirementSubmission.getRequirement(),candidate,submissionId,"user");
-				requirementSubmissionService.userNegotiateEmail(requirementSubmission.getRequirement(),users,candidate,loginOrgLocation,neogtation,tempHTML);
+				 if(requirementSubmission.getVendorLocationId() != null){
+					 requirementSubmissionService.sendEmailtoVendor(loginOrg,users,pastUser,requirementSubmission.getRequirement(),candidate,tempHTML,loginOrgLocation);
+				 }else{
+					 requirementSubmissionService.userNegotiateEmail(requirementSubmission.getRequirement(),users,candidate,loginOrgLocation,neogtation,tempHTML);
+				 }
 			 }
 			 
 			

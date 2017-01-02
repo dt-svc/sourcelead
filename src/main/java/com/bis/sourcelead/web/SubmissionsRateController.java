@@ -125,11 +125,12 @@ public class SubmissionsRateController {
 				requirementRateSubmissionNegotiation.setUpdatedDate(new Date());
 				requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);
 				requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
-			}else{
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			}
-			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-			
+			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				requirementSubmission.setExpectedCTC(requirementRateSubmissionNegotiation.getCurrentRate());
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			}
 			Requirement requirement = requirementSubmission.getRequirement();
 			Candidate candidate = requirementSubmission.getCandidate();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
@@ -187,11 +188,11 @@ public class SubmissionsRateController {
 				requirementRateSubmissionNegotiation.setUpdatedDate(new Date());
 				requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);
 				requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
-			}else{
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			}
-			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-			
+			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			}
 			Requirement requirement = requirementSubmission.getRequirement();
 			Candidate candidate = requirementSubmission.getCandidate();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
