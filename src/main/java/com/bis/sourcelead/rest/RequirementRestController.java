@@ -296,11 +296,13 @@ public class RequirementRestController {
 								requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
 								requirementService.addRequirement(requirement);
 						}
+						
 					}
 
+			
 					return "success";
-					
 	}
+					
 			
 		// Old Code			
 		/*// to get  RequirementApproverHierarchy with maximum Level
@@ -414,10 +416,7 @@ public class RequirementRestController {
 		 * approverUser,requirement,null,orgLocation); } } }
 		 */
 
-		return "success";
-
-	}
-
+	
 
 	/**
 	 * @author punnana sarath kumar
