@@ -4,6 +4,7 @@ import java.io.Writer;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Requests;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.search.SearchHits;
@@ -78,8 +79,11 @@ public  class SourceleadELKBaseIndexer<T> {
 		
 	}
 	public  SearchHits searchDocumentWithMaxResults(String index,String type,int offset,int maxResults,BoolQueryBuilder query){
-		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type).setQuery(query)
-				                 .setFrom(offset).setSize(maxResults).setExplain(true)
+		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index)
+				                 
+				                 .setTypes(type)
+				                  .setQuery(query)
+				                 .setFrom(offset).setSize(maxResults)
 	                             .execute()
 	                             .actionGet();
 		 
@@ -88,7 +92,6 @@ public  class SourceleadELKBaseIndexer<T> {
   }
 	public  SearchHits searchDocument(String index,String type,BoolQueryBuilder query){
 		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type).setQuery(query)
-				                 .setExplain(true)
 	                             .execute()
 	                             .actionGet();
 			
