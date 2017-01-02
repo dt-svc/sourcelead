@@ -57,7 +57,7 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS;
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			StringBuilder sbClientPipe = new StringBuilder();
-			sbClientPipe.append(orgName).append("_Requirements_").append(dateFormat.format(new Date()));
+			sbClientPipe.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date()));
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 
 		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
@@ -298,8 +298,8 @@ public class PdfUtilPipelineHelper  {
 		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
 			StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");(loginOrgLocation,requirementId,requirementSubmissionCounts.getSubmittedCount(),Constants.SUBMITTED_APPLICANTS_COUNT,file);
-
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
+	        Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getSubmittedCount(),Constants.SUBMITTED_APPLICANTS_COUNT,file);
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,5};
 		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
@@ -576,7 +576,7 @@ public class PdfUtilPipelineHelper  {
 		        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 		        boldFont.setColor(myBordColor);
 		        StringBuilder sbPipeHearder = new StringBuilder();
-		        sbPipeHearder.append(orgName).append(" ").append("Requirements");
+		        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
 //	            Paragraph para = new Paragraph(sbPipeHearder.toString(),boldFont);
 		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
 		        boldFont.setColor(myColor1);
