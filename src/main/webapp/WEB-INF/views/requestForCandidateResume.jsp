@@ -180,7 +180,7 @@ function cancel(){
 									$("#loading").removeAttr("style"); 
 									$("#campaigncandidatesList").empty(); 
 									document.getElementById("fromEmailDetails").style.display="none";
-									$('#campaigncandidatesList').append("<div class='text-center success-message'><i class='fa fa-handshake-o'></i>Request sent successfully. Kindly wait for the Response.</div>");
+									$('#campaigncandidatesList').append("<div class='text-center success-message'><i class='fa fa-handshake-o'></i>Request sent successfully. Kindly wait for the response.</div>");
 								}
 								 
 							},

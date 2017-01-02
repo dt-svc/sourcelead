@@ -3,6 +3,7 @@ package com.bis.sourcelead.web;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -106,7 +107,7 @@ public class LoginSessionController {
 		OrgLocations orgLocations = userRole.getOrgLocations();
 		Org org = orgLocations.getOrg();
 		List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
-		List<Tabs> tabsList = null;
+		Collection<Tabs> tabsList = null;
 		if(org.getOrgType().equalsIgnoreCase("Company")){
 			tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 		}
@@ -160,7 +161,7 @@ public class LoginSessionController {
 			List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
 			List<SourceleadActions> actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 			
-			List<Tabs> tabsList = null;
+			Collection<Tabs> tabsList = null;
 			if(org.getOrgType().equalsIgnoreCase("Company")){
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 			}
