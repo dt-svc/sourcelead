@@ -2137,18 +2137,27 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
         
         for(RequirementSubmission reqsub :submittedApplicantsList){
             
-        	if(reqsub.getCandidate() != null){
-        		 reqsub.setCandidateName(reqsub.getCandidate().getFirstName() +""+ reqsub.getCandidate().getLastName());
+        	StringBuilder sb = new  StringBuilder();
+        	if(reqsub.getCandidate().getLastName() != null && !" ".equalsIgnoreCase(reqsub.getCandidate().getLastName())){
+	        		
+	                reqsub.setCandidateName(sb.append(reqsub.getCandidate().getFirstName()).append(" ").append(reqsub.getCandidate().getLastName()).toString());
+        	}else{
+        		
+                    reqsub.setCandidateName(sb.append(reqsub.getCandidate().getFirstName()).toString());
         	}
-        	if(reqsub.getRequirement() != null){
-        		reqsub.setRequirementName(reqsub.getRequirement().getJobTitle());
-        	}
-            
-            User  submittedSourceUser = userDao.getUserByUserCode(reqsub.getCreatedBy());
-            reqsub.setSubmittedBy(submittedSourceUser.getFirstName() +"" + submittedSourceUser.getLastName());
-            if(reqsub.getUpdatedDate() != null){
-            	reqsub.setSubmittedOn(Constants.DF_DMY.format(reqsub.getUpdatedDate()));
+        	
+        	StringBuilder jbt = new  StringBuilder();
+            reqsub.setRequirementName(jbt.append(reqsub.getRequirement().getJobTitle()).toString());
+            if("ACCEPTED".equalsIgnoreCase(reqsub.getSubmissionRateStatus().toString())){
+            	StringBuilder app = new  StringBuilder();
+            	  User  approvedUser = userDao.getUserByUserCode(reqsub.getUpdatedBy());
+            	  reqsub.setUpdatedBy(app.append(approvedUser.getFirstName()).append(" ").append(approvedUser.getLastName()).toString());	
             }
+            User  submittedSourceUser = userDao.getUserByUserCode(reqsub.getCreatedBy());
+            StringBuilder sub = new  StringBuilder();
+            reqsub.setSubmittedBy(sub.append(submittedSourceUser.getFirstName()).append(" ").append(submittedSourceUser.getLastName()).toString() );
+            reqsub.setSubmittedOn(Constants.DF_DMY.format(reqsub.getCreatedDate()));
+
         }
         return submittedApplicantsList;
 	}

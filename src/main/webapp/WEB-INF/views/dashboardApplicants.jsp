@@ -67,7 +67,8 @@ function ApplicantAuthorization(status){
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
                                       if(report.requirementName != '' && report.requirementName != null && report.requirementName !='undefined'){
-                                          resultToday  = resultToday + '           <td><div><span>'+report.requirementName+'</span></div></td>';
+                                          resultToday = resultToday +'<td><div class="tbldata-dotdot-sm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementId='+report.requirement.id+'">'+report.requirementName+'</a></div></td>';
+
                                       }else{
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
@@ -77,7 +78,7 @@ function ApplicantAuthorization(status){
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
                                       if(status == 'accepted'){
-                                    	  resultToday  = resultToday + '           <td><div><span>'+report.submissionRequestUser+'</span></div></td>';
+                                    	  resultToday  = resultToday + '           <td><div><span>'+report.updatedBy+'</span></div></td>';
                                           resultToday  = resultToday + '           <td><div><span>'+report.submittedOn+'</span></div></td>';
                                       }
                                       if(status == 'requestSent'){ 
