@@ -88,7 +88,9 @@ public class ClientController {
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-			model.addObject("loginCountryName", countries.getName());
+			if(countries != null){
+				model.addObject("loginCountryName", countries.getName());
+			}
 			return model;
 	    }
 	 /**

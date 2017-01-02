@@ -80,7 +80,7 @@ text-align:left;
 <script>
 function editCandidate(candidateId){
 	$("#profileEditPopup").show();
-	
+	 var loginCountryName = '${loginCountryName}';
 	  var sourceleadUrl ='${sourceleadUrl}';
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -443,6 +443,7 @@ function editCandidate(candidateId){
 function getAllCandidateCountries(){
 	setTimeout(function(){ 
 	var countryName = $("#updateCountry").val();
+	var loginCountryName = '${loginCountryName}';
 	$.ajax({
     	type: "POST",
     	dataType: "json",
@@ -454,7 +455,7 @@ function getAllCandidateCountries(){
             for(var i=0;i<json.length;i++){
             	if(json[i] == countryName){
             		$('#candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}else if(json[i] == '${candidateCountry}' && countryName ==null && countryName ==''){
+            	}else if(json[i] == '${loginCountryName}' && countryName ==null && countryName ==''){
             		$('#candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{ 
