@@ -338,6 +338,9 @@ function candidateSideBar(candidateId){
 			             
 			            var experienceMonths = '';
 			            var designationType = '';
+			            var country = '';
+			            var state = '';
+			            var city = '';
 			            
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'-'+'Months';            			 		
@@ -356,6 +359,25 @@ function candidateSideBar(candidateId){
          			 	}else{
          			 		designationType = '';
          			 	}
+         			 	
+         			 	if(json.country != null && json.country != '' && json.country != 'undefined'){
+         			 		country = ','+json.country;
+             			 	}else{
+             			 		country = '';
+             			 	}
+         			 	
+         			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
+         			 		state =json.state;
+             			 	}else{
+             			 		state = '';
+             			 	}
+         			 	
+         			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
+         			 		city =json.city+',';
+             			 	}else{
+             			 		city = '';
+             			 	}
+         			 	
 	                	 var result = "";
 	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -481,11 +503,8 @@ function candidateSideBar(candidateId){
 			                                                	  
 			             result = result+'<li><i class="fa fa-phone"></i>----</li>';         	  
 			                                                  }
-			                                                  if(json.address != null && json.address != '' && json.address != 'undefined'){
-			             result = result+' <li><i class="fa fa-location-arrow"></i>'+json.address+'</li>';
-			                                                  }else{
-			             result = result+'<li><i class="fa fa-location-arrow"></i>----</li>';                                  	  
-			                                                  }
+			             result = result+' <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
+			             
 			             result = result+'<li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
 			             
 		             	 if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
