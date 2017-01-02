@@ -47,13 +47,14 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 	
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Transactional(rollbackFor = { Exception.class })	
 	@Override
 	public RequirementApproverHierarchy getRequirementApproverHierarchyByRequirementId(Long requirementId,Long approverUserId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId and rah.approverUserId.id =:approverUserId";
-		List requirementApproverHierarchyList =  session.createQuery(query)
+		List<RequirementApproverHierarchy> requirementApproverHierarchyList =  session.createQuery(query)
 														.setLong("requirementId", requirementId)
 														.setLong("approverUserId", approverUserId)
 														.setCacheable(true)
