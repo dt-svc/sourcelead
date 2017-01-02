@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
@@ -44,6 +45,7 @@ import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TeamService;
@@ -98,7 +100,9 @@ public class RequirementOfferRestController {
 	@Autowired
 	NotificationsService notificationsService;
 	
-	
+    @Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+
 	
 	@PreAuthorize("hasRole('ROLE_CREAE_OFFER')")
 	@RequestMapping(value = "/saveOffer" , method = RequestMethod.POST)
@@ -339,7 +343,7 @@ public class RequirementOfferRestController {
                            HttpServletRequest request) throws Exception {
 
 			 String setofferStatus = "";
-			 
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 
 			 RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
 				List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
@@ -375,6 +379,11 @@ public class RequirementOfferRestController {
 				    		 requirementSubmission.setRejectedReason(rejectedReason);
 							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+							 
+						    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+							requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.OFFERMADE.toString());
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 					  }
 			    	
 			    	  //Changing the status of offerTable 

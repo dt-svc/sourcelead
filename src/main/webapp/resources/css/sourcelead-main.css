@@ -1,4 +1,4 @@
-﻿@charset "utf-8";
+@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
@@ -5526,6 +5526,10 @@ padding: 0;
 }
 .disable-choosen-dropdown .chosen-container .chosen-drop{
 	display: none !important
+}
+
+.mail-next-previous-muted{
+	color: #ccc
 }
 /* media 320px */
 @media (max-width: 320px) {

@@ -11,6 +11,8 @@ public interface RequirementInterviewDao {
 	
 	List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 
+	List<RequirementInterview> getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
+	
 	/**
 	 * @author Prasad Salina
 	 * @param submissionId

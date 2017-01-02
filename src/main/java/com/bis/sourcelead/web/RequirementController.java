@@ -27,7 +27,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.BoUploadedFiles;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -37,6 +36,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
@@ -50,6 +50,7 @@ import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
@@ -105,14 +106,15 @@ public class RequirementController {
 	@Autowired
 	RequirementOfferHistoryService requirementOfferHistoryService;
 	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
 		Requirement requirement ;
-		RequirementAssignTo requirementAssignTo;
 		ModelAndView model = new ModelAndView();
 		
-		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
@@ -262,7 +264,7 @@ public class RequirementController {
 	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
-		 
+
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -278,13 +280,17 @@ public class RequirementController {
 		
 		Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
 		model.addObject("isManager",isManager);
-		
+
+		model.addObject("sourceleadUrl", sourceleadUrl);
+
+		// This code is commented as not in use 
+
 		//to get time zone list
-		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(countries != null){
 			String[] timezonesList = com.ibm.icu.util.TimeZone.getAvailableIDs(countries.getCode2());
 			model.addObject("timezonesList", timezonesList);
-		}
+		}*/
 		
 		if(requirement.getIsClientJob() != null && requirement.getIsClientJob().equalsIgnoreCase("Y")){
 			model.addObject("clientSubmissions","Y");
@@ -299,6 +305,7 @@ public class RequirementController {
             model.addObject("parentRequirement","N");
         }
         
+        
         if(requirement.getSpocId() != null && requirement.getSpocId().getId() != null){
 			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
 			if(orgSpoc != null && orgSpoc.getSpocStatus() != null && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
@@ -308,14 +315,12 @@ public class RequirementController {
 			}
 		}
 		
-		model.addObject("sourceleadUrl", sourceleadUrl);
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
 		if(!isNullOrEmpty(msg)){
 			model.addObject("msg", msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
 		}
 		return model;
-
 	}
 	
 	@RequestMapping(value = "/reqPipelineSubmitToClientMail")
@@ -419,7 +424,7 @@ public class RequirementController {
 	
 	@RequestMapping(value = "/acceptOrRejectRequirementOffer")
 	public ModelAndView acceptOrRejectRequirementOffer(HttpServletRequest request,@RequestParam(value="offerStatus", required=false)String offerStatus,@RequestParam(value="offerId", required=false)Long offerId) throws Exception {
-		 
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
 		List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
 		
@@ -443,8 +448,16 @@ public class RequirementController {
 				    		}
 							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+							 
+							//Strote RequirementSubmissionHistory
+						    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+							requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+							requirementSubmissionHistory.setFromStage("OFFERMADE");
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 					  }
 			    	
+					
 			    	  //Changing the status of offerTable 
 				      if(requirementOffers  != null){
 						    requirementOffers.setOfferStatus("OFFERACCEPTED");

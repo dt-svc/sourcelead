@@ -11,5 +11,5 @@ public interface RequirementInterviewerDao {
 	List<RequirementInterviewer> getInterviwersListByInterviewId(Long requirementInterviewId);
 	
 	RequirementInterviewer getInterviwerstByInterviewId(Long requirementInterviewerId);
-
+	
 }

@@ -14,9 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ModulesDao;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Status;
 
 @Repository
 public class ModulesDaoImpl implements ModulesDao{

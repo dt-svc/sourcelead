@@ -467,7 +467,6 @@ function sideBar(requirementId){
                				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'<i></i></h4></a>';
                			}
 				        result = result+'<div class="hide-row">';
-				        
 				       /*result = result+'    <div class="profile_details requirement_details clearfix">'; */
 				        result = result+'<div class="col-md-9">';
 				        result = result+'<div class="row">';
@@ -1068,7 +1067,6 @@ function cancelAlert(){
 --%>
 <script>  
 function requirementPipeline(requirementId,submissionType){
-	
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
@@ -1514,6 +1512,7 @@ function requirementPipeline(requirementId,submissionType){
 							$("#status-data").empty();
 							$("#status-data").append(result);
 							$("#tab-2").append(status-data);
+							$("#loading").removeAttr("style"); 
 							$("#emptyPipelinelist").val(json.length);
 							
 							documentpagination();

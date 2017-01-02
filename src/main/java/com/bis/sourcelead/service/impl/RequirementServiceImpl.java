@@ -86,7 +86,6 @@ import com.bis.sourcelead.util.PdfUtil;
 @Service
 public class RequirementServiceImpl implements RequirementService {
 
-	private static final Logger logger = LoggerFactory.getLogger(RequirementServiceImpl.class);
 
 	@Autowired
 	RequirementDao requirementDao;
@@ -123,9 +122,6 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	OrgService orgService;
-	
-	@Autowired
-	private RolesService rolesService;
 	
 	@Autowired
 	private UserRoleService userRoleService;
@@ -436,7 +432,8 @@ public class RequirementServiceImpl implements RequirementService {
 			     for(String approver : approvers){
 					  
 					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
-					  User approverUser = userService.getUserById(Long.parseLong(approver));
+					  // commented as it is not in use by David Raju
+					  //User approverUser = userService.getUserById(Long.parseLong(approver));
 					  
 					 		  
 					 
@@ -634,14 +631,14 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					//send mail to Assigned Team 
 					//condition : if login user as team member then mail not send
-					Set<RequirementAssignTo> updatedRequirementAssignToList = requirement.getRequirementAssignTo();
+					/*Set<RequirementAssignTo> updatedRequirementAssignToList = requirement.getRequirementAssignTo();
 					if(updatedRequirementAssignToList != null  ){
 						for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
 							if(requirementAssignTo.getAssignUserId() != null && !user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
 								AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
 							}
 						}
-					}
+					}*/
 					
 					
 					//send mail to manger 

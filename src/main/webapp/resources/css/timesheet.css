@@ -2225,7 +2225,7 @@ margin-bottom:15px !important;
 }
 .reqPopInn ul li {
 	list-style-type: none; font-size: 14px; font-weight: 500; color: #666; padding: 10px 15px;
-	border-bottom: 1px solid #f1f1f1;
+	border-bottom: 1px solid #f1f1f1; width: 100%; display: inline-block;
 }
 .reqPopInn ul li img {
 	width: 38px; height: 38px; border: 2px solid #ccc; display: block; margin: 0px 15px 0px 0px; float: left;
