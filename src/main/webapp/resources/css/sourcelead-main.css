@@ -4275,6 +4275,8 @@ import-tranhd  [class*="col-md-"]{
 	padding:0;
 	cursor: pointer;
 	position: relative;
+    float:left;
+	margin-right:5px;
 }
 .labelsuccess{
 	background: #5cb85c;
@@ -5277,6 +5279,13 @@ color: #ccc
 .chosen-container .chosen-results{
 max-height: 150px !important;
 }
+.divmax-width{
+    width:225px;
+}
+.dashboard-widget.req-profile ul{
+       position: relative;
+       right: 0;
+}
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
@@ -5305,7 +5314,7 @@ div.pages-404.width {
 
 @media (max-width:767px) {
 .require_wrap_table span{
-	max-width:100%;
+	max-width:100% !important;
 }
 .theme-color {
 	top: 150px;
