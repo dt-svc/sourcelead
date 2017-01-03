@@ -158,6 +158,9 @@ public class UserRole implements Serializable{
 	@Transient
 	List<User> projectApproversList;
 	
+	@Transient
+	private String userEmail;
+	
 
 	@Transient
 	List<Roles> rolesList;
@@ -183,6 +186,12 @@ public class UserRole implements Serializable{
 	
 	@Transient
 	private Integer projectApproverCount;
+	
+	@Transient
+	private Long userId;
+	
+	@Transient
+	private String isMailSent;
 	
 	
 	public String getUserName() {
@@ -556,6 +565,30 @@ public class UserRole implements Serializable{
 
 	public void setDesignation(String designation) {
 		this.designation = designation;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(String isMailSent) {
+		this.isMailSent = isMailSent;
 	}
 
 
