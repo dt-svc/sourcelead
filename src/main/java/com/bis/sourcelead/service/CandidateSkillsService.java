@@ -60,5 +60,7 @@ public interface CandidateSkillsService {
 	public CandidateSkills getSkillsByCandidateIdSkillName(String candidateId, String skillName);
 	
 	public Boolean validateSkillName(String skillName);
+	
+	public void saveOrUpdateCandidateElkDocumentWithSkillDetails(Candidate candidate) throws Exception;
 		
 }

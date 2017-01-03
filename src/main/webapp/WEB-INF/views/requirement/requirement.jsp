@@ -397,7 +397,7 @@ $(document).ready(function () {
           <div class="form-group">
 				<label class="col-md-3">Country</label>
 				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="countryReq" id="countryReq" field-name="Country" onchange="changeCurrency();" >
+				 <select class="chosen-select form-control select-bg" name="countryReq" id="countryReq" field-name="Country" >
                  </select>
                    <input type="hidden" id="existingCountry" value="${requirement.country}" >
 				</div>
@@ -1076,6 +1076,7 @@ function getAllCountries(){
         	$('#countryReq').append('<option value="">---select Country---</option>');
         	for(var i=0;i<json.length;i++){
             	if(json[i] == countryName ){
+            		
             		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else if((countryName ==null ||  countryName =='' || countryName =='undefined') && (json[i] == '${loginCountryName}')){
@@ -1083,6 +1084,7 @@ function getAllCountries(){
             		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{
+            		
             		$('#countryReq').append('<option value="'+json[i]+'">'+json[i]+'</option>');
             	}
             	

@@ -427,9 +427,10 @@ public class RegistrationRestController {
 	   
 	   @RequestMapping(value = "/validateCompanyName", method = RequestMethod.GET)
 	   public @ResponseBody String validateCompanyName(
-	   		@RequestParam(value="companyName", required=false) String companyName) {
+	   		@RequestParam(value="companyName", required=false) String companyName,HttpServletRequest request) {
+		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			String status = null;
-			if(!isNullOrEmpty(companyName)){
+			if(!isNullOrEmpty(companyName) && !org.getOrgName().equalsIgnoreCase(companyName)){
 			    boolean flag;
 				try {
 					flag = orgService.isOrgNameExisted(companyName);

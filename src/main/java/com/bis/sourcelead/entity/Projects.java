@@ -109,15 +109,15 @@ public class Projects implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
-    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
     
-    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL,fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectApproverHierarchy> projectApprovers;
     
-    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL,fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectTasks> projectTasks;
     

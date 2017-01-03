@@ -61,7 +61,8 @@ $(function(){
 	                result = result + '<td><div>';
 	                    result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;|&nbsp;';
                     '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_APPLICANT_TEMPLATE\',\'ROLE_VIEW_EDIT_APPLICANT_TEMPLATE\')">'
-	                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\',\''+opt.description+'\')">Edit</a>';
+	                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\')">Edit</a>';
+	                    result = result + '<input type="hidden" name="description" id="description'+opt.id+'" value="'+opt.description+'" >';
                     '</sec:authorize>';
 	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
@@ -124,7 +125,8 @@ function templatepagination(){
 </script>
 
 <script type="text/javascript">
-	function addSubmissionTemplateFields(templateId,templateName,description) {
+	function addSubmissionTemplateFields(templateId,templateName) {
+		var description =  $("#description"+templateId+"").val();
 		var sourceleadUrl ='${sourceleadUrl}';
 		 $("#clientSubmissionTemplateList").empty();
 	     $("#addTemplate").hide();

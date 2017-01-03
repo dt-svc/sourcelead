@@ -554,7 +554,7 @@ public class RequirementOfferRestController {
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 				requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
 			}
-			else if(StringUtils.equalsIgnoreCase(status, "reject")){
+			else if(StringUtils.equalsIgnoreCase(status, "rejected")){
 				requirementSubmission.setSubmissionRequestUser(user.getFirstName()+""+user.getLastName());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
