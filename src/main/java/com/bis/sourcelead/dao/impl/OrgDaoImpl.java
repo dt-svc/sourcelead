@@ -295,8 +295,14 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		 String query ="from Org org where org.orgName = :orgName ";
 		 
-		         List<Org> orglist = session.createQuery(query.toString()).setString("orgName", orgName).setCacheable(true).list();
-		return orglist.get(0);
+	    List<Org> orglist = session.createQuery(query.toString()).setString("orgName", orgName).setCacheable(true).list();
+		Org org1 = null;
+		         
+		if(orglist.size()>0){
+			org1 = orglist.get(0);
+		}
+		         
+		         return org1;
 	}
 
 }
