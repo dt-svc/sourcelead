@@ -160,7 +160,7 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		 
-	    String query = "select sa.id from SourceleadActions sa where sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id = :moduleId) and sa.tabs.id NOT IN (13,14) ";
+	    String query = "select sa.id from SourceleadActions sa where sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id = :moduleId) and sa.tabs.id NOT IN (13,14) and sa.id <> '115' ";
 	    List<Long> actionIds = session.createQuery(query.toString()).setLong("moduleId", moduleId).setCacheable(true).list();
      
 	    return actionIds;
