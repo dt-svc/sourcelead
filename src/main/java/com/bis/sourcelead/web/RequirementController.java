@@ -210,8 +210,9 @@ public class RequirementController {
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(countries != null){
 			model.addObject("loginCountryName", countries.getName());
+			model.addObject("currencyCode", countries.getCurrency());
 			}
-	        model.addObject("currencyCode", countries.getCurrency());
+	        
 		}
         
         

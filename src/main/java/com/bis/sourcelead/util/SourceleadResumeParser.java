@@ -126,7 +126,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 			    firstTenLines = firstTenLines+lineSeparator+line.replaceAll("[^a-zA-Z0-9\\s\\@\\.\\_]+", "").trim();
 				count++;
 			}
-			String nameRegex = "((?i)Name|name|NAME)";
+			String nameRegex = "((?i)Name|name|NAME)[\\s]+[\\:]";
 			if(line.matches("(\\W*)"+nameRegex+".*")){
 				nameMatchFound =true;
 				String[] nameLineArray =  line.split(nameRegex);
