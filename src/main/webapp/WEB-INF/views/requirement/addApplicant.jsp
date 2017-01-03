@@ -547,7 +547,6 @@ function getCandidateDetails(){
 		        	 
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
 		        		 getCandidateCities(json['city']);
-		        		 $("select[name=city]").html(json['city']);
 		        	 }else{
 		        		 $("select[name=city]").val('');
 		        	 }
