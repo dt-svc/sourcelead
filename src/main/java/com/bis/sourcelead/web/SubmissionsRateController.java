@@ -133,9 +133,9 @@ public class SubmissionsRateController {
 			}
 			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
-				requirementSubmission.setExpectedCTC(requirementRateSubmissionNegotiation.getCurrentRate());
-				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			}
+			requirementSubmission.setExpectedCTC(requirementRateSubmissionNegotiation.getCurrentRate());
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
@@ -206,8 +206,9 @@ public class SubmissionsRateController {
 			}
 			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
-				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			}
+			requirementSubmission.setFinalizedRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
