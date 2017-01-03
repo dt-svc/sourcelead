@@ -232,12 +232,18 @@ function exportToPdf(){
 		var searchByName = document.getElementById("searchByName").value;
 		var userState = document.getElementById("userState").value;
 		
-		offset = $("#usersOffset").val();
+		
+		if(type == "scroll"){
+			offset = $("#usersOffset").val();
+    	}
 		
 		if(type == "manual"){
     		$('#usersListBody').empty();
+    		$("#usersOffset").val(0);
+    		offset = 0;
     	}
 		
+		type
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		
 		 $.ajax({ 
@@ -251,6 +257,7 @@ function exportToPdf(){
 	       	
 	    	if(json.length > 0)	
 	   		{
+	    		$('#loadMoreDiv').empty(); 
 	 			for(var i=0; i<json.length; i++){
 	 				
 			 				var userRole = json[i];
@@ -315,16 +322,16 @@ function exportToPdf(){
 
 				   }
 	 			result = result + '<div class="clear"></div>';
-	   		    }else{
-	   		    	$("#loading").removeAttr("style");
-	   		    	$('#loadMoreDiv').empty(); 
-		         	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No More Records..</div>';
-		         	$('#loadMoreDiv').append(result);
 	   		    }
-            }else{
+            }else if(type == "scroll"){
             	$('#loadMoreDiv').empty(); 
             	$("#loading").removeAttr("style");
 	         	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No More Records..</div>';
+	         	$('#loadMoreDiv').append(result);
+            }else{
+            	$('#loadMoreDiv').empty(); 
+            	$("#loading").removeAttr("style");
+	         	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No  Records..</div>';
 	         	$('#loadMoreDiv').append(result);
             }
 	    	

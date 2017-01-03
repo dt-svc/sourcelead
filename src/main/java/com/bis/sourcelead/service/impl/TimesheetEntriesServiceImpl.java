@@ -1865,7 +1865,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		
 		for(ProjectApproverHierarchy approver : approverHierarchyList){
 				
-			if(!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode()) && approver.getLevel() == Constants.LEVEL1){
+			if(!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode()) && (approver.getLevel() == Constants.LEVEL1 || approver.getLevel() == Constants.LEVEL2)  ){
 				
 			 User projectManager = userService.getUserById(approver.getApproverUserId().getId());
 			 //Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());

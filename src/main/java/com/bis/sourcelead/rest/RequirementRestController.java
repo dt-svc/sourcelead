@@ -651,19 +651,24 @@ public class RequirementRestController {
 	 */
 
 	 @RequestMapping(value = "/validateJobId",  method = RequestMethod.POST)
-	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) String jobId,HttpServletRequest request) throws Exception {
-		    	String result;
-				String resultJson;
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Integer jobIdCount = requirementService.validateJobId(jobId,orgLocation.getId());
-				if(jobIdCount>0){
-					result = "duplicate";
-				}
-				else{
-					result = "unique";
-				}
-				resultJson = commonUtil.toJSON(result);
-				return resultJson;
+	    public @ResponseBody Boolean validateJobId(@RequestParam(value="jobId", required=false) String jobId,
+	    		@RequestParam(value="requirementid", required=false) Long requirementid,HttpServletRequest request) throws Exception {
+		       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		       	Requirement requirement  = requirementService.getRequirementByRequirementIdOrgLocationsId(jobId, requirementid, orgLocation.getId());
+		        Boolean flag = false;
+			    if(requirement == null){
+			    	flag = requirementService.validateJobid(jobId, orgLocation.getId());
+			    }
+				return flag;
+		    }
+	 
+	 
+	 @RequestMapping(value = "/validateExistingJobId",  method = RequestMethod.POST)
+	    public @ResponseBody Boolean validateExistingJobId(@RequestParam(value="jobId", required=false) String jobId,
+	    		@RequestParam(value="requirementid", required=false) Long requirementid,HttpServletRequest request) throws Exception {
+		       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		        Boolean flag = requirementService.validateJobid(jobId, orgLocation.getId());
+				return flag;
 		    }
 	
 	private String toJSON(Object obj){
