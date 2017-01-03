@@ -267,7 +267,7 @@ function exportToPdf(){
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 			       	    	result = result +"<div class='text-center image-parent'>";
 			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
+			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
 			       	    	result = result +"</div>";
 			       	    	
 			       	    	
@@ -276,22 +276,22 @@ function exportToPdf(){
 			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
 			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.user.id+"'/>''> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </h4>";
+			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> "+userRole.userName+" </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
 			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-		       	         	   result = result +"<h4><a href='#'> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </h4>";
+		       	         	   result = result +"<h4><a href='#'> "+userRole.userName+" </a> </h4>";
 		       	    	    '</sec:authorize>';
 			       	    	
-			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+userRole.user.email+" </lable></p>";
+			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+userRole.userEmail+" </lable></p>";
 			       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
 			       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp; "+userRole.userRoleName+" </label></p>";
 			       	        
-			       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N' && userRole.userState != 'INACTIVE'){
-			       	    	  result = result +"<p><label id='user"+userRole.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;&nbsp;Invite</a></label></p>";
-			 			    }else if((userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'Y') &&
+			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N' && userRole.userState != 'INACTIVE'){
+			       	    	  result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p>";
+			 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
 			 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
-			 			    	 result = result +"<p><label id='user"+userRole.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
+			 			    	 result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p>";
 			 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
 			 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
 			 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
@@ -311,50 +311,7 @@ function exportToPdf(){
 			            		 $("#searchByName").val("");
 			            	}
 			
-	       	    	/*result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
-	       	    	result = result +"<div class='user-profile'>";
-	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
-	       	    	result = result +"<div class='text-center image-parent'>";
-	       	    	result = result +"<div class='imageParent'>";
-	       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayUserImage/"+userRole.user.id+"' alt='image'>";
-	       	    	result = result +"</div>";
 	       	    	
-	       	    	
-	       	    	result = result +"</div>";
-	       	    	result = result +"</div>";
-	       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
-	       	    	
-	       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-	       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.user.id+"'/>''> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </h4>";
-	       	    	'</sec:authorize>';
-	       	    	
-	       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-       	         	   result = result +"<h4><a href='#'> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </h4>";
-       	    	    '</sec:authorize>';
-	       	    	
-	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+userRole.user.email+" </lable></p>";
-	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
-	       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp; "+userRole.userRoleName+" </label></p>";
-	       	        
-	       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N' && userRole.userState != 'INACTIVE'){
-	       	    	  result = result +"<p><label id='user"+userRole.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;&nbsp;Invite</a></label></p>";
-	 			    }else if((userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'Y') &&
-	 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
-	 			    	 result = result +"<p><label id='user"+userRole.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
-	 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
-	 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
-	 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
-	 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
-	 			    } 
-	       	    	
-	       	    	result = result +"</div>";
-	       	    	result = result +"<div class='clearfix'></div>";
-	       	    	result = result +"</div>";
-	       	    	result = result +"</div>";
-	       	    	
-	       	    	$("#loading").removeAttr("style"); 
-	       	 	    $('#usersListBody').append(result);
-	       	 	    $("#searchByName").val("");*/
 
 				   }
 	 			result = result + '<div class="clear"></div>';
