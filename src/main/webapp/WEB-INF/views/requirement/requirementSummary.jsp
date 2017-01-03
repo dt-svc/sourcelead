@@ -457,14 +457,16 @@ function sideBar(requirementId){
              			 	}
               			
               			
-              			result = result+'    <div class="profile_details requirement_details clearfix">';
+              			result = result+'    <div class="profile_details requirement_details clearfix reqrementsummary">';
               			if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined'){
-    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
+
                			}
                			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined'){
-     				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+     				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
                			}else{
-               				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'<i></i></h4></a>';
+               				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'">'+json.jobTitle+'</span><i></i></h4></a>';
+
                			}
 				        result = result+'<div class="hide-row">';
 				       /*result = result+'    <div class="profile_details requirement_details clearfix">'; */
@@ -888,14 +890,14 @@ function requirementDetails(requirementId){
 				            }else{
 				            	for (var i=0; i<json.approverNames.length; i++)
 				   				{
-				            		var level = 2;
+				            		var level = 1;
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
 					            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b> <span>'; 
 					            		result = result +json.approverNames[i];
 					            		result = result +'</span>';
 					            		result = result +'</div>';
-					            		level = level-1;
+					            		level = level+1;
 					   				}
 					            	
 				   				}
@@ -1316,13 +1318,13 @@ function requirementPipeline(requirementId,submissionType){
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							           }else{
-							        	   if(clientSubmissions == 'Y'){
+// 							        	   if(clientSubmissions == 'Y'){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
 							        	   }else{
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
-							        	   }
+// 							        	   }
 							           }
 							           }
 							           
@@ -1349,7 +1351,7 @@ function requirementPipeline(requirementId,submissionType){
 						       			    result = result +'<th>End Time</th>';
 						       			    result = result +'<th>Location</th>';
 						       			    result = result +'<th>Feedback</th>';
-						       			    result = result +'<th>Interview</th>';
+						       			  /*   result = result +'<th>Interview</th>'; */
 						       			    result = result +'</tr></thead>';
 						       			    result = result +'<tbody>';
 						       			    for(var j=0;j<report.requirementInterviewHistoryList.length;j++){
@@ -1393,7 +1395,7 @@ function requirementPipeline(requirementId,submissionType){
 							       			    }
 						       			    	
 						       			    	result = result +'<td><span>--</span></td>';
-						       			    	result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>';
+						       			    	/* result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>'; */
 						       			    	result = result +'</tr>';
 						       			    } 
 						       			    result = result +'</tbody>';
@@ -1897,6 +1899,11 @@ function clientSideBar(candidateId){
 			             
 	                	 var result = "";
 	                	 
+	                	 if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
+	                		 lastName  = json.lastName;
+	                	 }else{
+	                		 lastName = "";
+	                	 }
 	                	 result = result+'<div id="popUp" ></div>  ';
 	                	
 	                	 
@@ -1943,7 +1950,7 @@ function clientSideBar(candidateId){
 			             result = result+'                     </div>'; */
 			             result = result+'                     <div class="media-body candidate-details">';
 			             
-			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+json.lastName+'</h4>';
+			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
 			            
 			             result = result+'                       <ul class="list-unstyled">';
 			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){

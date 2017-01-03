@@ -416,14 +416,51 @@ public class TimeSheetPdfUtil {
 //	        	 java.util.List<Employee> = entry.getValue();
 	        	for(TimesheetHours hours:entry.getValue()){
 	        		String innerTable [] = new String[headers2.length];
-	        		innerTable[0] = hours.getTaskName();
-	        		innerTable[1] = hours.getMonDayHours();
-	        		innerTable[2] = hours.getTueDayHours();
-	        		innerTable[3] = hours.getWedDayHours();
-	        		innerTable[4] = hours.getThuDayHours();
-	        		innerTable[5] = hours.getFriDayHours();
-	        		innerTable[6] = hours.getSatDayHours();
-	        		innerTable[7] = hours.getSunDayHours();
+	        		if(hours.getTaskName() != null && !"".equalsIgnoreCase(hours.getTaskName())){
+	        			innerTable[0] = hours.getTaskName();
+	        		}else{
+	        			innerTable[0] = "--";
+	        		}
+	        		if(hours.getMonDayHours() !=null && !"".equalsIgnoreCase(hours.getMonDayHours())){
+	        			innerTable[1] = hours.getMonDayHours();
+	        		}else{
+	        			innerTable[1] = "--";
+	        		}
+	        		if(hours.getTueDayHours() !=null && !"".equalsIgnoreCase(hours.getTueDayHours())){
+	        			innerTable[2] = hours.getTueDayHours();
+	        		}else{
+	        			innerTable[2] = "--";
+	        		}
+	        		if(hours.getWedDayHours() !=null && !"".equalsIgnoreCase(hours.getWedDayHours())){
+	        			innerTable[3] = hours.getWedDayHours();
+	        		}else{
+	        			innerTable[3] = "--";
+	        		}
+	        		if(hours.getThuDayHours() !=null && !"".equalsIgnoreCase(hours.getThuDayHours())){
+	        			innerTable[4] = hours.getThuDayHours();
+	        		}else{
+	        			innerTable[4] = "--";
+	        		}
+	        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
+	        			innerTable[5] = hours.getFriDayHours();
+	        		}else{
+	        			innerTable[5] = "--";
+	        		}
+	        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
+	        			innerTable[5] = hours.getFriDayHours();
+	        		}else{
+	        			innerTable[5] = "--";
+	        		}
+	        		if(hours.getSatDayHours() !=null && !"".equalsIgnoreCase(hours.getSatDayHours())){
+	        			innerTable[6] = hours.getSatDayHours();
+	        		}else{
+	        			innerTable[6] = "--";
+	        		}
+	        		if(hours.getSunDayHours() !=null && !"".equalsIgnoreCase(hours.getSunDayHours())){
+	        			innerTable[7] = hours.getSunDayHours();
+	        		}else{
+	        			innerTable[7] = "--";
+	        		}
 	        		innerTableArrayData.add(innerTable);
 	        	}
 	        	for (String[] timeSheetArray: innerTableArrayData) {
@@ -437,7 +474,9 @@ public class TimeSheetPdfUtil {
 	              table2.completeRow();
 	          }
 	        	table1.addCell(table2);
-	        	table3.addCell(timeSheetStatus.get(k));
+	        	if(null != timeSheetStatus && !timeSheetStatus.isEmpty()){
+	        		table3.addCell(timeSheetStatus.get(k));
+	        	}
 	        	table1.addCell(table3);
 	        	k++;
 	        }

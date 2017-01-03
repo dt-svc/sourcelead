@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
@@ -47,7 +48,7 @@ public interface RequirementService {
 
 	void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement,StringBuilder location,String rejectedReason,OrgLocations loginOrgLocation) throws Exception;
 
-	void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation,String releasetype,StringBuilder location) throws Exception;
+	void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation,String releasetype) throws Exception;
 
 	public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception;
 	
@@ -88,6 +89,11 @@ public interface RequirementService {
 	public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception;
 	
 	public List<Requirement> getManagerAssignedRequirementsList(Long userId,Long orgLocationId) throws Exception;
+
+	Boolean checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(Long userId,Long orgLocationId)  throws Exception;
 	
+	public Requirement getRequirementByRequirementIdOrgLocationsId(String id,Long requirementId, Long orgLocationsId) throws Exception;
+	
+	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
 
 }

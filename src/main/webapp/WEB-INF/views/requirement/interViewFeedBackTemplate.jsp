@@ -26,6 +26,14 @@ $(function(){
 });
 </script>
 
+<style>
+.viewTemplate .sjfb-field {
+float: left; min-height: 36px; margin-bottom: 15px;
+}
+.viewTemplate .sjfb-field textarea {
+max-height: 65px;
+}
+</style>
 
 
 <script type="text/javascript">
@@ -64,7 +72,8 @@ $(function(){
 	                 '</sec:authorize>'; 
 	                    
                     '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">' 
-	                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\',\''+opt.description+'\')">Edit</a>';
+	                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\')">Edit</a>';
+	                    result = result + '<input type="hidden" name="description" id="description'+opt.id+'" value="'+opt.description+'" >';
                     '</sec:authorize>';
                     '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">'
                     result = result + '&nbsp;<a href="javascript:void(0)">Edit</a>';
@@ -127,12 +136,13 @@ function templatepagination(){
 }
 </script>
 <script type="text/javascript">
-	function addSubmissionTemplateFields(templateId,templateName,description) {
+	function addSubmissionTemplateFields(templateId,templateName) {
+		var description =  $("#description"+templateId+"").val();
 		var sourceleadUrl ='${sourceleadUrl}';
 		 $("#clientSubmissionTemplateList").empty();
 	     $("#addTemplate").hide();
 		var result = "";
-		
+		alert("description"+description);
 		result = result + '<section class="clearfix createTemplate">';
 		
 		result = result + '<div class="close-btn2" onclick="cancelTemplate()"><i class="fa fa-close"></i></div>';
@@ -164,7 +174,7 @@ function templatepagination(){
 			    	if(description){
 			    		result = result  +'<textarea rows="2" name="description" field-name="Description" data-validation="required" class="form-control">'+description+'</textarea>';
 			    	}else{
-			    		result = result  +'<textarea rows="2" name="description" field-name="Description" data-validation="required" class="form-control"></textarea>';
+			    		result = result  +'<textarea rows="2" name="description" field-name="Description" data-validation="required validate_length length10-500" class="form-control"></textarea>';
 			    	}
 			    	
 			    	result = result  +'	   </div>';

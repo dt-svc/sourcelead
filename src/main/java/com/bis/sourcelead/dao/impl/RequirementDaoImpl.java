@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -127,11 +128,11 @@ public class RequirementDaoImpl implements RequirementDao {
 				
 		Map<String, Object> params = new HashMap<String,Object>();
 		
-		String from = "from Requirement requirement"; 
+		String from = "from Requirement requirement left join fetch requirement.clientId left join fetch requirement.spocId left join fetch requirement.submissionTemplateId left join fetch requirement.clientSubmissionTemplateId left join fetch requirement.parentRequirement"; 
 		String subQuery = "";
 		
 		if(userRole != null && userRole.getRoles().getRoleName() != null && "ROLE_ADMIN".equalsIgnoreCase(userRole.getRoles().getRoleName()) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole.getRoles().getRoleName())){
-			subQuery = "where requirement.orgLocationId.id =:orgLocationId and (requirement.isTemplate IS NULL OR requirement.isTemplate <> 'Y') ";
+			subQuery = " where requirement.orgLocationId.id =:orgLocationId and (requirement.isTemplate IS NULL OR requirement.isTemplate <> 'Y') ";
 			params.put("orgLocationId",orgLocationId);
 		}else{
 			String subQuery1 = "requirement.createdBy =:loginUserCode and (requirement.isTemplate IS NULL OR requirement.isTemplate <> 'Y') ";
@@ -667,6 +668,57 @@ public class RequirementDaoImpl implements RequirementDao {
 					+ "where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId";
 		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
+	}
+	
+	@Override
+	@Transactional
+	public Boolean checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(Long userId, Long orgLocationId) throws Exception {
+		Boolean check = false;
+		Session session = sessionFactory.getCurrentSession();       
+		String subQuery = "requirement.id IN ( select rs.requirement.id from RequirementSubmission rs where  rs.submissionRateStatus = 'REQUEST' or rs.submissionRateStatus = 'ACCEPTED' ) ";
+		String query = "from Requirement requirement where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId and "+subQuery+" ";
+		List requirementList = session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		Requirement requirement = null;
+		if(requirementList != null && !requirementList.isEmpty())
+		{
+			check = true;
+		}
+		return check;
+		
+	}
+
+	@Override
+	@Transactional
+	public Requirement getRequirementByRequirementIdOrgLocationsId(String id, Long requirementId, Long orgLocationsId)
+			throws Exception {
+		 logger.debug("In EmployeesDaoImpl class getEmployeeByIdAndUserIdAndOrgLocationsId method");
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Requirement requirement where requirement.orgLocationId = :orgLocationsId and requirement.jobId = :id and requirement.id = :requirementId ";
+			List<Requirement> requirementList =  session.createQuery(query) .setString("id", id).setLong("requirementId", requirementId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+			Requirement requirement = null;
+			if(requirementList != null && !requirementList.isEmpty())
+			{
+				requirement = (Requirement) requirementList.iterator().next();
+			}
+			return requirement;
+	}
+
+	@Override
+	@Transactional
+	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception {
+		 logger.debug("In Employee getEmployeeByEmployeeId method");
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(id != null && orgLocationsId != null){
+				String query = "from Requirement requirement where requirement.orgLocationId = :orgLocationsId and requirement.jobId = :id ";
+				List<Requirement> requirementList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("id", id).setCacheable(true).list();
+
+				if (requirementList != null && requirementList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
 	}
 	
 }

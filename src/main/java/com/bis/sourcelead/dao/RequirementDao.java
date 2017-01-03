@@ -55,5 +55,11 @@ public interface RequirementDao {
 	
 	public List<Requirement> getManagerAssignedRequirementsList(Long userId,Long orgLocationId) throws Exception;
 	
+	Boolean checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(Long userId,Long orgLocationId)  throws Exception;
 	
+    public Requirement getRequirementByRequirementIdOrgLocationsId(String id,Long requirementId, Long orgLocationsId) throws Exception;
+	
+	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
+
+
 }

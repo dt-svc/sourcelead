@@ -112,6 +112,16 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    		   city = " ";
 	    	   }
 	    	   
+	    	   if(json.candidate.lastName != null && json.candidate.lastName != '' && json.candidate.lastName != 'undefined'){
+	    		   lastName = json.candidate.lastName;
+	    	   }else{
+	    		   lastName = "";
+	    	   }
+	    	   if(json.candidate.country != null && json.candidate.country != null && json.candidate.country != 'undefined'){
+	    		   country = json.candidate.country;
+	    	   }else{
+	    		   country = "";
+	    	   }
 	    	   var result = "";
           	   result = result + ' <div class="req_hide">';
                result = result + '<div class="profile_details clearfix">';
@@ -121,7 +131,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '<div class="imageParent"><img onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+json.candidate.id+'"/>" alt="candidate" title="Candidate"></div>';
                result = result + ' </div>';
                result = result + ' <div class="media-body candidate-details">';
-               result = result + ' <h4 class="media-heading">'+json.candidate.firstName+' '+json.candidate.lastName+'</h4>';
+               result = result + ' <h4 class="media-heading">'+json.candidate.firstName+' '+lastName+'</h4>';
                result = result + ' <ul class="list-unstyled">';
                result = result + ' <li><strong>'+designation+'</strong></li>';
                result = result + ' <li>'+experience+'</li>';
@@ -151,52 +161,76 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + ' </div>';
                result = result + '</div>';
 		       result = result + ' <div class="col-md-6">';
+		       
+		       result = result + ' <div class="row">';
+		       result = result + ' <div class="col-md-6">';
 		       result = result + '<ul class="list-unstyled can-perdt">';
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.candidate.email+'</a></li>';
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.candidate.mobilePhone+'</li>';
 		       result = result + '<li><i class="fa fa-location-arrow"></i>';
-		       result = result +json.candidate.country +''+ state +''+ city
+		       result = result +country +''+ state +''+ city
 		       result = result +'</li>';
 		       result = result + '<li><i class="fa fa-rupee"></i>'+currentRate+' / '+currentRateCurrency+' - Current Rate / Salary</li>';
 		       result = result + '<li><i class="fa fa-rupee"></i>'+expectedRate+' / '+rateType+' - Expected Rate / Salary</li>';
 		       result = result + '</ul>';
+		       result = result + ' </div>';
 		       
-				
-	          
-	             		
 		       
+		       result = result + ' <div class="col-md-6">';
+			   
 			    result = result + '<div class="acceptreject-actions">';
-				result = result + '<ul class="list-unstyled list-inline">';
-						result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept" onClick="acceptFun('+submissionId+');"></i>';
-						result = result + '		<div class="acceptreject-pop" id="accpet-div">';
-						result = result + '		</div>';
-						result = result + '	</li>';
-						
-						result = result + '	<li><i class="fa fa-close labeldanger" title="Reject" onClick="rejectFun('+submissionId+');"></i>';
-						result = result + '		<div class="acceptreject-pop" id="reject">';
-						result = result + '		</div>';
-						result = result + '	</li>';
-						result = result + '</ul>';
-						result = result + '<ul class="list-unstyled">';
-						if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
-								result = result + '	<li>';
-									result = result + "Request sent to Manager";
-								result = result + '	</li>';
-								result = result + '	<li>';
-									result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
-								result = result + '	</li>';
-								result = result + '	<li>';
-									result = result + "comment: "+json.submissionRequestComment;
-								result = result + '	</li>';
-					   }else{
-							<c:if test="${isTeamMember == true && isManager == false}">
-								result = result + '	<li><i class="fa fa-check labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
-								result = result + '		<div class="acceptreject-pop" id="request">';
+			    if(json.needApplicantPermit == 'Y'){
+			    	
+			    	    <c:if test="${isManager == true}">
+			    	   		result = result + '<ul class="list-unstyled list-inline">';
+			    	   		result = result + '<span id="statusDiv">';
+			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED'){   
+								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept" onClick="acceptFun('+submissionId+');"></i>';
+								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
 								result = result + '	</li>';
-							</c:if>	
-					   }
-					  result = result + '</ul>';
+								
+								result = result + '	<li><i class="fa fa-close labeldanger" title="Reject" onClick="rejectFun('+submissionId+');"></i>';
+								result = result + '		<div class="acceptreject-pop" id="reject">';
+								result = result + '		</div>';
+								result = result + '	</li>';
+			    	    	}/* else{
+			    	    		result = result + '	<li>';
+			    	    		result = result + json.submissionRateStatus;
+								result = result + '	</li>';
+			    	    	} */
+			    	    	result = result + '</span>';
+			    	    	result = result + '</ul>';
+						</c:if>
+						    result = result + '<ul class="list-unstyled">';
+							if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
+									result = result + '	<li>';
+										result = result + "Request sent to Manager";
+									result = result + '	</li>';
+									result = result + '	<li>';
+										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
+									result = result + '	</li>';
+									result = result + '	<li>';
+										result = result + "comment: "+json.submissionRequestComment;
+									result = result + '	</li>';
+									if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
+										result = result + '<li>';
+										result = result +"status: "+ json.submissionRateStatus;
+										result = result + '</li>';
+									}
+						   }else{
+							   <c:if test="${isTeamMember == true && isManager == false}">
+									result = result + '	<li><i class="fa fa-check labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
+									result = result + '		<div class="acceptreject-pop" id="request">';
+									result = result + '		</div>';
+									result = result + '	</li>';
+								</c:if>		
+						   }
+						result = result + '</ul>';
+						result = result + '</div>';
+					  
+			    } 
+				result = result + '</div>';
 				result = result + '</div>';
 				
 				/* New comments div creation Nov 8th, 2016 */ 
@@ -436,7 +470,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
 	   					     if(report.feedbackStartTime != "feedbackStartTime" || report.feedbackEndTime == "feedbackEndTime" ){
-	   					    	result = result + '<i class="fa fa-handshake-o pull-right" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
+	   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
 	   					     }
 	   					     
 	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
@@ -1151,6 +1185,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#accpet-div').append(result);
 		$('#reject').fadeOut();
 		$('#request').fadeOut();
+		
 	};
 	/* $("#accpet-div, .clients_side_wrap, .clients_side_wrap_active, .fa, .fa-check, .labelsuccess").click(function(e){
 		 e.stopPropagation();
@@ -1259,8 +1294,12 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		            		 else{
 						 		/* $("#popUpDivResume").removeClass("edit-details-active");
 						 		candidateResumesList(candidateId); */
+						 		 
 		            			 $('#accpet-div').fadeOut();
 		            			 $('#reject').fadeOut();
+		            			 $("#statusDiv").empty();
+		            			 $("#statusDiv").append("ACCEPTED");
+		            				
 		            		 }
 						},
 					});
@@ -1378,6 +1417,10 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 						 		candidateResumesList(candidateId); */
 		            			 $('#accpet-div').fadeOut();
 		            			 $('#reject').fadeOut();
+		            			 
+		            			 $("#statusDiv").empty();
+		            			 $("#statusDiv").append("REJECTED");
+		            				
 		            		 }
 						},
 					});

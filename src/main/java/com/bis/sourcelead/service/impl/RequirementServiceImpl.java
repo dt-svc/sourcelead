@@ -816,10 +816,10 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
 			}
-		 if(loginUser.getUserType()!=null && !"".equalsIgnoreCase(loginUser.getUserType())){
-			 globalVarsMap.put("role", loginUser.getUserType());
-			 }else{
-				 globalVarsMap.put("role","--");
+		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
+			 globalVarsMap.put("role",loginOrgLocation.getOrg().getOrgName() );
+			 } else {
+				 globalVarsMap.put("role", "--");
 			}
 		 
 		 if(requirement.getFileName() != null && !requirement.getFileName().isEmpty() ){
@@ -1236,13 +1236,13 @@ public class RequirementServiceImpl implements RequirementService {
 			 StringBuilder userBuild = new StringBuilder();
 			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("LoginUser","--"); 
+				 globalVarsMap.put("LoginUser",loginUser.getFirstName()); 
 			 }
-		 if(loginUser.getUserType()!= null && !"".equalsIgnoreCase(loginUser.getUserType())){
-			 globalVarsMap.put("Role", loginUser.getUserType());
-			 }else{
-				 globalVarsMap.put("Role","--"); 
-			 }
+		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
+			 globalVarsMap.put("Role",loginOrgLocation.getOrg().getOrgName() );
+			 } else {
+				 globalVarsMap.put("Role", "--");
+			}
 		 StringBuilder linkBuild = new StringBuilder();
 		 StringBuilder attachBuild = new StringBuilder();
 		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
@@ -1474,7 +1474,7 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 	@Override
-	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype,StringBuilder location) throws Exception {
+	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype) throws Exception {
 		User  vendorContactUser = null;
 		
 		if(releasetype.equalsIgnoreCase("VENDORS")){
@@ -1500,11 +1500,18 @@ public class RequirementServiceImpl implements RequirementService {
 			 } else {
 				 globalVarsMap.put("RequirementTitle", "--");
 			}
-		 if (location != null) {
-			 globalVarsMap.put("RequirementLocation",  location.toString());
-			 } else {
-				 globalVarsMap.put("RequirementLocation", "--");
-			}
+		 
+		 StringBuilder stringBuild = new StringBuilder();
+		 if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
+			 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
+		 }else if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
+			 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
+		 }else if(requirement.getCountry()!= null && !"".equalsIgnoreCase(requirement.getCountry())){
+			 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).toString());
+		 }else{
+			 globalVarsMap.put("RequirementLocation", "--");
+		 }
+		 
 		 if (requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) ) {
 			 globalVarsMap.put("RequirementRate", requirement.getRate());
 			 } else {
@@ -2055,6 +2062,26 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public List<Requirement> getManagerAssignedRequirementsList(Long userId, Long orgLocationId) throws Exception {
 		return requirementDao.getManagerAssignedRequirementsList(userId, orgLocationId);
+	}
+	
+
+	@Override
+	public Boolean checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(Long userId,
+			Long orgLocationId) throws Exception {
+		
+		return requirementDao.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(userId, orgLocationId);
+	
+	}
+
+	@Override
+	public Requirement getRequirementByRequirementIdOrgLocationsId(String id, Long requirementId, Long orgLocationsId)
+			throws Exception {
+		return requirementDao.getRequirementByRequirementIdOrgLocationsId(id, requirementId,orgLocationsId);
+	}
+
+	@Override
+	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception {
+		return requirementDao.validateJobid(id,orgLocationsId);
 	}
 
 }

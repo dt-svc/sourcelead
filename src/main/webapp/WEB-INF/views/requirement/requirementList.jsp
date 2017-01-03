@@ -180,7 +180,7 @@ function requirementList(){
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>ID-Title</th>"; 
 	                     result = result +"    <th>Client</th>"; 
-	                     result = result +"    <th>Position type</th>"; 
+	                     result = result +"    <th>Employment type</th>"; 
 	                     result = result +"    <th>Location</th>"; 
 	                     result = result +"    <th>No.of<br> Positions</th>"; 
 	                     result = result +"    <th>Applicants</th>"; 
@@ -255,8 +255,11 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
-                           result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");' id='changeStatusId"+opt.id+"'>";
-		                     
+		                     if(opt.isLoginUserAsTeamMember !=null && opt.isLoginUserAsTeamMember !='' && opt.isLoginUserAsTeamMember !='undefined'  && opt.isLoginUserAsTeamMember == 'true'){
+		                    	 result = result +"<td>"+opt.requirementSubmissionStatus+"</td>";
+		                     }
+		                     else{
+		                        result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");' id='changeStatusId"+opt.id+"'>";
 		                        if(opt.requirementSubmissionStatus == "DRAFT"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 									'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
@@ -353,7 +356,7 @@ function requirementList(){
 
 								result = result +" </select>";	
 			                    result = result +" </td>";
-		                     
+		                     }
 		                     
 		                     if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
 		                    	 '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';

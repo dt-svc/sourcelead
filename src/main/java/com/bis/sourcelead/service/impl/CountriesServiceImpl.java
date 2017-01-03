@@ -42,10 +42,11 @@ public class CountriesServiceImpl implements CountriesService{
 	@Override
 	public List<String> getAllStatesAndCitiesByCountryName(String countryName) throws Exception {
 		logger.debug("In CountriesServiceImpl class getAllLocations method...");
-		
+		List<String> countriesList = null;
 		Countries countries = countriesDao.getCountriesByCountryName(countryName);
-		
-		List<String> countriesList = countriesDao.getAllStatesAndCitiesByCountryCode(countries.getCode2());
+		if(null != countries){
+		  countriesList = countriesDao.getAllStatesAndCitiesByCountryCode(countries.getCode2());
+		}
 		return countriesList;
 	}
 	

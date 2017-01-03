@@ -208,8 +208,11 @@ public class RequirementController {
 		
 		if(orgLocations != null && StringUtils.isNotEmpty(orgLocations.getCountry())){
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(countries != null){
 			model.addObject("loginCountryName", countries.getName());
-	        model.addObject("currencyCode", countries.getCurrency());
+			model.addObject("currencyCode", countries.getCurrency());
+			}
+	        
 		}
         
         
@@ -305,6 +308,10 @@ public class RequirementController {
             model.addObject("parentRequirement","N");
         }
         
+        Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(countries != null){
+			model.addObject("loginCountryName", countries.getName());
+		}
         
         if(requirement.getSpocId() != null && requirement.getSpocId().getId() != null){
 			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
