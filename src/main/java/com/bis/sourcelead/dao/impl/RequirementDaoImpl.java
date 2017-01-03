@@ -486,6 +486,20 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 	}
 
+	@Override
+    @Transactional(rollbackFor = { Exception.class })
+    public Requirement validateExistingJobId(String jobId, Long requirementId, Long orgLocationId) throws Exception {
+            Session session = this.sessionFactory.getCurrentSession();
+            String query ="from Requirement requirement where requirement.id = :requirementId and requirement.jobId = :jobId and requirement.orgLocationId.id =:orgLocationId";
+            List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setString("jobId", jobId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+            Requirement requirement = null;
+            if(requirementList != null && !requirementList.isEmpty())
+            {
+                requirement = (Requirement) requirementList.iterator().next();
+            }
+            return requirement;
+    }
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
