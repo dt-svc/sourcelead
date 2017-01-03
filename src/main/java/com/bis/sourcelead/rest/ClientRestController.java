@@ -178,21 +178,21 @@ public class ClientRestController {
 			ArrayList<String> orgsList = new ArrayList<String>();
 			
 			Org org = orgService.getOrgByOrgName(orgName);
-			
-			
-			OrgLocations orgLocations = orgLocationService.getOrgLocationsByOrgCode(org.getId().toString());
-			
-			try {
-				orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
-			} catch (Exception e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
-			}
-			if(orgLocations != null)
-			{
-				orgsList.add(orgLocations.getCountry());
-				orgsList.add(orgLocations.getState());
-				orgsList.add(orgLocations.getCity());
-				orgsList.add(orgLocations.getOrg().getWebSite());
+			if(org != null){
+				OrgLocations orgLocations = orgLocationService.getOrgLocationsByOrgCode(org.getId().toString());
+				
+				try {
+					orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
+				} catch (Exception e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+				if(orgLocations != null)
+				{
+					orgsList.add(orgLocations.getCountry());
+					orgsList.add(orgLocations.getState());
+					orgsList.add(orgLocations.getCity());
+					orgsList.add(orgLocations.getOrg().getWebSite());
+				}
 			}
 			return commonUtil.toJSON(orgsList);
 			
