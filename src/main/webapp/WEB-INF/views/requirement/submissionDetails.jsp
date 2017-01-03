@@ -446,7 +446,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
 	   					     if(report.feedbackStartTime != "feedbackStartTime" || report.feedbackEndTime == "feedbackEndTime" ){
-	   					    	result = result + '<i class="fa fa-handshake-o pull-right" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
+	   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
 	   					     }
 	   					     
 	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
