@@ -33,8 +33,11 @@ public class WebgeocitiesServiceImpl implements WebgeocitiesService{
 	@Override
 	public List<Webgeocities> getAllCitiesByStateAndCountry(String stateName, String countryName) throws Exception {
 		Countries countries = countriesDao.getCountriesByCountryName(countryName);
+		List<Webgeocities> citiesList = null;
+		if(null != countries){
 		List<String> stateCodes = statesDao.getStatesCodesByStateName(stateName);
-		List<Webgeocities> citiesList = webgeocitiesDao.getAllCitiesByStateCodeCountryCode(stateCodes, countries.getCode2());
+		citiesList = webgeocitiesDao.getAllCitiesByStateCodeCountryCode(stateCodes, countries.getCode2());
+		}
 		return citiesList;
 	}
 

@@ -443,7 +443,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                       </ul>';
 
 			             result = result+' <ul class="list-unstyled">';
-						 result = result+'<li>'+designation+'</li>';
+						 result = result+'<li title="'+designation+'" class="tbldata-dotdot">'+designation+'</li>';
 						 result = result+'</ul>';
 						 
 			             result = result+' <ul class="list-unstyled">';
