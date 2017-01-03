@@ -655,4 +655,22 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 	}
 	
+	@Override
+	@Transactional
+	public Boolean checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(Long userId, Long orgLocationId) throws Exception {
+		Boolean check = false;
+		Session session = sessionFactory.getCurrentSession();       
+		String subQuery = "requirement.id IN ( select rs.requirement.id from RequirementSubmission rs where  rs.submissionRateStatus = 'REQUEST' or rs.submissionRateStatus = 'ACCEPTED' ) ";
+		String query = "from Requirement requirement where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId and "+subQuery+" ";
+		List requirementList = session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		Requirement requirement = null;
+		if(requirementList != null && !requirementList.isEmpty())
+		{
+			check = true;
+		}
+		return check;
+		
+	}
+	
 }
