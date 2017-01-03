@@ -577,9 +577,6 @@ public class PdfUtilPipelineHelper  {
 		        boldFont.setColor(myBordColor);
 		        StringBuilder sbPipeHearder = new StringBuilder();
 		        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ").append("Requirements");
-//	            Paragraph para = new Paragraph(sbPipeHearder.toString(),boldFont);
-		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-		        boldFont.setColor(myColor1);
 	            Paragraph para = new Paragraph(orderedListStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append(" Requirements.").toString(),boldFont);
 	            para.setAlignment(Element.ALIGN_CENTER);
 	            document.add(para);
