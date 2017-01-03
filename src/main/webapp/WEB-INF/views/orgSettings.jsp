@@ -99,7 +99,7 @@ function deleteImage(){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteOrgImage();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteOrgImage();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelOrgImg();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -127,7 +127,7 @@ function deleteOrgImage(){
 </script>
 
 <script type="text/javascript">
-function cancel(){
+function cancelOrgImg(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }

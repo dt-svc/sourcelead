@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
-import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -96,7 +94,9 @@ public interface RequirementSubmissionService {
 	public void applicantRejectMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
 			OrgLocations orgLocations, String rejectreason) throws Exception;
 	
-	RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user, RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile) throws Exception;
+
+	RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user, RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile,Org loginOrg,OrgLocations loginOrgLocation) throws Exception;
+
 
 	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser, Candidate candidate,
 			OrgLocations orgLocations, RequirementRateSubmissionNegotiation negotiation, StringBuilder tempHTML) throws Exception;
@@ -124,6 +124,15 @@ public interface RequirementSubmissionService {
 	List<RequirementSubmission> duplicateCandidateCountList(Long requirementId, User user,
 			OrgLocations loginOrgLocation)throws Exception;
 
+	
+	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status) throws Exception;
+	
+	public void sendEmailtoRequirementManager(Org loginOrg, User users,RequirementSubmission requirementSubmission,
+			 OrgLocations loginOrgLocation) throws Exception;
+	
+	public void sendEmailtoApplicant(Org loginOrg, User users,RequirementSubmission requirementSubmission,
+			 OrgLocations loginOrgLocation) throws Exception;
+		
 
 	void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation) throws Exception;
 

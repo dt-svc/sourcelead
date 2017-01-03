@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.entity.Candidate;
@@ -113,6 +114,11 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
+	
+	
+	@Autowired
+	RequirementApproverHierarchyDao requirementApproverHierarchyDao;
+	
 	
 	@Autowired
 	OrgService orgService;
@@ -419,7 +425,9 @@ public class RequirementServiceImpl implements RequirementService {
 			     String[] approvers = parallelApprovers.split(",");
 			  	  
 			     
-			     
+			     //to delete the  unselected approvers in edit Mode
+				  removedApproversInRequirementForParallel(approvers,requirement);	
+				  
 			     
 			     for(String approver : approvers){
 					  
@@ -427,8 +435,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  // commented as it is not in use by David Raju
 					  //User approverUser = userService.getUserById(Long.parseLong(approver));
 					  
-					  //to delete the  unselected approvers in edit Mode
-					  removedApproversInRequirementForParallel(approvers,requirement);			  
+					 		  
 					 
 					   
 					    // if  the Requirement is in Edit Mode
@@ -550,7 +557,7 @@ public class RequirementServiceImpl implements RequirementService {
 						Team team = null;
 						if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
 							String assignedTeamId = jsonObj.getString("assignedTeamId");
-					    	if(!assignedTeamId.contains("role")){
+					    	if(!assignedTeamId.contains("role") && !assignedTeamId.contains("All")){
 					    		teamId = Long.parseLong(assignedTeamId);
 							    team = teamService.getTeamByTeamId(teamId);
 					    	}
@@ -809,10 +816,10 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
 			}
-		 if(loginUser.getUserType()!=null && !"".equalsIgnoreCase(loginUser.getUserType())){
-			 globalVarsMap.put("role", loginUser.getUserType());
-			 }else{
-				 globalVarsMap.put("role","--");
+		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
+			 globalVarsMap.put("role",loginOrgLocation.getOrg().getOrgName() );
+			 } else {
+				 globalVarsMap.put("role", "--");
 			}
 		 
 		 if(requirement.getFileName() != null && !requirement.getFileName().isEmpty() ){
@@ -1229,13 +1236,13 @@ public class RequirementServiceImpl implements RequirementService {
 			 StringBuilder userBuild = new StringBuilder();
 			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("LoginUser","--"); 
+				 globalVarsMap.put("LoginUser",loginUser.getFirstName()); 
 			 }
-		 if(loginUser.getUserType()!= null && !"".equalsIgnoreCase(loginUser.getUserType())){
-			 globalVarsMap.put("Role", loginUser.getUserType());
-			 }else{
-				 globalVarsMap.put("Role","--"); 
-			 }
+		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
+			 globalVarsMap.put("Role",loginOrgLocation.getOrg().getOrgName() );
+			 } else {
+				 globalVarsMap.put("Role", "--");
+			}
 		 StringBuilder linkBuild = new StringBuilder();
 		 StringBuilder attachBuild = new StringBuilder();
 		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
@@ -1467,7 +1474,7 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 	@Override
-	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype,StringBuilder location) throws Exception {
+	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype) throws Exception {
 		User  vendorContactUser = null;
 		
 		if(releasetype.equalsIgnoreCase("VENDORS")){
@@ -1493,11 +1500,18 @@ public class RequirementServiceImpl implements RequirementService {
 			 } else {
 				 globalVarsMap.put("RequirementTitle", "--");
 			}
-		 if (location != null) {
-			 globalVarsMap.put("RequirementLocation",  location.toString());
-			 } else {
-				 globalVarsMap.put("RequirementLocation", "--");
-			}
+		 
+		 StringBuilder stringBuild = new StringBuilder();
+		 if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
+			 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
+		 }else if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
+			 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
+		 }else if(requirement.getCountry()!= null && !"".equalsIgnoreCase(requirement.getCountry())){
+			 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).toString());
+		 }else{
+			 globalVarsMap.put("RequirementLocation", "--");
+		 }
+		 
 		 if (requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) ) {
 			 globalVarsMap.put("RequirementRate", requirement.getRate());
 			 } else {
@@ -1594,10 +1608,10 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 	@Override
-	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode)
+	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode,String statusType)
 			throws Exception {
 		
-			return requirementDao.getApproverRequirementApproverListByOrgLocationIDAndUserId(orgLocationId, userType, userId, userCode);
+			return requirementDao.getApproverRequirementApproverListByOrgLocationIDAndUserId(orgLocationId, userType, userId, userCode,statusType);
 		
 	}
 	
@@ -1812,9 +1826,48 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	
 
-	
-	
 	public void removedApproversInRequirementForParallel(String[] approver , Requirement requirement) throws Exception{
+		
+		if(requirement.getId() !=null){
+			ArrayList<String> oldApproversList = new ArrayList<String>();
+			ArrayList<String> newApproversList = new ArrayList<String>();
+			ArrayList<String> uniqueApproversList = new ArrayList<String>();
+			ArrayList<String> removedApproversList = new ArrayList<String>();
+			
+			for(String app : approver){
+				 newApproversList.add(app);
+			 }
+			
+			// bringing the old  requirementapprovalHierarachy  list based on the requirementID
+			
+			List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
+			for(RequirementApproverHierarchy rah :requirementApproverHierarchies){
+				oldApproversList.add(rah.getApproverUserId().getId().toString());
+			}
+			
+			// seperating the lists
+			for (String item : oldApproversList) {
+	    	    if (newApproversList.contains(item)) {
+	    	    	uniqueApproversList.add(item);
+	    	    } else {
+	    	    	removedApproversList.add(item);
+	    	    }
+	    	}
+			
+			
+			// Removing  the unselected approvals from  the RequirementApprovalHierarachy
+			for (String item : removedApproversList) {
+				requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(Long.parseLong(item),requirement.getId());
+			}
+		}
+		
+		
+		
+	}
+	
+	
+	
+	/*public void removedApproversInRequirementForParallel(String[] approver , Requirement requirement) throws Exception{
 		
 		if(requirement.getId() !=null){
 			
@@ -1833,7 +1886,7 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		
 		
-	}
+	}*/
 
 	public void removedApproversInRequirementForSequential(User approver , Requirement requirement,Integer level) throws Exception{
 		
@@ -1842,7 +1895,7 @@ public class RequirementServiceImpl implements RequirementService {
 				    	if(requirementApproverHierarchies != null ){
 							     for(RequirementApproverHierarchy rah:requirementApproverHierarchies){
 							            if(approver.getId() != rah.getApproverUserId().getId() && level.equals(rah.getLevel())){
-								                requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
+							            	requirementApproverHierarchyDao.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
 							              }
 							
 								    }

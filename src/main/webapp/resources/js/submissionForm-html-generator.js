@@ -276,7 +276,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         				 datavalidation = 'data-validation="required validate_phone validate_Space validate_length length9-20"';
         			 }
         			 else{
-        				 datavalidation = 'data-validation="required validate_Space validate_length length2-50"';
+        				 datavalidation = 'data-validation="required validate_Space validate_length length2-100"';
         			 }
         			 
         			 if(label == 'Current CTC' || label == 'Expected CTC'){
