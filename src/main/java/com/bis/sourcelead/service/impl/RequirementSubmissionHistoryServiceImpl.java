@@ -31,9 +31,11 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 			throws Exception {
 		requirementSubmissionHistory.setSubmissionId(requirementSubmission);
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
-		requirementSubmissionHistory.setCreatedBy(user.getUserCode());
+		if(user != null){
+			requirementSubmissionHistory.setCreatedBy(user.getUserCode());
+			requirementSubmissionHistory.setUpdatedBy(user.getUserCode());	
+		}
 		requirementSubmissionHistory.setCreatedDate(new Date());
-		requirementSubmissionHistory.setUpdatedBy(user.getUserCode());
 		requirementSubmissionHistory.setUpdatedDate(new Date());
 		return requirementSubmissionHistoryDao.updateRequirementHistory(requirementSubmissionHistory);
 	}
