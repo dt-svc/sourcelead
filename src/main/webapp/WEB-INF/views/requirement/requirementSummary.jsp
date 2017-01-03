@@ -457,14 +457,16 @@ function sideBar(requirementId){
              			 	}
               			
               			
-              			result = result+'    <div class="profile_details requirement_details clearfix">';
+              			result = result+'    <div class="profile_details requirement_details clearfix reqrementsummary">';
               			if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined'){
-    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
+
                			}
                			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined'){
-     				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+     				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
                			}else{
-               				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'<i></i></h4></a>';
+               				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'">'+json.jobTitle+'</span><i></i></h4></a>';
+
                			}
 				        result = result+'<div class="hide-row">';
 				       /*result = result+'    <div class="profile_details requirement_details clearfix">'; */

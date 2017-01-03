@@ -164,8 +164,10 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		
 		String candidateTypeSubQuery = "";
-		if(candidateType.equalsIgnoreCase("All")){
+		if(candidateType != null && !candidateType.isEmpty() && candidateType.equalsIgnoreCase("All")){
+			
 			candidateTypeSubQuery = " and (cnadidate.candidateType = 'Candidate' OR cnadidate.candidateType = 'Consultant')";
+			
 		}else{
 			candidateTypeSubQuery = " and cnadidate.candidateType = '"+candidateType+"' ";
 		}

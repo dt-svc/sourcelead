@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -327,6 +328,7 @@ public class DashboardRestController {
 		String userCode = user.getUserCode();
 		String userType = null;
 		List<Requirement>   requirementList = null;
+		ArrayList<Requirement>   newList = new ArrayList<Requirement>();
 		
 		if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
 			userType = "ADMIN";
@@ -347,9 +349,17 @@ public class DashboardRestController {
 			                    	StringBuilder sb = new StringBuilder();
 									requirement.setApprovedBy(sb.append(approvedUser.getFirstName()).append(" ").append(approvedUser.getLastName()).toString());
 			                    }
+			                    newList.add(requirement);
+			}else if("OPEN".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString()) || "REJECTED".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
+				 User approvedUser = userService.getUserByUserCode(requirement.getUpdatedBy());
+                 if(approvedUser !=null ){
+                 	StringBuilder sb = new StringBuilder();
+						requirement.setApprovedBy(sb.append(approvedUser.getFirstName()).append(" ").append(approvedUser.getLastName()).toString());
+                 }
+                 newList.add(requirement);
 			}
 		}	
-		resultJson = commonUtil.toJSON(requirementList);
+		resultJson = commonUtil.toJSON(newList);
 		return resultJson;
 	 }
 	 

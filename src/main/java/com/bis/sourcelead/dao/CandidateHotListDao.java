@@ -13,5 +13,7 @@ public interface CandidateHotListDao {
 	public CandidateHotList getCandidateHotListByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId);
 	
 	List<CandidateHotList> getHotCandidateListForTeamByTeamId(Long teamId ,Long orgLocationsId) throws Exception;
+	
+	public CandidateHotList getCandidateHotListById(Long id) throws Exception;
 
 }

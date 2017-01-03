@@ -1163,14 +1163,14 @@ function getCandidateListForTeam(teamId,teamName){
 		                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 		                     result = result +"<thead>"; 
 		                     result = result +"  <tr>"; 
-		                    /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
 		                     result = result +"    <th>Name</th>"; 
 		                     result = result +"    <th>Designation</th>"; 
 		                     result = result +"    <th>Position type</th>"; 
 		                     result = result +"    <th>Email</th>"; 
 		                     result = result +"    <th>Mobile</th>"; 
 		                     result = result +"    <th>Type</th>"; 
-		                     result = result +"    <th>Location</th>"; 
+		                     result = result +"    <th>Location</th>";
+		                     result = result +"    <th>Action</th>";
 		                     result = result +"  </tr>"; 
 		                     result = result +"</thead>";
 		                     result = result +"<tbody>"; 
@@ -1221,7 +1221,7 @@ function getCandidateListForTeam(teamId,teamName){
 					            	 candidateLocation = "----";
 					             }
 		                    	 
-		                    	 result = result +"<tr>";
+		                    	 result = result +"<tr id='removeCandidate"+opt.id+"'>";
 				                 result = result +"  <td><div><span title='"+candidateFullName+"'>"+candidateFullName+"</span></div></td>";
 				                 result = result +"  <td><div><span>"+candidateDesignation+"</span></div></td>";
 				                 result = result +"  <td><div><span>"+positionType+"</span></div></td>";
@@ -1229,6 +1229,7 @@ function getCandidateListForTeam(teamId,teamName){
 				                 result = result +"  <td><div>"+candidateMobileNumber+"</div></td>";
 				                 result = result +"  <td><div>"+candidateType+"</div></td>";
 		                         result = result +"  <td><div>"+candidateLocation+"</div></td>";
+		                         result = result +"  <td><i class='glyphicon glyphicon-trash text-danger' onclick='removeFromTeam("+opt.id+");'></i></td>";
 				                 result = result +"</tr>";
 		                     }
 		                     result = result +" </tbody>";
@@ -1269,6 +1270,27 @@ function cpagination(){
      		"sSearch": ""
      	}
     } );
+}
+</script>
+
+<script>
+function removeFromTeam(id){
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(id){
+		 $("#removeCandidate"+id).html("<td colspan='8'  id='loading"+id+"'></td>");
+		 $("#loading"+id).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		 
+			 $.ajax({ 
+		    	type: "POST",
+		    	url: sourceleadUrl+"/removeFromTeam?${_csrf.parameterName}=${_csrf.token}&id="+id,
+		    	  success: function(data) {
+		    		  document.getElementById("removeCandidate"+id).remove();
+		    		  teamList();
+		    	  }
+			}); 
+	}
+	
+
 }
 </script>
 
