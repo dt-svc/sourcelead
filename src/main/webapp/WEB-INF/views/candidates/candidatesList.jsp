@@ -359,6 +359,13 @@ function candidateSideBar(candidateId){
          			 	}else{
          			 		designationType = '';
          			 	}
+
+         			 	if(json.lastName != null && json.lastName !='' && json.lastName != 'undefined'){
+         			 		lastName = json.lastName;
+         			 	}else{
+         			 		lastName = "";
+         			 	}
+
          			 	
          			 	if(json.country != null && json.country != '' && json.country != 'undefined'){
          			 		country = ','+json.country;
@@ -378,6 +385,7 @@ function candidateSideBar(candidateId){
              			 		city = '';
              			 	}
          			 	
+
 	                	 var result = "";
 	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -425,7 +433,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                     </div>'; */
 			             result = result+'                     <div class="media-body candidate-details">';
 			             
-			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+json.lastName+'</h4>';
+			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
 			            
 			             result = result+'                       <ul class="list-unstyled">';
 			             

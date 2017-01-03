@@ -1356,11 +1356,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
        	 }
    		 else if(requirement.getParentRequirement() == null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
    			 clientSubmission.setRequirement(requirement);
-   			 if("sladmin".equalsIgnoreCase(user.getUserCode())){
-                    clientSubmission.setOrgLocations(requirement.getClientId().getResponderLocationId());
-                }else{
-                    clientSubmission.setOrgLocations(requirement.getClientId().getLocationId());    
-                }
+   			 clientSubmission.setOrgLocations(requirement.getClientId().getResponderLocationId());
    			 
        	 }
    		 
