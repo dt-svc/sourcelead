@@ -636,29 +636,29 @@ public class SubmissionsRestController {
 		requirement.setSubmitToClientMailSubject(subjectSB.append("New applicants received for the").append(" ").append(requirement.getJobTitle()).toString());
 
 		if (requirement != null && requirement.getParentRequirement() != null) {
-			sb.append("Hi").append(" ").append(requirement.getParentRequirement().getManagerUserId().getFirstName()).append(" ").append(requirement.getParentRequirement().getManagerUserId().getLastName()).toString();
-			sb.append(",");
-			sb.append("\n\n");
-			sb.append(fullName).append(" submitted the applicants for the").append(" ").append(requirement.getJobTitle()).append(".\n\n").toString();
-			sb.append("Total no.of submitted applicants :").append(submissions.length).append(".\n\n").toString();
-			sb.append("Best Regards,\n");
-			sb.append(fullName);
-			requirement.setMailBody(sb.toString());
-
+			if(requirement != null && requirement.getParentRequirement().getManagerUserId() != null){
+				sb.append("<p>").append("Hi,").append(requirement.getParentRequirement().getManagerUserId().getFirstName()).append(" ")
+				.append(requirement.getParentRequirement().getManagerUserId().getLastName()).append("</p>")
+				.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ")
+				.append(requirement.getJobTitle()).append("</p>")
+				.append("<p>").append("Total no.of submitted applicants :").append(submissions.length).append("<p>")
+				.append("<p>").append("Best Regards,").append("</p>")
+				.append("<p>").append(fullName).append("</p>");
+				requirement.setMailBody(sb.toString());
+			}
 		}else{
-			  StringBuilder sbSpoc = new StringBuilder();
-				sbSpoc.append("Hi").append(" ").append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName()).toString();
-				sbSpoc.append(",");
-				sbSpoc.append("\n\n");
-				sbSpoc.append(fullName).append("\n").append(" submitted the applicants for the").append(" ").append(requirement.getJobTitle()).append(".\n\n").toString();
-				sbSpoc.append("Total no.of submitted applicants :").append(submissions.length).append(".\n\n").toString();
-				sbSpoc.append("Best Regards,\n");
-				sbSpoc.append(fullName);
-				requirement.setMailBody(sbSpoc.toString());
-			
-
+			if(requirement.getSpocId()!= null){
+				if(requirement.getSpocId().getSpocUser()!= null){
+					sb.append("<p>").append("Hi,").append(" ").append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ")
+					.append(requirement.getSpocId().getSpocUser().getLastName()).append("</p>").append("\n")
+					.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ").append(requirement.getJobTitle()).append("</p>")
+					.append("<p>").append("Total no.of submitted applicants :").append(submissions.length).append("</p>")
+					.append("<p>").append("Best Regards,").append("</p>")
+					.append("<p>").append(fullName).append("</p>");
+					requirement.setMailBody(sb.toString());
+				}
+			}
 		}
-		
 		resultJson = toJSON(requirement);
 		return resultJson;
 	}
