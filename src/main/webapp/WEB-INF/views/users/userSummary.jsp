@@ -25,6 +25,12 @@
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/chosen.jquery.min.js"></script> 
 
+<style>
+.user_summary_edit_cta p{
+    margin: -5px 15px;
+}
+</style>
+
 <div class="wraper">
 	<!-- Content Area -->
 	<section class="content-wraper">
@@ -785,7 +791,7 @@ function getChangeRole(userId,userRoleId){
 				
 				 result = result + '<div class="col-md-12" id="reasonDiv">';
 				  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Change Reason"></textarea>';
-				  	result = result + '</div>';
+				  	result = result + '</div><br/>';
 	        	
 	        	result = result + '</div>';	
 	        	
@@ -817,7 +823,10 @@ function getChangeRole(userId,userRoleId){
 		$("#editRoleDetailsList").empty(); 
 	}
 		
-	 
+	$( "#editRole_form" ).click(function() {
+		 if ($(this).validate(false, validationSettings)){
+		 }
+		});
 	
 	
 }
