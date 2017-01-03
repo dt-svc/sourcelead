@@ -52,7 +52,8 @@ function addOffer(requirementId){
 				
 				result = result + '<input type="hidden" id="isFlushCandidateRequired" name="isFlushCandidateRequired">';
 				
-				result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>';
+				/* result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>'; */
+				result= result + '	            <div class="add_inter_head"> <span>Add Offer</span>';
 				result= result + '	              <div class="clearfix"></div>';
 				result= result + '	            </div>';
 				
@@ -69,7 +70,7 @@ function addOffer(requirementId){
 				result= result + '	                  <th>Rate / Salary</th>';
 				result= result + '	                  <th>Position Type</th>';
 				result= result + '	                  <th>Attachment</th>';
-				result = result + '<th class="action">Action</th>';
+				/* result = result + '<th class="action">Action</th>'; */
 				result= result + '	                </tr>';
 				
 				result= result + '	              </tbody>';
@@ -181,11 +182,11 @@ function loadRemiderDiv(){
      </div>                 
 </div>
 
- <div id="divOfferTd6" style="display: none; float: left;">
+ <!-- <div id="divOfferTd6" style="display: none; float: left;">
 	 <div>
          <a href="#" onclick="removeOfferRow(REPLACEROWID);"><i class="glyphicon glyphicon-trash deme"></i></a>
     </div>
-</div> 
+</div> --> 
 	
 
 <script type="text/javascript">
@@ -226,10 +227,10 @@ function loadRemiderDiv(){
 		divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell4.innerHTML = divTsTd5Str; 
 		
-		var cell5 = row.insertCell(5);
+		/* var cell5 = row.insertCell(5);
 		var divTsTd6Str = document.getElementById("divOfferTd6").innerHTML;
 		divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell5.innerHTML = divTsTd6Str;
+		cell5.innerHTML = divTsTd6Str; */
 		
 		$("#"+maxRowNum+"applicantId").chosen();
 		
@@ -244,9 +245,9 @@ function loadRemiderDiv(){
 		
 
 		
-	    $("#"+maxRowNum+"applicantId").on('change', function (e) {
+	   /*  $("#"+maxRowNum+"applicantId").on('change', function (e) {
 	    	  getUpdatedSubmittedAndShortListedAndInterviewedCandidates();
-	    }); 
+	    });  */
 		
 }		
 </script>
