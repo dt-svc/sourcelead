@@ -79,8 +79,9 @@ public class CandidateController {
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(countries != null){
             model.addObject("loginCountryName", countries.getName());
-			}
             model.addObject("currencyCode", countries.getCurrency());
+			}
+            
             
             List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
@@ -106,8 +107,9 @@ public class CandidateController {
 				Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 				if(countries != null){
 	            model.addObject("loginCountryName", countries.getName());
-				}
 	            model.addObject("currencyCode", countries.getCurrency());
+				}
+	           
 	            
 	            List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 				model.addObject("educationsList", educationsList);
