@@ -1349,7 +1349,7 @@ function requirementPipeline(requirementId,submissionType){
 						       			    result = result +'<th>End Time</th>';
 						       			    result = result +'<th>Location</th>';
 						       			    result = result +'<th>Feedback</th>';
-						       			    result = result +'<th>Interview</th>';
+						       			  /*   result = result +'<th>Interview</th>'; */
 						       			    result = result +'</tr></thead>';
 						       			    result = result +'<tbody>';
 						       			    for(var j=0;j<report.requirementInterviewHistoryList.length;j++){
@@ -1393,7 +1393,7 @@ function requirementPipeline(requirementId,submissionType){
 							       			    }
 						       			    	
 						       			    	result = result +'<td><span>--</span></td>';
-						       			    	result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>';
+						       			    	/* result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>'; */
 						       			    	result = result +'</tr>';
 						       			    } 
 						       			    result = result +'</tbody>';
