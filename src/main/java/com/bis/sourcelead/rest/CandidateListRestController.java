@@ -471,9 +471,7 @@ public class CandidateListRestController {
 	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 			String resultJson;
-		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			 
-			Candidate can = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
+			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 			StringBuilder skillsList = new StringBuilder();
 			List<CandidateSkills> candidateSkills = candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
 			int i = 0;

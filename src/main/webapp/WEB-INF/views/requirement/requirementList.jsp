@@ -180,7 +180,7 @@ function requirementList(){
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>ID-Title</th>"; 
 	                     result = result +"    <th>Client</th>"; 
-	                     result = result +"    <th>Position type</th>"; 
+	                     result = result +"    <th>Employment type</th>"; 
 	                     result = result +"    <th>Location</th>"; 
 	                     result = result +"    <th>No.of<br> Positions</th>"; 
 	                     result = result +"    <th>Applicants</th>"; 
