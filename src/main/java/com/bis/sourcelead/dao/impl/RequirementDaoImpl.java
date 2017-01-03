@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -671,6 +672,39 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		return check;
 		
+	}
+
+	@Override
+	@Transactional
+	public Requirement getRequirementByRequirementIdOrgLocationsId(String id, Long requirementId, Long orgLocationsId)
+			throws Exception {
+		 logger.debug("In EmployeesDaoImpl class getEmployeeByIdAndUserIdAndOrgLocationsId method");
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Requirement requirement where requirement.orgLocationId = :orgLocationsId and requirement.jobId = :id and requirement.id = :requirementId ";
+			List<Requirement> requirementList =  session.createQuery(query) .setString("id", id).setLong("requirementId", requirementId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+			Requirement requirement = null;
+			if(requirementList != null && !requirementList.isEmpty())
+			{
+				requirement = (Requirement) requirementList.iterator().next();
+			}
+			return requirement;
+	}
+
+	@Override
+	@Transactional
+	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception {
+		 logger.debug("In Employee getEmployeeByEmployeeId method");
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(id != null && orgLocationsId != null){
+				String query = "from Requirement requirement where requirement.orgLocationId = :orgLocationsId and requirement.jobId = :id ";
+				List<Requirement> requirementList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("id", id).setCacheable(true).list();
+
+				if (requirementList != null && requirementList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
 	}
 	
 }

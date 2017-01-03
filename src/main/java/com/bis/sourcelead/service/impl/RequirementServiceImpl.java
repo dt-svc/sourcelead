@@ -2068,5 +2068,16 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	}
 
+	@Override
+	public Requirement getRequirementByRequirementIdOrgLocationsId(String id, Long requirementId, Long orgLocationsId)
+			throws Exception {
+		return requirementDao.getRequirementByRequirementIdOrgLocationsId(id, requirementId,orgLocationsId);
+	}
+
+	@Override
+	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception {
+		return requirementDao.validateJobid(id,orgLocationsId);
+	}
+
 }
 
