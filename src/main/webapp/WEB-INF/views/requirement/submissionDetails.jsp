@@ -161,6 +161,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + ' </div>';
                result = result + '</div>';
 		       result = result + ' <div class="col-md-6">';
+		       
+		       result = result + ' <div class="row">';
+		       result = result + ' <div class="col-md-6">';
 		       result = result + '<ul class="list-unstyled can-perdt">';
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.candidate.email+'</a></li>';
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.candidate.mobilePhone+'</li>';
@@ -170,11 +173,11 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<li><i class="fa fa-rupee"></i>'+currentRate+' / '+currentRateCurrency+' - Current Rate / Salary</li>';
 		       result = result + '<li><i class="fa fa-rupee"></i>'+expectedRate+' / '+rateType+' - Expected Rate / Salary</li>';
 		       result = result + '</ul>';
+		       result = result + ' </div>';
 		       
-				
-	          
-	             		
 		       
+		       result = result + ' <div class="col-md-6">';
+			   
 			    result = result + '<div class="acceptreject-actions">';
 			    if(json.needApplicantPermit == 'Y'){
 			    	
@@ -191,11 +194,11 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 								result = result + '		<div class="acceptreject-pop" id="reject">';
 								result = result + '		</div>';
 								result = result + '	</li>';
-			    	    	}else{
+			    	    	}/* else{
 			    	    		result = result + '	<li>';
 			    	    		result = result + json.submissionRateStatus;
 								result = result + '	</li>';
-			    	    	}
+			    	    	} */
 			    	    	result = result + '</span>';
 			    	    	result = result + '</ul>';
 						</c:if>
@@ -211,7 +214,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 										result = result + "comment: "+json.submissionRequestComment;
 									result = result + '	</li>';
 									if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
+										result = result + '<li>';
 										result = result +"status: "+ json.submissionRateStatus;
+										result = result + '</li>';
 									}
 						   }else{
 							   <c:if test="${isTeamMember == true && isManager == false}">
@@ -222,9 +227,10 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 								</c:if>		
 						   }
 						result = result + '</ul>';
-					
+						result = result + '</div>';
 					  
 			    } 
+				result = result + '</div>';
 				result = result + '</div>';
 				
 				/* New comments div creation Nov 8th, 2016 */ 
