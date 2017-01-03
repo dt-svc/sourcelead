@@ -150,23 +150,25 @@ public class ClientServiceImpl implements ClientService{
 			SubmissionTemplate sourceLeadDefaultTemplate = null;
 			if(jsonObj.has("orgLocationId")){
 				clientOrgLocations = orgLocationService.getOrgLocations(jsonObj.getLong("orgLocationId"));
-				if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
-					clientOrgLocations.setCountry(jsonObj.getString("country"));
-				}else if(jsonObj.has("orgCountry") && !isNullOrEmpty(jsonObj.getString("orgCountry"))){
+				if(jsonObj.has("orgCountry") && !isNullOrEmpty(jsonObj.getString("orgCountry"))){
 					clientOrgLocations.setCountry(jsonObj.getString("orgCountry"));
 				}
-				if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
-					clientOrgLocations.setState(jsonObj.getString("state"));
-				}else if(jsonObj.has("orgState") && !isNullOrEmpty(jsonObj.getString("orgState"))){
+				else if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+					clientOrgLocations.setCountry(jsonObj.getString("country"));
+				}
+				if(jsonObj.has("orgState") && !isNullOrEmpty(jsonObj.getString("orgState"))){
 					clientOrgLocations.setState(jsonObj.getString("orgState"));
 				}
-				
-				if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
-					clientOrgLocations.setCity(jsonObj.getString("city"));
-				}else if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
+				else if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
+					clientOrgLocations.setState(jsonObj.getString("state"));
+				}
+				if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
 					clientOrgLocations.setCity(jsonObj.getString("orgCity"));
 				}
 				
+				else if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
+					clientOrgLocations.setCity(jsonObj.getString("city"));
+				}
 			}
 			
 			if(clientOrgLocations == null){
