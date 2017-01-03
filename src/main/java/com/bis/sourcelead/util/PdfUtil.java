@@ -80,7 +80,6 @@ public class PdfUtil {
 	        boldFont.setColor(myColor);
 	        StringBuilder userStyle = new StringBuilder();
 	        userStyle.append(orgName).append(" ").append("Users");
-//            Paragraph para = new Paragraph(userStyle.toString(),boldFont);
           
 
 	        StringBuilder orgNameSB = new StringBuilder();
@@ -272,10 +271,7 @@ public class PdfUtil {
 	        boldFont.setColor(myBordColor);
 	        StringBuilder sbCandStyle = new StringBuilder();
 	        sbCandStyle.append(orgName).append(" ").append("Candidates");
-//            Paragraph para = new Paragraph(sbCandStyle.toString(),boldFont);
 
-	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-	        boldFont.setColor(myColor1);
 	        StringBuilder orgNameSB = new StringBuilder();
             Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" Candidates.").toString(),boldFont);
 
@@ -429,10 +425,7 @@ public class PdfUtil {
 	        boldFont.setColor(myBordColor);
 	        StringBuilder sbReqStyle = new StringBuilder();
 	        sbReqStyle.append(orgName).append(" ").append("Requirements");
-//            Paragraph para = new Paragraph(sbReqStyle.toString(),boldFont);
 
-	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-	        boldFont.setColor(myColor1);
 	        StringBuilder orgNameSB = new StringBuilder();
             Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" Requirements.").toString(),boldFont);
 
@@ -592,10 +585,7 @@ public class PdfUtil {
 	        boldFont.setColor(myColor);
 	        StringBuilder titleName = new StringBuilder();
 	        titleName.append(orgName).append(" ").append(vendorType);
-//            Paragraph para = new Paragraph(titleName.toString(),boldFont);
 
-	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-	        boldFont.setColor(myColor1);
 	        StringBuilder orgNameSB = new StringBuilder();
             Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" ").append(vendorType).toString(),boldFont);
 
@@ -711,10 +701,7 @@ public class PdfUtil {
 	        boldFont.setColor(myColor);
 	        StringBuilder titleName = new StringBuilder();
 	        titleName.append(orgName).append(" ").append(vendorType).append(" ").append("Contacts");
-//            Paragraph para = new Paragraph(titleName.toString(),boldFont);
 
-	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-	        boldFont.setColor(myColor1);
 	        StringBuilder orgNameSB = new StringBuilder();
             Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" ").append(vendorType).append(" Contacts.").toString(),boldFont);
 

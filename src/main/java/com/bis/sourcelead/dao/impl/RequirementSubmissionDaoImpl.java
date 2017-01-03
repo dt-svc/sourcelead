@@ -76,7 +76,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception{
 		Session session = this.sessionFactory.getCurrentSession();	
-		String query = "from RequirementSubmission rs left join fetch rs.requirement where rs.id = :submissionId";
+		String query = "from RequirementSubmission rs where rs.id = :submissionId";
 		List<RequirementSubmission>  submission = session.createQuery(query).setLong( "submissionId", submissionId).setCacheable(true).list();
 		logger.info("RequirementSubmission loaded successfully, RequirementSubmission details="+submission);
 		return submission.get(0);
@@ -330,9 +330,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
         
         String submissionStages = "";
         
-    		String query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.requirement.id =:requirementId";
+    		String query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.requirement.id =:requirementId ";
     		
-    		List<Long> reqSubmsCount  = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("requirementId", requirementId).list();
+    		List<Long> reqSubmsCount  = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("requirementId", requirementId).setCacheable(true).list();
     		Integer count = 0;
 			if(reqSubmsCount != null && !reqSubmsCount.isEmpty()){
 					count = reqSubmsCount.get(0).intValue();
