@@ -239,10 +239,10 @@ public class UserDaoImpl implements UserDao {
 		Boolean isAdmin = userRoleDao.isUserAdmin(userId);
 				
 		if(isAdmin){
-			query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' ) and user.id <> :userId";
+			query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' and userRole.roles.id <>'2') and user.id <> :userId";
 
 		}else{
-			 query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE') and user.id <> :userId  ";
+			 query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' and userRole.roles.id <>'2') and user.id <> :userId  ";
 
 		}
 		
