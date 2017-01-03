@@ -38,7 +38,7 @@
 		</div>
 	</section>
 		      <div class="content-area">
-		      				<div id="viewReqTemplateDiv" class="mt">
+		      				<div id="viewReqTemplateDiv" class="mt clearfix">
 						     </div>  
 		      </div>
           </div>
@@ -143,26 +143,6 @@
 				 
 				 
 						result = result + '<div class="project_details_cta clearfix">';
-
-				 
-				
-						result = result + '<div class="project_details_cta clearfix">';
-						result = result + '	<strong>Skills :</strong>';
-						 if(json.skills != null && json.skills != "" && json.skills != 'undefined'){
-						result = result + '<span class="fix" title="'+json.skills+'">'+json.skills+'</span>';
-						 }
-						result = result + ' </div>';
-					
-				 
-				 
-						result = result + '<div class="project_details_cta clearfix">';
-						result = result + '<strong>Education :</strong>';
-						if(json.education != null && json.education != "" && json.education != 'undefined'){
-						result = result + '<span class="fix" title="'+json.education+'">'+json.education+'</span>';
-						}
-						result = result + '</div>';
-					 
-				 
 				 
 						result = result + '<div class="project_details_cta clearfix">';
 

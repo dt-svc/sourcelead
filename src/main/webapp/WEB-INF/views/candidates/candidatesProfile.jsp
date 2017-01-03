@@ -80,7 +80,7 @@ text-align:left;
 <script>
 function editCandidate(candidateId){
 	$("#profileEditPopup").show();
-	
+	 var loginCountryName = '${loginCountryName}';
 	  var sourceleadUrl ='${sourceleadUrl}';
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -228,12 +228,12 @@ function editCandidate(candidateId){
 							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
 			                  
 							result = result + ' <select class="selct-picker" id="currentRateCurrency" name="currentRateCurrency">';
-							result = result + ' <option '+(json.currencyCode == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
-							result = result + '<option   '+(json.currencyCode == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
-							result = result + ' <option  '+(json.currencyCode == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
-							result = result + '  <option '+(json.currencyCode == "GPB" ? "selected" : '') +'><a href="#">GPB</a></option>';
-							result = result + '  <option '+(json.currencyCode == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
-							result = result + '<option   '+(json.currencyCode == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
+							result = result + ' <option '+(json.currentRateCurrency == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
+							result = result + '<option   '+(json.currentRateCurrency == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
+							result = result + ' <option  '+(json.currentRateCurrency == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
+							result = result + '  <option '+(json.currentRateCurrency == "GPB" ? "selected" : '') +'><a href="#">GPB</a></option>';
+							result = result + '  <option '+(json.currentRateCurrency == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
+							result = result + '<option   '+(json.currentRateCurrency == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
 			                result = result + ' </select>';
 			                
 			                result = result + '</div>';
@@ -264,12 +264,12 @@ function editCandidate(candidateId){
 							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
 			                  
 							result = result + ' <select class="selct-picker" id="expectedRateCurrencey" name="expectedRateCurrencey">';
-							result = result + ' <option '+(json.currencyCode == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
-							result = result + '<option   '+(json.currencyCode == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
-							result = result + ' <option  '+(json.currencyCode == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
-							result = result + '  <option '+(json.currencyCode == "GPB" ? "selected" : '') +'><a href="#">GPB</a></option>';
-							result = result + '  <option '+(json.currencyCode == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
-							result = result + '<option   '+(json.currencyCode == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
+							result = result + ' <option '+(json.expectedRateCurrencey == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
+							result = result + '<option   '+(json.expectedRateCurrencey == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
+							result = result + ' <option  '+(json.expectedRateCurrencey == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
+							result = result + '  <option '+(json.expectedRateCurrencey == "GPB" ? "selected" : '') +'><a href="#">GPB</a></option>';
+							result = result + '  <option '+(json.expectedRateCurrencey == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
+							result = result + '<option   '+(json.expectedRateCurrencey == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
 			                result = result + ' </select>';
 			                
 			                result = result + '</div>';
@@ -443,6 +443,7 @@ function editCandidate(candidateId){
 function getAllCandidateCountries(){
 	setTimeout(function(){ 
 	var countryName = $("#updateCountry").val();
+	var loginCountryName = '${loginCountryName}';
 	$.ajax({
     	type: "POST",
     	dataType: "json",
@@ -454,7 +455,7 @@ function getAllCandidateCountries(){
             for(var i=0;i<json.length;i++){
             	if(json[i] == countryName){
             		$('#candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}else if(json[i] == '${candidateCountry}' && countryName ==null && countryName ==''){
+            	}else if(json[i] == '${loginCountryName}' && countryName ==null && countryName ==''){
             		$('#candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{ 

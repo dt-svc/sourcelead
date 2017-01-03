@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -7,10 +8,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateSkillsDao;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -27,6 +31,9 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	@Autowired
 	CandidateSkillsDao candidateSkillsDao;
 	
+	 @Autowired
+	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	
 	/**
 	 * @author  prasad.k
 	 * This method is used for to store candidate skills 
@@ -37,10 +44,12 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	@Override
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception {
 		String newlist = candidateSkills.getName();
-		System.out.println(newlist);
-		
-		
-		return candidateSkillsDao.storeCandidateSkills(candidateSkills);
+		candidateSkills = candidateSkillsDao.storeCandidateSkills(candidateSkills);
+		/*
+		 * updating Candidate Skills DB data in existing candidateindex
+		 */
+		saveOrUpdateCandidateElkDocumentWithSkillDetails(candidateSkills.getCandidateId());
+		return candidateSkills;
 	}
 	
 	/**
@@ -134,4 +143,25 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 		Boolean flag = candidateSkillsDao.validateSkillName(skillName);
 		return flag;
 	}
+	
+	@Override
+    @Async
+	public void saveOrUpdateCandidateElkDocumentWithSkillDetails(Candidate candidate) throws Exception {
+		if(null != candidate && null != candidate.getId()){
+			CandidateIndex candidateIndex = new CandidateIndex();
+			candidateIndex.setCandidateId(candidate.getId());
+			ArrayList<String> skills =(ArrayList<String>) getCandidateSkillNamesByCandidateId(candidate.getId().toString());
+			if(null != skills){
+				candidateIndex.setSkills(skills);
+			}
+			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
 }

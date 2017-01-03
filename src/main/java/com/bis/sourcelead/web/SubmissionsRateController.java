@@ -122,6 +122,8 @@ public class SubmissionsRateController {
 				requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(requirementSubmission.getCandidate().getOrgLocationId());
 				requirementRateSubmissionNegotiation.setCurrentRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 				requirementRateSubmissionNegotiation.setCurrentRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
+				requirementRateSubmissionNegotiation.setExpectedRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+				requirementRateSubmissionNegotiation.setExpectedRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
 				requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.ACCEPTED);
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.CANDIDATE);
 				requirementRateSubmissionNegotiation.setCreatedBy("");
@@ -130,9 +132,13 @@ public class SubmissionsRateController {
 				requirementRateSubmissionNegotiation.setUpdatedDate(new Date());
 				requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);
 				requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
-			}else{
+			}
+			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			}
+			requirementSubmission.setFinalizedRate(requirementRateSubmissionNegotiation.getCurrentRate());
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
@@ -191,6 +197,8 @@ public class SubmissionsRateController {
 				requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(requirementSubmission.getCandidate().getOrgLocationId());
 				requirementRateSubmissionNegotiation.setCurrentRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 				requirementRateSubmissionNegotiation.setCurrentRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
+				requirementRateSubmissionNegotiation.setExpectedRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+				requirementRateSubmissionNegotiation.setExpectedRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
 				requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.ACCEPTED);
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.ORG);
 				requirementRateSubmissionNegotiation.setCreatedBy(user.getUserCode());
@@ -199,12 +207,15 @@ public class SubmissionsRateController {
 				requirementRateSubmissionNegotiation.setUpdatedDate(new Date());
 				requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);
 				requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
-			}else{
+			}
+			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			}
+			requirementSubmission.setFinalizedRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-			
 			Requirement requirement = requirementSubmission.getRequirement();
 			Candidate candidate = requirementSubmission.getCandidate();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();

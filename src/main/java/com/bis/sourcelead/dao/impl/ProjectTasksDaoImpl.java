@@ -111,7 +111,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		// TODO Auto-generated method stub
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectTasks pt where pt.projectId.id = :projectId )" ;
+		String query = "from ProjectTasks pt where pt.projectId.id = :projectId " ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setCacheable(true) 
 			    .list(); 
 		return projectTasksList;  
