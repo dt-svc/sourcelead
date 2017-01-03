@@ -1623,6 +1623,11 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
+    public Requirement validateExistingJobId(String jobId, Long requirementId, Long orgLocationId) throws Exception {
+        return requirementDao.validateExistingJobId(jobId,requirementId,orgLocationId);
+    }
+	
+	@Override
 	public Integer validateJobId(String id,Long orgLocation) throws Exception {
 		return requirementDao.validateJobId(id,orgLocation);
 	}

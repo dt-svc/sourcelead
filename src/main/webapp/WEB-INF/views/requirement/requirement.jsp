@@ -2106,13 +2106,14 @@ function getLevel2Approvers(currentApproverId){
 	 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
+	 var requirementId = document.getElementById("requirementId").value;
 	 if(jobId != null && jobId != ""){
 		 $("#draft").attr("disabled", "disabled");
 		 $("#save").attr("disabled", "disabled");
 		 $("#submitForApproval").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId, 
+		        url: sourceleadUrl+"/validateJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId+"&requirementId="+requirementId, 
 		        success: function(data) {
 		        	
 		        	if(data == '"duplicate"'){
