@@ -161,7 +161,18 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	
 			if(null != rolesList){
 				for(UserRole role : rolesList){
+					StringBuilder userName = new StringBuilder();
 					role.setUserRoleName(role.getRoles().getDisplayName());
+					if(!isNullOrEmpty(role.getUser().getLastName())){
+						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
+						role.setUserName(userName.toString());
+						
+					}else{
+						role.setUserName(role.getUser().getFirstName());
+					}
+					role.setUserEmail(role.getUser().getEmail());
+					role.setUserId(role.getUser().getId());
+					role.setIsMailSent(role.getUser().getIsMailSent().toString());
 					userRolesList.add(role);
 				}
 			
