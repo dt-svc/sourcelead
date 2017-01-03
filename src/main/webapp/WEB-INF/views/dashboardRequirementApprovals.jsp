@@ -104,7 +104,7 @@ function requirementApproverList(statusType){
 				            	 result = result + '<a  href="javascript:void(0)"  onClick="updateReuqirementStatus(\''+ APPROVED+ '\','+opt.id+');"   ><i class="fa fa-check text-success"></i></a>';
 		                    	 result = result + '<a  href="javascript:void(0)"  onClick="rejectRequirementAlertMessage(\''+ REJECTED+ '\','+opt.id+');"  ><i class="fa fa-close text-danger"></i></a>';
    				           	 
-				             }else if((opt.requirementApproverHierarchyStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN')  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
+				             }else if((opt.requirementApproverHierarchyStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN')  || (opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null)){
 				            	 result = result +'<div  id="requirementStatus"  >'+opt.approvedBy+'</div>';
     				         }else if( opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementApproverHierarchyStatus == 'REJECTED'  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
     				        	 result = result +'<div  id="requirementStatus" >'+opt.approvedBy+'</div>';
