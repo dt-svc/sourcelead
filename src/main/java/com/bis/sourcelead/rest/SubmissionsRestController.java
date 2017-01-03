@@ -612,7 +612,7 @@ public class SubmissionsRestController {
 	public String addEmailtemplate(@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "selectedShortlistsCount", required = false) String submissionIds,
 			HttpServletRequest request) throws Exception {
-
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
 		String[] submissions = submissionIds.split(",");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -626,11 +626,13 @@ public class SubmissionsRestController {
 		StringBuilder sb = new StringBuilder();
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		requirement.setSubmitToClientFromMailId(user.getEmail());
-		if (requirement.getParentRequirement() != null
-				&& requirement.getParentRequirement().getManagerUserId() != null) {
-			requirement.setSubmitToClientToMailId(requirement.getParentRequirement().getManagerUserId().getEmail());
-		} else {
-			requirement.setSubmitToClientToMailId(requirement.getSpocId().getSpocUser().getEmail());
+		
+		if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
+			
+				requirement.setSubmitToClientToMailId(requirement.getSpocId().getSpocUser().getEmail());
+		 }
+		if(requirement.getSpocId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+			requirement.setSubmitToClientToMailId(requirement.getSpocId().getOwnerUser().getEmail());
 		}
 		StringBuilder subjectSB = new StringBuilder();
 		requirement.setSubmitToClientMailSubject(subjectSB.append("New applicants received for the").append(" ").append(requirement.getJobTitle()).toString());
