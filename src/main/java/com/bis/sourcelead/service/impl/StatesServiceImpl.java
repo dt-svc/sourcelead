@@ -24,7 +24,10 @@ public class StatesServiceImpl implements StatesService{
 	@Override
 	public List<States> getAllStatesByCountry(String countryName) throws Exception {
 		Countries countries = countriesDao.getCountriesByCountryName(countryName);
-		List<States> statesList = statesDao.getAllStatesByCountryCode(countries.getCode2());
+		List<States> statesList = null;
+		if(null != countries){
+		statesList = statesDao.getAllStatesByCountryCode(countries.getCode2());
+		}
 		return statesList;
 	}
 
