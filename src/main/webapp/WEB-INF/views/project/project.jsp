@@ -219,11 +219,11 @@
 							<label class="col-md-3" for="Level-II">Level-II</label>
 							<div class="col-md-9">
 								<select class="form-control chosen-select" name="level2Manager" id="level2Manager">
-									<option value=''>-- Select Manager --</option>
+									<%-- <option value=''>-- Select Manager --</option>
 									<c:forEach var="option" items="${user_List}">
 										<option value="${option.id}">${option.firstName}
 											${option.lastName}</option>
-									</c:forEach>
+									</c:forEach> --%>
 								</select>
 							</div>
 						</div>
