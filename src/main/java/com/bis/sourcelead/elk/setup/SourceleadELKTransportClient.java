@@ -10,7 +10,12 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
+
+import com.bis.sourcelead.db.DatabaseConnectionConfig;
+import com.bis.sourcelead.db.PropertyPathConfiguration;
 
 /**
  * @purpose:Elastic Search Transport Client Configuration
@@ -23,8 +28,8 @@ public class SourceleadELKTransportClient {
    
     private TransportClient client;
     
-    //ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	//DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+     ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	 DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
     
 	/**
      * Default constructor, initializing the transport client.
@@ -33,12 +38,12 @@ public class SourceleadELKTransportClient {
     public SourceleadELKTransportClient() {
 	     try {
 	    	  Settings settings = Settings.settingsBuilder()
-	    			  .put("cluster.name", "sourcelead")
-	                  .put("node.name", "sourcelead_node")
-	         		  .put("path.home", "/home/sourcelead_es")
+	    			  .put("cluster.name", dbconfig.getCluster())
+	                  .put("node.name", dbconfig.getNode())
+	         		  .put("path.home", dbconfig.getPath())
 	                  .build();
 			client = TransportClient.builder().settings(settings).build().
-					addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("74.208.87.190"), 9300));
+					addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
 	     } catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
