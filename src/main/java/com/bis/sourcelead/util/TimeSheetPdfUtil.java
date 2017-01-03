@@ -474,7 +474,9 @@ public class TimeSheetPdfUtil {
 	              table2.completeRow();
 	          }
 	        	table1.addCell(table2);
-	        	table3.addCell(timeSheetStatus.get(k));
+	        	if(null != timeSheetStatus && !timeSheetStatus.isEmpty()){
+	        		table3.addCell(timeSheetStatus.get(k));
+	        	}
 	        	table1.addCell(table3);
 	        	k++;
 	        }
