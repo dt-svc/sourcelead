@@ -198,7 +198,7 @@ function timeSheetSubmissionStatusCount(){
 
 <style>
 .dashboard-widget {
-min-height: 400px !important;
+/* min-height: 400px !important; */
 }
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;
