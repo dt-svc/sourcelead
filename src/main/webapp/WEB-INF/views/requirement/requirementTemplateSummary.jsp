@@ -38,7 +38,7 @@
 		</div>
 	</section>
 		      <div class="content-area">
-		      				<div id="viewReqTemplateDiv" class="mt">
+		      				<div id="viewReqTemplateDiv" class="mt clearfix">
 						     </div>  
 		      </div>
           </div>
