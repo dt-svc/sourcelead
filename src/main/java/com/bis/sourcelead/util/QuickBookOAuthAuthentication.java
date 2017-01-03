@@ -58,15 +58,15 @@ public class QuickBookOAuthAuthentication {
 	    try {
 	        consumer.sign(httpget);
 	    } catch (OAuthMessageSignerException ex) {
-	        System.out.println("jjj");
+	        logger.debug("start");
 	    } catch (OAuthExpectationFailedException ex) {
-	    	System.out.println("ff");
+	    	logger.debug("fff");
 	    } catch (OAuthCommunicationException ex) {
-	        System.out.println("ee");
+	        logger.debug("ee");
 	    }
 	    HttpResponse response = httpclient.execute(httpget);
 	    
-	    System.out.println(response.getStatusLine().toString());
+	    logger.debug(response.getStatusLine().toString());
 	    InputStream inputStraem = response.getEntity().getContent();
 
 	    StringWriter writer = new StringWriter();

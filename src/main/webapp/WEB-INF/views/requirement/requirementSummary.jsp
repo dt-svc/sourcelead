@@ -888,14 +888,14 @@ function requirementDetails(requirementId){
 				            }else{
 				            	for (var i=0; i<json.approverNames.length; i++)
 				   				{
-				            		var level = 2;
+				            		var level = 1;
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
 					            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b> <span>'; 
 					            		result = result +json.approverNames[i];
 					            		result = result +'</span>';
 					            		result = result +'</div>';
-					            		level = level-1;
+					            		level = level+1;
 					   				}
 					            	
 				   				}
@@ -1349,7 +1349,7 @@ function requirementPipeline(requirementId,submissionType){
 						       			    result = result +'<th>End Time</th>';
 						       			    result = result +'<th>Location</th>';
 						       			    result = result +'<th>Feedback</th>';
-						       			    result = result +'<th>Interview</th>';
+						       			  /*   result = result +'<th>Interview</th>'; */
 						       			    result = result +'</tr></thead>';
 						       			    result = result +'<tbody>';
 						       			    for(var j=0;j<report.requirementInterviewHistoryList.length;j++){
@@ -1393,7 +1393,7 @@ function requirementPipeline(requirementId,submissionType){
 							       			    }
 						       			    	
 						       			    	result = result +'<td><span>--</span></td>';
-						       			    	result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>';
+						       			    	/* result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>'; */
 						       			    	result = result +'</tr>';
 						       			    } 
 						       			    result = result +'</tbody>';
