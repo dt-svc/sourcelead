@@ -38,7 +38,7 @@ public class SourceleadELKTransportClient {
     public SourceleadELKTransportClient() {
 	     try {
 	    	  Settings settings = Settings.settingsBuilder()
-	    			  .put("cluster.name", dbconfig.getClass())
+	    			  .put("cluster.name", dbconfig.getCluster())
 	                  .put("node.name", dbconfig.getNode())
 	         		  .put("path.home", dbconfig.getPath())
 	                  .build();

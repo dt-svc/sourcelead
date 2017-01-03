@@ -37,4 +37,9 @@ public class CandidateHotListServiceImpl implements CandidateHotListService{
 		return candidateHotListDao.getHotCandidateListForTeamByTeamId(teamId, orgLocationsId);
 	}
 
+	@Override
+	public CandidateHotList getCandidateHotListById(Long id) throws Exception {
+		return candidateHotListDao.getCandidateHotListById(id);
+	}
+
 }

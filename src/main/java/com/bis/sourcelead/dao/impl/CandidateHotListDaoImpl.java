@@ -95,4 +95,17 @@ public class CandidateHotListDaoImpl implements CandidateHotListDao{
 		 List<CandidateHotList> candidateHotList = session.createQuery(query.toString()).setLong( "teamId", teamId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
 		 return candidateHotList;
 	}
+
+	@Override
+	@Transactional
+	public CandidateHotList getCandidateHotListById(Long id) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from CandidateHotList hotList where hotList.id = :id"; 
+		List<CandidateHotList> candidateHotList = session.createQuery(query.toString()).setLong("id", id).setCacheable(true).list();
+		if (candidateHotList.size() > 0) {
+			return candidateHotList.get(0);
+		} else {
+			return null;
+		}
+	}
 }
