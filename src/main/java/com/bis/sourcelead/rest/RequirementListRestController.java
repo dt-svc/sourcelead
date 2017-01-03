@@ -463,7 +463,13 @@ public class RequirementListRestController {
 									}
 									requirementSubmission.setCandidateName(candidateName);
 									requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
-									requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+									if(requirementSubmission.getFinalizedRate() !=null && !"".equalsIgnoreCase(requirementSubmission.getFinalizedRate())){
+										requirementSubmission.setExpectedCTC(requirementSubmission.getFinalizedRate());
+									}else{
+										requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+									}
+									
+									
 									requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 									requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
