@@ -664,15 +664,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 		Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 				
 		 		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),loginOrgLocation.getId());
-				if (isadmin && requirement.getManagerUserId().getId()!=user.getId()) {
-					String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+subQuery+" ";
-					 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
+				if(requirement.getManagerUserId() !=null){
+					if (isadmin && requirement.getManagerUserId().getId().longValue() !=user.getId().longValue()) {
+						String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+subQuery+" ";
+						 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
+					}	
+				}
+				if(requirement.getManagerUserId().getId() !=null){
+					if(requirement.getManagerUserId().getId().longValue() == user.getId().longValue()){
+						String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+subQuery+" ";
+						requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
+					}
 				}
 				
-				if(requirement.getManagerUserId().getId()== user.getId()){
-					String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+subQuery+" ";
-					requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
-				}
 			return requirementSubmission;
 		}
 

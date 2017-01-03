@@ -540,7 +540,11 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate){
 	          	     dataType : 'json',
 					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate,
 					success : function(result) {
-							location.replace(sourceleadUrl+"/requirementList");
+						$(".submitnew-wrap").removeClass("submitnew-wrap_active");
+			    		$(".side_mask").fadeOut(200);
+			    		$("body").css('overflow-y', 'auto');
+			    		var allApplicants = 'all';
+			    		requirementPipeline(requirementId,allApplicants);
 					},
 				}); 
 	 }
