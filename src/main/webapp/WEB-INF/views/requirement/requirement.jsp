@@ -192,7 +192,36 @@ $(document).ready(function () {
 		    	    for (var i = 0; i < str_array2.length; i++) {
 		    	    	str_array2[i] = str_array2[i].replace(/^\s*/, "").replace(/\s*$/, "");
 		    	    }
-		    	    $("#sequentialApprover2").val(str_array2).trigger("chosen:updated");
+		    	    /*$("#sequentialApprover2").val(str_array2).trigger("chosen:updated");  */
+		    	    
+		    		var currentApproverId = document.getElementById("sequentialApprover1").value;
+		    		var sourceleadUrl ='${sourceleadUrl}';
+		    		if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
+		    			 $.ajax({
+		    			    	type: "POST",
+		    			        url: sourceleadUrl+"/getApproverTwoByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,  
+		    			        success: function(data) {
+		    			        	var json = JSON.parse(data);
+		    			        	var output = "";
+		    			        	output = output + "<option value=''>-Select Approver-</option>"; 
+		    			        	for (var i=0; i<json.length; i++)
+		    						{
+		    				        		var opt = json[i];
+		    				        		if(str_array2 == opt.id){
+		    				        			output = output + "<option value='"+opt.id+"' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+		    				        		}else{
+		    				        			output = output + "<option value='"+opt.id+"'>"+opt.firstName+" "+opt.lastName+"</option>";
+		    				        		}
+		    						}
+		    			        	$("#sequentialApprover2").empty();
+		    				        $("#sequentialApprover2").append(output);
+		    				        $('#sequentialApprover2').trigger("chosen:updated");
+		    			        },
+		    			        error: function(e){
+		    			            
+		    			        }
+		    			    });
+		    		 }
 		    	    
 		    } 
 			if(approverMode == 'Parallel'){
