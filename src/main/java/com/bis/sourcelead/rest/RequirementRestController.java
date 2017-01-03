@@ -650,6 +650,7 @@ public class RequirementRestController {
 	 * @throws Exception
 	 */
 
+
 	 @RequestMapping(value = "/validateJobId",  method = RequestMethod.POST)
 	    public @ResponseBody Boolean validateJobId(@RequestParam(value="jobId", required=false) String jobId,
 	    		@RequestParam(value="requirementid", required=false) Long requirementid,HttpServletRequest request) throws Exception {
@@ -670,6 +671,7 @@ public class RequirementRestController {
 		        Boolean flag = requirementService.validateJobid(jobId, orgLocation.getId());
 				return flag;
 		    }
+
 	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
