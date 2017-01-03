@@ -24,7 +24,7 @@ public class RecommendationsDaoImpl implements RecommendationsDao{
           
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement requirement left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation  where requirement.id =:requirementId";
-		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		List<Requirement> requirementList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		
 		Requirement requirement = null;
 		if(requirementList != null && !requirementList.isEmpty())

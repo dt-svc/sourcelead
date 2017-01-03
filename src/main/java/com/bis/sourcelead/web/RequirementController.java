@@ -308,6 +308,10 @@ public class RequirementController {
             model.addObject("parentRequirement","N");
         }
         
+        Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(countries != null){
+			model.addObject("loginCountryName", countries.getName());
+		}
         
         if(requirement.getSpocId() != null && requirement.getSpocId().getId() != null){
 			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
