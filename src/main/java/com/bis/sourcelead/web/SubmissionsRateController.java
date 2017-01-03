@@ -122,6 +122,8 @@ public class SubmissionsRateController {
 				requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(requirementSubmission.getCandidate().getOrgLocationId());
 				requirementRateSubmissionNegotiation.setCurrentRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 				requirementRateSubmissionNegotiation.setCurrentRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
+				requirementRateSubmissionNegotiation.setExpectedRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+				requirementRateSubmissionNegotiation.setExpectedRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
 				requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.ACCEPTED);
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.CANDIDATE);
 				requirementRateSubmissionNegotiation.setCreatedBy("");
@@ -134,7 +136,7 @@ public class SubmissionsRateController {
 			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			}
-			requirementSubmission.setExpectedCTC(requirementRateSubmissionNegotiation.getCurrentRate());
+			requirementSubmission.setFinalizedRate(requirementRateSubmissionNegotiation.getCurrentRate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
@@ -195,6 +197,8 @@ public class SubmissionsRateController {
 				requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(requirementSubmission.getCandidate().getOrgLocationId());
 				requirementRateSubmissionNegotiation.setCurrentRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 				requirementRateSubmissionNegotiation.setCurrentRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
+				requirementRateSubmissionNegotiation.setExpectedRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+				requirementRateSubmissionNegotiation.setExpectedRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
 				requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.ACCEPTED);
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.ORG);
 				requirementRateSubmissionNegotiation.setCreatedBy(user.getUserCode());
