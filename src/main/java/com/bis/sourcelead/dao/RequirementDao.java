@@ -35,6 +35,8 @@ public interface RequirementDao {
 	
 	public Requirement checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception;
 	
+	Requirement validateExistingJobId(String jobId,Long requirementId, Long orgLocationId) throws Exception;
+	
 	Integer validateJobId(String id,Long orgLocationId) throws Exception;
 
 	public Boolean validateRequirementTitle(String jobName, Long orgLocationId);
