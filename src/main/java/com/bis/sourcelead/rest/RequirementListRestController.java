@@ -160,6 +160,9 @@ public class RequirementListRestController {
 		
 		for(Requirement requirement : requirementList){
 			
+			Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirement.getId(), user.getId());
+			requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
+			
 			int totalApplicatsCountForRequirement = 0;
 			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation.getId(),requirement.getId());
 			if(totalApplicatsCountForRequirement > 0){
