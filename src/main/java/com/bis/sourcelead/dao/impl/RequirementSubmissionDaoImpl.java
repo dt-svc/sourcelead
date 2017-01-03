@@ -182,8 +182,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 								userCodes.add(usercode.getUserCode());
 							}
 							
-							String query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes  where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId";
-							  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setParameterList("usercode", userCodes).setLong("requirementId", requirementId).setCacheable(true).list();
+
+							String query = "from RequirementSubmission reqSub  left join fetch reqSub.requirement req   where reqSub.orgLocations.id =:loginOrgLocation and  and reqSub.requirement.id =:requirementId and  req.id IN( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId or rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId) ";
+							requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("userId", user.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
+
+					
 						}
 				}
 			}
