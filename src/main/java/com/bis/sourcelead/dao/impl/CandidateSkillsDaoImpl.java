@@ -71,7 +71,7 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 	public CandidateSkills getCandidateSkillBySkillId(Long candidateSkillId) throws Exception {
 		logger.debug("In Candidate Skill by SkillId");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from CandidateSkills candidateSkills where candidateSkills.id = :candidateSkillId" ;
+		String query = " from CandidateSkills candidateSkills left join fetch candidateSkills.candidateId  where candidateSkills.id = :candidateSkillId" ;
 		List<CandidateSkills> candidateSkillsList =session.createQuery(query).setLong("candidateSkillId", candidateSkillId).setCacheable(true).list(); 
 		CandidateSkills candidateSkills = null;
 		if(candidateSkillsList != null && !candidateSkillsList.isEmpty()){
