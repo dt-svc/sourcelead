@@ -35,6 +35,8 @@ public interface RequirementDao {
 	
 	public Requirement checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception;
 	
+	Requirement validateExistingJobId(String jobId,Long requirementId, Long orgLocationId) throws Exception;
+	
 	Integer validateJobId(String id,Long orgLocationId) throws Exception;
 
 	public Boolean validateRequirementTitle(String jobName, Long orgLocationId);
@@ -54,6 +56,10 @@ public interface RequirementDao {
 	public List<Requirement> getManagerAssignedRequirementsList(Long userId,Long orgLocationId) throws Exception;
 	
 	Boolean checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(Long userId,Long orgLocationId)  throws Exception;
+	
+    public Requirement getRequirementByRequirementIdOrgLocationsId(String id,Long requirementId, Long orgLocationsId) throws Exception;
+	
+	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
 
 
 }
