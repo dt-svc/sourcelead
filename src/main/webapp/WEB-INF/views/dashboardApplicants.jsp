@@ -1,25 +1,4 @@
- <!-- Inteviews -->
-    <!--   <div class="col-md-6">
-        <div class="dashboard-widget">
-          <h4 class="clearfix">Applicant Authorization
-          </h4>
-          <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a>
-          <div class="clearfix require_wrap_table dashboard-data clients_wrap_table">
-            <ul class="nav nav-tabs">
-             <li class="active" id="requestSent"><a data-toggle="tab" href="javascript:void(0)" onclick="applicants('REQUEST_SENT');">Request Sent</a></li>
-              <li id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="applicants('accepted');">Accepted</a></li>
-            </ul>
-            <div class="tab-content clearfix mt custom-datatble">
-              <div id="today" class="tab-pane fade in active"></div>
-              <div id="upcoming" class="tab-pane fade"></div>
-           	  <div id="previous" class="tab-pane fade"></div>
-            </div>
-          </div>
-        </div>
-      </div> -->
-<!-- Inteviews Ends --> 
-
- <!-- Inteviews -->
+ <!-- Applicant Authorization -->
       <div class="col-md-6">
         <div class="dashboard-widget">
           <h4 class="clearfix">Applicant Authorization
@@ -38,8 +17,7 @@
           </div>
         </div>
       </div>
-<!-- Inteviews Ends --> 
-
+<!-- Applicant Authorization Ends --> 
 
 <script>
 window.onload = ApplicantAuthorization('requestSent');
@@ -73,6 +51,7 @@ function ApplicantAuthorization(status){
 		            				resultToday = resultToday+'	    <th>Accepted on</th>';
 	            				}
 	            				if(status == 'requestSent'){
+	            					resultToday = resultToday+'	    <th>Status</th>';
 	            					resultToday = resultToday+'	    <th>Action</th>';
 	            				}
 	            				resultToday = resultToday+'	  </tr>';
@@ -88,7 +67,8 @@ function ApplicantAuthorization(status){
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
                                       if(report.requirementName != '' && report.requirementName != null && report.requirementName !='undefined'){
-                                          resultToday  = resultToday + '           <td><div><span>'+report.requirementName+'</span></div></td>';
+                                          resultToday = resultToday +'<td><div class="tbldata-dotdot-sm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementId='+report.requirement.id+'">'+report.requirementName+'</a></div></td>';
+
                                       }else{
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
@@ -98,10 +78,12 @@ function ApplicantAuthorization(status){
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
                                       if(status == 'accepted'){
-                                    	  resultToday  = resultToday + '           <td><div><span>'+report.submissionRequestUser+'</span></div></td>';
-                                          resultToday  = resultToday + '           <td><div><span>'+report.updatedDate+'</span></div></td>';
+                                    	  resultToday  = resultToday + '           <td><div><span>'+report.updatedBy+'</span></div></td>';
+                                          resultToday  = resultToday + '           <td><div><span>'+report.submittedOn+'</span></div></td>';
                                       }
                                       if(status == 'requestSent'){ 
+                                    	  
+                                    	    resultToday  = resultToday + '<td><div>'+report.submissionRateStatus+'</div></td>';
                                     	    resultToday = resultToday +"<td>";
                                     	    if(report.submissionRateStatus == 'REQUEST'){
                                     	    	resultToday = resultToday + '<a  href="javascript:void(0)"  onClick="acceptRejectCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
@@ -163,80 +145,14 @@ function ApplicantAuthorization(status){
 			            			 location.replace(sourceleadUrl+"/errorPage");
 			            		 }
 			            		 else{
-			            			 $('#accpet-div').fadeOut();
-			            			 $('#reject').fadeOut();
+			            			 ApplicantAuthorization('requestSent');
+			            			/*  $('#accpet-div').fadeOut();
+			            			 $('#reject').fadeOut(); */
 			            		 }
 					 },
 				}); 
 	}
 </script>
- 
-<!--      
-<script>
-window.onload = applicants('requestSent');
-function applicants(status){
-	var sourceleadUrl = '${sourceleadUrl}';
-	$.ajax({
-			type : "POST",
-			url : sourceleadUrl+"/getApplicantsByStatus?${_csrf.parameterName}=${_csrf.token}&status="+status,
-			success : function(data) {
-				var json = JSON.parse(data);
-				alert("sarat"+json);
-				if(data != null && data != 'undefined' && data != "" && data != '[]'){
-              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }else{
-	              			/* $("#requestSent").empty();
-	        	        	$("#requestSent").removeAttr("style"); */
-	              			if(json.length > 0){
-	              				 var resultToday = '';
-	            				resultToday = resultToday+'	<table id="applicantsPagination" class="display" cellspacing="0" width="100%">';
-	            				resultToday = resultToday+'	<thead>';
-	            				resultToday = resultToday+'	  <tr>';
-	            				resultToday = resultToday+'	    <th>Applicant</th>';
-	            				resultToday = resultToday+'	    <th>Requirement</th>';
-	            				resultToday = resultToday+'	    <th>Team Member</th>';
-	            				resultToday = resultToday+'	    <th>Accepted by</th>';
-	            				resultToday = resultToday+'	    <th>Accepted on</th>';
-	            				resultToday = resultToday+'	  </tr>';
-	            				resultToday = resultToday+'	</thead>';
-	            				resultToday = resultToday+'	<tbody>';
-	            				
-	            				for (var i=0; i<json.length; i++){
-	            					alert("hiii"+json.length);
-	            		       		var report = json[i];
-	            						resultToday = resultToday+'	  <tr>';
-	            						resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
-	            						resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
-	            						resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
-	            						resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
-	            						resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
-	            						resultToday = resultToday+'	 </tr>';
-	            					}
-	            					resultToday = resultToday+'	 </tbody>';
-	            					resultToday = resultToday+'	</table>';
-	            					
-	            			}
-	              			alert("resultToday"+resultToday);
-	              			$("#requestSent").append(resultToday);
-	              			applicantsPagination();
-              		 	}
-					}else{
-	               	 	/* $("#requestSent").removeAttr("style");
-	               	 	$("#requestSent").empty(); */
-     	        		var result ="";
-						result = result+"			<div class='blank-pages'>";
-						result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-						result = result+"			        <p>No Applicants Found</p>";
-						result = result+"			 </div>";
-					    $("#requestSent").append(resultToday); 
-	               }
-			},
-	});
-	}
-</script> -->
 
 <script>
 function applicantsPagination(){
