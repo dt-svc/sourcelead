@@ -460,7 +460,7 @@ public class UserServiceImpl implements UserService {
 		 if(isUserActive == false){
 			 globalVarsMap.put("password",password);
 		 }else{
-			 globalVarsMap.put("password","Note : You have already registered. Login with your registered password");
+			 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
 		 }
 		 
 		
@@ -698,7 +698,7 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("password",password);
 			 }else{
 				 globalVarsMap.put("userName",user.getEmail());
-				 globalVarsMap.put("password","Note : You have already registered with this org. Login with your registered password");
+				 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
 			 } 
 		     StringBuilder actionUrlBuilder = new StringBuilder();
 			 actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&UUID=").append(UUID).append(" ").toString();
@@ -728,7 +728,7 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("password",password);
 			 }else{
 				 globalVarsMap.put("userName",user.getEmail());
-				 globalVarsMap.put("password","Note : You have already registered with this org. Login with your registered password");
+				 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
 			 }
 			 
 			 StringBuilder actionLinkBuilder = new StringBuilder();
