@@ -152,7 +152,6 @@ function ApplicantAuthorization(status){
 <script type="text/javascript">
 	function acceptRejectCandidateFromDashboard(submissionId, status){
 			 var sourceleadUrl = '${sourceleadUrl}';
-			 alert("one");
 			 $.ajax({
 					 type : "POST",
 					 url : sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,
