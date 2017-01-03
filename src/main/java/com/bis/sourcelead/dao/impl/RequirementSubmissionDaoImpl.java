@@ -330,7 +330,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
         
         String submissionStages = "";
         
-    		String query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.requirement.id =:requirementId";
+    		String query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.requirement.id =:requirementId ";
     		
     		List<Long> reqSubmsCount  = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("requirementId", requirementId).setCacheable(true).list();
     		Integer count = 0;
