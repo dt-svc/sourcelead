@@ -426,9 +426,14 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		  boolean isValidated;
 		  List<OrgRelations> vandorsListByOrgLocationId = null;
 		  if(fname.contains("vendors_contacts_Import")){
-		   		 vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(row.getCell(0).toString(),orgLocation.getId());
-		   	  }else{
-		   		vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(row.getCell(0).toString(),orgLocation.getId());	  
+			  if(null != row.getCell(0) ){
+		   		     vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(row.getCell(0).toString(),orgLocation.getId());
+			  }
+			  }else{
+		   		  if(null != row.getCell(0)){
+				   		vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(row.getCell(0).toString(),orgLocation.getId());	  
+
+		   		  }
 		   	  }
 		  if (row.getRowNum() > 0) { 
 			  if (row.getCell(0) == null || "".equalsIgnoreCase(row.getCell(0).toString())) {
