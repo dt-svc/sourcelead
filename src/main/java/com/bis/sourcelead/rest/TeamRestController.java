@@ -408,6 +408,20 @@ public class TeamRestController {
 			  resultJson = commonUtil.toJSON(candidateHotList);
 			  return resultJson;
 		}
+		  
+		  
+		  
+		  @RequestMapping(value = "/removeFromTeam")
+		  public @ResponseBody String removeFromTeam(@RequestParam(value = "id", required = false) Long id, HttpServletRequest request) throws Exception {
+			    
+			  CandidateHotList hotList = candidateHotListService.getCandidateHotListById(id);
+			  if(hotList != null){
+				  hotList.setTeamId(null);
+				  candidateHotListService.saveCandidateHotList(hotList);
+			  }
+			    
+			  return "success";
+		}
 
 		  
 }
