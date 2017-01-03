@@ -147,7 +147,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
-		List<UserRole> rolesList = new ArrayList<UserRole>();
+//		List<UserRole> rolesList = new ArrayList<UserRole>();
 		
 			Long userRoleType ;
 			
@@ -157,7 +157,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				 userRoleType = null;
 			}
 			
-			rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset);
+			List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset);
 	
 			if(null != rolesList){
 				for(UserRole role : rolesList){
