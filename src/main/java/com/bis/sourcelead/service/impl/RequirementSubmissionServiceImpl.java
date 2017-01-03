@@ -2151,12 +2151,25 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
         
         for(RequirementSubmission reqsub :submittedApplicantsList){
             
-            reqsub.setCandidateName(reqsub.getCandidate().getFirstName() +""+ reqsub.getCandidate().getLastName());
-            reqsub.setRequirementName(reqsub.getRequirement().getJobTitle());
-            
+        	StringBuilder sb = new  StringBuilder();
+        	if(reqsub.getCandidate().getLastName() != null && !" ".equalsIgnoreCase(reqsub.getCandidate().getLastName())){
+	        		
+	                reqsub.setCandidateName(sb.append(reqsub.getCandidate().getFirstName()).append(" ").append(reqsub.getCandidate().getLastName()).toString());
+        	}else{
+        		
+                    reqsub.setCandidateName(sb.append(reqsub.getCandidate().getFirstName()).toString());
+        	}
+        	
+        	StringBuilder jbt = new  StringBuilder();
+            reqsub.setRequirementName(jbt.append(reqsub.getRequirement().getJobTitle()).toString());
+            if("ACCEPTED".equalsIgnoreCase(reqsub.getSubmissionRateStatus().toString())){
+            	StringBuilder app = new  StringBuilder();
+            	  User  approvedUser = userDao.getUserByUserCode(reqsub.getUpdatedBy());
+            	  reqsub.setUpdatedBy(app.append(approvedUser.getFirstName()).append(" ").append(approvedUser.getLastName()).toString());	
+            }
             User  submittedSourceUser = userDao.getUserByUserCode(reqsub.getCreatedBy());
-            
-            reqsub.setSubmittedBy(submittedSourceUser.getFirstName() +"" + submittedSourceUser.getLastName());
+            StringBuilder sub = new  StringBuilder();
+            reqsub.setSubmittedBy(sub.append(submittedSourceUser.getFirstName()).append(" ").append(submittedSourceUser.getLastName()).toString() );
             reqsub.setSubmittedOn(Constants.DF_DMY.format(reqsub.getCreatedDate()));
 
         }

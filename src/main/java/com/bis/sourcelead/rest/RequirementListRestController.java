@@ -160,6 +160,9 @@ public class RequirementListRestController {
 		
 		for(Requirement requirement : requirementList){
 			
+			Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirement.getId(), user.getId());
+			requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
+			
 			int totalApplicatsCountForRequirement = 0;
 			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation.getId(),requirement.getId());
 			if(totalApplicatsCountForRequirement > 0){
@@ -846,45 +849,47 @@ public class RequirementListRestController {
 					
 					List<RequirementSubmission> duplicateCount = requirementSubmissionService.duplicateCandidateCountList(Long.parseLong(requirementId), user, loginOrgLocation);
 					
-					for(RequirementSubmission rmentSubmission :requirementSubmissions){
-						
-						if("SHORTLIST".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
-							numOfShortList++;
+					if(requirementSubmissions !=null && requirementSubmissions.size() >0){
+						for(RequirementSubmission rmentSubmission :requirementSubmissions){
+							
+							if("SHORTLIST".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+								numOfShortList++;
+							}
+							else if("INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString()) || "CLIENT_INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+								numOfInterview++;
+							}
+							else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+								numOfSubmitToClient++;
+							}
+							else if("OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString()) 
+									|| "OFFERACCEPTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+									|| "OFFERREJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+									|| "CLIENT_OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+									|| "CLIENT_OFFERACCEPTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+									|| "CLIENT_OFFERREJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+									){
+								numOfOffers++;
+							}else if("REJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+								numOfRejected++;
+							}else if("REQUEST_SENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+								numofrequestsent++;
+							}
 						}
-						else if("INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString()) || "CLIENT_INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
-							numOfInterview++;
+						for(RequirementSubmission rmentSubmission :requirementSubmissions){
+							rmentSubmission.setNumOfSubmissions(requirementSubmissions.size());
+							rmentSubmission.setNumOfShortList(numOfShortList);
+							rmentSubmission.setNumOfInterview(numOfInterview);
+							rmentSubmission.setNumOfSubmitToClient(numOfSubmitToClient);
+							rmentSubmission.setNumOfOffers(numOfOffers);
+							rmentSubmission.setNumOfRejected(numOfRejected);
+							rmentSubmission.setNumofrequestsent(numofrequestsent);
+							if(duplicateCount != null){
+							rmentSubmission.setDuplicateCount(duplicateCount.size());
+							}
 						}
-						else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
-							numOfSubmitToClient++;
-						}
-						else if("OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString()) 
-								|| "OFFERACCEPTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
-								|| "OFFERREJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
-								|| "CLIENT_OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
-								|| "CLIENT_OFFERACCEPTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
-								|| "CLIENT_OFFERREJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
-								){
-							numOfOffers++;
-						}else if("REJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
-							numOfRejected++;
-						}else if("REQUEST_SENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
-							numofrequestsent++;
-						}
-						
-						
 					}
-					for(RequirementSubmission rmentSubmission :requirementSubmissions){
-						rmentSubmission.setNumOfSubmissions(requirementSubmissions.size());
-						rmentSubmission.setNumOfShortList(numOfShortList);
-						rmentSubmission.setNumOfInterview(numOfInterview);
-						rmentSubmission.setNumOfSubmitToClient(numOfSubmitToClient);
-						rmentSubmission.setNumOfOffers(numOfOffers);
-						rmentSubmission.setNumOfRejected(numOfRejected);
-						rmentSubmission.setNumofrequestsent(numofrequestsent);
-						if(duplicateCount.size() > 0 && duplicateCount != null){
-						rmentSubmission.setDuplicateCount(duplicateCount.size());
-						}
-					}
+					
+					
 					resultJson = commonUtil.toJSON(requirementSubmissions);
 				}
 				return resultJson;
