@@ -1350,8 +1350,8 @@ function requirementPipeline(requirementId,submissionType){
 						       			    result = result +'<th>Start&nbsp;Time</th>';
 						       			    result = result +'<th>End Time</th>';
 						       			    result = result +'<th>Location</th>';
-						       			    result = result +'<th>Feedback</th>';
-						       			  /*   result = result +'<th>Interview</th>'; */
+						       			   // result = result +'<th>Feedback</th>';
+						       			    result = result +'<th>Interview</th>'; 
 						       			    result = result +'</tr></thead>';
 						       			    result = result +'<tbody>';
 						       			    for(var j=0;j<report.requirementInterviewHistoryList.length;j++){
@@ -1394,8 +1394,7 @@ function requirementPipeline(requirementId,submissionType){
 							       			    	result = result +'<td><span>--</span></td>';
 							       			    }
 						       			    	
-						       			    	result = result +'<td><span>--</span></td>';
-						       			    	/* result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>'; */
+						       			    	 result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>'; 
 						       			    	result = result +'</tr>';
 						       			    } 
 						       			    result = result +'</tbody>';
@@ -1779,7 +1778,12 @@ function requirementRecommendations(requirementId){
 		    }else{
 		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
+		    
+		    if(report.candidateResume != null && report.candidateResume !='' && report.candidateResume !='undefined' ){
 		    result = result +'<td><div><span><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;&nbsp;'+report.candidateResume+'</a></span></div></td>';
+			}else{
+				result = result +'<td><div><span>--</span></div></td>';
+			}
 		    result = result +'<td><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
 		    if(report.requirementSubmisstions.length > 0){
 		    	result = result +'<div class="tooltip_div">';

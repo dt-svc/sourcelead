@@ -12,5 +12,5 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 											('VendorRateNegotiation','Email', 'VendorRateNegotiation', 'Used mail from Client to Vendor. ', 'New rate request from {{VendorRateNegotiation.loginUser}} for {{VendorRateNegotiation.requirementName}}.','org', 'Best Regards,\n{{VendorRateNegotiation.loginUser}}\n{{VendorRateNegotiation.loginOrgName}}.', 'Dear {{VendorRateNegotiation.vendorContact}},\n\n {{VendorRateNegotiation.loginOrgName}} requested new rate for the {{VendorRateNegotiation.requirementName}} for {{VendorRateNegotiation.candidateName}}.\n     Please find out the details,if you acknowledge with it click on the accept link.\n {{VendorRateNegotiation.negotiationTable}}','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
 				
 											
-UPDATE `sourcelead`.`email_scenario` SET `SUBJECT`='New rate request from {{ClientRateNegotiation.loginUser}} for {{ClientRateNegotiation.requirementName}}.' WHERE `ID`='80';
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='New rate request from {{ClientRateNegotiation.loginUser}} for {{ClientRateNegotiation.requirementName}}.' WHERE `ID`='80';
 
