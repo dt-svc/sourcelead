@@ -540,11 +540,13 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate){
 	          	     dataType : 'json',
 					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate,
 					success : function(result) {
+
 						$(".submitnew-wrap").removeClass("submitnew-wrap_active");
-			    		$(".side_mask").fadeOut(200);
-			    		$("body").css('overflow-y', 'auto');
-			    		var allApplicants = 'all';
-			    		requirementPipeline(requirementId,allApplicants);
+						$(".new_side_wrap").removeClass("new_side_wrap_active");
+                        $(".side_mask").fadeOut(200);
+                        $("body").css('overflow-y', 'auto');
+                        var allApplicants = 'all';
+                        requirementPipeline(requirementId,allApplicants); 
 					},
 				}); 
 	 }

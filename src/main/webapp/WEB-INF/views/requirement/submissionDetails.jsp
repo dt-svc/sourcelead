@@ -232,9 +232,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    } 
 				result = result + '</div>';
 				result = result + '</div>';
-				
+				result = result + '<div class="clearfix"></div>';
 				/* New comments div creation Nov 8th, 2016 */ 
-	            result = result+'<div class="comments-div clearfix" id="latestMessage">';
+	            result = result+'<div class="comments-div clearfix mr" id="latestMessage">';
 	            result = result+'    <div class="commentsimg">';
 	            result = result+'    <i class="fa fa-comments"></i>';
 	            result = result+'        <div class="commentsimg-inner">';
