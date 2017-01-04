@@ -142,7 +142,6 @@ function templatepagination(){
 		 $("#clientSubmissionTemplateList").empty();
 	     $("#addTemplate").hide();
 		var result = "";
-		alert("description"+description);
 		result = result + '<section class="clearfix createTemplate">';
 		
 		result = result + '<div class="close-btn2" onclick="cancelTemplate()"><i class="fa fa-close"></i></div>';

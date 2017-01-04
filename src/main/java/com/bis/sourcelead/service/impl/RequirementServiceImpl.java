@@ -1630,6 +1630,11 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
+    public Requirement validateExistingJobId(String jobId, Long requirementId, Long orgLocationId) throws Exception {
+        return requirementDao.validateExistingJobId(jobId,requirementId,orgLocationId);
+    }
+	
+	@Override
 	public Integer validateJobId(String id,Long orgLocation) throws Exception {
 		return requirementDao.validateJobId(id,orgLocation);
 	}
@@ -2066,6 +2071,17 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		return requirementDao.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(userId, orgLocationId);
 	
+	}
+
+	@Override
+	public Requirement getRequirementByRequirementIdOrgLocationsId(String id, Long requirementId, Long orgLocationsId)
+			throws Exception {
+		return requirementDao.getRequirementByRequirementIdOrgLocationsId(id, requirementId,orgLocationsId);
+	}
+
+	@Override
+	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception {
+		return requirementDao.validateJobid(id,orgLocationsId);
 	}
 
 }

@@ -5286,6 +5286,15 @@ max-height: 150px !important;
        position: relative;
        right: 0;
 }
+.require_uploadfile a.glyphicon{
+       color:#337ab7;
+}
+.profile_details.reqrementsummary h4 {
+    width: 650px;
+}
+.exp-drop .dropdown-menu {
+       max-height: 250px !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
