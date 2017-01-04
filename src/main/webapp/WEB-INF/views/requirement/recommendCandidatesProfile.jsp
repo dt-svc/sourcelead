@@ -705,7 +705,6 @@ function candidateSkillsList(candidateId){
                 		 result = result + '            <th>Skills</th>';
                 		 result = result + '            <th>Level</th>';
                 		 result = result + '            <th>Experience</th>';
-                		 result = result + '            <th>Action</th>';
                 		 result = result + '          </tr>';
                 		 result = result + '        </thead>';
                 		 result = result + '        <tbody>';
@@ -714,7 +713,7 @@ function candidateSkillsList(candidateId){
 	                    	 var opt = json[i];   
 	                    	    result = result + '          <tr>';
 		                		result = result + '            <td><p class="form-control-static">'+opt.name+'</p></td>';
-		                		result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
+		                		result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" disabled>';
 		                		result = result + '                <option selected="" disabled="">Select</option>';
 		                		
 		                		if(opt.scale == "Beginner"){
@@ -743,7 +742,7 @@ function candidateSkillsList(candidateId){
 		                			result = result + '  <option>Master</option>';
 		                		}
 		                		result = result + '              </select></td>';
-		                		result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
+		                		result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" disabled>';
 		                		result = result + '                <option selected="" disabled="">Select</option>';
 		                		if(opt.totalExperience == "0"){
 		                			result = result + '<option selected>0</option>';   
@@ -781,7 +780,6 @@ function candidateSkillsList(candidateId){
 		                			result = result + '<option>6</option>';
 		                		}
 		                		result = result + '              </select></td>';
-		                		result = result + '            <td><div class="text-center"><a onclick="removeSkillById('+candidateId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
 		                		result = result + '          </tr>';
 	                      } 
 	                     result = result +" </tbody>";
