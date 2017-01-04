@@ -716,6 +716,7 @@ function candidateSkillsList(candidateId){
                 		 result = result + '            <th>Skills</th>';
                 		 result = result + '            <th>Level</th>';
                 		 result = result + '            <th>Experience</th>';
+                		 result = result + '            <th>Action</th>';
                 		 result = result + '          </tr>';
                 		 result = result + '        </thead>';
                 		 result = result + '        <tbody>';
