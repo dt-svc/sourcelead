@@ -6,7 +6,6 @@ import java.io.StringWriter;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -142,22 +141,22 @@ public class QuickBookCustomerServiceImpl implements QuickBookCustomerService {
 	    try {
 	        consumer.sign(httpPost);
 	    } catch (OAuthMessageSignerException ex) {
-	        System.out.println("jjj");
+	        logger.debug("hello");
 	    } catch (OAuthExpectationFailedException ex) {
-	    	System.out.println("ff");
+	        logger.debug("hello");
 	    } catch (OAuthCommunicationException ex) {
-	        System.out.println("ee");
+	        logger.debug("hello");
 	    }
 	     
 	    HttpResponse response = httpclient.execute(httpPost);
 	    
-	    System.out.println(response.getStatusLine().toString());
+	    logger.debug(response.getStatusLine().toString());
 	    InputStream inputStraem = response.getEntity().getContent();
 
 	    StringWriter writer = new StringWriter();
 	    IOUtils.copy(inputStraem, writer, "UTF-8");
 	    String output = writer.toString();
-	    System.out.println(output);
+	    logger.debug(output);
 	    
 	   
 	    

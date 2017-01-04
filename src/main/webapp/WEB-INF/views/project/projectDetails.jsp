@@ -488,34 +488,15 @@
 				$
 						.ajax({
 							type : "POST",
-							url : sourceleadUrl
-									+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="
-									+ ProjectSequeneNumber,
+							url : sourceleadUrl + "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber=" + ProjectSequeneNumber,
 							success : function(data) {
 								if (data == true) {
-									$("input#ProjectSequeneNumber")
-											.after(
-													"<p class='jquery_form_error_message'>"
-															+ ProjectSequeneNumber
-															+ " is Already Existed</span>");
-									document
-											.getElementById(
-													"ProjectSequeneNumber")
-											.setAttribute('record-exist', 'yes');
-									document
-											.getElementById(
-													"ProjectSequeneNumber")
-											.setAttribute(
-													'record-exist-errorMsg',
-													ProjectSequeneNumber
-															+ ' is Already Existed');
+									$("input#ProjectSequeneNumber") .after( "<p class='jquery_form_error_message'>" + ProjectSequeneNumber + " is Already Existed</span>");
+									document .getElementById( "ProjectSequeneNumber") .setAttribute('record-exist', 'yes');
+									document .getElementById( "ProjectSequeneNumber") .setAttribute( 'record-exist-errorMsg', ProjectSequeneNumber + ' is Already Existed');
 								} else {
-									$('input#ProjectSequeneNumber')
-											.removeAttr(
-													"record-exist record-exist-errormsg");
-									$('#ProjectIdDiv').find(
-											'p.jquery_form_error_message')
-											.remove();
+									$('input#ProjectSequeneNumber') .removeAttr( "record-exist record-exist-errormsg");
+									$('#ProjectIdDiv').find( 'p.jquery_form_error_message') .remove();
 								}
 							},
 						});

@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  
- <div class="col-md-6 mb" id="requirementApproverListDiv" style="display: none;">
+ <div class="col-md-6 mb"  >
         <div class="dashboard-widget">
           <h4 class="clearfix">Requirement Approvals &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
@@ -104,10 +104,10 @@ function requirementApproverList(statusType){
 				            	 result = result + '<a  href="javascript:void(0)"  onClick="updateReuqirementStatus(\''+ APPROVED+ '\','+opt.id+');"   ><i class="fa fa-check text-success"></i></a>';
 		                    	 result = result + '<a  href="javascript:void(0)"  onClick="rejectRequirementAlertMessage(\''+ REJECTED+ '\','+opt.id+');"  ><i class="fa fa-close text-danger"></i></a>';
    				           	 
-				             }else if((opt.requirementApproverHierarchyStatus == 'APPROVED' ||  opt.requirementApproverHierarchyStatus == 'OPEN')  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
-				            	 result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">'+opt.approvedBy+'</button>';
+				             }else if((opt.requirementApproverHierarchyStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN')  || (opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null)){
+				            	 result = result +'<div  id="requirementStatus"  >'+opt.approvedBy+'</div>';
     				         }else if( opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementApproverHierarchyStatus == 'REJECTED'  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
-    				        	 result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">'+opt.approvedBy+'</button>';
+    				        	 result = result +'<div  id="requirementStatus" >'+opt.approvedBy+'</div>';
 		                     }else{
 		                    	 result = result +"<div>-----</div>";
 		                     }  
@@ -117,20 +117,22 @@ function requirementApproverList(statusType){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     $("#requirementApproverList").append(result); 
-	                     $("#requirementApproverListDiv").css("display", "block");
 	                     requirementApprovalPagination(); 
 			    	} 
                  }else{
                 	 $("#requirementApproverList").removeAttr("style");
-					$("#requirementApproverList").empty();
+					 $("#requirementApproverList").empty();
+					 $("#requirementApproverList").removeAttr("style");
+                	 $("#requirementApproverList").empty();
 					
+                	 if(statusType == "SUBMITTED"){
+                	     statusType = 'Waiting';
+                	 }
 					 var result ="";
 						result = result+"			<div class='blank-pages'>";
 						result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-						result = result+"			        <p>No Records For "+statusType+" Found</p>";
+						result = result+"			        <p> No Records found in  "+statusType+" Stage</p>";
 						result = result+"			 </div>";
-						
-						
 				    $("#requirementApproverList").append(result); 
                 }
           },
