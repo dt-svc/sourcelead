@@ -1232,11 +1232,23 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("Experience","--"); 
 			 }
-		 if(loginUser.getFirstName() != null && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+		 
+		  if(loginUser.getFirstName() != null && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
 			 StringBuilder userBuild = new StringBuilder();
 			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }
+		  else if(loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getFirstName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).toString());
+		  	 }
+		 else{
+			 globalVarsMap.put("LoginUser","--"); 
+			 }
+		  
+		 if(loginUser.getUserType()!= null && !"".equalsIgnoreCase(loginUser.getUserType())){
+			 globalVarsMap.put("Role", loginUser.getUserType());
 			 }else{
-				 globalVarsMap.put("LoginUser",loginUser.getFirstName()); 
+				 globalVarsMap.put("Role","--"); 
 			 }
 		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
 			 globalVarsMap.put("Role",loginOrgLocation.getOrg().getOrgName() );
@@ -1630,6 +1642,11 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
+    public Requirement validateExistingJobId(String jobId, Long requirementId, Long orgLocationId) throws Exception {
+        return requirementDao.validateExistingJobId(jobId,requirementId,orgLocationId);
+    }
+	
+	@Override
 	public Integer validateJobId(String id,Long orgLocation) throws Exception {
 		return requirementDao.validateJobId(id,orgLocation);
 	}
@@ -1694,8 +1711,8 @@ public class RequirementServiceImpl implements RequirementService {
 			StringBuilder sb = new StringBuilder(); 
 			writeRow.createCell(3).setCellValue(sb.append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString()); 
 		}
-		if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
-			 writeRow.createCell(4).setCellValue(requirement.getCity()); 
+		if(requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry())){
+			 writeRow.createCell(4).setCellValue(requirement.getCountry()); 
 		}
 		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
 			 writeRow.createCell(5).setCellValue(requirement.getSkills()); 
@@ -2066,6 +2083,17 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		return requirementDao.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(userId, orgLocationId);
 	
+	}
+
+	@Override
+	public Requirement getRequirementByRequirementIdOrgLocationsId(String id, Long requirementId, Long orgLocationsId)
+			throws Exception {
+		return requirementDao.getRequirementByRequirementIdOrgLocationsId(id, requirementId,orgLocationsId);
+	}
+
+	@Override
+	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception {
+		return requirementDao.validateJobid(id,orgLocationsId);
 	}
 
 }

@@ -457,14 +457,16 @@ function sideBar(requirementId){
              			 	}
               			
               			
-              			result = result+'    <div class="profile_details requirement_details clearfix">';
+              			result = result+'    <div class="profile_details requirement_details clearfix reqrementsummary">';
               			if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined'){
-    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
+
                			}
                			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined'){
-     				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+     				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
                			}else{
-               				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'<i></i></h4></a>';
+               				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'">'+json.jobTitle+'</span><i></i></h4></a>';
+
                			}
 				        result = result+'<div class="hide-row">';
 				       /*result = result+'    <div class="profile_details requirement_details clearfix">'; */
@@ -1260,6 +1262,13 @@ function requirementPipeline(requirementId,submissionType){
 				           for (var i=0; i<json.length; i++)
 			   				{  
 			   	        		var report = json[i];
+			   	        		
+			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
+			   	        			orgName = "("+report.orgName+")";
+			   	        		}else{
+			   	        			orgName = "";
+			   	        		}
+
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
@@ -1327,7 +1336,7 @@ function requirementPipeline(requirementId,submissionType){
 							           }
 							           
 							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.userName+'</span></div></td>';
+							        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
@@ -1348,8 +1357,8 @@ function requirementPipeline(requirementId,submissionType){
 						       			    result = result +'<th>Start&nbsp;Time</th>';
 						       			    result = result +'<th>End Time</th>';
 						       			    result = result +'<th>Location</th>';
-						       			    result = result +'<th>Feedback</th>';
-						       			  /*   result = result +'<th>Interview</th>'; */
+						       			   // result = result +'<th>Feedback</th>';
+						       			    result = result +'<th>Interview</th>'; 
 						       			    result = result +'</tr></thead>';
 						       			    result = result +'<tbody>';
 						       			    for(var j=0;j<report.requirementInterviewHistoryList.length;j++){
@@ -1392,8 +1401,7 @@ function requirementPipeline(requirementId,submissionType){
 							       			    	result = result +'<td><span>--</span></td>';
 							       			    }
 						       			    	
-						       			    	result = result +'<td><span>--</span></td>';
-						       			    	/* result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>'; */
+						       			    	 result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>'; 
 						       			    	result = result +'</tr>';
 						       			    } 
 						       			    result = result +'</tbody>';
@@ -1777,7 +1785,12 @@ function requirementRecommendations(requirementId){
 		    }else{
 		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
+		    
+		    if(report.candidateResume != null && report.candidateResume !='' && report.candidateResume !='undefined' ){
 		    result = result +'<td><div><span><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;&nbsp;'+report.candidateResume+'</a></span></div></td>';
+			}else{
+				result = result +'<td><div><span>--</span></div></td>';
+			}
 		    result = result +'<td><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
 		    if(report.requirementSubmisstions.length > 0){
 		    	result = result +'<div class="tooltip_div">';

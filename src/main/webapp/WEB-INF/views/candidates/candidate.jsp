@@ -103,7 +103,7 @@
         <div class="form-group">
           <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length2-100" value="">
+            <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length1-100" value="">
             <div class="input-group hidden">
               <div class="input-group-btn">
                 <button type="button" class="btn btn-danger dropdown-toggle"
@@ -125,7 +125,7 @@
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" value="">
+           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_Space validate_length length1-100" data-validation-optional="true" value="">
           </div>
         </div>
         <div class="form-group" id="emailDiv">
@@ -199,7 +199,7 @@
         <div class="form-group">
           <label class="col-md-3">Experience</label>
           <div class="col-md-9">
-            <div class="row">
+            <div class="row exp-drop">
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
              		  <option selected disabled>Years</option>

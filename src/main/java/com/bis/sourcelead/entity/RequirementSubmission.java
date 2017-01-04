@@ -36,19 +36,19 @@ public class RequirementSubmission implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
  	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "REQUIREMENT_ID")
    	private Requirement requirement;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
    	private Candidate candidate;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "SOURCE_SUBMISSION_ID")
    	private RequirementSubmission sourceSubmission;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_RESUEME_ID")
    	private CandidateResumes candidateResumes;
 	
@@ -266,6 +266,9 @@ public class RequirementSubmission implements Serializable{
 
 	@Transient
 	private int duplicateCount;
+	
+	@Transient
+	private String orgName;
 	
 
 	public OrgLocations getVendorLocationId() {
@@ -863,4 +866,11 @@ public class RequirementSubmission implements Serializable{
 		this.duplicateCount = duplicateCount;
 	}
 
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
 }

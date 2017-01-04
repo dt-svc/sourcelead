@@ -477,6 +477,10 @@ public class RequirementListRestController {
 									requirementSubmission.setTotalNoOfInterviews(numberOfInterviews.size());
 									requirementSubmission.setRequirementInterviewHistoryList(numberOfInterviews);
 									
+									if(requirementSubmission.getVendorLocationId() != null){
+										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+									}
+									
 									RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
 									
 									if(clientSubmission != null){
@@ -656,7 +660,9 @@ public class RequirementListRestController {
 				inputStream.close();
 				response.getOutputStream().close();
 				response.getOutputStream().flush();	
-			
+				if(file != null){
+					file.delete();
+				}
 		 }
 		 
 		/**

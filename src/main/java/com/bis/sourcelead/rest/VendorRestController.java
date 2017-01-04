@@ -141,18 +141,22 @@ public class VendorRestController {
 			
 		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
 				
-				if(orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
-					orgRelation.setState(orgRelation.getResponderLocationId().getState());
-					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
-					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+				if(orgRelation.getLocationId()!= null && orgRelation.getLocationId().getId()!=null &&orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelation.getResponderLocationId() !=null){
+						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
+						orgRelation.setState(orgRelation.getResponderLocationId().getState());
+						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
+						orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+						List<Requirement> vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getResponderLocationId().getId(),orgRelation.getId(),user,orgLocations);
+						orgRelation.setNoOfReleasedJobs(vendorReleasedJobsList.size());
+					}
 					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
-					List<Requirement> vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getResponderLocationId().getId(),orgRelation.getId(),user,orgLocations);
+					
 					List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
 					
-					orgRelation.setNoOfReleasedJobs(vendorReleasedJobsList.size());
+					
 					orgRelation.setNoOfContatcs(contactsList.size()); 
 					if(orgRelation.getInitiatorLevel()!=null){
 						orgRelation.setLevel(orgRelation.getInitiatorLevel());
@@ -163,15 +167,17 @@ public class VendorRestController {
 					
 				}
 				
-				if(orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
-					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
-					orgRelation.setState(orgRelation.getLocationId().getState());
-					orgRelation.setCity(orgRelation.getLocationId().getCity());
-					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
-					List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
-					orgRelation.setNoOfContatcs(contactsList.size()); 
+				if(orgRelation.getResponderLocationId()!= null && orgRelation.getResponderLocationId().getId()!=null &&orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelation.getLocationId() !=null){
+						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
+						orgRelation.setState(orgRelation.getLocationId().getState());
+						orgRelation.setCity(orgRelation.getLocationId().getCity());
+						orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+						List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
+						orgRelation.setNoOfContatcs(contactsList.size()); 
+					}
 					List<Requirement> vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(),orgRelation.getId(),user,orgLocations);
 					orgRelation.setNoOfReleasedJobs(vendorReleasedJobsList.size());
 					if(orgRelation.getResponderLevel()!=null){
@@ -213,13 +219,15 @@ public class VendorRestController {
 			
 		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
 				
-				if(orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
-					orgRelation.setState(orgRelation.getResponderLocationId().getState());
-					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
-					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+				if(orgRelation.getLocationId()!= null && orgRelation.getLocationId().getId()!=null &&orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelation.getResponderLocationId()!=null){
+						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
+						orgRelation.setState(orgRelation.getResponderLocationId().getState());
+						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
+						orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+					}
 					List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
 					orgRelation.setNoOfContatcs(contactsList.size()); 
 					if(orgRelation.getInitiatorLevel()!=null){
@@ -231,13 +239,15 @@ public class VendorRestController {
 					
 				}
 				
-				if(orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
-					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
-					orgRelation.setState(orgRelation.getLocationId().getState());
-					orgRelation.setCity(orgRelation.getLocationId().getCity());
-					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+				if(orgRelation.getResponderLocationId()!= null && orgRelation.getResponderLocationId().getId()!=null &&orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelation.getResponderLocationId()!=null){
+						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
+						orgRelation.setState(orgRelation.getLocationId().getState());
+						orgRelation.setCity(orgRelation.getLocationId().getCity());
+						orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+					}
 					List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
 					orgRelation.setNoOfContatcs(contactsList.size()); 
 					if(orgRelation.getResponderLevel()!=null){
@@ -279,16 +289,16 @@ public class VendorRestController {
 		
 			
 			for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
-				if(orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue() || orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
+				if((orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue() )|| (orgSpoc.getOwnerUser() != null &&orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue())){
 					//if login user is spoc
-					if(orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()){
-						if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
+					if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()){
+						if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
 							StringBuilder spocNameSB = new StringBuilder();
 							orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
 						}else{
 							orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName());
 						}
-						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+						if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
 							StringBuilder ownerNameSB = new StringBuilder();
 							orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 						}else{
@@ -301,14 +311,14 @@ public class VendorRestController {
 	    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 					}
 					//if login user is Owner
-					else if(orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
-						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+					else if(orgSpoc.getOwnerUser() != null  && orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
+						if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
 							StringBuilder spocNameSB1 = new StringBuilder();
 							orgSpoc.setSpocName(spocNameSB1.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 						}else{
 							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
 						}
-						if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
+						if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
 							StringBuilder ownerNameSB1 = new StringBuilder();
 							 orgSpoc.setOwnerName(ownerNameSB1.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
 						}else{
@@ -323,15 +333,15 @@ public class VendorRestController {
 						
 					 
 				}else{
-					if(orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
-						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+					if(orgSpoc.getInitiatorLocationId() != null  && orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
+						if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
 							StringBuilder spocNameSB2 = new StringBuilder();
 							orgSpoc.setSpocName(spocNameSB2.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 						}else{
 							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
 						}
 						
-						if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
+						if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
 							StringBuilder ownerNameSB2 = new StringBuilder();
 							orgSpoc.setOwnerName(ownerNameSB2.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
 						}else{
@@ -342,15 +352,15 @@ public class VendorRestController {
 						 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 						 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
 					 }
-					if(orgSpoc.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-						if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
+					if(orgSpoc.getResponderLocationId() != null  &&  orgSpoc.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
 							StringBuilder spocNameSB3 = new StringBuilder();
 							orgSpoc.setSpocName(spocNameSB3.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
 						}else{
 							orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName());
 						}
 						
-						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+						if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
 							StringBuilder ownerNameSB3 = new StringBuilder();
 							orgSpoc.setOwnerName(ownerNameSB3.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 						}else{
@@ -362,13 +372,18 @@ public class VendorRestController {
 					 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 					}
 				}
-				if(orgSpoc.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
-					orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+				if(orgSpoc.getResponderLocationId() != null && orgSpoc.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgSpoc.getInitiatorLocationId()!=null){
+					   orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
+					   orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+					}
+					
 				}
-				if(orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
+				if(orgSpoc.getInitiatorLocationId() != null && orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
+					if(orgSpoc.getResponderLocationId()!=null){
 					orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
 					orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
+					}
 				}
 				
 				orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
@@ -427,7 +442,7 @@ public class VendorRestController {
 				
 			    for (OrgRelations orgRelation : vandorsList) {
 					
-					if(orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
 						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
@@ -449,7 +464,7 @@ public class VendorRestController {
 						
 					}
 					
-					if(orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
 						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
@@ -508,9 +523,9 @@ public class VendorRestController {
 			for (OrgSpoc orgSpoc : vandorsContactList) {
 				if(orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue() || orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
 					//if login user is spoc
-					if(orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()){
+					if(orgSpoc.getSpocUser() !=null && orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()){
 						
-						if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
+						if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
 							StringBuilder spocNameSB = new StringBuilder();
 							orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
 						}else{
@@ -529,14 +544,14 @@ public class VendorRestController {
 	    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 					}
 					//if login user is Owner
-					else if(orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
+					else if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
 						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
 							StringBuilder spocNameSB1 = new StringBuilder();
 							orgSpoc.setSpocName(spocNameSB1.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 						}else{
 							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
 						}
-						if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
+						if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
 							StringBuilder ownerNameSB1 = new StringBuilder();
 							 orgSpoc.setOwnerName(ownerNameSB1.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
 						}else{
@@ -551,7 +566,7 @@ public class VendorRestController {
 						
 					 
 				}else{
-					if(orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
+					if(orgSpoc.getInitiatorLocationId() != null && orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
 						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
 							StringBuilder spocNameSB2 = new StringBuilder();
 							orgSpoc.setSpocName(spocNameSB2.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
@@ -570,7 +585,7 @@ public class VendorRestController {
 						 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 						 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
 					 }
-					if(orgSpoc.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgSpoc.getResponderLocationId() !=null && orgSpoc.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 						if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
 							StringBuilder spocNameSB3 = new StringBuilder();
 							orgSpoc.setSpocName(spocNameSB3.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
@@ -590,11 +605,11 @@ public class VendorRestController {
 					 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 					}
 				}
-				if(orgSpoc.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				if(orgSpoc.getResponderLocationId() !=null && orgSpoc.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
 					orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
 				}
-				if(orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
+				if(orgSpoc.getInitiatorLocationId() !=null && orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
 					orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
 					orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
 				}
@@ -618,6 +633,8 @@ public class VendorRestController {
 				inputStream.close();
 				response.getOutputStream().close();
 				response.getOutputStream().flush();
-			
+			if(file!= null){
+				file.delete();
+			}
 		}
 }

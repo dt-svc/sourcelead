@@ -192,7 +192,36 @@ $(document).ready(function () {
 		    	    for (var i = 0; i < str_array2.length; i++) {
 		    	    	str_array2[i] = str_array2[i].replace(/^\s*/, "").replace(/\s*$/, "");
 		    	    }
-		    	    $("#sequentialApprover2").val(str_array2).trigger("chosen:updated");
+		    	    /*$("#sequentialApprover2").val(str_array2).trigger("chosen:updated");  */
+		    	    
+		    		var currentApproverId = document.getElementById("sequentialApprover1").value;
+		    		var sourceleadUrl ='${sourceleadUrl}';
+		    		if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
+		    			 $.ajax({
+		    			    	type: "POST",
+		    			        url: sourceleadUrl+"/getApproverTwoByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,  
+		    			        success: function(data) {
+		    			        	var json = JSON.parse(data);
+		    			        	var output = "";
+		    			        	output = output + "<option value=''>-Select Approver-</option>"; 
+		    			        	for (var i=0; i<json.length; i++)
+		    						{
+		    				        		var opt = json[i];
+		    				        		if(str_array2 == opt.id){
+		    				        			output = output + "<option value='"+opt.id+"' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+		    				        		}else{
+		    				        			output = output + "<option value='"+opt.id+"'>"+opt.firstName+" "+opt.lastName+"</option>";
+		    				        		}
+		    						}
+		    			        	$("#sequentialApprover2").empty();
+		    				        $("#sequentialApprover2").append(output);
+		    				        $('#sequentialApprover2').trigger("chosen:updated");
+		    			        },
+		    			        error: function(e){
+		    			            
+		    			        }
+		    			    });
+		    		 }
 		    	    
 		    } 
 			if(approverMode == 'Parallel'){
@@ -263,12 +292,15 @@ $(document).ready(function () {
            <div class="form-group" id="jobTitleDiv">
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
-	          <div class="input-group">
-	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control" onblur="getTemplateVal();">
-	             
-	             <div class="input-group-btn selp-custom-min">
-	             <select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
-	                 <option value="">--Select--</option>
+	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length1-250"   value="" class="form-control" onblur="getTemplateVal();">
+	         </div>
+	       </div>
+
+		<div class="form-group">
+         <label class="col-md-3">Employment type</label>
+         <div class="col-md-9">
+             <select class="selectpicker form-control" id="jobType" name="jobType" onChange="getJobType(this);" >
+	                 <option value="">&nbsp;&nbsp;&nbsp;&nbsp;------ Select -----</option>
 	                 <option  ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
 	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}>W-2</option>
 	                 <option  ${requirement.jobType  == 'C2H' ? 'selected' : ''}>C2H</option>
@@ -277,15 +309,14 @@ $(document).ready(function () {
 	                 <option  ${requirement.jobType  == 'Full Time' ? 'selected' : ''}>Full Time</option>
 	                 <option  ${requirement.jobType  == 'Other' ? 'selected' : ''}>Other</option>
 	             </select>
-	             </div>
-	           </div>
-	         </div>
-	       </div>
-
+         </div>
+       </div>
+		          
           <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onKeyUp="validateJobId();" value="">
+              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onkeyup="validateJobId();" value="">
+               <input type="hidden" name="requirementId" id="requirementId" value="${requirement.id}"/>
             </div>
           </div>
            
@@ -358,18 +389,18 @@ $(document).ready(function () {
           </div>
           
           <div class="form-group">
-            <label class="col-md-3">Pay Rate/Salary</label>
+            <label class="col-md-3">Pay Rate/Salary </label>
             <div class="col-md-9">
              <div class="input-group">
                 <div class="input-group-btn selp-custom-min">
                   
                 <select class="selectpicker" id="currencyCode" name="currencyCode">
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+                 <option ${requirement.currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                 </select>
                 
                
@@ -573,7 +604,7 @@ $(document).ready(function () {
 		                 <option  ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}>INR</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+		                 <option  ${requirement.clientCurrencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
 	                </select>
@@ -806,7 +837,7 @@ $(document).ready(function () {
       
     </div>
     </div>
-    <input type="hidden" value="${requirement.id}" name ="requirementId"  id ="requirementId">
+   <%--  <input type="hidden" value="${requirement.id}" name ="requirementId"  id ="requirementId"> --%>
      <div class="form-footer clearfix">
     <div class="col-lg-12">   
       <div class="pull-right">
@@ -2102,37 +2133,67 @@ function getLevel2Approvers(currentApproverId){
 <script type="text/javascript">
  function validateJobId(jobId) {
 	 
-	 if(jobId == null || jobId == "" || jobId == "undefined"){
-		 jobId = document.getElementById("jobId").value; 
+	 var requirementid = document.getElementById("requirementId").value;
+	 if(requirementid != null && requirementid != '' && requirementid != 'undefined' ){
+		 if(jobId == null || jobId == "" || jobId == "undefined"){
+			 jobId = document.getElementById("jobId").value; 
+		 }
+		 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 if(jobId != null && jobId != ""){
+			 $("#draft").attr("disabled", "disabled");
+			 $("#save").attr("disabled", "disabled");
+			 $("#submitForApproval").attr("disabled", "disabled");
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId+"&requirementid="+requirementid, 
+			        success: function(data) {
+			        	if(data == true){
+							  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
+							  document.getElementById("jobId").setAttribute('record-exist','yes');
+							  document.getElementById("jobId").setAttribute('record-exist-errorMsg',jobId+' is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
+	                         $("#draft").removeAttr("disabled");
+	                         $("#save").removeAttr("disabled", "disabled");
+	                		 $("#submitForApproval").removeAttr("disabled", "disabled");
+			        	}
+			        },
+			    });
+		 }
+	 }else{
+		 if(jobId == null || jobId == "" || jobId == "undefined"){
+			 jobId = document.getElementById("jobId").value; 
+		 }
+		 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 if(jobId != null && jobId != ""){
+			 $("#draft").attr("disabled", "disabled");
+			 $("#save").attr("disabled", "disabled");
+			 $("#submitForApproval").attr("disabled", "disabled");
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateExistingJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId+"&requirementid="+requirementid, 
+			        success: function(data) {
+			        	if(data == true){
+							  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
+							  document.getElementById("jobId").setAttribute('record-exist','yes');
+							  document.getElementById("jobId").setAttribute('record-exist-errorMsg',jobId+' is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
+	                         $("#draft").removeAttr("disabled");
+	                         $("#save").removeAttr("disabled", "disabled");
+	                		 $("#submitForApproval").removeAttr("disabled", "disabled");
+			        	}
+			        },
+			    });
+		 }
 	 }
-	 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 
-	 if(jobId != null && jobId != ""){
-		 $("#draft").attr("disabled", "disabled");
-		 $("#save").attr("disabled", "disabled");
-		 $("#submitForApproval").attr("disabled", "disabled");
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/validateJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId, 
-		        success: function(data) {
-		        	
-		        	if(data == '"duplicate"'){
-		        		  $('#jobIdDiv').find('p.jquery_form_error_message').remove();
-						  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
-						  document.getElementById("jobId").setAttribute('record-exist','yes');
-						  document.getElementById("jobId").setAttribute('record-exist-errorMsg',jobId+' is Already Existed'); 
-		        	}
-		        	else{
-		        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
-                         $("#draft").removeAttr("disabled");
-                         $("#save").removeAttr("disabled", "disabled");
-                		 $("#submitForApproval").removeAttr("disabled", "disabled");
-		        	}
-		        },
-		    });
-	 }
+	
  }
  </script>     
  

@@ -285,6 +285,9 @@ public class RequirementController {
 		model.addObject("isManager",isManager);
 
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		model.addObject("skillsList", skillsList);
 
 		// This code is commented as not in use 
 
@@ -308,6 +311,10 @@ public class RequirementController {
             model.addObject("parentRequirement","N");
         }
         
+        Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(countries != null){
+			model.addObject("loginCountryName", countries.getName());
+		}
         
         if(requirement.getSpocId() != null && requirement.getSpocId().getId() != null){
 			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());

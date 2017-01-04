@@ -172,7 +172,6 @@ function getAllCustomers(){
 
 <script>
 function customerInvoice(){  
- 	alert("hai");
 }
 </script>
 
@@ -421,7 +420,6 @@ function check(){
 		 var sourceleadUrl = '${sourceleadUrl}';
 		 var form = $('#abc_form')[0];
    		 var formData = new FormData(form); 
-		 alert("abv"+sourceleadUrl);
 		 $.ajax({
 				    type : "POST",
 				    data: formData,
