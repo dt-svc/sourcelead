@@ -36,7 +36,7 @@ public class SourceleadCleanInitDatabase {
 		flyway.setSqlMigrationSuffix(".sql");
 		flyway.setSchemas("sourcelead");
 		flyway.setInitVersion("1");
-	
+		//flyway.setBaselineVersionAsString("1");
 		flyway.clean();
 		flyway.init();
 		

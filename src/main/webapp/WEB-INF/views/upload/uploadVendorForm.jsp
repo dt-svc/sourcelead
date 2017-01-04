@@ -1,13 +1,25 @@
-<jsp:include page="../masterHeader.jsp" />
+<%-- <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> --%>
+
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <style type="text/css">
@@ -28,7 +40,7 @@ margin:10px 220px 0;
       <div class="pull-left">
         <h2>Import Vendor & Contacts</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="vendorsList">Vendor & Contact List</a> &raquo; Vendor & Contact Import </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="vendorsList">Vendor & Contact List</a> &raquo; Vendor & Contact Import </div>
     </section>
     <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="vendorFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Vendor">
     <div class="content-area clearfix">
@@ -38,13 +50,16 @@ margin:10px 220px 0;
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 		  <!-- Download File button -->
 		  <div class="clearfix mb row">
-			<div class="col-xs-12 col-md-6">
+			<sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS')">
+			<div class="col-xs-12 col-md-6">			
 			 <a href="<c:url value='/downloadVendorTemplate?name=Vendor'/>">
 			 <button class="btn btn-success btn-block" type="button">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Vendor Template
 			</button>
 			</a>
 			</div>
+			</sec:authorize>
+			<sec:authorize access="hasAnyRole('ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
 			<div class="col-xs-12 col-md-6">
 			 <a href="<c:url value='/downloadVendorTemplate?name=Contact'/>">
 			 <button class="btn btn-warning btn-block" type="button">
@@ -52,6 +67,7 @@ margin:10px 220px 0;
 			</button>
 			</a>
 			</div>
+			</sec:authorize>
 			</div>
 			<!-- Attach File button -->
 			
@@ -108,7 +124,7 @@ margin:10px 220px 0;
 			  </span>
             </div>
             <div class="panel-body checkbox div-checkbox">
-				  <label><input type="checkbox" checked="checked" value="checked" name="name"></label><span>Send Emails</span>
+				  <label><input type="checkbox" checked="checked" value="Y" name="email"></label><span>Send Emails</span>
 		    </div>
           </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -221,7 +237,7 @@ function uploadSave() {
      $('#clientNameDiv').find('p.jquery_form_error_message').remove();
      var res_field = document.upload_form.elements["uploadFile"].value;   
      var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
-     var allowedExtensions = ['xls', 'xlsx', 'csv'];
+     var allowedExtensions = ['xls', 'xlsx'];
      if (res_field.length > 0)
         {
              if (allowedExtensions.indexOf(extension) === -1) 

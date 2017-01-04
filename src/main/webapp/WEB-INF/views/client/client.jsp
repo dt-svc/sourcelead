@@ -74,9 +74,9 @@ window.onload = function () {
 			</div>
 						
 			<div class="form-group" id="countryDiv" style="display: block;">
-				<label class="col-md-3">Country</label>
+				<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country"  >
+				 <select class="chosen-select form-control select-bg" name="country" data-validation="required" id="country" field-name="Country"  >
                  </select>
 				</div>
 			</div>
@@ -180,7 +180,7 @@ window.onload = function () {
             <div class="form-group">
               <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
                 <c:forEach var="user" items="${userList}">
 	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
                 </c:forEach>
@@ -200,18 +200,14 @@ window.onload = function () {
             </div>
             
             <!-- These are the default sourelead roles we are providing for spoc in client creation -->
-              <div class="form-group" id="roleDiv" style="display: block;">
+           <!--    <div class="form-group" id="roleDiv" style="display: block;">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
 		                        <option value="">-Select Role-</option>
-									<option value="1">Admin</option>
-									<option value="3">Approver/Project Manager</option>
-									<option value="5">HR Manager</option>
-									<option value="8">Recruiter</option>
 			              </select>
                   </div>
-                </div>
+                </div>-->
                 
                 <div class="form-group" id="userRoleDiv" style="display: none;">
 					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
@@ -220,7 +216,7 @@ window.onload = function () {
 					<input type="hidden" id="userRole" name="roleTypeId" value="" />
 					
 				   </div>
-		        </div>
+		        </div> 
 		 
           </div>
         </div>
@@ -279,10 +275,10 @@ function getOrgName(){
 	document.getElementById("cityDiv").style.display="";
 	document.getElementById("orgCityDiv").style.display="none";
 	
-	$("#role" ).val('');
+	/* $("#role" ).val('');
 	$("#role").attr("data-validation", "required");
-	document.getElementById("roleDiv").style.display="";
-	document.getElementById("userRoleDiv").style.display="none";
+	document.getElementById("roleDiv").style.display="";*/
+	document.getElementById("userRoleDiv").style.display="none"; 
 	
 	$.ajax({                           
     	type: "POST",
@@ -376,6 +372,44 @@ function getOrgDetails()
 
 
 <script type="text/javascript">
+function getRolesList(){
+	var orgName = document.getElementById("orgName").value;
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	if(orgName){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getRolesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&moduleType=VMS", 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select Role --</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.displayName+"</option>";
+				}
+	        	$("#role").empty();
+		        $("#role").append(output);
+		        $('#role').trigger("chosen:updated");
+		        $("#loading").removeAttr("style"); 
+	        },
+	    });
+	}else{
+		var output = "";
+    	 output = output + "<option value=''>-- Select Role --</option>"; 
+    	 $("#role").empty();
+	     $("#role").append(output);
+	     $('#role').trigger("chosen:updated");
+	}
+	 
+}
+</script>
+
+
+<script type="text/javascript">
 	(function($) {
 		$.fn.serializeFormJSON = function() {
 			var o = {};
@@ -397,12 +431,6 @@ function getOrgDetails()
 
 <script type="text/javascript">
 	function saveClient() {
-		var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		};
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 			var frm = $('#client_form').serializeFormJSON();
@@ -507,16 +535,16 @@ function getSpocUserDetails(){
 	        		 
 	        		 
 	        		 if(json[3] != null && json[3] != ''){
-		        			$("#role").removeAttr("data-validation");
+	        			 /* $("#role").removeAttr("data-validation");
 		        			$("#role" ).val('');
-	        			    document.getElementById("roleDiv").style.display="none";
+	        			    document.getElementById("roleDiv").style.display="none"; */
 	   	        			document.getElementById("userRoleDiv").style.display="";
 	   	        			$("#userRole").val(json[3]);
 	   	        			$("#userRoleText").val(json[4]);
 		        		 }else{
-		        			 $("#role").attr("data-validation", "required");
+		        			 /* $("#role").attr("data-validation", "required"); */
 		        			 $("#userRole" ).val('');
-		        			 document.getElementById("roleDiv").style.display="";
+		        			 /* document.getElementById("roleDiv").style.display=""; */
 		        			 document.getElementById("userRoleDiv").style.display="none";
 		        		 }
 	        	}
@@ -534,9 +562,9 @@ function getSpocUserDetails(){
 	    $("#phoneNumber").attr("disabled", false);
 	    $("#phoneNumber").val('');
 	    
-	    $("#role").attr("data-validation", "required");
+	    /* $("#role").attr("data-validation", "required"); */
 	    $("#userRole" ).val('');
-	    document.getElementById("roleDiv").style.display="";
+	    /* document.getElementById("roleDiv").style.display=""; */
 		document.getElementById("userRoleDiv").style.display="none";
 	   
 	}
@@ -552,8 +580,9 @@ function validateClientName(){
 	if(clientName.match(/^[^\s-](.*)*$/) != null){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 	if (clientName != null && clientName != '') {
-		//$("#save_client").attr("disabled", "disabled");
-		// $( "#save_client" ).addClass('button').val('Processing..');
+		
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Client",
@@ -579,6 +608,8 @@ function validateClientName(){
 						
 					});
 				}
+				
+				$("#loading").removeAttr("style");
 			},
 
 		});
@@ -651,10 +682,10 @@ function validateClientName(){
 						$('input#webSite').attr('class','valid form-control');
 						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 				
-						$("#save_client").click(function() {
+						/* $("#save_client").click(function() {
 							if ($(this).validate(false, validationSettings)) {
 							}
-						});
+						}); */
 					}
 				},
 
@@ -722,13 +753,14 @@ function getStates(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select---</option>');
+	        	$('#state').append('<option value="">---select state---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
 	            $('#state').trigger("chosen:updated");
 	            
 	            $('#city').empty();
+	            $('#city').append('<option value="">---select city---</option>');
 	            $('#city').trigger("chosen:updated");
 	        },
 	        error: function(e){
@@ -736,10 +768,10 @@ function getStates(){
 	    });
 	}else{
 		$('#state').empty();
-    	$('#state').append('<option value="">---select---</option>');
+    	$('#state').append('<option value="">---select state---</option>');
     	$('#state').trigger("chosen:updated");
     	$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select city---</option>');
         $('#city').trigger("chosen:updated");
 	}
 }
@@ -767,7 +799,7 @@ function getCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select---</option>');
+	        	$('#city').append('<option value="">---select city---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
@@ -778,7 +810,7 @@ function getCities(){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select city---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }

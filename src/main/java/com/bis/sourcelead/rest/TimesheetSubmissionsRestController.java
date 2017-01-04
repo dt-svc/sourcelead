@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -71,6 +72,7 @@ public class TimesheetSubmissionsRestController {
 	TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
 	
 	// sarath kumar punnana : this  controller method is for withdraw  timwsheet entries.
+	@PreAuthorize("hasRole('ROLE_MODIFY_MY_TIMESHEETS')")
 	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
 	public @ResponseBody void withDrawTimesheet(@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
 				
@@ -78,7 +80,7 @@ public class TimesheetSubmissionsRestController {
 	}
 		
 
-	
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')") 
 	@RequestMapping(value = "/getArrovalSubmissions",  method = RequestMethod.POST)
 	public @ResponseBody  String getArrovalSubmissions(HttpServletRequest request, @RequestParam(value="employeeId", required=false) String employeeId) throws Exception {
 		
@@ -91,6 +93,7 @@ public class TimesheetSubmissionsRestController {
 	
 	
 	// sarath kumar punnana : this controller  method is for get new timwsheet screen at page load.
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/dynamicTimesheet", method = RequestMethod.POST )    
 	public @ResponseBody String dynamicTimesheet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate,@RequestParam(value="memberId", required=false) Long memberId,@RequestParam(value="projectMemberUserId", required=false) Long projectMemberUserId,@RequestParam(value="employeeId", required=false) Long employeeId) throws Exception {
 		 
@@ -100,6 +103,7 @@ public class TimesheetSubmissionsRestController {
 		return output;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/saveSubmissionApprovalStatus", method = RequestMethod.POST)
     public  String saveSubmissionApprovalStatus(HttpServletRequest request,
 									    		@RequestParam(value="employeeId", required=false) Long employeeId,
@@ -118,7 +122,7 @@ public class TimesheetSubmissionsRestController {
         return "success";
     }
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/downloadDocument", method = RequestMethod.GET)
     public void downloadDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId ,HttpServletResponse response) throws Exception {
 		
@@ -127,9 +131,8 @@ public class TimesheetSubmissionsRestController {
 		    //TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());
 		    
 		    response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition",
-	                "attachment;filename="+timesheetSubmissionsDocuments.getFileName());
-		    
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(timesheetSubmissionsDocuments.getFileName()).append("\"").toString());
 			InputStream inputStream = new ByteArrayInputStream(timesheetSubmissionsDocuments.getDocFile());
 			try {
 				OutputStream outStream = response.getOutputStream();
@@ -151,7 +154,7 @@ public class TimesheetSubmissionsRestController {
 		}  
 		 
 
-	
+	//unused method : default method
 	@RequestMapping(value = "timesheetSubmissions/saveOrUpdate", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetSubmissions addTimesheetSubmissions() throws Exception
 			 
@@ -160,7 +163,7 @@ public class TimesheetSubmissionsRestController {
 		return timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
 	}
 	
-	
+	//unused method : default method
 	@RequestMapping(value = "timesheetSubmissions/update", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetSubmissions updateTimesheetSubmissions() throws Exception
 			 
@@ -170,6 +173,7 @@ public class TimesheetSubmissionsRestController {
 	}
 	
 	
+	//unused method : default method
 	@RequestMapping(value = "timesheetSubmissions/delete/{id}", method = RequestMethod.GET)
 	public @ResponseBody  Boolean deleteTimesheetSubmissions(@PathVariable String id) throws Exception
 			 
@@ -177,6 +181,7 @@ public class TimesheetSubmissionsRestController {
 		return timesheetSubmissionsService.deleteTimesheetSubmissions(id);
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)
     public String deleteSubmissionDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId ,HttpServletResponse response) throws Exception {
         
@@ -199,8 +204,10 @@ public class TimesheetSubmissionsRestController {
 		 	 emailMessage.setLastName(emp.getUser().getLastName());
 		 	 emailMessage.setToEmail(emp.getUser().getEmail());
 		 	 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-		 	emailMessage.setCreatedBy(loginUser.getUserCode());
-		 	 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 	 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 	 
+		 	 StringBuilder userNameSB = new StringBuilder();
+		 	 emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 	
 			 //setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<>();
@@ -209,19 +216,27 @@ public class TimesheetSubmissionsRestController {
 			 globalVarsMap.put("employeeFirstName",emp.getUser().getFirstName());
 			 globalVarsMap.put("employeeLastName",emp.getUser().getLastName());
 			 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
-			 globalVarsMap.put("timeFrequency",startDate+" to "+endDate);
+			 
+			 StringBuilder timeFrequencySB = new StringBuilder();
+			 globalVarsMap.put("timeFrequency",timeFrequencySB.append(startDate).append(" to ").append(endDate).toString());
+			 
 			 globalVarsMap.put("managerFirstName", loginUser.getFirstName());
 			 globalVarsMap.put("managerLastName", loginUser.getLastName());
 			 if("REJECTED".equalsIgnoreCase(status)){
 				 globalVarsMap.put("rejectedReason",rejectedReason);
 			 }
-			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+			 
+			 StringBuilder loginURLSB = new StringBuilder();
+			 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadUrl).append("/").append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			 
 			 //setting the Recipient information
 			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<>();
 			 EmailRecipient emailRecipient = new EmailRecipient();
 			 emailRecipient.setEmail(emailMessage.getToEmail());
-			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+			 
+			 StringBuilder nameSB = new StringBuilder();
+			 emailRecipient.setName(nameSB.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+			 
 			 emailRecipientList.add(emailRecipient);
 			 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type

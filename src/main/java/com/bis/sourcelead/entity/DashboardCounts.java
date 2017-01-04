@@ -1,8 +1,12 @@
 package com.bis.sourcelead.entity;
 
-public class DashboardCounts {
+import java.io.Serializable;
+
+public class DashboardCounts implements Serializable{
 	
-    private Integer submissionCount;
+	private static final long serialVersionUID = 1L;
+
+	private Integer submissionCount;
 	
 	private Integer applicantsCount;	
 	

@@ -7,9 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -37,15 +35,16 @@ public class RequirementListController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementList");
 		
-		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
+	    	/*
+		    *  This code is commented as  the client  based requirement   is not in use 
+		    */
 		
-		  List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
-	        for(OrgRelations orgRelations:orgClientList){
-	        	orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
-	        }
+		   /* List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+	         for(OrgRelations orgRelations:orgClientList){
+	         	orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
+	         }
 	        model.addObject("add_client", orgClientList);
-	        model.addObject(orgClientList);
+	        model.addObject(orgClientList);*/
 	        
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -57,12 +56,21 @@ public class RequirementListController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "reqCreateMsg");
+		}
 		
 		return model;
 
 	}
 	
-	
+	private boolean isNullOrEmpty(String msg) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	@RequestMapping(value = "/releaseRequirementToClientOrVendors")
 	public ModelAndView releaseRequirementToClientOrVendors(String requirementId,HttpServletRequest request) throws Exception {
 		
@@ -98,12 +106,6 @@ public class RequirementListController {
 		return model;
 
 	}
-	
-	
-	
-	
-	
-	
 	
 	 
 }

@@ -113,7 +113,7 @@ public class UploadFileServiceTest {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    String isMailChecked = null;
-	  	uploadFileService.uploadFile(multipartFile, orgLocations, user, isMailChecked);
+	  	uploadFileService.uploadFile(multipartFile, orgLocations, user, isMailChecked,new Org(),8L);
 	}
 	
 }

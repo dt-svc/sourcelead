@@ -1,8 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -13,10 +11,8 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Service
@@ -27,8 +23,6 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	@Autowired
 	OrgLocationsDao orgLocationsDao;
 	
-	@Autowired
-	private OrgRelationsService orgRelationsService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -124,13 +118,13 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 			if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
 				clientOrgLocations.setState(jsonObj.getString("state"));
 			}else if(jsonObj.has("orgState") && !isNullOrEmpty(jsonObj.getString("orgState"))){
-				clientOrgLocations.setCountry(jsonObj.getString("orgState"));
+				clientOrgLocations.setState(jsonObj.getString("orgState"));
 			}
 			
 			if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 				clientOrgLocations.setCity(jsonObj.getString("city"));
 			}else if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
-				clientOrgLocations.setCountry(jsonObj.getString("orgCity"));
+				clientOrgLocations.setCity(jsonObj.getString("orgCity"));
 			}
 			String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
 			clientOrgLocations.setLocationCode(addOrg.getOrgCode() + clientCountry);
@@ -151,5 +145,10 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
+	}
+
+	@Override
+	public OrgLocations getOrgLocationByOrgId(Long orgId) throws Exception {
+		return orgLocationsDao.getOrgLocationByOrgId(orgId);
 	}
 }

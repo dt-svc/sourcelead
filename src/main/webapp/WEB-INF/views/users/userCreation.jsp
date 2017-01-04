@@ -44,7 +44,7 @@
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmployeeId" name="employeeId" data-validation="validate_Space validate_length length2-20" data-validation-optional="true" value="" onKeyUp="validateEmployeeId();">
+                    <input type="text" class="form-control" id="EmployeeId" name="employeeId" data-validation="validate_Space validate_length length2-20" data-validation-optional="true" value="" onKeyUp="validateEmployeeId();" onblur="validateEmployeeId();">
                     </div>
                 </div>
                 <div class="form-group">
@@ -60,7 +60,7 @@
                  <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onKeyUp="validateUserEmail();" onblur="getUserByUserEmail();">
+                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email"  onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();" >
                   </div>
                   </div>
                   
@@ -91,7 +91,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
-                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required" onchange="getReportingManager();">
+                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
 		                        <c:forEach var="option" items="${rolesList}">
 									<option value="${option.id}">${option.displayName}</option>
@@ -105,6 +105,9 @@
                   <div class="col-md-9">
                       <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager">
                         <option value="">-Select Manager-</option>
+                        <%-- <c:forEach var="option" items="${reportingManagersList}">
+								<option value="${option.id}">${option.firstName} ${option.lastName} (${option.userType})</option>
+						</c:forEach> --%>
                       </select>
                   </div>
             </div>
@@ -135,18 +138,7 @@
                      </div>
                 </div>
                 
-             <div class="form-group">
-                  <label class="col-md-3">Invoice Frequency</label>
-                  <div class="col-md-9">
-                         <select class="form-control chosen-select" id="invoiceFrequency" name="invoiceFrequency" field-name="Invoice Frequency">
-		                        <option value="">-Invoice Frequency-</option>
-				                <option value="Weekly">Weekly</option>
-				        	    <option value="Bi-Weekly">Bi-Weekly</option>
-				         		<option value="Semi-Monthly">Semi-Monthly</option>
-				         		<option value="Monthly">Monthly</option>
-			              </select>
-                  </div>
-                </div>
+            
             
             <div class="form-group">
 		             <label class="col-md-3"></label>
@@ -268,7 +260,7 @@
 	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
 	 if(EmployeeId != null && EmployeeId != ""){
 		 $("#create_user").attr("disabled", "disabled");
-         $("#create_user" ).addClass('button').val('Processing..');
+        // $("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateEmployeeId?${_csrf.parameterName}=${_csrf.token}&EmployeeId="+EmployeeId, 
@@ -366,6 +358,15 @@
 		        	}
 		        },
 		    });
+	 }else{
+		 $("#FirstName").attr("disabled", false);
+		 $("#FirstName").val('');
+		 
+		 $("#lastName").attr("disabled", false);
+		 $("#lastName").val('');
+		 
+		 $("#phone").attr("disabled", false);
+		 $("#phone").val('');
 	 }
  }
  </script>     

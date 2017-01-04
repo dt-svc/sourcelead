@@ -30,7 +30,7 @@ function getCandidateProfile(candidateId){
 							result = result +'		<h1>Summary:</h1>';
 							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
 							
-						    result = result +'<div class="clearfix mt dashboard-widget">';
+						    result = result +'<div class="clearfix mt dashboard-widget req-profile">';
 							result = result +'<ul class="nav nav-tabs">';
 							result = result +' <li class="active"><a data-toggle="tab" href="#skills">General View</a></li>';
 							//result = result +'  <li><a data-toggle="tab" href="#milestone">Milestone View</a></li>';

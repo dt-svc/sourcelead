@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,7 +41,6 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -60,6 +58,7 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -133,6 +132,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 private ProjectTasksService projectTasksService;
+	 
+	 @Autowired
+	 private TimesheetSubmissionsService timesheetSubmissionsService;
 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
@@ -276,6 +278,15 @@ public class ProjectsServiceImpl implements ProjectsService{
     		Date endDate = format.parse(jsonObj.getString("EndDate"));
 	    	projects.setEndDate(endDate);
     	}
+    	
+    	
+		if(jsonObj.has("invoiceFrequency") && jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
+			projects.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+	    }else{
+	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    }
+    	
+    	
     	if((jsonObj.has("Satatus"))){
     	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
     	}
@@ -315,16 +326,18 @@ public class ProjectsServiceImpl implements ProjectsService{
     	
 
     	//prepare ProjectApproverHierarchy
-    	Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj, request, projects);
+    	Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj,request,projects);
     	projects.setProjectApprovers(projectApproverHierarchyList);
 		
 		//prepare project task set...
 		/*tasksService.*/
+    	/*User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");*/
+    	
 		Set<ProjectTasks>  projectTasksList = projectTasksService.prepareProjectTasksListByJson(jsonObj, request, projects);
 		projects.setProjectTasks(projectTasksList);
 		//prepare projectmembers list...
 		
-		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj, request, projects);
+		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 		projects.setProjectMembers(projectMemberList);
 		
 		Projects updatedProjects = saveProject(projects);
@@ -332,7 +345,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		/**
 		 * this block is for submissions for project member
 		*/
-		if (jsonObj.has("employeeMaxCount")){
+		/*if (jsonObj.has("employeeMaxCount")){
 		String employeeMaxCount = jsonObj.getString("employeeMaxCount");
 		if(StringUtils.isNotEmpty(employeeMaxCount)){
 		int empMaxCount = Integer.parseInt(employeeMaxCount);
@@ -340,7 +353,21 @@ public class ProjectsServiceImpl implements ProjectsService{
 			Employees emp = employeesService.getEmployee(jsonObj.getString("employeeId"+c));
 			commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
 			}
-		}
+		 }
+		}*/
+		
+		
+		/**
+		 * this block is for submissions for project member
+		*/
+		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(updatedProjects.getId());
+		if (projectMembersList != null && !projectMembersList.isEmpty()){
+			for (ProjectMembers pm : projectMembersList) {
+				if(pm.getEmployee() != null){
+					commonUtil.storeTimesheetSubmissionRecords(pm.getEmployee().getUser());
+				}
+		  	  
+			}
 		}
 		
 		/*
@@ -355,8 +382,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 					Employees emp = projectMembers.getEmployee();
 					if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
 						User  approverUserId1 =new User();
+						User  approverUserId2 =new User();
 						approverUserId1.setId(Long.valueOf(jsonObj.getString("level1Manager")));
-						sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
+						approverUserId2.setId(Long.valueOf(jsonObj.getString("level2Manager")));
+						if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue() &&  approverUserId2.getId().longValue() != emp.getUser().getId().longValue()){
+							sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
+						}
+						
 					}
 				}
 			}
@@ -411,10 +443,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 	            }
 			    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+			    	StringBuilder projectStringBuilder=new StringBuilder();
 			    	if(approverHierarchy.getLevel()==1){
-			    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName()+" "+approverHierarchy.getApproverUserId().getLastName());
+			    		projects.setManagerLevel1(projectStringBuilder.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 			    	}else if(approverHierarchy.getLevel()==2){
-			    		projects.setManagerLevel2(approverHierarchy.getApproverUserId().getFirstName()+" "+approverHierarchy.getApproverUserId().getLastName());
+			    		projects.setManagerLevel2(projectStringBuilder.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 			    	}
 			    }
 	    }
@@ -452,14 +485,17 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}*/
 
 	@Override
-	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,HashSet<TimesheetSubmissions> timesheetSubmissions) throws Exception {
+	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,HashSet<TimesheetSubmissions> timesheetSubmissions,String level) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(locationsId);
 		
-		EmailMessage emailMessage = new EmailMessage();
+		Set<Projects> projectsSet = new HashSet<>();
+		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-		 emailMessage.setFromName(user.getFirstName()+" "+user.getLastName());
+		 StringBuilder fromNameSB = new StringBuilder();
+		 emailMessage.setFromName(fromNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -470,20 +506,31 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 globalVarsMap.put("role",user.getUserType());
 		 globalVarsMap.put("userEmailId",user.getEmail()); //
 		 LinkedList<String> frequency = new LinkedList<>();
-		 if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
-			 for(TimesheetSubmissions ts :timesheetSubmissions){
-				 frequency.add("<b>"+Constants.DMY.format(ts.getStartDate())+" To "+Constants.DMY.format(ts.getEndDate())+"<b>");
-			 }
-		 }
-		 if(frequency != null && !frequency.isEmpty()){
-			 globalVarsMap.put("weekFrequency","<br/>"+frequency.stream().collect(Collectors.joining("<br/>"))+"<br/>");
-		 }
-		 
+		 StringBuilder tempHTML = new StringBuilder();
+		 tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+			tempHTML.append("<tr>");
+					tempHTML.append("<th> Project Name </th>");
+					tempHTML.append("<th> Frequency </th>");
+					tempHTML.append("</tr>");
+		
+			if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
+				 for(TimesheetSubmissions ts :timesheetSubmissions){
+					 tempHTML.append("<tr>");
+					 tempHTML.append("<td>").append(ts.getProjectMembers().getProjects().getProjectName()).append("</td>").toString();
+					 tempHTML.append("<td>").append(Constants.DMY.format(ts.getStartDate())).append(" To ").append(Constants.DMY.format(ts.getEndDate())).append("</td>").toString();
+					 tempHTML.append("</tr>");
+					 projectsSet.add(ts.getProjectMembers().getProjects());
+				 }
+			}
+			
+	     tempHTML.append("</table> ");
+		 globalVarsMap.put("weekFrequency",tempHTML.toString());
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder nameSB = new StringBuilder();
+		 emailRecipient.setName(nameSB.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -502,45 +549,75 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,locationsId,emailRecipientList,new ArrayList<EmailAttachment>());
-		 sendWeeklyBaseNotiFication(user);
-		
-		//projectsDao.userEmailNotificationForTimeShhetSubmission(user);
+		 sendWeeklyBaseNotiFication(user,orgLocations,projectsSet);
 	}
 
-//	@Override
-//	public List<SubmissionApproverHierarchy> getApproveUserForTimeSheets(Long userId) throws Exception {
-//		return projectsDao.getApproveUserForTimeSheets(userId);
-//	}
+
+	private void sendWeeklyBaseNotiFicationToAdmin(User user, OrgLocations orgLocations) throws Exception {
+		if(user.getId() !=1 && user.getId() !=2){
+			List<Employees> empList = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(user.getId());
+		    Employees emp = empList.get(0);
+		    logger.info("Employee Location code :"+emp.getOrgLocations().getLocationCode());
+			logger.info("Employee org code :"+emp.getOrgLocations().getOrg().getOrgCode());
+		    User toUser = emp.getUser();
+		    User fromUser = null;
+		    if(user.getId() != orgLocations.getUser().getId()){
+		    	  fromUser = orgLocations.getUser();
+		    }else{
+		    	fromUser = userService.getUserById(1L);
+		    }
+		    logger.info("Aprover for the Employee "+user.getFirstName()+" is :"+fromUser.getFirstName()+"("+fromUser.getUserType()+")");
+		        EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+			    Map<String, String> globalVarsMap = new HashMap<String, String>();
+			    globalVarsMap.put("firstName", user.getFirstName());
+			    globalVarsMap.put("lastName",user.getLastName());
+				String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
+				emailScenario.setBody(body);
+				emailScenario.setOrgCode(emp.getOrgLocations().getOrg().getOrgCode());
+				String actionLink = "";
+				OrgLocations loginOrgLocation = new OrgLocations();
+			   loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
+			   loginOrgLocation.setOrg(emp.getOrgLocations().getOrg());
+			   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);	
+		}
+	}
 	
 
-	private void sendWeeklyBaseNotiFication(User user) throws Exception {
-		List<Employees> empList = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(user.getId());
-	    Employees emp = empList.get(0);
-	    logger.info("Employee Location code :"+emp.getOrgLocations().getLocationCode());
-		logger.info("Employee org code :"+emp.getOrgLocations().getOrg().getOrgCode());
-	    User toUser = emp.getUser();
-	    List<SubmissionApproverHierarchy> sah = projectsDao.getApproveUserForTimeSheets(user.getId());
-	    User fromUser = sah.get(0).getHeirarchyId().getApproverUserId();
-	    logger.info("Aprover for the Employee "+user.getFirstName()+" is :"+fromUser.getFirstName()+"("+fromUser.getUserType()+")");
-	        EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.WEEK_TIME_SHEET_SUBMISSION,Constants.ENTITY_TYPE_NOTIFICATION);
-		    Map<String, String> globalVarsMap = new HashMap<String, String>();
-		    globalVarsMap.put("firstName", user.getFirstName());
-		    globalVarsMap.put("lastName",user.getLastName());
-			String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
-			emailScenario.setBody(body);
-			emailScenario.setOrgCode(emp.getOrgLocations().getOrg().getOrgCode());
-			String actionLink = "";
-			OrgLocations loginOrgLocation = new OrgLocations();
-		   loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
-		   loginOrgLocation.setOrg(emp.getOrgLocations().getOrg());
-			emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);		
+	private void sendWeeklyBaseNotiFication(User user, OrgLocations orgLocations, Set<Projects> projectsSet) throws Exception {
+		if(user.getId().longValue() !=1l && user.getId().longValue() !=2l){
+			List<Employees> empList = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(user.getId());
+		    Employees emp = empList.get(0);
+		    logger.info("Employee Location code :"+emp.getOrgLocations().getLocationCode());
+			logger.info("Employee org code :"+emp.getOrgLocations().getOrg().getOrgCode());
+		    User toUser = emp.getUser();
+		    for(Projects projects :projectsSet){
+		    	 User fromUser = null;
+		    	List<ProjectApproverHierarchy> pahList = projectApproverHierarchyService.getApproverUsersByProjectId(projects.getId());
+		    	//for(ProjectApproverHierarchy pah :pahList){
+		    		//if(pah.getLevel() != null && pah.getLevel().intValue() == 1){
+//		    	for(ProjectApproverHierarchy pah :pahList){
+		    	ProjectApproverHierarchy pah = pahList.get(0);
+		    		if(pah.getLevel() != null && pah.getLevel().intValue() == 1){
+		    			fromUser = pah.getApproverUserId();
+		    		}
+		    		 logger.info("Aprover for the Employee "+user.getFirstName()+" is :"+fromUser.getFirstName()+"("+fromUser.getUserType()+")");
+				        EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+					    Map<String, String> globalVarsMap = new HashMap<String, String>();
+					    globalVarsMap.put("firstName", user.getFirstName());
+					    globalVarsMap.put("lastName",user.getLastName());
+						String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
+						emailScenario.setBody(body);
+						emailScenario.setOrgCode(emp.getOrgLocations().getOrg().getOrgCode());
+						String actionLink = "";
+						OrgLocations loginOrgLocation = new OrgLocations();
+					   loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
+					   loginOrgLocation.setOrg(emp.getOrgLocations().getOrg());
+					   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);
+//		    	}
+		    }
+		}
 	}
-
-	/*@Override
-	public HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
-		
-		return projectsDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
-	}*/
+	
 
 	@Override
 	public void saveAllProjects(List<Projects> projectsList) throws Exception {
@@ -576,7 +653,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    if(projects.getProjectSequeneNumber() != null){
 	    	projects.setProjectSequeneNumber(projects.getProjectSequeneNumber());
 	    }
-	    projects.setCreatedBy(user.getFirstName()+" "+user.getLastName());
+	    StringBuilder projectApprover=new StringBuilder();
+	    projects.setCreatedBy(projectApprover.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 	    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 	   
 	    /**
@@ -585,9 +663,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    if(projectApproverHierarchies.size()==1){
 	    	
 	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
-		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
+		    	if(approverHierarchy.getLevel() != null){
 		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
-		    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
+		    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
 	    	}
 	    }else{
@@ -595,11 +673,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
 		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1){
 		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
-		    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
+		    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
 		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
 		    		projects.setManager2(approverHierarchy.getApproverUserId().getId());
-		    		projects.setManagerLevel2(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
+		    		projects.setManagerLevel2(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
 		    	
 		    }
@@ -618,7 +696,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    String[] approvers = new String[projectApproverHierarchies.size()];
 	    int i = 0;
 	    for(ProjectApproverHierarchy php : projectApproverHierarchies){
-	    	approvers[i] = php.getApproverUserId().getFirstName()+"&"+php.getApproverUserId().getId();
+	    	StringBuilder approverHierarchies=new StringBuilder();
+	    	approvers[i] = approverHierarchies.append(php.getApproverUserId().getFirstName()).append("&").append(php.getApproverUserId().getId()).toString();
 	    	i++;
 	    }
 	    projects.setProjectManagerName(approvers);
@@ -633,7 +712,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 					projects.setClient(ocl.getResponderLocationId().getOrg().getOrgName());
 				}
 			}
-			clientList[j] = ocl.getResponderLocationId().getOrg().getOrgName()+"&"+ocl.getId();
+			StringBuilder approverHierarchiesSB=new StringBuilder();
+			clientList[j] = approverHierarchiesSB.append(ocl.getResponderLocationId().getOrg().getOrgName()).append("&").append(ocl.getId()).toString();
 			j++;
 		 }
 		projects.setClientName(clientList);
@@ -662,14 +742,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 Date currentDate = new Date();
 		 Date previousEndDate = null;
          Projects projects = getProjectById(projectId);
-		 
-		
-	     
+         //HashSet<ProjectApproverHierarchy> projectMemberList = new HashSet<ProjectApproverHierarchy>();
 		        if(jsonObj.has("ProjectSequeneNumber")){
 	        	  if(jsonObj.getString("ProjectSequeneNumber") != null){
 			    	 projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
 			     }
 		        }
+		        
+		        
 		    	projects.setProjectName(jsonObj.getString("projectName"));
 		    	if(jsonObj.getString("description") != null){
 		    		projects.setDescription(jsonObj.getString("description"));
@@ -694,31 +774,98 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		}
 			    		
 			    	}
-		    	
-		    	
-		    	if(jsonObj.has("level1Manager")){
+		    		
+		    		if(jsonObj.has("invoiceFrequency")){
+			        	  if(jsonObj.getString("invoiceFrequency") != null){
+					    	 projects.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+					     }
+				        }
+		    		
+		    	if(jsonObj.has("level1Manager") || jsonObj.has("level2Manager") ){
+			    		HashSet<Long> oldlist = new HashSet<>();
+			    		HashSet<Long> freshlist = new HashSet<>();
+			    		HashSet<Long> templist = null;
 			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
-						 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
-							 if(prHierarchy.getLevel() == 1){
-								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
-								 Long fieldValuelong = Long.valueOf(jsonObj.getString("level1Manager"));
-								 User usr = userService.getUserById(fieldValuelong);
-								 pah.setApproverUserId(usr);
-								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
-							 }
-			    	}
-		    	}
-		    	if(jsonObj.has("level2Manager")){
-			    		 Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
-						 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
-							 if(prHierarchy.getLevel() == 2){
-								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
-								 Long fieldValuelong = Long.valueOf(jsonObj.getString("level2Manager"));
-								 User usr = userService.getUserById(fieldValuelong);
-								 pah.setApproverUserId(usr);
-								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
-							 }
+			    		
+			    		// if   we  are adding new  level 2 manager while editing
+			    		if(jsonObj.has("level2Manager") && projectApproverHierarchies.size() == 1){ 	
+							if(!jsonObj.getString("level2Manager").isEmpty()){
+								Long[] ids = new Long[1000];
+								User approverUserId2 = new User();
+								ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
+								pah2.setProjectId(projects);
+								approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
+								pah2.setApproverUserId(approverUserId2);
+								pah2.setLevel(2);
+								ids[1] = approverUserId2.getId();
+								projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+								
+							}
 						 }
+			    		/**
+						 * this block is for submissions for project member
+						*/
+						Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
+						if (projectMembersList != null && !projectMembersList.isEmpty()){
+							for (ProjectMembers pm : projectMembersList) {
+								if(pm.getEmployee() != null){
+									commonUtil.storeTimesheetSubmissionRecords(pm.getEmployee().getUser());
+								}
+						  	  
+							}
+						}
+			    		for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
+								 Long fieldValuelong = null;
+								     if(prHierarchy.getLevel() == 1 || (prHierarchy.getLevel() == 2 && projectApproverHierarchies.size() == 1))
+									  fieldValuelong = Long.valueOf(jsonObj.getString("level1Manager"));
+								     
+								     if(prHierarchy.getLevel() == 2 &&  jsonObj.has("level2Manager"))
+								      fieldValuelong = Long.valueOf(jsonObj.getString("level2Manager"));
+								     
+									 User usr = userService.getUserById(fieldValuelong);
+									 oldlist.add(pah.getApproverUserId().getId());
+									 freshlist.add(usr.getId());
+									 pah.setApproverUserId(usr);
+								
+								   projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+			    	 }
+			    		if(oldlist != null && !oldlist.isEmpty()){
+			    			templist = (HashSet<Long>) oldlist.clone();
+			    		}
+			    		//getting projectmember userId's who are terminated or who are dropped from project
+			    		oldlist.removeAll(freshlist);
+			    		if(oldlist != null && !oldlist.isEmpty()){
+			    			for(Long terminatedUserId : oldlist){
+			    				if(projects != null && projects.getId() != null){
+			    					ProjectMembers pm = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUserId, projects.getId());
+				    				if(pm.getId() != null){
+				    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+				    					projectMembersHistory.setProjectTerminationDate(currentDate);
+				    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+					    				commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
+				    				}
+				    				 
+			    				}
+			    			}
+			    		}
+			    		
+			    		if(templist != null && !templist.isEmpty()){
+			    			//getting projectmember userId's who are added to the project
+			    			freshlist.removeAll(templist);
+			    			if(freshlist != null && !freshlist.isEmpty()){
+			    				for(Long freshlyaddedUserId : freshlist){
+			    					ProjectMembers pm = storeProjectMemberByMemberUserIdAndLoginUser(freshlyaddedUserId, user, projects, currentDate);
+			    					User usr = userService.getUserById(freshlyaddedUserId);
+			    					if(pm != null){
+			    						commonUtil.storeTimesheetSubmissionRecords(usr);
+			    					}
+			    				}
+			    				
+			    			}
+			    			
+			    		}
+			    		
 		    	}
 			    projects.setUpdatedBy(user.getUserCode());
 			    projects.setUpdatedDate(currentDate);
@@ -836,6 +983,39 @@ public class ProjectsServiceImpl implements ProjectsService{
 		return user;
 		
 	}
+	
+	/**
+	 * @throws Exception 
+	 * 
+	 */
+	private ProjectMembers storeProjectMemberByMemberUserIdAndLoginUser(Long memberUserId,User loginUser,Projects projects,Date currentDate) throws Exception{
+		
+		ProjectMembers pm = new ProjectMembers();
+		HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+		ProjectMembersHistory pmh = new ProjectMembersHistory();
+		pmh.setProjectMemberId(pm);
+		pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+		pmh.setProjectAssignedDate(currentDate);
+		pmh.setProjectTerminationDate(projects.getEndDate());
+ 	    pmh.setCreatedDate(currentDate);
+		pmh.setCreatedBy(loginUser.getUserCode());
+		pmh.setUpdatedDate(currentDate);
+		pmh.setUpdatedBy(loginUser.getUserCode());
+		pmhList.add(pmh);
+		Employees emp = employeesService.getEmployeeByUserId(memberUserId);
+    	pm.setProjects(projects);
+    	pm.setEmployee(emp);
+		pm.setStatus(Constants.MEMBER_ACTIVE);
+		pm.setCreatedDate(currentDate);
+		pm.setUpdatedDate(currentDate);
+		pm.setCreatedBy(loginUser.getUserCode());
+		pm.setUpdatedBy(loginUser.getUserCode());
+		pm.setMemberHistoryList(pmhList);
+		pm = projectMembersService.saveProjectMember(pm);
+		return pm;
+	}
+	
+	
 	/**
 	 * populate Employees Data	
 	 * @param user
@@ -848,9 +1028,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	private Employees populateEMployee(User user, OrgLocations loginOrgLocation, JSONObject jsonObj, User users) throws JSONException {
 		Employees employee  = new Employees();
 		employee.setUser(user);
-		if(!jsonObj.getString("invoiceFrequency").isEmpty()){
+		/*if(!jsonObj.getString("invoiceFrequency").isEmpty()){
 			employee.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
-		}
+		}*/
 		employee.setOrgLocations(loginOrgLocation);
 		employee.setCreatedBy(users.getUserCode());
 		employee.setStatus("ACTIVE");
@@ -902,16 +1082,18 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		ProjectMembers myPM =  new ProjectMembers();
 		
-		 Projects project = projectsDao.getProjectById(projectId) ;
-		
 		
 		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
 		Projects pr = projectsDao.getProjectById(projectId);
 		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
-			 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());
-			 pm.setProjectStatus(pr.getStatus());
+			 if(pm.getEmployee() != null){
+				 StringBuilder membersListStringBuilder=new StringBuilder();
+				 pm.setEmpName(membersListStringBuilder.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());	 
+				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	 
+			 }
+			 pm.setProjectStatus(pr.getProjectStatus().getValue());
 			 
 			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
 			 if(pmh == null){
@@ -930,6 +1112,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
 	          	 }
+		      if(pm.getTerminateReason() != null){
+		    	  pm.setTerminateReason(pm.getTerminateReason());
+		      }
 	       	 
 	       	 if(pm.getEmployee()!=null){
 	
@@ -962,7 +1147,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		 
 		 myPM.setProjectMembersList(projectMembersArrList);
-		 myPM.setStatus(project.getProjectStatus().getValue());
+		 if(pr.getProjectStatus() != null){
+			 myPM.setStatus(pr.getProjectStatus().getValue());	 
+		 }
+		 
 		 
 		 return myPM;
 	}
@@ -1206,14 +1394,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 			  	 if(isNullOrEmpty(teamMembersList) && ("undefined".equals(teamMembersList))){
 			  		teamMembersList = "-";
 			  	 }
-			  	
+			  	 StringBuilder fromNameBuilder=new StringBuilder();
 			     EmailMessage emailMessage = new EmailMessage();
 				 emailMessage.setFirstName(projectManager.getFirstName());
 				 emailMessage.setLastName(projectManager.getLastName());
 				 emailMessage.setToEmail(projectManager.getEmail());
 				 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 				 emailMessage.setCreatedBy(loginUser.getUserCode());
-				 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+				 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
 				 //setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1224,13 +1412,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 globalVarsMap.put("teamMembers",teamMembersList);
 				 globalVarsMap.put("projectName", projects.getProjectName());
 				 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
-				 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+				 StringBuilder loginURLBuilder=new StringBuilder();
+				 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				 
 				 //setting the Recipient information
 				 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 				 EmailRecipient emailRecipient = new EmailRecipient();
 				 emailRecipient.setEmail(emailMessage.getToEmail());
-				 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+				 StringBuilder nameBuilder=new StringBuilder();
+				 emailRecipient.setName(nameBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 				 emailRecipientList.add(emailRecipient);
 				 
 				 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1271,14 +1461,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 			  */
 			  private void sendEmailToTeamMembers(Projects projects, Employees emp, User loginUser, User approverUserId1, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 				  	 User projectManager = userService.getUserById(approverUserId1.getId());
-				  	
+				  	 StringBuilder fromNameBuilder=new StringBuilder();
 				     EmailMessage emailMessage = new EmailMessage();
 					 emailMessage.setFirstName(emp.getUser().getFirstName());
 					 emailMessage.setLastName(emp.getUser().getLastName());
 					 emailMessage.setToEmail(emp.getUser().getEmail());
 					 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 					 emailMessage.setCreatedBy(loginUser.getUserCode());
-					 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+					 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
 					 //setting the class filed values
 					 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1290,13 +1480,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 globalVarsMap.put("employeeLastName",emailMessage.getLastName());
 					 globalVarsMap.put("projectName", projects.getProjectName());
 					 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
-					 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+					 StringBuilder loginURLBuilder=new StringBuilder();
+					 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 					 
 					 //setting the Recipient information
 					 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 					 EmailRecipient emailRecipient = new EmailRecipient();
 					 emailRecipient.setEmail(emailMessage.getToEmail());
-					 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+					 StringBuilder nameBuilder=new StringBuilder();
+					 emailRecipient.setName(nameBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 					 emailRecipientList.add(emailRecipient);
 					 
 					 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1395,9 +1587,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 											/**
 										    * This teamMembersList string to store all team members for mail to project manager.
 										    */
+											StringBuilder teamStringBuilder=new StringBuilder();
+											StringBuilder teamMembersStringBuilder=new StringBuilder();
 											String teamMember = "";
-											teamMember = emp.getUser().getFirstName()+" "+emp.getUser().getLastName();
-											teamMembersList = teamMembersList+teamMember+"<br/>";
+											teamMember = teamStringBuilder.append(emp.getUser().getFirstName()).append(" ").append(emp.getUser().getLastName()).toString();
+											teamMembersList = teamMembersStringBuilder.append(teamMembersList).append(teamMember).append("<br/>").toString();
 									    }
 									}
 							    }
@@ -1406,9 +1600,140 @@ public class ProjectsServiceImpl implements ProjectsService{
 				return teamMembersList;
 				}
 
+/**
+ * prepares email boday with table 
+ */
+@Override
+public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,User user1) throws Exception {
+	     User user = null;
+	     if(user1!=null){
+	    	 user = user1;
+	     }else{
+	    	 user = orgLocations.getUser();
+	     }
+	     StringBuilder fNameStringBuilder=new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("firstName", emailMessage.getFirstName());
+		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 globalVarsMap.put("administratorFirstName", user.getFirstName());
+		 globalVarsMap.put("administratorLastName",user.getLastName());
+		 globalVarsMap.put("role",user.getUserType());
+		 globalVarsMap.put("userEmailId",user.getEmail()); //
+		 globalVarsMap.put("weekFrequency",tempHTML.toString());
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 StringBuilder nameStringBuilder=new StringBuilder();
+		 emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_MANAGER_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		sendWeeklyBaseNotiFicationToAdmin(user,orgLocations);
+		
+}
+
+
+			@Override
+			public Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId, Long orgLocationId)
+					throws Exception {
+				return projectsDao.getProjectApproversCountByUserIdAndOrgLocationId(userId, orgLocationId);
+			}
+
+			
+			
+			@Override
+			public void tereminateAsProjectApprover(JSONObject jsonObj,User user,Long userId,OrgLocations orgLocations) throws Exception {
+				
+				   boolean flag = false;
+				
+		    		List<ProjectApproverHierarchy> projectApproverList = projectApproverHierarchyService.getProjectApproversListByUserIdAndOrgLocationId(userId,orgLocations.getId());
+		    		
+		    		for(ProjectApproverHierarchy hierarchy : projectApproverList){
+		    			
+							
+						   
+							User usr = userService.getUserById(Long.valueOf(jsonObj.getString("projectApproverUser")));
+							User terminatedUser = hierarchy.getApproverUserId();
+							hierarchy.setApproverUserId(usr);
+							hierarchy.setUpdatedBy(user.getUserCode());
+							hierarchy.setUpdatedDate(new Date());
+						
+							
+							List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(hierarchy.getProjectId().getId(), orgLocations.getId());	
+							for(ProjectApproverHierarchy approverHierarchy : hierarchyList){
+								if(approverHierarchy.getApproverUserId().getId().equals(usr.getId())){
+									flag = true;
+								}
+							}
+							
+							if(flag == false){
+								
+					    			//getting projectmember userId's who are added to the project
+					    					ProjectMembers pm = storeProjectMemberByMemberUserIdAndLoginUser(usr.getId(), user, hierarchy.getProjectId(), new Date());
+					    					if(pm != null){
+					    						commonUtil.storeTimesheetSubmissionRecords(user);
+					    					}
+										 
+							}
+							
+							 if(hierarchy.getProjectId() != null && hierarchy.getProjectId().getId() != null){
+			    					ProjectMembers pm1 = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUser.getId(), hierarchy.getProjectId().getId());
+				    				if(pm1.getId() != null){
+				    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm1.getId());
+				    					
+				    					if(null != projectMembersHistory){
+				    						projectMembersHistory.setProjectTerminationDate(new Date());
+					    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+				    					}
+				    					
+					    				commonUtil.terminateProjectMemberByProjectMemberId(pm1.getId(), Primary.Yes);
+				    				}
+				    				
+				    				List<TimesheetSubmissions> submissionsList = timesheetSubmissionsService.getTimeSheetSubmissionByProjectMemberId(pm1.getId());
+				    				if(null != submissionsList){
+				    					for(TimesheetSubmissions submissions : submissionsList){
+				    						submissions.setStatus(Constants.MEMBER_IN_ACTIVE);
+				    						submissions.setUpdatedBy(user.getUserCode());
+				    						submissions.setUpdatedDate(new Date());
+				    						timesheetSubmissionsService.addTimesheetSubmissions(submissions);
+				    					}
+				    				}
+				    				 
+			    				}
+						
+								projectApproverHierarchyService.updateProjectApproverHierarchy(hierarchy);
+		    		}
+		    		
+			}
+
 			/*@Override
 			public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception {
 				return projectsDao.getAllUserTimeSheetSubmissionStatusCurrentWeek();
 			}
 			  */
+
 }

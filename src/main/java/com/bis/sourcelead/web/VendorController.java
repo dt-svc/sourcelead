@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -64,7 +65,7 @@ public class VendorController {
 	@Autowired
 	ClientImportsService clientImportsService;
 
-	
+	/* This method is used for landing page of vendors tab. So, who has vendors tab access they can see vendors list. No preAuthorize for this method */
 	@RequestMapping(value = "/vendorsList")
 	public ModelAndView vendorsList(HttpServletRequest request) throws Exception {
 		
@@ -94,7 +95,18 @@ public class VendorController {
 		}
 		model.addObject("vendor_list", vendorsList);
         model.addObject(vendorsList);
-		
+        
+        //this block is for success messages -@pavanjampana
+        String msg = "";
+		msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "vendorCreateMsg");
+		if(msg != null && !"".equals(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "vendorCreateMsg");
+		}else{
+			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "vendorContactCreateMsg");
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "vendorContactCreateMsg");
+		}
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -113,6 +125,8 @@ public class VendorController {
  * @return ModelAndView
  * @throws Exception
  */
+	
+	 @PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
 	@RequestMapping(value = "/addVendor")
 	public ModelAndView addVendor(HttpServletRequest request)  {
 		
@@ -121,7 +135,7 @@ public class VendorController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/vendor");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_VENDOR));
 			model.addObject("userList", userList);
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
@@ -132,7 +146,9 @@ public class VendorController {
 			request.getSession().setAttribute("sessionData",sessionData);
 			
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-			model.addObject("loginCountryName", countries.getName());	
+			if(countries != null){
+			model.addObject("loginCountryName", countries.getName());
+			}
 		}catch(Exception e){
 			logger.error(ExceptionUtils.getFullStackTrace(e)); 
 		}
@@ -145,6 +161,7 @@ public class VendorController {
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR_CONTACT')")
 	@RequestMapping(value = "/addVendorContact")
 	public ModelAndView addVendorContac(HttpServletRequest request){
 		ModelAndView model = new ModelAndView();
@@ -152,7 +169,7 @@ public class VendorController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/addVendorContact");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_VENDOR));
 			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 			model.addObject("userList", userList);
 			model.addObject("loginOrgLocId", orgLocations.getId());
@@ -170,7 +187,8 @@ public class VendorController {
 		}
 		return model;
 	}
-	
+
+	@PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')")
 	 @RequestMapping(value = "/uploadVendorForm")
 		public ModelAndView uploadVendorForm(HttpServletRequest request) {
 		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -198,6 +216,7 @@ public class VendorController {
 		 * @return
 	 * @throws Exception 
 		 */
+	    @PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')")
 		@RequestMapping("/vendorFileUpload")
 		public String fileUploaded(@ModelAttribute("uploadedFile") UploadedFile uploadedFile,Model model, HttpServletRequest request,@RequestParam(value = "type", required = false) String responderType)throws Exception {
 					
@@ -239,6 +258,7 @@ public class VendorController {
 		 * @param response
 		 * @throws IOException
 		 */
+	    
 		@RequestMapping(value = "/downloadVendorErrorFile/{fileName}", method = RequestMethod.GET)
 		public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
 			
@@ -254,7 +274,8 @@ public class VendorController {
 					mimeType = "application/octet-stream";
 				}
 				response.setContentType(mimeType);
-				response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
 				response.setContentLength((int) file.length());
 				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 				FileCopyUtils.copy(inputStream, response.getOutputStream());

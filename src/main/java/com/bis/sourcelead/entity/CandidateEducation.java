@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -22,8 +23,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity
 @Table(name = "CANDIDATE_EDUCATION", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "CandidateEducation")
-public class CandidateEducation {
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEducation")
+public class CandidateEducation implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
@@ -81,6 +85,9 @@ public class CandidateEducation {
 	
 	@Transient
     private String startDateStr;
+	
+	@Transient
+	private String msg;
 	
 	@Transient
 	private String endDateStr;
@@ -246,6 +253,14 @@ public class CandidateEducation {
 
 	public void setEducationList(List<LookUpData> educationList) {
 		this.educationList = educationList;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 	
 }

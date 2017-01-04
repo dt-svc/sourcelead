@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,12 +15,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
-import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -34,9 +30,6 @@ public class ProjectsDashboardController {
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
 	
-	 @Autowired
-	 private ProjectsService projectsService; 
-	 
 	 @Autowired
 	 public ProjectApproverHierarchyService projectApproverHierarchyService;
 	 
@@ -53,10 +46,11 @@ public class ProjectsDashboardController {
 	 * @return
 	 * @throws Exception
 	 */
+	
 	@RequestMapping(value = "/projectDashboard")
 	public ModelAndView projectDashboard(HttpServletRequest request) throws Exception {
            logger.debug("projectDashboard");
-		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+           
 		ModelAndView model = new ModelAndView();
 		model.setViewName("project/projectDashboard");
 		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
@@ -76,7 +70,7 @@ public class ProjectsDashboardController {
         model.addObject("add_client", orgClientList);
         model.addObject(orgClientList);
         
-        List<Long> projectIds = projectApproverHierarchyService.getProjectIdsByLoginUserId(user.getId());
+        /*List<Long> projectIds = projectApproverHierarchyService.getProjectIdsByLoginUserId(user.getId());
         
         if(!projectIds.isEmpty()){
         List<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
@@ -87,7 +81,7 @@ public class ProjectsDashboardController {
             }
         }
 		model.addObject(projectsList);
-        }
+        }*/
 		
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "projectCreateMsg");
 		if(!isNullOrEmpty(msg)){

@@ -1,10 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,13 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
-import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHierarchyService {
@@ -27,9 +22,6 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	@Autowired
 	private  ProjectApproverHierarchyDao  projectApproverHierarchyDao;
 	
-	@Autowired
-	private UserService userService;
-
 	
 	@Override
 	public ProjectApproverHierarchy saveProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy)
@@ -86,7 +78,6 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	public Set<ProjectApproverHierarchy> prepareProjectApproverHierarchyListByJson(JSONObject jsonObj, HttpServletRequest request,
 			Projects projects) throws Exception {
 		    
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    Long[] ids = new Long[1000];
 			HashSet<ProjectApproverHierarchy> projectMemberList = new HashSet<ProjectApproverHierarchy>();
 	    	
@@ -98,12 +89,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 				    	User approverUserId1 = new User();
 			    		approverUserId1.setId(Long.parseLong(jsonObj.getString("level1Manager")));
 				    	pah1.setApproverUserId(approverUserId1);
-				    	if(jsonObj.has("level2Manager") && !jsonObj.getString("level2Manager").isEmpty()){
-				    			pah1.setLevel(1);
-				    	}else{
-				    		pah1.setLevel(2);
-				    	}
-				    	
+				    	pah1.setLevel(1);
 				    	//ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
 				    	ids[0] = approverUserId1.getId();
 				    	projectMemberList.add(pah1);
@@ -146,6 +132,38 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			}
 		}*/
 		return projectMemberList;
+	}
+
+
+	@Override
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdForManager(Long projectId,Long userId,int managerLevel) throws Exception {
+		return projectApproverHierarchyDao.getAllProjectApproverHierarchyByProjectIdForManager(projectId,userId,managerLevel);
+	}
+	
+	@Override
+	public List<ProjectApproverHierarchy> getProjectApproversListByUserIdAndOrgLocationId(Long userId,
+			Long orgLocationId) throws Exception {
+		return projectApproverHierarchyDao.getProjectApproversListByUserIdAndOrgLocationId(userId, orgLocationId);
+	}
+
+
+	@Override
+	public ProjectApproverHierarchy getApproverUsersByProjectIdLevel1(Long projectId, Long userId) {
+		// TODO Auto-generated method stub
+		return projectApproverHierarchyDao.getApproverUsersByProjectIdLevel1(projectId,userId);
+	}
+
+
+	@Override
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdlevel2Manager(Long projectId,
+			Long userId) throws Exception {
+		return projectApproverHierarchyDao.getAllProjectApproverHierarchyByProjectIdlevel2Manager(projectId,userId);
+			}
+
+	@Override
+	public List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,
+			Long orgLocationId) throws Exception {
+		return projectApproverHierarchyDao.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectId, orgLocationId);
 	}
 	
 }

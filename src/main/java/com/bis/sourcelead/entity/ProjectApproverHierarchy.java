@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
@@ -24,18 +25,20 @@ import org.hibernate.annotations.FetchMode;
 @Entity
 @Table(name = "PROJECT_APPROVER_HIERARCHY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectApproverHierarchy")
-public class ProjectApproverHierarchy {
+public class ProjectApproverHierarchy implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projectId;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="APPROVER_USER_ID", nullable=false )	
 	private User approverUserId;
  	

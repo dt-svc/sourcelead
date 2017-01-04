@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
@@ -100,7 +98,7 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId and  ( usr.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '3'  OR userRole.roles = '9' OR userRole.roles = '1')))";
+		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId ";
 	        List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId)
 	        																							.setCacheable(true)
 	        																							.list();
@@ -169,8 +167,69 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	public ProjectApproverHierarchy getByProjectApproverHierarchyId(Long projectApproverHierarchy) throws Exception {
 
 		logger.debug("In ProjectApproverHierarchy getByProjectApproverHierarchyId method");
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		return (ProjectApproverHierarchy) session.get(ProjectApproverHierarchy.class, projectApproverHierarchy);
+		String query = "from  ProjectApproverHierarchy projectHirachy left join fetch projectHirachy.approverUserId where projectHirachy.id =:projectApproverHierarchy";
+		 @SuppressWarnings("unchecked")
+		List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectApproverHierarchy", projectApproverHierarchy)
+				                                                                                     .setCacheable(true)
+	    																					         .list();
+		 
+		 ProjectApproverHierarchy pah = null;
+		 if(projectHirachyList != null && !projectHirachyList.isEmpty()){
+			 pah = projectHirachyList.iterator().next();
+		 }
+	        
+		 return pah;
+		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdForManager(Long projectId,Long userId,int managerLevel) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId and usr.id = :userId and projectHirachy.level =:managerLevel";
+		return session.createQuery(query.toString()).setLong("projectId", projectId).setLong("userId", userId).setInteger("managerLevel", managerLevel).setCacheable(true).list();
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public ProjectApproverHierarchy getApproverUsersByProjectIdLevel1(Long projectId, Long userId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId  and projectHirachy.level=1 ";
+		List<ProjectApproverHierarchy> projectApproverHierarchies =  session.createQuery(query.toString()).setLong("projectId", projectId).setCacheable(true).list();
+		 return projectApproverHierarchies.get(0);
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdlevel2Manager(Long projectId,Long userId){
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId  and usr.id = :userId and projectHirachy.level=2 ";
+		List<ProjectApproverHierarchy> projectApproverHierarchies =  session.createQuery(query.toString()).setLong("projectId", projectId).setLong("userId", userId).setCacheable(true).list();
+		 return projectApproverHierarchies;
+	}
+
+	@Override
+	@Transactional
+	public List<ProjectApproverHierarchy> getProjectApproversListByUserIdAndOrgLocationId(Long userId,
+			Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectApproverHierarchy hierarchy left join fetch hierarchy.projectId projects left join fetch hierarchy.approverUserId where hierarchy.approverUserId.id = :userId and projects.orgLocationsId.id = :orgLocationId";
+		 List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId)
+				                                                                                     .setCacheable(true)
+				 																					 .list();
+	        return projectHirachyList;
+	}
+	@Override
+	@Transactional
+	public List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,
+			Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectApproverHierarchy hierarchy left join fetch hierarchy.projectId projects left join fetch hierarchy.approverUserId where projects.id = :projectId and projects.orgLocationsId.id = :orgLocationId";
+		 List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId)
+				                                                                                     .setCacheable(true)
+				 																					 .list();
+	        return projectHirachyList;
+
 	}
 
 	

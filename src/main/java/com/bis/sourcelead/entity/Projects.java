@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
@@ -31,8 +32,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "PROJECTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projects")
-public class Projects {
+public class Projects implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
@@ -53,10 +56,13 @@ public class Projects {
     @Column(name = "END_DATE")
     private Date endDate;
     
+    @Column(name="INVOICE_FREQUENCY")
+	private String invoiceFrequency;
+    
     @Column(name = "TIMESHEET_FREQUENCY")
     private String timesheetFrequency;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SUPERIOR_USER_ID")
    	private User superiorUser;
     
@@ -77,12 +83,12 @@ public class Projects {
     private Integer isPrimary;
 	
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
    
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
     
@@ -103,15 +109,15 @@ public class Projects {
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
-    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
     
-    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectApproverHierarchy> projectApprovers;
     
-    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectTasks> projectTasks;
     
@@ -231,6 +237,15 @@ public class Projects {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	
+
+	public String getInvoiceFrequency() {
+		return invoiceFrequency;
+	}
+
+	public void setInvoiceFrequency(String invoiceFrequency) {
+		this.invoiceFrequency = invoiceFrequency;
 	}
 
 	public String getTimesheetFrequency() {

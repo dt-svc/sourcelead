@@ -11,11 +11,10 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,10 +28,7 @@ import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellRangeAddressList;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DataValidation;
-import org.apache.poi.ss.usermodel.DataValidationConstraint;
-import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -44,7 +40,6 @@ import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,8 +48,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.UploadFileDao;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
@@ -89,16 +84,19 @@ public class UploadFileServiceImpl implements UploadFileService {
 	private RolesService rolesService;
 	
 	@Autowired
+	private UserRoleService userRoleService;
+	
+	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
 	@Override
-	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,String isMailChecked) throws Exception {
+	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,String isMailChecked, Org org, Long roleHierarchyId) throws Exception {
 
 		String isFileCreated;
 		String fileName = multipartFile.getOriginalFilename();
 
 		if (!fileName.toLowerCase().endsWith("csv")) {
-			isFileCreated = parseXlsxandXlsData(multipartFile, orgLocations,user,isMailChecked);
+			isFileCreated = parseXlsxandXlsData(multipartFile, orgLocations,user,isMailChecked,org,roleHierarchyId);
 		} else {
 			isFileCreated = parseCSVData(multipartFile,orgLocations,user,isMailChecked);
 		}
@@ -169,11 +167,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 						userImport.setDateOfJoin(null);
 					}
 					userImport.setRole(record.get(Constants.ROLE));
-					if(record.get(Constants.INVOICE_FREQUENCY) !=null || !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))){
+					/*if(record.get(Constants.INVOICE_FREQUENCY) !=null || !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))){
 						userImport.setInvoiceFrequency(record.get(Constants.INVOICE_FREQUENCY));
 					}else{
 						userImport.setInvoiceFrequency("");
-					}if(record.get(Constants.DAY_HOURS) !=null || !"".equalsIgnoreCase(record.get(Constants.DAY_HOURS))){
+					}*/
+					if(record.get(Constants.DAY_HOURS) !=null || !"".equalsIgnoreCase(record.get(Constants.DAY_HOURS))){
 						userImport.setDayHours(record.get(Constants.DAY_HOURS));
 					}else{
 						userImport.setDayHours("");
@@ -217,9 +216,16 @@ public class UploadFileServiceImpl implements UploadFileService {
 		boolean isUserFound = false;
 		User user = userService.findByEmail(email);
 		if(user != null){
-			isUserFound = true;
-			userImport.setReason("duplicate data");
-		}else{
+			User user1 = userService.findByEmailAndOrgLocationsId(email,orgLocations.getId());
+			if(user1 !=null){
+				isUserFound = true;
+				userImport.setReason("duplicate data");
+			}else{
+				isUserFound = false;
+				userImport.setReason("INSERT");
+			}
+		}
+		else{
 			if(EmployeeId!=null && !"".equalsIgnoreCase(EmployeeId)){
 				Boolean flag = employeesService.validateEmployeeId(EmployeeId, orgLocations.getId());
 				userImport.setReason("duplicate data");
@@ -235,10 +241,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 	 * @param orgLocations
 	 * @param user 
 	 * @param isMailChecked 
+	 * @param roleHierarchyId 
+	 * @param org 
 	 * @return List<UsersImport>
 	 * @throws FileNotFoundException
 	 */
-	private String parseXlsxandXlsData(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked) throws Exception {
+	private String parseXlsxandXlsData(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked, Org org, Long roleHierarchyId) throws Exception {
 
 		String isFileCreated = "failure";
 		String fileName = multipartFile.getOriginalFilename();
@@ -316,13 +324,13 @@ public class UploadFileServiceImpl implements UploadFileService {
 								userImport.setDateOfJoin(hireDate);
 							}
 							userImport.setRole(row.getCell(8).toString());
-							if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
+							/*if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
 								userImport.setInvoiceFrequency("");
 							} else {
 								userImport.setInvoiceFrequency(row.getCell(9).toString());
-							}
-							if (row.getCell(10) != null) {
-								String dayHours = getCellValueAsString(row.getCell(10),fileName);
+							}*/
+							if (row.getCell(9) != null) {
+								String dayHours = getCellValueAsString(row.getCell(9),fileName);
 								userImport.setDayHours(dayHours);
 							} else {
 								userImport.setDayHours("");
@@ -331,7 +339,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 							 if(isUserFound){
 								 if (row.getRowNum() > 0) {
 										count++;
-										 createXlsSheet(row, createExcelsheet, count,userImport,fileName);
+										 createXlsSheet(row, createExcelsheet, count,userImport,fileName,org,roleHierarchyId,orgLocations);
 									}
 							 }else{
 								 if(isMailChecked != null){
@@ -345,7 +353,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 					} else {
 						if (row.getRowNum() > 0) {
 							count++;
-							createXlsSheet(row, createExcelsheet, count,userImport,fileName);
+							createXlsSheet(row, createExcelsheet, count,userImport,fileName,org,roleHierarchyId,orgLocations);
 						}
 					}
 				}
@@ -431,53 +439,58 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @throws Exception
  */
 	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked) throws Exception {
-		User user = new User();
+		User user = null;
 		UserRole userRole = new UserRole();
 		Employees employee = new Employees();
-
-		Roles role = rolesService.getRolesByDisplayName(userImport.getRole());
-
-		user.setFirstName(userImport.getFirstName());
-		user.setLastName(userImport.getLastName());
-		user.setEmail(userImport.getEmailId());
-		user.setMobilePhone(userImport.getMobileNumber());
-		user.setCreatedDate(new Date());
-		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
-		user.setUserName(userImport.getEmailId());
-		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
-		user.setPassword(sourceleadPasswordEncoder.encode(password));
-		user.setIsMailSent(userImport.getIsMailChecked());
-		employee.setEmployeeId(userImport.getEmployeeId());
-		employee.setRate(userImport.getRate());
-		employee.setRatePer(userImport.getRatePer());
-		if(userImport.getInvoiceFrequency() !=null && !"".equalsIgnoreCase(userImport.getInvoiceFrequency())){
-			employee.setInvoiceFrequency(userImport.getInvoiceFrequency());
-		}else{
-			employee.setInvoiceFrequency("Weekly");
-		}
-		employee.setDailyHours(userImport.getDayHours());
-		employee.setOrgLocations(orgLocations);
-		
-		employee.setHireDate(userImport.getDateOfJoin());
-
-		userRole.setUser(user);
+		Roles role = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(userImport.getRole(), orgLocations.getId());
 		userRole.setIsPrimary(1);
 		userRole.setRoles(role);
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType(role.getDisplayName());
 		userRole.setCreatedDate(new Date());
 		userRole.setOrgLocations(orgLocations);
-
-		Set<UserRole> userRoles = new HashSet<UserRole>();
-		userRoles.add(userRole);
-		user.setUserRole(userRoles);
-		userService.addUser(user);
-		employee.setUser(user);
-		employeesService.addEmployee(employee);
-		if(isMailChecked !=null){
-			userService.sendEmail(user, loginUser, password,orgLocations.getId());
-		}
+		employee.setEmployeeId(userImport.getEmployeeId());
+		employee.setRate(userImport.getRate());
+		employee.setRatePer(userImport.getRatePer());
+		employee.setDailyHours(userImport.getDayHours());
+		employee.setOrgLocations(orgLocations);
 		
+		employee.setHireDate(userImport.getDateOfJoin());
+		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		if(!"INSERT".equalsIgnoreCase(userImport.getReason())){
+			user = new User();
+			user.setFirstName(userImport.getFirstName());
+			user.setLastName(userImport.getLastName());
+			user.setEmail(userImport.getEmailId());
+			user.setMobilePhone(userImport.getMobileNumber());
+			user.setCreatedDate(new Date());
+			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			user.setUserName(userImport.getEmailId());
+			
+			user.setPassword(sourceleadPasswordEncoder.encode(password));
+			user.setIsMailSent(userImport.getIsMailChecked());
+			userRole.setUser(user);
+		    userService.addUser(user);	
+		    userRoleService.addUserRole(userRole);
+			employee.setUser(user);
+			employeesService.addEmployee(employee);
+			if(isMailChecked !=null){
+				userService.sendEmail(user, loginUser, password,orgLocations.getId());
+			}
+		}else{
+			User user1 = userService.findByEmail(userImport.getEmailId());
+			if(user1.getUserState() !=null && !"ACTIVE".equalsIgnoreCase(user1.getUserState().toString())){
+				user1.setPassword(sourceleadPasswordEncoder.encode(password));
+				userService.addUser(user1);
+			}
+			userRole.setUser(user1);
+			userRoleService.addUserRole(userRole);
+			employee.setUser(user1);
+			employeesService.addEmployee(employee);
+			if(isMailChecked !=null){
+				userService.sendEmail(user1, loginUser, password,orgLocations.getId());
+			}
+		}
 
 	}
 /**
@@ -487,10 +500,13 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @param rowIndex
  * @param userImport 
  * @param fileName 
+ * @param orgLocations 
+ * @param roleHierarchyId 
+ * @param org 
  * @throws IOException
  */
-	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport, String fileName) throws IOException {
-
+	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport, String fileName, Org org, Long roleHierarchyId, OrgLocations orgLocations) throws IOException {
+		String[] rolesList = getRolesList(org,orgLocations.getId(),roleHierarchyId);
 		Row writeRow = createExcelsheet.createRow(rowIndex);
 		if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 			
@@ -559,20 +575,20 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		}
 		if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
 			if(!fileName.endsWith("xlsx")){
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8,fileName));
+				createExcelsheet.addValidationData(getDropDownListForCell(rolesList,8,fileName));
 			}else{
-				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.ROLE_LIST,8,createExcelsheet));
+				createExcelsheet.addValidationData(getXssfDropDownlist(rolesList,8,createExcelsheet));
 			}
 	        writeRow.createCell(8).setCellValue(row.getCell(8).toString());
 		} else {
 			if(!fileName.endsWith("xlsx")){
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8,fileName));
+				createExcelsheet.addValidationData(getDropDownListForCell(rolesList,8,fileName));
 			}else{
-				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.ROLE_LIST,8,createExcelsheet));
+				createExcelsheet.addValidationData(getXssfDropDownlist(rolesList,8,createExcelsheet));
 			}
 			writeRow.createCell(8).setCellValue("");
 		}
-		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+	/*	if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 			if(!fileName.endsWith("xlsx")){
 				createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,fileName));
 			}else{
@@ -586,16 +602,16 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.INVOICE_FREQUENCY_LIST,9,createExcelsheet));
 			}
 		     writeRow.createCell(9).setCellValue("");
-		}
-			if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
+		}*/
+			if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 
-                String dayHours = getCellValueAsString(row.getCell(10), fileName);
-                  writeRow.createCell(10).setCellValue(dayHours);
+                String dayHours = getCellValueAsString(row.getCell(9), fileName);
+                  writeRow.createCell(9).setCellValue(dayHours);
 			} else {
-				writeRow.createCell(10).setCellValue("");
+				writeRow.createCell(9).setCellValue("");
 			}
 		if (userImport.getReason() !=null) {
-			writeRow.createCell(11).setCellValue(userImport.getReason());
+			writeRow.createCell(10).setCellValue(userImport.getReason());
 		} 
 	}
 	/**
@@ -780,10 +796,30 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		excelHeader.createCell(6).setCellValue(Constants.RATEPER);
 		excelHeader.createCell(7).setCellValue(Constants.DATEOFJOIN);
 		excelHeader.createCell(8).setCellValue(Constants.ROLE);
-		excelHeader.createCell(9).setCellValue(Constants.INVOICE_FREQUENCY);
-		excelHeader.createCell(10).setCellValue(Constants.DAY_HOURS);
-		excelHeader.createCell(11).setCellValue(Constants.FAILED_REASON);
+		excelHeader.createCell(9).setCellValue(Constants.DAY_HOURS);
+		excelHeader.createCell(10).setCellValue(Constants.FAILED_REASON);
 		return createExcelsheet;
+	}
+	
+	/**
+	 * Prepares Headers for xls template
+	 * @param createExcelsheet
+	 * @return
+	 */
+	private Sheet setTemplateHeaders(Sheet sheet) {
+		
+		Row excelHeader = sheet.createRow(0);
+		excelHeader.createCell(0).setCellValue(Constants.EMPLOYEE_ID);
+		excelHeader.createCell(1).setCellValue(Constants.FIRST_NAME);
+		excelHeader.createCell(2).setCellValue(Constants.LAST_NAME);
+		excelHeader.createCell(3).setCellValue(Constants.EMAIL_ID);
+		excelHeader.createCell(4).setCellValue(Constants.PHONE_NUMBER);
+		excelHeader.createCell(5).setCellValue(Constants.RATE);
+		excelHeader.createCell(6).setCellValue(Constants.RATEPER);
+		excelHeader.createCell(7).setCellValue(Constants.DATEOFJOIN);
+		excelHeader.createCell(8).setCellValue(Constants.ROLE);
+		excelHeader.createCell(9).setCellValue(Constants.DAY_HOURS);
+		return sheet;
 	}
 	
 	/**
@@ -862,22 +898,22 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			Cell cell8 = writeRow.createCell(8);
 			cell8.setCellValue("");
 		}
-		if (record.get(Constants.INVOICE_FREQUENCY) != null && !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))) {
+		/*if (record.get(Constants.INVOICE_FREQUENCY) != null && !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))) {
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue(record.get(Constants.INVOICE_FREQUENCY));
 		} else {
 			Cell cell9 = writeRow.createCell(9);
 			cell9.setCellValue("");
-		}
+		}*/
 		if (record.get(Constants.DAY_HOURS) != null && !"".equalsIgnoreCase(record.get(Constants.DAY_HOURS))) {
-			Cell cell10 = writeRow.createCell(10);
-			cell10.setCellValue(record.get(Constants.DAY_HOURS));
+			Cell cell9 = writeRow.createCell(9);
+			cell9.setCellValue(record.get(Constants.DAY_HOURS));
 		} else {
-			Cell cell10 = writeRow.createCell(10);
-			cell10.setCellValue("");
+			Cell cell9 = writeRow.createCell(9);
+			cell9.setCellValue("");
 		}
 		if (userImport.getReason() !=null) {
-			writeRow.createCell(11).setCellValue(userImport.getReason());
+			writeRow.createCell(10).setCellValue(userImport.getReason());
 		} 
 	
 	}
@@ -996,5 +1032,42 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	   XSSFDataValidation validation=(XSSFDataValidation)dvHelper.createValidation(dvConstraint,addressList);
 	   validation.setShowErrorBox(true);
 	   return validation;
+	}
+
+	@Override
+	public File getUserTemplate(Org org, Long orgLocationId, Long roleHierarchyId) throws FileNotFoundException {
+		Workbook wb = (Workbook) new HSSFWorkbook();
+		Sheet sheet = wb.createSheet("createuser");
+		sheet = setTemplateHeaders(sheet);
+		sheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6,"xls"));
+		String[] rolesList = getRolesList(org,orgLocationId,roleHierarchyId);
+	    sheet.addValidationData(getDropDownListForCell(rolesList,8,"xls"));
+		//sheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,"xls"));
+		File file = new File("createuser.xls");
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			wb.write(fos);
+			fos.close();
+		} catch (IOException e) {
+			logger.error("template download failed due to "+e.getMessage());
+		}
+		return file;
+	}
+/**
+ * @author Rajashekar
+ * Reading roles from ROLE table and converted into an Array
+ * @param org
+ * @param orgLocationId
+ * @param roleHierarchyId
+ * @return String[]
+ */
+	private String[] getRolesList(Org org, Long orgLocationId, Long roleHierarchyId) {
+		List<String> list = new ArrayList<>();
+		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocationId,roleHierarchyId);
+		for(Roles roles :rolesList){
+			list.add(roles.getDisplayName());
+		}
+		String [] roleList = list.toArray(new String[list.size()]);
+		 return roleList;
 	}
 }

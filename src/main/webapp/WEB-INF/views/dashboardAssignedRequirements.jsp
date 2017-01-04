@@ -1,10 +1,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
-<div class="content-dashboard clearfix"> 
+<div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;"> 
       <!-- Assigned Requirements -->
       <div class="clearfix dashboard-widget mb col-md-12">
         <h4 class="clearfix">
@@ -13,7 +13,7 @@
         </span> -->
         </h4>
       <!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-        <div class="clearfix require_wrap_table dashboard-data">
+        <div class="clearfix require_wrap_table dashboard-data"> 
         		 <div id="requirementList"></div>
         </div>
       </div>
@@ -38,6 +38,8 @@ $(document).ready(function(){
 function requirementList(){  
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var orgATS = '${SourceLeadWeb_ats}';
+	  var orgVMS = '${SourceLeadWeb_vms}';
 	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
@@ -57,14 +59,13 @@ function requirementList(){
 	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>ID</th>"; 
-	                     result = result +"    <th>Requirement</th>"; 
+	                     result = result +"    <th>ID-Title</th>"; 
 	                     result = result +"    <th>Client</th>"; 
 	                     result = result +"    <th>Rate</th>"; 
 	                     result = result +"    <th>Priority</th>"; 
 	                     result = result +"    <th>Applicants</th>"; 
 	                     result = result +"    <th>Shortlisted</th>"; 
-	                     result = result +"    <th>Submited</th>"; 
+	                     result = result +"    <th>Submitted</th>"; 
 	                     result = result +"    <th>Interviewed</th>"; 
 	                     result = result +"    <th>Offered</th>"; 
 	                     result = result +"    <th>Action</th>"; 
@@ -76,8 +77,12 @@ function requirementList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
-		                     result = result +"<td><div>"+opt.id+"</div></td>";
-		                     result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
+	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobId+"-"+opt.jobTitle+"</a></div></td>";
+		                     }else{
+		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
+		                     }
+		                     
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
 		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
 		                     }else{
@@ -100,26 +105,36 @@ function requirementList(){
 			                 result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
 		                     result = result +"<td><div>"+opt.noOfInterviewedApplicants+"</div></td>";
 		                     result = result +"<td><div>"+opt.noOfOfferedApplicants+"</div></td>";
-		                     result = result +"<td><div>--</div></td>";
+		                     if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
+		                    	 '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+		                    	 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+		                    	 '</sec:authorize>';
+		                    	 '<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+		                    	 	result = result +"<td><div><i class='fa fa-bullhorn'></i></div></td>";
+		                    	 '</sec:authorize>';
+		                     }else{
+			                     result = result +"<td><div>--</div></td>";
+		                     }
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     $("#requirementList").append(result); 
+	                     $("#assignedRequirementsDiv").css("display", "block");
 	                     pagination(); 
 			    	} 
                  }else{
                 	 $("#requirementList").removeAttr("style");
-  	    	         var result ="";
+  	    	      /*    var result ="";
 		    	    
 					 result = result+"			<div class='blank-pages'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No Requirement Found</p>";
-					 result = result+"			 </div>";
+					 result = result+"			 </div>"; */
 					
 					$("#requirementList").empty();
-				    $("#requirementList").append(result); 
+				    //$("#requirementList").append(result); 
                 }
           },
             

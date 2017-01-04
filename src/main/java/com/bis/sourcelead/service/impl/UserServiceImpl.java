@@ -8,9 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,6 +62,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDao userDao;
 	
+	
 	@Autowired
 	private UserRoleService userRoleService;
 	
@@ -95,8 +93,6 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	CommonUtil commonUtil;
 	
-	@Autowired
-	private HttpServletRequest request;
 
 	@Override
 	public User findByUserName(String username) {
@@ -315,8 +311,9 @@ public class UserServiceImpl implements UserService {
 		
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		
+		Roles roles = null;
+		
 		if(jsonObj.has("roleType")){
-			Roles roles;
 			try {
 				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleType")));
 				userRole.setUserType(roles.getDisplayName());
@@ -327,16 +324,17 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		
-		Roles roles = null;
+		
 		try {
-			if(jsonObj.has("roleType") && !isNullOrEmpty(jsonObj.getString("roleType"))){
-				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleType")));
+			
+			if(jsonObj.has("roleTypeId")){
+				if(!isNullOrEmpty(jsonObj.getString("roleTypeId"))){
+					roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleTypeId")));
+				}else{
+					roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
+				}
 			}
-			else if(jsonObj.has("roleTypeId") && !isNullOrEmpty(jsonObj.getString("roleTypeId"))){
-				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleTypeId")));
-			}else{
-				roles = rolesService.getRolesById(2L);
-			}
+			
 			
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
@@ -366,14 +364,14 @@ public class UserServiceImpl implements UserService {
 		if(jsonObj.has("dayHours")){
 			employees.setDailyHours(jsonObj.getString("dayHours"));
 		}
-		if(jsonObj.has("invoiceFrequency")){
+		/*if(jsonObj.has("invoiceFrequency")){
 			if(jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
 				employees.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
 			}else{
 				employees.setInvoiceFrequency("Weekly");
 			}
 			
-		}
+		}*/
 		
 		if(jsonObj.has("dateofJoin") && !isNullOrEmpty(jsonObj.getString("dateofJoin"))){
 			try {
@@ -440,12 +438,12 @@ public class UserServiceImpl implements UserService {
 		 boolean isUserActive = false;
 		 isUserActive = userRoleService.isUserActive(user.getId());
 		 
-
+		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setOrgLocationId(locationId);
 		 
@@ -456,20 +454,22 @@ public class UserServiceImpl implements UserService {
 		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
 		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
 		 globalVarsMap.put("role",userRole.getUserType());
-		 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		 StringBuilder loginBuilder = new StringBuilder();
+		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 globalVarsMap.put("userEmailId",user.getEmail());
 		 if(isUserActive == false){
 			 globalVarsMap.put("password",password);
 		 }else{
-			 globalVarsMap.put("password","Note : You have already registered. Login with your registered password");
+			 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
 		 }
 		 
 		
 		 //setting the Recipient information
+		 StringBuilder emailRecipientBuilder = new StringBuilder();
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipient.setName(emailRecipientBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -549,6 +549,11 @@ public class UserServiceImpl implements UserService {
 		user.setMobilePhone(userProfile.getMobilePhone());
 		user.setJobTitle(userProfile.getJobTitle());
 		user.setLocation(userProfile.getLocation());
+		user.setLinkedIn(userProfile.getLinkedIn());
+		user.setFacebook(userProfile.getFacebook());
+		user.setTwitter(userProfile.getTwitter());
+		user.setGooglePlus(userProfile.getGooglePlus());
+		
         if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
     	  try {
     	   		user.setFileContentType(multiFile.getContentType());
@@ -599,13 +604,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
-		return userDao.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
+	public List<User> getManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId,Long tabId) throws Exception {
+		return userDao.getManagersByUserRolesAndOrgLocationId(roleId, orgLocationsId,tabId);
 	}
 	
 	@Override
-	public List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception {
-		return userDao.getManagersByUserIdAndUserRolesAndOrgLocationId(userId, roleType, orgLocationsId);
+	public List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,Long roleId , Long orgLocationsId) throws Exception {
+		return userDao.getManagersByUserIdAndUserRolesAndOrgLocationId(userId, roleId, orgLocationsId);
 	}
 	
 
@@ -663,7 +668,8 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 StringBuilder emailMsgBuilder = new StringBuilder();
+		 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -677,7 +683,8 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("clientlastName",user.getLastName());
 			 globalVarsMap.put("clientOrgName",respondingPartyOrg.getOrgName());
 			 globalVarsMap.put("vendorOrgName",loginOrg.getOrgName());
-			 globalVarsMap.put("acceptURL","<a href='"+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"&UUID="+UUID+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+			 StringBuilder urlBuilder = new StringBuilder();
+			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&UUID=").append(UUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 			 
 		     if(null != password){
 			    globalVarsMap.put("userName",user.getEmail());
@@ -691,10 +698,10 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("password",password);
 			 }else{
 				 globalVarsMap.put("userName",user.getEmail());
-				 globalVarsMap.put("password","Note : You have already registered with this org. Login with your registered password");
+				 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
 			 } 
-			 
-			 actionLink = ""+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"&UUID="+UUID+" ";
+		     StringBuilder actionUrlBuilder = new StringBuilder();
+			 actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&UUID=").append(UUID).append(" ").toString();
 			 
 			 
 		 }else if("Vendor".equals(responderType)){
@@ -706,7 +713,8 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("clientLastName",loginUser.getLastName());
 			 globalVarsMap.put("vendorOrgName",respondingPartyOrg.getOrgName());
 			 globalVarsMap.put("clientOrgName",loginOrg.getOrgName());
-			 globalVarsMap.put("acceptURL","<a href='"+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"&UUID="+UUID+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+			 StringBuilder actionUrlBuilder = new StringBuilder();
+			 globalVarsMap.put("acceptURL",actionUrlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&UUID=").append(UUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 			
 			 if(null != password){
 			    globalVarsMap.put("userName",user.getEmail());
@@ -720,19 +728,20 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("password",password);
 			 }else{
 				 globalVarsMap.put("userName",user.getEmail());
-				 globalVarsMap.put("password","Note : You have already registered with this org. Login with your registered password");
+				 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
 			 }
 			 
-			 
-			 actionLink = ""+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"&UUID="+UUID+"";
+			 StringBuilder actionLinkBuilder = new StringBuilder();
+			 actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&UUID=").append(UUID).append("").toString();
 			 
 		 }
 		 
 		 //setting the Recipient information
+		 StringBuilder recipientbuilder = new StringBuilder();
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -756,7 +765,7 @@ public class UserServiceImpl implements UserService {
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
-		 
+		 emailMessage.setOrgLocationId(respondingPartyOrgLocation.getId());
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,respondingPartyOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
@@ -791,9 +800,42 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public List<User> getReoprtingManagersByOrgLocationId(Long orgLocationsId) throws Exception {
+		return userDao.getReoprtingManagersByOrgLocationId(orgLocationsId);
+	}
+	
+	@Override
 	public List<User> getAllUsersByOrgLocationCodeExcludingEmployees(Long orgLocationsId) throws Exception {
-		
+	
 		return userDao.getAllUsersByOrgLocationCodeExcludingEmployees(orgLocationsId);
+
+	}
+
+	@Override
+	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationsId, tabId);
+	}
+
+	@Override
+	public List<User> getUsersForAddAsConsultant(Org org,Long orgLocationsId) throws Exception {
+		return userDao.getUsersForAddAsConsultant(org,orgLocationsId);
+	}
+
+	@Override
+	public List<User> getUsersForConsultantsByUserRoleIdAndOrgLocationId(Long roleId, Long orgLocationsId) throws Exception {
+		return userDao.getUsersForConsultantsByUserRoleIdAndOrgLocationId(roleId, orgLocationsId);
+	}
+
+	@Override
+	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(Long orgLocationsId, List<Long> userIds,
+			Long tabId) throws Exception {
+		return userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(orgLocationsId, userIds, tabId);
+	}
+
+	@Override
+	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId, Long userId, Long tabId)
+			throws Exception {
+		return userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocationsId, userId, tabId);
 	}
 	
 	

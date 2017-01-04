@@ -4,7 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,27 +17,37 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -73,7 +83,13 @@ public class RequirementOfferRestController {
 	RequirementAssignToService  requirementAssignToService;
 	
 	@Autowired
+	private RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
+	
+	@Autowired
 	RequirementService  requirementService;
+	
+	@Autowired
+	RequirementOfferHistoryService requirementOfferHistoryService;
 	
 	@Autowired
 	TeamService teamService ;
@@ -81,9 +97,14 @@ public class RequirementOfferRestController {
 	@Autowired
 	CandidateService candidateService ;
 	
+	@Autowired
+	NotificationsService notificationsService;
 	
+    @Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+
 	
-	
+	@PreAuthorize("hasRole('ROLE_CREAE_OFFER')")
 	@RequestMapping(value = "/saveOffer" , method = RequestMethod.POST)
 	public String saveOffer(@RequestParam(value="jsonData", required=false) String json,MultipartHttpServletRequest request) throws Exception {
 			   					 
@@ -103,6 +124,7 @@ public class RequirementOfferRestController {
 	@RequestMapping(value = "/getAllSubmittedAndShortListAndInterviewededCandidates")
 	public @ResponseBody String getAllSubmittedAndShortListAndInterviewededCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			                                              @RequestParam(value="existingApplicantsIds", required=false) List<Long> existingApplicantsIds,
+			                                              @RequestParam(value="isClientOffer", required=false) String isClientOffer,
 			                                              HttpServletRequest request) throws Exception {
 		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -110,31 +132,31 @@ public class RequirementOfferRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
 	
-		List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations.getId(), requirementId,existingApplicantsIds);
+		List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations.getId(), requirementId,existingApplicantsIds,isClientOffer);
+		for (RequirementSubmission requirementSubmission : shortListCandidatesList) {
+			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+			if(requirementSubmissionTemplateFields.getLastName() != null){
+				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+			}else{
+				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
+			}
+		}
+		resultJson = commonUtil.toJSON(shortListCandidatesList);
+		return resultJson;
 		
-		/*for (RequirementSubmission sub : shortListCandidatesList) {
-			String candidateName = "";
- 		   if(StringUtils.isNotEmpty(sub.getCandidate().getFirstName())){
- 			   candidateName = sub.getCandidate().getFirstName();
- 		   }
- 		   if(StringUtils.isNotEmpty(sub.getCandidate().getLastName()) && StringUtils.isNotBlank(sub.getCandidate().getLastName())){
- 			   candidateName = candidateName+" "+sub.getCandidate().getLastName();
- 		   }
- 		  sub.setCandidateName(candidateName);
-		}*/
-		
-	    List<RequirementSubmission>  list = new ArrayList<RequirementSubmission>();
+		//commented by prasad salina
+	    /*List<RequirementSubmission>  list = new ArrayList<RequirementSubmission>();
 		for (RequirementSubmission sub : shortListCandidatesList) {
 			 RequirementAssignTo  requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementId(sub.getRequirement().getId());
-			 /*
+			 
 			  * Offer can be shown to either loggedin user is admin of org  or 
 			  *                                               manager of  requirement or 
 			  *                                               requirement assigned to owner or
 			  *                                               requirement team lead
 			  *                                               
-			  */
+			  
 			 String loginUserType =  (String) SourceLeadSessionManager.getSessionAttribute(request, "userType");
-			 if(requirementAssignTo != null && 
+			if(requirementAssignTo != null && 
 					 (sub.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode()) 
 					   || (sub.getRequirement().getManagerUserId().getId() == loginUser.getId())
 					   || (StringUtils.isNotEmpty(loginUserType) && loginUserType.equalsIgnoreCase(Constants.ADMIN)) 
@@ -155,11 +177,8 @@ public class RequirementOfferRestController {
 			 }
 			 
 		}
-	
-	
-		
 		resultJson = commonUtil.toJSON(list);
-		return resultJson;
+		return resultJson;*/
 	}
 	
 	
@@ -179,6 +198,7 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_OFFER','ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')")
 	@RequestMapping(value = "/getOfferDetails")
 	public @ResponseBody String getOfferDetails(@RequestParam(value="submissionId", required=false) Long submissionId,
 			                                             
@@ -186,24 +206,40 @@ public class RequirementOfferRestController {
 		
 		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
 		String resultJson = null;
 		Requirement req   =null;
 		RequirementSubmission  requirementSubmission =null;
 		RequirementOffers  requirementOffers =null;
 		
-		requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-		String loginUserType =  (String) SourceLeadSessionManager.getSessionAttribute(request, "userType");
-		requirementOffers =  requirementOffersService.offerDetails(submissionId, loginUser, orgLocations, loginUserType);
+		List<RequirementOfferHistory> offersList = requirementOfferHistoryService.getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
+		return resultJson = commonUtil.toJSON(offersList);
 		
-		if(requirementOffers !=null){
-			resultJson = commonUtil.toJSON(requirementOffers);
-			return resultJson;
+		/*requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		String loginUserType =  (String) SourceLeadSessionManager.getSessionAttribute(request, "userType");
+		
+		requirementOffers =  requirementOffersService.offerDetails(submissionId, loginUser, orgLocations, loginUserType);
+		if(requirementOffers != null){
+			
+			Boolean  flag = requirementService.checkRequirementIsReleasedOrNot(requirementSubmission.getRequirement().getId(), orgLocations.getId());
+			if(flag){
+				requirementOffers.setRequirementReleasedOrNot(flag);
+			}else{
+				requirementOffers.setRequirementReleasedOrNot(false);
+			}
+			if(requirementOffers !=null){
+				resultJson = commonUtil.toJSON(requirementOffers);
+				return resultJson;
+			}else{
+				return null;
+			}
 		}else{
 			
 			return null;
-		}
+		}*/
+		
+		
 	}
 	
 	
@@ -220,23 +256,39 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')")
 	@RequestMapping(value = "/acceptingOffer")
 	public @ResponseBody String acceptingOffer(@RequestParam(value="submissionId", required=false) Long submissionId,
 			                                   @RequestParam(value="offerStatus", required=false) String offerStatus,
 			                                   @RequestParam(value="reason", required=false) String reason, 
+			                                   @RequestParam(value="OfferId", required=false) Long OfferId,
 			                                   HttpServletRequest request) throws Exception {
 		
 		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Requirement req   =null;
+		/*
+		 * Requirement req   =null;
 		RequirementSubmission  requirementSubmission =null;
 		RequirementOffers  requirementOffers =null;
 		
-		requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-		requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
+		  requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+    	  
+		  
+		   // This if condition is for the vendor login accepts the Offer  so bringing offer made by  the client 
+		   
+		  RequirementSubmission clientsubmission = requirementSubmissionService.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(submissionId,orgLocations.getId());
+			
+		  if(clientsubmission != null){
+				requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(clientsubmission.getId());
 
-	    offerStatus  = requirementOffersService.acceptOrRejectOffer(submissionId, requirementOffers.getId(), loginUser, offerStatus, reason, orgLocations);
+			}else{
+				requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
+			}
+    	
+
+	     offerStatus  = requirementOffersService.acceptOrRejectOffer(submissionId, requirementOffers.getId(), loginUser, offerStatus, reason, orgLocations);*/
+		  offerStatus  = requirementOffersService.acceptOrRejectOffer(submissionId, OfferId, loginUser, offerStatus, reason, orgLocations);
 		 
 		return offerStatus;
 	}
@@ -262,8 +314,8 @@ public class RequirementOfferRestController {
 		   RequirementOffers requirementOffers  =requirementOffersService.getRequirementOfferId(offerId);
 		
 		    response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition",
-	                "attachment;filename="+requirementOffers.getFileName());
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(requirementOffers.getFileName()).append("\"").toString());
 		    
 			InputStream inputStream = new ByteArrayInputStream(requirementOffers.getDocFile());
 			try {
@@ -286,11 +338,67 @@ public class RequirementOfferRestController {
 	
 	@RequestMapping(value = "/acceptOrRejectOffer")
     @ResponseBody  String acceptOrRejectOffer(@RequestParam(value="offerStatus", required=false) String offerStatus,
-                           @RequestParam(value = "submissionId", required = false) Long submissionId,
-                    HttpServletRequest request) throws Exception {
+                           @RequestParam(value = "offerId", required = false) Long offerId,
+                           @RequestParam(value="rejectedReason", required=false) String rejectedReason,
+                           HttpServletRequest request) throws Exception {
 
 			 String setofferStatus = "";
-            RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submissionId);
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 
+			 RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
+				List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
+			    
+			    if(requirementOfferHistories != null && !requirementOfferHistories.isEmpty() ){  
+				    if(offerStatus.equalsIgnoreCase("Accepted")){
+				    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
+				    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
+					    		if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+					    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+					    		}else{
+					    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+					    		}
+								 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+								 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+						  }
+				    	
+				    	  //Changing the status of offerTable 
+					      if(requirementOffers  != null){
+							    requirementOffers.setOfferStatus("OFFERACCEPTED");
+							    requirementOffers.setUpdatedDate(commonUtil.currentDate());
+							    requirementOffersService.saveOfferStatus(requirementOffers);
+					     }
+					      setofferStatus ="you have accepted the offer";
+			    }else if(offerStatus.equalsIgnoreCase("Rejected")){
+			    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
+			    		    RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
+				    		if(requirementSubmission.getSourceSubmission() == null){
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
+				    		}else{
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);
+				    		}
+				    		 requirementSubmission.setRejectedReason(rejectedReason);
+							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+							 
+						    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+							requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.OFFERMADE.toString());
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+					  }
+			    	
+			    	  //Changing the status of offerTable 
+					  if(requirementOffers  != null ){
+						    requirementOffers.setOfferStatus("OFFERREJECTED");
+						    requirementOffers.setRejectedReason(rejectedReason);
+						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
+						    requirementOffersService.saveOfferStatus(requirementOffers);
+				      }
+					  setofferStatus ="success";
+			    }
+			 }
+			 
+			 
+            /*RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submissionId);
 
             RequirementSubmission requirementSubmission   =requirementSubmissionService.getRequirementSubmissionById(submissionId);
             if(offerStatus.equalsIgnoreCase("Accepted")){
@@ -313,42 +421,146 @@ public class RequirementOfferRestController {
                         setofferStatus ="you have rejected the offer";
                     }
                     
-            }
+            }*/
             
            return setofferStatus;
     }                
 
 
 
-		/**
-		* @author David Raju 
-		* 
-		* This method user to  notify To Applicant Of Requirement OfferMade 
-		* 
-		* @param offerId
-		* 
-		* @param submissionId
-		* 
-		* 
-		* @param request
-		* 
-		* @return String
-		* 
-		* @throws Exception
-		*/
+	/**
+	* @author David Raju 
+	* 
+	* This method user to  notify To Applicant Of Requirement OfferMade 
+	* 
+	* @param offerId
+	* 
+	* @param submissionId
+	* 
+	* 
+	* @param request
+	* 
+	* @return String
+	* 
+	* @throws Exception
+	*/
+
+	@RequestMapping(value = "/sendNotificationAboutRequirementOfferMade" , method = RequestMethod.POST)
+	public String notifyToApplicantOfRequirementOfferMade(@RequestParam(value="submissionId", required=false) Long submissionId,
+														  @RequestParam(value="offerId", required=false) Long offerId,
+														  @RequestParam(value="notificationtype", required=false) String notificationtype,
+														  @RequestParam(value = "offerHistoryId", required = false) Long offerHistoryId,
+														  HttpServletRequest request) throws Exception {
+		
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+	        requirementOffersService.sendNotificationAboutRequirementOfferMade(submissionId, offerId, offerHistoryId,loginUser, orgLocations,notificationtype);
+			return "success";
+	    
+	}
+
 	
-		@RequestMapping(value = "/notifyToApplicantOfRequirementOfferMade" , method = RequestMethod.POST)
-		public String notifyToApplicantOfRequirementOfferMade(@RequestParam(value="submissionId", required=false) Long submissionId,@RequestParam(value="offerId", required=false) Long offerId, HttpServletRequest request) throws Exception {
-				
-				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				
-		        requirementOffersService.notifyToApplicantOfRequirementOfferMade(submissionId, offerId, loginUser, orgLocations);
-		          
-				return "success";
-		    
+	/**
+	* @author Venkat Kesav 
+	* 
+	* Handles accept Candidate
+	* 
+	* @param json, 
+	* @param request
+	* 
+	* @return ResponseBody
+	* 
+	* @throws Exception
+	*/
+	@RequestMapping(value = "/acceptRejectCandidate", method = RequestMethod.POST)
+	public @ResponseBody String acceptRejectCandidate(@RequestParam(value = "json", required = false) String json, String submissionId, String decision, MultipartHttpServletRequest request) throws Exception {
+
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
 		}
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		
+		if(StringUtils.isNotEmpty(submissionId)){
+			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+			
+			requirementSubmissionService.acceptRejectCandidate(jsonObj, user, requirementSubmission, decision, multiFile,loginOrg,orgLocation);
+
+			/*SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage",
+					"Successfully you have added");*/
+
+			return "success";
+		}else{
+			return "exception";
+		}
+	}
 	
+	@RequestMapping(value = "/acceptCandidateFromNotification", method = RequestMethod.GET)
+	public ModelAndView acceptCandidateFromNotification(String submissionId,
+												  @RequestParam(value = "UUID", required = false) String UUID,HttpServletRequest request) throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		
+		if(StringUtils.isNotEmpty(submissionId)){
+			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+			requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
+		
+			 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
+			 if(null != notifications){
+				 notifications.setUserNotificationStatus("Accepted");
+				 notificationsService.saveNotification(notifications);
+			 }
+			 
+			StringBuilder redirectUrl = new StringBuilder();
+			
+			ModelAndView model = new ModelAndView();
+			model.setViewName("/dashboard");
+			return model;
+			
+		}else{
+			
+			ModelAndView model = new ModelAndView();
+			model.setViewName("/dashboard");
+			return model;
+			
+		}
+	}
 	
+	@RequestMapping(value = "/acceptRejectCandidateFromDashboard", method = RequestMethod.POST)
+	public @ResponseBody String acceptRejectCandidateFromDashboard(String submissionId,String status,HttpServletRequest request) throws Exception { 
+												 
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		
+		if(StringUtils.isNotEmpty(submissionId)){
+			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+			if(StringUtils.equalsIgnoreCase(status, "accept")){
+				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
+				requirementSubmission.setSubmissionRequestUser(user.getFirstName()+""+user.getLastName());
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
+			}
+			else if(StringUtils.equalsIgnoreCase(status, "rejected")){
+				requirementSubmission.setSubmissionRequestUser(user.getFirstName()+""+user.getLastName());
+				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			}
+		}
+		return "success";	  
+	}
 	
 }

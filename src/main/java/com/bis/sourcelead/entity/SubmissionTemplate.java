@@ -1,10 +1,10 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +19,9 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "SUBMISSION_TEMPLATE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionTemplate")
-public class SubmissionTemplate {
+public class SubmissionTemplate implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,11 +31,11 @@ public class SubmissionTemplate {
 	@Column(name = "TEMPLATE_NAME")
 	private String templateName;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "CLIENT_LOCATION_ID")
     private OrgLocations clientLocationId;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID")
     private OrgLocations orgLocationId;
 	
@@ -44,6 +46,10 @@ public class SubmissionTemplate {
 	@Column(name = "DESCRIPTION")
 	@Type(type="text")
 	private String description;
+	
+
+	@Column(name = "TEMPLATE_TYPE")
+	private String templateType;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -159,5 +165,13 @@ public class SubmissionTemplate {
 
 	public void setIsDefault(String isDefault) {
 		this.isDefault = isDefault;
+	}
+
+	public String getTemplateType() {
+		return templateType;
+	}
+
+	public void setTemplateType(String templateType) {
+		this.templateType = templateType;
 	}
 }

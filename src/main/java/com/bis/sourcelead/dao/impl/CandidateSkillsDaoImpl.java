@@ -54,6 +54,16 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 		candidateSkillsList = citiesListQuery.setString("candidateId", candidateId).setInteger( "status", status ).setCacheable(true).list();
 		return candidateSkillsList;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<String> getCandidateSkillNamesByCandidateId(String candidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer status = Constants.CANDIDATE_SKILL_ACTIVE;
+		String query = "select cs.name from CandidateSkills cs where cs.candidateId.id =:candidateId and (cs.status =:status or cs.status is null)";
+	    List<String> skillNames = session.createQuery(query).setString( "candidateId", candidateId).setInteger( "status", status ).setCacheable(true).list();
+        return skillNames;
+	}
 
 
 	@Override
@@ -61,7 +71,7 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 	public CandidateSkills getCandidateSkillBySkillId(Long candidateSkillId) throws Exception {
 		logger.debug("In Candidate Skill by SkillId");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from CandidateSkills candidateSkills where candidateSkills.id = :candidateSkillId" ;
+		String query = " from CandidateSkills candidateSkills left join fetch candidateSkills.candidateId  where candidateSkills.id = :candidateSkillId" ;
 		List<CandidateSkills> candidateSkillsList =session.createQuery(query).setLong("candidateSkillId", candidateSkillId).setCacheable(true).list(); 
 		CandidateSkills candidateSkills = null;
 		if(candidateSkillsList != null && !candidateSkillsList.isEmpty()){

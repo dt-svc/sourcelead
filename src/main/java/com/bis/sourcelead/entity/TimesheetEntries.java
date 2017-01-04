@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -26,10 +27,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "TIMESHEET_ENTRIES")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetEntries")
-public class TimesheetEntries {
+public class TimesheetEntries implements Serializable{
 	
-	 
-	
+	private static final long serialVersionUID = 1L;
+
 	@Id
     @Column(name = "ID", nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

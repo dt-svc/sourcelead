@@ -1,5 +1,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
@@ -29,15 +30,20 @@
 						
 						var json = JSON.parse(data);
 						var result = "";
-						
+						if(json.msg != null && json.msg != "" && json.msg != 'undefined'){
+							result = result+ '<div class="success_pop" id="selector1" style="display: block;">';
+							result = result+ ' <i class="fa fa-check-circle"></i><span>'+json.msg+'</span>';
+							result = result+ '</div>';
+						}
 						
 						result = result+ '<div class="project_tabs_inn_table">';
 						result = result + '<div class="project_details">';
 						
+						 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
 							result = result + ' <div class="useredit useredit_a">';
 								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 							result = result + ' </div>'; 
-							
+						'</sec:authorize>';
 							
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Spoc Name:</strong>';
@@ -114,7 +120,7 @@
 											"display", "none");
 									$(tab).fadeIn();
 								});
-
+						msgFadeIn();
 					}
 				});
 	}
@@ -341,3 +347,12 @@
         $("#editVendorContact_form").validateOnBlur(false, validationSettings);  
     });
 </script>    
+
+<!-- Show success message after form submission script -->
+<script>
+	function msgFadeIn() {
+	    setTimeout(function(){ 
+	    	$('#selector1').fadeOut('slow'); }, 500);
+	}
+</script> 
+<!-- End -->

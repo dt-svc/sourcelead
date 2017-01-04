@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,6 +53,7 @@ public class OrgRelationsRestController {
 	 * @return orgRelations
 	 * @throws NullPointerException
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT')")
 	@RequestMapping(value = "/saveClientFromProject", method = RequestMethod.GET)
 	public @ResponseBody  String saveClientFromProject(
 			@RequestParam(value="json", required=false) String json ,

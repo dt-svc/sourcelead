@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.TimeSheetPdfUtil;
  
 
 @RestController 
@@ -61,6 +63,9 @@ public class TimesheetEntriesRestController {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	TimeSheetPdfUtil timeSheetPdfUtil;
+	
 	/**
 	 * @author sarath kumar punnana
 	 * @param request
@@ -69,7 +74,8 @@ public class TimesheetEntriesRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/newTimesheet", method = RequestMethod.POST )    
+	@RequestMapping(value = "/newTimesheet", method = RequestMethod.POST )   
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
 	public @ResponseBody String newTimesheet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -85,6 +91,7 @@ public class TimesheetEntriesRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/dynamicTimesheetpopUp", method = RequestMethod.POST )
 	public @ResponseBody String dynamicTimesheetpopUp(HttpServletRequest request,@RequestParam(value="employeeId", required=false) Long employeeId,
 																				 @RequestParam(value="startDate", required=false) String startDate,
@@ -94,15 +101,17 @@ public class TimesheetEntriesRestController {
 		String result = timesheetEntriesService.dynamicTimesheetpopUp(user, employeeId, startDate, endDate);
 		return result;
 	}
-/**
- * @author sarath kumar punnana 
- * @param timesheetEntriesForm
- * @param json
- * @param request
- * @param status
- * @return
- * @throws Exception
- */
+	/**
+	 * @author sarath kumar punnana 
+	 * @param timesheetEntriesForm
+	 * @param json
+	 * @param request
+	 * @param status
+	 * @return
+	 * @throws Exception
+	 */
+	
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/saveTimesheet", method = RequestMethod.POST)
 	public @ResponseBody String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
 				MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status,String savingType) throws Exception {
@@ -118,8 +127,9 @@ public class TimesheetEntriesRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/projectTasksById" , method = RequestMethod.POST)
-	 public @ResponseBody  String getProjectTasks(
+	public @ResponseBody  String getProjectTasks(
 			 @RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="avilableProjectTaskIds", required=false) String  avilableProjectTaskIds) throws Exception {
 		 	
 			 
@@ -137,11 +147,14 @@ public class TimesheetEntriesRestController {
 			 return resultJson;
 		 	
 	 }
-/**
- * @author sarath kumar punnana
- * @return
- * @throws Exception
- */
+	/**
+	 * @author sarath kumar punnana
+	 * 
+	 * usage : unused method : this is default method
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetEntries addTimesheetEntries() throws Exception
 			 
@@ -155,6 +168,9 @@ public class TimesheetEntriesRestController {
 	}
 	/**
 	 * @author sarath kumar punnana
+	 * 
+	 *  usage : unused method : this is default method
+	 *  
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetEntries updateTimesheetEntries() throws Exception
@@ -174,6 +190,9 @@ public class TimesheetEntriesRestController {
 	 * @author sarath kumar punnana
 	 * @param id
 	 * @return
+	 * 
+	 * usage : unused method : this is default method
+	 *  
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getTimesheetEntries/{id}", method = RequestMethod.GET)
@@ -183,8 +202,12 @@ public class TimesheetEntriesRestController {
 		TimesheetEntries savedTimesheetEntries = timesheetEntriesService.getTimesheetEntries(id);
 		return savedTimesheetEntries; 
 	}
+	
 	/**
 	 * @author sarath kumar punnana 
+	 * 
+	 * usage : unused method : this is default method
+	 *  
 	 * @param id
 	 * @return json
 	 * @throws Exception
@@ -198,7 +221,16 @@ public class TimesheetEntriesRestController {
 		return status; 
 	}
 	
-	//sarath kumar punnana : unused method 
+	/**
+	 * @author sarath kumar punnana 
+	 * 
+	 *  usage : unused method : this is default method
+	 *  
+	 * @param id
+	 * @return json
+	 * @throws Exception
+	 */
+	
 	@RequestMapping(value = "/getAll", method = RequestMethod.GET)
 	public @ResponseBody Collection<TimesheetEntries> getAllTimesheetEntries() throws Exception
 			 
@@ -207,7 +239,16 @@ public class TimesheetEntriesRestController {
 		  return timesheetEntriesList;
 	}
 	
-	//sarath kumar punnana : unused method 
+	/**
+	 * @author sarath kumar punnana 
+	 * 
+	 *  usage : unused method : this is default method
+	 *  
+	 * @param id
+	 * @return json
+	 * @throws Exception
+	 */
+	
 	@RequestMapping(value = "/saveAll", method = RequestMethod.GET)
 	public @ResponseBody Collection<TimesheetEntries> saveAll() throws Exception
 			 
@@ -229,17 +270,26 @@ public class TimesheetEntriesRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/exportTimeShhet")    
-	public void ExportTimeShhet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate,HttpServletResponse response) throws Exception {
+	
+	@RequestMapping(value = "/exportTimeSheet")  
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS')")
+	public void ExportTimeShhet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate,@RequestParam(value="exportType", required=false) String exportType,HttpServletResponse response) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		File file = exportTimesheetEntries.exportTimesheets(user, navigation, startDate,orgLocations);
+		File file = null;
+		if(!"pdf".equalsIgnoreCase(exportType)){
+			file = exportTimesheetEntries.exportTimesheets(user, navigation, startDate,orgLocations);
+		}else{
+			file = timeSheetPdfUtil.exportTimesheetPdf(user, navigation, startDate,orgLocations);
+		}
+		
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";
 		}
 		response.setContentType(mimeType);
-		response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
 		response.setContentLength((int) file.length());
 		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 		FileCopyUtils.copy(inputStream, response.getOutputStream());

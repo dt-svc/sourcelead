@@ -21,9 +21,9 @@ public class SubmissionTemplateServiceImpl implements SubmissionTemplateService 
 	}
 
 	@Override
-	public List<SubmissionTemplate> getSubmissionTemplateByClientLocationIdAndOrgLocationId(Long clientLocationId, Long orgLocationId)
+	public List<SubmissionTemplate> getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(Long clientLocationId, Long orgLocationId,String templateType)
 			throws Exception {
-		return submissionTemplateDao.getSubmissionTemplateByClientLocationIdAndOrgLocationId(clientLocationId, orgLocationId);
+		return submissionTemplateDao.getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(clientLocationId, orgLocationId,templateType);
 	}
 
 	@Override
@@ -49,13 +49,18 @@ public class SubmissionTemplateServiceImpl implements SubmissionTemplateService 
 	}
 
 	@Override
-	public List<SubmissionTemplate> getOrgSubmissionTemplatesByOrgLocationId(Long orgLocationId) throws Exception {
-		return submissionTemplateDao.getOrgSubmissionTemplatesByOrgLocationId(orgLocationId);
+	public List<SubmissionTemplate> getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(Long orgLocationId,String templateType) throws Exception {
+		return submissionTemplateDao.getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(orgLocationId,templateType);
 	}
 
 	@Override
 	public SubmissionTemplate getSubmissionTemplateByTemplateNameByOrg(Long orgLocationId, String templateName) throws Exception {
 		return submissionTemplateDao.getSubmissionTemplateByTemplateNameByOrg(orgLocationId, templateName);
 		}
-
+	
+	@Override
+	public List<SubmissionTemplate> getInterviewFeedbackTemplatesByOrgLocationId(Long orgLocationId) throws Exception {
+		return submissionTemplateDao.getInterviewFeedbackTemplatesByOrgLocationId(orgLocationId);
+	}
+	
 }

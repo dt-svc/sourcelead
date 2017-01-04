@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +32,9 @@ import com.bis.sourcelead.enums.Status;
 @Entity
 @Table(name = "USER", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "user")
-public class User {
+public class User implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -87,6 +90,24 @@ public class User {
 	@Type(type="text")
 	private String location;
 	
+	
+	@Column(name = "LINKEDIN")
+	@Type(type="text")
+	private String linkedIn;
+	
+	
+	@Column(name = "FACEBOOK")
+	@Type(type="text")
+	private String facebook;
+	
+	@Column(name = "TWITTER")
+	@Type(type="text")
+	private String twitter;
+	
+	@Column(name = "GOOGLE_PLUS")
+	@Type(type="text")
+	private String googlePlus;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -99,11 +120,11 @@ public class User {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 	
-	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<Employees> employee = new HashSet<Employees>(0);
 	
@@ -364,6 +385,38 @@ public class User {
 
 	public void setAssignJobCount(int assignJobCount) {
 		this.assignJobCount = assignJobCount;
+	}
+
+	public String getLinkedIn() {
+		return linkedIn;
+	}
+
+	public void setLinkedIn(String linkedIn) {
+		this.linkedIn = linkedIn;
+	}
+
+	public String getFacebook() {
+		return facebook;
+	}
+
+	public void setFacebook(String facebook) {
+		this.facebook = facebook;
+	}
+
+	public String getTwitter() {
+		return twitter;
+	}
+
+	public void setTwitter(String twitter) {
+		this.twitter = twitter;
+	}
+
+	public String getGooglePlus() {
+		return googlePlus;
+	}
+
+	public void setGooglePlus(String googlePlus) {
+		this.googlePlus = googlePlus;
 	}
 	
 }

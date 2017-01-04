@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -27,16 +28,26 @@ import org.hibernate.annotations.FetchMode;
 @Entity
 @Table(name = "CANDIDATE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidate")
-public class Candidate {
+public class Candidate implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="CONSULTANT_USER_ID")        
+    private User consultantUser;
+	
+	
+	@Column(name = "CANDIDATE_TYPE")
+	private String candidateType;
 	
 	@Column(name = "FIRST_NAME")
 	private String firstName;
@@ -74,6 +85,9 @@ public class Candidate {
 	@Column(name = "EXPERIENCE_MONTHS")
 	private String experienceMonths;
 	
+	@Column(name = "NOTICE_PERIOD")
+	private String noticePeriod;
+	
 	@Column(name = "DESIGNATION")
 	private String designation;
 	
@@ -82,6 +96,9 @@ public class Candidate {
 	
 	@Column(name = "CURRENT_RATE")
 	private String currentRate;
+	
+	@Column(name = "CURRENT_RATE_TYPE")
+	private String currentRateType;
 	
 	@Column(name = "CURRENT_RATE_CURRENCY")
 	private String currentRateCurrency;
@@ -129,23 +146,39 @@ public class Candidate {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
+	@Transient
+	private String skills;
+	
+	@Transient
+	private String totalExp;
+	
+	@Transient
+	private String rate;
+	
+	@Transient
+	private String candidateName;
+	
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateResumes> candidateResumes = new HashSet<CandidateResumes>(0);
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
+	
+	
+	@Transient
+	private String candidateEdu;
 	
 	@Transient
 	private String skillsList;
@@ -170,6 +203,9 @@ public class Candidate {
 	 
 	 @Transient
 	 private String reqSubmissionId;
+	 
+	 @Transient
+	 private String isFavourite;
 	 
 	 
 	 
@@ -585,6 +621,15 @@ public class Candidate {
 		this.noOfReq = noOfReq;
 	}
 
+	public String getCandidateEdu() {
+		return candidateEdu;
+	}
+
+
+	public void setCandidateEdu(String candidateEdu) {
+		this.candidateEdu = candidateEdu;
+	}
+
 
 	public String getCandidateResume() {
 		return candidateResume;
@@ -622,4 +667,101 @@ public class Candidate {
 	public void setReqSubmissionId(String reqSubmissionId) {
 		this.reqSubmissionId = reqSubmissionId;
 	}
+
+
+	public String getCurrentRateType() {
+		return currentRateType;
+	}
+
+
+	public void setCurrentRateType(String currentRateType) {
+		this.currentRateType = currentRateType;
+	}
+
+
+	public User getConsultantUser() {
+		return consultantUser;
+	}
+
+
+	public void setConsultantUser(User consultantUser) {
+		this.consultantUser = consultantUser;
+	}
+
+
+	public String getCandidateType() {
+		return candidateType;
+	}
+
+
+	public void setCandidateType(String candidateType) {
+		this.candidateType = candidateType;
+	}
+
+
+	public String getIsFavourite() {
+		return isFavourite;
+	}
+
+
+	public void setIsFavourite(String isFavourite) {
+		this.isFavourite = isFavourite;
+	}
+
+
+	public String getNoticePeriod() {
+		return noticePeriod;
+	}
+
+
+	public void setNoticePeriod(String noticePeriod) {
+		this.noticePeriod = noticePeriod;
+	}
+
+
+	public String getSkills() {
+		return skills;
+	}
+
+
+	public void setSkills(String skills) {
+		this.skills = skills;
+	}
+
+
+	public String getTotalExp() {
+		return totalExp;
+	}
+
+
+	public void setTotalExp(String totalExp) {
+		this.totalExp = totalExp;
+	}
+
+
+	public String getRate() {
+		return rate;
+	}
+
+
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
+
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+
+	public void setCandidateAdedd(boolean isCandidateAdedd) {
+		this.isCandidateAdedd = isCandidateAdedd;
+	}
+	
+	
 }

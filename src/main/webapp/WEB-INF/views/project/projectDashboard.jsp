@@ -6,6 +6,8 @@
 <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
@@ -15,10 +17,10 @@
  .clsDatePicker {
    z-index: 100000 !important;
 }
-.side-bar .side-nav ul li span{
+/* .side-bar .side-nav ul li span{
   display: inline-block;
   float: none;
-}
+} */
 /* .project_wrap_table span{
 display: inline;
 } */
@@ -33,8 +35,8 @@ overflow-x: auto;
        <section class="content-wraper">
         <section class="content-header clearfix">
         
-        <c:if test="${not empty msg}">
-	        <div class="success_pop" id="selector">
+        <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector" style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
@@ -46,7 +48,7 @@ overflow-x: auto;
 
         
 	   <div class="timesheet_out">
-	   <c:if test="${empty projectsList}">
+	   <%-- <c:if test="${empty projectsList}">
 			<div class="project_wrap">
         <div class="timesheet_head">
         	<ul>
@@ -70,7 +72,10 @@ overflow-x: auto;
                         </ul>
                     </div>                	
                 </li>
-				<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
+                <sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')"> 
+	                   	<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
+	             </sec:authorize>	
+                
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
@@ -82,8 +87,8 @@ overflow-x: auto;
 							</table>
 			</div>	   
 		</div>
-		</c:if>
-		<c:if test="${!empty projectsList}">
+		</c:if> --%>
+		<%-- <c:if test="${!empty projectsList}"> --%>
 		<div class="project_wrap">
         <div class="timesheet_head">
         	<ul>
@@ -101,13 +106,15 @@ overflow-x: auto;
                     	<ul>
                         	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
 							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">STARTED</label></li>
-							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
+							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRES-S"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
 							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">COMPLETED</label></li>
                				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">ONHOLD</label></li>
                         </ul>
                     </div>                	
                 </li>
-				<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
+				<sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')"> 
+	                   	<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
+	             </sec:authorize>	
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
@@ -120,7 +127,7 @@ overflow-x: auto;
 			</div>	   
 				
 		</div>
-		</c:if>
+		<%-- </c:if> --%>
 		<div class="side_mask"><div class="proj_close"><i></i></div></div>
 		<div class="project_side_wrap">
 			<div class="project_side_wrap_inn">
@@ -213,9 +220,29 @@ $(document).ready(function() {
 	  	    result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
 	  	    result = result + '<div class="project_side_wrap_inn_tabs">';
 		  	result = result + '<ul class="project-tabs-menu">';
-		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\');" >Employees</a></li>';
-		  	result = result + '<li><a href="#tab-2" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
-		  	result = result + ' <li><a href="#tab-3" onClick="projectDetails('+projectId+');" >Details</a></li>';
+		  	
+			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
+		  	   result = result + ' <li class="current"><a href="#tab-1" onClick="projectDetails('+projectId+');" >Details</a></li>';
+			'</sec:authorize>';
+		  	
+		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
+		  	    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">' 
+		  	         result = result + '<li><a href="#tab-2" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Employees</a></li>';
+		  	    '</sec:authorize>';
+		  	    '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'
+			  	    result = result + '<li class="current"><a href="#tab-2" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Employees</a></li>';
+			  	'</sec:authorize>';
+		  	  '</sec:authorize>';
+		  	
+		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
+			  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
+			      	 result = result + '<li><a href="#tab-3" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
+			  	'</sec:authorize>';
+			  	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
+			  	     result = result + '<li class="current"><a href="#tab-3" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
+			  	'</sec:authorize>';
+		  	'</sec:authorize>';
+			
 		  	result = result + ' <div class="clearfix"></div>';
 		  	result = result + ' </ul>';
 		  	 
@@ -239,7 +266,21 @@ $(document).ready(function() {
 		    $(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
 			
-		    projectEmployee(projectId,startDateStr,endDateStr,status);
+		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
+		        projectDetails(projectId);
+			'</sec:authorize>';
+			
+			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
+			    '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
+			       projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
+			    '</sec:authorize>';
+			'</sec:authorize>';
+			
+			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
+			 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
+			      projectTask(projectId, status)
+			  '</sec:authorize>';
+		  	'</sec:authorize>';
  }
  </script> 
  
@@ -250,6 +291,7 @@ $(document).ready(function() {
 $(document).ready(function() {
     $("#filter1ApprovePop").click(function(){
 		$("#filter1ApprovedPop").slideToggle(200);
+		 $("#filter2ApprovedPop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter1ApprovedPop").slideUp(200);
@@ -261,6 +303,7 @@ $(document).ready(function() {
     
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
+		$("#filter1ApprovedPop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
@@ -321,6 +364,7 @@ function filter(){
    		    	result = result +'	<th>Id</th>';
    		    	result = result +'    <th>Name</th>'; 
    		    	result = result +'     <th>Manager</th>';
+   		    	result = result +'     <th>Invoice Frequency</th>';
    		    	result = result +'     <th>Date</th>';
    		    	result = result +'      <th>Client</th>';
    		    	result = result +'       <th>Status</th>';
@@ -338,7 +382,18 @@ function filter(){
    		    		}
    		    		result = result +'<tr>';
    		    		result = result +'<td data-title="Id"><div><span>'+projectSequeneNumber+'</span></div></td>';
-   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span class="tbldata-dotdot-vsm">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+
+   		    		
+   		    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
+   		    		  result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   		    		'</sec:authorize>';
+   		    		
+   		    		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
+ 		    		  result = result +'<td data-title="Name"><div class="proj_show"><span>'+report.projectName+'</span></div></td>';
+ 		    		'</sec:authorize>';
+
+   		    		/*result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span class="tbldata-dotdot-vsm">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';*/
+
    		    		result = result +'<td data-title="Manager">';
    		    		result = result +'<div><span>';
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
@@ -352,6 +407,17 @@ function filter(){
    		    		} 
    		    		result = result +'</span></div>';
    		    		result = result +'</td>';
+   		    		
+   		    		
+   		    		result = result +'<td data-title="Invoice Frequency">';
+   		    		result = result +'<div><span>';
+   		    		if(report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
+   		    			result = result +report.invoiceFrequency;
+   		    		}
+   		    		
+   		    		result = result +'</span></div>';
+   		    		result = result +'</td>';
+   		    		
    		    		result = result +'<td data-title="Date"><div>'+report.startDateStr+' ';
    		    		if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
    	   		    		result = result +'- '+report.endDateStr+' </div></td>';

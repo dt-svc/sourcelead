@@ -27,6 +27,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -342,15 +343,16 @@ public class UserServiceTest {
 	@Test
 	public void getManagersByUserRolesAndOrgLocationId() throws Exception{
 		String roleType = "2";
-		Long orgLocationsId = 3l;
-		List<User> list = userService.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
+		Long roleId = 1L;
+		Long orgLocationsId = 1l;
+		List<User> list = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocationsId,Long.valueOf(Constants.TAB_USER));
 		assertFalse(list.isEmpty());
 	}
 	
 	@Test
 	public void getManagersByUserIdAndUserRolesAndOrgLocationId() throws Exception{
 		Long userId = 3l;
-		String roleType = "2";
+		Long roleType = 2l;
 		Long orgLocationsId = 3l;
 		List<User> list = userService.getManagersByUserIdAndUserRolesAndOrgLocationId(userId,roleType,orgLocationsId);
 		assertFalse(list.isEmpty());

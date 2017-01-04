@@ -1,5 +1,7 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,8 +15,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name="ENTITY_TYPE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="entityType")
-public class EntityType {
+public class EntityType implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="ID", nullable = false)

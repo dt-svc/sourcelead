@@ -8,7 +8,7 @@ public interface SubmissionTemplateDao {
 
 	public SubmissionTemplate addSubmissionTemplate(SubmissionTemplate submissionTemplate) throws Exception;
 	
-	List<SubmissionTemplate> getSubmissionTemplateByClientLocationIdAndOrgLocationId(Long clientLocationId,Long orgLocationId) throws Exception;
+	List<SubmissionTemplate> getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(Long clientLocationId,Long orgLocationId,String tempalteType) throws Exception;
 	
 	SubmissionTemplate getSubmissionTemplateById(Long Id) throws Exception;
 	
@@ -18,7 +18,11 @@ public interface SubmissionTemplateDao {
 	
 	SubmissionTemplate getSubmissionTemplateByLabelName(Long templateId,String labelName) throws Exception;
 	
-	List<SubmissionTemplate> getOrgSubmissionTemplatesByOrgLocationId(Long orgLocationId) throws Exception;
+	List<SubmissionTemplate> getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(Long orgLocationId,String templateType) throws Exception;
 	
 	SubmissionTemplate getSubmissionTemplateByTemplateNameByOrg(Long orgLocationId,String templateName) throws Exception;
+	
+	List<SubmissionTemplate> getInterviewFeedbackTemplatesByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	
 }

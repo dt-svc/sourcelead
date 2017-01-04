@@ -265,23 +265,25 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 var datavalidation = '';	
             	 var novalidation = '';
             	 var datavalidation2 = '';
+            	 var onBlurEvent = '';
             	 
         		 if(required == 1){
         			 if(label == 'Email Id'){
-        				 datavalidation = 'data-validation="required validate_email validate_Space validate_length length2-50"';
+        				 datavalidation = 'data-validation="required validate_email validate_Space validate_length length2-100"';
+        				 onBlurEvent = 'onblur="validateCandidateEmail();"';
         				 
         			 }else if(label == 'Phone Number'){
         				 datavalidation = 'data-validation="required validate_phone validate_Space validate_length length9-20"';
         			 }
         			 else{
-        				 datavalidation = 'data-validation="required validate_Space validate_length length2-50"';
+        				 datavalidation = 'data-validation="required validate_Space validate_length length2-100"';
         			 }
         			 
         			 if(label == 'Current CTC' || label == 'Expected CTC'){
             			 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
             		 }
             		 if(label == 'Designation' || label == 'Education'){
-            			 datavalidation = 'data-validation="required validate_Space validate_Alphabet length2-50"';
+            			 datavalidation = 'data-validation="required validate_Space validate_Name length2-250"';
             		 }
         			 
         			 datavalidation2 = 'data-validation="required"';
@@ -289,14 +291,14 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         			 if(label == 'Alternate Number'){
         				 datavalidation = 'data-validation="validate_phone validate_Space validate_length length9-20"';
         			 }else{
-        				 datavalidation = 'data-validation="validate_Space validate_length length2-50"';
+        				 datavalidation = 'data-validation="validate_Space validate_length length2-100"';
         			 }
         			 
         			 if(label == 'Current CTC' || label == 'Expected CTC'){
         				 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
             		 }
             		 if(label == 'Designation' || label == 'Education'){
-            			 datavalidation = 'data-validation="validate_Space validate_Alphabet length2-50"';
+            			 datavalidation = 'data-validation="validate_Space validate_Name length2-250"';
             		 }
         			 novalidation = 'data-validation-optional="true"';
         		 }
@@ -325,7 +327,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+onBlurEvent+' '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
 
                      case 'textarea':
@@ -369,21 +371,21 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                     		 return '' +
                              '<div id="sjfb-' + countryUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>Country'+reqSymbol+'</label>' +
-                             '<select class="chosen-select form-control select-bg"  '+datavalidation2+' '+novalidation+'  name="country" id="country" field-name="Country"  >'+
+                             '<select class="chosen-select form-control"  '+datavalidation2+' '+novalidation+'  name="country" id="country" field-name="Country"  >'+
                              '<option>--Select--</option>'+
                              '</select>'+
                              '</div>'+
                              
                              '<div id="sjfb-' + stateUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>State'+reqSymbol+'</label>' +
-                             '<select class="chosen-select form-control select-bg"  '+datavalidation2+' '+novalidation+'  name="state" id="state" field-name="State"  >'+
+                             '<select class="chosen-select form-control"  '+datavalidation2+' '+novalidation+'  name="state" id="state" field-name="State"  >'+
                              '<option>--Select--</option>'+
                              '</select>'+
                              '</div>'+
                              
                              '<div id="sjfb-' + cityUniqueID + '" '+novalidation+' class="sjfb-field sjfb-text">' +
                              '<label>City'+reqSymbol+'</label>' +
-                             '<select class="chosen-select form-control select-bg" '+datavalidation2+' '+novalidation+'  name="city" id="city" field-name="State"  >'+
+                             '<select class="chosen-select form-control" '+datavalidation2+' '+novalidation+'  name="city" id="city" field-name="State"  >'+
                              '<option>--Select--</option>'+
                              '</select>'+
                              '</div>';

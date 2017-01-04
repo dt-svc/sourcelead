@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
@@ -36,6 +37,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	
 	@Autowired
 	HttpServletRequest request;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	
 	 /**
@@ -201,11 +205,11 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		Collection<SubmissionApproverHierarchy> submittedForApprovalindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"SUBMITTED");
 		timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(new Float(submittedForApprovalindividualEmployeeList.size()));
 		
-		Collection<SubmissionApproverHierarchy> newindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"NEW");
+		//Collection<SubmissionApproverHierarchy> newindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"NEW");
 		
 		Collection<SubmissionApproverHierarchy> draftindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"DRAFT");
 		
-		Integer savedTimesheetSubmissionCount = newindividualEmployeeList.size() + draftindividualEmployeeList.size();
+		Integer savedTimesheetSubmissionCount = draftindividualEmployeeList.size();
 		timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(new Float(savedTimesheetSubmissionCount));
 		
 		return timeSheetSubmissionCount;
@@ -234,19 +238,19 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		    TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 		
 		 
-		    Collection<SubmissionApproverHierarchy> approvedindividualEmployeeList = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,  "APPROVED");
+		    Collection<SubmissionApproverHierarchy> approvedindividualEmployeeList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,  "APPROVED");
 			timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(new Float(approvedindividualEmployeeList.size()));
 			 
-			Collection<SubmissionApproverHierarchy> rejectedindividualEmployeeList = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, "REJECTED");
+			Collection<SubmissionApproverHierarchy> rejectedindividualEmployeeList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, "REJECTED");
 			timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(new Float(rejectedindividualEmployeeList.size()));
 			
-			Collection<SubmissionApproverHierarchy> submittedForApprovalindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"SUBMITTED");
+			Collection<SubmissionApproverHierarchy> submittedForApprovalindividualEmployeeList   = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"SUBMITTED");
 			timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(new Float(submittedForApprovalindividualEmployeeList.size()));
 			
-			Collection<SubmissionApproverHierarchy> newindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"NEW");
+			//Collection<SubmissionApproverHierarchy> newindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"NEW");
 			
-			Collection<SubmissionApproverHierarchy> draftindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"DRAFT");
-			Integer savedTimesheetSubmissionCount = newindividualEmployeeList.size() +draftindividualEmployeeList.size();
+			Collection<SubmissionApproverHierarchy> draftindividualEmployeeList   = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"DRAFT");
+			Integer savedTimesheetSubmissionCount = draftindividualEmployeeList.size();
 			
 			timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(new Float(savedTimesheetSubmissionCount));
 			
@@ -428,7 +432,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			       ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
 			       ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
 	        	   if(ts.getProjectMembers() != null && ts.getProjectMembers().getEmployee() != null && ts.getProjectMembers().getEmployee().getUser() != null){
-	        		   ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
+	        		   StringBuilder stringBuilder = new StringBuilder();
+	        		   ts.setFullName(stringBuilder.append(ts.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(ts.getProjectMembers().getEmployee().getUser().getLastName()).toString());
 	        	   }
 	        	   
 	        	   currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
@@ -443,7 +448,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	        	   
 	        	   
 	        	  String rows = dynamicTimesheet(user, "left", startDate, ts.getProjectMembers().getId(), ts.getProjectMembers().getEmployee().getUser().getId(), ts.getProjectMembers().getEmployee().getId(),locationsId);
-	        	  sb.append("<tr id='row"+ts.getProjectMembers().getEmployee().getUser().getId()+"'>");
+	        	  sb.append("<tr id='row").append(ts.getProjectMembers().getEmployee().getUser().getId()).append("'>");
 	        	  sb.append(rows);
 	        	  sb.append("</tr>");
 	         }
@@ -473,14 +478,15 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		
 		@Override
 		public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId,Long locationsId) throws Exception {
-			 
+			
+			Boolean isViewMemberTimeSheet = commonUtil.hasRole("ROLE_VIEW_MEMBER_TIMESHEETS");
 			HashMap<String, Date> submissionDateRange =	 timesheetSubmissionsDao.getMinAndMaxTimesheetSubmissionDatesForApprover(user.getId(),projectMemberUserId,locationsId);
 			Date employeeStartDate = submissionDateRange.get("STARTDATE");
 			Date employeeEndDate = submissionDateRange.get("ENDDATE");
 			
 			String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
       	   
-      	    if(StringUtils.isNotEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_APPROVER")){
+      	    if(StringUtils.isNotEmpty(loginUserRole) && (loginUserRole.equalsIgnoreCase("ROLE_APPROVER") || loginUserRole.equalsIgnoreCase("ROLE_ADMIN"))){
       		   /**
 	      		   *calculating prior 6th week mondaydate and post 6th week sunday day for employee
 	      		   *
@@ -529,7 +535,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	          Date currentEndDate = null;
 	          Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			   startCal.setLenient(false);
-			   if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
+			   if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty()){  
 				      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
 				      if(currentWeekStartDate.equals(employeeStartDate)|| (currentWeekStartDate.before(employeeEndDate) && currentWeekStartDate.after(employeeStartDate))){
 				    	  startCal.setTime(currentWeekStartDate);
@@ -538,7 +544,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 				    	  Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 				    	  endCal.setLenient(false);
 				    	  endCal.setTime(employeeEndDate);
-				    	  startCal.setTime(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(endCal,"MON").getTime());
+				    	  startCal.setTime(CalendarUtil.getPreviousWeekDayByCalendar(endCal,"MON").getTime());
 				      }
 				      else if(employeeStartDate.after(currentWeekStartDate)){
 				    	  startCal.setTime(employeeStartDate);
@@ -546,15 +552,27 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	          }
 			  else{
 	               Date sDate  =  Constants.DMY.parse(startDate);
-				   startCal.setTime(sDate);
+	               if(sDate != null && employeeEndDate.before(sDate)){
+	            	      Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+				    	  endCal.setLenient(false);
+				    	  endCal.setTime(employeeEndDate);
+				    	  startCal.setTime(CalendarUtil.getPreviousWeekDayByCalendar(endCal,"MON").getTime());
+	               }
+	               else{
+	            	   startCal.setTime(sDate);
+	               }
+				  
 			  }
 			   startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
 		       endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
 		         
 		         ts = getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId(),projectMemberUserId,employeeId);
-		         if(!StringUtils.isNotEmpty(ts.getCombinedStatus())){
-		        	 break l1;
+		         if(ts != null){
+		        	 if(!StringUtils.isNotEmpty(ts.getCombinedStatus())){
+			        	 break l1;
+			         }
 		         }
+		         
 		        
 		         currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
 		         currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
@@ -566,19 +584,19 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	  	    if(currentEndDate !=null){
 	  		   ts.setEndDateStr(Constants.DF_DMY.format(currentEndDate));
 	  	    }
-	  	    
 	  	   ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
 	       ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
 		   if(ts.getProjectMembers() != null && ts.getProjectMembers().getEmployee() != null && ts.getProjectMembers().getEmployee().getUser() != null){
-			   ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
+			   StringBuilder stringBuilder = new StringBuilder();	
+			   ts.setFullName(stringBuilder.append(ts.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(ts.getProjectMembers().getEmployee().getUser().getLastName()).toString());
 		   }
 		   		
 	         sb.append("  <td><div class='time_appr_user tbldata-dotdot-me'>");
-	         sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='"+request.getContextPath()+"/displayUserImage/"+ts.getProjectMembers().getEmployee().getUser().getId()+"' alt='Profile Image' class='img-circle img-responsive'>");
-	         sb.append("    <span><b>"+ts.getFullName()+"</b></span>");
+	         sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(ts.getProjectMembers().getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
+	         sb.append("    <span><b>").append(ts.getFullName()).append("</b></span>");
 	         sb.append(" <div></td>");
 	         
-	           sb.append("<td><div>");
+	           sb.append("<td><div id='datefrequency"+ts.getUserId()+ts.getStartDateStr().replaceAll("-", "")+"'>");
 	           Date leftNavStartDate = getLeftNavStartDateForApproverBasedOnCurrentStartDate(user.getId(), ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
 	           if(leftNavStartDate != null && (leftNavStartDate.after(employeeStartDate) || employeeStartDate.equals(leftNavStartDate))){
 		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
@@ -586,7 +604,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	           else{
 	        	   sb.append("       	<i class='glyphicon glyphicon-none'></i>");
 	           }
-	     	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
+	     	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>").append(startDateBuilder).append(" To ").append(endDateBuilder).append("</span>");
 	     	   Date rightNavStartDate = getRightNavStartDateForApproverBasedOnCurrentStartDate(user.getId(), ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
 	           if(rightNavStartDate != null){
 		     		Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
@@ -605,11 +623,15 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	     	   
 	     	 
 	         sb.append("    <td><div> " );
-	         sb.append(" <a onclick='myTimesheet(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'  id='timesheetPopup"+ts.getId()+"'> "+ts.getCombinedTotalHours()+"</a>");
+	         if(isViewMemberTimeSheet){
+	        	 sb.append(" <a onclick='myTimesheet(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'  id='timesheetPopup"+ts.getId()+"'> ").append(ts.getCombinedTotalHours()).append("</a>");
+	         }else{
+	        	 sb.append(ts.getCombinedTotalHours());
+	         }
 	         sb.append("    </div>");
 	         sb.append("    </td>");
 	         
-	         sb.append("  <td><div id='status"+ts.getUserId()+"'>"+ts.getCombinedStatus()+"</div></td>");
+	         sb.append("  <td><div id='status"+ts.getUserId()+"'>").append(ts.getCombinedStatus()).append("</div></td>");
 	         
 	         sb.append("    <td><div id='action"+ts.getUserId()+"'> " );
 	             if( (ts.getCombinedStatus() !=null && ts.getCombinedStatus().equalsIgnoreCase("NEW")) || ( ts.getCombinedStatus() != null && ts.getCombinedStatus().equalsIgnoreCase("SUBMITTED FOR APPROVAL")) ){
@@ -619,7 +641,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	             if(ts.getCombinedStatus() !=null && ts.getCombinedStatus().equalsIgnoreCase("REJECTED")){
 	               sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
 	               sb.append(" <i class='glyphicon glyphicon-comment' id='"+ts.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+ts.getId()+"\");'>");
-	               sb.append(" <div class='app_error_mes' id='rejectedMessage"+ts.getId()+"'>"+ts.getRejectedReason()+"</div>");
+	               sb.append(" <div class='app_error_mes' id='rejectedMessage"+ts.getId()+"'>").append(ts.getRejectedReason()).append("</div>");
 	               sb.append(" </i>");
 	               sb.append(" </div>");
 	            }
@@ -1074,9 +1096,20 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
  * 
  */
 		@Override
-		public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId,Long locationsId) throws Exception {
-			return timesheetSubmissionsDao.getWeekFrequency(userId,locationsId);
+		public HashSet<TimesheetSubmissions> getWeekFrequency(Long projectId,Long locationsId,Long userId) throws Exception {
+			return timesheetSubmissionsDao.getWeekFrequency(projectId,locationsId,userId);
 		}
+
+
+	@Override
+	public HashSet<TimesheetSubmissions> getWeekFrequencyByProjMemId(Long projectId) throws Exception {
+		return timesheetSubmissionsDao.getWeekFrequencyByProjMemId(projectId);
+	}
+
+	@Override
+	public List<TimesheetSubmissions> getTimeSheetSubmissionByProjectMemberId(Long pojectMemberId) throws Exception {
+		return timesheetSubmissionsDao.getTimeSheetSubmissionByProjectMemberId(pojectMemberId);
+	}
 
 
 		

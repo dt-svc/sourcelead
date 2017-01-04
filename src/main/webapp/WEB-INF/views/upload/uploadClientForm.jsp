@@ -1,13 +1,12 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ page trimDirectiveWhitespaces="true" %>
-
-<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <style type="text/css">
@@ -28,16 +27,17 @@ margin:10px 220px 0;
       <div class="pull-left">
         <h2>Import Client & Contacts</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div>
     </section>
     <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Client">
     <div class="content-area clearfix">
     <div id="loading"></div> 
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-        <div class="row minHeight">
+        <div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 		  <!-- Download File button -->
 		  <div class="clearfix mb row">
+		  <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS')">
 			<div class="col-xs-12 col-md-6">
 			 <a href="<c:url value='/downloadClientTemplate?name=client'/>">
 			 <button class="btn btn-success btn-block" type="button">
@@ -45,6 +45,8 @@ margin:10px 220px 0;
 			</button>
 			</a>
 			</div>
+			</sec:authorize>
+			<sec:authorize access="hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')">
 			<div class="col-xs-12 col-md-6">
 			 <a href="<c:url value='/downloadClientTemplate?name=Contact'/>">
 			 <button class="btn btn-warning btn-block" type="button">
@@ -52,6 +54,7 @@ margin:10px 220px 0;
 			</button>
 			</a>
 			</div>
+			</sec:authorize>
 			</div>
 			<!-- Attach File button -->
 			
@@ -109,7 +112,7 @@ margin:10px 220px 0;
 			  </span>
             </div>
             <div class="panel-body checkbox div-checkbox">
-				  <label><input type="checkbox" checked="checked" value="checked" name="email"></label><span>Send Emails</span>
+				  <label><input type="checkbox" checked="checked" value="Y" name="email"></label><span>Send Emails</span>
 		    </div>
           </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -219,11 +222,10 @@ function uploadSave() {
  function checkFile()
     {
      var fsize = $('#uploadBtn')[0].files[0].size;
-     alert("-----------"+fsize);
      $('#clientNameDiv').find('p.jquery_form_error_message').remove();
      var res_field = document.upload_form.elements["uploadFile"].value;   
      var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
-     var allowedExtensions = ['xls', 'xlsx', 'csv'];
+     var allowedExtensions = ['xls', 'xlsx'];
      if (res_field.length > 0)
         {
              if (allowedExtensions.indexOf(extension) === -1) 

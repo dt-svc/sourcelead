@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -21,11 +23,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FuzzyQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,18 +47,24 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.entity.CandidateSkills;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.AutoCompleteController;
 
 
 /**
@@ -84,7 +100,14 @@ public class CandidateListRestController {
 	 @Autowired
 	 CandidateSkillsService candidateSkillsService;
 	 
-		
+	 @Autowired	
+	 LookUpDataService lookUpDataService;
+	
+	  @Autowired
+	  CandidateHotListService candidateHotListService;
+	  
+	  @Autowired
+	  private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	 /**
 	   * @author David and sarath kumar
 	   * @since  aug 30 2016
@@ -103,12 +126,332 @@ public class CandidateListRestController {
 	   */
 	 
 	 @RequestMapping(value = "/getCandidatesListByOrgLocationID")
-	 public String getCandidatesListByOrgLocationID(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,@RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,HttpServletRequest request) throws Exception {
+	 public String getCandidatesListByOrgLocationID(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,@RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,
+			 @RequestParam(value="candidateType", required=false) String  candidateType,
+			 HttpServletRequest request) throws Exception {
 
 		String resultJson;
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange);
+		List<Candidate> candList = new ArrayList<Candidate>();
+		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
+		
+		if(null != candidatesList){
+			for(Candidate candidate : candidatesList){
+				boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
+				if(flag == true){
+					candidate.setIsFavourite(Constants.YES);
+				}else{
+					candidate.setIsFavourite(Constants.NO);
+				}
+				candList.add(candidate);
+			}
+		}
+		
+		resultJson = commonUtil.toJSON(candList);
+		return resultJson;
+	 }
+	 
+	 
+	  /**
+	   * @author Naresh Bolisetty
+	   * @since  Dec 28 2016
+	   * @version 0.0.1
+	   * 
+	   *  
+	   * @return string 
+	   * 
+	   * @throws NullPointer
+	   */
+	 @RequestMapping(value = "/searchCandidate", method = RequestMethod.POST)
+	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+
+		    MultipartFile multiFile = null;
+			Iterator<String> itrator = request.getFileNames();
+			if(itrator.hasNext()){
+		        multiFile = request.getFile(itrator.next());
+			}
+			String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);
+			
+			StringBuilder andQuerySeperation = new StringBuilder(" AND ");
+			StringBuilder orQuerySeperation  = new StringBuilder(" OR ");
+			
+			 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			 BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId());
+		   	    //Exclude Keyword
+				ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+				if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+					BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : excludeKeyWordArray){
+						ArrayList<FuzzyQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(FuzzyQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								excludeBoolQueryBuilder.should(matchQueryBuilder);
+							}
+							excludeBoolQueryBuilder.minimumShouldMatch("1");
+							boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+						}
+					}
+				}
+				//Any Keyword
+				ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+				anyKeyWordArray.removeAll(excludeKeyWordArray);
+				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : anyKeyWordArray){
+						ArrayList<FuzzyQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(FuzzyQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								anyBoolQueryBuilder.should(matchQueryBuilder);
+							}
+							anyBoolQueryBuilder.minimumShouldMatch("1");
+							boolQueryBuilder.should(anyBoolQueryBuilder);
+						}
+					}
+				}
+				//All Keywords
+				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				allKeyWordArray.remove(anyKeyWordArray);
+				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : anyKeyWordArray){
+						ArrayList<FuzzyQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(FuzzyQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								anyBoolQueryBuilder.should(matchQueryBuilder);
+							}
+							anyBoolQueryBuilder.minimumShouldMatch("1");
+							boolQueryBuilder.should(anyBoolQueryBuilder);
+						}
+					}
+				}
+				//Designation
+				ArrayList<String> designationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "designation");
+				designationArray.removeAll(excludeKeyWordArray);
+				if(designationArray != null && !designationArray.isEmpty()){
+					BoolQueryBuilder designationBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : designationArray){
+						designationBoolQueryBuilder.should(QueryBuilders.fuzzyQuery("designation", "*"+keywd+"*"));
+					}
+					designationBoolQueryBuilder.minimumShouldMatch("1");
+					boolQueryBuilder.must(designationBoolQueryBuilder);
+				}
+				
+				//Notice_Period
+				ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(jsonObj, "noticePeriod");
+				noticePeriodArray.removeAll(excludeKeyWordArray);
+				if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
+					BoolQueryBuilder noticePeriodBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : noticePeriodArray){
+						noticePeriodBoolQueryBuilder.should(QueryBuilders.matchQuery("noticePriod", keywd));
+					}
+					noticePeriodBoolQueryBuilder.minimumShouldMatch("1");
+					boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
+				}
+			
+				 //Country
+				if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+			    }
+				 //State
+				if(jsonObj.has("state") && StringUtils.isNotEmpty(jsonObj.getString("state"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
+			    }
+				//City
+				if(jsonObj.has("city")  && StringUtils.isNotEmpty(jsonObj.getString("city"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
+			    }
+				
+				 //Currency
+			    if(jsonObj.has("currency") && StringUtils.isNotEmpty(jsonObj.getString("currency"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("expectedRateCurrencey", jsonObj.getString("currency")));
+			    } 
+				
+				
+				
+				
+			   //Rate Type
+				if(jsonObj.has("rateType") && StringUtils.isNotEmpty(jsonObj.getString("rateType"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
+			    }
+				//Exclude Educations
+				ArrayList<String> excludeEducationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeEducation");
+				excludeEducationArray.removeAll(excludeKeyWordArray);
+				if(excludeEducationArray != null && !excludeEducationArray.isEmpty()){
+					BoolQueryBuilder excludeEdunBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : excludeEducationArray){
+						excludeEdunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("education", keywd));
+					}
+					excludeEdunBoolQueryBuilder.minimumShouldMatch("1");
+					boolQueryBuilder.mustNot(excludeEdunBoolQueryBuilder);
+				} 
+				//Educations
+				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
+				educationArray.removeAll(excludeEducationArray);
+				if(educationArray != null && !educationArray.isEmpty()){
+					//BoolQueryBuilder edunBoolQueryBuilder = QueryBuilders.boolQuery();
+					StringBuilder eduQueryStringBuilder = new StringBuilder();
+					int count =1;
+					
+					for(String keywd : educationArray){
+						if(count>1){
+							eduQueryStringBuilder.append(andQuerySeperation);
+						}
+						eduQueryStringBuilder.append(" education :"+keywd+"");
+						count++;
+					}
+					//edunBoolQueryBuilder.should(QueryBuilders.queryStringQuery(queryString));
+					//edunBoolQueryBuilder.minimumShouldMatch("1");
+					boolQueryBuilder.must(QueryBuilders.queryStringQuery(eduQueryStringBuilder.toString()));
+				} 
+				
+				//Certifications
+				ArrayList<String> certificationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "certification");
+				certificationArray.removeAll(excludeKeyWordArray);
+				if(certificationArray != null && !certificationArray.isEmpty()){
+					BoolQueryBuilder certificationBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : certificationArray){
+						certificationBoolQueryBuilder.should(QueryBuilders.matchQuery("certifications", keywd));
+					}
+					certificationBoolQueryBuilder.minimumShouldMatch("1");
+					boolQueryBuilder.must(certificationBoolQueryBuilder);
+				} 
+				
+				//Exclude Employers
+				ArrayList<String> excludeEmployerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeEmployers");
+				excludeEmployerArray.removeAll(excludeKeyWordArray);
+				if(excludeEmployerArray != null && !excludeEmployerArray.isEmpty()){
+					BoolQueryBuilder excldEmployerBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : excludeEmployerArray){
+						excldEmployerBoolQueryBuilder.should(QueryBuilders.matchQuery("employer", keywd));
+					}
+					excldEmployerBoolQueryBuilder.minimumShouldMatch("1");
+					boolQueryBuilder.mustNot(excldEmployerBoolQueryBuilder);
+				} 
+				
+				//Employers
+				ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employers");
+				employerArray.removeAll(excludeEmployerArray);
+				if(employerArray != null && !employerArray.isEmpty()){
+					BoolQueryBuilder employerBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : employerArray){
+						employerBoolQueryBuilder.should(QueryBuilders.matchQuery("employer", keywd));
+					}
+					employerBoolQueryBuilder.minimumShouldMatch("1");
+					boolQueryBuilder.must(employerBoolQueryBuilder);
+				}
+				 
+				//applicant type
+				if(jsonObj.has("applicantType") && StringUtils.isNotEmpty(jsonObj.getString("applicantType"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", jsonObj.getString("applicantType")));
+			    }
+				
+				
+				//CandidateSkills
+				ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "candidateSkills");
+				candidateSkillsArray.removeAll(excludeKeyWordArray);
+				if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
+					BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : candidateSkillsArray){
+						skillBoolQueryBuilder.should(QueryBuilders.matchQuery("skills", keywd));
+					}
+					skillBoolQueryBuilder.minimumShouldMatch("1");
+					boolQueryBuilder.must(skillBoolQueryBuilder);
+				} 
+				
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				ArrayList<Candidate>   candList = new ArrayList<>();
+				if(searchHits != null && searchHits.length >0){
+					for (SearchHit hit : searchHits) {
+						Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(hit.getId()));
+						boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
+						if(flag == true){
+							candidate.setIsFavourite(Constants.YES);
+						}else{
+							candidate.setIsFavourite(Constants.NO);
+						}
+						candList.add(candidate);
+					}
+				}
+			 String resultJson;
+			 resultJson = commonUtil.toJSON(candList);
+			 return resultJson;
+	 }
+	 
+	 private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
+		 ArrayList<String> keyWordList = null;
+		 if(jsonObj.has(param)){
+			 String searchKeywordString = null;
+			 try{
+	   		   JSONArray jsonArray = jsonObj.getJSONArray(param);
+	   		   searchKeywordString = jsonArray.toString();
+		   	  }
+		   	  catch(JSONException e){
+		   		  searchKeywordString= jsonObj.getString(param);
+		   	  }
+			 
+		     searchKeywordString = searchKeywordString.replaceAll("\\[", "").replaceAll("\\]","");
+		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+		 }
+		 else{
+			 keyWordList = new ArrayList<String>();
+		 }
+         return keyWordList;
+     }
+
+	 private ArrayList<FuzzyQueryBuilder> getMatchQueryBuilderList(String keywd){
+		    ArrayList<FuzzyQueryBuilder> matchQueryBuilderList = new ArrayList<FuzzyQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("firstName", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("lastName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("email", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("alternateEmail", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("alternateMobilePhone", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("mobilePhone", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("country", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("city", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("state", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("address", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("experienceYears", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("experienceYears", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("designation", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("designationType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("currentRate", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("currentRateType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("currentRateCurrency", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("expectedRate", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("rateType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("expectedRateCurrencey", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("summary", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("education", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("skills", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("employer", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("certifications", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("candidateType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("noticePriod", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("currentResumeName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("resumeContent", keywd));
+			
+			
+			return matchQueryBuilderList; 
+	 }
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
+	 @RequestMapping(value = "/getHotListCandidates")
+	 public String getHotListCandidates(@RequestParam(value="candidateType", required=false) String  candidateType,
+			 HttpServletRequest request) throws Exception {
+
+		String resultJson;
+		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<Candidate> candList = new ArrayList<Candidate>();
+		List<Candidate>   candidatesList = candidateService.getHotListCandidatesListByOrgLocationID(loginOrgLocation.getId(), candidateType);
+		
 		resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
 	 }
@@ -128,31 +471,20 @@ public class CandidateListRestController {
 	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 			String resultJson;
-		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-			 
-			Candidate can = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
-			logger.info("=================================="+can.getCountry());
-			String skillsList = "";
-			//Set<CandidateSkills> candidateSkills = can.getCandidateSkills();
+			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+			StringBuilder skillsList = new StringBuilder();
 			List<CandidateSkills> candidateSkills = candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
-			
 			int i = 0;
 			for(CandidateSkills skilss: candidateSkills){
 				if(i <= 5){
-				
-					
-					skillsList = skillsList+skilss.getName();
+					skillsList = skillsList.append(skilss.getName());
 					if(i != candidateSkills.size()-1){
-						skillsList = skillsList+",";
+						skillsList = skillsList.append(",");
 					}
 				}
-				
 				i++;
 			}
-			
-			can.setSkillsList(skillsList);
+			can.setSkillsList(skillsList.toString());
 			resultJson = commonUtil.toJSON(can);
 			return resultJson;
      }
@@ -242,11 +574,26 @@ public class CandidateListRestController {
 						cs.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
 						cs.setOrgLocationID(loginOrgLocation);
 						cs.setName(skill);
+						List<String> skillList = Arrays.asList(skills);
+						lookUpDataService.getSkillsBySkillsName(skillList);
 						candidateSkillsService.storeCandidateSkills(cs);
 				 }
 			}
 			return "success";
 			
+		 }
+	   
+	   
+	   @RequestMapping(value = "/getSkillsExcludeExistingSkills")
+	   public String getSkillsExcludeExistingSkills(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
+
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			String resultJson;
+			
+				List<String> candidateSkillNames = candidateSkillsService.getCandidateSkillNamesByCandidateId(candidateId);
+				List<LookUpData> skills = lookUpDataService.getSkillsBySkillsName(candidateSkillNames);
+				resultJson = commonUtil.toJSON(skills);
+				return resultJson;
 		 }
 	   
 	   
@@ -377,9 +724,14 @@ public class CandidateListRestController {
 			Candidate candidate ;
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
-
-			 candidate = candidateService.storeCandidate(jsonObj,loginOrgLocation,user,multiFile);
 			
+			StringBuilder candidateCreateMsg = new StringBuilder();
+			candidate = candidateService.storeCandidate(jsonObj,loginOrgLocation,user,multiFile);
+				if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
+					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateCreateMsg.append("Success!!  ").append(candidate.getFirstName()).append(" Details Updated").toString());
+
+				}
+
 			return "success";
 			
 		 }
@@ -409,9 +761,83 @@ public class CandidateListRestController {
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidateService.saveOrUpdateCandidate(candidate);
+				StringBuilder candidateRemoveMsg = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateRemoveMsg.append("").append(candidate.getFirstName()).append(" Removed").toString());
+	
+			
 			}
 			return "success";
 		 }
+	   
+	   
+	   
+	   @PreAuthorize("hasRole('ROLE_ADD_CANDIDATE_HOTLIST')")
+	   @RequestMapping(value = "/saveCandidateAsFavourite", method = RequestMethod.POST)
+		public @ResponseBody String saveCandidateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate candidate = new Candidate();
+			candidate.setId(candidateId);
+			
+			CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(candidateId, orgLocation.getId());
+			if(null != hotList){
+				if(hotList.getStatus().equals(1)){
+					hotList.setStatus(0);
+				}else{
+					hotList.setStatus(1);
+				}
+				hotList.setTeamId(null);
+				hotList.setUpdatedBy(user.getUserCode());
+				hotList.setUpdatedDate(new Date());
+				candidateHotListService.saveCandidateHotList(hotList);
+				
+			}else{
+				hotList = new CandidateHotList();
+				hotList.setCandidateId(candidate);
+				hotList.setOrgLocationId(orgLocation);
+				hotList.setStatus(1);
+				hotList.setCreatedBy(user.getUserCode());
+				hotList.setCreatedDate(new Date());
+				hotList.setUpdatedBy(user.getUserCode());
+				hotList.setUpdatedDate(new Date());
+				candidateHotListService.saveCandidateHotList(hotList);
+			}
+			
+			
+			
+			return "success";
+		}
+	   
+	   
+	   @PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
+	   @RequestMapping(value = "/assignHotListCandiddatesToTeam", method = RequestMethod.POST)
+		public @ResponseBody String assignHotListCandiddatesToTeam(@RequestParam(value = "teamId", required = false) Long teamId,
+				@RequestParam(value = "hotlist", required = false) String hotlist,HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			String[] candidateIds = hotlist.split(",");
+			Team team =new Team();
+			team.setId(teamId);
+			
+			for(int i = 0; i < candidateIds.length; i++){
+				
+				CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(Long.valueOf(candidateIds[i]), orgLocation.getId());
+				hotList.setTeamId(team);
+				hotList.setUpdatedBy(user.getUserCode());
+				hotList.setUpdatedDate(new Date());
+				candidateHotListService.saveCandidateHotList(hotList);
+			}
+			
+			
+			return "success";
+		}
+	   
+	   
+	   
+	 
 	   
 	   
 	   /**
@@ -479,11 +905,12 @@ public class CandidateListRestController {
 	 	 @RequestMapping(value = "/getCandidatesExportList")
 		 public void getCandidatesExportList(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,
 				                             @RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,
-				                             @RequestParam(value="exportType", required=false) String  exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+				                             @RequestParam(value="exportType", required=false) String  exportType,
+				                             @RequestParam(value="candidateType", required=false) String  candidateType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 
 	 		 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange);
+			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
 			File file = null;
 			if(!"pdf".equalsIgnoreCase(exportType)){
 			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName());
@@ -495,7 +922,10 @@ public class CandidateListRestController {
 				mimeType = "application/octet-stream";
 			}
 			response.setContentType(mimeType);
-			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			
+			StringBuilder filename = new StringBuilder();
+			//changed string to StringBuilder(Prasad Salina)
+			response.setHeader("Content-Disposition", filename.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
 			response.setContentLength((int) file.length());
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());

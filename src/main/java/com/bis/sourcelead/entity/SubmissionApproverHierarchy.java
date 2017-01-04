@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -26,8 +27,10 @@ import com.bis.sourcelead.enums.Submission_Status;
 @Entity
 @Table(name = "SUBMISSION_APPROVER_HIERARCHY", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionApproverHeirarchy")
-public class SubmissionApproverHierarchy {
+public class SubmissionApproverHierarchy implements  Serializable{
 	  
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)

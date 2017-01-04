@@ -15,6 +15,7 @@ import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -50,6 +51,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 	        value = Controller.class))
 @PropertySource({"${propertyLocation:app.properties}", "classpath:exception.properties", "classpath:config.properties"})
 @EnableTransactionManagement
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class WebAppConfig extends WebMvcConfigurationSupport {
 
 	@Bean

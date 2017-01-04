@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
@@ -14,6 +14,9 @@
 <script src="resources/js/jquery-ui.min.js" ></script>
 
 <link rel="stylesheet" href="resources/css/style.css" />
+
+<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 
 <style type="text/css">
@@ -28,7 +31,7 @@ width: 100% !important;
 <script type="text/javascript">
 //On document ready
 $(function(){
-    generateForm();
+    //generateForm();
 });
 </script>
 
@@ -42,7 +45,9 @@ function clientSubmissionTemplate(clientLocationId){
 	result = result  +'<div class="timesheet_head">';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
+	    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_SUBMISSION_TEMPLATE\')">';
 		result = result  +'    	<a href="javascript:void(0)" onClick="addSubmissionTemplateFields('+clientLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Template</a>                                                            ';
+		'</sec:authorize>';
 		result = result  +'     <div id="popUpDivContact" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
@@ -104,9 +109,18 @@ function clientSubmissionTemplate(clientLocationId){
 	                result = result + '<td><div>'+opt.templateName+'</a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot">'+opt.description+'</div></td>';
 	                result = result + '<td><div>';
+	                '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_SUBMISSION_TEMPLATE\')">';
 	                result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+clientLocationId+','+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;';
-	                result = result + '|&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+clientLocationId+','+opt.id+',\''+opt.templateName+'\',\''+opt.description+'\')">Edit</a>';
-      	            result = result +'</div></td>';
+	                '</sec:authorize>';
+	                '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_SUBMISSION_TEMPLATE\',\'ROLE_CREATE_SUBMISSION_TEMPLATE\')">';
+	                result = result + '|&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+clientLocationId+','+opt.id+',\''+opt.templateName+'\')">Edit</a>';
+	                result = result + '<input type="hidden" name="description" id="descriptionText'+opt.id+'" value="'+opt.description+'"';
+	                '</sec:authorize>';
+	                
+	                '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_SUBMISSION_TEMPLATE\',\'ROLE_EDIT_SUBMISSION_TEMPLATE\')">';
+	               	 result = result + '--';
+	                '</sec:authorize>';
+	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				} 
 	        		
@@ -153,9 +167,10 @@ function templatepagination(){
 
 
 <script type="text/javascript">
-	function addSubmissionTemplateFields(clientLocationId,templateId,templateName,description) {
+	function addSubmissionTemplateFields(clientLocationId,templateId,templateName) {
 		
 		var sourceleadUrl ='${sourceleadUrl}';
+		var description = document.getElementById("descriptionText"+templateId).value; 
 		var result = "";
 		
 		result = result + '<section class="clearfix createTemplate">';

@@ -110,7 +110,8 @@
                    </c:if>  
                  </c:forEach> 
                 </select>
-                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i> </div>
+                <!-- Temporarily Commented.. because contact user doesnt exists, so issue occurs in enrolled org list -->
+                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" style="display: none"></i> </div>
             </div>
           </div>
           </div>
@@ -156,7 +157,7 @@
 	             <div class="form-group">
 	              <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
-	                <select multiple class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+	                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
 	                <c:forEach var="user" items="${userList}">
 		                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
 	                </c:forEach>
@@ -164,19 +165,14 @@
 	              </div>
 	            </div>
 	            
-	            <div class="form-group" id="roleDiv" style="display: block;">
+	            <!-- <div class="form-group" id="roleDiv" style="display: block;">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
 	                            <option value="">-Select Role-</option>
-								<option value="1">Admin</option>
-								<option value="6">Account Manager</option>
-								<option value="7">Sales Manager</option>
-								<option value="5">HR Manager</option>
-								<option value="8">Recruiter</option>
 			             </select>
                   </div>
-                </div>
+                </div> -->
                 
                 <div class="form-group" id="userRoleDiv" style="display: none;">
 					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
@@ -252,9 +248,9 @@ function getOrgName(){
 	$("#webSite").attr("disabled", false);
 	$("#webSite" ).val('');
 	
-	$("#role" ).val('');
+	/* $("#role" ).val('');
 	$("#role").attr("data-validation", "required");
-	document.getElementById("roleDiv").style.display="";
+	document.getElementById("roleDiv").style.display=""; */
 	document.getElementById("userRoleDiv").style.display="none";
 	
 	$.ajax({                           
@@ -588,6 +584,8 @@ function validateEmail(){
 	 var orgLocationId = vendorName.split(',');
 	 var orgRelationId = orgLocationId[0];
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var SourceLeadWeb_userId= '${SourceLeadWeb_userId}';
+	 
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
@@ -595,16 +593,33 @@ function validateEmail(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
+		        	var flag=false;
 		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		if(i == 0){
-			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
-			        		}else{
-			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
-			        		}
-			        		
-					}
+	        		{
+	        		    var check = json[i];
+		        		if(check.id == SourceLeadWeb_userId){
+		        			flag=true;
+		        		}
+	        		}
+		        	if(flag){
+				        	for (var i=0; i<json.length; i++)
+							{
+					        	    var opt = json[i];
+					        		if(opt.id == SourceLeadWeb_userId){
+					        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+					        		}
+					        		else{
+					        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					        		}
+			                }
+		        	}
+		        	if(!flag){
+	                	for (var j=0; j<json.length; j++)
+						{
+				        	var opt1 = json[j];
+				        	output = output + "<option value='" +opt1.id+ "'>"+opt1.firstName+" "+opt1.lastName+"</option>";
+						}
+           		 	}
 		        	$("#owner").empty();
 			        $("#owner").append(output);
 			        $('#owner').trigger("chosen:updated");
@@ -662,16 +677,16 @@ function getSpocUserDetails(){
 	        		 
 	        		 
 	        		 if(json[3] != null && json[3] != ''){
-	        			$("#role").removeAttr("data-validation");
-	        			$("#role" ).val('');
-        			    document.getElementById("roleDiv").style.display="none";
+	        			 /*$("#role").removeAttr("data-validation");
+	        			 $("#role" ).val('');
+        			    document.getElementById("roleDiv").style.display="none"; */
    	        			document.getElementById("userRoleDiv").style.display="";
    	        			$("#userRole").val(json[3]);
    	        			$("#userRoleText").val(json[4]);
 	        		 }else{
-	        			 $("#role").attr("data-validation", "required");
+	        			/*  $("#role").attr("data-validation", "required"); */
 	        			 $("#userRole" ).val('');
-	        			 document.getElementById("roleDiv").style.display="";
+	        			/*  document.getElementById("roleDiv").style.display=""; */
 	        			 document.getElementById("userRoleDiv").style.display="none";
 	        		 }
 			      	 
@@ -690,9 +705,9 @@ function getSpocUserDetails(){
 	    $("#phoneNumber").attr("disabled", false);
 	    $("#phoneNumber").val('');
 	    
-	    $("#role").attr("data-validation", "required");
+	    /* $("#role").attr("data-validation", "required"); */
 	    $("#userRole" ).val('');
-	    document.getElementById("roleDiv").style.display="";
+	  /*   document.getElementById("roleDiv").style.display=""; */
 		document.getElementById("userRoleDiv").style.display="none";
 	   
 	}
@@ -702,7 +717,43 @@ function getSpocUserDetails(){
 
 
 
-
+<script type="text/javascript">
+function getRolesList(){
+	var vendorName = document.getElementById("vendorName").value;
+	var array = vendorName.split(',');
+	var orgLocationId = array[1];
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	if(vendorName){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getRolesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&moduleType=ATS", 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select Role --</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.displayName+"</option>";
+				}
+	        	$("#role").empty();
+		        $("#role").append(output);
+		        $('#role').trigger("chosen:updated");
+		        $("#loading").removeAttr("style"); 
+	        },
+	    });
+	}else{
+		var output = "";
+    	 output = output + "<option value=''>-- Select Role --</option>"; 
+    	 $("#role").empty();
+	     $("#role").append(output);
+	     $('#role').trigger("chosen:updated");
+	}  
+	 
+}
+</script>
 
 <script type="text/javascript">
 	(function($) {

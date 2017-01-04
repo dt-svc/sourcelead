@@ -1,13 +1,10 @@
 package com.bis.sourcelead.rest;
 
-import java.io.Writer;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -18,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.EmailScenario;
+
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -41,17 +37,12 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
 public class ProjectsRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ProjectsRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -104,16 +95,25 @@ public class ProjectsRestController {
 	  */
 	 
 	 @RequestMapping(value = "/storeProject" , method = RequestMethod.POST)
-	 public @ResponseBody  String storeProject(@RequestParam(value="json", required=false) String json) throws Exception {
+	 public @ResponseBody  String storeProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		   
 		    String json1 = "{"+json+"}";
 		    JSONObject jsonObj = new JSONObject(json1);
+		 	/*OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");*/
 		    String outPut =  projectsService.storeProject(jsonObj);
+/*		    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");*/
 		    return outPut;		
 			 
 	   }
 	 
-	 @RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
+	 
+	 /**
+	 * @author shivayogi. 
+	 * @Description : this is duplicate method, this method is not used anywhere.This method is same as storeProject() .
+	 */
+	@RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		   
 		String json1 = "{" + json + "}";
@@ -175,7 +175,7 @@ public class ProjectsRestController {
 		return isDeleted;
 	  }
 	  
-	@RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
+	/*@RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
 	public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		    
 		    String json1 = "{"+json+"}";	
@@ -185,7 +185,7 @@ public class ProjectsRestController {
 		 	userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS","",new Org());
 			return "SUCCESS";
 		}
-	  
+	  */
 	  /**
 		  * This method for getEmployeesList by by excluding  Level1 and Level2 Managers 
 		  * @param id

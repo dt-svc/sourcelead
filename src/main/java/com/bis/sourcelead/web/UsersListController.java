@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -70,6 +72,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	 * @param request
 	 * @return
 	 */
+	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
 	@RequestMapping(value = "/usersList")
 	public ModelAndView usersList(HttpServletRequest request) {
 		
@@ -81,6 +84,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		model.setViewName("users/usersList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -91,7 +96,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		request.getSession().setAttribute("sessionData",sessionData);
 		
 		try {
-			rolesList = rolesService.getMoudleRoles(org.getId(), loginUserRoleId);
+			rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		} catch (Exception e) {
 			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		}
@@ -124,6 +129,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	 * @return
 	 * @throws Exception 
 	 */
+	@PreAuthorize("hasRole('ROLE_EXPORT_USERS')")
 	@RequestMapping(value = "/getExportUsers")
 	public void getExportUsersData(HttpServletRequest request,
 			@RequestParam(value="userRole", required=false) String userRole,
@@ -137,7 +143,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		 List<UserRole> notLoggedInList = null;
 		 DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
- 		 Sheet createExcelsheet = createExcelworkbook.createSheet("users "+dateFormat.format(new Date()));
+		 StringBuilder excelSB = new StringBuilder();
+ 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("users ").append(dateFormat.format(new Date())).toString());
          
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -163,7 +170,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  				rolesList = userRoleService.getUsersListByUserNameAndLocationId(searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
  			}
  			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName)){
- 				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
+ 				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),0);
  			}
  		
  			if(null != rolesList){
@@ -178,7 +185,11 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  		File file = null;
  		if(!"pdf".equalsIgnoreCase(exportType)){
  			createExcelsheet = userRoleService.getExcelFile(createExcelsheet,createExcelworkbook,activeList,inactiveList,notLoggedInList,userRolesList,userState);
- 	 		  file = new File("users_"+dateFormat.format(new Date())+".xls");
+ 	 		 /* file = new File("users_"+dateFormat.format(new Date())+".xls");*/
+ 			  StringBuilder templateSB = new StringBuilder();
+ 	 		  file = File.createTempFile(templateSB.append("users_").append(dateFormat.format(new Date())).toString(),".xls");
+ 	 		  file.setReadable(true);
+ 	 		  
  			 FileOutputStream fos = new FileOutputStream(file);
  			 try {
  				createExcelworkbook.write(fos);
@@ -195,7 +206,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 				mimeType = "application/octet-stream";
 			}
 			response.setContentType(mimeType);
-			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			StringBuilder fileNameSB = new StringBuilder();
+			response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
 			response.setContentLength((int) file.length());
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());

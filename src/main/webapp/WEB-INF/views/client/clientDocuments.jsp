@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style type="text/css">
 .edit-details {
 text-align:left;
@@ -51,9 +51,14 @@ function clientDocuments(orgRelationId,clientLocationId){
 	
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
+	result  = result + '<div class="success_pop" id="clientDocSelector" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="clientDococMsgDiv"></span>';
+    result  = result + '</div>';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
+	    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CLIENT_DOCUMENT\')">';
 		result = result  +'    	<a href="javascript:void(0)" onClick="addDocument('+clientLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
+		'</sec:authorize>';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
@@ -90,6 +95,18 @@ function clientDocumentsList(clientLocationId,orgRelationId){
              			 location.replace(sourceleadUrl+"/errorPage");
              		 }
              		 else{
+             			var json = JSON.parse(data);
+             			/* for (var i = 0; i < 1; i++) { 
+             				var val= json[i];
+             				var opt = "";
+             					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+	             					opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
+	             					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+	             					opt  = opt + '</div>';
+             						}
+             					$("#msgDiv").empty();
+             					$("#msgDiv").append(opt);
+             				} */
 	                	 $("#clientDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -106,7 +123,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
+	                     
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
@@ -150,12 +167,25 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	 result = result+'	 <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
+	                    	    result = result+'	 <td><div class="tblicons">';
+	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_CLIENT_DOCS\')">'; 
+	                    	    result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
+	                    	 '</sec:authorize>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+clientLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+'); getClientDocument('+clientLocationId+','+orgRelationId+', '+opt.id+');"></a>';
-					           	 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteClientDocument('+clientLocationId+','+orgRelationId+','+opt.id+');"></i>';
+	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 
+	                    		 	result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+clientLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+'); getClientDocument('+clientLocationId+','+orgRelationId+', '+opt.id+');"></a>';
+	                    		 '</sec:authorize>';
+	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_DOCUMENT\')">'; 
+	                    		 	result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteClientDocument('+clientLocationId+','+orgRelationId+','+opt.id+',\''+opt.docName+'\');"></i>';
+	                    		 '</sec:authorize>';
+	                    		 
+	                    		 '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\',\'ROLE_DELETE_CLIENT_DOCUMENT\')">';
+	                    			 result = result+'--';
+	                    		 '</sec:authorize>';
 	                    	 }
 	                    	 result = result+'	            </div></td>';
+	                    	 
+	                    	 
 	                    	 result  = result + '</tr>';
 	                      } 
 	                     result = result +" </tbody>";
@@ -163,8 +193,23 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    
 	                     $("#clientDocumentsList").append(result); 
 	                     documentpagination(); 
+	                     //msgFadein();
 			    	} 
                }else{
+            	   
+            	    var val= "${SourceLeadWeb_deleteDocument}";
+    				var opt = "";
+    					if(val != null && val != '' && val != 'undefined'){
+        					opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
+        					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val+'</span>';
+        					opt  = opt + '</div>';
+    						}
+    					$("#msgDiv").empty();
+    					$("#msgDiv").append(opt);
+    					<%
+    					session.removeAttribute( "deleteDocument" );
+    			         %>
+            	   
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
@@ -178,6 +223,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 					 result = result+"  </div> "; 
 					$("#clientDocumentsList").empty();
 				    $("#clientDocumentsList").append(result); 
+				    msgFadein();
                }
         },
           
@@ -237,7 +283,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'	                            </span> </label>';
-	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="File not selected..." field-name="Document" data-validation="required validate_Space validatedoc">';
+	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Document" data-validation="required validate_Space validatedoc">';
 	result = result+'	                        </div>';
 	result = result+'	                    </div>  ';  
 	result = result+'	                  </div>   ';  
@@ -405,7 +451,15 @@ function closePopup(){
 		            		 }
 		            		 else{
 		            			$("#popUpDiv").removeClass("edit-details-active");
+		            			$("#clientDocSelector").removeAttr("style");
+		            			$("#clientDocSelector").css({ display: "block" });
+		            			if(docId != null){
+		            				$("#clientDococMsgDiv").html("Success!! Document details updated");
+		            			}else{
+		            				$("#clientDococMsgDiv").html("Success!! New document added");
+		            			}
 		            			clientDocumentsList(clientLocationId,orgRelationId);
+		            			clientDocMsgFadein();
 		            		 }
 						},
 					});
@@ -591,14 +645,14 @@ function removeResumeNameDiv(){
 </script>
 
 <script>
-function deleteClientDocument(clientLocationId,orgRelationId,docId){
+function deleteClientDocument(clientLocationId,orgRelationId,docId,docName){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForDoc("+clientLocationId+","+orgRelationId+","+docId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForDoc("+clientLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
 	result = result +"	</div>";
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -614,7 +668,7 @@ $(".project_inn_mask").fadeOut(200);
 </script>
 
 <script>
-function saveReasonForDoc(clientLocationId,orgRelationId,docId){
+function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
 	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
@@ -632,7 +686,11 @@ function saveReasonForDoc(clientLocationId,orgRelationId,docId){
         		 else{
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
+        			 $("#clientDocSelector").removeAttr("style");
+         			 $("#clientDocSelector").css({ display: "block" });
+         			 $("#clientDococMsgDiv").html(""+docName+" Removed");
         			 clientDocumentsList(clientLocationId,orgRelationId);
+        			 clientDocMsgFadein();
         		 }
    		    }
 	     });
@@ -645,3 +703,12 @@ function saveReasonForDoc(clientLocationId,orgRelationId,docId){
 	}
 }
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function clientDocMsgFadein() {
+		$("#clientDocSelector").fadeIn(200);
+        $('#clientDocSelector').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->

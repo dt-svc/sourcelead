@@ -1,4 +1,4 @@
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!-- client details View starts-->
 <script type="text/javascript">
 	function clientDetails(clientLocationId,orgRelationID) {
@@ -13,12 +13,20 @@
 						var state = "";
 						var country = "";
 						
+						if(json.msg != null && json.msg != "" && json.msg != 'undefined'){
+							result = result+ '<div class="success_pop" id="selector1" style="display: block;">';
+							result = result+ ' <i class="fa fa-check-circle"></i><span>'+json.msg+'</span>';
+							result = result+ '</div>';
+						}
+						
 						result = result+ '<div class="project_tabs_inn_table">';
                         
 						result = result + '<div class="project_details">';
-						result = result + ' <div class="useredit useredit_a">';
-						result = result + '<a id="edit-client" href="javascript:editClientDetails('+clientLocationId+','+orgRelationID+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-						result = result + ' </div>';
+						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CLIENT\')">';
+							result = result + ' <div class="useredit useredit_a">';
+							result = result + '<a id="edit-client" href="javascript:editClientDetails('+clientLocationId+','+orgRelationID+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+							result = result + ' </div>';
+						'</sec:authorize>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client name:</strong>';
@@ -110,7 +118,7 @@
 											"display", "none");
 									$(tab).fadeIn();
 								});
-
+						msgFadeIn();
 					}
 				});
 	}
@@ -534,3 +542,12 @@ function getCities(){
 	}
 }
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function msgFadeIn() {
+	    setTimeout(function(){ 
+	    	$('#selector1').fadeOut('slow'); }, 500);
+	}
+</script> 
+<!-- End -->

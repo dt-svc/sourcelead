@@ -31,22 +31,22 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class RequirementOffersServiceImpl implements RequirementOffersService{
@@ -77,14 +77,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     private String sourceleadUrl;
 	
 	@Autowired
-	private RequirementAssignToService requirementAssignToService;
-	
-	
+	RequirementOfferHistoryService requirementOfferHistoryService;
 	
 	@Autowired
 	private CandidateService candidateService;
 	@Autowired
 	private RequirementService requirementService;
+	
+	@Autowired
+	private RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@Override
 	public void saveRequirementOffers(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,MultipartHttpServletRequest request) throws Exception {
@@ -92,7 +93,6 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		String maxAdminTimeTypeRowNum = jsonObj.getString("maxOfferRowNum");
 		int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
-		RequirementInterview requirementInterview  = null;
 		
 		RequirementOffers requirementOffers = null;
 		
@@ -139,15 +139,6 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 									requirementOffers.setPositionType(jsonObj.getString(c+"PositionType"));
 								}
 								
-								if(jsonObj.has("notifyToVendor") && !jsonObj.getString("notifyToVendor").isEmpty()){
-									requirementOffers.setNotifyToVendor(jsonObj.getString("notifyToVendor"));
-								}
-								
-								if(jsonObj.has("notifyToApplicant") && !jsonObj.getString("notifyToApplicant").isEmpty()){
-									requirementOffers.setNotifyToApplicant(jsonObj.getString("notifyToApplicant"));
-								}
-                               
-								
                                final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
                    		       final Map files = multiRequest.getFileMap();
                               
@@ -157,34 +148,90 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                                        String fileName = multiFile.getOriginalFilename();
                                }*/
                                MultipartFile  multiFile = (MultipartFile)files.get(c+"OfferAttachment");
-                               requirementOffers.setDocFile(multiFile.getBytes());
-							   requirementOffers.setFileName(multiFile.getOriginalFilename());
-							   requirementOffers.setFileContentType(multiFile.getContentType());
+                               if(null != multiFile && null != multiFile.getContentType() && null != multiFile.getOriginalFilename() && !"".equals(multiFile.getOriginalFilename())){
+                            	   requirementOffers.setDocFile(multiFile.getBytes());
+    							   requirementOffers.setFileName(multiFile.getOriginalFilename());
+    							   requirementOffers.setFileContentType(multiFile.getContentType());
+                               }
+                               
 							  
 								requirementOffers.setStatus(Constants.RECORD_ACTIVE);
+								requirementOffers.setOfferStatus(Constants.OFFERMADE);
 								requirementOffers.setCreatedDate(new Date());
 								requirementOffers.setCreatedBy(loginUser.getUserCode());
 								requirementOffers.setUpdatedDate(new Date());
 								requirementOffers.setUpdatedBy(loginUser.getUserCode());
-					            requirementOffersDao.storeRequirementOffers(requirementOffers);
-					           
+								RequirementOffers updateOffer = requirementOffersDao.storeRequirementOffers(requirementOffers);
+					           RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
+					           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
 					           requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
+					           
+					           if(jsonObj.has("isClientOffer")){
+					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
+					           }else{
+					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
+					           }
+					           requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           
-								RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementSubmission.getId(), orgLocations.getId());
-                                if(sourcesubmission !=null ){
-                                	sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
-                                	requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
-                                }
-					            
-                                
-                                // This is to  notify  the Vendor
-					            if(jsonObj.has("notifyToVendor")  && !jsonObj.getString("notifyToVendor").isEmpty()){
-									List<Requirement> vendorRequirement = requirementService.getRequirementListById(requirementSubmission.getRequirement().getId());
-									Requirement clientRequirement= requirementService.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
-									offerMailToVendors(loginUser,orgLocations,clientRequirement,vendorRequirement);
-					            }
+					           
+					           //to save offer history
+					           RequirementOfferHistory offerHistory = new RequirementOfferHistory();
+					           offerHistory.setOfferId(updateOffer);
+					           offerHistory.setSubmissionId(submission);
+					           offerHistory.setOrgLocationId(orgLocations);
+					           if(jsonObj.has("isClientOffer")){
+					        	   offerHistory.setOfferSourceType(Constants.CLIENT_OFFERMADE);
+					           }else{
+					        	   offerHistory.setOfferSourceType(Constants.OFFERMADE);
+					           }
+					           if(jsonObj.has("notifyToApplicant") && !jsonObj.getString("notifyToApplicant").isEmpty()){
+					        	   offerHistory.setNotifyToApplicant(jsonObj.getString("notifyToApplicant"));
+					           }
+					           if(jsonObj.has("notifyToVendor") && !jsonObj.getString("notifyToVendor").isEmpty()){
+					        	   offerHistory.setNotifyToVendor(jsonObj.getString("notifyToVendor"));
+					           }
+					           
+					           offerHistory.setStatus(Constants.RECORD_ACTIVE);
+					           offerHistory.setCreatedDate(new Date());
+					           offerHistory.setCreatedBy(loginUser.getUserCode());
+					           offerHistory.setUpdatedDate(new Date());
+					           offerHistory.setUpdatedBy(loginUser.getUserCode());
+					           requirementOfferHistoryService.storeRequirementOfferHistory(offerHistory);
+					           
+					           
+					           
+					           if(requirementSubmission.getSourceSubmission() !=null){
+					        	   RequirementSubmission sourcesubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
+					        		   if(jsonObj.has("notifyToVendor") && !jsonObj.getString("notifyToVendor").isEmpty() && sourcesubmission != null){
+					        			   requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
+		                                	sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
+		                                	sourcesubmission.setUpdatedDate(commonUtil.currentDate());
+		                                	requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
+		                                	
+		                                	//to save offer history
+		     					           RequirementOfferHistory vendorOfferHistory = new RequirementOfferHistory();
+		     					           vendorOfferHistory.setOfferId(updateOffer);
+							        	   vendorOfferHistory.setSubmissionId(requirementSubmission.getSourceSubmission());
+							        	   vendorOfferHistory.setOrgLocationId(requirementSubmission.getVendorLocationId());
+								           vendorOfferHistory.setOfferSourceType(Constants.CLIENT_OFFERMADE);
+								           vendorOfferHistory.setNotifyToApplicant(Constants.NO);
+								           vendorOfferHistory.setNotifyToVendor(Constants.NO);
+								           vendorOfferHistory.setStatus(Constants.RECORD_ACTIVE);
+								           vendorOfferHistory.setCreatedDate(new Date());
+								           vendorOfferHistory.setCreatedBy(loginUser.getUserCode());
+								           vendorOfferHistory.setUpdatedDate(new Date());
+								           vendorOfferHistory.setUpdatedBy(loginUser.getUserCode());
+		     					           requirementOfferHistoryService.storeRequirementOfferHistory(vendorOfferHistory);
+		                                	
+		                                	// This is to  notify  the Vendor
+		                                	Requirement vendorRequirement= requirementService.getRequirementByRequirementId(sourcesubmission.getRequirement().getId());
+											offerMailToVendors(loginUser,orgLocations,vendorRequirement);
+					        		   }
+					        	   
+					           }
+					           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser, requirementSubmissionHistory);
 					            
 					            // This is to  notify  the Applicant
 					            if(jsonObj.has("notifyToApplicant")  && !jsonObj.getString("notifyToApplicant").isEmpty()){
@@ -221,33 +268,34 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	}
 	
 	@Override
-    public void offerMailToVendors(User loginUser,OrgLocations loginOrgLocations,Requirement clientrequirement,List<Requirement> vendorRequirement) throws Exception {
-		for(Requirement req :vendorRequirement){
+    public void offerMailToVendors(User loginUser,OrgLocations loginOrgLocations,Requirement clientrequirement) throws Exception {
+		
 		
             EmailMessage emailMessage = new EmailMessage();
             emailMessage.setFirstName(loginUser.getFirstName());
             emailMessage.setLastName(loginUser.getLastName());
-            emailMessage.setToEmail(req.getSpocId().getSpocUser().getEmail());
+            emailMessage.setToEmail(clientrequirement.getSpocId().getSpocUser().getEmail());
             emailMessage.setFromEmail("peopleaxisindia@gmail.com");
             emailMessage.setCreatedBy(loginUser.getUserCode());
-            emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
+            StringBuilder nameBuilder=new StringBuilder();
+            emailMessage.setFromName(nameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
             // setting the class filed values
             Map<String, String> globalVarsMap = new HashMap<String, String>();
             
-            if (req.getOrgLocationId().getOrg().getOrgName() != null && !"".equalsIgnoreCase(req.getOrgLocationId().getOrg().getOrgName())) {
-                    globalVarsMap.put("OrgnanizationName",req.getOrgLocationId().getOrg().getOrgName());
+            if (clientrequirement.getOrgLocationId().getOrg().getOrgName() != null && !"".equalsIgnoreCase(clientrequirement.getOrgLocationId().getOrg().getOrgName())) {
+                    globalVarsMap.put("OrgnanizationName",clientrequirement.getOrgLocationId().getOrg().getOrgName());
             } else {
                     globalVarsMap.put("OrgnanizationName", "--");
             }
             
-            if (req.getSpocId().getSpocUser().getFirstName() != null && !"".equalsIgnoreCase(req.getSpocId().getSpocUser().getFirstName())) {
-                globalVarsMap.put("vendorContact",req.getSpocId().getSpocUser().getFirstName());
+            if (clientrequirement.getSpocId().getSpocUser().getFirstName() != null && !"".equalsIgnoreCase(clientrequirement.getSpocId().getSpocUser().getFirstName())) {
+                globalVarsMap.put("vendorContact",clientrequirement.getSpocId().getSpocUser().getFirstName());
             } else {
                 globalVarsMap.put("vendorContact", "--");
             }
-            if (req.getJobTitle()!= null && !"".equalsIgnoreCase(req.getJobTitle()))  {
-                    globalVarsMap.put("requirementName", req.getJobTitle());
+            if (clientrequirement.getJobTitle()!= null && !"".equalsIgnoreCase(clientrequirement.getJobTitle()))  {
+                    globalVarsMap.put("requirementName", clientrequirement.getJobTitle());
             } else {
                     globalVarsMap.put("requirementName", "--");
             }
@@ -257,29 +305,41 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             } else {
                     globalVarsMap.put("loginUser", "--");
             }
+            if (loginOrgLocations.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocations.getOrg().getOrgName())) {
+                globalVarsMap.put("clientOrgnanizationName", loginOrgLocations.getOrg().getOrgName());
+            } else {
+                globalVarsMap.put("clientOrgnanizationName", "--");
+            }
             
-            globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+            StringBuilder linkSB=new StringBuilder();
+            globalVarsMap.put("link",linkSB.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 
             // setting the Recipient information
             ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
             EmailRecipient emailRecipient = new EmailRecipient();
             emailRecipient.setEmail(emailMessage.getToEmail());
-            emailRecipient.setName(emailMessage.getFirstName() + " " + emailMessage.getLastName());
+            StringBuilder nameStringBuilder=new StringBuilder();
+            emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
             emailRecipientList.add(emailRecipient);
 
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
             EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_EMAIL);
+            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_NOTIFICATION);
+
 
             // covert subject,body and signature
             String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
             String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
             String url = "";
+            
+            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+           notificationScenario.setBody(notificationbody);
+
 
             // construct HTML template using required data
-            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-                            signature, url, new Org());
+            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, new Org());
             emailMessage.setSubject(subject);
             emailMessage.setMessageBody(emailTemplate);
 
@@ -288,6 +348,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             try {
     			
                 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
+                String actionLink="";
+               OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
+				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
         		}catch (MessagingException e) {
         			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
         		} catch (UnsupportedEncodingException e) {
@@ -295,7 +358,6 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
         		}
             
             
-		}
 }
 	
 	@Override
@@ -307,7 +369,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setToEmail(applicant.getCandidate().getEmail());
             emailMessage.setFromEmail("peopleaxisindia@gmail.com");
             emailMessage.setCreatedBy(loginUser.getUserCode());
-            emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
+            StringBuilder attachmentBuilder=new StringBuilder();
+            emailMessage.setFromName(attachmentBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
             // setting the class filed values
             Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -352,34 +415,29 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             }
             
             
-        globalVarsMap.put("acceptLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Accepted&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
-        
-        globalVarsMap.put("rejectLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Rejected&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
+        //commented by prasad salina, here i am sending offer id    
+       /* globalVarsMap.put("acceptLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Accepted&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+        globalVarsMap.put("rejectLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Rejected&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");*/
 
+         StringBuilder acceptLinkBuilder=new StringBuilder();
+         StringBuilder rejectLinkBuilder=new StringBuilder();
+         globalVarsMap.put("acceptLink",acceptLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirementOffer?offerStatus=Accepted&offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+         globalVarsMap.put("rejectLink",rejectLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirementOffer?offerStatus=Rejected&offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
         
-//        File logFile = new File(sLogFilename);
-//        if(logFile.length() == 0)
-//            System.out.println("NO ERRORS!");
-//        else
-//            System.out.println("SOME ERRORS!");
-        
-        
-        if( !requirementOffers.getFileName().isEmpty() ){
-            globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"downloadOfferAttachment?offerId="+requirementOffers.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/></div></a>");
-
+        StringBuilder attachmentLinkBuilder=new StringBuilder();
+        if(requirementOffers.getFileName() != null && !requirementOffers.getFileName().isEmpty() ){
+            globalVarsMap.put("attachment",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("downloadOfferAttachment?offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
         }else{
-            globalVarsMap.put(" ","<a href='"+sourceleadUrl+"/"+"downloadOfferAttachment?offerId="+requirementOffers.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/></div></a>");
+            globalVarsMap.put(" ",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("downloadOfferAttachment?offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
 
         }
-
-            
-            
 
             // setting the Recipient information
             ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
             EmailRecipient emailRecipient = new EmailRecipient();
             emailRecipient.setEmail(emailMessage.getToEmail());
-            emailRecipient.setName(emailMessage.getFirstName() + " " + emailMessage.getLastName());
+            StringBuilder nameBuilder=new StringBuilder();
+            emailRecipient.setName(nameBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
             emailRecipientList.add(emailRecipient);
 
             // getting the current EmailScenario by EmailScenario unique name and
@@ -425,27 +483,34 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	public void offerAcceptEmailScenario(User loginUser,OrgLocations orgLocations,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission)
 			throws Exception {
 
+		/*
+		 * this touser is  the user who made Offer
+		 */
+		User touser = userService.getUserByUserCode(requirementOffers.getCreatedBy());
+		
 		EmailMessage emailMessage = new EmailMessage();
-		emailMessage.setFirstName(loginUser.getFirstName());
-		emailMessage.setLastName(loginUser.getLastName());
-		emailMessage.setToEmail(requirement.getSpocId().getSpocUser().getEmail());
+		emailMessage.setFirstName(touser.getFirstName());
+		emailMessage.setLastName(touser.getLastName());
+		emailMessage.setToEmail(touser.getEmail());
 		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-		emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		StringBuilder contactBuilder=new StringBuilder();
+		emailMessage.setFromName(contactBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 			
-			if(requirementSubmission.getCandidateName() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidateName())){
-				globalVarsMap.put("ApplicantName", requirementSubmission.getCandidateName());	
+			if(requirementSubmission.getCandidate() != null){
+				StringBuilder applicantNameBuilder=new StringBuilder();
+				globalVarsMap.put("ApplicantName",applicantNameBuilder.append(requirementSubmission.getCandidate().getFirstName()).append("").append(requirementSubmission.getCandidate().getLastName()).toString());	
 			}
 			else{
 				globalVarsMap.put("ApplicantName", "---");	
 			}
-			if(requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())){
-				globalVarsMap.put("requirementName", requirement.getJobTitle());
+			if(requirementSubmission.getRequirement() != null){
+				globalVarsMap.put("RequirementName", requirementSubmission.getRequirement().getJobTitle());
 			}
 			else{
-				globalVarsMap.put("requirementName", "---");
+				globalVarsMap.put("RequirementName", "---");
 
 			}
 			if(requirementOffers.getDateOfJoining() != null ){
@@ -462,28 +527,30 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			globalVarsMap.put("Rate","---" );
 	
 			}
-			if(requirement.getSpocId().getSpocUser().getFirstName() != null && !"".equalsIgnoreCase(requirement.getSpocId().getSpocUser().getFirstName())){
-			globalVarsMap.put("ClientContactName", requirement.getSpocId().getSpocUser().getFirstName()+ " " +requirement.getSpocId().getSpocUser().getLastName());
+			if(requirement.getParentRequirement()!= null ){
+			StringBuilder clientContactNameBuilder=new StringBuilder();
+			globalVarsMap.put("ClientContactName",clientContactNameBuilder.append(touser.getFirstName()).append(" ").append(touser.getLastName()).toString());
 
 			}
 			else{
 			globalVarsMap.put("ClientContactName", "---");
 	
 			}
-			globalVarsMap.put("VendorContact",loginUser.getFirstName()+" "+loginUser.getLastName() );
+			StringBuilder vendorContactBuilder=new StringBuilder();
+			globalVarsMap.put("VendorContact",vendorContactBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		
 		
 		// setting the Recipient information
 		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		EmailRecipient emailRecipient = new EmailRecipient();
 		emailRecipient.setEmail(emailMessage.getToEmail());
-		emailRecipient.setName(emailMessage.getFirstName() + " " + emailMessage.getLastName());
+		StringBuilder contactsBuilder=new StringBuilder();
+		emailRecipient.setName(contactsBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		emailRecipientList.add(emailRecipient);
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService
-				.getEmailScenarioByUniqueName(Constants.OFFERACCEPT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFERACCEPT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 
 		// covert subject,body and signature
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
@@ -505,24 +572,32 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	public void offerRejectEmailScenario(User loginUser,OrgLocations loginOrgLocations,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission)
 			throws Exception {
 
+		/*
+		 * this touser is  the user who made Offer
+		 */
+		User touser = userService.getUserByUserCode(requirementOffers.getCreatedBy());
+		
 		EmailMessage emailMessage = new EmailMessage();
-		emailMessage.setFirstName(loginUser.getFirstName());
-		emailMessage.setLastName(loginUser.getLastName());
-		emailMessage.setToEmail(requirement.getSpocId().getSpocUser().getEmail());
+		emailMessage.setFirstName(touser.getFirstName());
+		emailMessage.setLastName(touser.getLastName());
+		emailMessage.setToEmail(touser.getEmail());
 		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-		emailMessage.setFromName(loginUser.getFirstName()+""+loginUser.getLastName());
+		StringBuilder nameStringBuilder=new StringBuilder();
+		emailMessage.setFromName(nameStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		
-		if(requirementSubmission.getCandidateName() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidateName())){
-			globalVarsMap.put("ApplicantName", requirementSubmission.getCandidateName());	
+		if(requirementSubmission.getCandidate() != null){
+			StringBuilder applicantNameBuilder=new StringBuilder();
+			globalVarsMap.put("applicantName",applicantNameBuilder.append(requirementSubmission.getCandidate().getFirstName()).append("").append(requirementSubmission.getCandidate().getLastName()).toString());	
 		}
+		
 		else{
-			globalVarsMap.put("ApplicantName", "---");	
+			globalVarsMap.put("applicantName", "---");	
 		}
-		if(requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())){
-			globalVarsMap.put("requirementName", requirement.getJobTitle());
+		if(requirementSubmission.getRequirement() != null ){
+			globalVarsMap.put("requirementName", requirementSubmission.getRequirement().getJobTitle());
 		}
 		else{
 			globalVarsMap.put("requirementName", "---");
@@ -530,40 +605,41 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		}
 		if(requirementOffers.getDateOfJoining() != null ){
 		requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));	
-		globalVarsMap.put("JoinDate", requirementOffers.getDateOfJoiningStr());
+		globalVarsMap.put("joinDate", requirementOffers.getDateOfJoiningStr());
 		}
 		else{
-		globalVarsMap.put("JoinDate", "---");
+		globalVarsMap.put("joinDate", "---");
 		}
 		if(requirementOffers.getAmount() != null && !"".equalsIgnoreCase(requirementOffers.getAmount())){
-		globalVarsMap.put("Rate",requirementOffers.getAmount() );
+		globalVarsMap.put("rate",requirementOffers.getAmount() );
 		}
 		else{
-		globalVarsMap.put("Rate","---" );
+		globalVarsMap.put("rate","---" );
 
 		}
-		if(requirement.getSpocId().getSpocUser().getFirstName() != null && !"".equalsIgnoreCase(requirement.getSpocId().getSpocUser().getFirstName())){
-			globalVarsMap.put("ClientContactName", requirement.getSpocId().getSpocUser().getFirstName()+ " " +requirement.getSpocId().getSpocUser().getLastName());
+		if(requirement.getParentRequirement()!= null ){
+			StringBuilder clientContactNameBuilder=new StringBuilder();
+			globalVarsMap.put("clientContactName", clientContactNameBuilder.append(touser.getFirstName()).append(" " ).append(touser.getLastName()).toString());
 
-			}
-			else{
-			globalVarsMap.put("ClientContactName", "---");
+			}	else{
+			globalVarsMap.put("clientContactName", "---");
 	
 			}		
-		globalVarsMap.put("VendorContact", loginUser.getFirstName()+" "+loginUser.getLastName());
+		StringBuilder vendorContactBuilder=new StringBuilder();
+		globalVarsMap.put("vendorContact", vendorContactBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		
 		
 		// setting the Recipient information
 		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		EmailRecipient emailRecipient = new EmailRecipient();
 		emailRecipient.setEmail(emailMessage.getToEmail());
-		emailRecipient.setName(emailMessage.getFirstName() + " " + emailMessage.getLastName());
+		StringBuilder nameStrBuilder=new StringBuilder();
+		emailRecipient.setName(nameStrBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		emailRecipientList.add(emailRecipient);
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService
-				.getEmailScenarioByUniqueName(Constants.OFFERREJECT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario emailScenario = emailScenarioService .getEmailScenarioByUniqueName(Constants.OFFERREJECT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 
 		// covert subject,body and signature
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
@@ -582,16 +658,52 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	}
 
 
+
 	@Override
-	public void notifyToApplicantOfRequirementOfferMade(Long submissionId, Long offerId, User loginUser,OrgLocations orgLocations) throws Exception {
+	public void sendNotificationAboutRequirementOfferMade(Long submissionId, Long offerId, Long offerHistoryId, User loginUser,OrgLocations orgLocations,String notificationtype) throws Exception {
 		
 		    RequirementSubmission requirementSubmission  = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 				  if(requirementSubmission != null){
-					  
 					     RequirementOffers  requirementOffers  =  requirementOffersDao.getRequirementOfferId(offerId);
+					     RequirementOfferHistory offerHistory = requirementOfferHistoryService.getRequirementOfferHistoryById(offerHistoryId);
 					     Candidate candidate  =  candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
-							     if( requirementOffers != null){
-							          addOfferMailScenario(loginUser, requirementSubmission, orgLocations, requirementOffers, candidate);
+							     if(requirementOffers != null && offerHistory != null){
+							    	     // this is used to notify the vedor about the offer
+								    	 if("Vendor".equalsIgnoreCase(notificationtype)){
+								    		  offerHistory.setNotifyToVendor(Constants.YES);
+											  requirementOfferHistoryService.storeRequirementOfferHistory(offerHistory);
+								        	   RequirementSubmission sourcesubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
+								        	   if(sourcesubmission != null){
+								        		   
+								        		   sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
+								        		   sourcesubmission.setUpdatedDate(commonUtil.currentDate());
+									        	   requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
+								        		   
+								        		   RequirementOfferHistory vendorOfferHistory = new RequirementOfferHistory();
+								        	  	     vendorOfferHistory.setOfferId(requirementOffers);
+								        	  	     vendorOfferHistory.setSubmissionId(requirementSubmission.getSourceSubmission());
+								        	  	     vendorOfferHistory.setOrgLocationId(requirementSubmission.getVendorLocationId());
+								        	         vendorOfferHistory.setOfferSourceType(Constants.CLIENT_OFFERMADE);
+								        	         vendorOfferHistory.setNotifyToApplicant(Constants.NO);
+								        	         vendorOfferHistory.setNotifyToVendor(Constants.NO);
+								        	         vendorOfferHistory.setStatus(Constants.RECORD_ACTIVE);
+								        	         vendorOfferHistory.setCreatedDate(new Date());
+								        	         vendorOfferHistory.setCreatedBy(loginUser.getUserCode());
+								        	         vendorOfferHistory.setUpdatedDate(new Date());
+								        	         vendorOfferHistory.setUpdatedBy(loginUser.getUserCode());
+								        	         requirementOfferHistoryService.storeRequirementOfferHistory(vendorOfferHistory);
+								        		   
+								        		    List<Requirement> clientRequirement = requirementService.getRequirementListById(requirementSubmission.getRequirement().getId());
+													Requirement vendorRequirement= requirementService.getRequirementByRequirementId(sourcesubmission.getRequirement().getId());
+													offerMailToVendors(loginUser,orgLocations,vendorRequirement);
+								        	   }
+								    	 }
+							    	    // this is used to notify the Applicant about the offer
+										if("Applicant".equalsIgnoreCase(notificationtype)){
+											  offerHistory.setNotifyToApplicant(Constants.YES);
+											  requirementOfferHistoryService.storeRequirementOfferHistory(offerHistory);
+									          addOfferMailScenario(loginUser, requirementSubmission, orgLocations, requirementOffers, candidate);
+										 }
 							     }
 				         
 				  }
@@ -602,152 +714,63 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Override
 	public String acceptOrRejectOffer(Long submissionId, Long OfferId, User loginUser, String offerStatus, String reason,
 			OrgLocations orgLocations) throws Exception {
-	
-
 		
-		Requirement req   =null;
-		RequirementSubmission  requirementSubmission =null;
-		RequirementOffers  requirementOffers =null;
-		
-		requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-		requirementOffers  = requirementOffersDao.getRequirementOfferSubmissionById(requirementSubmission.getId());
-
-		
-		if(offerStatus.equalsIgnoreCase("ACCEPT")){
-			
-			  // This is for Cleint Submission Check  for Offer
-			  RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(requirementSubmission.getId(), orgLocations.getId());
-				if(sourcesubmission!=null){
-					  
-					  // This is  if the vendor accepts the Offer 
-					   //changing the vendor submitted     Candidate status  
-					    sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
-					    sourcesubmission.setUpdatedBy(loginUser.getUserCode());
-					    sourcesubmission.setUpdatedDate(commonUtil.currentDate());
-					    requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
-					    
-					 
-					    // This is  if the Client accepts the Offer 
-					   //changing the ClientOfferMade    Candidate status  
-					    requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
-					    requirementSubmission.setUpdatedBy(loginUser.getUserCode());
-					    requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-					    requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-					    
-					    // for saving  the offerStatus in Requirement Offer Table
-					    requirementOffers  = requirementOffersDao.getRequirementOfferSubmissionById(sourcesubmission.getId());
+	 
+		RequirementOffers requirementOffers  = requirementOffersDao.getRequirementOfferId(OfferId);
+		List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(OfferId);
+	    
+	    if(requirementOfferHistories != null && !requirementOfferHistories.isEmpty() ){  
+		    if(offerStatus.equalsIgnoreCase("OFFERACCEPTED")){
+		    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
+		    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
+			    		if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+			    		}else{
+			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+			    		}
+			    		 requirementSubmission.setUpdatedBy(loginUser.getUserCode());
+						 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+						 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				  }
+		    	
+		    	  //Changing the status of offerTable 
+			      if(requirementOffers  != null){
 					    requirementOffers.setOfferStatus("OFFERACCEPTED");
 					    requirementOffers.setUpdatedBy(loginUser.getUserCode());
 					    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 					    requirementOffersDao.storeRequirementOffers(requirementOffers);
-					  
-					
-				}else{
-				    RequirementSubmission sourcesub  = requirementSubmissionService.getSubmissionsBySourceSubmissionId(submissionId, orgLocations.getId());
-				    if(sourcesub!=null){
-				    	 // This is  if the Own Org member accepts the Offer
-						    sourcesub.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
-						    sourcesub.setUpdatedBy(loginUser.getUserCode());
-						    sourcesub.setUpdatedDate(commonUtil.currentDate());
-				            requirementSubmissionService.storeRequirementSubmission(sourcesub);
-				    }
-				   
-				    
-				      // This is  if the Client accepts the Offer 
-					   //changing the ClientOfferMade    Candidate status  
-					    requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
-					    requirementSubmission.setUpdatedBy(loginUser.getUserCode());
-					    requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-					    requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-					    
-					    // for saving  the offerStatus in Requirement Offer Table
-					    requirementOffers  = requirementOffersDao.getRequirementOfferSubmissionById(requirementSubmission.getId());
-					    requirementOffers.setOfferStatus("OFFERACCEPTED");
-					    requirementOffers.setUpdatedBy(loginUser.getUserCode());
-					    requirementOffers.setUpdatedDate(commonUtil.currentDate());
-					    requirementOffersDao.storeRequirementOffers(requirementOffers);
-				}
-			
-			// Mail Logic here  for Accept Offer
-			
-		}else if(offerStatus.equalsIgnoreCase("REJECT")){
-			     if(requirementOffers!=null){
-			    	 
-			    	 
-			    	 // This is for Cleint Submission Check  for Offer
-					  RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(requirementSubmission.getId(), orgLocations.getId());
-						if(sourcesubmission!=null){
-							  
-							  // This is  if the vendor accepts the Offer 
-							   //changing the vendor submitted     Candidate status  
-							    sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
-							    sourcesubmission.setUpdatedBy(loginUser.getUserCode());
-							    sourcesubmission.setUpdatedDate(commonUtil.currentDate());
-							    requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
-							    
-							 
-							    // This is  if the Client accepts the Offer 
-							   //changing the ClientOfferMade    Candidate status  
-							    requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
-							    requirementSubmission.setUpdatedBy(loginUser.getUserCode());
-							    requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-							    requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-							    
-							    // for saving  the offerStatus in Requirement Offer Table
-							    requirementOffers  = requirementOffersDao.getRequirementOfferSubmissionById(sourcesubmission.getId());
-							    requirementOffers.setOfferStatus("OFFERACCEPTED");
-							    requirementOffers.setUpdatedBy(loginUser.getUserCode());
-							    requirementOffers.setUpdatedDate(commonUtil.currentDate());
-							    requirementOffersDao.storeRequirementOffers(requirementOffers);
-							  
-							
-						}else{
-							    RequirementSubmission sourcesub  = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementSubmission.getId(), orgLocations.getId());
-							    if(sourcesub!=null){
-							    	 // This is  if the Own Org member accepts the Offer
-									sourcesub.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
-									sourcesub.setUpdatedBy(loginUser.getUserCode());
-									sourcesub.setUpdatedDate(commonUtil.currentDate());
-							        requirementSubmissionService.storeRequirementSubmission(sourcesub);
-							    }
-							     // This is  if the Client Rejects the Offer 
-								   //changing the ClientOfferMade    Candidate status  
-								    requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
-								    requirementSubmission.setUpdatedBy(loginUser.getUserCode());
-								    requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-								    requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-								    
-							    // for saving  the offerStatus in Requirement Offer Table
-							    requirementOffers  = requirementOffersDao.getRequirementOfferSubmissionById(requirementSubmission.getId());
-							    requirementOffers.setOfferStatus("OFFERREJECTED");
-							    requirementOffers.setUpdatedBy(loginUser.getUserCode());
-							    requirementOffers.setUpdatedDate(commonUtil.currentDate());
-							  
-							    requirementOffersDao.storeRequirementOffers(requirementOffers);
-						}
-						
-						
-			    	 if(!"".equalsIgnoreCase(reason) && !reason.isEmpty()){
-						 requirementOffers.setRejectedReason(reason);
-						 // for saving offer Rejected Reason
-						 
-						 requirementOffersDao.storeRequirementOffers(requirementOffers);
-					 } 
 			     }
-			     
-			  // Mail Logic here  for Reject Offer
-			  // for saving offer OFFER REJECTED Status In Submission Table
-			  requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		}
-		
-		
+	    }else if(offerStatus.equalsIgnoreCase("OFFERREJECTED")){
+	    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
+	    		    RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
+		    		if(requirementSubmission.getSourceSubmission() == null){
+		    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
+		    		}else{
+		    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);
+		    		}
+		    		 requirementSubmission.setUpdatedBy(loginUser.getUserCode());
+					 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+					 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			  }
+	    	
+	    	  //Changing the status of offerTable 
+			  if(requirementOffers  != null ){
+				    requirementOffers.setOfferStatus("OFFERREJECTED");
+				    requirementOffers.setUpdatedBy(loginUser.getUserCode());
+				    requirementOffers.setUpdatedDate(commonUtil.currentDate());
+				    if(!"".equalsIgnoreCase(reason) && !reason.isEmpty()){
+						 requirementOffers.setRejectedReason(reason);
+					 } 
+				    requirementOffersDao.storeRequirementOffers(requirementOffers);
+		    }
+	    }
+	 }	
 		return offerStatus;
 	}
 
 
-	@Override
+	/*@Override
 	public RequirementOffers offerDetails(Long submissionId, User loginUser,OrgLocations orgLocations ,String userType) throws Exception {
-		
 		
 		Requirement req   =null;
 		RequirementSubmission  requirementSubmission =null;
@@ -837,6 +860,13 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			
 		}
 		return null;
+	}*/
+
+
+	@Override
+	public List<RequirementOffers> getRequirementOfferSubmissionByIdAndOrgLocationId(Long submissionId, Long orgLocationId)
+			throws Exception {
+		return requirementOffersDao.getRequirementOfferSubmissionByIdAndOrgLocationId(submissionId,orgLocationId);
 	}
 
 

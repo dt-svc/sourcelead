@@ -21,7 +21,15 @@ public interface CandidateEducationDao {
 	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 
 	public CandidateEducation getCandidateEducationBycandidateIdandEducationId(Long candidateId,Long candidateCertificateId)  throws Exception;
-
 	
+	/**
+	 * @author Prasad Salina
+	 * @param candidateId
+	 * @return
+	 */
+	public CandidateEducation getCandidateEducationByCandidateId(Long candidateId) throws Exception;
+
+	public Boolean validateEducationName(Long candidateId, String candidateEducation) throws Exception;
+
 
 }

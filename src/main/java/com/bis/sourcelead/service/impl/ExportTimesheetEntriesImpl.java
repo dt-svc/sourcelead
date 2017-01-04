@@ -11,9 +11,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
-import org.apache.poi.hslf.model.Comment;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
@@ -41,9 +40,7 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
-import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -109,12 +106,21 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		File file = null;
 		Workbook wb = new XSSFWorkbook();
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		Sheet sheet = wb.createSheet(user.getFirstName() + "_" + dateFormat.format(new Date()));
+		StringBuilder fName=new StringBuilder();
+		Sheet sheet = wb.createSheet(fName.append(user.getFirstName()).append("_").append(dateFormat.format(new Date())).toString());
 		Row writeRow = null;
 		
 		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId(),orgLocations.getId());
 		Date employeeStartDate = submissionDateRange.get("STARTDATE");
 		Date employeeEndDate = submissionDateRange.get("ENDDATE");
+		
+		Long monTotHours = 0L;
+		Long tueTotHours = 0L;
+		Long wedTotHours = 0L;
+		Long thuTotHours = 0L;
+		Long friTotHours = 0L;
+		Long satTotHours = 0L;
+		Long sunTotHours = 0L;
 		
 		/**
 		  *calculating prior 6th week mondaydate and post 6th week sunday day for employee
@@ -286,21 +292,25 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						              Cell cell2 = null;
 						              if(timesheetEntries.getMonHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getMonHours())){
 						            	  cell2 = writeRow.createCell(2);
-						            	  cell2.setCellValue(timesheetEntries.getMonHours());  
+						            	  cell2.setCellValue(timesheetEntries.getMonHours()); 
+						            	 // monTotHours = monTotHours + Double.parseDouble(timesheetEntries.getMonHours());
+						            	  monTotHours = monTotHours + getTotalHoursFormDayHours(timesheetEntries.getMonHours());
 						              }
 					            	  if(!isNullOrEmpty(timesheetEntries.getMoncomments())){
 					            		  cell2.setCellComment(getCellComment(sheet,wb,timesheetEntries.getMoncomments()));
 					            	  }
 						              Cell cell3 = writeRow.createCell(3);
 						              if(timesheetEntries.getTueHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getTueHours())){
-						            	  cell3.setCellValue(timesheetEntries.getTueHours());   
+						            	  cell3.setCellValue(timesheetEntries.getTueHours());
+						            	  tueTotHours = tueTotHours + getTotalHoursFormDayHours(timesheetEntries.getTueHours());
 						              }
 						              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
 						            	  cell3.setCellComment(getCellComment(sheet,wb,timesheetEntries.getTuecomments()));
 						              }
 						              Cell cell4 = writeRow.createCell(4);
 						              if(timesheetEntries.getWedHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getWedHours())){
-						            	  cell4.setCellValue(timesheetEntries.getWedHours());   
+						            	  cell4.setCellValue(timesheetEntries.getWedHours()); 
+						            	  wedTotHours = wedTotHours + getTotalHoursFormDayHours(timesheetEntries.getWedHours());
 						              }
 						              if(!isNullOrEmpty(timesheetEntries.getWedcomments())){
 						            	  cell4.setCellComment(getCellComment(sheet,wb,timesheetEntries.getWedcomments()));
@@ -308,13 +318,15 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						              Cell cell5 = writeRow.createCell(5);
 						              if(timesheetEntries.getThuHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getThuHours())){
 						            	  cell5.setCellValue(timesheetEntries.getThuHours());   
+						            	  thuTotHours = thuTotHours + getTotalHoursFormDayHours(timesheetEntries.getThuHours());
 						              }
 					            	  if(!isNullOrEmpty(timesheetEntries.getThucomments())){
 					            		  cell5.setCellComment(getCellComment(sheet,wb,timesheetEntries.getThucomments()));
 					            	  }
 						              Cell cell6 = writeRow.createCell(6);
 						              if(timesheetEntries.getFriHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getFriHours())){
-						            	  cell6.setCellValue(timesheetEntries.getFriHours());   
+						            	  cell6.setCellValue(timesheetEntries.getFriHours()); 
+						            	  friTotHours = friTotHours + getTotalHoursFormDayHours(timesheetEntries.getFriHours());
 						              }
 					            	  if(!isNullOrEmpty(timesheetEntries.getFricomments())){
 					            		  cell6.setCellComment(getCellComment(sheet,wb,timesheetEntries.getFricomments()));
@@ -322,6 +334,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						              Cell cell7 = writeRow.createCell(7);
 						              if(timesheetEntries.getSatHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getSatHours())){
 						            	  cell7.setCellValue(timesheetEntries.getSatHours());   
+						            	  satTotHours = satTotHours + getTotalHoursFormDayHours(timesheetEntries.getSatHours());
 						              } 
 					            	  if(!isNullOrEmpty(timesheetEntries.getSatcomments())){
 					            		  cell7.setCellComment(getCellComment(sheet,wb,timesheetEntries.getFricomments()));
@@ -329,37 +342,63 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						              Cell cell8 = writeRow.createCell(8);
 						              if(timesheetEntries.getSunHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getSunHours())){
 						            	  cell8.setCellValue(timesheetEntries.getSunHours());   
+						            	  sunTotHours = sunTotHours + getTotalHoursFormDayHours(timesheetEntries.getSunHours());
 						              } 
 					            	  if(!isNullOrEmpty(timesheetEntries.getSuncomments())){
 					            		  cell8.setCellComment(getCellComment(sheet,wb,timesheetEntries.getFricomments()));
 					            	  }  
 						              column++;
 						     }
-//						       
-							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
-							            	  writeRow.createCell(9).setCellValue(submissionStatusStr);   
+						                 Cell cell9 = writeRow.createCell(9);
+						              if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+						            	  cell9.setCellValue(submissionStatusStr); 
+						            	  CellStyle style =getCellStyle(wb,submissionStatusStr);
+						            	  cell9.setCellStyle(style);
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
-						            	  writeRow.createCell(9).setCellValue(submissionStatusStr);   
+							        	cell9.setCellValue(submissionStatusStr); 
+							        	 CellStyle style =getCellStyle(wb,submissionStatusStr);
+						            	  cell9.setCellStyle(style);
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-							        	writeRow.createCell(9).setCellValue(submissionStatusStr);   
+							        	cell9.setCellValue(submissionStatusStr);   
+							        	 CellStyle style =getCellStyle(wb,submissionStatusStr);
+						            	  cell9.setCellStyle(style);
 							        	if(isSah == null ){
-							        		writeRow.createCell(9).setCellValue(submissionStatusStr);
+							        		cell9.setCellValue(submissionStatusStr);
+							            	  cell9.setCellStyle(style);
 							        	}
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
-							        	writeRow.createCell(9).setCellValue(submissionStatusStr);   
+							        	cell9.setCellValue(submissionStatusStr);   
+							        	 CellStyle style =getCellStyle(wb,submissionStatusStr);
+						            	  cell9.setCellStyle(style);
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
-							        	writeRow.createCell(9).setCellValue(submissionStatusStr);
+							        	cell9.setCellValue(submissionStatusStr);
+							        	 CellStyle style =getCellStyle(wb,submissionStatusStr);
+						            	  cell9.setCellStyle(style);
 							        }
 				  }
 			count = lastRow+1;
 			}
+		Long totalHours = monTotHours+tueTotHours+wedTotHours+thuTotHours+friTotHours+satTotHours+sunTotHours;
+		writeRow = sheet.createRow(count);
+		Cell cell1 = writeRow.createCell(1);
+		cell1.setCellValue("Total");
+		CellStyle style =getCellStyle(wb,"");
+   	    cell1.setCellStyle(style);
+		writeRow.createCell(2).setCellValue(getTotalHours(monTotHours));
+		writeRow.createCell(3).setCellValue(getTotalHours(tueTotHours));
+		writeRow.createCell(4).setCellValue(getTotalHours(wedTotHours));
+		writeRow.createCell(5).setCellValue(getTotalHours(thuTotHours));
+		writeRow.createCell(6).setCellValue(getTotalHours(friTotHours));
+		writeRow.createCell(7).setCellValue(getTotalHours(satTotHours));
+		writeRow.createCell(8).setCellValue(getTotalHours(sunTotHours));
+		writeRow.createCell(9).setCellValue(getTotalHours(totalHours));
 		
-		
-		file = new File(user.getFirstName()+"_"+weekStartDate+" to "+weekEndDate+".xls");
+		StringBuilder fileName=new StringBuilder();
+		file = new File(fileName.append(user.getFirstName()).append("_").append(weekStartDate).append(" to ").append(weekEndDate).append(".xls").toString());
 		FileOutputStream fos = new FileOutputStream(file);
 		try {
 			wb.write(fos);
@@ -434,7 +473,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		 cell5.setCellStyle(style);
 		 
 		 Cell cell6 = writeRow.createCell(1);
-		 cell6.setCellValue(weekStartDate+" to "+weekEndDate); 
+		 StringBuilder val=new StringBuilder();
+		 cell6.setCellValue(val.append(weekStartDate).append(" to ").append(weekEndDate).toString()); 
 		 cell6.setCellStyle(style);
 		 
 		return createExcelsheet = setExcelHeader(createExcelsheet,style,createExcelworkbook);
@@ -467,5 +507,48 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		return comment;
        
         /*cell comments end here */
+	}
+	
+	private Long getTotalHoursFormDayHours(String dayHours){
+		Long total = 0l;
+		String[] parts = dayHours.split(":");
+		String hours = parts[0]; 
+		String min = parts[1];
+		
+		Long  localHours = Long.parseLong(hours) * 60;
+		Long  localHoursMinute = Long.parseLong(min);
+		Long  finalmin = localHours + localHoursMinute;
+		total = total + finalmin;
+		return total;
+	
+}
+	private String getTotalHours(Long total){
+		String actualTimeString = null;
+		if(total != null){
+            int actualHours = (int) (total / 60);
+            int actualMinutes =   (int)(total % 60);
+            String actualMinutesStr = ""+actualMinutes;
+            String startWithZero = "";
+            if(StringUtils.isNotEmpty(actualMinutesStr) && actualMinutesStr.length()==1)
+            	startWithZero ="0";	
+            StringBuilder actualTime=new StringBuilder();
+            actualTimeString =  actualTime.append(actualHours).append(".").append(startWithZero+actualMinutes).toString();
+            
+		}
+		return actualTimeString;
+	}
+	public CellStyle getCellStyle(Workbook wb, String submissionStatusStr) {
+		CellStyle style = wb.createCellStyle();
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		Font font = wb.createFont();
+		if("SUBMITTED".equalsIgnoreCase(submissionStatusStr)){
+			style.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
+			font.setColor(HSSFColor.WHITE.index);
+		}else{
+			style.setFillForegroundColor(IndexedColors.GREY_40_PERCENT.getIndex());
+			font.setColor(HSSFColor.WHITE.index);
+		}
+		style.setFont(font);
+		return style;
 	}
 }

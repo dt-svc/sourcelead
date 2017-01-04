@@ -53,7 +53,7 @@ public interface SubmissionApproverHierarchyService {
 
 	public List<SubmissionApproverHierarchy>  getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(Long userId,Long orgLocationId, String submissionStatus); 
 
-	public List<SubmissionApproverHierarchy>  getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(Long userId,Long orgLocationId, String submissionStatus,String userRole); 
+	public List<SubmissionApproverHierarchy>  getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(Long userId,Long orgLocationId, String submissionStatus,String userRole) throws Exception; 
 
 	
 }

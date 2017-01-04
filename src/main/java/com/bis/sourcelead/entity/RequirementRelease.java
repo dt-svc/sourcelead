@@ -1,11 +1,13 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,19 +23,20 @@ import com.bis.sourcelead.enums.REQUIREMENT_RELEASE_Status;
 @Entity
 @Table(name = "REQUIREMENT_RELEASE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementRelease")
-public class RequirementRelease {
+public class RequirementRelease implements Serializable{
 	
-	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )        
     private Requirement requirementId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="ORG_SPOC_ID", nullable=false )        
     private User orgSpocId;
 	

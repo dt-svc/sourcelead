@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -12,14 +13,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "USER_LOGIN_LOGOUT_SESSION", catalog = "sourcelead")
 //@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userLoginLogoutSession")
-public class UserLoginLogoutSession {
+public class UserLoginLogoutSession  implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

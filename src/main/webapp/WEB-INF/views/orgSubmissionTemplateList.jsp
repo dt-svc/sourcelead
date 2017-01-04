@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
@@ -17,6 +17,10 @@
 <script src="resources/js/jquery-ui.min.js" ></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
+
+<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+
 <script type="text/javascript">
 //On document ready
 $(function(){
@@ -55,9 +59,12 @@ $(function(){
 	                result = result + '<td><div><span class="mid-span">'+opt.templateName+'</span></a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
 	                result = result + '<td><div>';
-	                result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;';
-	                result = result + '|&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\',\''+opt.description+'\')">Edit</a>';
-      	            result = result +'</div></td>';
+	                    result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;|&nbsp;';
+                    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_APPLICANT_TEMPLATE\',\'ROLE_VIEW_EDIT_APPLICANT_TEMPLATE\')">'
+	                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\')">Edit</a>';
+	                    result = result + '<input type="hidden" name="description" id="description'+opt.id+'" value="'+opt.description+'" >';
+                    '</sec:authorize>';
+	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				}  
 	        		
@@ -118,7 +125,8 @@ function templatepagination(){
 </script>
 
 <script type="text/javascript">
-	function addSubmissionTemplateFields(templateId,templateName,description) {
+	function addSubmissionTemplateFields(templateId,templateName) {
+		var description =  $("#description"+templateId+"").val();
 		var sourceleadUrl ='${sourceleadUrl}';
 		 $("#clientSubmissionTemplateList").empty();
 	     $("#addTemplate").hide();

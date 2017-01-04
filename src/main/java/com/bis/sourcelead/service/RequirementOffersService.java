@@ -22,20 +22,22 @@ public interface RequirementOffersService {
 	
 	RequirementOffers saveOfferStatus(RequirementOffers requirementOffers)throws Exception;
 
-	void offerMailToVendors(User loginUser,OrgLocations loginOrgLocations, Requirement clientrequirement, List<Requirement> vendorRequirement)	throws Exception;
+	void offerMailToVendors(User loginUser,OrgLocations loginOrgLocations, Requirement vendorRequirement)	throws Exception;
 
 	void addOfferMailScenario(User loginUser, RequirementSubmission applicant, OrgLocations orgLocations,RequirementOffers requirementOffers, Candidate candidate) throws Exception;
 	
 	void offerAcceptEmailScenario(User loginUser,OrgLocations loginOrgLocations,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission) throws Exception;
 	
 
-	void notifyToApplicantOfRequirementOfferMade(Long submissionId,Long OfferId, User loginUser,OrgLocations orgLocations ) throws Exception;
+	void sendNotificationAboutRequirementOfferMade(Long submissionId,Long OfferId, Long offerHistoryId, User loginUser,OrgLocations orgLocations ,String notificationtype) throws Exception;
 	
 	String acceptOrRejectOffer(Long submissionId,Long OfferId, User loginUser,String offerStatus,String reason, OrgLocations orgLocations ) throws Exception;
 	
-	RequirementOffers offerDetails(Long submissionId, User loginUser, OrgLocations orgLocations ,String userType) throws Exception;
+	//RequirementOffers offerDetails(Long submissionId, User loginUser, OrgLocations orgLocations ,String userType) throws Exception;
 	
   
 	void offerRejectEmailScenario(User loginUser,OrgLocations loginOrgLocations,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission) throws Exception;
+
+	List<RequirementOffers> getRequirementOfferSubmissionByIdAndOrgLocationId(Long submissionId, Long orgLocationId)throws Exception;
 }
 

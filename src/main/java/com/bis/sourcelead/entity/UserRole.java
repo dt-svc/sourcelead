@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
 
@@ -28,8 +30,10 @@ import com.bis.sourcelead.enums.Status;
 @Entity
 @Table(name = "USER_ROLE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="userRole")
-public class UserRole{
+public class UserRole implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
@@ -65,8 +69,15 @@ public class UserRole{
 	@Column(name = "USER_TYPE")
 	private String userType;
 	
+	@Column(name = "ROLE_CHANGE_REASON")
+	@Type(type="text")
+	private String roleChangeReason;
+	
 	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
 	private String terminateReason;
+	
+    @Column(name = "DESIGNATION")
+	private String designation;
     
     @Column(name = "STATUS")
 	private String status;
@@ -122,8 +133,65 @@ public class UserRole{
 	@Transient
 	List<User> allReportingManagers;
 	
+	
 	@Transient
 	private String userName;
+	
+	@Transient
+	List<User> reportingManagers;
+	
+	@Transient
+	List<User> clientUsersList;
+	
+	@Transient
+	List<User> vendorUsersList;
+	
+	@Transient
+	List<User> requirementManagersList;
+	
+	@Transient
+	List<User> requirementApproversList;
+	
+	@Transient
+	List<User> teamOwnersList;
+	
+	@Transient
+	List<User> projectApproversList;
+	
+	@Transient
+	private String userEmail;
+	
+
+	@Transient
+	List<Roles> rolesList;
+	
+	
+	@Transient
+	private Integer assignedUsersCountToReportingManager;
+	
+	@Transient
+	private Integer assignedAsVendorOwnerOrSpocCount;
+	
+	@Transient
+	private Integer assignedAsClientOwnerOrSpocCount;
+	
+	@Transient
+	private Integer requirementsCountAsManager;
+	
+	@Transient
+	private Integer requirementsCountAsApprover;
+	
+	@Transient
+	private Integer teamsCountAsOwner;
+	
+	@Transient
+	private Integer projectApproverCount;
+	
+	@Transient
+	private Long userId;
+	
+	@Transient
+	private String isMailSent;
 	
 	
 	public String getUserName() {
@@ -363,7 +431,165 @@ public class UserRole{
 		this.employeeId = employeeId;
 	}
 
-	
-	
+	public List<User> getReportingManagers() {
+		return reportingManagers;
+	}
+
+	public void setReportingManagers(List<User> reportingManagers) {
+		this.reportingManagers = reportingManagers;
+	}
+
+	public Integer getAssignedUsersCountToReportingManager() {
+		return assignedUsersCountToReportingManager;
+	}
+
+	public void setAssignedUsersCountToReportingManager(Integer assignedUsersCountToReportingManager) {
+		this.assignedUsersCountToReportingManager = assignedUsersCountToReportingManager;
+	}
+
+	public List<User> getClientUsersList() {
+		return clientUsersList;
+	}
+
+	public void setClientUsersList(List<User> clientUsersList) {
+		this.clientUsersList = clientUsersList;
+	}
+
+	public List<User> getVendorUsersList() {
+		return vendorUsersList;
+	}
+
+	public void setVendorUsersList(List<User> vendorUsersList) {
+		this.vendorUsersList = vendorUsersList;
+	}
+
+	public Integer getAssignedAsVendorOwnerOrSpocCount() {
+		return assignedAsVendorOwnerOrSpocCount;
+	}
+
+	public void setAssignedAsVendorOwnerOrSpocCount(Integer assignedAsVendorOwnerOrSpocCount) {
+		this.assignedAsVendorOwnerOrSpocCount = assignedAsVendorOwnerOrSpocCount;
+	}
+
+	public Integer getAssignedAsClientOwnerOrSpocCount() {
+		return assignedAsClientOwnerOrSpocCount;
+	}
+
+	public void setAssignedAsClientOwnerOrSpocCount(Integer assignedAsClientOwnerOrSpocCount) {
+		this.assignedAsClientOwnerOrSpocCount = assignedAsClientOwnerOrSpocCount;
+	}
+
+	public List<User> getRequirementManagersList() {
+		return requirementManagersList;
+	}
+
+	public void setRequirementManagersList(List<User> requirementManagersList) {
+		this.requirementManagersList = requirementManagersList;
+	}
+
+	public Integer getRequirementsCountAsManager() {
+		return requirementsCountAsManager;
+	}
+
+	public void setRequirementsCountAsManager(Integer requirementsCountAsManager) {
+		this.requirementsCountAsManager = requirementsCountAsManager;
+	}
+
+	public Integer getRequirementsCountAsApprover() {
+		return requirementsCountAsApprover;
+	}
+
+	public void setRequirementsCountAsApprover(Integer requirementsCountAsApprover) {
+		this.requirementsCountAsApprover = requirementsCountAsApprover;
+	}
+
+	public List<User> getRequirementApproversList() {
+		return requirementApproversList;
+	}
+
+	public void setRequirementApproversList(List<User> requirementApproversList) {
+		this.requirementApproversList = requirementApproversList;
+	}
+
+	public List<User> getTeamOwnersList() {
+		return teamOwnersList;
+	}
+
+	public void setTeamOwnersList(List<User> teamOwnersList) {
+		this.teamOwnersList = teamOwnersList;
+	}
+
+	public Integer getTeamsCountAsOwner() {
+		return teamsCountAsOwner;
+	}
+
+	public void setTeamsCountAsOwner(Integer teamsCountAsOwner) {
+		this.teamsCountAsOwner = teamsCountAsOwner;
+	}
+
+	public List<User> getProjectApproversList() {
+		return projectApproversList;
+	}
+
+	public void setProjectApproversList(List<User> projectApproversList) {
+		this.projectApproversList = projectApproversList;
+	}
+
+	public Integer getProjectApproverCount() {
+		return projectApproverCount;
+	}
+
+	public void setProjectApproverCount(Integer projectApproverCount) {
+		this.projectApproverCount = projectApproverCount;
+	}
+
+	public List<Roles> getRolesList() {
+		return rolesList;
+	}
+
+	public void setRolesList(List<Roles> rolesList) {
+		this.rolesList = rolesList;
+	}
+
+	public String getRoleChangeReason() {
+		return roleChangeReason;
+	}
+
+	public void setRoleChangeReason(String roleChangeReason) {
+		this.roleChangeReason = roleChangeReason;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(String isMailSent) {
+		this.isMailSent = isMailSent;
+	}
+
 
 }

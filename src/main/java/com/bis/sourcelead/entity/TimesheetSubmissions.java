@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,16 +28,15 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.bis.sourcelead.enums.Submission_ApprovalStatus;
-import com.bis.sourcelead.enums.Submission_Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TIMESHEET_SUBMISSIONS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetSubmissions")
-public class TimesheetSubmissions {
+public class TimesheetSubmissions implements Serializable{
 	
-	 
+	private static final long serialVersionUID = 1L;
+
 	@Id
     @Column(name = "ID", nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

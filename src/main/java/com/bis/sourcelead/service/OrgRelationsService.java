@@ -23,6 +23,8 @@ public interface OrgRelationsService {
 	
 	public List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception;
 	
+	List<OrgRelations> getAllClientsByOrgNameOrgLocationId(String  orgName,Long orgLocationId) throws Exception;
+	
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	public Long getNumberOfProjectsPerClient(Long orgLocationId) throws Exception;
@@ -32,6 +34,8 @@ public interface OrgRelationsService {
 	Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception;
 	
 	List<OrgRelations> getAllVendorsListByOrgLocationId(Long id);
+	
+	List<OrgRelations> getAllVendorsListByOrgName(String  orgName,Long id);
 
 	OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId);
 	
@@ -48,5 +52,9 @@ public interface OrgRelationsService {
 	List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long id,String status) throws Exception;
 
 	List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationId(Long id, Long orgLocationId, String relationType,String vendorStatus,String vendorIds,String vendorInvitationStatus) throws Exception;
+	
+	List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId,Long loginUserId) throws Exception;
+	
+	List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId,String type);
 
 }

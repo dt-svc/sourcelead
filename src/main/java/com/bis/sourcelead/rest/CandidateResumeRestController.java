@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,15 +31,14 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.google.gson.Gson;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -67,6 +67,9 @@ public class CandidateResumeRestController {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	RequirementOffersService requirementOffersService;
+	
 	/**
 	* @author Venkat Kesav 
 	* 
@@ -79,8 +82,12 @@ public class CandidateResumeRestController {
 	* 
 	* @throws Exception
 	*/
+	
+	
+	@PreAuthorize("hasRole('ROLE_ADD_CANDIDATE_RESUMES')")
 	@RequestMapping(value = "/saveCandidateResume", method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateResume(@RequestParam(value = "json", required = false) String json, String candidateId, String resumeId, MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String saveCandidateResume(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "resumeId", required = false) String resumeId,MultipartHttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
@@ -98,10 +105,6 @@ public class CandidateResumeRestController {
 			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
 			
 			candidateResumesService.storeCandidateResume(jsonObj, user, candidate, resumeId, orgLocation, multiFile);
-
-			SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage",
-					"Successfully you have added");
-
 			return "success";
 		}else{
 			return "exception";
@@ -121,8 +124,9 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	@RequestMapping(value = "/candidateResumesListByCandidateId", method = RequestMethod.POST)
-	public @ResponseBody String candidateResumesListByCandidateId(String candidateId) throws Exception {
+	public @ResponseBody String candidateResumesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
 
+		String msg = "";
 		String resultJson = null;
 		Integer status = Constants.CANDIDATE_ACTIVE;
 		if(candidateId != null){
@@ -130,7 +134,8 @@ public class CandidateResumeRestController {
 			for(CandidateResumes candidateResume : candidateResumesList){
 				User createdUser = userService.getUserByUserCode(candidateResume.getCreatedBy());
 				if(createdUser != null){
-					candidateResume.setCreatedBy(createdUser.getFirstName()+" "+createdUser.getLastName());
+					StringBuilder name = new StringBuilder();
+					candidateResume.setCreatedBy(name.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
 				}
 			}
 			resultJson = commonUtil.toJSON(candidateResumesList);
@@ -151,8 +156,12 @@ public class CandidateResumeRestController {
 	* 
 	* @throws Exception
 	*/
+	
+	 @PreAuthorize("hasRole('ROLE_VIEW_DELETE_CANDIDATE_RESUMES')")
 	@RequestMapping(value = "/terminateResume", method = RequestMethod.POST)
-	public @ResponseBody String terminateResume(String resumeId, HttpServletRequest request) throws Exception {
+	public @ResponseBody String terminateResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "resumeId", required = false) String resumeId, 
+			HttpServletRequest request) throws Exception {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
@@ -162,6 +171,7 @@ public class CandidateResumeRestController {
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
 			candidateResumesService.updateCandidateResume(candidateResume);
+			//SourceLeadSessionManager.setSessionAttribute(request, "deleteResume", "Resume deleted");
 		}
 		return "success";
 	}
@@ -179,8 +189,11 @@ public class CandidateResumeRestController {
 	* 
 	* @throws Exception
 	*/
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_CANDIDATE_RESUMES')")
 	@RequestMapping(value = "/getResume", method = RequestMethod.POST)
-	public @ResponseBody String getResume(String resumeId, HttpServletRequest request) throws Exception {
+	public @ResponseBody String getResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "resumeId", required = false) String resumeId, HttpServletRequest request) throws Exception {
 		String resultJson = null;
 		CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(resumeId));
 		if(candidateResume != null){
@@ -208,8 +221,8 @@ public class CandidateResumeRestController {
 			CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(resumeId));
 		    
 		    response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition",
-	                "attachment;filename="+candidateResume.getFileName());
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
 		    
 			InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
 			try {
@@ -228,6 +241,32 @@ public class CandidateResumeRestController {
 			} catch (FileNotFoundException e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
+		}
+	
+	@RequestMapping(value = "/offerDownloadDocument", method = RequestMethod.GET)
+    public void candidateAndOfferDownloadDocument(@RequestParam(value="resumeId", required=false) Long resumeId,HttpServletResponse response) throws Exception {
+			RequirementOffers  requirementOffers = requirementOffersService.getRequirementOfferId(resumeId);
+	    	response.setContentType("application/octet-stream");
+	    	response.setHeader("Content-Disposition", "attachment;filename="+requirementOffers.getFileName());
+			InputStream inputStream = new ByteArrayInputStream(requirementOffers.getDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+	
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+	
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+	
+				inputStream.close();
+				outStream.close();
+	
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+			    
+		   
 		}
 	
 }

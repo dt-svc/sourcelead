@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -46,7 +47,7 @@ public interface CandidateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange) throws Exception;
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType) throws Exception;
 	
 	/**
 	 * @param candidateId
@@ -71,7 +72,7 @@ public interface CandidateService {
 	public Candidate saveOrUpdateCandidate(Candidate candidate) throws Exception;
 	
 	
-	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId) throws Exception;
+	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId, String candidateType) throws Exception;
 
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId)throws Exception;
 
@@ -79,4 +80,18 @@ public interface CandidateService {
 
 	public File getCandidatePdf(List<Candidate> candidatesList, String orgName) throws Exception;
 	
+	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
+
+	public List<Candidate> getAllActiveCandidatesForCampaignByLocation(Long orgLocationId,String type)throws Exception;
+	
+	public List<Candidate> getAllCandidatesForCampaignByTeam(List<Team> teamId,String type)throws Exception;
+	
+	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId)throws Exception;
+	
+	public void saveOrUpdateCandidateElkDocument(Candidate candidate) throws Exception;
+	
+	public Long getCandidatesCountByOrgLocationID(Long orgLocationId);
+	
+	public List<Candidate> getAllHotlistCandidatesAndNotAssignedToTeamByLocation(Long orgLocationId)throws Exception;
+
 }

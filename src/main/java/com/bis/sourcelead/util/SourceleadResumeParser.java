@@ -2,7 +2,6 @@ package com.bis.sourcelead.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -10,28 +9,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.bis.sourcelead.service.LookUpDataService;
-import com.bis.sourcelead.service.UserLoginLogoutSessionService;
-import com.bis.sourcelead.service.impl.LookUpDataServiceImpl;
 import com.google.i18n.phonenumbers.PhoneNumberMatch;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
+
+@Component
 public class SourceleadResumeParser {
 	
 /**@param
@@ -42,14 +36,9 @@ public class SourceleadResumeParser {
  * @throws GateException 
  *  @date: 17-October-2016
  */
-	@Configuration
-	static class LookUpDataServiceContextConfiguration {
-		@Bean
-		public LookUpDataService lookUpDataService() {
-			return new LookUpDataServiceImpl();
-		}
-	}
-	
+@Autowired
+LookUpDataService lookUpDataService;
+ 
 public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest request)
 				throws Exception {
 				
@@ -90,9 +79,6 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 	  String[] totalLines = parsedString.split(System.getProperty("line.separator"));
 	  HashSet<String> skills = new HashSet<String>();
 	  HashSet<String> duplicateSkills = new HashSet<String>();
-	  HttpSession session = request.getSession();
-		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(session.getServletContext());
-		LookUpDataService lookUpDataService = (LookUpDataService) ctx.getBean("lookUpDataService");
 	    List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 		for(String sLine : totalLines) 
 		{
@@ -140,7 +126,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 			    firstTenLines = firstTenLines+lineSeparator+line.replaceAll("[^a-zA-Z0-9\\s\\@\\.\\_]+", "").trim();
 				count++;
 			}
-			String nameRegex = "((?i)Name|name|NAME)";
+			String nameRegex = "((?i)Name|name|NAME)[\\s]+[\\:]";
 			if(line.matches("(\\W*)"+nameRegex+".*")){
 				nameMatchFound =true;
 				String[] nameLineArray =  line.split(nameRegex);
@@ -165,11 +151,12 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 			String[] tenLines = firstTenLines.split(System.getProperty("line.separator"));
 			outerloop:{
 			for(String line :tenLines){
+						
 				Matcher nameMatcher = Pattern.compile("([A-Z]{1}[A-Z]{1,30}[- ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[- \']{1}[A-Z]{0,1}  [a-z]{1,30}[- ]{0,1}|[a-z]{1,2}[ -\']{1}[A-Z]{1}[a-z]{1,30}){2,}").matcher(line);
 				//Matcher nameMatcher = Pattern.compile("([A-Z]{1}[a-z]{1,30}[. -\']{1}[A-Z]{1,2}|[A-Z]{1}[A-Z]{1,30}[- ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[- \']{1}[A-Z]{0,1}  [a-z]{1,30}[- ]{0,1}|[A-Z]{1,2}[. -\']{1}[A-Z]{1}[a-z]{1,30}|[a-z]{1,2}[ -\']{1}[A-Z]{1}[a-z]{1,30})").matcher(firstTenLines); 
 				//Matcher nameMatcher = Pattern.compile("([A-Z]{1,30}[- ]{0,}|[A-Z]{1}[A-Z]{1,30}[- ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[- \']{1}[A-Z]{0,1}  [a-z]{1,30}[- ]{0,1}|[a-z]{1,2}[ -\']{1}[A-Z]{1}[a-z]{1,30}){2,}").matcher(firstTenLines);
 			    if(nameMatcher.find()){
-				    	 if(StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum") || StringUtils.containsIgnoreCase(nameMatcher.group(), "objective") || StringUtils.containsIgnoreCase(nameMatcher.group(), "resume"))
+				    	 if(StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum") || StringUtils.containsIgnoreCase(nameMatcher.group(), "objective") || StringUtils.containsIgnoreCase(nameMatcher.group(), "resume")|| StringUtils.containsIgnoreCase(nameMatcher.group(), "cell")|| StringUtils.containsIgnoreCase(nameMatcher.group(), "mobile")|| StringUtils.containsIgnoreCase(nameMatcher.group(), "email"))
 				    		 continue;
 				    	 name = nameMatcher.group();
 				    	 break outerloop;

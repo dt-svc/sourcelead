@@ -258,6 +258,26 @@
             	replicateRemovals=true" />
     </cache>
     
+     <cache name="lookupdata"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+     <cache name="teamMembers"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
     <cache name="roles"
         maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />
@@ -268,6 +288,7 @@
             	replicateRemovals=true" />
     </cache>
     
+    
     <cache name="tabs"
         maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />
@@ -277,6 +298,38 @@
             	replicateUpdates=true, replicateUpdatesViaCopy=false,
             	replicateRemovals=true" />
     </cache>
+    
+    <cache name="requirement1"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="requirementAssignTo"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+     <cache name="requirementRateSubmissionNegotiation"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    
     
     <cache name="timeSheetEntries"
         maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
@@ -443,6 +496,36 @@
             	replicateRemovals=true" />
     </cache>
     
+    <cache name="requirmentInterviewHistory"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="requirementOfferss"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="requirmentOfferHistory"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
     <cache name="interviewRemainder"
         maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />
@@ -464,6 +547,286 @@
             	replicateRemovals=true" />
     </cache>
     
+    <cache name="sourceleadActions"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="moduleActions"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+     <cache name="roleHierarchy"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+      <cache name="sourceleadRoles"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    
+     <cache name="boPaymentTypes"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="boAmexTrans"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+     <cache name="boUploadedFiles"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    
+    
+    <cache name="boComericaTrans"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="boJmpcTrans"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="assetCategory"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    
+    <cache name="asset"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+ 
+	<cache name="requirementSubmissionHistory"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="candidateResumes"
+		maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache> 
+    
+    <cache name="candidateHotList"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="candidateCertifications"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="candidate"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+     <cache name="candidateComments"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    
+    
+     <cache name="candidateEducation"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+       <cache name="candidateSkills"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+     </cache>
+     
+     <cache name="candidateEmployers"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+     </cache>
+    
+      <cache name="team"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+      <cache name="requirementApproverHierarchy"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="requirementOffers"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="requirementRelease"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="userSignature"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="userMailBox"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="sourceleadSignature"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>      
+    
+    <cache name="interviewfeedbackTemplate"  maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" properties="replicateAsynchronously=true,
+         replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
+    </cache>
     <!-- 21600 seconds is 6 hours (6 * 60 * 60) -->
     <cache name="AuthenticateUserCache"
            eternal="false"

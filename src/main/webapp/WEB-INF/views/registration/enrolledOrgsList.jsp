@@ -129,7 +129,7 @@ window.onload = function () {
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
-	       	    	result = result +"<h4><a href='#'> "+org.orgName+"</a> </h4>";
+	       	    	result = result +"<h4><a href='<c:url value='/orgSummary/"+org.id+"'/>''> "+org.orgName+" </a> </h4>";
 	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+email+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
 	       	        

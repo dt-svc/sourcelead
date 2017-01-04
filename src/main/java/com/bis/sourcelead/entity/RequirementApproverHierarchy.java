@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -7,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,8 +26,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 @Entity
 @Table(name = "REQUIREMENT_APPROVER_HIERARCHY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementApproverHierarchy")
-public class RequirementApproverHierarchy {
+public class RequirementApproverHierarchy implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +39,7 @@ public class RequirementApproverHierarchy {
 	private Integer level;
 	
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )        
     private Requirement requirementId;
 	

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.bis.sourcelead.enums.Status;
@@ -11,7 +12,9 @@ import com.bis.sourcelead.enums.Status;
  *
  */
 
-public class UsersImport {
+public class UsersImport implements Serializable{
+
+private static final long serialVersionUID = 1L;
 
 private String employeeId;		// Employee ID
 

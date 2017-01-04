@@ -13,7 +13,24 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+
+import org.hibernate.Session;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
@@ -147,6 +164,9 @@ public class CommonUtil {
 	public void terminateProjectMemberByProjectMemberId(Long projectMemberId,Primary isManuallyTerminated){
 		try {
 			ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMemberId);
+			 if(pmh == null){
+				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMemberId);
+			 }
 			pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
 			pmh = projectMembersHistoryService.updateProjectMembersHistory(pmh);
 			
@@ -544,4 +564,120 @@ public class CommonUtil {
 	        });
 	        return xstream.toXML(obj);
 	    }
+		
+	public String getBackOfficeSummaryFilters(JSONObject jsonObj) throws Exception {
+		String subquery1 = "";
+		String subquery2 = "";
+		String subquery3 = "";
+
+		//only fromTransDate
+		 if(jsonObj.has("fromTransDate") && jsonObj.getString("fromTransDate") != null && !"".equals(jsonObj.getString("fromTransDate")) 
+					&& jsonObj.has("toTransDate") && "".equals(jsonObj.getString("toTransDate"))){
+			 subquery1 = "and bt.transDate >= :fromTransDate" ;
+		 }
+		 
+		 //only toTransDate
+		 else if(jsonObj.has("toTransDate") && jsonObj.getString("toTransDate") != null && !"".equals(jsonObj.getString("toTransDate")) 
+					&& jsonObj.has("fromTransDate") && "".equals(jsonObj.getString("fromTransDate"))){
+				subquery1 = "and bt.transDate <= :toTransDate" ;
+		 }
+		 
+		 //combination of dates
+		 else if(jsonObj.has("toTransDate") && jsonObj.getString("toTransDate") != null && !"".equals(jsonObj.getString("toTransDate")) && 
+					jsonObj.has("fromTransDate") && jsonObj.getString("fromTransDate") != null && !"".equals(jsonObj.getString("fromTransDate"))){
+				subquery1 = "and bt.transDate BETWEEN :fromTransDate and :toTransDate" ;
+		 }
+		
+		 //based on paymentType
+		 if(jsonObj.has("paymentTypeId") && jsonObj.getString("paymentTypeId") != null && !"".equals(jsonObj.getString("paymentTypeId"))){
+			 String paymentTypeId = jsonObj.getString("paymentTypeId").replaceAll("\\[", "").replaceAll("\\]","");
+			 String[] paymentTypes = paymentTypeId.split(",");
+			 if (paymentTypes != null && paymentTypes[0] != null && paymentTypes[0].length() > 0) {
+				 for (String paymentType : paymentTypes) {
+					 paymentType = paymentType.replace("\"", "");
+					 subquery2 = subquery2 + " bt.paymentTypeId.id =" + paymentType+" OR ";
+				 }
+			 }
+		 }
+		
+		if(!subquery2.equalsIgnoreCase("")){
+			subquery2 = " (" + subquery2.substring(0, subquery2.length() - 4) + ")";
+			subquery2 = " and " +subquery2;
+		}
+		
+		//based on transType
+		if(jsonObj.has("transType") && jsonObj.getString("transType") != null && !"".equals(jsonObj.getString("transType"))){
+			   String transType = jsonObj.getString("transType").replaceAll("\\[", "").replaceAll("\\]","");
+			   String[] transTypes = transType.split(",");
+			   if (transTypes != null && transTypes[0] != null && transTypes[0].length() > 0) {
+					 for (String trans : transTypes) {
+						 trans = trans.replace("\"", "");
+						 subquery3= subquery3 + " bt.transType = '"+trans+"' OR ";
+					 }
+				 }
+		 }
+		
+		if(!subquery3.equalsIgnoreCase("")){
+			subquery3 = " (" + subquery3.substring(0, subquery3.length() - 4) + ")";
+			subquery3 = " and " +subquery3;
+		}
+		return  subquery1+subquery2+subquery3;
+		
+	}
+
+		/**
+		 * @author Rajashekar create headers for file
+		 * @param createExcelsheet
+		 * @param style
+		 * @param headers
+		 * @param rowCount 
+		 * @return sheet
+		 */
+		public Sheet setExcelHeaders(Sheet createExcelsheet, CellStyle style, String[] headers, int rowCount) {
+			Row excelHeader = createExcelsheet.createRow(rowCount);
+			for (int i = 0; i < headers.length; i++) {
+				Cell cell = excelHeader.createCell(i);
+				cell.setCellValue(headers[i]);
+				cell.setCellStyle(style);
+			}
+			return createExcelsheet;
+		}
+
+		/**
+		 * @author Rajashekar writes font style to headers
+		 * @param wb
+		 * @return CellStyle
+		 */
+		public CellStyle getCellStyle(Workbook wb) {
+			CellStyle style = wb.createCellStyle();
+			style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			Font font = wb.createFont();
+			font.setColor(HSSFColor.BLUE.index);
+			style.setFont(font);
+			return style;
+		}
+		
+
+
+		/**
+		 * HashRole is used for Java Code
+		 * @author: Naresh Bolisetty
+		 * 
+		 */
+		public boolean hasRole(String role) {
+	        // get security context from thread local
+			
+			 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        if (authentication == null)
+	            return false;
+
+	        for (GrantedAuthority auth : authentication.getAuthorities()) {
+	            if (role.equals(auth.getAuthority()))
+	                return true;
+	        }
+
+	        return false;
+	    }
+		
 }

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -26,30 +27,28 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.enums.Primary;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import com.bis.sourcelead.enums.Status;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "PROJECT_MEMBERS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectMembers")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class ProjectMembers {
+public class ProjectMembers implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projects;
 	
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="EMPLOYEE_ID", nullable=false )	
 	private Employees employee;
 	
@@ -93,6 +92,8 @@ public class ProjectMembers {
     @Transient
     private String empName;
     @Transient
+    private String empEmail;
+    @Transient
     private String startDate;
     @Transient
     private String endDate;
@@ -125,7 +126,7 @@ public class ProjectMembers {
     private String terminateReason;
     
     @JsonIgnore
-    @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonBackReference
 	@Fetch(FetchMode.SELECT)
 	private Set<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(0);
@@ -302,6 +303,14 @@ public class ProjectMembers {
 
 	public void setEmpName(String empName) {
 		this.empName = empName;
+	}
+
+	public String getEmpEmail() {
+		return empEmail;
+	}
+
+	public void setEmpEmail(String empEmail) {
+		this.empEmail = empEmail;
 	}
 
 	public String getStartDate() {

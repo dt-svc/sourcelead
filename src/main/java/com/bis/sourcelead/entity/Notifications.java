@@ -1,10 +1,10 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,8 +20,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name="NOTIFICATIONS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="notifications")
-public class Notifications {
+public class Notifications implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="ID")
@@ -86,6 +91,18 @@ public class Notifications {
 	@Transient
 	private Long notificationCount;
 
+	@Transient
+	private String notificationFirstName;
+	
+	@Transient
+	private String notificationLastName;
+	
+	
+	@Transient
+	private String notificationUserType;
+	
+	@Transient
+	private String notificationFormId;
 	
 	
 	
@@ -233,4 +250,35 @@ public class Notifications {
 		UUID = uUID;
 	}
 
+	public String getNotificationFirstName() {
+		return notificationFirstName;
+	}
+
+	public void setNotificationFirstName(String notificationFirstName) {
+		this.notificationFirstName = notificationFirstName;
+	}
+
+	public String getNotificationLastName() {
+		return notificationLastName;
+	}
+
+	public void setNotificationLastName(String notificationLastName) {
+		this.notificationLastName = notificationLastName;
+	}
+
+	public String getNotificationUserType() {
+		return notificationUserType;
+	}
+
+	public void setNotificationUserType(String notificationUserType) {
+		this.notificationUserType = notificationUserType;
+	}
+
+	public String getNotificationFormId() {
+		return notificationFormId;
+	}
+
+	public void setNotificationFormId(String notificationFormId) {
+		this.notificationFormId = notificationFormId;
+	}
 }

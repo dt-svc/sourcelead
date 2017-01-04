@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.service.EmployeesService;
 
 @Service
@@ -111,6 +110,11 @@ public class EmployeesServiceImpl implements EmployeesService {
 	public Employees getEmployeeByUserIdAndOrgLocationsId(Long userId, Long orgLocationsId) {
 		// TODO Auto-generated method stub
 		return  employeesDao.getEmployeeByUserIdAndOrgLocationsId(userId,orgLocationsId);
+	}
+
+	@Override
+	public List<Employees> getEmployeesByLocationId(Long orgLocationsId) throws Exception {
+		return employeesDao.getEmployeesByLocationId(orgLocationsId);
 	}
 
 	

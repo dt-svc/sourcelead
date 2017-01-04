@@ -1,9 +1,11 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,8 +23,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "CANDIDATE_CERTIFICATIONS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "CandidateCertifications")
-public class CandidateCertifications {
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateCertifications")
+public class CandidateCertifications implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +37,7 @@ public class CandidateCertifications {
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidateId;
 
@@ -68,6 +72,8 @@ public class CandidateCertifications {
 	@Transient
 	private Long candidatecertificateID; 
 	
+	@Transient
+	private String msg;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -228,6 +234,14 @@ public class CandidateCertifications {
 
 	public void setCandidatecertificateID(Long candidatecertificateID) {
 		this.candidatecertificateID = candidatecertificateID;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 
 	

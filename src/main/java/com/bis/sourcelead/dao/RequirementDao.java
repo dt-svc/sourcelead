@@ -26,14 +26,18 @@ public interface RequirementDao {
 	
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
+	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode,String statusType) throws Exception;
+	
+	
 	public List<Requirement> getAssignedRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId,Long  userId) throws Exception;
 
 	public List<Requirement> getRequirementListById(Long requirementId);
 	
 	public Requirement checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception;
 	
+	Requirement validateExistingJobId(String jobId,Long requirementId, Long orgLocationId) throws Exception;
 	
-	Integer validateJobId(Long id,Long orgLocationId) throws Exception;
+	Integer validateJobId(String id,Long orgLocationId) throws Exception;
 
 	public Boolean validateRequirementTitle(String jobName, Long orgLocationId);
 
@@ -41,4 +45,21 @@ public interface RequirementDao {
 	
 	Boolean checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long requirementId,Long userId)  throws Exception;
 	
+	List<Requirement> getAllRequirementTeplateJobsByOrgLocationId(Long orgLocationId, User user) throws Exception;
+	
+	public Requirement getRequirementTemplateByRequirementId(Long requirementId,Long orgLocationId) throws Exception;
+	
+	Integer getManagerAssignedRequirementsCount(Long userId,Long orgLocationId) throws Exception;
+	
+	public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception;
+	
+	public List<Requirement> getManagerAssignedRequirementsList(Long userId,Long orgLocationId) throws Exception;
+	
+	Boolean checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(Long userId,Long orgLocationId)  throws Exception;
+	
+    public Requirement getRequirementByRequirementIdOrgLocationsId(String id,Long requirementId, Long orgLocationsId) throws Exception;
+	
+	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
+
+
 }

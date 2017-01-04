@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,6 +59,7 @@ public class OrgDocumentsRestController {
 	@Autowired
 	private UserService userService;
 	
+	@PreAuthorize("hasAnyRole('ROLE_EDIT_CLIENT_DOCUMENT','ROLE_CREATE_CLIENT_DOCUMENT','ROLE_EDIT_VENDOR_DOCUMENT','ROLE_CREATE_VENDOR_DOCUMENT')")
 	@RequestMapping(value = "/saveDocuments", method = RequestMethod.POST)
 	@ResponseBody String saveDocuments(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
@@ -76,6 +78,12 @@ public class OrgDocumentsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		orgDocumentsService.saveDocument(jsonObj,multiFile,responderLocationId,docId, orgLocation,user, sourceType);
+		if(docId.equalsIgnoreCase("null")){
+			SourceLeadSessionManager.setSessionAttribute(request, "addDocument", "Success !! New document added.");
+		}else{
+			SourceLeadSessionManager.setSessionAttribute(request, "editDocument", "Success!! Document details updated.");
+		}
+		
 		return "success";
 
 	} 	
@@ -87,7 +95,7 @@ public class OrgDocumentsRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	
+	@PreAuthorize("hasRole('ROLE_VIEW_VENDOR_DOCUMENT')")
 	@RequestMapping(value = "/getclientDocumentsListByResponderLocationId")
 	public String getclientDocumentsListByResponderLocationId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			                                                 @RequestParam(value = "sourceType", required = false) String sourceType,
@@ -95,8 +103,23 @@ public class OrgDocumentsRestController {
 
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 String resultJson;
+		 String resultJson , msg="" ;
 		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long.valueOf(responderLocationId), user.getId(), loginOrgLocation.getId(), sourceType);
+		 for(OrgDocuments orgDocuments :clientDocumentsList){
+			 msg = (String) SourceLeadSessionManager.getSessionAttribute(request,"addDocument");
+			 if(msg == null){
+				 msg = (String) SourceLeadSessionManager.getSessionAttribute(request,"editDocument");
+			 }
+			 if(msg == null){
+				 msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteDocument");
+			 }
+			 if(msg != null){
+				 orgDocuments.setMsg(msg);
+			 }
+				 SourceLeadSessionManager.removeSessionAttribute(request, "addDocument");
+				 SourceLeadSessionManager.removeSessionAttribute(request, "editDocument");
+				 SourceLeadSessionManager.removeSessionAttribute(request, "deleteDocument");
+		 }
 		 resultJson = commonUtil.toJSON(clientDocumentsList);
 		 return resultJson;
 	}	
@@ -119,7 +142,8 @@ public class OrgDocumentsRestController {
 		//to fetch client contact list
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId());
 		for (OrgSpoc orgSpoc : orgSpocsList) {
-			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			StringBuilder name = new StringBuilder();
+			orgSpoc.setSpocName(name.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
 		}
 		
@@ -145,7 +169,8 @@ public class OrgDocumentsRestController {
 		//to fetch client contact list
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId());
 		for (OrgSpoc orgSpoc : orgSpocsList) {
-			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			StringBuilder name = new StringBuilder();
+			orgSpoc.setSpocName(name.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
 		}
 		
@@ -166,13 +191,15 @@ public class OrgDocumentsRestController {
 	 * @param response
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_DOWNLOAD_VENODR_DOCS','ROLE_DOWNLOAD_CLIENT_DOCS')")
 	@RequestMapping(value = "/downloadOrgDocument", method = RequestMethod.GET)
     public void downloadResume(@RequestParam(value="docId", required=false) String docId ,HttpServletResponse response) throws Exception {
 		
 		    OrgDocuments orgDocument =  orgDocumentsService.getOrgDocumentsById(Long.parseLong(docId));
 		    
 		    response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition", "attachment;filename="+orgDocument.getFileName());
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(orgDocument.getFileName()).append("\"").toString());
 		    
 			InputStream inputStream = new ByteArrayInputStream(orgDocument.getDocFile());
 			try {
@@ -201,13 +228,30 @@ public class OrgDocumentsRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_VENDOR_DOCUMENT','ROLE_VIEW_CLIENT_DOCUMENT')")
 	@RequestMapping(value = "/getclientDocumentsListByResponderLocationIdAndSpocUserId")
 	public String getclientDocumentsListByResponderLocationIdAndSpocUserId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			@RequestParam(value = "userId", required = false) String spocUserId,HttpServletRequest request) throws Exception {
 
+		String msg = "";
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 String resultJson;
 		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long.valueOf(responderLocationId), loginOrgLocation.getId(),Long.valueOf(spocUserId));
+		 for(OrgDocuments orgDocuments : clientDocumentsList){
+			 msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addDocument");
+			 if(msg == null){
+				 msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editDocument");
+			 }
+			 if(msg == null){
+				 msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteDocument");
+			 }
+			 if(msg != null){
+				 orgDocuments.setMsg(msg);
+			 }
+			 SourceLeadSessionManager.removeSessionAttribute(request, "addDocument");
+			 SourceLeadSessionManager.removeSessionAttribute(request, "editDocument");
+			 SourceLeadSessionManager.removeSessionAttribute(request, "deleteDocument");
+		 }
 		 resultJson = commonUtil.toJSON(clientDocumentsList);
 		 return resultJson;
 	}	
@@ -220,6 +264,7 @@ public class OrgDocumentsRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_DELETE_CLIENT_DOCUMENT','ROLE_DELETE_VENDOR_DOCUMENT')")
 	@RequestMapping(value = "/terminateOrgDocumnet", method = RequestMethod.POST)
 	public @ResponseBody String terminateOrgDocumnet(@RequestParam(value="docId", required=false) String docId ,
 			                                         @RequestParam(value = "terminateReason", required = false) String terminateReason,
@@ -234,6 +279,8 @@ public class OrgDocumentsRestController {
 			orgDocument.setUpdatedBy(user.getUserCode());
 			orgDocument.setUpdatedDate(commonUtil.currentDate());
 			orgDocumentsService.updateDocumnet(orgDocument);
+			StringBuilder deleteDocumentMsg = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "deleteDocument", deleteDocumentMsg.append("").append(orgDocument.getDocName()).append(" removed.").toString());
 		}
 		return "success";
 	}

@@ -117,7 +117,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	}
 
 	@Override
-	public Set<ProjectTasks> prepareProjectTasksListByJson(JSONObject jsonObj, HttpServletRequest request,
+	public Set<ProjectTasks> prepareProjectTasksListByJson(JSONObject jsonObj,  HttpServletRequest request,
 			Projects projects) throws Exception {
 		 
 		    HashSet<ProjectTasks> projectTasksList = new HashSet<ProjectTasks>(); 
@@ -143,7 +143,5 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		    		  
 		
 	}
-
-	
 
 }

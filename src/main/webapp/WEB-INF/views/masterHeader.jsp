@@ -15,8 +15,7 @@
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -68,7 +67,7 @@
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
-  <span class="logo"> <a href="dashboard" title="Source Lead">
+  <span class="logo"> <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
   <i>
  <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>
@@ -96,7 +95,7 @@
               <img class="img-circle" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>"> </div>
               <div class="user-media-body">
                 <p><span>${SourceLeadWeb_userName}</span></p>
-                <p>${SourceLeadWeb_userType}</p>
+                <p>${SourceLeadWeb_displayName}</p>
               </div>
             </div>
             <ul class="list-unstyled">
@@ -108,7 +107,7 @@
         <!-- login User details -->
         <ul class="list-inline list-unstyled pull-left custom-navbar-inner">
           <li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>
-           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN' || SourceLeadWeb_loginUserRole == 'SOURCELEAD_ADMIN'}">
+           <%-- <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN' || SourceLeadWeb_loginUserRole == 'SOURCELEAD_ADMIN'}">
 	          <li> <a href="javascript:void(0)" title="Quick Links" id="qlinks"> <i class="fa fa-link"></i> </a>
 	              <div class="qlinks-area ">
 	              <ul class="list-unstyled">
@@ -119,8 +118,10 @@
 	              </ul>
 	            </div>
 	          </li>
-            </c:if>
-            
+            </c:if> --%>
+            <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
+            	<li><a href="${sourceleadUrl}/mailBox" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </a></li>
+            </sec:authorize>
             <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
             <li> <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
 	              <div id="spockLinksList" style="display: none;">
@@ -129,8 +130,8 @@
 		              <li>
 			              <a href="${sourceleadUrl}/dashboard/${links.orgLocations.id}">
 				                <div class="clearfix">
-				                   <div class="pull-left image-parent">
-				                   <div class="imageParent org-imagelink">
+				                   <div class="pull-left image-parent positionRelative">
+				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
 				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
 				                     </div>
 				                   </div>
@@ -147,65 +148,9 @@
 	            </div>
 	          </li>
 	          </c:if>
-           
-          <!-- <li> <a href="#" title="Notifications" id="notification"> <i class="fa fa-envelope"></i> <span class="label label-success">4</span> </a>
-            <div class="header-widget note-area">
-              <ul class="list-unstyled">
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img src="resources/images/pratap-bis.jpg" title="Pratap Reddy" alt="Admin" class="img-circle"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                    <div class="msg-time"> <span> <i class="fa fa-clock-o"></i><br>
-                      1hr ago </span> </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img src="resources/images/pratap-bis.jpg" title="Pratap Reddy" alt="Admin" class="img-circle"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                    <div class="msg-time"> <span> <i class="fa fa-clock-o"></i><br>
-                      1hr ago </span> </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img src="resources/images/pratap-bis.jpg" title="Pratap Reddy" alt="Admin" class="img-circle"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                    <div class="msg-time"> <span> <i class="fa fa-clock-o"></i><br>
-                      1hr ago </span> </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img src="resources/images/pratap-bis.jpg" title="Pratap Reddy" alt="Admin" class="img-circle"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                    <div class="msg-time"> <span> <i class="fa fa-clock-o"></i><br>
-                      1hr ago </span> </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img src="resources/images/pratap-bis.jpg" title="Pratap Reddy" alt="Admin" class="img-circle"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                    <div class="msg-time"> <span> <i class="fa fa-clock-o"></i><br>
-                      1hr ago </span> </div>
-                  </div>
-                </li>
-              </ul>
-              <div class="headerwidget-footer"> <a href="javascript:void(0)" >View All</a> </div>
-            </div>
-          </li> -->
-          <li> <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
+         
+          <li> 
+          <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
               <c:if test="${empty SourceLeadWeb_notificationList}">
@@ -233,25 +178,34 @@
             </div>
           </li>
           
-          
-	          <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
+          <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS','ROLE_ORG_SUBMISSION_TEMPLATE')"> 
+	            <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
-	              <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y' && SourceLeadWeb_enrollOrgVisible == 'Y'}">
+	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>Enroll Org</a></li>
-	               </c:if>
-	               		 <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
-	                     <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
+	                     </sec:authorize>
+	                     
+	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+	                        <li><a href="<c:url value="/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
+	                     </sec:authorize>
+	                     <sec:authorize access="hasAnyRole('ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS')"> 
+	               		      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
+	               		 </sec:authorize>
+	               		 <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
+	                    	   <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
+	                     </sec:authorize>
 	                     
 	              </ul>
 	            </div>
 	          </li>
-         
+         </sec:authorize>
           <%-- <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y' && SourceLeadWeb_enrollOrgVisible != 'Y'}">
 	          <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
                      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
+                     <li><a href="<c:url value="/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Enroll Roles</a></li>
                      <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
 	                     
 	              </ul>

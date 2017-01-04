@@ -29,6 +29,14 @@ public interface ProjectApproverHierarchyService {
 	public List<Long> getProjectIdsByLoginUserId(Long userId);
 	
 	Set<ProjectApproverHierarchy> prepareProjectApproverHierarchyListByJson(JSONObject jsonObj,HttpServletRequest request,Projects projects) throws Exception;
-	
 
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdForManager(Long projectId, Long userId, int managerLevel) throws Exception;
+
+	public ProjectApproverHierarchy getApproverUsersByProjectIdLevel1(Long projectId, Long userId);
+
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdlevel2Manager(Long projectId, Long userId)throws Exception;
+	
+	List<ProjectApproverHierarchy> getProjectApproversListByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
+
+	List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,Long orgLocationId) throws Exception;
 }

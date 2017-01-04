@@ -3,13 +3,10 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -22,21 +19,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
-import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.service.ProjectsService;
-import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.CalendarUtil;
-import com.bis.sourcelead.util.EmailScenerioUtil;
 
 @Repository
 public class ProjectsDaoImpl implements ProjectsDao{
@@ -44,22 +32,10 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Autowired
 	private SessionFactory sessionFactory;
 	
-
-    @Autowired
-	private ProjectApproverHierarchyDao projectApproverHierarchyDao;
     
     @Autowired
    	private UserRoleDao userRoleDao;
     
-    @Autowired
-    private EmailScenarioService emailScenarioService;
-    
-    @Autowired
-    
-    private EmailScenerioUtil emailScenerioUtil;
-    
-    @Autowired
-    private UserService userService;
     
     @Value("${SourceLead.100}")
 	private String notFound;
@@ -72,10 +48,6 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
     
-    @Autowired
-    
-    private ProjectsService projectsService;
-	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 
 	/**
@@ -215,7 +187,11 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		 boolean flag = false;
 		 if(projectSequeneNumber != null && orgLocationsId != null){
 				String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectSequeneNumber = :projectSequeneNumber ";
-				Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("projectSequeneNumber", projectSequeneNumber).list();
+				Collection<Projects> projectsList = session.createQuery(query.toString())
+						                                   .setLong("orgLocationsId", orgLocationsId)
+						                                   .setString("projectSequeneNumber", projectSequeneNumber)
+						                                   .setCacheable(true)
+						                                   .list();
 
 				if (projectsList != null && projectsList.size() > 0) {
 					flag = true;
@@ -233,7 +209,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		logger.debug("In Projects getAllProjects method");
         Session session = this.sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(Projects.class);
-        List<Projects> projectsList = crit.list();
+        List<Projects> projectsList = crit.setCacheable(true).list();
         return projectsList;
 	}
 	
@@ -246,7 +222,11 @@ public class ProjectsDaoImpl implements ProjectsDao{
         String query = "from  Projects projects  left join fetch projects.orgRelationId  orgrelation left join fetch orgrelation.responderLocationId orgLocation "	
 
         		+ "left join fetch orgLocation.org  where projects.id IN (:projectIds) and projects.orgLocationsId = :orgLocationId";
-        List<Projects> projectsList  =   session.createQuery(query.toString()).setParameterList("projectIds", projectIds).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+        List<Projects> projectsList  =   session.createQuery(query.toString())
+								        		.setParameterList("projectIds", projectIds)
+								        		.setLong("orgLocationId", orgLocationId)
+								        		.setCacheable(true)
+								        		.list();
        
         return projectsList;
 	}
@@ -260,8 +240,10 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		String query ="select count(*)from Projects projects where projects.projectSequeneNumber = :projectId";
 		
-		List<Long> deptCount =   session.createQuery(query.toString()).setLong("projectId", projectId)
-        										.list();
+		List<Long> deptCount =   session.createQuery(query.toString())
+				                         .setLong("projectId", projectId)
+				                         .setCacheable(true)
+				                         .list();
 			Integer count = 0;
 			if(deptCount != null && !deptCount.isEmpty()){
 					count = deptCount.get(0).intValue();
@@ -284,7 +266,11 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		logger.debug("In ProjectsDaoImpl class getAllProjectsByOrgRelationId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects projects  left join fetch projects.orgRelationId orgre  where  orgre.responderLocationId  IN(select orgrel.responderLocationId from OrgRelations  orgrel where orgrel.responderLocationId = :orgRelationId and orgrel.locationId = :locationId) and projects.orgLocationsId = :locationId";
-		List<Projects> clientProjectsList =  session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId).setLong("locationId", locationId).list();
+		List<Projects> clientProjectsList =  session.createQuery(query.toString())
+													.setLong("orgRelationId", orgRelationId)
+													.setLong("locationId", locationId)
+													.setCacheable(true)
+													.list();
 		
 		return clientProjectsList;
 	}
@@ -335,8 +321,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects p where p.projectSequeneNumber = :projectSequeneNumber";
 		List<Projects> projectsList =  session.createQuery(query.toString())
-				.setString("projectSequeneNumber", projectSequeneNumber)
-				.setCacheable(true).list();
+											  .setString("projectSequeneNumber", projectSequeneNumber)
+											  .setCacheable(true).list();
 		if(projectsList != null){
 			return projectsList.get(0);
 		}
@@ -483,7 +469,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			
 			String query = "select pj from  Projects pj where pj.id IN (select pm.projects.id from ProjectMembers pm  "
-					+ "where pm.employee.id IN (select emp.id from Employees emp where emp.user.id = :userId and pm.status <> 'IN-ACTIVE'  and  emp.orgLocations.id = :orgLocationId ))" ;
+					+ "where pm.employee.id IN (select emp.id from Employees emp where emp.user.id = :userId and pm.status <> 'IN-ACTIVE'  and  emp.orgLocations.id = :orgLocationId ) and pm.status = '1')" ;
 			List<Projects> projectsList =session.createQuery(query.toString()).setLong("userId", userId)
 					.setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
 			      
@@ -590,6 +576,23 @@ public void saveAllProjects(List<Projects> projectsList) throws Exception {
 			}
 		}
 	}
+}
+
+@Override
+@Transactional
+public Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+	logger.debug("getProjectApproversCountByUserIdAndOrgLocationId start");
+	Session session = this.sessionFactory.getCurrentSession();
+		String query = "select count(projects.id) from Projects projects "
+				+ "where projects.id IN (select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy where hierarchy.approverUserId.id = :userId) and projects.orgLocationsId.id = :orgLocationId ";
+		
+		List<Long> projectsCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		Integer count = 0;
+		if(projectsCount != null && !projectsCount.isEmpty()){
+				count = projectsCount.get(0).intValue();
+		}
+		return count;
+    
 }
 
 /*@Override

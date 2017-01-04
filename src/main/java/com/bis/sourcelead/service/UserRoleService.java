@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 
@@ -26,7 +27,7 @@ public interface UserRoleService {
 	
 	public List<UserRole> getUsersListByUserNameAndLocationId(String userName,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
 	
-	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId,String userName,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
+	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId,String userName,Long locationId,String userState,Long userId,String loginUserRole,String userCode,Integer offset) throws Exception;
 	
 	public List<UserRole> getUsersListByUserStateAndLocationId(String userState,Long locationId,Long userId,String loginUserRole,String userCode) throws Exception;
 
@@ -35,6 +36,10 @@ public interface UserRoleService {
 	public List<UserRole> getApproverAssignedUsers(List<Long> projectIds,String userState,String searchByName) throws Exception;
 	
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
+	
+	public UserRole getUserDetailsByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
+	
+	public UserRole getUserByUserId(Long userId) throws Exception;
 	
 	/**To get user role by userid and locationId
 	 * @author Prasad salina
@@ -84,8 +89,16 @@ public interface UserRoleService {
 	 * @purpose : Email JobScheduler(For to intimate unfilled timesheets)
 	 * 
 	 */
-	 public HashSet<UserRole> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
+	 public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 	 
 	 public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
+
+	 public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String wEEKLY) throws Exception;
+
+	 List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId);
+	 
+	 List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId,Long orgLocationId);
+	 
+	 UserRole getChangeRolePermissions(List<Long> userRoletabIds,Long userId,Long orgLocationId) throws Exception;
 	
 }

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -18,9 +19,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name="USER_LOGIN_ATTEMPTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region = "userLoginAttempts")
-public class UserLoginAttempts {
+public class UserLoginAttempts implements Serializable{
 	
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID",nullable = false)

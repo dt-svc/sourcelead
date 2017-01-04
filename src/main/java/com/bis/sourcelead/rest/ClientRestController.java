@@ -1,11 +1,17 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
@@ -14,6 +20,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.util.FileCopyUtils;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,13 +31,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -36,6 +48,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -94,6 +107,12 @@ public class ClientRestController {
 	@Autowired
 	SubmissionTemplateService submissionTemplateService;
 	
+	@Autowired
+	private RolesService rolesService;
+	
+	@Autowired
+	private ClientVendorExport clientVendorExport;
+	
 	
 	/**
 	 * Handles to get Orgs
@@ -125,6 +144,23 @@ public class ClientRestController {
 	    }
 	 
 	 
+	 @RequestMapping(value = "/getRolesList", method = RequestMethod.POST)
+		public @ResponseBody String getRolesList(
+				@RequestParam(value = "orgLocationId", required = false) String orgLocationId,
+				@RequestParam(value = "moduleType", required = false) String moduleType,
+				HttpServletRequest request) throws Exception {
+			
+			List<Roles> rolesList  = null;
+			if(!isNullOrEmpty(orgLocationId)){
+				rolesList = rolesService.getClientOrVendorRolesList(Long.parseLong(orgLocationId), moduleType);
+			}else{
+				rolesList = rolesService.getClientOrVendorRolesList(1L, moduleType);
+			}
+			
+			return commonUtil.toJSON(rolesList);
+		}
+	 
+	 
 	 /**
 		 * Handles to get Org Deatils
 		 * 
@@ -142,27 +178,27 @@ public class ClientRestController {
 			ArrayList<String> orgsList = new ArrayList<String>();
 			
 			Org org = orgService.getOrgByOrgName(orgName);
-			
-			
-			OrgLocations orgLocations = orgLocationService.getOrgLocationsByOrgCode(org.getId().toString());
-			
-			try {
-				orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
-			} catch (Exception e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
-			}
-			if(orgLocations != null)
-			{
-				orgsList.add(orgLocations.getCountry());
-				orgsList.add(orgLocations.getState());
-				orgsList.add(orgLocations.getCity());
-				orgsList.add(orgLocations.getOrg().getWebSite());
+			if(org != null){
+				OrgLocations orgLocations = orgLocationService.getOrgLocationsByOrgCode(org.getId().toString());
+				
+				try {
+					orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
+				} catch (Exception e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+				if(orgLocations != null)
+				{
+					orgsList.add(orgLocations.getCountry());
+					orgsList.add(orgLocations.getState());
+					orgsList.add(orgLocations.getCity());
+					orgsList.add(orgLocations.getOrg().getWebSite());
+				}
 			}
 			return commonUtil.toJSON(orgsList);
 			
 		}
 	
-		
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_CREATE_VENDOR')")
 		@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
 			public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
 					@RequestParam(value = "responderType", required = false) String responderType,
@@ -180,13 +216,14 @@ public class ClientRestController {
 					}
 					
 					clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
-				 	
-					SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg",
-							"Successfully you have created a client");
-
+				 	if(responderType.equalsIgnoreCase("Vendor")){
+				 		SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg",
+								"Success!! New Vendor created");
+				 	}else if(responderType.equalsIgnoreCase("Client")){
+				 		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg",
+								"Success!! New client created");
+				 	}
 					return "clientDashboard";
-				
-				
 			} 
 		
 		
@@ -234,8 +271,11 @@ public class ClientRestController {
 						logger.error(ExceptionUtils.getFullStackTrace(e));
 					}
 					if(userRole != null){
-						userList.add(userRole.getRoles().getId().toString());
-						userList.add(userRole.getRoles().getDisplayName());
+						if(userRole.getRoles() !=null){
+							userList.add(userRole.getRoles().getId().toString());
+							userList.add(userRole.getRoles().getDisplayName());
+						}
+						
 					}
 					
 				}
@@ -276,7 +316,10 @@ public class ClientRestController {
 		Long projectCount = orgRelationsService.getNumberOfProjectsPerClient(orgRelation.getId());
 		orgRelation.setProjectsCont(projectCount);
 		User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
-		orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
+		if(user != null){
+			StringBuilder name = new StringBuilder();
+			orgRelation.setVendorCreateduserName(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		}
 		return commonUtil.toJSON(orgRelation);
 	}
 	
@@ -287,19 +330,33 @@ public class ClientRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT','ROLE_CREATE_REQUIREMENT')")
 	@RequestMapping(value = "/getOrgSpocsList", method = RequestMethod.POST)
 	@ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+		String msg = "";
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
 		if(orgSpocsList != null){
 			for(OrgSpoc orgSpoc : orgSpocsList){
+				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientContactCreateMsg");
+				if(msg != null && msg != ""){
+					orgSpoc.setMsg(msg);
+					SourceLeadSessionManager.removeSessionAttribute(request, "clientContactCreateMsg");
+				}else{
+					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "vendorContactCreateMsg");
+					if(msg != null){
+						orgSpoc.setMsg(msg);
+						SourceLeadSessionManager.removeSessionAttribute(request, "vendorContactCreateMsg");
+					}
+				}
 				String ownerLastName = "";
 				if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null){
 					ownerLastName = orgSpoc.getOwnerUser().getLastName();
 				}
-				orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+ownerLastName);
+				StringBuilder name = new StringBuilder();
+				orgSpoc.setOwnerName(name.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(ownerLastName).toString());
 			}
 		}
 		return commonUtil.toJSON(orgSpocsList);
@@ -310,7 +367,7 @@ public class ClientRestController {
 	@RequestMapping(value = "/getSubmissionTemplatesList", method = RequestMethod.POST)
 	@ResponseBody String getSubmissionTemplatesList(@RequestParam(value = "clientLocationId", required = false) Long clientLocationId) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationId(clientLocationId, orgLocations.getId());
+		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(clientLocationId, orgLocations.getId(),"Submission");
 		
 		return commonUtil.toJSON(submissiontTemplateList);
 	}
@@ -401,6 +458,8 @@ public class ClientRestController {
 	 * @return
 	 * @throws Exception
 	 */
+
+	@PreAuthorize("hasAnyRole('ROLE_DELETE_CLIENT_CONTACT','ROLE_DELETE_VENDOR_CONTACT')")
 	 @RequestMapping(value = "/terminateSpoc", method = RequestMethod.POST)
 	 public @ResponseBody String terminateSpoc(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value="reason", required=false) String reason) throws Exception{
 		       OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
@@ -467,8 +526,10 @@ public class ClientRestController {
 	        if(orgSpoc !=  null){
 	        	if(invitationStaus != null && "Accepted".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Success !! Accepted the invitation.");
 	        	}else if(invitationStaus != null && "Rejected".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
+	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Rejected the invitation.");
 	        	}
 	        	orgSpocService.addOrgSpoc(orgSpoc);
 	        }
@@ -483,6 +544,7 @@ public class ClientRestController {
 	  * @return
 	  * @throws Exception
 	  */
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_CLIENT_CONTACT','ROLE_VIEW_EDIT_CLIENT_CONTACT','ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT')")
 	 @RequestMapping(value = "/getSpocAndOwnerDetailsById", method = RequestMethod.POST)
 	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,@RequestParam(value = "tempOwnerId", required = false) Long tempOwnerId ) throws Exception{
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -492,6 +554,12 @@ public class ClientRestController {
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
 		     orgSpoc.setUserList(userList);
+		     String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editSpocMsg");
+		     if(msg != null && msg != ""){
+		    	 orgSpoc.setMsg(msg);
+		    	 SourceLeadSessionManager.removeSessionAttribute(request, "editSpocMsg");
+		     }
+		     
 		 return commonUtil.toJSON(orgSpoc);
 		}
 
@@ -514,6 +582,9 @@ public class ClientRestController {
 	       String json1 = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(json1);
 	       clientService.updateClientDetails(jsonObj, orgRelationId,clientLocationId, orgLocation.getId());
+	       
+	       StringBuilder editClientMsg = new StringBuilder();
+		   SourceLeadSessionManager.setSessionAttribute(request, "editClient", editClientMsg.append("Success !! ").append(jsonObj.getString("clientName")).append(" details updated.").toString());
 
 		return "success";
 	}
@@ -534,7 +605,21 @@ public class ClientRestController {
 		List<Org> org =orgService.getOrgs();
 	    boolean flag = false;
 		
-			flag = orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
+			List<OrgRelations> relationsList = orgRelationsService.getClientOrVendorListByOrgLocationId(orgLocation.getId(), responderType);
+			for(OrgRelations orgRelations : relationsList){
+				if(orgRelations.getLocationId().getId() == orgLocation.getId()){
+					if(clientName.equalsIgnoreCase(orgRelations.getResponderLocationId().getOrg().getOrgName())){
+						flag = true;
+					}
+				}	
+				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
+					if(clientName.equalsIgnoreCase(orgRelations.getLocationId().getOrg().getOrgName())){
+						flag = true;
+					}
+					
+				}
+				
+			}
 		
 		
 		return flag;
@@ -576,7 +661,7 @@ public class ClientRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CLIENT','ROLE_VIEW_CLIENT','ROLE_VIEW_VENDOR','ROLE_VIEW_EDIT_VENDOR')")
 	@RequestMapping(value = "/getClientAndVendorOrgDeatilsById", method = RequestMethod.POST)
 	@ResponseBody String getClientAndVendorOrgDeatilsById(@RequestParam(value = "vendorLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
@@ -584,7 +669,15 @@ public class ClientRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(orgLocationId,orgRelationId,orgLocation.getId());
-		
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editClient");
+		if(msg != null && msg != ""){
+			orgRelation.setMsg(msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "editClient");
+		}else{
+			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editVendor");
+			orgRelation.setMsg(msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "editVendor");
+		}
 		String resultJson;
 		resultJson = commonUtil.toJSON(orgRelation);
 		return resultJson;
@@ -628,6 +721,9 @@ public class ClientRestController {
 	
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	       clientService.updateVendorDetails(jsonObj, orgRelationId,vendorLocationId, orgLocation.getId());
+	       
+	       StringBuilder editVendorMsg = new StringBuilder();
+		   SourceLeadSessionManager.setSessionAttribute(request, "editVendor", editVendorMsg.append("Success !! ").append(jsonObj.getString("vendorName")).append(" details updated.").toString());
 
 		return "success";
 	}
@@ -649,7 +745,10 @@ public class ClientRestController {
 	       JSONObject jsonObj = new JSONObject(jsonVal);
 	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation);
+	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation);
+	       
+	       StringBuilder editSpocMsg = new StringBuilder();
+		   SourceLeadSessionManager.setSessionAttribute(request, "editSpocMsg", editSpocMsg.append("Success !! ").append(orgSpoc.getSpocUser().getFirstName()).append(" details updated.").toString());
 
 		return jsonObj.getString("owner");
 	}
@@ -661,10 +760,17 @@ public class ClientRestController {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
-	    String resultJson;
+	    String resultJson , msg="" ;
 	    
 	    List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Vendor",status,clientIds,invitationStatus);
-		resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
+	    for(OrgSpoc orgSpoc :vandorsContactListByOrgLocationId){
+			 msg = (String) SourceLeadSessionManager.getSessionAttribute(request,"acceptContact");
+			 if(msg != null){
+				 orgSpoc.setMsg(msg);
+				 SourceLeadSessionManager.removeSessionAttribute(request, "acceptContact");
+			 }
+		 }
+	    resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
 		return resultJson;
 	}
 	
@@ -684,7 +790,7 @@ public class ClientRestController {
 	}	
 	
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_SUBMISSION_TEMPLATE','ROLE_EDIT_SUBMISSION_TEMPLATE')")
 	@RequestMapping(value = "/saveClientSubmissionTemplate" , method = RequestMethod.POST)
 	   public String saveClientSubmissionTemplate(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="clientLocationId", required=false) Long clientLocationId,
@@ -713,8 +819,11 @@ public class ClientRestController {
 			   submissionTemplate.setOrgLocationId(orgLocations);
 			   submissionTemplate.setJsonString(jsonStringData);
 			   submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+			   submissionTemplate.setTemplateType("Submission");
 			   submissionTemplate.setCreatedBy(user.getUserCode());
 			   submissionTemplate.setCreatedDate(new Date());
+			   submissionTemplate.setUpdatedBy(user.getUserCode());
+			   submissionTemplate.setUpdatedDate(new Date());
 			   submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 				
 			} catch (Exception e) {
@@ -765,6 +874,95 @@ public class ClientRestController {
 	    
 	   }
 	
+	
+	
+	@RequestMapping(value = "/validateFeedbackTemplateLabelName" , method = RequestMethod.GET)
+	   public String validateFeedbackTemplateLabelName(@RequestParam(value="templateId", required=false) Long templateId,
+			   @RequestParam(value="labelName", required=false) String labelName) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    SubmissionTemplate submissionTemplate = null;
+		    if(templateId != null){
+		    	submissionTemplate = submissionTemplateService.getSubmissionTemplateByLabelName(templateId, labelName);	
+		    }
+		    if(submissionTemplate == null){
+		    	return "Success";
+		    }else{
+		    	return "Existed";
+		    }
+	    
+	   }
+	
+	/**
+	 * @author Rajashekar
+	 * Export client data to excel and pdf
+	 * @param status
+	 * @param exportType
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	
+	@PreAuthorize("hasRole('ROLE_EXPORT_CLIENTS')")
+	 @RequestMapping(value = "/exportClientDetails")
+	   @ResponseBody void exportClientDetails(@RequestParam(value="values", required=false) String status,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		    List<OrgRelations> clientsList = orgRelationsService.getAllClientsFilterByOrgLocationId(orgLocations.getId(),status,loginUser.getId());
+		    File file = clientVendorExport.getClientExportFile(clientsList,exportType,org.getOrgName());
+		    String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"" ).append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+		    
+		}
+	 
+	 
+	 /**
+	  * @author Rajashekar
+	  * export client contacts data to excel and pdf
+	  * @param status
+	  * @param clientIds
+	  * @param invitationStatus
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
+	
+	 @PreAuthorize("hasRole('ROLE_EXPORT_CLIENT_CONTACTS')")
+	 @RequestMapping(value = "/exportClientContactDetails")
+		public void exportClientContactDetails(@RequestParam(value="status", required=false) String status,@RequestParam(value="clientIds", required=false) String clientIds,@RequestParam(value="invitationStatus", required=false) String invitationStatus,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		    List<OrgSpoc> vandorsContactList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Vendor",status,clientIds,invitationStatus);
+		    File file = clientVendorExport.getClientContactsExportFile(vandorsContactList,exportType,org.getOrgName());
+		    String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"" ).append(file.getName()).append( "\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+	 }
 	
 	/**
 	 * check given string empty or null

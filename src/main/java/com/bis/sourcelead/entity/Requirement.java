@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -30,8 +31,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Entity
 	@Table(name = "REQUIREMENT", catalog = "sourcelead")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement")
-	public class Requirement {
+	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement1")
+	public class Requirement implements Serializable{
+
+	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,13 +52,16 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "JOB_TYPE")
 	private String jobType;
 	
+	@Column(name = "OTHER_JOBTYPE")
+	private String otherJobType;
+		
 	@Column(name = "JOB_ID")
 	private String jobId;
 	
 	@Column(name = "POSITIONS")
 	private String positions;
 	
-	@Column(name = "EDUCATION")
+	@Column(name = "EDUCATION", columnDefinition = "TEXT default NULL")
 	private String education;
 	
 	@Column(name = "MIN_EXP")
@@ -81,7 +88,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "CITY")
 	private String city;
 	
-	@Column(name = "SKILLS")
+	@Column(name = "SKILLS", columnDefinition = "TEXT default NULL")
 	private String skills;
 	
 	@Column(name = "DESCRIPTION" , columnDefinition = "TEXT default NULL")
@@ -104,7 +111,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
 	    
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId;
 	
@@ -154,7 +161,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String clientSubmissionTemplateJsonString;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="PARENT_REQUIREMENT_ID")        
     private Requirement parentRequirement;
 	
@@ -182,11 +189,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private  Long  requirementId;
 	
-	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@Transient
+	private String msg;
+	
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
 	
-	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
 	
@@ -256,6 +266,24 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String isLoginUserAsManager;
+	
+	@Transient
+	private String mailBody;
+	
+	@Transient
+	private String submitToClientFromMailId;
+	
+	@Transient
+	private String submitToClientToMailId;
+	
+	@Transient
+	private String submitToClientMailSubject;
+	
+	@Transient
+	private Integer totalApplicantsForRequirement;
+	
+	@Transient
+	private String approvedBy;
 	
 
 	public String getRequirementCreatedDateToString() {
@@ -794,6 +822,15 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public String getIsLoginUserAsManager() {
 		return isLoginUserAsManager;
 	}
+	
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
 
 	public void setIsLoginUserAsManager(String isLoginUserAsManager) {
 		this.isLoginUserAsManager = isLoginUserAsManager;
@@ -807,4 +844,60 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.requirementSubmissionPreviousStatus = requirementSubmissionPreviousStatus;
 	}
 
+	public String getOtherJobType() {
+		return otherJobType;
+	}
+
+	public void setOtherJobType(String otherJobType) {
+		this.otherJobType = otherJobType;
+	}
+
+	public String getMailBody() {
+		return mailBody;
+	}
+
+	public void setMailBody(String mailBody) {
+		this.mailBody = mailBody;
+	}
+
+	public String getSubmitToClientFromMailId() {
+		return submitToClientFromMailId;
+	}
+
+	public void setSubmitToClientFromMailId(String submitToClientFromMailId) {
+		this.submitToClientFromMailId = submitToClientFromMailId;
+	}
+
+	public String getSubmitToClientToMailId() {
+		return submitToClientToMailId;
+	}
+
+	public void setSubmitToClientToMailId(String submitToClientToMailId) {
+		this.submitToClientToMailId = submitToClientToMailId;
+	}
+
+	public String getSubmitToClientMailSubject() {
+		return submitToClientMailSubject;
+	}
+
+	public void setSubmitToClientMailSubject(String submitToClientMailSubject) {
+		this.submitToClientMailSubject = submitToClientMailSubject;
+	}
+
+	public Integer getTotalApplicantsForRequirement() {
+		return totalApplicantsForRequirement;
+	}
+
+	public void setTotalApplicantsForRequirement(Integer totalApplicantsForRequirement) {
+		this.totalApplicantsForRequirement = totalApplicantsForRequirement;
+	}
+
+	public String getApprovedBy() {
+		return approvedBy;
+	}
+
+	public void setApprovedBy(String approvedBy) {
+		this.approvedBy = approvedBy;
+	}
+	
 }

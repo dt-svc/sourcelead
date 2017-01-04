@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +21,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "ORG_SPOC")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgSpoc")
-public class OrgSpoc {
+public class OrgSpoc implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -122,6 +125,9 @@ public class OrgSpoc {
 	
 	@Transient
 	private String releasedRequirement;
+	
+	@Transient
+	private String msg;
 
 	public Long getSpocLocationId() {
 		return spocLocationId;
@@ -368,5 +374,13 @@ public class OrgSpoc {
 
 	public void setReleasedRequirement(String releasedRequirement) {
 		this.releasedRequirement = releasedRequirement;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 }

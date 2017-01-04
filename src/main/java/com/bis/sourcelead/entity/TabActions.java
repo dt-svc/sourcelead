@@ -1,5 +1,7 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,8 +19,10 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "TABS_ACTIONS", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
-public class TabActions {
+public class TabActions implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)

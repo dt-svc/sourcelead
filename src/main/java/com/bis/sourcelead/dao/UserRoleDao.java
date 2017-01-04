@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 
@@ -21,7 +22,7 @@ public interface UserRoleDao {
 	
 	public List<UserRole> getUsersListByUserNameAndLocationId(String userName,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
 	
-	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId,String userName,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
+	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId,String userName,Long locationId,String userState,Long userId,String loginUserRole,String userCode,Integer offset) throws Exception;
 	
 	public List<UserRole> getUsersListByUserStateAndLocationId(String userState,Long locationId,Long userId,String loginUserRole,String userCode) throws Exception;
 
@@ -30,6 +31,8 @@ public interface UserRoleDao {
 	public List<UserRole> getApproverAssignedUsers(List<Long> projectIds, String userState, String searchByName) throws Exception;
 	
 	public Boolean isUserAdminByOrgLocationId(Long userId, Long orgLocationId);
+	
+	public UserRole getUserDetailsByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
 	
 
 	public Boolean isUserAdmin(Long userId);
@@ -48,11 +51,7 @@ public interface UserRoleDao {
 	
 	public boolean isUserActive(Long userId) throws Exception;
 	
-	/*//Prasad Salina to get managers list baded on role type
-	List<UserRole> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception;
-			
-	//Prasad Salina to get managers list baded on role type and except current user
-	List<UserRole> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;*/
+	public UserRole getUserByUserId(Long userId) throws Exception;
 	
 	//Prasad Salina to get all the user ids baded on reportingManager userid
 	List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception;
@@ -72,9 +71,15 @@ public interface UserRoleDao {
 	 * @purpose : Email JobScheduler(For to intimate unfilled timesheets)
 	 * 
 	 */
-	public HashSet<UserRole> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
+	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 	
 	public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
+	
+	List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId);
+	
+	List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId,Long orgLocationId);
+
+	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 
 
 }

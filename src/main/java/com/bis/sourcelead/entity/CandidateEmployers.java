@@ -1,9 +1,11 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,8 +27,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "CANDIDATE_EMPLOYERS", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEmployers")
 
-public class CandidateEmployers {
+public class CandidateEmployers implements Serializable{
 	
+	
+	private static final long serialVersionUID = 1L;
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
@@ -37,7 +43,7 @@ public class CandidateEmployers {
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
 	private Candidate candidateId;
 		
@@ -90,6 +96,9 @@ public class CandidateEmployers {
 
 	@Transient
 	private Long candidateEmployeeId;
+	
+	@Transient
+	private String msg;
 	
 	public Long getId() {
 		return id;
@@ -245,6 +254,14 @@ public class CandidateEmployers {
 
 	public void setCandidateEmployeeId(Long candidateEmployeeId) {
 		this.candidateEmployeeId = candidateEmployeeId;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 	
 }

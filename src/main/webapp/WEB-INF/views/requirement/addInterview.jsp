@@ -15,11 +15,16 @@
 <link rel="stylesheet" href="resources/css/jquery.timepicker.css">
 <script src="resources/js/jquery.timepicker.js"></script> 
 
+
+<!--  No auto completes are used in addInterview -->
+
 <!-- these files for autocomplete with tagit -->
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> -->
+
 <!-- end files for autocomplete with tagit -->
 
 
@@ -35,18 +40,26 @@ padding:0!important;
 
 <script>
 function addInterview(requirementId){
-	
+	interviewTemplate();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
-	 
+	var clientSubmissions = '${clientSubmissions}';
 	var result = "";
 	result = result + '<div class="add_inter">';
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
 	result = result + '<input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
-	result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>';
+	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
+	
+	/* result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; */
+	result = result + '<div class="add_inter_head"> <span>Add Interview</span>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
+	
+	if(clientSubmissions == 'Y'){
+	    result = result + '<input type="checkbox" name="isClientInterview" id="isClientInterview" class="isClient" onclick="myFunction();">';
+        result = result + '<label>&nbsp;&nbsp;<strong>Is Client Interview</strong>&nbsp;&nbsp;</label>';
+	} 
 	
 	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl">';
 	result = result + '<tbody>';
@@ -58,7 +71,7 @@ function addInterview(requirementId){
 			/* result = result + '<th>Time Zone</th>'; */
 			result = result + '<th>Location</th>';
 			result = result + '<th>Interviewer</th>';
-			result = result + '<th>Action</th>';
+			/* result = result + '<th>Action</th>'; */
 		result = result + '</tr>';
 	result = result + '</tbody>';
 	result = result + '</table>';
@@ -82,6 +95,16 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	
 	result = result + '<div class="mb10 mt clearfix">';
+	
+	result = result + '<div id="emptyTemplate" style="dispaly:none">';
+	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
+	result = result + '<div class="col-md-3">';
+	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	
 	result = result + '<strong class="clearfix col-md-12 mb">Reminder Before</strong>';
 	result = result + '<div class="col-md-3">';
 	result = result + '<span>Hours</span>';
@@ -203,7 +226,7 @@ function checkEmails(){
 
 
 <div id="divTaskTd1" style="display: none; float: left;">
-       <select multiple class="chosen-select blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
+       <select multiple data-placeholder="select applicants" class="chosen-select blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
@@ -232,20 +255,21 @@ function checkEmails(){
 </div> 
 
 <div id="divTaskTd6" style="display: none; float: left;">
-		  <select multiple class="chosen-select" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
+		  <select multiple data-placeholder="select interviewer" class="chosen-select" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
 			
 	  </select>
 </div> 
 
- <div id="divTaskTd7" style="display: none; float: left;">
+<!--  <div id="divTaskTd7" style="display: none; float: left;">
 	 <div>
          <a href="#" onclick="removeInterviewRow(REPLACEROWID);"><i class="glyphicon glyphicon-trash deme"></i></a>
     </div>
-</div> 
+</div>  -->
 
 <script type="text/javascript">
 	function addInterviewRow() {
 		
+		$("#isFlushRequired").val('N');
 		var checkMaxTsRowNum = $("#maxTsRowNum").val();
 		var tbl = document.getElementById("addInterviewTbl");
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
@@ -300,10 +324,10 @@ function checkEmails(){
 		divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell5.innerHTML = divTsTd6Str;  
 		
-		var cell6 = row.insertCell(6);
+		/* var cell6 = row.insertCell(6);
 		var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
 		divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell6.innerHTML = divTsTd7Str;
+		cell6.innerHTML = divTsTd7Str; */
 		
 		getInterviewers(maxRowNum);
 		getShortListCandidates(maxRowNum);
@@ -313,9 +337,9 @@ function checkEmails(){
 	    $("#"+maxRowNum+"interviewer").chosen();
 		
 		
-	    $("#"+maxRowNum+"applicant").on('change', function (e) {
+	   /*  $("#"+maxRowNum+"applicant").on('change', function (e) {
 	    	getUpdatedShortListCandidates();
-	    }); 
+	    }); */ 
 		    
 		    
 				
@@ -434,7 +458,8 @@ function cancelAddInterviewDiv(){
 	        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
 	        		$(".side_mask").fadeOut(200);
 	        		$("body").css('overflow-y', 'auto');
-	        		requirementPipeline(requirementId); 
+	        		var allApplicants = 'all';
+		    		requirementPipeline(requirementId,allApplicants); 
 	        },
 	    });   
         return true;
@@ -451,6 +476,19 @@ function cancelAddInterviewDiv(){
   
 <script type="text/javascript">
  function getShortListCandidates(rowId) {
+	 var clientSubmissions = '${clientSubmissions}';
+	 var isClientInterview = "";
+	 if(clientSubmissions == 'Y'){
+		 if(rowId == null || rowId == "undefined" || rowId == ""){
+	     	rowId = $("#maxTsRowNum").val() - 1;
+	     }
+		 if(document.getElementById('isClientInterview').checked) {
+		        isClientInterview = 'Y';
+	     }else{
+	    	isClientInterview = 'N';
+	     }
+	 }
+	
 	 var existingApplicantsIds = [];    
 	 for(i=rowId ; i > 0; i--){
 		 var applicant = $("#"+(i)+"applicant").val();
@@ -458,13 +496,12 @@ function cancelAddInterviewDiv(){
 			 existingApplicantsIds.push(applicant);
 		 }
 	 }
-	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
+		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -474,6 +511,17 @@ function cancelAddInterviewDiv(){
 			        		var opt = json[i];
 			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
 					}
+		        	
+		        	var isFlushRequired = $("#isFlushRequired").val();
+		        	if(clientSubmissions == 'Y' && isFlushRequired == 'Y'){
+		        		for(i=rowId ; i > 0; i--){
+		       	        	$("#"+(i-1)+"applicant").empty();
+		       	        	$("#"+(i-1)+"applicant").append(output);
+		       	        	$("#"+(i-1)+"applicant").trigger("chosen:updated");
+			       	    }
+		        	}
+		        	
+		        	
 		        	$("#"+rowId+"applicant").empty();
 		        	$("#"+rowId+"applicant").append(output);
 		        	$("#"+rowId+"applicant").trigger("chosen:updated");
@@ -496,10 +544,20 @@ function cancelAddInterviewDiv(){
 	 }
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
+	 var clientSubmissions = '${clientSubmissions}';
+	 var isClientInterview = "";
+	 if(clientSubmissions == 'Y'){
+		 if(document.getElementById('isClientInterview').checked) {
+		        isClientInterview = 'Y';
+	     }else{
+	    	isClientInterview = 'N';
+	     }
+	 }
+	 
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
+		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -598,4 +656,37 @@ $(function(){
 });
 </script>
 
+<script>
+function interviewTemplate(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        var json = JSON.parse(data);
+	        var output = "";
+	        if(json.length > 0){
+	        	 output = output + "<option value=''>-Select Template-</option>"; 
+	         	for (var i=0; i<json.length; i++)
+	 			{
+	 	        		var opt = json[i];
+	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+	 			}
+	         	$("#interviewSubmissionTemplate").empty();
+	 	        $("#interviewSubmissionTemplate").append(output);
+	        }else{
+	        	$("#emptyTemplate").empty();
+	        }
+	       
+	        },
+	    });
+}
+</script>
+
+<script>
+function myFunction(){
+	$("#isFlushRequired").val('Y');
+	getShortListCandidates();
+}
+</script>
 

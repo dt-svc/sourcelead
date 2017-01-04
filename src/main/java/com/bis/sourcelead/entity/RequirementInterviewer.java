@@ -1,9 +1,11 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,18 +20,21 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Entity
 	@Table(name = "REQUIREMENT_INTERVIEWER", catalog = "sourcelead")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementInterviewer")
-	public class RequirementInterviewer {
+	public class RequirementInterviewer implements Serializable{
+
+	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="INTERVIEW_ID", nullable=false )        
     private RequirementInterview requirementInterview;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="INTERVIEWER_USER_ID", nullable=false )        
     private User interviewerUser;
 	
@@ -50,6 +55,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Transient
 	private String interviewerName;
+	
+	@Transient
+	private String feedbackDate;
+	
+	@Transient
+	private String feedbackStatus;
 
 	public Long getId() {
 		return id;
@@ -122,5 +133,20 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setInterviewerName(String interviewerName) {
 		this.interviewerName = interviewerName;
 	}
-			
+
+	public String getFeedbackDate() {
+		return feedbackDate;
+	}
+
+	public void setFeedbackDate(String feedbackDate) {
+		this.feedbackDate = feedbackDate;
+	}
+
+	public String getFeedbackStatus() {
+		return feedbackStatus;
+	}
+
+	public void setFeedbackStatus(String feedbackStatus) {
+		this.feedbackStatus = feedbackStatus;
+	}
 }

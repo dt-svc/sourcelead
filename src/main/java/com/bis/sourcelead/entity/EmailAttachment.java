@@ -1,7 +1,11 @@
 package com.bis.sourcelead.entity;
 
-public class EmailAttachment {
+import java.io.Serializable;
+
+public class EmailAttachment implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	private String name;
 	
 	private String type;
@@ -9,6 +13,10 @@ public class EmailAttachment {
 	private String content;
 	
 	private Boolean binary;
+	
+	private byte[] docFile;
+	
+	private String UUID;
 
 	public String getName() {
 		return name;
@@ -40,6 +48,22 @@ public class EmailAttachment {
 
 	public void setBinary(Boolean binary) {
 		this.binary = binary;
+	}
+
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
+	public String getUUID() {
+		return UUID;
+	}
+
+	public void setUUID(String uUID) {
+		UUID = uUID;
 	}
 
 }

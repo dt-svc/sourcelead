@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -13,26 +14,23 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="EMPLOYEE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="employees")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Employees {
+public class Employees implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="USER_ID", nullable=false )        
     private User user;
 	
@@ -57,12 +55,12 @@ public class Employees {
 	@Column(name="EMPLOYEE_STATE")
 	private String employeeState;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="ORG_LOCATIONS_ID", nullable=false )        
     private OrgLocations orgLocations;
 	
-	@Column(name="Invoice_Frequency")
-	private String InvoiceFrequency;
+	/*@Column(name="Invoice_Frequency")
+	private String InvoiceFrequency;*/
 	
 	@Column(name="STATUS")
 	private String status;
@@ -177,13 +175,13 @@ public class Employees {
 		this.orgLocations = orgLocations;
 	}
 
-	public String getInvoiceFrequency() {
+	/*public String getInvoiceFrequency() {
 		return InvoiceFrequency;
 	}
 
 	public void setInvoiceFrequency(String invoiceFrequency) {
 		InvoiceFrequency = invoiceFrequency;
-	}
+	}*/
 
 	public String getStatus() {
 		return status;

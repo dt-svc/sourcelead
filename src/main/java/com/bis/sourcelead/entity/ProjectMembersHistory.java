@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -15,20 +16,19 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 @Entity
 @Table(name = "PROJECT_MEMBERS_HISTORY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectMembersHistory")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class ProjectMembersHistory {
+public class ProjectMembersHistory implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="PROJECT_MEMBERS_ID", nullable=false )	
 	private ProjectMembers projectMemberId;
 	

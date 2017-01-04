@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,28 @@ public class TabsServiceImpl implements TabsService {
 	@Override
 	public List<Tabs> getSourceLeadTabsListByOrgId(Long roleId,Long orgId) throws Exception {
 		return tabsDao.getSourceLeadTabsListByOrgId(roleId,orgId);
+	}
+
+	@Override
+	public List<Tabs> getTabsList(List<Long> modulesId, Long roleId, Long orgId) throws Exception {
+		return tabsDao.getTabsList(modulesId, roleId, orgId);
+	}
+
+	@Override
+	public Collection<Tabs> getTabsListByOrgLocationId(List<Long> modulesId, Long roleId, Long orgLocationId)
+			throws Exception {
+		return tabsDao.getTabsListByOrgLocationId(modulesId, roleId, orgLocationId);
+	}
+
+	@Override
+	public List<Long> getTabsIdsListByUserRoleIdAndOrgLocationId(Long roleId, Long orgLocationId)
+			throws Exception {
+		return tabsDao.getTabsIdsListByUserRoleIdAndOrgLocationId(roleId, orgLocationId);
+	}
+
+	@Override
+	public List<Tabs> getTabsListByIds(List<Long> tabIds) throws Exception {
+		return tabsDao.getTabsListByIds(tabIds);
 	}
 
 }

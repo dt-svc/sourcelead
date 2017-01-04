@@ -161,7 +161,9 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		Session session = this.sessionFactory.getCurrentSession();  
 		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user  user where project.orgLocationsId.id = :locationsId and user.id IN(select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE')  and  ts.status != '0' "
 				+ " and ( "
-				+ "  (ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:approverUserId)) )OR "+Constants.loginUserAsAdmin+""
+				+ "  ( ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:approverUserId)) ) "
+				+ "   OR "
+				+     Constants.loginUserAsAdmin+""
 			    + ")  GROUP BY emp.id";   
 		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("approverUserId", userId).setLong("userId", userId).setLong("locationsId", locationsId).list();
 	    for(TimesheetSubmissions ts : timesheetSubmissionsList){
@@ -200,7 +202,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
-		String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm   left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and  ts.submissionApprovalStatus = :approvalStatus)" ;
+		String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm   left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and ts.id IN(select sah.submissionId.id from SubmissionApproverHierarchy sah where sah.hierarchyId.approverUserId.id = :userId and sah.submissionApprovalStatus = :approvalStatus)" ;
 		List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId).setString("approvalStatus", approvalStatus).list(); 
 		      
 		
@@ -208,6 +210,23 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		  
 		
 	}
+   
+   /*@Override
+   @Transactional(rollbackFor = { Exception.class })
+   public Integer getUsersTimeSheetSubmissionsCountBasedOnStatus(Long userId, String approvalStatus,Long orgLocationId) throws Exception {
+   
+   Session session = this.sessionFactory.getCurrentSession();
+   
+   String query = "from TimesheetSubmissions ts left join fetch ts.projectMembers pm left join fetch pm.employee emp left join fetch emp.orgLocations "
+           + "where (emp.id IN(select emp.id from Employees emp where emp.user.id = :userId and emp.orgLocations.id = :orgLocationId ))"
+           + " and ts.id IN(select sah.submissionId.id SubmissionApproverHierarchy sah where sah.hierarchyId.approverUserId = :userId and sah.submissionApprovalStatus = :approvalStatus))" ;
+   List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId)
+           .setString("approvalStatus", approvalStatus).setLong("orgLocationId", orgLocationId).list(); 
+         
+   return tslist.size();
+     
+
+}*/
 
 
 	
@@ -731,7 +750,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId,Long locationsId) throws Exception {
+	public HashSet<TimesheetSubmissions> getWeekFrequency(Long projectId,Long locationsId,Long userId) throws Exception {
 		
 		Date currentWeekStartDate = CalendarUtil.getCurrentWeekDay("MON");
 		java.sql.Date  currentWeekStartDayDate = new java.sql.Date(currentWeekStartDate.getTime());
@@ -748,14 +767,53 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.projects projects left join fetch projects.orgLocationsId locations left join fetch tm.employee emp left join fetch emp.user usr where  usr.id = :userID and locations.id = :locationsId and tss.startDate >= :frmDate and tss.endDate < :endsDate order by tss.startDate desc";
+		String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.projects projects left join fetch projects.orgLocationsId locations left join fetch tm.employee emp left join fetch emp.user usr where  usr.id =:userId and tss.projectMembers.id = :projectId and locations.id = :locationsId and tss.startDate >= :frmDate and tss.endDate < :endsDate order by tss.startDate desc";
 		//String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.employee emp left join fetch emp.user usr where  usr.id = :userID and  tss.startDate BETWEEN :frmDate AND :endDate";
-		List<TimesheetSubmissions> timeSheetSubmissions  = session.createQuery(query).setLong("userID",userId ).setDate("frmDate", previousWeekStartDayDate).setDate("endsDate", currentWeekStartDayDate).setLong("locationsId", locationsId).setCacheable(true).list();
+		List<TimesheetSubmissions> timeSheetSubmissions  = session.createQuery(query).setLong("userId",userId).setLong("projectId",projectId ).setDate("frmDate", previousWeekStartDayDate).setDate("endsDate", currentWeekStartDayDate).setLong("locationsId", locationsId).setCacheable(true).list();
 		HashSet<TimesheetSubmissions> tsSet = null;
 		if(timeSheetSubmissions != null && !timeSheetSubmissions.isEmpty()){
 			tsSet = new HashSet<>(timeSheetSubmissions);
 		}
 		return tsSet;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public HashSet<TimesheetSubmissions> getWeekFrequencyByProjMemId(Long projectId) throws Exception {
+		Date currentWeekStartDate = CalendarUtil.getCurrentWeekDay("MON");
+		java.sql.Date  currentWeekStartDayDate = new java.sql.Date(currentWeekStartDate.getTime());
+		
+		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		cal.setLenient(false);
+		cal.setTime(new Date());
+		
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+		Date previousWeekStartDate = previousMonday.getTime();
+		java.sql.Date  previousWeekStartDayDate = new java.sql.Date(previousWeekStartDate.getTime());
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.projects projects left join fetch projects.orgLocationsId locations left join fetch tm.employee emp left join fetch emp.user usr where tss.projectMembers.id = :projectId and tss.startDate >= :frmDate and tss.endDate < :endsDate order by tss.startDate desc";
+		//String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.employee emp left join fetch emp.user usr where  usr.id = :userID and  tss.startDate BETWEEN :frmDate AND :endDate";
+		List<TimesheetSubmissions> timeSheetSubmissions  = session.createQuery(query).setLong("projectId",projectId ).setDate("frmDate", previousWeekStartDayDate).setDate("endsDate", currentWeekStartDayDate).setCacheable(true).list();
+		HashSet<TimesheetSubmissions> tsSet = null;
+		if(timeSheetSubmissions != null && !timeSheetSubmissions.isEmpty()){
+			tsSet = new HashSet<>(timeSheetSubmissions);
+		}
+		return tsSet;
+	}
+
+	@Override
+	@Transactional
+	public List<TimesheetSubmissions> getTimeSheetSubmissionByProjectMemberId(Long pojectMemberId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();  
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  where pm.id = :pojectMemberId and ts.status = '1' ";   
+		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("pojectMemberId", pojectMemberId.intValue()).list();
+		
+		return timesheetSubmissionsList;
 	}
 
 

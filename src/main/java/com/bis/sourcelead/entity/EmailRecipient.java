@@ -1,9 +1,13 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class EmailRecipient {
+public class EmailRecipient implements Serializable{
 	
+	
+	private static final long serialVersionUID = 1L;
+
 	private String name;
 	
 	private String email;

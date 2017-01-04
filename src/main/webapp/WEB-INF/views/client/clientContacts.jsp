@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
@@ -25,9 +26,15 @@ function clientContacts(orgRelationID,clientLocationId){
 	
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
+	result  = result + '<div class="success_pop" id="clientTerminateMsgDiv" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="clientTerminateMsg"></span>';
+    result  = result + '</div>';
+	result  = result + '   <div id="clientMsgDiv" ></div>';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
+	    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CLIENT_CONTACT\')">';
 		result = result  +'    	<a href="javascript:void(0)" onClick="addContact('+orgRelationID+','+clientLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Contact</a>                                                            ';
+		'</sec:authorize>';
 		result = result  +'     <div id="popUpDivContact" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
@@ -59,6 +66,17 @@ function clientContacts(orgRelationID,clientLocationId){
 	        success: function(data) {
 	        	
 	        var json = JSON.parse(data);
+	        for (var i = 0; i < 1; i++) { 
+ 				var val= json[i];
+ 				var opt = "";
+ 					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+     					opt  = opt + '<div class="success_pop" id="clientMsgSelector" style="display: block;">';
+     					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+     					opt  = opt + '</div>';
+ 						}
+ 					$("#clientMsgDiv").empty();
+ 					$("#clientMsgDiv").append(opt);
+ 				}
 	      
     		if(json.length != null && json.length != ''){
     			$("#clientContactList").empty();
@@ -163,14 +181,25 @@ function clientContacts(orgRelationID,clientLocationId){
 	             		}
    		    		result = result +'</div></td>';
 	                
+   		    		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
 	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
 	                result = result + '	    <td><div>';
-	                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateClientSpoc('+json[i].id+'\,\''+orgRelationID+'\',\''+clientLocationId+'\')";></i>';
+	                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateClientSpoc('+json[i].id+'\,\''+orgRelationID+'\',\''+clientLocationId+'\',\''+opt.spocName+'\')";></i>';
 	                	                    result = result +'</div></td>';
                      }
                      else{
                           result = result + '<td><div><font color="red">Terminated</font></div></td>';
                      }
+	                '</sec:authorize>';
+	                
+	                
+	                '<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
+	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
+	                						result = result + '	    <td><div>';
+	                                        result = result + '--';
+	                	                    result = result +'</div></td>';
+                     }
+	                '</sec:authorize>';
 	                result = result + '	 </tr>';
 				} 
 	        		
@@ -185,6 +214,7 @@ function clientContacts(orgRelationID,clientLocationId){
 			    result = result + '</div>';
 			    $("#clientContactList").append(result); 
 	    	    contactPagination();
+	    	    clientMsgFadein();
     		}else{
     			 var result ="";
 	    	     result = result+"   <div class='row'>"; 
@@ -274,14 +304,14 @@ $(document).ready(function() {
 
 
 <script>
-function terminateClientSpoc(spocId, orgRelationID,clientLocationId){
+function terminateClientSpoc(spocId, orgRelationID,clientLocationId,spocName){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveSpocTerminateReason("+spocId+","+orgRelationID+","+clientLocationId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveSpocTerminateReason("+spocId+","+orgRelationID+","+clientLocationId+",\""+spocName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -290,7 +320,7 @@ function terminateClientSpoc(spocId, orgRelationID,clientLocationId){
 </script>
 
 <script>
-function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId){
+function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId,spocName){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
@@ -301,7 +331,11 @@ function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId){
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
+	   			$("#clientTerminateMsgDiv").removeAttr("style");
+	 			$("#clientTerminateMsgDiv").css({ display: "block" });
+	 			$("#clientTerminateMsg").html(""+spocName+" Removed");
 		    	clientContactList(orgRelationID,clientLocationId);
+		    	clientTerminateMsgFadein();
 		    }
 	   });
 	}else{
@@ -415,7 +449,7 @@ function addContact(orgRelationID,clientLocationId) {
     result = result  +'	 </div>';
 	
 	
-	result = result  +'	 <div class="clearfix mb10" id="roleDiv" style="display: block;" >';
+	/* result = result  +'	 <div class="clearfix mb10" id="roleDiv" style="display: block;" >';
 	result = result  +'	 <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>';
 	result = result  +'	 <div class="col-md-12">';
 	result = result  +'	       <select class="form-control" id="role" name="roleType" field-name="Role" data-validation="required">';
@@ -426,7 +460,7 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	 					<option value="8">Recruiter</option>';
 	result = result  +'	        </select>';
 	result = result  +'	 </div>';
-	result = result  +'	 </div>';
+	result = result  +'	 </div>'; */
 	
 	
 	result = result  +'<div class="clearfix mb10" id="userRoleDiv" style="display: none;">';
@@ -623,18 +657,18 @@ function getSpocUserDetails(orgLocationId,orgRelationID){
 	        			    $("#phoneNumber").attr("disabled", false);
 	        			    $("#phoneNumber").val('');
 	        		 }
-	       
+	        		 
 	        		 if(json[3] != null && json[3] != ''){
-	        			$("#role").removeAttr("data-validation");
+	        			/* $("#role").removeAttr("data-validation");
 	        			$("#role" ).val('');
-        			    document.getElementById("roleDiv").style.display="none";
+        			    document.getElementById("roleDiv").style.display="none"; */
    	        			document.getElementById("userRoleDiv").style.display="";
    	        			$("#userRole").val(json[3]);
    	        			$("#userRoleText").val(json[4]);
 	        		 }else{
-	        			 $("#role").attr("data-validation", "required");
+// 	        			 $("#role").attr("data-validation", "required");
 	        			 $("#userRole" ).val('');
-	        			 document.getElementById("roleDiv").style.display="";
+// 	        			 document.getElementById("roleDiv").style.display="";
 	        			 document.getElementById("userRoleDiv").style.display="none";
 	        		 }
 			      	 
@@ -670,7 +704,11 @@ function acceptSpocInvitation(spocId,orgRelationId,clientLocationId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
-		    	clientContactList(orgRelationId,clientLocationId);
+		    	$("#clientTerminateMsgDiv").removeAttr("style");
+	 			$("#clientTerminateMsgDiv").css({ display: "block" });
+	 			$("#clientTerminateMsg").html("Invitation Accepted");
+	 			clientContactList(orgRelationId,clientLocationId);
+		    	clientTerminateMsgFadein();
 		    }
 	   });
 }
@@ -683,7 +721,11 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
-		    	clientContactList(orgRelationId,clientLocationId);
+		    	$("#clientTerminateMsgDiv").removeAttr("style");
+	 			$("#clientTerminateMsgDiv").css({ display: "block" });
+	 			$("#clientTerminateMsg").html("Invitation Rejected");
+	 			clientContactList(orgRelationId,clientLocationId);
+		    	clientTerminateMsgFadein();
 		    }
 	   });
 }
@@ -751,3 +793,17 @@ function validateEmail(orgRelationID){
 	}
 }
 </script>
+<!-- Show success message after form submission script -->
+<script>
+	function clientMsgFadein() {
+		$("#clientMsgSelector").fadeIn(200);
+        $('#clientMsgSelector').delay(2000).fadeOut('slow');
+	}
+</script> 
+<script>
+	function clientTerminateMsgFadein() {
+		$("#clientTerminateMsgDiv").fadeIn(200);
+        $('#clientTerminateMsgDiv').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->

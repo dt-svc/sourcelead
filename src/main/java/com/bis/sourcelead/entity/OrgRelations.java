@@ -1,8 +1,8 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,24 +17,23 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 @Entity
 @Table(name="ORG_RELATIONS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgRelation")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class OrgRelations {
+public class OrgRelations implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )        
     private OrgLocations responderLocationId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="LOCATION_ID", nullable=false )        
     private OrgLocations locationId;
     
@@ -136,6 +135,9 @@ public class OrgRelations {
 	
 	@Transient
 	private String level;
+	
+	@Transient
+	private String msg;
 	
 	public String getLevel() {
 		return level;
@@ -434,6 +436,12 @@ public class OrgRelations {
 	public void setNoOfReleasedJobs(Integer noOfReleasedJobs) {
 		this.noOfReleasedJobs = noOfReleasedJobs;
 	}
-	
-	
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
 }

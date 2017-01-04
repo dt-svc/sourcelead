@@ -1,10 +1,11 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,28 +20,29 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Entity
 	@Table(name = "REQUIREMENT_ASSIGN_TO")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementAssignTo")
-	public class RequirementAssignTo {
+	public class RequirementAssignTo implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="TEAM_ID", nullable=false )        
     private Team teamId;
 	
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="ROLE_ID", nullable=false )        
     private Roles roleId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )        
     private Requirement requirementId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="ASSIGN_USER_ID", nullable=false )        
     private User assignUserId;
 	

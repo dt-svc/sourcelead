@@ -1,6 +1,7 @@
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%-- 
      @author : David Sammeta.
      this script is for upDate Candidate Details .
@@ -12,10 +13,18 @@
 
 		var result = "";
 		result = result	+ '    <div class="project_tabs_inn_head addUser-org">  ';
+		result  = result + '<div class="success_pop" id="selector3" style="display: none;">';
+	    result  = result + '<i class="fa fa-check-circle"></i><span id="empMsgDiv"></span>';
+	    result  = result + '</div>';
+		result =result +'<div id = "msgDiv2"></div>';
 		if(window.candidateStatusGlobal == '0'){
-		result = result	+ '   	<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>                                                            ';
+		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\')">'; 	
+		result = result	+ '<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>';
+		'</sec:authorize>';
 		}else{
-			result = result	+ '   	<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';	
+			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\')">';
+			result = result	+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';
+			'</sec:authorize>';
 		}
 		result = result	+ '     <div id="popUpDivEmp" class="edit-details col-md-4"> ';
 		result = result + '     </div>  ';
@@ -35,6 +44,15 @@
 
 	}
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function empMsgFadein() {
+		$("#selector3").fadeIn(200);
+        $('#selector3').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->
 
 <script>
 function closeCertificatePopup(){
@@ -82,9 +100,12 @@ function closeCertificatePopup(){
 								} else if (data.indexOf('exception') >= 0) {
 									location.replace(sourceleadUrl  + "/errorPage");
 								} else {
-									$("#popUpDivEmp").removeClass(
-											"edit-details-active");
+									$("#popUpDivEmp").removeClass("edit-details-active");
+			            			$("#selector3").removeAttr("style");
+			            			$("#selector3").css({ display: "block" });
+			            			$("#empMsgDiv").html("Success!! New Employer added");
 									candidateEmployersList(candidateId);
+									empMsgFadein();
 								}
 							}
 
@@ -142,14 +163,14 @@ function closeCertificatePopup(){
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <p class="ml">Start Date</p>';
 		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
-		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear"  placeholder="Enter Year"  field-name="Start Date" >';
+		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear"  placeholder="Select Start Date"  field-name="Start Date" >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div>';
 		result = result + '	                 <div id="endDateDiv">';
 		result = result + '	                 <div class="clearfix mb10 endDate">';
 		result = result + '	                 <p class="ml">End Date</p>';
 		result = result + '	                   <div class="col-md-6" >';
-		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year"  placeholder="Enter Year" >';
+		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year"  placeholder="Select End Date" >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div> ';
 		result = result + '	                 </div> ';
@@ -214,11 +235,9 @@ function closeCertificatePopup(){
 <script>
 
 	function editEmployer(candidateEmpId, candidateId) {
-
 		
 		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax({
+		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
 							+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?${_csrf.parameterName}=${_csrf.token}&candidateId="
@@ -278,9 +297,9 @@ function closeCertificatePopup(){
 								
 								result = result	+ '<div class="col-md-6">';
 								if (json.startYear != null && json.startYear != '' && json.startYear != 'undefined') {
-									result = result	+ '<input type="text" max class="form-control" value="'+ json.startYear+ '" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control" value="'+ json.startYear+ '" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Select Start Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
 								}else{
-									result = result	+ '<input type="text" max class="form-control" value="" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control" value="" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Select End Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
 								}
 								result = result + '</div>';
 								result = result + '</div>';
@@ -412,6 +431,18 @@ function closeCertificatePopup(){
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
+								var json = JSON.parse(data);
+		             			/* for (var i = 0; i < 1; i++) {
+		                            var val= json[i];
+		                            var opt = "";
+		                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+		                                            opt  = opt + '<div class="success_pop" id="selector3" style="display: block;">';
+		                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+		                                            opt  = opt + '</div>';
+		                                            }
+		                                    $("#msgDiv2").empty();
+		                                    $("#msgDiv2").append(opt);
+		                            } */
 								$("#candidateEmployersList").empty();
 								var result = "";
 								result = result	+ "<table id='candidateEmployersPagination' class='display' cellspacing='0' width='100%' >";
@@ -426,7 +457,6 @@ function closeCertificatePopup(){
 								result = result + "  </tr>";
 								result = result + "</thead>";
 								result = result + "<tbody>";
-								var json = JSON.parse(data);
 								for (var i = 0; i < json.length; i++) {
 									var opt = json[i];
 									result = result + '         <tr>';
@@ -462,11 +492,11 @@ function closeCertificatePopup(){
 									if(window.candidateStatusGlobal == '0'){
 				                   result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 									}else{
-										result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');"></a>';	
+										result = result+'<td><div class="tblicons"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEER\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');"></a></sec:authorize>';	
 									}if(window.candidateStatusGlobal == '0'){
 										result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 									}else{
-										result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></div></td>';
+										result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_EMPLOYEER\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></sec:authorize></div></td>';
 									}
 									result = result + '</tr>';
 								}
@@ -474,18 +504,18 @@ function closeCertificatePopup(){
 								result = result + "</table>";
 								$("#candidateEmployersList").append(result);
 								employeePagination();
+								msgFadein2();
 							}
 						} else {
 							var result = "";
 							result = result + "   <div class='row'>";
 							result = result + "	<div class='col-lg-12'>";
-							result = result
-									+ "		<div class='content-area clearfix'>";
+							result = result + "		<div class='content-area clearfix'>";
 							result = result + "			<div class='blank-pages'>";
 							result = result
 									+ "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 							result = result
-									+ "			        <p>No CandidatesCertifications Found</p>";
+									+ "			        <p>No Candidate Employers Found</p>";
 							result = result + "			 </div>";
 							result = result + "		</div>";
 							result = result + "	</div>";
@@ -529,7 +559,6 @@ function employeePagination(){
 	function removeEmployer(candidateemployerId, candidateId) {
 
 		var sourceleadUrl = '${sourceleadUrl}';
-		
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
@@ -541,9 +570,12 @@ function employeePagination(){
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
-								$("#popUpDivEmp").removeClass(
-										"edit-details-active");
-								candidateEmployersList(candidateId);
+			        			 $("#selector3").removeAttr("style");
+			         			 $("#selector3").css({ display: "block" });
+			         			 $("#empMsgDiv").html("Employer deleted");
+								 $("#popUpDivEmp").removeClass("edit-details-active");
+								 candidateEmployersList(candidateId);
+								 empMsgFadein();
 							}
 						}
 					},
@@ -594,7 +626,11 @@ function employeePagination(){
 									.click(function(e) {
 										e.stopPropagation();
 									});
-							candidateEmployersList(candidateId)
+							$("#selector3").removeAttr("style");
+	            			$("#selector3").css({ display: "block" });
+	            			$("#empMsgDiv").html("Employer details updated");
+							candidateEmployersList(candidateId);
+							empMsgFadein();
 						},
 					});
 			return true;

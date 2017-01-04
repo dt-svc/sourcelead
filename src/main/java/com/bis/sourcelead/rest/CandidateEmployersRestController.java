@@ -5,23 +5,21 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -36,7 +34,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 public class CandidateEmployersRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(CandidateEmployersRestController.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -48,6 +45,10 @@ public class CandidateEmployersRestController {
 	@Autowired
 	private CommonUtil commonUtil;
 
+	
+	@Autowired
+	private CandidateService candidateService;
+	
 	
 
 	/*------------Create a Candidate Employers details--------------------------------*/
@@ -70,6 +71,7 @@ public class CandidateEmployersRestController {
 	 * @throws NullPointer
 	 */
 	
+	@PreAuthorize("hasRole('ROLE_ADD_EMPLOYEER')")
 	@RequestMapping(value = "/storeCandidateEmployers", method = RequestMethod.POST)
 	public @ResponseBody String storeCandidateEmployers(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
 
@@ -80,6 +82,7 @@ public class CandidateEmployersRestController {
 		String json1 = "{"+json+"}";
 		JSONObject jsonObject = new JSONObject(json1);
 	    candidateEmployersService.storeCandidateEmployers(jsonObject,users,loginOrgLocation,candidateId);
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		return json;
 	}
 	
@@ -98,11 +101,28 @@ public class CandidateEmployersRestController {
 	@RequestMapping(value = "/getCandidatesEmployersListByCandidateIdAndOrgLocationID")
 	public String getCandidatesEmployersListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
 
+		String msg = "";
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson;
-		
-
 		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loginOrgLocation.getId());
+		 
+		 for(CandidateEmployers candidateEmployers : candidatesEmployersList){
+			 
+			/* msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addExep");
+			 if(msg == null){
+					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editExep");
+				}
+				if(msg == null){
+					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteExep");
+				}
+				if(msg !=null && msg != ""){
+					candidateEmployers.setMsg(msg);
+				}
+				 	SourceLeadSessionManager.removeSessionAttribute(request, "addExep");
+				    SourceLeadSessionManager.removeSessionAttribute(request, "editExep");
+				    SourceLeadSessionManager.removeSessionAttribute(request, "deleteExep");*/
+		 }
+		 
 		 resultJson = commonUtil.toJSON(candidatesEmployersList);
 		 return resultJson;
 	}
@@ -121,6 +141,8 @@ public class CandidateEmployersRestController {
 	 * 
 	 * @throws Exception
 	 */
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_DELETE_EMPLOYEER')")
 	@RequestMapping(value = "/removeCandidateEmployerBycandidateIdandCandidateEmployerID")
 	public String removeCandidateEmployerBycandidateIdandCandidateEmployerID(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateemployerId", required = false) Long candidateemployerId,HttpServletRequest request) throws Exception {
 
@@ -128,6 +150,8 @@ public class CandidateEmployersRestController {
 
 		CandidateEmployers  candidatesEmployersList = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateemployerId);
 		 resultJson = commonUtil.toJSON(candidatesEmployersList);
+		//SourceLeadSessionManager.setSessionAttribute(request, "deleteExep", "Employer deleted");
+
 		 return resultJson;
 	}
 	
@@ -145,6 +169,7 @@ public class CandidateEmployersRestController {
 	 * 
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_EMPLOYEER')")
 	@RequestMapping(value = "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId")
 	public String getCandidateEmployerByCandidateIdAndCandidateEmpoyerId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEmpId", required = false) Long candidateEmpId,HttpServletRequest request) throws Exception {
 
@@ -180,7 +205,8 @@ public class CandidateEmployersRestController {
 			JSONObject jsonObj = new JSONObject(jsonc);
 			
 			candidateEmp = candidateEmployersService.storeCandidateEmployers(jsonObj,user,loginOrgLocation,candidateId);
-			
+			//SourceLeadSessionManager.setSessionAttribute(request, "editExep", "Employers details updated");
+
 			return "success";
 	}
 	

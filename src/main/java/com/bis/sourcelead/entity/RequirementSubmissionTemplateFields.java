@@ -1,10 +1,10 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,14 +22,16 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION_TEMPLATE_FIELDS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementSubmissionTemplateFields")
-public class RequirementSubmissionTemplateFields {
+public class RequirementSubmissionTemplateFields implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
  	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "REQUIREMENT_SUBMISSION_ID")
    	private RequirementSubmission requirementSubmission;
 	

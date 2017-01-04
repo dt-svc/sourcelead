@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -26,9 +27,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "TEAM", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "team")
-
-public class Team {
+public class Team implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
@@ -37,7 +39,7 @@ public class Team {
 	@Column(name = "NAME")
 	private String name ;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="OWNER_USER_ID", nullable=false )        
     private User ownerUserId;
 	
@@ -62,7 +64,7 @@ public class Team {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name = "ORG_LOCATION_ID")
     private OrgLocations orgLocationsId;
 	
@@ -74,6 +76,9 @@ public class Team {
 	
 	@Transient
 	private String teamOwnerName;
+	
+	@Transient
+	private Integer candidateHotlistCount;
 	
 	public Long getId() {
 		return id;
@@ -186,5 +191,12 @@ public class Team {
 	public void setTeamOwnerName(String teamOwnerName) {
 		this.teamOwnerName = teamOwnerName;
 	}
-	
+
+	public Integer getCandidateHotlistCount() {
+		return candidateHotlistCount;
+	}
+
+	public void setCandidateHotlistCount(Integer candidateHotlistCount) {
+		this.candidateHotlistCount = candidateHotlistCount;
+	}
 }

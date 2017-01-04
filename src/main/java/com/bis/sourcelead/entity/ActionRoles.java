@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -22,9 +23,12 @@ import com.bis.sourcelead.enums.Status;
 @Entity
 @Table(name = "ACTION_ROLES", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="actionRole")
-public class ActionRoles {
+public class ActionRoles implements Serializable {
 	
 	
+	private static final long serialVersionUID = 1L;
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)

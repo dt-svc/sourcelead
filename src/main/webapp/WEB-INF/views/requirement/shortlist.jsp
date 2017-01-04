@@ -1,4 +1,3 @@
-<jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -70,7 +69,7 @@ function candidateShortList(requirementId){
 			    	     }
 			           
 			           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-			        	   result = result + '<td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.id+'\"></a>'+report.resumeName+'</span></div></td>';
+			        	   result = result + '<td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a>'+report.resumeName+'</span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';
@@ -197,7 +196,8 @@ function shortlist(requirementId){
 		        	$(".shortlist-wrap").removeClass("shortlist-wrap_active");
 	        		$(".side_mask").fadeOut(200);
 	        		$("body").css('overflow-y', 'auto');
-	        		requirementPipeline(requirementId); 
+	        		var allApplicants = 'all';
+		    		requirementPipeline(requirementId,allApplicants); 
 		        },
 		 }); 
 	 }else{

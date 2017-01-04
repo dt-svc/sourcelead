@@ -1,15 +1,23 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,18 +27,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
-import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -42,7 +48,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.mysql.jdbc.log.Log;
 
 /**
  * 
@@ -53,7 +58,6 @@ import com.mysql.jdbc.log.Log;
 @RestController
 public class ProjectsDashboardRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -63,9 +67,7 @@ public class ProjectsDashboardRestController {
 	 
 	 @Autowired
 	 private ProjectTasksService tasksService;
-	 
-	 @Autowired
-	 private ProjectMembersHistoryService projectMembersHistoryService;
+
 	 
 	 @Autowired
 	 public UserService userService;
@@ -86,9 +88,6 @@ public class ProjectsDashboardRestController {
 	 private OrgLocationService orgLocationService;
 	 
 	 @Autowired
-	 private OrgRelationsService orgRelationsService;
-	 
-	 @Autowired
 	 public RolesService rolesService;
 	 
 	 @Autowired
@@ -105,6 +104,9 @@ public class ProjectsDashboardRestController {
 	
 	 @Autowired
 	 EmailScenerioUtil emailScenerioUtil;
+	 
+	 @Autowired
+	 ClientVendorExport clientVendorExport;
 	 
 			
 		/**
@@ -124,6 +126,11 @@ public class ProjectsDashboardRestController {
 				String resultJson;
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    List<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
+			   
+			    
+			    
+			    
+			    
 			    for(Projects ps : projectsList){
 			    	ps.setManagerLevel1(ps.getManagerLevel1());
 			    	if(ps.getManagerLevel2() != null){
@@ -141,6 +148,7 @@ public class ProjectsDashboardRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT','ROLE_VIEW_PROJECT')")
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
 	 public @ResponseBody String getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 		   String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
@@ -160,7 +168,7 @@ public class ProjectsDashboardRestController {
 	  * @return String
 	  * @throws Exception
 	  */
-	 
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT')")
 	 @RequestMapping(value = "/updateProjectByProjectId", method = RequestMethod.POST)
 	 public String updateProjectByProjectId(@RequestParam(value="json", required=false) String json,@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 
@@ -173,16 +181,17 @@ public class ProjectsDashboardRestController {
 	 }
 	 
 
-/**
- * update project task by task id	 
- * @author David Sammeta
- * @param taskId
- * @param fieldName
- * @param fieldValue
- * @return String
- * @throws Exception
- */
+	/**
+	 * update project task by task id	 
+	 * @author David Sammeta
+	 * @param taskId
+	 * @param fieldName
+	 * @param fieldValue
+	 * @return String
+	 * @throws Exception
+	 */
 	 
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT_TASKS')")
 	 @RequestMapping(value = "/updateProjectTaskById", method = RequestMethod.POST)
 	 public String updateProjectTaskById(@RequestParam(value="taskId", required=false) String taskId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue) throws Exception{ 
 		    
@@ -204,6 +213,7 @@ public class ProjectsDashboardRestController {
 	  * @return JSON
 	  * @throws Exception
 	  */
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_PROJECT_TASKS')")
 	 @RequestMapping(value = "/saveProjectTasks" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProjectTasks(@RequestParam(value="json", required=false) String json,
 			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
@@ -221,6 +231,7 @@ public class ProjectsDashboardRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_TASKS', 'ROLE_VIEW_EDIT_PROJECT_TASKS')")
 	 @RequestMapping(value = "/getProjectTasks" , method = RequestMethod.POST)
 	 public @ResponseBody  String getProjectTasks(
 			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
@@ -237,6 +248,7 @@ public class ProjectsDashboardRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_EMPLOYEES', 'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES', 'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
 	 public @ResponseBody String  getProjectEmployeeListById(@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
 		 String resultJson;
@@ -253,6 +265,7 @@ public class ProjectsDashboardRestController {
 	  * @return JSON
 	  * @throws Exception
 	  */
+	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT_EMPLOYEES')")
 	 @RequestMapping(value = "/addEmployeeForProjectDashboard",  method = RequestMethod.POST)
 		public @ResponseBody  String addEmployeeForProjectDashboard(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		   String  json1 = "{"+json+"}";
@@ -299,6 +312,8 @@ public class ProjectsDashboardRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
+	
+	 @PreAuthorize("hasRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')")
 	 @RequestMapping(value = "/storeAssignEmployee",  method = RequestMethod.POST)
 		 public @ResponseBody  String storeAssignEmployee(
 				@RequestParam(value="ProjectId", required=false) Long projectId,
@@ -314,12 +329,36 @@ public class ProjectsDashboardRestController {
 			 
 				return storeAssignEmployee;
 		}
-	 
-	/**
-	 * Checks String empty or null
-	 * @param string
-	 * @return boolean
-	 */
-
+	 /**
+	  * @author Rajashekar
+	  * 
+	  * Writes Projects Assgined employee data to excel and pdf based on exportType
+	  * @param projectId
+	  * @return
+	  * @throws Exception
+	  */
+	 @PreAuthorize("hasAnyRole('ROLE_EXPORT_EMPLOYEE')")
+	 @RequestMapping(value = "/exportProjectEmployeeList")
+	 public void  exportProjectEmployeeList(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="projectName", required=false) String projectName,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectId(projectId);
+		 List<ProjectMembers> list = employeeList.getProjectMembersList();
+		 Projects project = projectsService.getProjectById(projectId);
+		 
+		 File file = clientVendorExport.getexportProjectEmployeeFile(list,projectName,exportType,project); 
+		 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+		
+	  }
 	
 }

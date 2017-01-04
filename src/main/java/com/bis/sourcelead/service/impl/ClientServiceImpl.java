@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,11 +29,12 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RoleHierarchy;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -43,6 +45,10 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RoleHierarchyService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -69,9 +75,6 @@ public class ClientServiceImpl implements ClientService{
 	private OrgRelationsService orgRelationsService;
 
 	@Autowired
-	private ProjectsService projectsService;
-
-	@Autowired
 	ProjectApproverHierarchyService projectApproverHierarchyService;
 
 	@Autowired
@@ -95,6 +98,19 @@ public class ClientServiceImpl implements ClientService{
 	@Autowired
 	SubmissionTemplateService  submissionTemplateService;
 	
+	@Autowired
+	RolesService rolesService;
+	
+	@Autowired
+	RoleHierarchyService roleHierarchyService;
+	
+	@Autowired
+	SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private SourceleadRolesService sourceleadRolesService;
+	
+	
 	@Value("${SourceLead.100}")
 	private String notFound;
 	@Value("${SourceLead.101}")
@@ -107,71 +123,7 @@ public class ClientServiceImpl implements ClientService{
 	private String duplicateValue;
 	
 
-	@Override
-	public void saveClient(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception {
-		
-		Org org = populateOrg(jsonObj, user.getUserCode());
-		orgService.addOrganization(org);
-		OrgLocations clientOrgLocation = populateOrgLocations(jsonObj, org, orgLocations.getLocationCode(), user.getUserCode());
-		orgLocationService.addOrgLocations(clientOrgLocation);
-
-		OrgRelations orgRelations = populateOrgRelations(clientOrgLocation, orgLocations, user.getUserCode());
-		if(jsonObj.getString("level") != null && !jsonObj.getString("level").isEmpty()){
-			orgRelations.setInitiatorLevel(jsonObj.getString("level"));
-	     }
-		orgRelationsService.addOrgRelations(orgRelations);
-		
-		if(jsonObj.has("maxTsRowNum")){
-			String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
-			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
-		
-		for (int c = 1; c < maxCount; c++) {
-			Projects project = new Projects();
-			ProjectApproverHierarchy projectApproverHierarchy = new ProjectApproverHierarchy();
-			Set<ProjectApproverHierarchy> projectApproverSet = new HashSet<ProjectApproverHierarchy>();
-			project.setProjectSequeneNumber(jsonObj.getString(c + "projectId"));
-			project.setProjectName(jsonObj.getString(c + "projectName"));
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-			project.setOrgLocationsId(orgLocations);
-			project.setOrgRelationId(orgRelations); // newly Added
-
-			String startDateString = jsonObj.getString(c + "projectStartDate");
-			String endDateString = jsonObj.getString(c + "projectEndDate");// projectEndDate
-			Date startDate = getDateFormat(startDateString);
-			if(!isNullOrEmpty(endDateString)){
-				Date endDate = getDateFormat(endDateString);
-				project.setEndDate(endDate);
-			}
-			
-			project.setStartDate(startDate);
-			project.setProjectStatus(Project_Status.STARTED);
-			project.setCreatedDate(new Date());
-			projectApproverHierarchy.setProjectId(project);
-			User approverUserId1 = new User();
-			approverUserId1.setId(Long.parseLong(jsonObj.getString(c + "projectManager")));
-			projectApproverHierarchy.setApproverUserId(approverUserId1);
-			projectApproverHierarchy.setLevel(1);
-			ProjectApproverHierarchy projectApproverHierarchy1 = new ProjectApproverHierarchy();
-			if (!isNullOrEmpty(jsonObj.getString("level2Manager"))) {
-				projectApproverHierarchy1.setProjectId(project);
-				User approverUserId2 = new User();
-				approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
-				projectApproverHierarchy1.setApproverUserId(approverUserId2);
-				projectApproverHierarchy1.setLevel(2);
-				projectApproverSet.add(projectApproverHierarchy1);
-			}
-			projectApproverSet.add(projectApproverHierarchy);
-
-			project.setProjectApprovers(projectApproverSet);
-			project.setCreatedBy(user.getUserCode());
-			/* Saving for Projects */
-			projectsService.saveProject(project);
-			commonUtil.storeSourceleadTasks(user, project);
-		}
-
-	}
-		
-	}
+	
 	
 	/**
 	 * @author VenkatKesav
@@ -198,27 +150,29 @@ public class ClientServiceImpl implements ClientService{
 			SubmissionTemplate sourceLeadDefaultTemplate = null;
 			if(jsonObj.has("orgLocationId")){
 				clientOrgLocations = orgLocationService.getOrgLocations(jsonObj.getLong("orgLocationId"));
-				if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
-					clientOrgLocations.setCountry(jsonObj.getString("country"));
-				}else if(jsonObj.has("orgCountry") && !isNullOrEmpty(jsonObj.getString("orgCountry"))){
+				if(jsonObj.has("orgCountry") && !isNullOrEmpty(jsonObj.getString("orgCountry"))){
 					clientOrgLocations.setCountry(jsonObj.getString("orgCountry"));
 				}
-				if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
+				else if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+					clientOrgLocations.setCountry(jsonObj.getString("country"));
+				}
+				if(jsonObj.has("orgState") && !isNullOrEmpty(jsonObj.getString("orgState"))){
+					clientOrgLocations.setState(jsonObj.getString("orgState"));
+				}
+				else if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
 					clientOrgLocations.setState(jsonObj.getString("state"));
-				}else if(jsonObj.has("orgState") && !isNullOrEmpty(jsonObj.getString("orgState"))){
-					clientOrgLocations.setCountry(jsonObj.getString("orgState"));
+				}
+				if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
+					clientOrgLocations.setCity(jsonObj.getString("orgCity"));
 				}
 				
-				if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
+				else if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 					clientOrgLocations.setCity(jsonObj.getString("city"));
-				}else if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
-					clientOrgLocations.setCountry(jsonObj.getString("orgCity"));
 				}
-				
 			}
 			
 			if(clientOrgLocations == null){
-				org = populateOrg(jsonObj, user.getUserCode());
+				org = populateOrg(jsonObj, user.getUserCode(),responderType);
 				clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
 				
 				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
@@ -226,6 +180,8 @@ public class ClientServiceImpl implements ClientService{
 				orgLocationsList.add(clientOrgLocations);
 				org.setOrgLocationsList(orgLocationsList);
 				orgService.addOrganization(org);
+				saveOrgRoleHierarchy(clientOrgLocations,user);
+				saveOrgBasedRoles(org,clientOrgLocations,user);
 			}else{
 				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
 				clientOrgLocations.setOrgRelationsList(orgRelationsList);
@@ -243,13 +199,8 @@ public class ClientServiceImpl implements ClientService{
 			
 			if(jsonObj.has("email")){
 				spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
-				if(!isNullOrEmpty(jsonObj.getString("roleType")) && null == clientOrgLocations.getUser() && null == org.getUser()){
-					clientOrgLocations.setUser(spocUser);
-					org.setUser(spocUser);
-					orgLocationService.updateOrgLocations(clientOrgLocations);
-					orgService.addOrganization(org);
-				}
 			}
+			
 			if(jsonObj.has("owner")){
 				String ownersId =null;
 				try{
@@ -298,13 +249,18 @@ public class ClientServiceImpl implements ClientService{
 			if(org.getOrgType().equalsIgnoreCase("Guest")){
 				submissionTemplate = new SubmissionTemplate();
 				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
-				submissionTemplate.setTemplateName(org.getOrgName()+" Default Template");
-				submissionTemplate.setDescription(org.getOrgName()+" Default Template");
+				StringBuilder nameBuilder=new StringBuilder();
+				StringBuilder descBuilder=new StringBuilder();
+				submissionTemplate.setTemplateName(nameBuilder.append(org.getOrgName()).append(" Default Template").toString());
+				submissionTemplate.setDescription(descBuilder.append(org.getOrgName()).append(" Default Template").toString());
 				submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 				submissionTemplate.setOrgLocationId(clientOrgLocations);
 				submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				submissionTemplate.setTemplateType("Submission");
 				submissionTemplate.setCreatedBy(user.getUserCode());
+				submissionTemplate.setUpdatedBy(user.getUserCode());
 				submissionTemplate.setCreatedDate(new Date());
+				submissionTemplate.setUpdatedDate(new Date());
 				submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 			}
 			
@@ -323,8 +279,12 @@ public class ClientServiceImpl implements ClientService{
 					submissionTemplate.setClientLocationId(orgLocations);
 					submissionTemplate.setOrgLocationId(clientOrgLocations);
 				}
+				submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				submissionTemplate.setTemplateType("Submission");
 				submissionTemplate.setCreatedBy(user.getUserCode());
 				submissionTemplate.setCreatedDate(new Date());
+				submissionTemplate.setUpdatedBy(user.getUserCode());
+				submissionTemplate.setUpdatedDate(new Date());
 				submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 			}
 		}
@@ -337,7 +297,7 @@ public class ClientServiceImpl implements ClientService{
 	 * @return Org
 	 * @throws JSONException
 	 */
-		private Org populateOrg(JSONObject jsonObj, String loginUserCode) throws JSONException {
+		private Org populateOrg(JSONObject jsonObj, String loginUserCode,String responderType) throws JSONException {
 			Org org = new Org();
 		
 			if(jsonObj.has("orgName")){
@@ -351,6 +311,14 @@ public class ClientServiceImpl implements ClientService{
 				org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
 			}
 			org.setOrgType("Guest");
+			
+			if(responderType.equalsIgnoreCase("Client")){
+				org.setModulesId(Integer.toString(Constants.MODULE_VMS));
+			}
+			else if(responderType.equalsIgnoreCase("Vendor")){
+				org.setModulesId(Integer.toString(Constants.MODULE_ATS));
+			}
+			
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 			org.setCreatedDate(commonUtil.currentDate());
 			org.setUpdatedBy(loginUserCode);
@@ -361,6 +329,73 @@ public class ClientServiceImpl implements ClientService{
 		}
 		
 		
+		
+		public void saveOrgRoleHierarchy(OrgLocations orgLocations,User user) throws Exception{
+			List<RoleHierarchy> hierarchyList = roleHierarchyService.getRoleHierarchyByOrgLocationId(1L);
+			if(null != hierarchyList){
+				for(RoleHierarchy roleHierarchy : hierarchyList){
+					RoleHierarchy orgRoleHierarchy = new RoleHierarchy();
+					orgRoleHierarchy.setHierarchyName(roleHierarchy.getHierarchyName());
+					orgRoleHierarchy.setHierarchyLevel(roleHierarchy.getHierarchyLevel());
+					orgRoleHierarchy.setOrgLocations(orgLocations);
+					orgRoleHierarchy.setStatus(roleHierarchy.getStatus());
+					orgRoleHierarchy.setCreatedBy(user.getUserCode());
+					orgRoleHierarchy.setCreatedDate(new Date());
+					roleHierarchyService.saveRoleHierarchy(orgRoleHierarchy);
+				}
+			}
+			
+		}
+		
+		public void saveOrgBasedRoles(Org org,OrgLocations orgLocations,User user) throws Exception{
+			List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
+			if(null != rolesList){
+				for(SourceleadRoles roles : rolesList){
+					Roles orgRoles = new Roles();
+					orgRoles.setRoleName(roles.getRoleName());
+					orgRoles.setDisplayName(roles.getDisplayName());
+					orgRoles.setOrgLocations(orgLocations);
+					orgRoles.setOrg(orgLocations.getOrg());
+					RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelAndOrgLocationId(roles.getRoleHierarchy().getHierarchyLevel(), orgLocations.getId());
+					orgRoles.setRoleHierarchy(roleHierarchy);
+					orgRoles.setStatus(roles.getStatus().toString());
+					orgRoles.setDefaultRole(1);
+					StringBuilder strbul  = new StringBuilder();
+					
+					List<Long> roleActonsList = new ArrayList<Long>();
+					if(null != roles.getActionId()){
+						for (String s : roles.getActionId().split(",")){
+							 roleActonsList.add(Long.parseLong(s));
+						 }
+					}
+					
+					List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActions(org);
+					for(SourceleadActions actions : sourceLeadActionsList){
+						if(roleActonsList.contains(actions.getId())){
+							 strbul.append(actions.getId()).append(",");
+						}
+					}
+					
+					String actionId = strbul.toString();
+					
+					if(!isNullOrEmpty(actionId)){
+						actionId = actionId.substring(0, actionId.length()-1);
+						orgRoles.setActionId(actionId);
+					}else{
+						orgRoles.setActionId(null);
+					}
+					
+					orgRoles.setCreatedBy(user.getUserCode());
+					orgRoles.setCreatedDate(new Date());
+					rolesService.storeRoles(orgRoles);
+				}
+			}
+			
+		}
+		
+		
+		
+		// This method is not in use  so commented by David S
 		/**
 		 * populating OrgLocations Data
 		 * @param jsonObj
@@ -370,7 +405,7 @@ public class ClientServiceImpl implements ClientService{
 		 * @return OrgLocations
 		 * @throws JSONException
 		 */
-			private OrgLocations populateOrgLocations(JSONObject jsonObj, Org addOrg, String locationCode, String loginUserCode)
+			/*private OrgLocations populateOrgLocations(JSONObject jsonObj, Org addOrg, String locationCode, String loginUserCode)
 					throws JSONException {
 				OrgLocations orgLocations = new OrgLocations();
 				orgLocations.setOrg(addOrg);
@@ -393,15 +428,21 @@ public class ClientServiceImpl implements ClientService{
 				}
 				
 				String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
-				orgLocations.setLocationCode(addOrg.getOrgCode() + clientCountry);
+				StringBuilder countryBuilder=new StringBuilder();
+				orgLocations.setLocationCode(countryBuilder.append(addOrg.getOrgCode()).append(clientCountry).toString());
 				orgLocations.setCreatedDate(new Date());
 				orgLocations.setCreatedBy(loginUserCode);
 				orgLocations.setUpdatedBy(loginUserCode);
 				orgLocations.setUpdatedDate(new Date());
 				return orgLocations;
 			}
+			*/
 			
-			
+		
+		
+		// This method is not in use  so commented by David S
+		
+		
 			/**
 			 * populate OrgRelations Data
 			 * @param orgLocations
@@ -409,7 +450,7 @@ public class ClientServiceImpl implements ClientService{
 			 * @param loginUserCode
 			 * @return
 			 */
-				private OrgRelations populateOrgRelations(OrgLocations clientOrgLocation, OrgLocations orgLocations,String loginUserCode) {
+			/*	private OrgRelations populateOrgRelations(OrgLocations clientOrgLocation, OrgLocations orgLocations,String loginUserCode) {
 
 					OrgRelations orgRelations = new OrgRelations();
 					orgRelations.setResponderLocationId(clientOrgLocation);
@@ -420,7 +461,7 @@ public class ClientServiceImpl implements ClientService{
 					orgRelations.setCreatedBy(loginUserCode);
 					orgRelations.setCreatedDate(new Date());
 					return orgRelations;
-				}
+				}*/
 		
 		
 
@@ -442,13 +483,15 @@ public class ClientServiceImpl implements ClientService{
 		    return host;
 		}
 		
+		
+		// This method is not in use  so commented by David S
 		/**
 		 * Returns Date
 		 * 
 		 * @param startDateString
 		 * @return
 		 */
-		private Date getDateFormat(String startDateString) {
+	/*	private Date getDateFormat(String startDateString) {
 
 			Date formatedDate = null;
 			try {
@@ -459,7 +502,7 @@ public class ClientServiceImpl implements ClientService{
 				e.printStackTrace();
 			}
 			return formatedDate;
-		}
+		}*/
 
 		/**
 		 * check given string empty or null
@@ -480,13 +523,13 @@ public class ClientServiceImpl implements ClientService{
 				
 				 OrgLocations orgLocations = null;
 					//if login user org id is equals to client location id then we get vendor list of ResponderLocationId Org details 
-					 if(orgRelation.getLocationId().getId() == loginLocationId){ 
+					 if(orgRelation.getLocationId().getId().longValue()== loginLocationId.longValue()){ 
 						 orgLocations = orgRelation.getResponderLocationId();
 						 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
 								orgRelation.setInitiatorLevel(jsonObj.getString(level));
 							}
 					 }
-					 if(orgRelation.getResponderLocationId().getId() == loginLocationId){ 
+					 if(orgRelation.getResponderLocationId().getId().longValue() == loginLocationId.longValue()){ 
 						 orgLocations = orgRelation.getLocationId();
 						 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
 								orgRelation.setResponderLevel(jsonObj.getString(level));
@@ -559,13 +602,13 @@ public class ClientServiceImpl implements ClientService{
 			if(null != orgRelation){
 				 OrgLocations orgLocations = null;
 				//if login user org id is equals to vendor location id then we get vendor list of ResponderLocationId Org details 
-				 if(orgRelation.getLocationId().getId()== loginOrgId){ 
+				 if(orgRelation.getLocationId().getId().longValue()== loginOrgId.longValue()){ 
 					 orgLocations = orgRelation.getResponderLocationId();
 					 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
 							orgRelation.setInitiatorLevel(jsonObj.getString(level));
 						}
 				 }
-				 if(orgRelation.getResponderLocationId().getId()== loginOrgId){ 
+				 if(orgRelation.getResponderLocationId().getId().longValue()== loginOrgId.longValue()){ 
 					 orgLocations = orgRelation.getLocationId();
 					 if(jsonObj.getString(level) != null && !jsonObj.getString(level).isEmpty()){
 							orgRelation.setResponderLevel(jsonObj.getString(level));
@@ -616,7 +659,7 @@ public class ClientServiceImpl implements ClientService{
 		}
 		
 		@Override
-		public void updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser ,Long ownerId, Long spocUserId,OrgLocations orgLocation) throws Exception {
+		public OrgSpoc updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser ,Long ownerId, Long spocUserId,OrgLocations orgLocation) throws Exception {
 			
 			//OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
 			
@@ -677,7 +720,7 @@ public class ClientServiceImpl implements ClientService{
 					}
 				}*/
 				User user = orgSpoc.getSpocUser();
-				if(user.getId() == spocUserId){
+				if(user.getId().longValue()== spocUserId.longValue()){
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
@@ -685,7 +728,7 @@ public class ClientServiceImpl implements ClientService{
 					}
 				}
 				
-				else if(user.getId() == ownerId){
+				else if(user.getId().longValue()== ownerId.longValue()){
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
@@ -702,7 +745,7 @@ public class ClientServiceImpl implements ClientService{
 				}
 				orgSpocService.addOrgSpoc(orgSpoc);
 				
-				if(orgSpoc.getTempOwnerId() != orgSpoc.getOwnerUser().getId()){
+				if(orgSpoc.getTempOwnerId().longValue() != orgSpoc.getOwnerUser().getId().longValue()){
 					user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
 					sendEmailToClientContact(user,editUser,orgLocation,loginUser);
 				}
@@ -711,6 +754,7 @@ public class ClientServiceImpl implements ClientService{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
+			return orgSpoc;
 
 		}
 
@@ -721,7 +765,8 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setToEmail(editUser.getEmail());
 			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
-			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+			 StringBuilder fromName=new StringBuilder();
+			 emailMessage.setFromName(fromName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			 
 			 
 			//setting the class filed values
@@ -737,7 +782,7 @@ public class ClientServiceImpl implements ClientService{
 				 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 				 EmailRecipient emailRecipient = new EmailRecipient();
 				 emailRecipient.setEmail(emailMessage.getToEmail());
-				 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+				 emailRecipient.setName(fromName.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 				 emailRecipientList.add(emailRecipient);
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
