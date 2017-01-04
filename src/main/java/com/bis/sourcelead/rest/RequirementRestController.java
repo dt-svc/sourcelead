@@ -466,10 +466,11 @@ public class RequirementRestController {
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
 				if(userRole !=null){
 					user.setUserType(userRole.getUserType());
-					 boolean requirementAction  = sourceleadRolesService.roleHaveActionAccessOrNot(requirementActionId,userRole.getUserType());
+					/* boolean requirementAction  = sourceleadRolesService.roleHaveActionAccessOrNot(requirementActionId,userRole.getUserType());
 					 if (requirementAction){
 						 mynewList.add(user);
-					    }
+					    }*/
+					 mynewList.add(user);
 				}
 		   }
 		

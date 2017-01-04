@@ -1232,11 +1232,23 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("Experience","--"); 
 			 }
-		 if(loginUser.getFirstName() != null && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+		 
+		  if(loginUser.getFirstName() != null && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
 			 StringBuilder userBuild = new StringBuilder();
 			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }
+		  else if(loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getFirstName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).toString());
+		  	 }
+		 else{
+			 globalVarsMap.put("LoginUser","--"); 
+			 }
+		  
+		 if(loginUser.getUserType()!= null && !"".equalsIgnoreCase(loginUser.getUserType())){
+			 globalVarsMap.put("Role", loginUser.getUserType());
 			 }else{
-				 globalVarsMap.put("LoginUser",loginUser.getFirstName()); 
+				 globalVarsMap.put("Role","--"); 
 			 }
 		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
 			 globalVarsMap.put("Role",loginOrgLocation.getOrg().getOrgName() );

@@ -1611,48 +1611,51 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	     }else{
 	    	 user = orgLocations.getUser();
 	     }
-	     StringBuilder fNameStringBuilder=new StringBuilder();
-		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(user.getFirstName());
-		 emailMessage.setLastName(user.getLastName());
-		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-		 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-		 
-		//setting the class filed values
-		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("firstName", emailMessage.getFirstName());
-		 globalVarsMap.put("lastName",emailMessage.getLastName());
-		 globalVarsMap.put("administratorFirstName", user.getFirstName());
-		 globalVarsMap.put("administratorLastName",user.getLastName());
-		 globalVarsMap.put("role",user.getUserType());
-		 globalVarsMap.put("userEmailId",user.getEmail()); //
-		 globalVarsMap.put("weekFrequency",tempHTML.toString());
-		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder nameStringBuilder=new StringBuilder();
-		 emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
-		
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_MANAGER_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
-		 //calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
-		sendWeeklyBaseNotiFicationToAdmin(user,orgLocations);
+	     if(user != null){
+	    	 StringBuilder fNameStringBuilder=new StringBuilder();
+			 EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(user.getFirstName());
+			 emailMessage.setLastName(user.getLastName());
+			 emailMessage.setToEmail(user.getEmail());
+			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("firstName", emailMessage.getFirstName());
+			 globalVarsMap.put("lastName",emailMessage.getLastName());
+			 globalVarsMap.put("administratorFirstName", user.getFirstName());
+			 globalVarsMap.put("administratorLastName",user.getLastName());
+			 globalVarsMap.put("role",user.getUserType());
+			 globalVarsMap.put("userEmailId",user.getEmail()); //
+			 globalVarsMap.put("weekFrequency",tempHTML.toString());
+			 //setting the Recipient information
+			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+			 EmailRecipient emailRecipient = new EmailRecipient();
+			 emailRecipient.setEmail(emailMessage.getToEmail());
+			 StringBuilder nameStringBuilder=new StringBuilder();
+			 emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+			 emailRecipientList.add(emailRecipient);
+			
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_MANAGER_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = "";
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+			sendWeeklyBaseNotiFicationToAdmin(user,orgLocations); 
+	     }
+	    
 		
 }
 
