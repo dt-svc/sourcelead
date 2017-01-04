@@ -157,6 +157,7 @@ public class Constants {
 	public static String APPLICANT_NEGOTIATE_REQUIREMENT = "ApplicantNegotiateRequirement";
 	public static String USER_RATE_NEGOTIATION = "UserRateNegotiation";
 	public static String CLIENT_RATE_NEGOTIATION = "ClientRateNegotiation";
+	public static String VENDOR_RATE_NEGOTIATION = "VendorRateNegotiation";
 	public static String USER_ACCEPT_RATE_NEGOTIATION = "UserAcceptRateNegotiation";
 
 
@@ -248,10 +249,9 @@ public class Constants {
 	public static String SALES_MANAGER = "ROLE_SALES_MANAGER";
 	public static String RECRUITER = "ROLE_RECRUITER";
 	public static String ROLE_MANAGER = "ROLE_MANAGER";
-
-
 	
-	
+	public static String Applicant_Acceptance_By_Manager_Of_Requirement = "ApplicantAcceptanceByManagerOfRequirement";
+	public static String Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "ApplicantWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
 	
 	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
 	

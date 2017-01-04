@@ -216,7 +216,7 @@ function ApplicantPermit(){
 	     if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'parseCandidate'){
 	    	 document.getElementById("browseDiv").style.display="";
 	    	 $('#uploadFile').removeAttr('data-validation-optional');
-			 $('#uploadFile').attr("data-validation","required validate_Space validatedoc "); 
+			 $('#uploadFile').attr("data-validation","required validatedoc "); 
 			 
 			 document.getElementById("newResumeDiv").style.display="none";
 			 $('#newUploadFile').removeAttr('data-validation');
@@ -546,7 +546,7 @@ function getCandidateDetails(){
 		        	 }
 		        	 
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
-		        		 $("select[name=city]").val(json['city']);
+		        		 getCandidateCities(json['city']);
 		        	 }else{
 		        		 $("select[name=city]").val('');
 		        	 }
@@ -666,12 +666,17 @@ function getCandidateStates(){
 
 
 <script>
-function getCandidateCities(){
+function getCandidateCities(city){
 	
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
 	
+	if(stateName == null || stateName == "" || stateName =="undefined"){
+		stateName = document.getElementById("state");
+	}
+	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
@@ -681,9 +686,14 @@ function getCandidateCities(){
 	        	$('#city').empty();
 	        	$('#city').append('<option value="">---Select---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	var selected = '';
+	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
+	            		selected = 'selected';
+	            	}
+	            	$('#city').append('<option value="'+json[i]+'" '+selected+'>'+json[i]+'</option>');
 	            }
 	            $('#city').trigger("chosen:updated");
+	            $("#loading").removeAttr("style"); 
 	        },
 	        error: function(e){
 	        }

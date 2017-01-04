@@ -133,6 +133,7 @@ public class SubmissionsRateRestController {
 				/*requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				requirementSubmission.setSubmissionRateComment(rejectreason);*/
 			}
+			requirementSubmission.setCreatedDate(commonUtil.currentDate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
@@ -199,6 +200,11 @@ public class SubmissionsRateRestController {
 		requirementRateSubmissionNegotiation.setUpdatedDate(commonUtil.currentDate());
 		requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
 		
+		if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		}
+		
 		 Requirement requirement = requirementSubmission.getRequirement();
 		 
 		 Candidate candidate = requirementSubmission.getCandidate();
@@ -234,7 +240,7 @@ public class SubmissionsRateRestController {
 			         tempHTML.append("<td>").append(requirement.getRate()).append("</td>");
 			         tempHTML.append("<td>").append(negotiations.getExpectedRate()).append("</td>");
 			         if(negotiations.getCreatedBy() != null && "" != negotiations.getCreatedBy()){
-			        	 User proposedUser = userService.getUserByUserCode(negotiations.getRequirementsubmissionId().getCreatedBy());
+			        	 User proposedUser = userService.getUserByUserCode(negotiations.getCreatedBy());
 			        	 tempHTML.append("<td>").append(proposedUser.getFirstName()).append(" ").append(proposedUser.getLastName()).append("</td>");
 			         }else{
 			        	 if(candidate.getLastName() != null){
@@ -252,16 +258,16 @@ public class SubmissionsRateRestController {
 		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
 			        tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Rejected&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
 			        tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");
-		        }else if("Vendor".equalsIgnoreCase(type)){
-		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
-			        tempHTML.append("<a href='").append(sourceleadUrl).append("/style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");
+		        }else if("Vendor".equalsIgnoreCase(type) || "Client".equalsIgnoreCase(type)){
+		        	/*tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRateNegotiateClientOrVendorRates?status=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRateNegotiateClientOrVendorRates?status=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");*/
+			        tempHTML.append("<a href='").append(sourceleadUrl).append("/style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#214b90;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 		        }else{
 		        	//these links are provided in applicant to user Negotiate email
 		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateUserRates?rateStatus=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
 			        tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateUserRates?rateStatus=Rejected&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
 			        tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateUserRates?rateStatus=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");
 		        }
-		        
 		 	}
 		return tempHTML;
 	}
@@ -358,14 +364,16 @@ public class SubmissionsRateRestController {
 				requirementRateSubmissionNegotiation.setCurrentRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
 			}
 			
-			if(requirementSubmission.getVendorLocationId() != null && requirementSubmission.getVendorLocationId() == loginOrgLocation){
+			if(requirementSubmission.getVendorLocationId() != null && requirementSubmission.getVendorLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
-				if(isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
+				candidate = requirementSubmission.getCandidate();
+				if(!isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
 					pastUser = userService.getUserByUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
 				}
-			}else if(requirementSubmission.getVendorLocationId() != null &&  requirementSubmission.getVendorLocationId() != loginOrgLocation){
+			}else if(requirementSubmission.getVendorLocationId() != null &&  requirementSubmission.getVendorLocationId().getId().longValue() != loginOrgLocation.getId().longValue()){
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.CLIENT);
-				if(isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
+				candidate = requirementSubmission.getCandidate();
+				if(!isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
 					pastUser = userService.getUserByUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
 				}
 			}else{
@@ -394,8 +402,13 @@ public class SubmissionsRateRestController {
 			 }else{
 				 RequirementRateSubmissionNegotiation neogtation = requirementSubmissionService.getRequirementRateBySubmissionById(submissionId);
 				 List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidate.getId());
-				 StringBuilder tempHTML = buildNegotiationHistory(negotiationList,requirementSubmission.getRequirement(),candidate,submissionId,"user");
-				requirementSubmissionService.userNegotiateEmail(requirementSubmission.getRequirement(),users,candidate,loginOrgLocation,neogtation,tempHTML);
+				 if(requirementSubmission.getVendorLocationId() != null){
+					 StringBuilder tempHTML = buildNegotiationHistory(negotiationList,requirementSubmission.getRequirement(),candidate,submissionId,"Client");
+					 requirementSubmissionService.sendEmailtoVendor(loginOrg,users,pastUser,requirementSubmission.getRequirement(),candidate,tempHTML,loginOrgLocation);
+				 }else{
+					 StringBuilder tempHTML = buildNegotiationHistory(negotiationList,requirementSubmission.getRequirement(),candidate,submissionId,"user");
+					 requirementSubmissionService.userNegotiateEmail(requirementSubmission.getRequirement(),users,candidate,loginOrgLocation,neogtation,tempHTML);
+				 }
 			 }
 			 
 			
@@ -459,6 +472,12 @@ public class SubmissionsRateRestController {
 			requirementSubmission.setFinalizedRateType(requirementRateSubmissionNegotiation.getExpectedRateType());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
+			/*if("Accepted".equalsIgnoreCase(status)){
+				Requirement requirement = requirementSubmission.getRequirement();
+				Candidate candidate = requirementSubmission.getCandidate();
+				OrgLocations orgLocations = requirementSubmission.getOrgLocations();
+				requirementSubmissionService.userAcceptRateNegotiation(requirement,users,candidate,orgLocations,requirementRateSubmissionNegotiation);
+			}*/
 			return "SUCCESS";
 		}
 	 

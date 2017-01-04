@@ -457,14 +457,16 @@ function sideBar(requirementId){
              			 	}
               			
               			
-              			result = result+'    <div class="profile_details requirement_details clearfix">';
+              			result = result+'    <div class="profile_details requirement_details clearfix reqrementsummary">';
               			if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined'){
-    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
+
                			}
                			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined'){
-     				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+     				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
                			}else{
-               				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'<i></i></h4></a>';
+               				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'">'+json.jobTitle+'</span><i></i></h4></a>';
+
                			}
 				        result = result+'<div class="hide-row">';
 				       /*result = result+'    <div class="profile_details requirement_details clearfix">'; */
@@ -888,14 +890,14 @@ function requirementDetails(requirementId){
 				            }else{
 				            	for (var i=0; i<json.approverNames.length; i++)
 				   				{
-				            		var level = 2;
+				            		var level = 1;
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
 					            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b> <span>'; 
 					            		result = result +json.approverNames[i];
 					            		result = result +'</span>';
 					            		result = result +'</div>';
-					            		level = level-1;
+					            		level = level+1;
 					   				}
 					            	
 				   				}
@@ -1219,9 +1221,13 @@ function requirementPipeline(requirementId,submissionType){
 				        	   result = result + '<th>Applied on</th>';
 					           result = result + '<th>Rate</th>';
 					           
+					         if(clientSubmissions == 'Y'){
 					           if(submissionType != 'REQUEST_SENT'){
 					           result = result + '<th>Sub. Rate</th>';
 					           }
+					         }else{
+					        	result = result + '<th>Sub. Rate</th>';
+					         }
 					           result = result + '<th>Source</th>';
 				            }
 						  
@@ -1312,12 +1318,14 @@ function requirementPipeline(requirementId,submissionType){
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							           }else{
+// 							        	   if(clientSubmissions == 'Y'){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
 							        	   }else{
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
-							        	   }
+// 							        	   }
+							           }
 							           }
 							           
 							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
@@ -1342,8 +1350,8 @@ function requirementPipeline(requirementId,submissionType){
 						       			    result = result +'<th>Start&nbsp;Time</th>';
 						       			    result = result +'<th>End Time</th>';
 						       			    result = result +'<th>Location</th>';
-						       			    result = result +'<th>Feedback</th>';
-						       			    result = result +'<th>Interview</th>';
+						       			   // result = result +'<th>Feedback</th>';
+						       			    result = result +'<th>Interview</th>'; 
 						       			    result = result +'</tr></thead>';
 						       			    result = result +'<tbody>';
 						       			    for(var j=0;j<report.requirementInterviewHistoryList.length;j++){
@@ -1386,8 +1394,7 @@ function requirementPipeline(requirementId,submissionType){
 							       			    	result = result +'<td><span>--</span></td>';
 							       			    }
 						       			    	
-						       			    	result = result +'<td><span>--</span></td>';
-						       			    	result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>';
+						       			    	 result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>'; 
 						       			    	result = result +'</tr>';
 						       			    } 
 						       			    result = result +'</tbody>';
@@ -1771,7 +1778,12 @@ function requirementRecommendations(requirementId){
 		    }else{
 		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
+		    
+		    if(report.candidateResume != null && report.candidateResume !='' && report.candidateResume !='undefined' ){
 		    result = result +'<td><div><span><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;&nbsp;'+report.candidateResume+'</a></span></div></td>';
+			}else{
+				result = result +'<td><div><span>--</span></div></td>';
+			}
 		    result = result +'<td><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
 		    if(report.requirementSubmisstions.length > 0){
 		    	result = result +'<div class="tooltip_div">';
@@ -1891,6 +1903,11 @@ function clientSideBar(candidateId){
 			             
 	                	 var result = "";
 	                	 
+	                	 if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
+	                		 lastName  = json.lastName;
+	                	 }else{
+	                		 lastName = "";
+	                	 }
 	                	 result = result+'<div id="popUp" ></div>  ';
 	                	
 	                	 
@@ -1937,7 +1954,7 @@ function clientSideBar(candidateId){
 			             result = result+'                     </div>'; */
 			             result = result+'                     <div class="media-body candidate-details">';
 			             
-			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+json.lastName+'</h4>';
+			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
 			            
 			             result = result+'                       <ul class="list-unstyled">';
 			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
@@ -2226,13 +2243,13 @@ function getRateListDiv(submissionId, candidateId){
 					    	 var report = json[i];
 					    	 if(i == json.length-1){
 		                    	 divState = report.rateInitiatorType;
-		                    	 if((report.rateInitiatorType != "ORG" && report.rateInitiatorType != "CANDIDATE") && (report.initiatorOrgLocationIdStr==orgLocationId)){
+		                    	 if(report.rateInitiatorType != "CANDIDATE" && report.initiatorOrgLocationIdStr==orgLocationId && report.createdBy!='' && report.createdBy!='undefined' && report.createdBy!=null){
 		                    		 isLastNegotiator = "true";
 		                    	 }else{
 		                    		 isLastNegotiator = "false";
 		                    	 }
 	                    	 }
-		                     result = result + '      <tr>';
+		                     result = result + '      <tr class="redtxt">';
 		                     result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
 		                     result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
 		                     result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';

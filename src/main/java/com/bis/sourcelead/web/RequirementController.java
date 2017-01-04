@@ -1,11 +1,17 @@
 package com.bis.sourcelead.web;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +19,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -200,8 +208,11 @@ public class RequirementController {
 		
 		if(orgLocations != null && StringUtils.isNotEmpty(orgLocations.getCountry())){
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(countries != null){
 			model.addObject("loginCountryName", countries.getName());
-	        model.addObject("currencyCode", countries.getCurrency());
+			model.addObject("currencyCode", countries.getCurrency());
+			}
+	        
 		}
         
         
@@ -256,13 +267,23 @@ public class RequirementController {
 	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
-		 
+
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		
 		ModelAndView model = new ModelAndView();
 		model.setViewName("requirement/requirementSummary");
 		model.addObject("requirementId",requirementId);
+		
+		Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+		model.addObject("isTeamMember",isTeamMember);
+		
+		Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
+		model.addObject("isManager",isManager);
+
 		model.addObject("sourceleadUrl", sourceleadUrl);
 
 		// This code is commented as not in use 
@@ -287,6 +308,10 @@ public class RequirementController {
             model.addObject("parentRequirement","N");
         }
         
+        Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(countries != null){
+			model.addObject("loginCountryName", countries.getName());
+		}
         
         if(requirement.getSpocId() != null && requirement.getSpocId().getId() != null){
 			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
@@ -451,6 +476,34 @@ public class RequirementController {
 		}
 		return model;
 	}
+	
+	@RequestMapping(value = "/downloadRequestDocumentBySubmissionId", method = RequestMethod.GET)
+    public void downloadRequestDocumentBySubmissionId(@RequestParam(value="submissionId", required=false) String submissionId ,HttpServletResponse response) throws Exception {
+		
+			RequirementSubmission requirementSubmission =  requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+	        StringBuilder filename = new StringBuilder();
+	        
+		    response.setContentType("application/octet-stream");
+	        response.setHeader("content-disposition", filename.append("attachment; filename=\"").append(requirementSubmission.getSubmissionRequestFileName()).append("\"").toString());
+	        
+			InputStream inputStream = new ByteArrayInputStream(requirementSubmission.getSubmissionRequestDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+
+				inputStream.close();
+				outStream.close();
+
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+		}
 	
 
 	private boolean isNullOrEmpty(String msg) {

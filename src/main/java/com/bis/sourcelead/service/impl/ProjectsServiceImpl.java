@@ -382,8 +382,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 					Employees emp = projectMembers.getEmployee();
 					if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
 						User  approverUserId1 =new User();
+						User  approverUserId2 =new User();
 						approverUserId1.setId(Long.valueOf(jsonObj.getString("level1Manager")));
-						sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
+						approverUserId2.setId(Long.valueOf(jsonObj.getString("level2Manager")));
+						if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue() &&  approverUserId2.getId().longValue() != emp.getUser().getId().longValue()){
+							sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
+						}
+						
 					}
 				}
 			}
@@ -1082,9 +1087,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Projects pr = projectsDao.getProjectById(projectId);
 		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
-		StringBuilder membersListStringBuilder=new StringBuilder();
 		 for(ProjectMembers pm : projectMembersList){
 			 if(pm.getEmployee() != null){
+				 StringBuilder membersListStringBuilder=new StringBuilder();
 				 pm.setEmpName(membersListStringBuilder.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());	 
 				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	 
 			 }

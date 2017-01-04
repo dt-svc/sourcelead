@@ -112,6 +112,16 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    		   city = " ";
 	    	   }
 	    	   
+	    	   if(json.candidate.lastName != null && json.candidate.lastName != '' && json.candidate.lastName != 'undefined'){
+	    		   lastName = json.candidate.lastName;
+	    	   }else{
+	    		   lastName = "";
+	    	   }
+	    	   if(json.candidate.country != null && json.candidate.country != null && json.candidate.country != 'undefined'){
+	    		   country = json.candidate.country;
+	    	   }else{
+	    		   country = "";
+	    	   }
 	    	   var result = "";
           	   result = result + ' <div class="req_hide">';
                result = result + '<div class="profile_details clearfix">';
@@ -121,7 +131,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '<div class="imageParent"><img onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+json.candidate.id+'"/>" alt="candidate" title="Candidate"></div>';
                result = result + ' </div>';
                result = result + ' <div class="media-body candidate-details">';
-               result = result + ' <h4 class="media-heading">'+json.candidate.firstName+' '+json.candidate.lastName+'</h4>';
+               result = result + ' <h4 class="media-heading">'+json.candidate.firstName+' '+lastName+'</h4>';
                result = result + ' <ul class="list-unstyled">';
                result = result + ' <li><strong>'+designation+'</strong></li>';
                result = result + ' <li>'+experience+'</li>';
@@ -151,37 +161,80 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + ' </div>';
                result = result + '</div>';
 		       result = result + ' <div class="col-md-6">';
+		       
+		       result = result + ' <div class="row">';
+		       result = result + ' <div class="col-md-6">';
 		       result = result + '<ul class="list-unstyled can-perdt">';
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.candidate.email+'</a></li>';
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.candidate.mobilePhone+'</li>';
 		       result = result + '<li><i class="fa fa-location-arrow"></i>';
-		       result = result +json.candidate.country +''+ state +''+ city
+		       result = result +country +''+ state +''+ city
 		       result = result +'</li>';
 		       result = result + '<li><i class="fa fa-rupee"></i>'+currentRate+' / '+currentRateCurrency+' - Current Rate / Salary</li>';
 		       result = result + '<li><i class="fa fa-rupee"></i>'+expectedRate+' / '+rateType+' - Expected Rate / Salary</li>';
 		       result = result + '</ul>';
+		       result = result + ' </div>';
 		       
 		       
-		       
-		       
-		       
+		       result = result + ' <div class="col-md-6">';
+			   
 			    result = result + '<div class="acceptreject-actions">';
-				result = result + '<ul class="list-unstyled list-inline">';
-				result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept" onClick="acceptFun('+submissionId+');"></i>';
-				result = result + '		<div class="acceptreject-pop" id="accpet">';
-				result = result + '		</div>';
-				result = result + '	</li>';
-				
-				result = result + '	<li><i class="fa fa-close labeldanger" title="Reject" onClick="rejectFun('+submissionId+');"></i>';
-				result = result + '		<div class="acceptreject-pop" id="reject">';
-				result = result + '		</div>';
-				result = result + '	</li>';
-				
-				result = result + '</ul>';
+			    if(json.needApplicantPermit == 'Y'){
+			    	
+			    	    <c:if test="${isManager == true}">
+			    	   		result = result + '<ul class="list-unstyled list-inline">';
+			    	   		result = result + '<span id="statusDiv">';
+			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED'){   
+								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept" onClick="acceptFun('+submissionId+');"></i>';
+								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
+								result = result + '		</div>';
+								result = result + '	</li>';
+								
+								result = result + '	<li><i class="fa fa-close labeldanger" title="Reject" onClick="rejectFun('+submissionId+');"></i>';
+								result = result + '		<div class="acceptreject-pop" id="reject">';
+								result = result + '		</div>';
+								result = result + '	</li>';
+			    	    	}/* else{
+			    	    		result = result + '	<li>';
+			    	    		result = result + json.submissionRateStatus;
+								result = result + '	</li>';
+			    	    	} */
+			    	    	result = result + '</span>';
+			    	    	result = result + '</ul>';
+						</c:if>
+						    result = result + '<ul class="list-unstyled">';
+							if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
+									result = result + '	<li>';
+										result = result + "Request sent to Manager";
+									result = result + '	</li>';
+									result = result + '	<li>';
+										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
+									result = result + '	</li>';
+									result = result + '	<li>';
+										result = result + "comment: "+json.submissionRequestComment;
+									result = result + '	</li>';
+									if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
+										result = result + '<li>';
+										result = result +"status: "+ json.submissionRateStatus;
+										result = result + '</li>';
+									}
+						   }else{
+							   <c:if test="${isTeamMember == true && isManager == false}">
+									result = result + '	<li><i class="fa fa-check labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
+									result = result + '		<div class="acceptreject-pop" id="request">';
+									result = result + '		</div>';
+									result = result + '	</li>';
+								</c:if>		
+						   }
+						result = result + '</ul>';
+						result = result + '</div>';
+					  
+			    } 
 				result = result + '</div>';
-				
+				result = result + '</div>';
+				result = result + '<div class="clearfix"></div>';
 				/* New comments div creation Nov 8th, 2016 */ 
-	            result = result+'<div class="comments-div clearfix" id="latestMessage">';
+	            result = result+'<div class="comments-div clearfix mr" id="latestMessage">';
 	            result = result+'    <div class="commentsimg">';
 	            result = result+'    <i class="fa fa-comments"></i>';
 	            result = result+'        <div class="commentsimg-inner">';
@@ -417,7 +470,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
 	   					     if(report.feedbackStartTime != "feedbackStartTime" || report.feedbackEndTime == "feedbackEndTime" ){
-	   					    	result = result + '<i class="fa fa-handshake-o pull-right" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
+	   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
 	   					     }
 	   					     
 	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
@@ -1111,7 +1164,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 <script>
 		// Accept function
 	function acceptFun(submissionId){
-		$('#accpet').empty();
+		$('#accpet-div').empty();
 		$('#reject').empty();
 		var result = "";	
 		result = result + '	        <form id="accept_form" name="accept_form" action="upload" enctype="multipart/form-data" method="post">';
@@ -1128,17 +1181,21 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '			</div>';
 		result = result + '			</div>';
 		result = result + '	        </form>';
-		$('#accpet').fadeIn();
-		$('#accpet').append(result);
+		$('#accpet-div').toggle();
+		$('#accpet-div').append(result);
 		$('#reject').fadeOut();
+		$('#request').fadeOut();
+		
 	};
-	$("#accpet, .acceptreject-pop, .labelsuccess, .col-md-6, .acceptreject-actions").click(function(e){
+	/* $("#accpet-div, .clients_side_wrap, .clients_side_wrap_active, .fa, .fa-check, .labelsuccess").click(function(e){
 		 e.stopPropagation();
 	 });
-	
+	$("html").click(function(e){
+		 $('#accpet-div').fadeOut();
+	 }); */
 	function rejectFun(submissionId){
 		$('#reject').empty();
-		$('#accpet').empty();
+		$('#accpet-div').empty();
 		var result = "";
 		result = result + '	        <form id="reject_form" name="reject_form" action="upload" enctype="multipart/form-data" method="post">';
 		result = result + '			<div class="row">';
@@ -1151,13 +1208,45 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '				</div>';
 		result = result + '			</div>';
 		result = result + '	        </form>';
-		$('#reject').fadeIn();
+		$('#reject').toggle();
 		$('#reject').append(result);
-		$('#accpet').fadeOut();
+		$('#accpet-div').fadeOut();
+		$('#request').fadeOut();
 	};
 	$("#reject, .acceptreject-pop, .labelsuccess").click(function(e){
 		 e.stopPropagation();
-	 });
+	});
+	
+	function requestFun(submissionId){
+		$('#reject').empty();
+		$('#accpet-div').empty();
+		$('#request').empty();
+		var result = "";
+		result = result + '<form id="request_form" name="request_form" action="upload" enctype="multipart/form-data" method="post">';
+		result = result + '			<div class="row">';
+		result = result + '				<div class="col-md-12">';
+		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required" field-name="Comment"></textarea>';
+		result = result + '				</div>';
+		result = result + '		    </div>';
+		result = result + '		    <div class="row">';
+		result = result + '				<div class="col-md-8">';
+		result = result + '					<input type="file" multiple id="docFile" name="docFile" class="mt10" data-validation="required validate_Space validatedoc" field-name="Attachment">';
+		result = result + '				</div>';
+		result = result + '			</div>';
+		result = result + '			<div class="row">';
+		result = result + '				<div class="col-md-12"><input type="button" id="request_candidate" value="Submit" title="Sibmit" class="pull-right btn btn-primary mt10 btn-sm ml10" onclick="requestCandidate(\''+submissionId+'\',\'request\');">';
+		result = result + '				</div>';
+		result = result + '			</div>';
+		result = result + '</form>';
+		$('#request').toggle();
+		$('#request').append(result);
+		$('#accpet-div').fadeOut();
+		$('#reject').fadeOut();
+	};
+	$("#request, .acceptreject-pop, .labelsuccess").click(function(e){
+		 e.stopPropagation();
+	});
+	
 </script>
 
 <%-- 
@@ -1205,8 +1294,12 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		            		 else{
 						 		/* $("#popUpDivResume").removeClass("edit-details-active");
 						 		candidateResumesList(candidateId); */
-		            			 $('#accpet').fadeOut();
+						 		 
+		            			 $('#accpet-div').fadeOut();
 		            			 $('#reject').fadeOut();
+		            			 $("#statusDiv").empty();
+		            			 $("#statusDiv").append("ACCEPTED");
+		            				
 		            		 }
 						},
 					});
@@ -1220,6 +1313,70 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$("#accept_form").validateOnBlur(false, validationSettings);
 	});
 </script>
+
+
+
+<%-- 
+     @author : sarath kumar punnana
+     this script is for request Candidate
+     1.usage     : onclick
+     2.parameter : .
+     3.ajax url implementation in CandidateResumeRestController.
+--%>
+<script type="text/javascript">
+	function requestCandidate(submissionId, decision){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			        borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+			 if ($('#request_form').validate(false, validationSettings)){
+				var frm = $('#request_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#request_form')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#request_candidate").attr("disabled", "disabled");
+         		$("#request_candidate" ).addClass('button').val('Processing..');
+				//It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/acceptRejectCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						success : function(result) {
+							 if( result.indexOf('Sign In') >= 0){
+					    		location.replace(sourceleadUrl);
+					    	 }
+		            		 else if (result.indexOf('exception') >= 0) {
+		            			 location.replace(sourceleadUrl+"/errorPage");
+		            		 }
+		            		 else{
+		            			 $('#accpet-div').fadeOut();
+		            			 $('#reject').fadeOut();
+		            			 $('#request').fadeOut();
+		            		 }
+						},
+					});
+					return true;
+			 }else{ 
+					return false;
+			 }
+		}
+		$('body').on('blur', '#request_form', function() {
+		$("#request_form").showHelpOnFocus();
+		$("#request_form").validateOnBlur(false, validationSettings);
+	});
+</script>
+
+
 <script type="text/javascript">
 	function rejectCandidate(submissionId, decision){
 			var validationSettings = {
@@ -1258,8 +1415,12 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		            		 else{
 						 		/* $("#popUpDivResume").removeClass("edit-details-active");
 						 		candidateResumesList(candidateId); */
-		            			 $('#accpet').fadeOut();
+		            			 $('#accpet-div').fadeOut();
 		            			 $('#reject').fadeOut();
+		            			 
+		            			 $("#statusDiv").empty();
+		            			 $("#statusDiv").append("REJECTED");
+		            				
 		            		 }
 						},
 					});

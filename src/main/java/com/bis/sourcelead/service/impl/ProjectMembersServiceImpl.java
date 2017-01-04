@@ -156,6 +156,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		// TODO Auto-generated method stub
 		return projectMembersDao.getProjectMemberByUserIdAndProjectId(userId,projectId);
 	}
+	
+	@Override
+	public ProjectMembers getProjectMemberByEmpIdAndProjectId(Long empId, Long projectId) throws Exception {
+		return projectMembersDao.getProjectMemberByEmpIdAndProjectId(empId,projectId);
+	}
+	
 	@Override
 	public Integer getAllProjectMembersCountByProjectId(Long id) throws Exception {
 		
@@ -263,10 +269,20 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public String storeAssignEmployeeByProjectIdEmployeeIdStartDateEndaDate(Long projectId, Long employeeId,
 			String startDate, String endDate, String mailtoMembers, String loginOrgCode, User user,OrgLocations loginOrgLocation) throws Exception {
 		
-		ProjectMembers pm = new ProjectMembers();
+		
 		  if(projectId != null){
 			  
 				Projects projects = projectsService.getProjectById(projectId);
+				ProjectMembers pm = projectMembersDao.getProjectMemberByEmpIdAndProjectId(employeeId, projectId);
+				if(pm == null){
+					pm = new ProjectMembers();
+					pm.setCreatedDate(new Date());
+					pm.setCreatedBy(user.getUserCode());
+				}else{
+					pm.setIsManuallyTerminated(null);
+					pm.setTerminateReason(null);
+				}
+				
 				Employees emp = employeesService.getEmployee(employeeId.toString());
 			 	pm.setEmployee(emp);
 				pm.setProjects(projects);
@@ -301,9 +317,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				pmhList.add(pmh);
 	            
 	            pm.setStatus(Constants.MEMBER_ACTIVE);
-				pm.setCreatedDate(new Date());
 				pm.setUpdatedDate(new Date());
-				pm.setCreatedBy(user.getUserCode());
 				pm.setUpdatedBy(user.getUserCode());
 				pm.setMemberHistoryList(pmhList);
 				saveProjectMember(pm);

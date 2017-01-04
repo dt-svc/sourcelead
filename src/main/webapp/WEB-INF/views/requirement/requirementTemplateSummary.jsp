@@ -38,7 +38,7 @@
 		</div>
 	</section>
 		      <div class="content-area">
-		      				<div id="viewReqTemplateDiv" class="mt">
+		      				<div id="viewReqTemplateDiv" class="mt clearfix">
 						     </div>  
 		      </div>
           </div>
@@ -65,7 +65,7 @@
      			 		jobType = '';
      			 	}
       			
-      	         
+
 			    if(json.status != null && json.status != "" && json.status != '0'){ 
 			    
 			    result = result + ' <div class="useredit">';
@@ -121,6 +121,7 @@
 						 }
 						result = result + '</div>';
 					
+
 				 
 				
 						result = result + '<div class="project_details_cta clearfix">';
@@ -142,6 +143,9 @@
 				 
 				 
 						result = result + '<div class="project_details_cta clearfix">';
+				 
+						result = result + '<div class="project_details_cta clearfix">';
+
 						result = result + '<strong>Description :</strong>';
 						if(json.description != null && json.description != "" && json.description != 'undefined'){
 						result = result + '<span class="fix" title="'+json.description+'">'+json.description+'</span>';

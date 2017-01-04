@@ -77,8 +77,11 @@ public class CandidateController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(countries != null){
             model.addObject("loginCountryName", countries.getName());
             model.addObject("currencyCode", countries.getCurrency());
+			}
+            
             
             List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
@@ -102,8 +105,11 @@ public class CandidateController {
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				
 				Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+				if(countries != null){
 	            model.addObject("loginCountryName", countries.getName());
 	            model.addObject("currencyCode", countries.getCurrency());
+				}
+	           
 	            
 	            List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 				model.addObject("educationsList", educationsList);
@@ -132,9 +138,11 @@ public class CandidateController {
 		model.addObject("countryList", countryList);
 		
 		if(orgLocations != null && StringUtils.isNotEmpty(orgLocations.getCountry())){
+		
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-	        model.addObject("loginCountryName", countries.getName());
-	        
+			if(countries != null){
+			   model.addObject("loginCountryName", countries.getName());
+			}
 	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 	        model.addObject("statesList", statesList);
 		}
@@ -214,8 +222,9 @@ public class CandidateController {
 		model.setViewName("candidates/addConsultant");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(countries != null){
         model.addObject("loginCountryName", countries.getName());
-		
+		}
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
