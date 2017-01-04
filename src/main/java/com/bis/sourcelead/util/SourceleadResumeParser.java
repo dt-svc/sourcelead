@@ -226,12 +226,18 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 			}
 			
 		}
-		/*else{
-			Iterator<PhoneNumberMatch> inMatches = phoneUtil.findNumbers(parsedString, "US").iterator();
+		else{
+			if(StringUtils.isNotEmpty(country) && country.equalsIgnoreCase("India")){
+				countryCode = "US";
+			}
+			else{
+				countryCode = "IN";
+			}
+			Iterator<PhoneNumberMatch> inMatches = phoneUtil.findNumbers(parsedString, countryCode).iterator();
 			while(inMatches.hasNext()){
 				phoneNumbers.add(inMatches.next().number().getNationalNumber()+"");
 			}
-		}*/
+		}
 		return phoneNumbers;
    }
 
