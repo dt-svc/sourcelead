@@ -84,6 +84,8 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 		{
 		    for(String searchWord: skillsList)
 		    {
+		    	if(searchWord.equalsIgnoreCase("J++"))
+		    		continue;
 		    	Matcher skillMatcher = Pattern.compile("\\b"+searchWord+"\\b",Pattern.CASE_INSENSITIVE).matcher(sLine);
 		    	  while(skillMatcher.find()){
 		    		 if(duplicateSkills.add(skillMatcher.group().toUpperCase())){
@@ -104,7 +106,9 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 		String[] totalLines = parsedString.split(System.getProperty("line.separator"));
 		String firstTenLines = "";
 		String name = "";
-		boolean nameMatchFound = false;
+		//boolean nameMatchFound = false;
+		String finalLine = "";
+		String ecludeNameRegex = "((?i)Name|name|NAME|\\.)";
 		int count = 0;
 		for(String line : totalLines){
 			if(count < 10){
@@ -112,56 +116,58 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 				if(StringUtils.isNotEmpty(firstTenLines)){
 					 lineSeparator =System.getProperty("line.separator");
 				}
-				String finalLine = "";
 				line = line.trim();
-				String[] words = line.split("\\s{2,}");
+				String[] words = line.split("(\\,|\\s){2,}");
 				if(words != null &&  words.length > 1){
-					for(String word : words){
-						finalLine = finalLine+" "+word.replaceAll("\\s", "");
-					}
-					line = finalLine;
 					
+					for(int i=0;i<words.length;i++){
+						if(StringUtils.containsIgnoreCase(words[i], "curriculum") || StringUtils.containsIgnoreCase(words[i], "objective") || StringUtils.containsIgnoreCase(words[i], "resume")|| StringUtils.containsIgnoreCase(words[i], "cell")|| StringUtils.containsIgnoreCase(words[i], "mobile")|| StringUtils.containsIgnoreCase(words[i], "email"))
+								continue;
+						line = line+System.getProperty("line.separator")+words[i];
+					}
 				}
 			
 			    firstTenLines = firstTenLines+lineSeparator+line.replaceAll("[^a-zA-Z0-9\\s\\@\\.\\_]+", "").trim();
 				count++;
 			}
-			String nameRegex = "((?i)Name|name|NAME)[\\s]+[\\:]";
+			String nameRegex = "((?i)Name|name|NAME)[\\s]+(\\:|\\-|\\.)+";
 			if(line.matches("(\\W*)"+nameRegex+".*")){
-				nameMatchFound =true;
+				//nameMatchFound =true;
 				String[] nameLineArray =  line.split(nameRegex);
 				if(nameLineArray.length>1){
 					String nameContent =nameLineArray[1].replaceAll("[^a-zA-Z0-9\\s]+", "").trim();
 					if(StringUtils.isNotEmpty(nameContent) && Character.isUpperCase(nameContent.charAt(0))){
 						name = nameLineArray[1].replaceAll("[^a-zA-Z\\s\\.]+", "").trim();
-						nameMatchFound = false;
+						//nameMatchFound = false;
 					}
 					
 				}
+				name = name.replaceAll(ecludeNameRegex, "");
 			}
-			else if(nameMatchFound){
+			/*else if(nameMatchFound){
 		    	String nameContent =line.replaceAll("[^a-zA-Z0-9\\s\\@\\.\\_]+", "").trim();
 		    	if(StringUtils.isNotEmpty(nameContent) && Character.isUpperCase(nameContent.charAt(0)))
 					name = nameContent.replaceAll("[^a-zA-Z\\s\\.]+", "").trim();
 					nameMatchFound = false;
-		    }
+		    }*/
 		}
 		
 		if(!StringUtils.isNotEmpty(name)){
 			String[] tenLines = firstTenLines.split(System.getProperty("line.separator"));
 			outerloop:{
 			for(String line :tenLines){
-						
-				Matcher nameMatcher = Pattern.compile("([A-Z]{1}[A-Z]{1,30}[- ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[- \']{1}[A-Z]{0,1}  [a-z]{1,30}[- ]{0,1}|[a-z]{1,2}[ -\']{1}[A-Z]{1}[a-z]{1,30}){2,}").matcher(line);
+				String regex = "[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}"	;
+				Matcher nameMatcher = Pattern.compile(regex).matcher(line);
+				//Matcher nameMatcher = Pattern.compile("([A-Z]{1}[A-Z]{1,30}[- ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[- \']{1}[A-Z]{0,1}  [a-z]{1,30}[- ]{0,1}|[a-z]{1,2}[ -\']{1}[A-Z]{1}[a-z]{1,30}){2,}").matcher(line);
 				//Matcher nameMatcher = Pattern.compile("([A-Z]{1}[a-z]{1,30}[. -\']{1}[A-Z]{1,2}|[A-Z]{1}[A-Z]{1,30}[- ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[- \']{1}[A-Z]{0,1}  [a-z]{1,30}[- ]{0,1}|[A-Z]{1,2}[. -\']{1}[A-Z]{1}[a-z]{1,30}|[a-z]{1,2}[ -\']{1}[A-Z]{1}[a-z]{1,30})").matcher(firstTenLines); 
 				//Matcher nameMatcher = Pattern.compile("([A-Z]{1,30}[- ]{0,}|[A-Z]{1}[A-Z]{1,30}[- ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[- \']{1}[A-Z]{0,1}  [a-z]{1,30}[- ]{0,1}|[a-z]{1,2}[ -\']{1}[A-Z]{1}[a-z]{1,30}){2,}").matcher(firstTenLines);
 			    if(nameMatcher.find()){
-				    	 if(StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum") || StringUtils.containsIgnoreCase(nameMatcher.group(), "objective") || StringUtils.containsIgnoreCase(nameMatcher.group(), "resume")|| StringUtils.containsIgnoreCase(nameMatcher.group(), "cell")|| StringUtils.containsIgnoreCase(nameMatcher.group(), "mobile")|| StringUtils.containsIgnoreCase(nameMatcher.group(), "email"))
+				    	 if(StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum") || StringUtils.containsIgnoreCase(nameMatcher.group(), "objective") || StringUtils.containsIgnoreCase(nameMatcher.group(), "resume")|| StringUtils.containsIgnoreCase(nameMatcher.group(), "cell")|| StringUtils.containsIgnoreCase(nameMatcher.group(), "mobile")|| StringUtils.containsIgnoreCase(nameMatcher.group(), "email")|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Summary")|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Profile")|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Address") || StringUtils.containsIgnoreCase(nameMatcher.group(), "Date"))
 				    		 continue;
 				    	 name = nameMatcher.group();
 				    	 break outerloop;
 			    }
-			    else{
+			    /*else{
 			    	  nameMatcher = Pattern.compile("([A-Z]{1}[a-z]{1,30}[. -\']{1}[A-Z]{1,2}|[A-Z]{1,2}[. -\']{1}[A-Z]{1}[a-z]{1,30})").matcher(line);
 			    	  while(nameMatcher.find()){
 				    	 if(StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum") || StringUtils.containsIgnoreCase(nameMatcher.group(), "objective") || StringUtils.containsIgnoreCase(nameMatcher.group(), "resume"))
@@ -169,11 +175,13 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 				    	 name = nameMatcher.group();
 				    	 break outerloop;
 				     }
-			    }
+			    }*/
 				
 				
 			}
 		   }
+			
+			name = name.replaceAll(ecludeNameRegex, "");
 		}
 		return name;
    }
