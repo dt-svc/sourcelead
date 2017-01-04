@@ -549,12 +549,14 @@ public class RequirementOfferRestController {
 		if(StringUtils.isNotEmpty(submissionId)){
 			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
 			if(StringUtils.equalsIgnoreCase(status, "accept")){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 				requirementSubmission.setSubmissionRequestUser(user.getFirstName()+""+user.getLastName());
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 				requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
 			}
 			else if(StringUtils.equalsIgnoreCase(status, "rejected")){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 				requirementSubmission.setSubmissionRequestUser(user.getFirstName()+""+user.getLastName());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
