@@ -1699,8 +1699,8 @@ public class RequirementServiceImpl implements RequirementService {
 			StringBuilder sb = new StringBuilder(); 
 			writeRow.createCell(3).setCellValue(sb.append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString()); 
 		}
-		if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
-			 writeRow.createCell(4).setCellValue(requirement.getCity()); 
+		if(requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry())){
+			 writeRow.createCell(4).setCellValue(requirement.getCountry()); 
 		}
 		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
 			 writeRow.createCell(5).setCellValue(requirement.getSkills()); 
