@@ -287,8 +287,16 @@ public class TeamRestController {
 		  */
 	   	 @PreAuthorize("hasRole('ROLE_VIEW_DELETE_TEAM')")
 		 @RequestMapping(value = "/deleteTeamById", method = RequestMethod.POST,headers="Accept=application/json")
-		 public String deleteTeamById(@RequestParam( value = "teamId", required = false) Long teamId) throws Exception { 
-			 Team team = teamService.deleteTeamById(teamId);
+		 public String deleteTeamById(@RequestParam( value = "teamId", required = false) Long teamId,HttpServletRequest request) throws Exception { 
+	   		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	   		 List<CandidateHotList> hotListCandidatesList = candidateHotListService.getHotCandidateListForTeamByTeamId(teamId, orgLocations.getId());
+	   		 if(null != hotListCandidatesList){
+	   			 for(CandidateHotList hotList : hotListCandidatesList){
+	   				hotList.setTeamId(null);
+	   				candidateHotListService.saveCandidateHotList(hotList);
+	   			 }
+	   		 }
+	   		 Team team = teamService.deleteTeamById(teamId);
 			 return "success";
 
 		  }
