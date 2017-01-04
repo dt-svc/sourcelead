@@ -484,7 +484,7 @@ function candidateProfile(candidateId){
 							result = result + '      </div>';
 							
 							
-							result = result + '<div id="candidateSkillList"></div> ';
+							result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> ';
 							
 							/* result = result + '      <a href="javascript:void(0)">more <i class="fa fa-angle-right"></i></a>'; */
 							result = result + '    </div>';
@@ -500,7 +500,12 @@ function candidateProfile(candidateId){
 							candidateSkillsList(candidateId);
 							
 							$("#tab-11").show();
-							/* $(".project-tabs-menu a").click(function(event) {
+							
+										
+									       
+								     
+							$("#tab-1").show();
+							$(".project-tabs-menu a").click(function(event) {
 							     event.preventDefault();
 							     $(this).parent().addClass("current");
 							     $(this).parent().siblings().removeClass("current");
@@ -513,6 +518,9 @@ function candidateProfile(candidateId){
 									$(".add-skills").css({"display":"block","opacity":"1"});
 									$("#skillName").val('');
 									 
+									 $("#skillName").val('').trigger("chosen:updated");
+									 
+									/* skill auto complete */
 									var config = {
 											  '.chosen-select'           : {},
 											  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -547,10 +555,13 @@ function candidateProfile(candidateId){
 								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 									 e.stopPropagation();
 								 });
-								 
+								/*  $('html').click(function(){
+								  $(".edit-details").removeClass("edit-details-active");
+							     });	 */
 							     $("#endDate").click(function(){
 								   $(".endDate").toggle(200);
-							     }); */
+							     });
+								 
 							     event.preventDefault();
 								   
             		 }
@@ -705,6 +716,7 @@ function candidateSkillsList(candidateId){
                 		 result = result + '            <th>Skills</th>';
                 		 result = result + '            <th>Level</th>';
                 		 result = result + '            <th>Experience</th>';
+                		 result = result + '            <th>Action</th>';
                 		 result = result + '          </tr>';
                 		 result = result + '        </thead>';
                 		 result = result + '        <tbody>';
@@ -713,8 +725,21 @@ function candidateSkillsList(candidateId){
 	                    	 var opt = json[i];   
 	                    	    result = result + '          <tr>';
 		                		result = result + '            <td><p class="form-control-static">'+opt.name+'</p></td>';
-		                		result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" disabled>';
-		                		result = result + '                <option selected="" disabled="">Select</option>';
+		                		
+		                		if(window.candidateStatusGlobal == '0'){
+		                			result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
+		                			if(opt.scale == 'undefined'|| opt.scale==null || opt.scale== 0){
+			                			 result = result + '                <option selected=""disabled="">select</option>'; 
+				                	 }else{
+		                			result = result + '                <option selected="" value="'+opt.scale+'" disabled="">'+opt.scale+'</option>';
+				                	 }
+		                		}else{
+		                		
+		                		result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
+		                		result = result + '                <option selected="" value="'+opt.scale+'" disabled="">Select</option>';
+
+		                		/*result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" disabled>';
+		                		result = result + '                <option selected="" disabled="">Select</option>';*/
 		                		
 		                		if(opt.scale == "Beginner"){
 		                			result = result + '<option selected>Beginner</option>';
@@ -741,8 +766,21 @@ function candidateSkillsList(candidateId){
 		                		}else{
 		                			result = result + '  <option>Master</option>';
 		                		}
+		                		}
 		                		result = result + '              </select></td>';
-		                		result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" disabled>';
+		                		
+		                		 if(window.candidateStatusGlobal == '0'){ 
+		                			 result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
+				                	 if(opt.totalExperience == 'undefined'|| opt.totalExperience==null || opt.totalExperience== 0){
+			                			 result = result + '                <option selected=""disabled="">select</option>'; 
+				                	 }else{
+		                			 result = result + '                <option selected="" value="'+opt.totalExperience+'" disabled="">'+opt.totalExperience+'</option>'; 
+		                		 }
+				                }else{
+		                		result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
+
+		                		//result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" disabled>';
+
 		                		result = result + '                <option selected="" disabled="">Select</option>';
 		                		if(opt.totalExperience == "0"){
 		                			result = result + '<option selected>0</option>';   
@@ -779,12 +817,24 @@ function candidateSkillsList(candidateId){
 		                		}else{
 		                			result = result + '<option>6</option>';
 		                		}
+		                		}
 		                		result = result + '              </select></td>';
+		                		
+		                		 if(window.candidateStatusGlobal == '0'){ 
+				                result = result + '            <td><div class="text-center"><a href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
+		                		 }else{
+		                		result = result + '            <td><div class="text-center"><a onclick="removeSkillById('+candidateId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
+		                		 }
+
 		                		result = result + '          </tr>';
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
 	                     $("#candidateSkillList").append(result); 
+	                     
+	                     $("#candidateSkills").trigger("chosen:updated");
+	                     
+	                     
 			    	} 
                }else{
 	    	         var result ="";
@@ -806,7 +856,6 @@ function candidateSkillsList(candidateId){
      }); 
 }
 </script>
-
 
 
 <%-- 

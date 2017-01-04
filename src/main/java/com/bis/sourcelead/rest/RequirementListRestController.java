@@ -439,7 +439,7 @@ public class RequirementListRestController {
 											requirementSubmission.setSubmittedBy(usr.getFirstName());
 										}
 									}
-									if(requirementOffersList.size() > 0){
+									if(null != requirementOffersList && requirementOffersList.size() > 0){
 										RequirementOffers requirementOffers = requirementOffersList.get(0);
 										requirementSubmission.setOfferId(requirementOffers.getId());
 										if(requirementOffers.getDateOfJoining() != null){
@@ -656,7 +656,9 @@ public class RequirementListRestController {
 				inputStream.close();
 				response.getOutputStream().close();
 				response.getOutputStream().flush();	
-			
+				if(file != null){
+					file.delete();
+				}
 		 }
 		 
 		/**
