@@ -469,10 +469,11 @@ function getInternalInterviewsList(submissionId){
 	                    	 }
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
-	   					     if(report.feedbackStartTime != "feedbackStartTime" || report.feedbackEndTime == "feedbackEndTime" ){
+	   					  if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
+	   					     if(report.feedbackStartTime == "feedbackStartTime" || report.feedbackEndTime == "feedbackEndTime" ){
 	   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
 	   					     }
-	   					     
+	   					  }
 	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
 	                    	result = result + '<div class="content clearfix">';
 	                    	
@@ -1599,7 +1600,6 @@ function interviewFeedback(interviewId,templateId,id){
 				}else{
 					feedbackDate = "--";
 				}
-				
 				 result = result +"  <tr>";  
 				    result = result +'<td><div class="tbldata-dotdot-me">'+report.interviewerName+'</div></td>'; 
 				    result = result +' <td><div class="tblminwidth-100">'+feedbackDate+'</div></td>'; 
