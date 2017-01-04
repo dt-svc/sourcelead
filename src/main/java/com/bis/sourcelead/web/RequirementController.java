@@ -285,6 +285,9 @@ public class RequirementController {
 		model.addObject("isManager",isManager);
 
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		model.addObject("skillsList", skillsList);
 
 		// This code is commented as not in use 
 

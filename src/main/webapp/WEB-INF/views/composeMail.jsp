@@ -86,7 +86,7 @@ display: none;
             <div class="col-md-8 saluation field-border">
               <select id="saluation" name="saluation">
                <option value="Dear" selected>Dear</option>
-                <option value="Hai">Hai</option>
+                <option value="Hi">Hi</option>
                 <option value="Hello">Hello</option>
               </select>
             </div>
