@@ -60,7 +60,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 				jsonUtil.setName(name);
 			}
 			jsonUtil.setEmail(emailFinderFromParsedTextFile(parsedString));
-			jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString));
+			jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString,request));
 			
 			HashSet<String> skillsList = skillFinderFromParsedTextFile(parsedString,request);
 			if(skillsList != null && !skillsList.isEmpty()){
@@ -211,22 +211,27 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
   	 * Here we used libphonenumber class for resolving phone numbers from text file 
   	 * (source:com.googlecode.libphonenumber.libphonenumber7.7.jar)
   	 */
-   private  HashSet<String> phoneNumberFinderFromParsedTextFile(String parsedString){
+   private  HashSet<String> phoneNumberFinderFromParsedTextFile(String parsedString,HttpServletRequest request){
+	    String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
         HashSet<String> phoneNumbers = new HashSet<String>();
 		PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-		Iterator<PhoneNumberMatch> usMatches = phoneUtil.findNumbers(parsedString, "US").iterator();
-		if(usMatches!= null){
-			while(usMatches.hasNext()){
-				phoneNumbers.add(usMatches.next().number().getNationalNumber()+"");
+		String countryCode = "US";
+		if(StringUtils.isNotEmpty(country) && country.equalsIgnoreCase("India")){
+			countryCode = "IN";
+		}
+		Iterator<PhoneNumberMatch> indMatches = phoneUtil.findNumbers(parsedString, countryCode).iterator();
+		if(indMatches!= null){
+			while(indMatches.hasNext()){
+				phoneNumbers.add(indMatches.next().number().getNationalNumber()+"");
 			}
 			
 		}
-		else{
-			Iterator<PhoneNumberMatch> inMatches = phoneUtil.findNumbers(parsedString, "IN").iterator();
+		/*else{
+			Iterator<PhoneNumberMatch> inMatches = phoneUtil.findNumbers(parsedString, "US").iterator();
 			while(inMatches.hasNext()){
 				phoneNumbers.add(inMatches.next().number().getNationalNumber()+"");
 			}
-		}
+		}*/
 		return phoneNumbers;
    }
 
