@@ -294,6 +294,11 @@ public class SubmissionsRestController {
 			requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+			
+			if(requirementSubmission.getVendorLocationId() != null){
+				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+			}
+			
 			if (requirementSubmission.getCreatedDate() != null) {
 				requirementSubmission
 						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
@@ -337,6 +342,11 @@ public class SubmissionsRestController {
 			requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+			
+			if(requirementSubmission.getVendorLocationId() != null){
+				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+			}
+	
 			if (requirementSubmission.getCreatedDate() != null) {
 				requirementSubmission
 						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
