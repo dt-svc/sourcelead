@@ -51,7 +51,8 @@ function addInterview(requirementId){
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
 	
-	result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>';
+	/* result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; */
+	result = result + '<div class="add_inter_head"> <span>Add Interview</span>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
 	
@@ -70,7 +71,7 @@ function addInterview(requirementId){
 			/* result = result + '<th>Time Zone</th>'; */
 			result = result + '<th>Location</th>';
 			result = result + '<th>Interviewer</th>';
-			result = result + '<th>Action</th>';
+			/* result = result + '<th>Action</th>'; */
 		result = result + '</tr>';
 	result = result + '</tbody>';
 	result = result + '</table>';
@@ -259,11 +260,11 @@ function checkEmails(){
 	  </select>
 </div> 
 
- <div id="divTaskTd7" style="display: none; float: left;">
+<!--  <div id="divTaskTd7" style="display: none; float: left;">
 	 <div>
          <a href="#" onclick="removeInterviewRow(REPLACEROWID);"><i class="glyphicon glyphicon-trash deme"></i></a>
     </div>
-</div> 
+</div>  -->
 
 <script type="text/javascript">
 	function addInterviewRow() {
@@ -323,10 +324,10 @@ function checkEmails(){
 		divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell5.innerHTML = divTsTd6Str;  
 		
-		var cell6 = row.insertCell(6);
+		/* var cell6 = row.insertCell(6);
 		var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
 		divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell6.innerHTML = divTsTd7Str;
+		cell6.innerHTML = divTsTd7Str; */
 		
 		getInterviewers(maxRowNum);
 		getShortListCandidates(maxRowNum);
@@ -336,9 +337,9 @@ function checkEmails(){
 	    $("#"+maxRowNum+"interviewer").chosen();
 		
 		
-	    $("#"+maxRowNum+"applicant").on('change', function (e) {
+	   /*  $("#"+maxRowNum+"applicant").on('change', function (e) {
 	    	getUpdatedShortListCandidates();
-	    }); 
+	    }); */ 
 		    
 		    
 				
