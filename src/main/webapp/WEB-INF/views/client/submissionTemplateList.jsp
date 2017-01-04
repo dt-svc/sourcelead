@@ -114,7 +114,7 @@ function clientSubmissionTemplate(clientLocationId){
 	                '</sec:authorize>';
 	                '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_SUBMISSION_TEMPLATE\',\'ROLE_CREATE_SUBMISSION_TEMPLATE\')">';
 	                result = result + '|&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+clientLocationId+','+opt.id+',\''+opt.templateName+'\')">Edit</a>';
-	                result = result + '<input type="hidden" name="description" id="descriptionText'+opt.id+'" value="'+opt.description+'"';
+	                result = result + '<input type="hidden" name="description" id="descriptionText'+opt.id+'" value="'+opt.description+'">';
 	                '</sec:authorize>';
 	                
 	                '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_SUBMISSION_TEMPLATE\',\'ROLE_EDIT_SUBMISSION_TEMPLATE\')">';
@@ -170,7 +170,7 @@ function templatepagination(){
 	function addSubmissionTemplateFields(clientLocationId,templateId,templateName) {
 		
 		var sourceleadUrl ='${sourceleadUrl}';
-		var description = document.getElementById("descriptionText"+templateId).value; 
+		var description =  $("#descriptionText"+templateId+"").val();
 		var result = "";
 		
 		result = result + '<section class="clearfix createTemplate">';
