@@ -123,7 +123,7 @@ public interface UserService  {
 	 * @param orgLocationsId,teamOwnerUserId
 	 * @return List<User> 
 	 */
-	List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId ,Long orgLocationsId) throws Exception;
+	List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId ,Long orgLocationsId, Long tabId) throws Exception;
 
 	/**
 	 * Rajashekar
