@@ -48,7 +48,7 @@
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Spoc Name:</strong>';
 							if(json.spocName !=null && json.spocName !='' && json.spocName !='undefined'){
-								result = result + '<span>'+json.spocName+'</span>';
+								result = result + '<span title="'+json.spocName+'">'+json.spocName+'</span>';
 							}
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
@@ -56,7 +56,7 @@
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>EmailId:</strong>';
 							if(json.spocEmail !=null && json.spocEmail !='' && json.spocEmail !='undefined'){
-								result = result + '<span>'+json.spocEmail+'</span>';
+								result = result + '<span title="'+json.spocEmail+'">'+json.spocEmail+'</span>';
 							}
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
@@ -94,7 +94,7 @@
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Owner :</strong>';
 							if(json.ownerName !=null && json.ownerName !='' && json.ownerName !='undefined'){
-								result = result + '<span>'+json.ownerName+'</span>';
+								result = result + '<span title="'+json.ownerName+'">'+json.ownerName+'</span>';
 							}
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
