@@ -157,57 +157,46 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		List<RequirementAssignTo> requirementAssignToList =  requirementAssignToService.getRequirementAssignToListByRequirementId(requirementId);
 		List<RequirementSubmission>  requirementSubmission = null;
 		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),loginOrgLocation.getId());
-		if (isadmin && requirement.getManagerUserId().getId().longValue() != user.getId().longValue()) {
-			String query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes  where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId ";
+		
+		//to get all applicates list if login user is manager or admin
+		if (isadmin || requirement.getManagerUserId().getId().longValue() == user.getId().longValue() ) {
+			String query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left "
+					+ "join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes  "
+					+ "where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId ";
 			 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
 		}
+		//to get applicates list of the team lead and team submissions
 		
-		if(requirement.getManagerUserId().getId().longValue() == user.getId().longValue()){
-			String query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId ";
-			requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
-		}
 		
-		Boolean teamFlag = teamDao.getTeamOwnersListByUserId(user,loginOrgLocation.getId());
+		
+		Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,loginOrgLocation.getId(),requirement.getId());
 		if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag){
+			List<String> userCodes = new ArrayList<>();
 			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
-				if(requirementAssignTo.getTeamId()!=null){
-					Team team = teamDao.getTeamByTeamId(requirementAssignTo.getTeamId().getId());
-					if(team.getOwnerUserId()!=null){
-						if((long)team.getOwnerUserId().getId() == (long)user.getId()){
-							List<TeamMembers> teamMembers =  teamMemberDao.getTeamMembersListByTeamID(requirementAssignTo.getTeamId().getId(),loginOrgLocation.getId());
-							List<String> userCodes = new ArrayList<>();
-							userCodes.add(user.getUserCode());
-							for (TeamMembers teamMember : teamMembers) {
-								User usercode= userDao.getUserById(teamMember.getMemberUserId().getId());
-								userCodes.add(usercode.getUserCode());
-							}
-							
-
-							String query = "from RequirementSubmission reqSub  left join fetch reqSub.requirement req   where reqSub.orgLocations.id =:loginOrgLocation and  and reqSub.requirement.id =:requirementId and  req.id IN( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId or rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId) ";
-							requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("userId", user.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
-
-					
-						}
-				}
+				User usercode= userDao.getUserById(requirementAssignTo.getAssignUserId().getId());
+				userCodes.add(usercode.getUserCode());
 			}
-			}
-		}
+			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId";
+			requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setParameterList("usercode", userCodes).setLong("requirementId", requirementId).setCacheable(true).list();
+
+			  
+		}  
 		boolean flag = false;
 		for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
 			if(requirementAssignTo.getAssignUserId().getId().longValue() == user.getId().longValue()){
 				flag = true;
 			}
 		}
-		
-		if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && flag && !teamFlag ){
-			String query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId";
+		//to get applicates list of the team member 
+		if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && flag && !teamFlag){
+			String query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch "
+					+ "reqSub.candidate left join fetch reqSub.sourceSubmission "
+					+ "left join fetch reqSub.candidateResumes where (reqSub.orgLocations.id =:loginOrgLocation or "
+					+ "reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId";
 		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).setCacheable(true).list();
 		}
 		
-		if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && !flag && !teamFlag && !isadmin){
-			String query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId";
-		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).setCacheable(true).list();
-		}
+		
 		return requirementSubmission;
 	}
 

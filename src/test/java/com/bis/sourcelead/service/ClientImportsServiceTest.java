@@ -53,15 +53,15 @@ public class ClientImportsServiceTest {
 	@Test
 	public void clientImportTest() throws Exception{
 		User user = new User();
-		user.setId(4L);
+		user.setId(3L);
 		Org org = new Org();
-		org.setId(3L);
+		org.setId(2L);
 		org.setUser(user);
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(4L);
 		orgLocations.setOrg(org);
 		orgLocations.setUser(user);
-		File file = new File("/root/Downloads/clients_import_template.xls");
+		File file = new File("/C:/Users/BIS35/Downloads/clients_import_template.xls");
 	    FileInputStream input = new FileInputStream(file);
 	    MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
 	    String isMailCheck = "checked";
@@ -69,5 +69,17 @@ public class ClientImportsServiceTest {
 	    clientImportsService.clientBulkSaving(multipartFile, user, orgLocations, org, isMailCheck, responderType);
 	}
 	
-
+	@Test
+	public void getVendorContactsTemplate() throws Exception{
+	
+		Long orgLocationID = 3l;
+		clientImportsService.getVendorContactsTemplate(orgLocationID);
+	}
+	
+	@Test
+	public void getClientContactsTemplate() throws Exception{
+	
+		Long orgLocationID = 3l;
+		clientImportsService.getClientContactsTemplate(orgLocationID);
+	}
 }

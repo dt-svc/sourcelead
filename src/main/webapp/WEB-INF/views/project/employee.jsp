@@ -183,13 +183,13 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
     		result = result + '	<thead>';
     		result = result + '		<tr>';
-            result = result + '	 	<th>Emp name</th>';
-            result = result + '	 	<th>Emp email</th>';
+            result = result + '	 	<th>Emp Name</th>';
+            result = result + '	 	<th>Emp Email</th>';
             result = result + '	     <th>Start Date</th>';
             result = result + '	     <th>End Date</th>';
             result = result + '	     <th>Approved hrs</th>';
             result = result + '	     <th>Rejected hrs</th>';
-            result = result + '	     <th>Wait for approval </th>';
+            result = result + '	     <th>Wait for Approval </th>';
             result = result + '	     <th>Saved hrs</th>';
             result = result + '	     <th>Action</th>';
             result = result + '	 </tr>';

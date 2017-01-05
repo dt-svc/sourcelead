@@ -82,7 +82,7 @@ display: none;
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-warning small">Others</label>
           <div class="col-md-10 email-icon positionRelative disable-choosen-dropdown">
-                <select multiple data-placeholder="Enter Emails" class="chosen-select form-control" name="otherEmails" id="otherEmails" >
+                <select multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) To Add New Email" class="chosen-select form-control" name="otherEmails" id="otherEmails" >
                 </select>
           </div>
         </div>
@@ -188,8 +188,7 @@ display: none;
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
               <button type="button" class="btn btn-sm btn-success" onclick="sendHotListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
-              <!-- <a class="btn btn-sm btn-success" href="readmail.html" title="Read Mail"><i class="glyphicon glyphicon-eye-open"></i>&nbsp;Preview</a> -->
-              <button type="button" class="btn btn-sm btn-default"><i class="fa fa-times"></i>&nbsp;Cancel</button>
+              <button type="button" class="btn btn-sm btn-default" onClick="javascript:location.href = '<c:url value='mailBox'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
         </div>
         <!-- Attachment button --> 
