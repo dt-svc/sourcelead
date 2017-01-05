@@ -207,9 +207,9 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 	        		
 	        		result = result + '	 <tr>';
 	                
-	                result = result + '	 	<td><div class="tbldata-dotdot-sm" title="'+opt.empName+'">'+opt.empName+'</div></td>';
-	                result = result + '	 	<td><div class="tbldata-dotdot-me" title="'+opt.empEmail+'">'+opt.empEmail+'</div></td>';
-	                result = result + '	     <td><div>'+opt.projectAssignedDateStr+'</div></td>';
+	                result = result + '	 	<td><div class="tbldata-dotdot-sm" title="'+opt.empName+'"><span title="'+opt.empName+'">'+opt.empName+'</span></div></td>';
+	                result = result + '	 	<td><div class="tbldata-dotdot-me" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>';
+	                result = result + '	     <td><div><span title="'+opt.projectAssignedDateStr+'">'+opt.projectAssignedDateStr+'</span></div></td>';
 	                if(status == 'COMPLETED'){
 	                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
 	                }else{
@@ -218,19 +218,19 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 		                	result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
 		                }
 		                else{
-		                	  result = result + '	     <td><div><span>'+projectEndDateStr+'</span></div></td>';
+		                	  result = result + '	     <td><div><span title="'+projectEndDateStr+'">'+projectEndDateStr+'</span></div></td>';
 		                }
 	                	'</sec:authorize>';
 	                	
 	                	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
-	                	  result = result + '	     <td><div><span>'+projectEndDateStr+'</span></div></td>';
+	                	  result = result + '	     <td><div><span title="'+projectEndDateStr+'">'+projectEndDateStr+'</span></div></td>';
                 	   '</sec:authorize>';
 	                	
 	                }
-	                result = result + '	     <td><div><span>'+opt.approvedHrs+'</span></div></td>';
-	                result = result + '	     <td><div><span>'+opt.rejectedHrs+'</span></div></td>';
-	                result = result + '	     <td><div><span>'+opt.submittedHrs+'</span></div></td>';
-	                result = result + '	     <td><div><span>'+opt.draftHrs+'</span></div></td>';
+	                result = result + '	     <td><div><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
+	                result = result + '	     <td><div><span title="'+opt.rejectedHrs+'">'+opt.rejectedHrs+'</span></div></td>';
+	                result = result + '	     <td><div><span title="'+opt.submittedHrs+'">'+opt.submittedHrs+'</span></div></td>';
+	                result = result + '	     <td><div><span title="'+opt.draftHrs+'">'+opt.draftHrs+'</span></div></td>';
 	                if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 	                	result = result + '	<td><div>';
 	                	if(status != 'COMPLETED'){

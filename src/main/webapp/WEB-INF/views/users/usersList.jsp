@@ -274,7 +274,7 @@ function exportToPdf(){
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 			       	    	result = result +"<div class='text-center image-parent'>";
 			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
+			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
 			       	    	result = result +"</div>";
 			       	    	
 			       	    	
@@ -283,16 +283,16 @@ function exportToPdf(){
 			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
 			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> "+userRole.userName+" </a> </h4>";
+			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.userName+"'> "+userRole.userName+"</span> </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
 			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
 		       	         	   result = result +"<h4><a href='#'> "+userRole.userName+" </a> </h4>";
 		       	    	    '</sec:authorize>';
 			       	    	
-			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+userRole.userEmail+" </lable></p>";
-			       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
-			       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp; "+userRole.userRoleName+" </label></p>";
+			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.userEmail+"'> "+userRole.userEmail+"</span></lable></p>";
+			       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
+			       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp;<span title='"+userRole.userRoleName+"'> "+userRole.userRoleName+"</span></label></p>";
 			       	        
 			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N' && userRole.userState != 'INACTIVE'){
 			       	    	  result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p>";
