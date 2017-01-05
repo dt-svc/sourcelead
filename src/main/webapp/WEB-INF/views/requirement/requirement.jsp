@@ -604,7 +604,7 @@ $(document).ready(function () {
 		                 <option  ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}>INR</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+		                 <option  ${requirement.clientCurrencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
 	                </select>

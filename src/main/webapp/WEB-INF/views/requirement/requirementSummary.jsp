@@ -1262,6 +1262,13 @@ function requirementPipeline(requirementId,submissionType){
 				           for (var i=0; i<json.length; i++)
 			   				{  
 			   	        		var report = json[i];
+			   	        		
+			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
+			   	        			orgName = "("+report.orgName+")";
+			   	        		}else{
+			   	        			orgName = "";
+			   	        		}
+
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
@@ -1329,7 +1336,7 @@ function requirementPipeline(requirementId,submissionType){
 							           }
 							           
 							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.userName+'</span></div></td>';
+							        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
