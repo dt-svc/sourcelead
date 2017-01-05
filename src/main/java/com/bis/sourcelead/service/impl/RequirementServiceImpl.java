@@ -560,6 +560,15 @@ public class RequirementServiceImpl implements RequirementService {
 					    	if(!assignedTeamId.contains("role") && !assignedTeamId.contains("All")){
 					    		teamId = Long.parseLong(assignedTeamId);
 							    team = teamService.getTeamByTeamId(teamId);
+							    // Adding Team Owner as RequirementAssignTo
+							    RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+									User assUser = userService.getUserById(team.getOwnerUserId().getId());
+									requirementAssignTo.setAssignUserId(assUser);
+									requirementAssignTo.setRequirementId(requirement);
+									requirementAssignTo.setTeamId(team);
+									UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
+									requirementAssignTo.setRoleId(userRole.getRoles());
+									requirementAssignToList.add(requirementAssignTo);
 					    	}
 						}   
 					    // User roleUser = team.getOwnerUserId();

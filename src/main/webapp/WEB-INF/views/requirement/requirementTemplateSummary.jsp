@@ -73,9 +73,9 @@
 			    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\')">';
 			        result = result + ' <a id="edit-user" href="<c:url value="/addTemplate?requirementId='+requirementId+'"/>"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 			    '</sec:authorize>';
-			     '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">';    
+			   /*   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">';    
 			        result = result + ' <a id="edit-user" href="#" onClick="deleteRequirementTemplate(\''+requirementId+'\',\''+remove+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
-		        '</sec:authorize>';
+		        '</sec:authorize>'; */
 		        result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
 				result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
 				result = result + ' <div />';
@@ -165,7 +165,7 @@
  }
 </script>
 
-<script>
+<!-- <script>
 function deleteRequirementTemplate(requirementId, status){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var message = confirm("You are choosing to delete the Requirement Template");
@@ -188,7 +188,7 @@ function deleteRequirementTemplate(requirementId, status){
 	     });
 	}
 }
-</script>
+</script> -->
 
 <script type="text/javascript">
 	(function($) {
