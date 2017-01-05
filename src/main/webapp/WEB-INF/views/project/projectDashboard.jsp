@@ -385,11 +385,11 @@ function filter(){
 
    		    		
    		    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
-   		    		  result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   		    		  result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span title="'+report.projectName+'">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
    		    		'</sec:authorize>';
    		    		
    		    		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
- 		    		  result = result +'<td data-title="Name"><div class="proj_show"><span>'+report.projectName+'</span></div></td>';
+ 		    		  result = result +'<td data-title="Name"><div class="proj_show"><span title="'+report.projectName+'">'+report.projectName+'</span></div></td>';
  		    		'</sec:authorize>';
 
    		    		/*result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span class="tbldata-dotdot-vsm">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';*/
@@ -410,7 +410,7 @@ function filter(){
    		    		
    		    		
    		    		result = result +'<td data-title="Invoice Frequency">';
-   		    		result = result +'<div><span>';
+   		    		result = result +'<div><span title="'+report.invoiceFrequency+'">';
    		    		if(report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
    		    			result = result +report.invoiceFrequency;
    		    		}
@@ -418,12 +418,12 @@ function filter(){
    		    		result = result +'</span></div>';
    		    		result = result +'</td>';
    		    		
-   		    		result = result +'<td data-title="Date"><div>'+report.startDateStr+' ';
+   		    		result = result +'<td data-title="Date"><div><span title="'+report.startDateStr+'">'+report.startDateStr+'</span>';
    		    		if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-   	   		    		result = result +'- '+report.endDateStr+' </div></td>';
+   	   		    		result = result +'- <span title="'+report.endDateStr+'">'+report.endDateStr+'</span> </div></td>';
    		    		}
    		    		if(report.client != null && report.client != '' && report.client != 'undefined'){
-   		    			result = result +'<td data-title="Client"><div><span>'+report.client+'</span></div></td>';  
+   		    			result = result +'<td data-title="Client"><div><span title="'+report.client+'">'+report.client+'</span></div></td>';  
    		    		}else{
    		    			result = result +'<td data-title="Client"><div>---</div></td>';  
    		    		}
