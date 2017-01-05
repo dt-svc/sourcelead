@@ -236,6 +236,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					candidate.setCandidateType("Candidate");
 					candidate.setCreatedBy(user.getUserCode());
 					candidate.setCreatedDate(new Date());
+					candidate.setUpdatedDate(new Date());
 					candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 					
 					candidateDao.storeCandidate(candidate);

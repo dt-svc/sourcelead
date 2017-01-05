@@ -258,7 +258,7 @@ function candidateCertificateList(candidateId){
 				            		candidatevalidToDateToString = "----";
 				            	}
 	                    	 result  = result + '         <tr>';
-	                    	 result  = result + '           <td><div><span>'+opt.name+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+opt.provider+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+score+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
