@@ -141,10 +141,10 @@ function vendorContacts(orgRelationID,clientLocationId){
 			   		    		}
 				        		
 				        		result = result + '	 <tr>';
-				                result = result + '	 	<td><div>'+opt.spocName+'</a></div></td>';
-				                result = result + '	     <td><div>'+opt.spocEmail+'</div></td>';
+				                result = result + '	 	<td><div><span title="'+opt.spocName+'">'+opt.spocName+'</span></div></td>';
+				                result = result + '	     <td><div><span title="'+opt.spocEmail+'">'+opt.spocEmail+'</span></div></td>';
 				                result = result + '	     <td><div>'+spocMobilePhone+'</div></td>';
-				                result = result + '	     <td><div>'+opt.ownerName+'</div></td>';
+				                result = result + '	     <td><div><span title="'+opt.ownerName+'">'+opt.ownerName+'</span></div></td>';
 				                
 				                result = result + ' <td><div>';
 								result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+vendorLocationId+');">';
@@ -206,7 +206,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 			    	    
 			    	    result = result + '<div class="project_inn_mask"></div>';
 					    result = result + '<div class="project_error">';
-					    result = result + '	<p>User delete message here ....</p>';
+					    result = result + '	<p>Vendor delete message here ....</p>';
 					    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
 					    result = result + '</div>';
 					    $("#vendorContactListDiv").append(result);
@@ -251,7 +251,7 @@ function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId,spocName){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>User delete message here</p>";
+	result = result +"		<p>Vendor delete message here</p>";
 	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorSpocTermination("+spocId+","+orgRelationID+","+vendorLocationId+",\""+spocName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";

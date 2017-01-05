@@ -94,12 +94,9 @@ function teamList(){
 	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
-	                    	 result = result +"<tr>";
-	                    	
-				            /*  result = result +"<td><div><span>"+opt.name+"</span></div></td>"; */
+	                    	 result = result +"<tr id='deleteTeam"+opt.id+"'>";
 				             
 				             result = result +' <td><div>'+opt.name+'</div></td>';
-				             
 				             
 				             if(opt.teamOwnerName != null && opt.teamOwnerName != '' && opt.teamOwnerName != 'undefined'){
 				             result = result +"<td><div><span>"+opt.teamOwnerName+"</span></div></td>";
@@ -113,7 +110,7 @@ function teamList(){
 				             	result = result +"<i class='glyphicon glyphicon-pencil' onclick='sideBar("+opt.id+");'></i>";
 				             '</sec:authorize>';
 				             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_TEAM\')">'; 
-				             	result = result +"<i class='glyphicon glyphicon-trash' onclick='deleteTeam("+opt.id+");'></i>";
+				             	result = result +'<i class="glyphicon glyphicon-trash" onclick="deleteTeam('+opt.id+',\''+opt.name+'\');"></i>';
 				             '</sec:authorize>';
 				             result = result +"</div></td>";
 				             result = result +"</tr>";
@@ -742,7 +739,7 @@ function TeamMemberpagination(){
       <div class="project_tabs_inn_table vendor_wrap_inn_table">
        			<div id="popUpDivTeamParent" class="edit-details col-md-4"></div>  
       			<div id="teamList"></div>
-      			
+      			<div id="deleteTeamPopUp"></div>
               </div>
         </div>      
   
@@ -878,11 +875,44 @@ function getTeamMembers(){
 </script>
 
 <script>
-function deleteTeam(teamId){
+function deleteTeam(teamId,teamName){
+	
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure to delete <strong>"+teamName+"</strong> ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedTeam("+teamId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#deleteTeamPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	
+	
+	
+}
+</script>  
+
+<script type="text/javascript">
+function cancel(){
+	$("#deleteTeamPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+<script>
+function deleteSelectedTeam(teamId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var message = confirm("You are choosing to delete the team");
-	if (message == true) {
-		$.ajax({
+	 if (teamId) {
+		 
+	     $("#deleteTeamPopUp").empty();
+		 $(".project_inn_mask").fadeOut(200);
+			
+		 $("#deleteTeam"+teamId).html("<td colspan='5'  id='loading"+teamId+"'></td>");
+		 $("#loading"+teamId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		 
+		 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/deleteTeamById?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId, 
    		    success: function(data) {
@@ -894,14 +924,18 @@ function deleteTeam(teamId){
              		else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		}else{
-             			teamList();
+             			document.getElementById("deleteTeam"+teamId).remove();
+             			$("#loading"+teamId).removeAttr("style"); 
              		}
    		    	}
    		    }
-	     });
-	}
+	     }); 
+	} 
 }
-</script>         
+</script>
+
+
+      
  
  <!-- Team Member Store -->
  
