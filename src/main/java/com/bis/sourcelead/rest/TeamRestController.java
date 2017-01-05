@@ -359,7 +359,8 @@ public class TeamRestController {
 			Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
-			List<User> freshUserList = userService.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId, loginOrgLocation.getId());
+			List<User> freshUserList = userService.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId, loginOrgLocation.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+			
 			resultJson = commonUtil.toJSON(freshUserList);
 			return resultJson;
 		 } 
