@@ -1901,7 +1901,29 @@ function clientSideBar(candidateId){
 			             var skills = [];
 			             skills = skillsList.split(",");
 			             
-	                	 var result = "";
+			             var country = '';
+				         var state = '';
+				         var city = '';
+			             
+			             if(json.country != null && json.country != '' && json.country != 'undefined'){
+	         			 		country = ','+json.country;
+	             			 	}else{
+	             			 		country = '';
+	             			 	}
+	         			 	
+	         			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
+	         			 		state =json.state;
+	             			 	}else{
+	             			 		state = '';
+	             			 	}
+	         			 	
+	         			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
+	         			 		city =json.city+',';
+	             			 	}else{
+	             			 		city = '';
+	             			 	}
+			             
+	                	       var result = "";
 	                	 
 	                	 if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
 	                		 lastName  = json.lastName;
@@ -2002,11 +2024,9 @@ function clientSideBar(candidateId){
 			                                                	  
 			             result = result+'                   <li><i class="fa fa-phone"></i>----</li>';         	  
 			                                                  }
-			                                                  if(json.address != null && json.address != '' && json.address != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+json.address+'</li>';
-			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-location-arrow"></i>----</li>';                                  	  
-			                                                  }
+			                                                  
+			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
+			             
 			                                                  if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
 			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.currentRate+'/Per Hour - Current Rate / Salary</li>';
 			                                                  }else{
