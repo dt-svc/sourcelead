@@ -385,7 +385,31 @@ function candidateSideBar(candidateId){
              			 		city = '';
              			 	}
          			 	
-
+         			 	 if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
+         			 		currentRate = json.currentRate;
+         			 	 }else{
+         			 		currentRate = '';
+         			 	 }
+                           
+         			 	if(json.currentRateType != null && json.currentRateType != '' && json.currentRateType != 'undefined'){
+         			 		currentRateType = json.currentRateType;
+         			 	}else{
+         			 		currentRateType = '';
+         			 	}
+         			 	
+         			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
+         			 		expectedRate = json.expectedRate;
+         			 	}else{
+         			 		expectedRate = '';
+         			 	}
+         			 	
+         			 	if(json.rateType != null && json.rateType != '' && json.rateType != 'undefined'){
+         			 		rateType = json.rateType;
+         			 	}else{
+         			 		rateType = '';
+         			 	}
+         			 	 
+         			 	currentRateType
 	                	 var result = "";
 	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -433,7 +457,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                     </div>'; */
 			             result = result+'                     <div class="media-body candidate-details">';
 			             
-			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
+			             result = result+'                       <h4 class="media-heading" title = "'+json.firstName+' '+lastName+'">'+json.firstName+' '+lastName+'</h4>';
 			            
 			             result = result+'                       <ul class="list-unstyled">';
 			             
@@ -504,7 +528,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                 </div>';
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
-			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.email+'</a></li>';
+			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="'+json.email+'">'+json.email+'</a></li>';
 			                                                  if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
 			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
 			                                                  }else{
@@ -515,19 +539,11 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'<li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
 			             
-		             	 if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-			             	result = result+''+json.currentRate+' '+json.currentRateType+'';
-			             }else{
-			             	result = result+'---- ';                                    
-			             }
+			             	result = result+''+currentRate+' '+currentRateType+'';
 		             	 result = result+'				     <b>Expected:</b> ';
-			             if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-			             	result = result+''+json.expectedRate+' '+json.rateType+'';
-			             }else{
-			             	result = result+'----';                                  	  
-			             }
+			             	result = result+''+expectedRate+' '+rateType+'';
 			             result = result+'</li>'; 
-			             result = result+'                 </ul>';
+			             result = result+' </ul>';
 			             
 			            /* New comments div creation Nov 8th, 2016 */ 
 			            if(json.status == '1' ){

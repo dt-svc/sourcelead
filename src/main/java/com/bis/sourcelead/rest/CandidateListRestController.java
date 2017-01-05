@@ -174,17 +174,16 @@ public class CandidateListRestController {
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
 			
-			StringBuilder andQuerySeperation = new StringBuilder(" AND ");
-			StringBuilder orQuerySeperation  = new StringBuilder(" OR ");
-			
 			 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
-			 BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+			 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+			 
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+			 
 			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId());
 		   	    //Exclude Keyword
-				ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+				/*ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 				if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
 					BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : excludeKeyWordArray){
@@ -197,9 +196,9 @@ public class CandidateListRestController {
 							boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
 						}
 					}
-				}
+				}*/
 				//Any Keyword
-				ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+				/*ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
 				anyKeyWordArray.removeAll(excludeKeyWordArray);
 				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
 					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -213,9 +212,9 @@ public class CandidateListRestController {
 							boolQueryBuilder.should(anyBoolQueryBuilder);
 						}
 					}
-				}
+				}*/
 				//All Keywords
-				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				/*ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
 				allKeyWordArray.remove(anyKeyWordArray);
 				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -229,9 +228,9 @@ public class CandidateListRestController {
 							boolQueryBuilder.should(anyBoolQueryBuilder);
 						}
 					}
-				}
+				}*/
 				//Designation
-				ArrayList<String> designationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "designation");
+				/*ArrayList<String> designationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "designation");
 				designationArray.removeAll(excludeKeyWordArray);
 				if(designationArray != null && !designationArray.isEmpty()){
 					BoolQueryBuilder designationBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -240,10 +239,10 @@ public class CandidateListRestController {
 					}
 					designationBoolQueryBuilder.minimumShouldMatch("1");
 					boolQueryBuilder.must(designationBoolQueryBuilder);
-				}
+				}*/
 				
 				//Notice_Period
-				ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(jsonObj, "noticePeriod");
+				/*ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(jsonObj, "noticePeriod");
 				noticePeriodArray.removeAll(excludeKeyWordArray);
 				if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
 					BoolQueryBuilder noticePeriodBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -252,7 +251,7 @@ public class CandidateListRestController {
 					}
 					noticePeriodBoolQueryBuilder.minimumShouldMatch("1");
 					boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
-				}
+				}*/
 			
 				 //Country
 				if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
@@ -269,49 +268,39 @@ public class CandidateListRestController {
 				
 				 //Currency
 			    if(jsonObj.has("currency") && StringUtils.isNotEmpty(jsonObj.getString("currency"))){
-					boolQueryBuilder.must(QueryBuilders.matchQuery("expectedRateCurrencey", jsonObj.getString("currency")));
-			    } 
-				
-				
+					boolQueryBuilder.must(QueryBuilders.termQuery("expectedRateCurrencey", jsonObj.getString("currency")));
+			    }
 				
 				
 			   //Rate Type
 				if(jsonObj.has("rateType") && StringUtils.isNotEmpty(jsonObj.getString("rateType"))){
-					boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
+					boolQueryBuilder.must(QueryBuilders.termQuery("rateType", jsonObj.getString("rateType")));
 			    }
+				//Educations
+				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
+				//educationArray.removeAll(excludeEducationArray);
+				if(educationArray != null && !educationArray.isEmpty()){
+					BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
+					for(String keywd : educationArray){
+						edunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("education", keywd));
+					}
+					//edunBoolQueryBuilder.minimumShouldMatch("1");
+					boolQueryBuilder.must(edunBoolQueryBuilder);
+				} 
+				
 				//Exclude Educations
 				ArrayList<String> excludeEducationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeEducation");
-				excludeEducationArray.removeAll(excludeKeyWordArray);
+				//excludeEducationArray.removeAll(excludeKeyWordArray);
 				if(excludeEducationArray != null && !excludeEducationArray.isEmpty()){
 					BoolQueryBuilder excludeEdunBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : excludeEducationArray){
 						excludeEdunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("education", keywd));
 					}
-					excludeEdunBoolQueryBuilder.minimumShouldMatch("1");
+					//excludeEdunBoolQueryBuilder.minimumShouldMatch("1");
 					boolQueryBuilder.mustNot(excludeEdunBoolQueryBuilder);
 				} 
-				//Educations
-				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
-				educationArray.removeAll(excludeEducationArray);
-				if(educationArray != null && !educationArray.isEmpty()){
-					//BoolQueryBuilder edunBoolQueryBuilder = QueryBuilders.boolQuery();
-					StringBuilder eduQueryStringBuilder = new StringBuilder();
-					int count =1;
-					
-					for(String keywd : educationArray){
-						if(count>1){
-							eduQueryStringBuilder.append(andQuerySeperation);
-						}
-						eduQueryStringBuilder.append(" education :"+keywd+"");
-						count++;
-					}
-					//edunBoolQueryBuilder.should(QueryBuilders.queryStringQuery(queryString));
-					//edunBoolQueryBuilder.minimumShouldMatch("1");
-					boolQueryBuilder.must(QueryBuilders.queryStringQuery(eduQueryStringBuilder.toString()));
-				} 
-				
 				//Certifications
-				ArrayList<String> certificationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "certification");
+				/*ArrayList<String> certificationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "certification");
 				certificationArray.removeAll(excludeKeyWordArray);
 				if(certificationArray != null && !certificationArray.isEmpty()){
 					BoolQueryBuilder certificationBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -320,10 +309,10 @@ public class CandidateListRestController {
 					}
 					certificationBoolQueryBuilder.minimumShouldMatch("1");
 					boolQueryBuilder.must(certificationBoolQueryBuilder);
-				} 
+				} */
 				
 				//Exclude Employers
-				ArrayList<String> excludeEmployerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeEmployers");
+				/*ArrayList<String> excludeEmployerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeEmployers");
 				excludeEmployerArray.removeAll(excludeKeyWordArray);
 				if(excludeEmployerArray != null && !excludeEmployerArray.isEmpty()){
 					BoolQueryBuilder excldEmployerBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -332,10 +321,10 @@ public class CandidateListRestController {
 					}
 					excldEmployerBoolQueryBuilder.minimumShouldMatch("1");
 					boolQueryBuilder.mustNot(excldEmployerBoolQueryBuilder);
-				} 
+				} */
 				
 				//Employers
-				ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employers");
+				/*ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employers");
 				employerArray.removeAll(excludeEmployerArray);
 				if(employerArray != null && !employerArray.isEmpty()){
 					BoolQueryBuilder employerBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -345,7 +334,7 @@ public class CandidateListRestController {
 					employerBoolQueryBuilder.minimumShouldMatch("1");
 					boolQueryBuilder.must(employerBoolQueryBuilder);
 				}
-				 
+				 */
 				//applicant type
 				if(jsonObj.has("applicantType") && StringUtils.isNotEmpty(jsonObj.getString("applicantType"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", jsonObj.getString("applicantType")));
@@ -353,7 +342,7 @@ public class CandidateListRestController {
 				
 				
 				//CandidateSkills
-				ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "candidateSkills");
+				/*ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "candidateSkills");
 				candidateSkillsArray.removeAll(excludeKeyWordArray);
 				if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
 					BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -362,7 +351,7 @@ public class CandidateListRestController {
 					}
 					skillBoolQueryBuilder.minimumShouldMatch("1");
 					boolQueryBuilder.must(skillBoolQueryBuilder);
-				} 
+				} */
 				
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 				ArrayList<Candidate>   candList = new ArrayList<>();
