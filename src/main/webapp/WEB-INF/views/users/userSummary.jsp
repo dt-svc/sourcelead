@@ -823,10 +823,6 @@ function getChangeRole(userId,userRoleId){
 		$("#editRoleDetailsList").empty(); 
 	}
 		
-	$( "#editRole_form" ).click(function() {
-		 if ($(this).validate(false, validationSettings)){
-		 }
-		});
 	
 	
 }
@@ -1477,6 +1473,8 @@ function editUserRole(){
 	$(".edit_role_pop").slideToggle(100);
 	$("#remove_user_id").slideUp(100);
 	$(".user_summary_edit").slideUp(100);
+	
+	$("#editRoleDetailsList").empty(); 
 }
 </script>
 <script>
