@@ -1272,14 +1272,14 @@ function requirementPipeline(requirementId,submissionType){
 
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           '</sec:authorize>';
 						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
 						           '</sec:authorize>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';
+						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
