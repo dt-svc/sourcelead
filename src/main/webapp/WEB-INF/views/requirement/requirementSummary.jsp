@@ -458,9 +458,10 @@ function sideBar(requirementId){
               			
               			
               			result = result+'    <div class="profile_details requirement_details clearfix reqrementsummary">';
-              			if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined'){
-    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
-
+              			if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType != '' && json.jobType != null && json.jobType != 'undefined'){
+    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'</span><i></i></h4></a>';
+               			}else if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined'){
+    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobId+'">'+json.jobTitle+'-'+json.jobId+'</span><i></i></h4></a>';
                			}
                			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined'){
      				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
@@ -1271,14 +1272,14 @@ function requirementPipeline(requirementId,submissionType){
 
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           '</sec:authorize>';
 						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
 						           '</sec:authorize>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';
+						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -1908,7 +1909,29 @@ function clientSideBar(candidateId){
 			             var skills = [];
 			             skills = skillsList.split(",");
 			             
-	                	 var result = "";
+			             var country = '';
+				         var state = '';
+				         var city = '';
+			             
+			             if(json.country != null && json.country != '' && json.country != 'undefined'){
+	         			 		country = ','+json.country;
+	             			 	}else{
+	             			 		country = '';
+	             			 	}
+	         			 	
+	         			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
+	         			 		state =json.state;
+	             			 	}else{
+	             			 		state = '';
+	             			 	}
+	         			 	
+	         			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
+	         			 		city =json.city+',';
+	             			 	}else{
+	             			 		city = '';
+	             			 	}
+			             
+	                	       var result = "";
 	                	 
 	                	 if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
 	                		 lastName  = json.lastName;
@@ -2009,11 +2032,9 @@ function clientSideBar(candidateId){
 			                                                	  
 			             result = result+'                   <li><i class="fa fa-phone"></i>----</li>';         	  
 			                                                  }
-			                                                  if(json.address != null && json.address != '' && json.address != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+json.address+'</li>';
-			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-location-arrow"></i>----</li>';                                  	  
-			                                                  }
+			                                                  
+			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
+			             
 			                                                  if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
 			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.currentRate+'/Per Hour - Current Rate / Salary</li>';
 			                                                  }else{
@@ -2266,6 +2287,12 @@ function getRateListDiv(submissionId, candidateId){
 		                    	 var Accepted = 'Accepted';
 		                    	 var Rejected = 'Rejected';
 		                     	result = result + '			<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';
+		                     }else{
+		                    	 if(report.rateStage == 'ACCEPTED'){
+		                     		result = result + '<b class="text-primary"> Accepted </b>';
+		                     	}else if(report.rateStage == 'REJECTED'){
+		                     		result = result + '<b class="text-danger"> Rejected </b>';
+		                     	}
 		                     }
 		                     result = result + '		</td>';
 		                     result = result + '      </tr>';

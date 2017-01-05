@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
@@ -49,6 +50,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -90,6 +92,9 @@ public class SubmissionsRestController {
 	@Autowired
 	private RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 
+	@Autowired
+	RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService; 
+	
 	@Autowired
 	private UserService userService;
 
@@ -291,7 +296,11 @@ public class SubmissionsRestController {
 			}
 
 			requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
-			requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+			RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+			if(pastRequirementRateSubmissionNegotiation != null){
+				requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+			}
+			
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 			

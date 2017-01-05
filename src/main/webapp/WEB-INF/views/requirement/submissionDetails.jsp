@@ -264,7 +264,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			
 		       result = result + '</div>';
 		       result = result + '</div>';
-       		
+		       result = result + '<div class="clearfix"></div>';
 		       result = result + ' <div class="project_side_wrap_inn_tabs">';
 		       result = result + '<ul class="new-tabs">';
 		       result = result + ' <li class="current"><a href="#tabb-1" onClick="getSubmissionDetailsSideBar('+submissionId+','+candidateId+','+requirementId+');">Time Line</a></li>';

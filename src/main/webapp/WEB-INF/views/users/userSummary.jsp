@@ -260,13 +260,13 @@ $(document).ready(function(){
 				result = result + '	     <div id="viewUserDiv">';
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
-					result = result + '				 <strong>Employee Id:</strong><span class="fix">'+json.employeeId+'</span><div class="clearfix"></div>';
+					result = result + '				 <strong>Employee Id:</strong><span class="fix" title="'+json.employeeId+'">'+json.employeeId+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
 				}
 				
 				
 				result = result + '			<div class="project_details_cta">';
-				result = result + '				 <strong>First Name:</strong><span class="fix">'+json.user.firstName+'</span><div class="clearfix"></div>';
+				result = result + '				 <strong>First Name:</strong><span class="fix" title="'+json.user.firstName+'">'+json.user.firstName+'</span><div class="clearfix"></div>';
 				result = result + ' 		</div>';
 				
 					
@@ -274,13 +274,13 @@ $(document).ready(function(){
 				
 				if(json.user.lastName != null && json.user.lastName != "" && json.user.lastName != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
-					result = result + '				 <strong>Last Name:</strong><span class="fix">'+json.user.lastName+'</span><div class="clearfix"></div>';
+					result = result + '				 <strong>Last Name:</strong><span class="fix" title="'+json.user.lastName+'">'+json.user.lastName+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
 				}
 				
 				if(json.user.email != null && json.user.email != "" && json.user.email != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
-					result = result + '				 <strong>Email Id:</strong><span class="fix">'+json.user.email+'</span><div class="clearfix"></div>';
+					result = result + '				 <strong>Email Id:</strong><span class="fix" title="'+json.user.email+'">'+json.user.email+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
 				}
 				
@@ -292,7 +292,7 @@ $(document).ready(function(){
 				
 				if(json.rate != null && json.rate != "" && json.rate != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
-					result = result + '				 <strong>Rate:</strong><span class="fix">'+json.rate+'</span><div class="clearfix"></div>';
+					result = result + '				 <strong>Rate:</strong><span class="fix" title="'+json.rate+'">'+json.rate+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
 				}
 				
