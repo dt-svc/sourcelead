@@ -271,7 +271,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				for(CandidateEducation edu :educationList){
 					eduList.add(edu.getName());
 				}
-				candidateIndex.setSkills(eduList);
+				candidateIndex.setEducation(eduList);
 			}
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 		}

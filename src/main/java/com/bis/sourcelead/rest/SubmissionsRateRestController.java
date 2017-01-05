@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
@@ -37,6 +38,7 @@ import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -80,6 +82,9 @@ public class SubmissionsRateRestController {
 	
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -223,21 +228,25 @@ public class SubmissionsRateRestController {
 	
 	
 	private StringBuilder buildNegotiationHistory(List<RequirementRateSubmissionNegotiation>  negotiationList, Requirement requirement, Candidate candidate, Long submissionId, String type) throws Exception {
+		
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
+		
 		StringBuilder tempHTML = new StringBuilder();
 		 if(negotiationList != null){
 			 
 	         tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
 	         tempHTML.append("<tr>");
 	         tempHTML.append("<th> Requirement Title </th>");
-	         tempHTML.append("<th> Requirement Rate </th>");
+//	         tempHTML.append("<th> Requirement Rate </th>");
 	         tempHTML.append("<th> Rate </th>");
 	         tempHTML.append("<th> By </th>");
 	         //tempHTML.append("<th> Action </th>");
 	         tempHTML.append("</tr>");
+	         
 	        	 for (RequirementRateSubmissionNegotiation negotiations : negotiationList) {
 			         tempHTML.append("<tr>");
 			         tempHTML.append("<td>").append(requirement.getJobTitle()).append("</td>");
-			         tempHTML.append("<td>").append(requirement.getRate()).append("</td>");
+//			         tempHTML.append("<td>").append(requirement.getRate()).append("</td>");
 			         tempHTML.append("<td>").append(negotiations.getExpectedRate()).append("</td>");
 			         if(negotiations.getCreatedBy() != null && "" != negotiations.getCreatedBy()){
 			        	 User proposedUser = userService.getUserByUserCode(negotiations.getCreatedBy());
@@ -260,8 +269,9 @@ public class SubmissionsRateRestController {
 			        tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");
 		        }else if("Vendor".equalsIgnoreCase(type) || "Client".equalsIgnoreCase(type)){
 		        	/*tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRateNegotiateClientOrVendorRates?status=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
-		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRateNegotiateClientOrVendorRates?status=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");*/
-			        tempHTML.append("<a href='").append(sourceleadUrl).append("/style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#214b90;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRateNegotiateClientOrVendorRates?status=Rejected&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
+			        tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRateNegotiateClientOrVendorRates?rateStatus=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");*/
+		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 		        }else{
 		        	//these links are provided in applicant to user Negotiate email
 		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateUserRates?rateStatus=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
@@ -279,6 +289,20 @@ public class SubmissionsRateRestController {
 		 
 		//to get rate history of a requirement
 		List<RequirementRateSubmissionNegotiation> allSubmissionRateHistory = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId,candidateId);
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
+		
+		RequirementRateSubmissionNegotiation requirementRateSubmission = new RequirementRateSubmissionNegotiation();
+		if(allSubmissionRateHistory.isEmpty()){
+			requirementRateSubmission.setRequirementName(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getJobTitle());
+			requirementRateSubmission.setExpectedRate(requirementSubmissionTemplateFields.getExpectedCTC());
+			User proposedUser = userService.getUserDetailsByUserCode(requirementSubmissionTemplateFields.getCreatedBy());
+			if(proposedUser.getFirstName() != null && proposedUser.getLastName()!= null && !"".equalsIgnoreCase(proposedUser.getFirstName()) && !"".equalsIgnoreCase(proposedUser.getLastName())){
+				 StringBuilder sb = new StringBuilder();
+				 requirementRateSubmission.setProposeByName(sb.append(proposedUser.getFirstName()).append(" ").append(proposedUser.getLastName()).toString());
+			}else{
+				requirementRateSubmission.setProposeByName(proposedUser.getFirstName());
+			}
+		}
 		for(RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation : allSubmissionRateHistory){
 			
 			RequirementRateSubmissionNegotiation rate = allSubmissionRateHistory.get(allSubmissionRateHistory.size()-1);
@@ -290,8 +314,10 @@ public class SubmissionsRateRestController {
 				}
 			}
 		
+			requirementRateSubmissionNegotiation.setRateStage(requirementRateSubmissionNegotiation.getRateStage());
 			requirementRateSubmissionNegotiation.setRequirementName(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getRequirement().getJobTitle());
-			requirementRateSubmissionNegotiation.setRequirementRate(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getRequirement().getRate());
+			requirementRateSubmissionNegotiation.setRequirementRate(requirementRateSubmissionNegotiation.getExpectedRate());
+			requirementRateSubmissionNegotiation.setExpectedRateType(requirementRateSubmissionNegotiation.getExpectedRateType());
 			
 			/*if(requirementRateSubmissionNegotiation.getCreatedBy() != null && "" != requirementRateSubmissionNegotiation.getCreatedBy()){
 	        	 User proposedUser = userService.getUserByUserCode(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getCreatedBy());
@@ -320,8 +346,10 @@ public class SubmissionsRateRestController {
 			requirementRateSubmissionNegotiation.setRateAndType(rateTypeSB.append(requirementRateSubmissionNegotiation.getExpectedRate()).append(" ").append(requirementRateSubmissionNegotiation.getExpectedRateType()).toString());
 		}
 		
-		String resultJson = commonUtil.toJSON(allSubmissionRateHistory);
-		 return resultJson;
+		if(allSubmissionRateHistory.isEmpty()){
+			allSubmissionRateHistory.add(requirementRateSubmission);
+		}
+		 return commonUtil.toJSON(allSubmissionRateHistory);
 	}
 	
 	

@@ -345,7 +345,7 @@ function addResume(candidateId) {
 					            	}
 					            	
 					            	result = result+'<tr>';
-					           		result = result+'<td><div><span>'+title+'</span></div></td>';
+					           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
 					           		result = result+'<td><div><span>'+opt.fileName+'</span></div></td>';
 					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
