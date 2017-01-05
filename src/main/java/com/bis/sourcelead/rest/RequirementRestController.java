@@ -700,7 +700,7 @@ public class RequirementRestController {
 		    }
 	 
 	 
-	 @RequestMapping(value = "/terminateRequirementTemplate", method = RequestMethod.POST)
+	 /*@RequestMapping(value = "/terminateRequirementTemplate", method = RequestMethod.POST)
 		public @ResponseBody String terminateRequirementTemplate(String requirementId, String status, HttpServletRequest request) throws Exception {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -720,6 +720,6 @@ public class RequirementRestController {
 				requirementService.updateRequirementTemplate(rt);
 			}
 			return "success";
-		}
+		}*/
 
 }
