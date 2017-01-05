@@ -464,12 +464,17 @@ public class RequirementRestController {
 		String requirementActionId = "146";
 		ArrayList<User> mynewList =  new ArrayList<User>();
 		List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
-        
+       
+		//   Commented because Team Lead not required to show in team Members List By Default he is added in to the  RequirementAssignTo
+		
+		/*
 		// adding team owner as  a Team Member
 		if(!teamType.equalsIgnoreCase("") && !teamType.equalsIgnoreCase("undefined") && !teamType.contains("role") && !teamType.contains("All")){
 			Team team = teamService.getTeamByTeamId(Long.parseLong(teamType));
 			usersList.add(team.getOwnerUserId());
-		}
+		}*/
+		
+		
 		for(User user : usersList){
 	            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId());
 	            user.setAssignJobCount(assign.size());
@@ -484,7 +489,7 @@ public class RequirementRestController {
 				}
 		   }
 		
-		resultJson = commonUtil.toJSON(mynewList);
+		resultJson = commonUtil.toJSON(usersList);
 		return resultJson;
 		
 		/*List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
