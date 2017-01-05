@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -12,10 +13,13 @@ import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEducationDao;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -35,7 +39,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	@Autowired
 	private CommonUtil commonUtil;
  
-	
+	 @Autowired
+	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	
 	/**
 	 * @author ajith kumar
@@ -124,7 +129,14 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		candidateEducation.setUpdatedBy(user.getUserCode());
 		candidateEducation.setUpdatedDate(commonUtil.currentDate());
 		}
-		return candidateEducationDao.storeCandidateEducation(candidateEducation);
+		candidateEducation = candidateEducationDao.storeCandidateEducation(candidateEducation);
+		
+		/*
+		 * updating Candidate Skills DB data in existing candidateindex
+		 */
+		saveOrUpdateCandidateElkDocumentWithEducationDetails(candidateEducation.getCandidateId(),orgLocationId);
+		
+		return candidateEducation;
 	}
 	
 	
@@ -202,7 +214,13 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			Long candidateEducationId) throws Exception {
 			CandidateEducation can = candidateEducationDao.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
 		     can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
-		     return candidateEducationDao.storeCandidateEducation(can);
+		     can =  candidateEducationDao.storeCandidateEducation(can);
+		        /*
+				 * updating Candidate Skills DB data in existing candidateindex
+				 */
+				saveOrUpdateCandidateElkDocumentWithEducationDetails(can.getCandidateId(),can.getOrglocationId().getId());
+		     
+		     return can;
 	}
 	
 	/**
@@ -240,5 +258,23 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		return candidateEducationDao.validateEducationName(candidateId, candidateEducation);
 	}
 
+	
+	@Override
+    @Async
+	public void saveOrUpdateCandidateElkDocumentWithEducationDetails(Candidate candidate,Long locationId) throws Exception {
+		if(null != candidate && null != candidate.getId()){
+			CandidateIndex candidateIndex = new CandidateIndex();
+			candidateIndex.setCandidateId(candidate.getId());
+			ArrayList<CandidateEducation> educationList =(ArrayList<CandidateEducation>) getCandidateEducationListByCandidateIdAndOrgLocationID(candidate.getId(),locationId);
+			if(null != educationList && !educationList.isEmpty()){
+				ArrayList<String> eduList = new ArrayList<>();
+				for(CandidateEducation edu :educationList){
+					eduList.add(edu.getName());
+				}
+				candidateIndex.setSkills(eduList);
+			}
+			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+		}
+	}
 
 }
