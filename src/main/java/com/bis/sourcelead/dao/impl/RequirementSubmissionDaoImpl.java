@@ -166,7 +166,23 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
 		}
 		//to get applicates list of the team lead and team submissions
-		Boolean teamFlag = teamDao.getTeamOwnersListByUserId(user,loginOrgLocation.getId());
+		
+		
+		
+		Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,loginOrgLocation.getId(),requirement.getId());
+		if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag){
+			List<String> userCodes = new ArrayList<>();
+			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
+				User usercode= userDao.getUserById(requirementAssignTo.getAssignUserId().getId());
+				userCodes.add(usercode.getUserCode());
+			}
+			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId";
+			requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setParameterList("usercode", userCodes).setLong("requirementId", requirementId).setCacheable(true).list();
+
+			  
+		}  
+			  
+	/*	Boolean teamFlag = teamDao.getTeamOwnersListByUserId(user,loginOrgLocation.getId());
 		if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag){
 			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
 				if(requirementAssignTo.getTeamId()!=null){
@@ -187,7 +203,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}
 			}
 			}
-		}
+		}*/
 		boolean flag = false;
 		for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
 			if(requirementAssignTo.getAssignUserId().getId().longValue() == user.getId().longValue()){
@@ -195,7 +211,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}
 		}
 		//to get applicates list of the team member 
-		if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && flag){
+		if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && flag && !teamFlag){
 			String query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch "
 					+ "reqSub.candidate left join fetch reqSub.sourceSubmission "
 					+ "left join fetch reqSub.candidateResumes where (reqSub.orgLocations.id =:loginOrgLocation or "
