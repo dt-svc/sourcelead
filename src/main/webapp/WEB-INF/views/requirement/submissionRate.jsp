@@ -149,7 +149,7 @@ width: auto;
 										  </div>
 										  <div class="clearfix"></div>
 										  <div class="col-md-6 mt">
-											  <textarea class="form-control" rows="2" name="comment" placeholder="Comment" id="comment" data-validation="required"></textarea>	
+											  <textarea class="form-control" rows="2" name="comment" placeholder="Comment" id="comment" field-name="Comment" data-validation="required"></textarea>	
 										  </div>
 										  </div>
 										  </div>

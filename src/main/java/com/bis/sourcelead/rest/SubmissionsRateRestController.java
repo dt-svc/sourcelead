@@ -302,6 +302,9 @@ public class SubmissionsRateRestController {
 			}else{
 				requirementRateSubmission.setProposeByName(proposedUser.getFirstName());
 			}
+			DateFormat standardFormat = new SimpleDateFormat( "yyyy-MM-dd");
+			String commonDateFormat = standardFormat.format(requirementSubmissionTemplateFields.getCreatedDate());
+			requirementRateSubmission.setCreatedDateStr(commonDateFormat.toString());
 		}
 		for(RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation : allSubmissionRateHistory){
 			
