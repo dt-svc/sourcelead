@@ -433,7 +433,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                     </div>'; */
 			             result = result+'                     <div class="media-body candidate-details">';
 			             
-			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
+			             result = result+'                       <h4 class="media-heading" title = "'+json.firstName+' '+lastName+'">'+json.firstName+' '+lastName+'</h4>';
 			            
 			             result = result+'                       <ul class="list-unstyled">';
 			             
@@ -504,7 +504,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                 </div>';
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
-			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.email+'</a></li>';
+			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="'+json.email+'">'+json.email+'</a></li>';
 			                                                  if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
 			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
 			                                                  }else{
