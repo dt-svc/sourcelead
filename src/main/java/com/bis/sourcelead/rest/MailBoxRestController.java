@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -613,28 +614,33 @@ public class MailBoxRestController {
 	 
 	 
 		
-		public void calculateDays(List<UserMailBox> mailBoxList) throws ParseException {
-			for (UserMailBox userMailBox : mailBoxList) {
-				// differentiating date and time
-				Date date = userMailBox.getCreatedDate();
-				String[] parts = date.toString().split(" ");
-				userMailBox.setDateValue(parts[0]);
-				final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
-				final Date dateObj = sdf.parse(parts[1].toString());
-				userMailBox.setTime(new SimpleDateFormat("K:mm a").format(dateObj));
-				// calculating days b/w dates
-				Date currentDate = new Date();
-				Date d1 = userMailBox.getCreatedDate();
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-				String strDate = dateFormat.format(currentDate);
-				Date d2 = dateFormat.parse(strDate);
-				long diff = d2.getTime() - d1.getTime();
-				long diffDays = diff / (24 * 60 * 60 * 1000);
-				userMailBox.setCalDays(diffDays);
+	        public void calculateDays(List<UserMailBox> mailBoxList) throws ParseException {
+	    		for (UserMailBox userMailBox : mailBoxList) {
+	    			long diff = commonUtil.currentDate().getTime() - userMailBox.getCreatedDate().getTime();
+	    			
+	    		    long diffSeconds = diff / 1000 % 60;
+	    			long diffMinutes = diff / (60 * 1000) % 60;
+	    			long diffHours = diff / (60 * 60 * 1000) % 24;
+	    			long diffDays = diff / (24 * 60 * 60 * 1000);
+	    			StringBuilder  time = new StringBuilder();
+	    			
+	    			if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
+	    				userMailBox.setCalDays(time.append(diffSeconds).append(" sec ago ").toString());
+	    			}else if(diffDays == 0 && diffHours == 0){
+	    				userMailBox.setCalDays(time.append(diffMinutes).append(" min ").append(diffSeconds).append(" sec ago ").toString());
+	    			}else if(diffDays == 0){
+	    				userMailBox.setCalDays(time.append(diffHours).append(" hours ").append(diffMinutes).append(" min ago ").toString());
+	    			}else if(diffDays < 7){
+	    				userMailBox.setCalDays(time.append(diffDays).append(" day(s) ").toString());
+	    			}else{
+	    				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+	    				String commonDateFormat = standardFormat.format(userMailBox.getCreatedDate());
+	    				userMailBox.setCalDays(commonDateFormat.toString());
+	    			} 
 
-			}
+	    		}
 
-		}
+	    	}
 
 	 
 	 public String toJSON(Object obj){

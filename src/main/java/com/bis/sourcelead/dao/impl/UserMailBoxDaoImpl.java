@@ -62,7 +62,8 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 			String mailStatus) throws Exception {
 		
 		 Session session = this.sessionFactory.getCurrentSession();
-		 String query = "from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId and mailbox.mailStatus = :mailStatus and mailbox.status = '1' ";
+		 String query = "from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId "
+		 		+ "and mailbox.mailStatus = :mailStatus and mailbox.status = '1' ORDER BY mailbox.id DESC ";
 		 List<UserMailBox> mailBoxList = session.createQuery(query.toString()).setLong( "userId", userId)
 				 .setLong( "orgLocationId", orgLocationId).setString("mailStatus", mailStatus).setCacheable(true).list();
 		 return mailBoxList;
@@ -106,7 +107,8 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 			throws Exception {
 		
 		 Session session = this.sessionFactory.getCurrentSession();
-		 String query = "from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId and mailbox.isFavourite = '1' and mailbox.status = '1' ";
+		 String query = "from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId "
+		 		+ "and mailbox.isFavourite = '1' and mailbox.status = '1' ORDER BY mailbox.id DESC ";
 		 List<UserMailBox> mailBoxList = session.createQuery(query.toString()).setLong( "userId", userId)
 				 .setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
 		 return mailBoxList;
@@ -132,15 +134,23 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 	@Transactional
 	public UserMailBox getUserPreviousMail(Long Id, Long userId, Long orgLocationId,String type) throws Exception {
 		
+		String selectedMode = "";
 		
-		String selectedMode = "select max(mb.id) from UserMailBox mb where mb.id < :id "
-				+ "and mb.userId.id = :userId and mb.orgLocationId.id = :orgLocationId and "
-				+ "mb.mailStatus = :type";
+		if(!type.equalsIgnoreCase("Starred")){
+			selectedMode = "select max(mb.id) from UserMailBox mb where mb.id < :id "
+					+ "and mb.userId.id = :userId and mb.orgLocationId.id = :orgLocationId and "
+					+ "mb.mailStatus = '"+type+"'";
+		}else{
+			selectedMode = "select max(mb.id) from UserMailBox mb where mb.id < :id "
+					+ "and mb.userId.id = :userId and mb.orgLocationId.id = :orgLocationId and "
+					+ "mb.isFavourite = '1' ";
+		}
+		
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserMailBox> mailBox = new ArrayList<UserMailBox>();
 		logger.debug("getUserMailBoxById start");
-		mailBox = session.createQuery("from UserMailBox mailBox where mailBox.id IN ("+selectedMode+")" ).setLong("id", Id).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("type", type).setCacheable(true).list();
+		mailBox = session.createQuery("from UserMailBox mailBox where mailBox.id IN ("+selectedMode+")" ).setLong("id", Id).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		logger.debug("getUserMailBoxById end");
 		if (mailBox.size() > 0) {
 			return mailBox.get(0);
@@ -153,15 +163,21 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 	@Transactional
 	public UserMailBox getUserNextMail(Long Id, Long userId, Long orgLocationId,String type) throws Exception {
 		
-		
-		String selectedMode = "select min(mb.id) from UserMailBox mb where mb.id > :id "
+		String selectedMode = "";
+		if(!type.equalsIgnoreCase("Starred")){
+		selectedMode = "select min(mb.id) from UserMailBox mb where mb.id > :id "
 				+ "and mb.userId.id = :userId and mb.orgLocationId.id = :orgLocationId and "
-				+ "mb.mailStatus = :type";
+				+ "mb.mailStatus = '"+type+"'";
+		}else{
+			selectedMode = "select min(mb.id) from UserMailBox mb where mb.id > :id "
+					+ "and mb.userId.id = :userId and mb.orgLocationId.id = :orgLocationId and "
+					+ "mb.isFavourite = '1'";
+		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserMailBox> mailBox = new ArrayList<UserMailBox>();
 		logger.debug("getUserMailBoxById start");
-		mailBox = session.createQuery("from UserMailBox mailBox where mailBox.id IN ("+selectedMode+")" ).setLong("id", Id).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("type", type).setCacheable(true).list();
+		mailBox = session.createQuery("from UserMailBox mailBox where mailBox.id IN ("+selectedMode+")" ).setLong("id", Id).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		logger.debug("getUserMailBoxById end");
 		if (mailBox.size() > 0) {
 			return mailBox.get(0);

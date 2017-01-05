@@ -346,8 +346,8 @@ public class PdfUtil {
 		if(candidate.getMobilePhone() !=null && !"".equalsIgnoreCase(candidate.getMobilePhone())){
 			candidateArray[3] = candidate.getMobilePhone();
 		}
-		if(candidate.getCity() !=null && !"".equalsIgnoreCase(candidate.getCity())){
-			candidateArray[4] = candidate.getCity();
+		if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
+			candidateArray[4] = candidate.getCountry();
 		}else{
 			candidateArray[4] = "--";
 		}
@@ -520,8 +520,8 @@ public class PdfUtil {
 		}else{
 			requirementArray[3] = "--";
 		}
-		if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
-			requirementArray[4] = requirement.getCity();
+		if(requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry())){
+			requirementArray[4] = requirement.getCountry();
 		}else{
 			requirementArray[4] = "--";
 		}

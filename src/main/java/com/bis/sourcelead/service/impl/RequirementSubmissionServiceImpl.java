@@ -15,12 +15,6 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.util.ByteArrayDataSource;
-
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -40,7 +34,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.beust.jcommander.internal.Lists;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateEducationDao;
@@ -1265,6 +1258,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		if(requirementSubmission != null){
 			
 			if(StringUtils.equalsIgnoreCase(decision, "accept")){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 				if(jsonObj.has("comment")){
 					requirementSubmission.setSubmissionRateComment(jsonObj.getString("comment"));
@@ -1277,6 +1271,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				sendEmailtoApplicant(loginOrg, user,requirementSubmission,loginOrgLocation);
 			}
 			else if(StringUtils.equalsIgnoreCase(decision, "reject")){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				if(jsonObj.has("comment")){
 					requirementSubmission.setSubmissionRateComment(jsonObj.getString("comment"));

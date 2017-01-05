@@ -413,10 +413,10 @@ public class RequirementListRestController {
 //						}
 						if(Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)){
 							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
-						}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
+						}/*else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
 							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
 //							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
-						}
+						}*/
 						else{
 							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
 //							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
@@ -968,10 +968,10 @@ public class RequirementListRestController {
 				List<RequirementSubmission> requirementStatusList = null;
 				if(Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)){
 					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
-				}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
+				}/*else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
 					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
 //					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
-				}
+				}*/
 				else{
 					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
 //					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	

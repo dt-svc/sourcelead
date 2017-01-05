@@ -625,22 +625,23 @@ public class RequirementServiceImpl implements RequirementService {
 						    String[] approvers = parallelApprovers.split(",");
 						    for(String approver : approvers){
 						    	User approverUser = userService.getUserById(Long.parseLong(approver));
-						    	approverEmailScenario(user,approverUser,requirement,location,orgLocations);
+						    	approverEmailScenario(user,approverUser,savedRequirement,location,orgLocations);
 						    }
 					 }
 					
 					//send mail to Assigned Team 
 					//condition : if login user as team member then mail not send
-					/*Set<RequirementAssignTo> updatedRequirementAssignToList = requirement.getRequirementAssignTo();
+					// this logic will execute when no approvers are selected for requirement.
+				  if(!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)){
+					Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
 					if(updatedRequirementAssignToList != null  ){
 						for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
 							if(requirementAssignTo.getAssignUserId() != null && !user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
 								AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
 							}
+						 }
 						}
-					}*/
-					
-					
+					}
 					//send mail to manger 
 					//condition : login user as manager then  mail shoul not forwared
 					if(savedRequirement.getManagerUserId() != null && !user.getId().equals(savedRequirement.getManagerUserId().getId())){
@@ -1711,8 +1712,8 @@ public class RequirementServiceImpl implements RequirementService {
 			StringBuilder sb = new StringBuilder(); 
 			writeRow.createCell(3).setCellValue(sb.append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString()); 
 		}
-		if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
-			 writeRow.createCell(4).setCellValue(requirement.getCity()); 
+		if(requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry())){
+			 writeRow.createCell(4).setCellValue(requirement.getCountry()); 
 		}
 		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
 			 writeRow.createCell(5).setCellValue(requirement.getSkills()); 
