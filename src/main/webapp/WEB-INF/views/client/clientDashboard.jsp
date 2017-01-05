@@ -272,7 +272,7 @@ function getClientDetails(){
    	        		}else{
    	        			result = result +'<td><div>--</div></td>';
    	        		}
-   	        		result = result +'<td><div><span class="tblminwidth-125">'+report.vendorCreateduserName+'</span></div></td>';
+   	        		result = result +'<td><div><span class="tblminwidth-125" title="'+report.vendorCreateduserName+'">'+report.vendorCreateduserName+'</span></div></td>';
    	        		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
    	        		/* result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
    	        		result = result +'</tr>';
@@ -468,21 +468,21 @@ function getVendorContactLists(){
    	        		
    	        		result = result +'<tr>';
    	        		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
-   	        			result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        			result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
    	        		'</sec:authorize>';
    	        		
    	        		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
    	        			result = result +'<td><div class="proj_show"><span>'+report.spocName+'</span></i></div></td>';
    	        		'</sec:authorize>';
    	        		
-   	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
+   	        		result = result +'<td><div><span title="'+report.spocEmail+'">'+report.spocEmail+'</span></div></td>';
    	        		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
    	        			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
    	        		}else{
    	        			result = result +'<td><div>--</div></td>';
    	        		}
-   	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
-   	        		result = result +'<td><div><span>'+report.orgName+'</span></div></td>';
+   	        		result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+   	        		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
    	        		
    	        		result = result + ' <td><div>';
 					result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
