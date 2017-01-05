@@ -56,7 +56,7 @@ $(function(){
 	        		var opt = json[i];
 	        		
 	        		result = result + '<tr>';
-	                result = result + '<td><div><span class="mid-span">'+opt.templateName+'</span></a></div></td>';
+	                result = result + '<td><div><span class="mid-span" title="'+opt.templateName+'">'+opt.templateName+'</span></a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
 	                result = result + '<td><div>';
 	                    result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;|&nbsp;';
@@ -383,9 +383,11 @@ function cancel(){
          }
     });
     	
-   	$('#sjfb').showHelpOnFocus();
-    $('#sjfb').validateOnBlur(false, validationSettings); 
-  
+   	$('body').on('blur', '#sjfb', function() {
+        $("#sjfb").showHelpOnFocus();
+        $("#sjfb").validateOnBlur(false, validationSettings);  
+    });
+   	  
   </script>
   
 
