@@ -2259,6 +2259,12 @@ function getRateListDiv(submissionId, candidateId){
 		                    	 var Accepted = 'Accepted';
 		                    	 var Rejected = 'Rejected';
 		                     	result = result + '			<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';
+		                     }else{
+		                    	 if(report.rateStage == 'ACCEPTED'){
+		                     		result = result + '<b class="text-primary"> Accepted </b>';
+		                     	}else if(report.rateStage == 'REJECTED'){
+		                     		result = result + '<b class="text-danger"> Rejected </b>';
+		                     	}
 		                     }
 		                     result = result + '		</td>';
 		                     result = result + '      </tr>';
