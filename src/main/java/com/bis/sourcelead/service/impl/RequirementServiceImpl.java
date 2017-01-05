@@ -625,22 +625,23 @@ public class RequirementServiceImpl implements RequirementService {
 						    String[] approvers = parallelApprovers.split(",");
 						    for(String approver : approvers){
 						    	User approverUser = userService.getUserById(Long.parseLong(approver));
-						    	approverEmailScenario(user,approverUser,requirement,location,orgLocations);
+						    	approverEmailScenario(user,approverUser,savedRequirement,location,orgLocations);
 						    }
 					 }
 					
 					//send mail to Assigned Team 
 					//condition : if login user as team member then mail not send
-					/*Set<RequirementAssignTo> updatedRequirementAssignToList = requirement.getRequirementAssignTo();
+					// this logic will execute when no approvers are selected for requirement.
+				  if(!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)){
+					Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
 					if(updatedRequirementAssignToList != null  ){
 						for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
 							if(requirementAssignTo.getAssignUserId() != null && !user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
 								AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
 							}
+						 }
 						}
-					}*/
-					
-					
+					}
 					//send mail to manger 
 					//condition : login user as manager then  mail shoul not forwared
 					if(savedRequirement.getManagerUserId() != null && !user.getId().equals(savedRequirement.getManagerUserId().getId())){
@@ -1232,11 +1233,23 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("Experience","--"); 
 			 }
-		 if(loginUser.getFirstName() != null && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+		 
+		  if(loginUser.getFirstName() != null && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
 			 StringBuilder userBuild = new StringBuilder();
 			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }
+		  else if(loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getFirstName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).toString());
+		  	 }
+		 else{
+			 globalVarsMap.put("LoginUser","--"); 
+			 }
+		  
+		 if(loginUser.getUserType()!= null && !"".equalsIgnoreCase(loginUser.getUserType())){
+			 globalVarsMap.put("Role", loginUser.getUserType());
 			 }else{
-				 globalVarsMap.put("LoginUser",loginUser.getFirstName()); 
+				 globalVarsMap.put("Role","--"); 
 			 }
 		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
 			 globalVarsMap.put("Role",loginOrgLocation.getOrg().getOrgName() );

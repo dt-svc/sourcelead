@@ -273,6 +273,16 @@ public class RequirementRestController {
 								} else if (status.equalsIgnoreCase("REJECTED")) {
 									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
 								}
+								 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
+								RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
+						    	 List<RequirementAssignTo> reqAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirementId,orgLocation.getId());
+					    			if(hierarchy!= null && "APPROVED".equals(hierarchy.getRequirementApproverStatus().toString())){
+					    				for(RequirementAssignTo reqAssign:reqAssignTo ){
+												if(reqAssign.getAssignUserId() != null && !loginUser.getId().equals(reqAssign.getAssignUserId().getId())){
+													requirementService.AssignToTeamMembersEmail(loginUser, reqAssign.getAssignUserId(), requirement,new StringBuilder(),orgLocation);
+												}
+					    				}
+					    		}
 						}else{
 
 							    RequirementApproverHierarchy level2approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
@@ -466,10 +476,11 @@ public class RequirementRestController {
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
 				if(userRole !=null){
 					user.setUserType(userRole.getUserType());
-					 boolean requirementAction  = sourceleadRolesService.roleHaveActionAccessOrNot(requirementActionId,userRole.getUserType());
+					/* boolean requirementAction  = sourceleadRolesService.roleHaveActionAccessOrNot(requirementActionId,userRole.getUserType());
 					 if (requirementAction){
 						 mynewList.add(user);
-					    }
+					    }*/
+					 mynewList.add(user);
 				}
 		   }
 		

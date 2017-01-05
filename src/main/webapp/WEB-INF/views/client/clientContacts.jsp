@@ -406,13 +406,13 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	<div class="clearfix mb10">';
 	result = result  +'	 <div class="col-md-12">';
-	result = result  +'	<input type="text" class="form-control input-sm" value="" id="firstName" name="firstName" field-name="First name" placeholder="First name *" data-validation="required validate_Space validate_length length2-100">';
+	result = result  +'	<input type="text" class="form-control input-sm" value="" id="firstName" name="firstName" field-name="First name" placeholder="First name *" data-validation="required validate_Space validate_length length1-100">';
 	result = result  +'	</div>';
 	result = result  +'	</div>';
 	
 	result = result  +'	<div class="clearfix mb10">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	     <input type="text" class="form-control input-sm" name="lastName" id="lastName" value="" placeholder="Last name" data-validation="validate_Space validate_length length2-100" data-validation-optional="true">';
+	result = result  +'	     <input type="text" class="form-control input-sm" name="lastName" id="lastName" value="" placeholder="Last name" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	

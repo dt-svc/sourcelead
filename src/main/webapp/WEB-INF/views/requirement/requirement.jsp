@@ -292,7 +292,7 @@ $(document).ready(function () {
            <div class="form-group" id="jobTitleDiv">
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
-	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control" onblur="getTemplateVal();">
+	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length1-250"   value="" class="form-control" onblur="getTemplateVal();">
 	         </div>
 	       </div>
 
@@ -604,7 +604,7 @@ $(document).ready(function () {
 		                 <option  ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}>INR</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+		                 <option  ${requirement.clientCurrencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
 	                </select>

@@ -106,7 +106,7 @@
              <div class="form-group">
 	            <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
-	              <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}" field-name="First Name" data-validation="required validate_Alphanumeric validate_Space validate_length length2-100" />
+	              <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}" field-name="First Name" data-validation="required validate_Alphanumeric validate_Space validate_length length1-100" />
 	              <span class="hidden">First Name</span>
 	            </div>
             </div>
@@ -114,7 +114,7 @@
             <div class="form-group">
 	            <label class="col-md-3">Last Name </label>
 	            <div class="col-md-9">
-	               <input type="text" name="lastName"  id="lastName"  value="${lastName}" class="form-control" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length2-100"  />
+	               <input type="text" name="lastName"  id="lastName"  value="${lastName}" class="form-control" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100"  />
 	             <span class="hidden">Last Name</span>
 	            </div>
             </div>

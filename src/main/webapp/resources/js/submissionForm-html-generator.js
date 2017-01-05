@@ -276,7 +276,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         				 datavalidation = 'data-validation="required validate_phone validate_Space validate_length length9-20"';
         			 }
         			 else{
-        				 datavalidation = 'data-validation="required validate_Space validate_length length2-100"';
+        				 datavalidation = 'data-validation="required validate_Space validate_length length1-100"';
         			 }
         			 
         			 if(label == 'Current CTC' || label == 'Expected CTC'){
@@ -291,7 +291,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         			 if(label == 'Alternate Number'){
         				 datavalidation = 'data-validation="validate_phone validate_Space validate_length length9-20"';
         			 }else{
-        				 datavalidation = 'data-validation="validate_Space validate_length length2-100"';
+        				 datavalidation = 'data-validation="validate_Space validate_length length1-100"';
         			 }
         			 
         			 if(label == 'Current CTC' || label == 'Expected CTC'){

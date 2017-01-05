@@ -413,10 +413,10 @@ public class RequirementListRestController {
 //						}
 						if(Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)){
 							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
-						}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
+						}/*else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
 							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
 //							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
-						}
+						}*/
 						else{
 							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
 //							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
@@ -476,6 +476,10 @@ public class RequirementListRestController {
 									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 									requirementSubmission.setTotalNoOfInterviews(numberOfInterviews.size());
 									requirementSubmission.setRequirementInterviewHistoryList(numberOfInterviews);
+									
+									if(requirementSubmission.getVendorLocationId() != null){
+										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+									}
 									
 									RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
 									
@@ -656,7 +660,9 @@ public class RequirementListRestController {
 				inputStream.close();
 				response.getOutputStream().close();
 				response.getOutputStream().flush();	
-			
+				if(file != null){
+					file.delete();
+				}
 		 }
 		 
 		/**
@@ -966,10 +972,10 @@ public class RequirementListRestController {
 				List<RequirementSubmission> requirementStatusList = null;
 				if(Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)){
 					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
-				}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
+				}/*else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
 					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
 //					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
-				}
+				}*/
 				else{
 					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
 //					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	

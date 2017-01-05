@@ -267,6 +267,9 @@ public class RequirementSubmission implements Serializable{
 	@Transient
 	private int duplicateCount;
 	
+	@Transient
+	private String orgName;
+	
 
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -863,4 +866,11 @@ public class RequirementSubmission implements Serializable{
 		this.duplicateCount = duplicateCount;
 	}
 
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
 }
