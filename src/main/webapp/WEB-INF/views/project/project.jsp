@@ -184,7 +184,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkbox">
-									<label> <input type="checkbox" value="Y" checked="checked" name="isMailToProjectManager"> 
+									<label> <input type="checkbox" value="Y"  name="isMailToProjectManager"> 
 									Mail to Project Manager
 									</label>
 								</div>
@@ -320,7 +320,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkbox">
-									<label> <input type="checkbox" value="Y" checked="checked"
+									<label> <input type="checkbox" value="Y" 
 										name="isMailToTeamMembers"> Mail to Team Members
 									</label>
 								</div>
