@@ -51,7 +51,7 @@
             </span>
             <div class="clearfix"></div>
             </div>
-            <input type="submit" value="Save" id="submit_button" class="sign_btn" />
+            <input type="submit" value="Save" id="submit_button" onclick="checkPasswords();" class="sign_btn" />
             </form:form>
         </div>
     </div>
@@ -119,6 +119,33 @@ function applyInputSlide() {
 	 return false;
     }
 })(jQuery);
+</script>
+
+
+
+<script type="text/javascript">
+	function checkPasswords() {   
+		var pass1 = document.getElementById('password');  
+	    var pass2 = document.getElementById('confirmPassword');
+	    if(pass1.value == pass2.value){
+	    	 $('input#confirmPassword').removeAttr( "class pass-exist pass-exist-errormsg");
+			 $('#passwordDiv').find('span.jquery_form_error_message').remove(); 
+			 document.getElementById("confirmPassword").setAttribute('class','valid signin_fild');
+			 $("input#confirmPassword").removeAttr("style");
+			 document.getElementById('submit_button').disabled = false;
+	    }
+	    else{ 
+		        $('#passwordDiv').find('span.jquery_form_error_message').remove();
+		        document.getElementById("confirmPassword").setAttribute('class','error signin_fild');
+		        $("input#confirmPassword").after("<span class='jquery_form_error_message'> <font color='red'>Passwords Not Matched</font></span>");
+				document.getElementById("confirmPassword").setAttribute('pass-exist','yes');
+				document.getElementById("confirmPassword").setAttribute('pass-exist-errorMsg', ' Passwords Not Matched'); 
+				$("input#confirmPassword").removeAttr("style");
+				document.getElementById('submit_button').disabled = true;
+	    }
+   }
+	
+ 
 </script>
 
 
