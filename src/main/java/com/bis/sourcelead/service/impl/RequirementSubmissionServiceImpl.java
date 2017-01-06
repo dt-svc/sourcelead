@@ -805,6 +805,17 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 	
 	@Override
+	public Integer getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user,
+			OrgLocations loginOrgLocation, String submissionStatus) throws Exception{
+		return requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirementId,user,loginOrgLocation,submissionStatus);
+	}
+	
+	@Override
+	public Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,OrgLocations loginOrgLocation) throws Exception{
+		return requirementSubmissionDao.duplicateCandidateCountsByRequirementId(requirementId,user,loginOrgLocation);
+	}
+	
+	@Override
 	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId,User user,String loginUserRole) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocations, requirementId,user,loginUserRole);
 	}

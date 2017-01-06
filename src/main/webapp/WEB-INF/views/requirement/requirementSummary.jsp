@@ -142,6 +142,134 @@ $(document).ready(function() {
 });	
 </script>
 
+
+<script>
+function prepareAllCounts(requirementId){
+    $('#applicantli').load(allApplicantsCount(requirementId)); 
+    $('#duplicataplctli').load(duplicateCount(requirementId));
+    $('#requestSentli').load(requestSentCount(requirementId));
+    $('#shortListli').load(shortListCount(requirementId));
+    $('#submitToClientli').load(submitToClientCount(requirementId));
+    $('#interviewli').load(interviewsCount(requirementId));
+    $('#offerMadeli').load(offerMadeCount(requirementId));
+    $('#rejectedli').load(rejectedCount(requirementId));  
+}
+</script>
+
+
+
+<script>
+function allApplicantsCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=APPLICANTS",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#applicantsCount").html(json);
+        },
+	  });
+}
+</script>
+
+<script>
+function duplicateCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	  $.ajax({
+      type : "POST",
+       url: sourceleadUrl+"/getDuplicateSubmissionsCountByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+       success :function(data) { 
+      	 var json = JSON.parse(data);
+      	 $("#duplicateApplicantsCount").html(json);
+       },
+	  }); 
+}
+</script>
+
+<script>
+function requestSentCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+      type : "POST",
+       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=REQUESTSENT",        
+       success :function(data) { 
+      	    var json = JSON.parse(data);
+      	    $("#requestSent").html(json);
+         },
+	  });
+}
+</script>
+
+<script>
+function shortListCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+     type : "POST",
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=SHORTLISTED",        
+      success :function(data) { 
+     	    var json = JSON.parse(data);
+     	    $("#shortlistCount").html(json);
+        },
+	  });
+}
+</script>
+
+<script>
+function submitToClientCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+     type : "POST",
+     url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=SUBMIT_TO_CLIENT",        
+     success :function(data) { 
+    	    var json = JSON.parse(data);
+    	    $("#submitToClientCount").html(json);
+       },
+	  });
+}
+</script>
+
+<script>
+function interviewsCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+      type : "POST",
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=INTERVIEWED",        
+      success :function(data) { 
+    	    var json = JSON.parse(data);
+    	    $("#interviewCount").html(json);
+       },
+	  });
+}
+</script>
+
+<script>
+function offerMadeCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+      type : "POST",
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=OFFERED",        
+      success :function(data) { 
+    	    var json = JSON.parse(data);
+    	    $("#offersCount").html(json);
+       },
+	  });
+}
+</script>
+
+<script>
+function rejectedCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+      type : "POST",
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=REJECTED",        
+      success :function(data) { 
+    	    var json = JSON.parse(data);
+    	    $("#rejectedCount").html(json);
+       },
+	  });
+}
+</script>
+
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -1063,7 +1191,7 @@ function requirementPipeline(requirementId,submissionType){
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
          success :function(data) {  
-        	requirementSubmissionCount(requirementId);
+        	//requirementSubmissionCount(requirementId);
         	 var result =""; 
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
@@ -1520,6 +1648,7 @@ function requirementPipeline(requirementId,submissionType){
 							     $(".project_tabs_inn").not(tab).css("display", "none");
 							     $(tab).fadeIn();
 							 });
+							prepareAllCounts(requirementId);
 							
             		 }
               }else{
@@ -1540,6 +1669,7 @@ function requirementPipeline(requirementId,submissionType){
                },
                  
             }); 
+	 
 }
 </script>
 
@@ -1619,14 +1749,14 @@ function requirementSubmissionCount(requirementId){
         	 var json = JSON.parse(data);
         	 var report1 = json[0];
         	 
-        	 $("#applicantsCount").html(report1.numOfSubmissions);
+        	 //$("#applicantsCount").html(report1.numOfSubmissions);
         	 $("#shortlistCount").html(report1.numOfShortList);
         	 $("#submitToClientCount").html(report1.numOfSubmitToClient);
         	 $("#interviewCount").html(report1.numOfInterview);
         	 $("#offersCount").html(report1.numOfOffers);
         	 $("#rejectedCount").html(report1.numOfRejected);
         	 $("#requestSent").html(report1.numofrequestsent);
-        	 $("#duplicateApplicantsCount").html(report1.duplicateCount);
+        	 //$("#duplicateApplicantsCount").html(report1.duplicateCount);
          },
 	  });
 }
