@@ -107,8 +107,8 @@ function requirementTemplateList(){
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 		                     
-		                     if(opt.createdBy!=null && opt.createdBy !='' && opt.createdBy !='undefined'){
-		                    	 result = result +"<td><div>"+opt.createdBy+"</div></td>";
+		                     if(opt.createdByName!=null && opt.createdByName !='' && opt.createdByName !='undefined'){
+		                    	 result = result +"<td><div>"+opt.createdByName+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
