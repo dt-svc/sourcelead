@@ -725,27 +725,24 @@ $(document).ready(function () {
                 <label class="col-md-3">Submission Form<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                  
-                  
-                  
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
-			 	<c:when test="${val == 'Y'}">
-			   		<select class="chosen-select form-control" disabled="disabled" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
-                       <c:set var="report" value="${clientSubmissionTemplete}"/>
-			           <option value="${report.id}">${report.templateName}</option>
-					</select>
-			    </c:when>
-			    <c:otherwise>
-						<select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
-                       <option value="">-- Select Submission Form --</option>
-                       <c:forEach var="report" items="${clientSubmissionTempletesList}">
-							 <%-- 	<c:if test="${report.id == loginOrgLocId}">   --%>
-			                    	<option value="${report.id}" ${report.id  == requirement.clientSubmissionTemplateId.id  ? 'selected' : ''} >${report.templateName}</option>
-			                 <%--    </c:if>   --%>
-						</c:forEach>
+				 	<c:when test="${val == 'Y'}">
+				   		<select class="chosen-select form-control" disabled="disabled" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
+	                       <c:set var="report" value="${clientSubmissionTemplete}"/>
+				           <option value="${report.id}">${report.templateName}</option>
 						</select>
-				</c:otherwise>
+				    </c:when>
+				    <c:otherwise>
+							<select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
+	                       <option value="">-- Select Submission Form --</option>
+	                       <c:forEach var="report" items="${clientSubmissionTempletesList}">
+								 <%-- 	<c:if test="${report.id == loginOrgLocId}">   --%>
+				                    	<option value="${report.id}" ${report.id  == requirement.clientSubmissionTemplateId.id  ? 'selected' : ''} >${report.templateName}</option>
+				                 <%--    </c:if>   --%>
+							</c:forEach>
+							</select>
+					</c:otherwise>
 				</c:choose>
                   </div>
                 </div>
