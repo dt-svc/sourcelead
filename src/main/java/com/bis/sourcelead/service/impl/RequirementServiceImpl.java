@@ -325,13 +325,15 @@ public class RequirementServiceImpl implements RequirementService {
 						requirement.setDocFile(templateRequirement.getDocFile());
 						requirement.setFileName(templateRequirement.getFileName());
 						requirement.setFileContentType(templateRequirement.getFileContentType());
+						requirement.setIsClientJob("N");
 					 }
-				     requirement.setIsClientJob("N");
 			 }	
 			 
 			 
 			if(jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
+			}else if(jsonObj.has("isClient")){
+				requirement.setIsClientJob("N");
 			}
 		if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient")) &&  jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y")){
 		requirementClient = (jsonObj.getString("isClient"));
