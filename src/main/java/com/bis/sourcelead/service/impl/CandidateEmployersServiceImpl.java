@@ -1,16 +1,21 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -30,6 +35,9 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	 @Autowired
+	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	
 	
 	/**
@@ -88,7 +96,14 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         	candidateEmployers.setUpdatedDate(commonUtil.currentDate());
 		}
 		
-		return candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
+        candidateEmployers = candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
+		
+		/*
+		 * updating Candidate Employer DB data in existing candidateindex
+		 */
+		saveOrUpdateCandidateElkDocumentWithEmployerDetails(candidateId,orgLocationId.getId());
+		
+		return candidateEmployers;
 	}
 	
 	/**
@@ -109,7 +124,14 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		
 		 CandidateEmployers can = candidateEmployersDao.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateEmployerId, candidateId);
 		 can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
-		 return candidateEmployersDao.storeCandidateEmployers(can);
+		 can = candidateEmployersDao.storeCandidateEmployers(can);
+	 
+	     /*
+		 * updating Candidate Employer DB data in existing candidateindex
+		 */
+		 saveOrUpdateCandidateElkDocumentWithEmployerDetails(candidateId,can.getOrgLocationId().getId());
+			
+	    return can;
 	}
 
 	
@@ -189,5 +211,23 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	public CandidateEmployers getCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateId, Long candidateEmployerId)
 			throws Exception {
 		  return candidateEmployersDao.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateEmployerId, candidateId);	}
+
+	@Override
+    @Async
+	public void saveOrUpdateCandidateElkDocumentWithEmployerDetails(Long candidateId,Long locationId) throws Exception {
+		if(null != candidateId){
+			CandidateIndex candidateIndex = new CandidateIndex();
+			candidateIndex.setCandidateId(candidateId);
+			ArrayList<CandidateEmployers> employerList =(ArrayList<CandidateEmployers>) getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateId,locationId);
+			if(null != employerList && !employerList.isEmpty()){
+				ArrayList<String> empList = new ArrayList<>();
+				for(CandidateEmployers employer :employerList){
+					empList.add(employer.getName());
+				}
+				candidateIndex.setEmployer(empList);
+			}
+			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateId.toString());
+		}
+	}
 
 }

@@ -39,11 +39,7 @@ function interviews(dateRange){
 			success : function(data) {
 				var json = JSON.parse(data);
 				if(data != null && data != 'undefined' && data != "" && data != '[]'){
-              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }else{
+              
 	              			$("#today").empty();
 	        	        	$("#upcoming").empty();
 	        	        	$("#previous").empty();
@@ -103,7 +99,6 @@ function interviews(dateRange){
 	            				$("#upcomingTab").removeClass("active");
 	            				$("#previousTab").removeClass("active");
 	            	        }
-              		 	}
 					}else{
 	               	 	$("#today").removeAttr("style");
 	               	 	$("#today").empty();
