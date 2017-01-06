@@ -265,8 +265,18 @@ public class CandidateListRestController {
 				if(jsonObj.has("city")  && StringUtils.isNotEmpty(jsonObj.getString("city"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
 			    }
+				//minExpYears && maxExpYears
+			    if(jsonObj.has("minExpYears") && StringUtils.isNotEmpty(jsonObj.getString("minExpYears")) &&
+			    		jsonObj.has("maxExpYears") && StringUtils.isNotEmpty(jsonObj.getString("maxExpYears"))){
+			    	String minYears= jsonObj.getString("minExpYears").replaceAll("[^0-9\\.]+", "");
+			    	String maxYears= jsonObj.getString("maxExpYears").replaceAll("[^0-9\\.]+", "");
+			    	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("experienceYears").from(new Integer(minYears)).to(new Integer(maxYears)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
 				//minExpYears
-			    if(jsonObj.has("minExpYears") && StringUtils.isNotEmpty(jsonObj.getString("minExpYears"))){
+				else if(jsonObj.has("minExpYears") && StringUtils.isNotEmpty(jsonObj.getString("minExpYears"))){
 			    	String minYears= jsonObj.getString("minExpYears").replaceAll("[^0-9\\.]+", "");
 			    	try{
 			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("experienceYears").gte(new Integer(minYears)));
@@ -274,7 +284,7 @@ public class CandidateListRestController {
 			    	catch(NumberFormatException e){}
 			    }
 			    //maxExpYears
-                if(jsonObj.has("maxExpYears") && StringUtils.isNotEmpty(jsonObj.getString("maxExpYears"))){
+			    else if(jsonObj.has("maxExpYears") && StringUtils.isNotEmpty(jsonObj.getString("maxExpYears"))){
                 	String maxYears= jsonObj.getString("maxExpYears").replaceAll("[^0-9\\.]+", "");
                 	try{
 			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("experienceYears").lte(new Integer(maxYears)));
@@ -285,8 +295,19 @@ public class CandidateListRestController {
 			    if(jsonObj.has("currency") && StringUtils.isNotEmpty(jsonObj.getString("currency"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("expectedRateCurrencey", jsonObj.getString("currency")));
 			    }
+			    
+			     //minRate && //axRate
+			    if(jsonObj.has("minRate") && StringUtils.isNotEmpty(jsonObj.getString("minRate")) 
+			    		&& jsonObj.has("maxRate") && StringUtils.isNotEmpty(jsonObj.getString("maxRate"))){
+			    	String minRate= jsonObj.getString("minRate").replaceAll("[^0-9\\.]+", "");
+			    	String maxRate= jsonObj.getString("maxRate").replaceAll("[^0-9\\.]+", "");
+			    	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("expectedRate").from(new Float(minRate)).to(new Float(maxRate)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
 				//minRate
-			    if(jsonObj.has("minRate") && StringUtils.isNotEmpty(jsonObj.getString("minRate"))){
+			    else if(jsonObj.has("minRate") && StringUtils.isNotEmpty(jsonObj.getString("minRate"))){
 			    	String minRate= jsonObj.getString("minRate").replaceAll("[^0-9\\.]+", "");
 			    	try{
 			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("expectedRate").gte(new Float(minRate)));
@@ -294,7 +315,7 @@ public class CandidateListRestController {
 			    	catch(NumberFormatException e){}
 			    }
 			    //maxRate
-                if(jsonObj.has("maxRate") && StringUtils.isNotEmpty(jsonObj.getString("maxRate"))){
+			    else if(jsonObj.has("maxRate") && StringUtils.isNotEmpty(jsonObj.getString("maxRate"))){
                 	String maxRate= jsonObj.getString("maxRate").replaceAll("[^0-9\\.]+", "");
                 	try{
 			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("expectedRate").lte(new Float(maxRate)));
