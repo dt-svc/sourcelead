@@ -157,6 +157,7 @@ public class RequirementListRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		
 		for(Requirement requirement : requirementList){
 			
@@ -164,7 +165,7 @@ public class RequirementListRestController {
 			requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
 			
 			int totalApplicatsCountForRequirement = 0;
-			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation.getId(),requirement.getId());
+			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation,requirement.getId(),user,userRole);
 			if(totalApplicatsCountForRequirement > 0){
 				requirement.setTotalApplicantsForRequirement(totalApplicatsCountForRequirement); ;
 			}
