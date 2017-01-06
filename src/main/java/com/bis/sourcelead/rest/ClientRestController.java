@@ -777,13 +777,20 @@ public class ClientRestController {
 	
 	
 	@RequestMapping(value = "/getAllOwners")
-	public @ResponseBody String getAllOwners(@RequestParam(value="email", required=false) String email,@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
+	public @ResponseBody String getAllOwners(@RequestParam(value="email", required=false) String email,@RequestParam(value="orgRelationId", required=false) Long orgRelationId,
+			                                 @RequestParam(value="type", required=false) String type,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		String resultJson = null;
+		Long tabType = null;
+		if(null != type && "vendor".equalsIgnoreCase(type)){
+			tabType = Long.valueOf(Constants.TAB_VENDOR);
+		}else if(null != type && "client".equalsIgnoreCase(type)){
+			tabType = Long.valueOf(Constants.TAB_CLIENT);
+		}
 		
 		List<Long> existingOwnerUserIds = orgSpocService.getOwnerUserIdsbySpocEmailAndOrgRelationId(email,orgRelationId);
-		List<User> userList = userService.getUserListExceptExistedUsersList(existingOwnerUserIds,orgLocations.getId());
+		List<User> userList = userService.getUserListExceptExistedUsersList(existingOwnerUserIds,orgLocations.getId(),tabType);
 		resultJson = commonUtil.toJSON(userList);
 		return resultJson;
 
