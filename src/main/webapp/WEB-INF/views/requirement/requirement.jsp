@@ -395,14 +395,27 @@ $(document).ready(function () {
              <div class="input-group">
                 <div class="input-group-btn selp-custom-min">
                   
-                <select class="selectpicker" id="currencyCode" name="currencyCode">
-                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${requirement.currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
-                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                  <select class="selectpicker" id="currencyCode" name="currencyCode">
+               
+                <c:if test="${empty requirement.id}">
+	                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+	                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
+                 
+                 <c:if test="${! empty requirement.id}">
+	                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${requirement.currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+	                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
                 </select>
+                
                 
                
                 
@@ -494,7 +507,7 @@ $(document).ready(function () {
            <div class="form-group">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-             <textarea rows="10" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description"  data-validation-optional="true">${requirement.description}</textarea>
+             <textarea rows="5" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description"  data-validation-optional="true">${requirement.description}</textarea>
             </div>
           </div>
           
@@ -651,44 +664,28 @@ $(document).ready(function () {
               <div class="col-md-9 pras">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
-                  <%-- <c:choose> 
-			 	<c:when test="${val == 'Y'}">
-			   		<div class="input-group-btn selp-custom-min">
-	                  <select class="selectpicker" disabled="disabled" id="clientCurrencyCode" name="clientCurrencyCode">
-		                 <option  ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
-	                </select>
-	                
-	                </div>
-	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
-	                <div class="input-group-btn selp-custom-min">
-	                 <select disabled="disabled" class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Type" value="${requirement.clientRateType}" name="clientRateType">
-	                    
-			                <option value="">Rate Per</option>
-		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-		                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-		                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-		                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-		                    <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-		                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-		                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-	                  </select>
-           			</div>
-			 </c:when>
-			    <c:otherwise> --%>
-						 <div class="input-group-btn selp-custom-min">
-	                  <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
-		                 <option  ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
-	                </select>
+  
+				<div class="input-group-btn selp-custom-min">
+	             <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
+		         
+		          <c:if test="${empty requirement.id}">
+	                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+	                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
+                 
+                 <c:if test="${! empty requirement.id}">
+	                 <option ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${requirement.clientCurrencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+	                 <option ${requirement.clientCurrencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${requirement.clientCurrencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
+                </select>
 	                
 	                </div>
 	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
@@ -1439,18 +1436,6 @@ function getTemplateVal(){
 
 </script>
 
-<!-- <script type="text/javascript">
- function disableMonths() {
-     $("#minExp").change(function() {
-    	 
-         if ($(this).val() == '25+'){
-             $("#maxExp").attr("disabled", true);
-             $("#maxExp").val("disabled", true);
-         }else
-        	 $("#maxExp").attr("disabled", false); 
-     });
- }
- </script> -->
 
 <script>
 function setTemplateValues(){
@@ -2137,7 +2122,7 @@ var existingValue = document.getElementById('isClientJob').value;
 		 $('.selectpicker').selectpicker('refresh');
 		  */
 		  
-		  $("#clientCurrencyCode").val('');
+		 // $("#clientCurrencyCode").val('');
 			
 		 $('#clientRate').val('');
 		 
