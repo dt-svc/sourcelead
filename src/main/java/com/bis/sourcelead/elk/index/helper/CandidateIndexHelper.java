@@ -1,6 +1,7 @@
 package com.bis.sourcelead.elk.index.helper;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -89,11 +90,11 @@ public class CandidateIndexHelper {
 			candidateIndex.setStatus(candidate.getStatus());
 			candidateIndex.setTerminateReason(candidate.getTerminateReason());
 			if(candidate.getCreatedDate() != null){
-				candidateIndex.setCreatedDate(candidate.getCreatedDate());
+				candidateIndex.setCreatedDate(new Date(candidate.getCreatedDate().getTime()));
 			}
 			candidateIndex.setCreatedBy(candidate.getCreatedBy());
 			if(candidate.getUpdatedDate() != null){
-				candidateIndex.setUpdatedDate(candidate.getUpdatedDate());
+				candidateIndex.setUpdatedDate(new Date(candidate.getUpdatedDate().getTime()));
 			}
 			
 			candidateIndex.setUpdatedBy(candidate.getUpdatedBy());

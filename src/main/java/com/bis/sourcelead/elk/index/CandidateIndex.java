@@ -7,7 +7,7 @@ import java.util.Date;
 public class CandidateIndex implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	 
+
 	private Long candidateId;
 
 	private Long orgLocationId;

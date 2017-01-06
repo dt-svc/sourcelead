@@ -265,12 +265,42 @@ public class CandidateListRestController {
 				if(jsonObj.has("city")  && StringUtils.isNotEmpty(jsonObj.getString("city"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
 			    }
-				
+				//minExpYears
+			    if(jsonObj.has("minExpYears") && StringUtils.isNotEmpty(jsonObj.getString("minExpYears"))){
+			    	String minYears= jsonObj.getString("minExpYears").replaceAll("[^0-9\\.]+", "");
+			    	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("experienceYears").gte(new Integer(minYears)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
+			    //maxExpYears
+                if(jsonObj.has("maxExpYears") && StringUtils.isNotEmpty(jsonObj.getString("maxExpYears"))){
+                	String maxYears= jsonObj.getString("maxExpYears").replaceAll("[^0-9\\.]+", "");
+                	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("experienceYears").lte(new Integer(maxYears)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
 				 //Currency
 			    if(jsonObj.has("currency") && StringUtils.isNotEmpty(jsonObj.getString("currency"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("expectedRateCurrencey", jsonObj.getString("currency")));
 			    }
-				
+				//minRate
+			    if(jsonObj.has("minRate") && StringUtils.isNotEmpty(jsonObj.getString("minRate"))){
+			    	String minRate= jsonObj.getString("minRate").replaceAll("[^0-9\\.]+", "");
+			    	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("expectedRate").gte(new Float(minRate)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
+			    //maxRate
+                if(jsonObj.has("maxRate") && StringUtils.isNotEmpty(jsonObj.getString("maxRate"))){
+                	String maxRate= jsonObj.getString("maxRate").replaceAll("[^0-9\\.]+", "");
+                	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("expectedRate").lte(new Float(maxRate)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
 				
 			   //Rate Type
 				if(jsonObj.has("rateType") && StringUtils.isNotEmpty(jsonObj.getString("rateType"))){
