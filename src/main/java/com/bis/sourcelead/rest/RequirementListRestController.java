@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -828,27 +829,29 @@ public class RequirementListRestController {
 		 * @return
 		 * @throws Exception
 		 */
+		@Async
 		@RequestMapping(value = "/getSubmissionsCountBySubmissionStatus" , method = RequestMethod.POST)
 		 @ResponseBody  String getSubmissionsCountBySubmissionStatus(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String submissionType,HttpServletRequest request) throws Exception {
-				String resultJson = null;
-				int numOfShortList = 0;
-				int numOfInterview = 0;
-				int numOfSubmitToClient = 0;
-				int numOfOffers = 0;
-				int numOfRejected = 0;
-				int numofrequestsent = 0;
-				
-
 				
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
+				String resultJson = null;
+				/*int numOfShortList = 0;
+				int numOfInterview = 0;
+				int numOfSubmitToClient = 0;
+				int numOfOffers = 0;
+				int numOfRejected = 0;
+				int numofrequestsent = 0;*/
+				
 				if(requirementId !=null && !requirementId.isEmpty()){
-					List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
 					
-					List<RequirementSubmission> duplicateCount = requirementSubmissionService.duplicateCandidateCountList(Long.parseLong(requirementId), user, loginOrgLocation);
+					Integer applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long.valueOf(requirementId), user, loginOrgLocation, submissionType);
 					
-					if(requirementSubmissions !=null && requirementSubmissions.size() >0){
+					/*List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+					  List<RequirementSubmission> duplicateCount = requirementSubmissionService.duplicateCandidateCountList(Long.parseLong(requirementId), user, loginOrgLocation);
+					
+					 if(requirementSubmissions !=null && requirementSubmissions.size() >0){
 						for(RequirementSubmission rmentSubmission :requirementSubmissions){
 							
 							if("SHORTLIST".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
@@ -887,9 +890,31 @@ public class RequirementListRestController {
 							}
 						}
 					}
+					resultJson = commonUtil.toJSON(requirementSubmissions);*/
 					
-					
-					resultJson = commonUtil.toJSON(requirementSubmissions);
+					resultJson = commonUtil.toJSON(applicantsCount);
+				}
+				return resultJson;
+		}
+		
+		/**
+		 * @author Prasad salina
+		 * @param requirementId
+		 * @param submissionType
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@Async
+		@RequestMapping(value = "/getDuplicateSubmissionsCountByRequirementId" , method = RequestMethod.POST)
+		 @ResponseBody  String getDuplicateSubmissionsCountByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
+				String resultJson = null;
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				
+				if(requirementId !=null && !requirementId.isEmpty()){
+					Integer duplicateApplicantscount = requirementSubmissionService.duplicateCandidateCountsByRequirementId(Long.valueOf(requirementId), user, loginOrgLocation);
+					resultJson = commonUtil.toJSON(duplicateApplicantscount);
 				}
 				return resultJson;
 		}

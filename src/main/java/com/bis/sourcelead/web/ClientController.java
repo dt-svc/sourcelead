@@ -132,7 +132,8 @@ public class ClientController {
 			model.addObject("clientsList", clientsList);
 			
 			//for get the owners list for spocs
-			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			//List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
 			model.addObject("userList", userList);
 			
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
