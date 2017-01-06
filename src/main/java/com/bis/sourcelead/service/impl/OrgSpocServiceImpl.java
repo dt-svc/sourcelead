@@ -238,8 +238,13 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		    	   StringBuilder spocNameSB = new StringBuilder();
 				   StringBuilder ownerNameSB = new StringBuilder();
 		    	 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
-		    	 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());  
-			     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+		    	 if(orgSpoc.getOwnerUser().getLastName()!=null){
+		    		 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());  
+		    	 }
+		    	 else{
+		    		 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getOwnerUser().getFirstName()).toString());
+		    	 }
+		    	 orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
 			     orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 			     orgSpoc.setSpocFirstName(orgSpoc.getOwnerUser().getFirstName());
 			     orgSpoc.setSpocLastName(orgSpoc.getOwnerUser().getLastName());
@@ -259,8 +264,13 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		    		 StringBuilder spocNameSB1 = new StringBuilder();
 					 StringBuilder ownerNameSB1 = new StringBuilder();
 		    		 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-					 orgSpoc.setSpocName(spocNameSB1.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-					 orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
+		    		 if(orgSpoc.getSpocUser().getLastName()!=null){
+		    			 orgSpoc.setSpocName(spocNameSB1.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+		    		 }
+		    		 else{
+		    			 orgSpoc.setSpocName(spocNameSB1.append(orgSpoc.getSpocUser().getFirstName()).toString());
+		    		 }
+		    		 orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
 					 orgSpoc.setOwnerName(ownerNameSB1.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
 					 orgSpoc.setSpocFirstName(orgSpoc.getSpocUser().getFirstName());
 				     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
@@ -280,7 +290,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					StringBuilder spocNameSB2 = new StringBuilder();
 					 StringBuilder ownerNameSB2 = new StringBuilder();
 					 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
-					 orgSpoc.setSpocName(spocNameSB2.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+					 if(orgSpoc.getOwnerUser().getLastName()!=null){
+						 orgSpoc.setSpocName(spocNameSB2.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+					 }
+					 else{
+						 orgSpoc.setSpocName(spocNameSB2.append(orgSpoc.getOwnerUser().getFirstName()).toString());
+					 }
 					 orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
 					 orgSpoc.setOwnerName(ownerNameSB2.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 					 orgSpoc.setSpocFirstName(orgSpoc.getOwnerUser().getFirstName());
