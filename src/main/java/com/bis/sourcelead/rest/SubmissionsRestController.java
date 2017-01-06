@@ -429,6 +429,7 @@ public class SubmissionsRestController {
 
 		String resultJson = null;
 
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		StringBuilder skillsList = new StringBuilder();
 		Set<CandidateSkills> candidateSkills = submission.getCandidate().getCandidateSkills();
@@ -444,6 +445,7 @@ public class SubmissionsRestController {
 		}
 
 		submission.setSkillsList(skillsList.toString());
+		submission.setRequirementSubmissionTemplateFields(requirementSubmissionTemplateFields);
 		resultJson = toJSON(submission);
 		return resultJson;
 
