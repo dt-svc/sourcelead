@@ -972,7 +972,7 @@ $(document).ready(function () {
                             <label class="col-lg-4">Team Name <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                               <!-- <input type="text" class="form-control" value=""> -->
-                              <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">
+                              <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="">
                               </div>
                             </div>
                             <div class="form-group">
@@ -1141,7 +1141,7 @@ function storeTeam(){
 			
 			$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success :function(data) { 
 						$('#addTeam').modal('hide');
 				      }, 
