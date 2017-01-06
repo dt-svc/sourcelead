@@ -284,7 +284,12 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		try {
 			isCLientExist =  orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
 			if(isCLientExist){
+				if(responderType.equalsIgnoreCase("Client")){
 				client.setReason("duplicate client");
+				}
+				if(responderType.equalsIgnoreCase("Vendor")){
+					client.setReason("duplicate vendor");
+					}
 				isCLientExist = true;
 			}
 		} catch (Exception e) {
