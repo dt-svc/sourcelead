@@ -502,7 +502,16 @@ $(document).ready(function () {
             
             <label class="col-md-3">Is Template</label>
             <div class="col-md-9">
-            <input type="checkbox" name="isTemplate" id="isTemplate" value="" onclick="getTemplateVal();">
+            
+            <c:set var="val" value="${requirement.isClientJob}"/>
+			<c:choose> 
+			  <c:when test="${val == 'Y'}">
+			   		    <input disabled="disabled" type="checkbox" name="isTemplate" id="isTemplate" value="" onclick="getTemplateVal();">
+			  </c:when>
+			  <c:otherwise>
+						<input type="checkbox" name="isTemplate" id="isTemplate" value="" onclick="getTemplateVal();">
+			  </c:otherwise>
+			</c:choose>
 		    </div>
         </div>
         
@@ -512,17 +521,18 @@ $(document).ready(function () {
 	        <c:if test="${(SourceLeadWeb_vms == 'Y' && SourceLeadWeb_ats == 'Y') || (SourceLeadWeb_vms != 'Y')}">
 	        
 	        <c:set var="val" value="${requirement.isClientJob}"/>
-			<%-- <c:choose> 
+			<c:choose> 
 			  <c:when test="${val == 'Y'}">
 			   				<div class="ml">
-					            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
+			   				<!-- here the isClient checkbox name is changes to isClientEdit because, readonly check box is not working and onclick methods are effected (Venkat Kesav) -->
+					            <input type="checkbox" name="isClientEdit" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 					            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();" disabled="disabled" checked="checked">
 					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 					            &nbsp;&nbsp;
 					            </label>
 						  	</div>
 			  </c:when>
-						  <c:otherwise> --%>
+						  <c:otherwise>
 						   <div class="ml">
 							  <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 							   ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
@@ -530,8 +540,8 @@ $(document).ready(function () {
 								&nbsp;&nbsp;
 							   </label>
 							</div>
-						 <%--  </c:otherwise>
-			</c:choose> --%>
+						 </c:otherwise>
+			</c:choose>
 	        </c:if>
 	      
           <div id="clientDetails" style="display: none;">
@@ -540,25 +550,23 @@ $(document).ready(function () {
             </div>
             <div class="clearfix">
               <div class="form-group">
-                <label class="col-md-3">Client <span class="text-danger">*</span></label>
+                <label class="col-md-3">Client<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
                    <c:set var="val" value="${requirement.isClientJob}"/>
-                   <%-- <c:choose> 
+                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
-			   				<select class="chosen-select form-control select-bg" disabled="disabled" data-validation-optional="true" field-name = "Client" name="selectClient" id="addClientId" onchange="getContactList(this); getClientSubmissionTemplates(this); ">
-                    			<option value="">-- Select Client --</option>
-	                   			 <c:forEach var="report" items="${add_clientList}">
+			   				<select class="chosen-select form-control select-bg" disabled="disabled" data-validation-optional="true" field-name = "Client" name="selectClient" id="addClientId">
+                    			<c:set var="report" value="${orgClient}"/>
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
-			                    	<option disabled="disabled" value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
+			                    	<option selected="selected" value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
 			                    </c:if>  
 			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<option disabled="disabled" value="${report.id},${report.locationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+			                  	 	<option selected="selected" value="${report.id},${report.locationId.id}">${report.locationId.org.orgName}</option>
 			                    </c:if>
-								</c:forEach>
                    		    </select>
 						 </c:when>
-						  <c:otherwise> --%>
+						  <c:otherwise>
 						   <select class="chosen-select form-control select-bg" data-validation-optional="true" field-name = "Client" name="selectClient" id="addClientId" onchange="getContactList(this); getClientSubmissionTemplates(this); ">
                     		 <option value="">-- Select Client --</option>
 	                    	  <c:forEach var="report" items="${add_clientList}">
@@ -569,9 +577,9 @@ $(document).ready(function () {
 			                  	 	<option value="${report.id},${report.locationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 			                    </c:if>
 							</c:forEach>
-                    </select>
-						  <%-- </c:otherwise>
-				</c:choose> --%>
+                    	  </select>
+						  </c:otherwise>
+				</c:choose>
                 
                 
                     <%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')">
@@ -618,17 +626,17 @@ $(document).ready(function () {
                 <div class="col-md-9">
                   <div class="form-icon">
                   <c:set var="val" value="${requirement.isClientJob}"/>
-                  <%-- <c:choose> 
+                  <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
 			   				<select class="chosen-select form-control" disabled="disabled" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
                       			 <option value=''>-- Select Contact --</option>
                       			 <c:forEach var="report" items="${clientContactList}">
-			         		<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option>
+			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
 			         				<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option> 
 					    		 </c:forEach>
                     		</select>
 						 </c:when>
-					<c:otherwise> --%>
+					<c:otherwise>
 						  <select class="chosen-select form-control" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
                      			 <option value=''>-- Select Contact --</option>
                       			 <c:forEach var="report" items="${clientContactList}">
@@ -636,8 +644,8 @@ $(document).ready(function () {
 			         		     <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option> 
 					     		 </c:forEach>
                     	</select>
-				    <%-- </c:otherwise>
-				</c:choose> --%>
+				    </c:otherwise>
+				</c:choose>
                     
                     <%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')">
                     <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i>
@@ -651,7 +659,7 @@ $(document).ready(function () {
               <div class="col-md-9 pras">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
-                  <%-- <c:choose> 
+                  <c:choose> 
 			 	<c:when test="${val == 'Y'}">
 			   		<div class="input-group-btn selp-custom-min">
 	                  <select class="selectpicker" disabled="disabled" id="clientCurrencyCode" name="clientCurrencyCode">
@@ -679,7 +687,7 @@ $(document).ready(function () {
 	                  </select>
            			</div>
 			 </c:when>
-			    <c:otherwise> --%>
+			    <c:otherwise>
 						 <div class="input-group-btn selp-custom-min">
 	                  <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
 		                 <option  ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}>INR</option>
@@ -705,8 +713,8 @@ $(document).ready(function () {
 		                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
 	                  </select>
            			</div>
-				<%-- </c:otherwise>
-				</c:choose> --%>
+				</c:otherwise>
+				</c:choose>
 	                
               </div>
               </div>
@@ -721,18 +729,14 @@ $(document).ready(function () {
                   
                   
                   <c:set var="val" value="${requirement.isClientJob}"/>
-                  <%-- <c:choose> 
+                  <c:choose> 
 			 	<c:when test="${val == 'Y'}">
 			   		<select class="chosen-select form-control" disabled="disabled" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
-                       <option value="">-- Select Submission Form --</option>
-                       <c:forEach var="report" items="${clientSubmissionTempletesList}">
-							 	<c:if test="${report.id == loginOrgLocId}">  
-			                    	<option value="${report.id}" ${report.id  == requirement.clientSubmissionTemplateId.id  ? 'selected' : ''} >${report.templateName}</option>
-			                    </c:if>  
-						</c:forEach>
+                       <c:set var="report" value="${clientSubmissionTemplete}"/>
+			           <option value="${report.id}">${report.templateName}</option>
 					</select>
 			    </c:when>
-			    <c:otherwise> --%>
+			    <c:otherwise>
 						<select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
                        <option value="">-- Select Submission Form --</option>
                        <c:forEach var="report" items="${clientSubmissionTempletesList}">
@@ -741,8 +745,8 @@ $(document).ready(function () {
 			                 <%--    </c:if>   --%>
 						</c:forEach>
 						</select>
-				<%-- </c:otherwise>
-				</c:choose> --%>
+				</c:otherwise>
+				</c:choose>
                   </div>
                 </div>
               </div>
