@@ -65,13 +65,7 @@ function requirementTemplateList(){
            url: sourceleadUrl+"/getRequirementTemplateListByOrgLocationsId?${_csrf.parameterName}=${_csrf.token}",    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
+               		
 			    	     $("#requirementTemplateList").removeAttr("style");
 	                	 $("#requirementTemplateList").empty();
 	                	 
@@ -124,7 +118,7 @@ function requirementTemplateList(){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     $("#requirementTemplateList").append(result); 
-			    	} 
+			    	
                  }else{
                  	 $("#requirementTemplateList").removeAttr("style");
    	    	         var result ="";

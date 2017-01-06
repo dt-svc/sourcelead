@@ -2133,7 +2133,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 globalVarsMap.put("EmploymentType","--");
 		 }
 		 
-		 if(reqRateNegotiation.getExpectedRate() != null && !"".equalsIgnoreCase(reqRateNegotiation.getExpectedRate())){
+		 
+		 if( reqRateNegotiation !=null && reqRateNegotiation.getExpectedRate() != null && !"".equalsIgnoreCase(reqRateNegotiation.getExpectedRate())){
 			 globalVarsMap.put("Rate", reqRateNegotiation.getExpectedRate());
 		 }else{
 			 globalVarsMap.put("Rate","--");
