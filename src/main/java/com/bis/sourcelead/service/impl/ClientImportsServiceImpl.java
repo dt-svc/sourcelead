@@ -19,7 +19,6 @@ import org.apache.poi.hssf.usermodel.HSSFName;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.CellRangeAddressList;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataValidation;
@@ -27,6 +26,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
@@ -787,7 +787,6 @@ public class ClientImportsServiceImpl implements ClientImportsService{
  * @return
  */
 		private DataValidation getDropDownListForCell(String[] dropDownList, int column) {
-			@SuppressWarnings("deprecation")
 			  CellRangeAddressList addressList = new CellRangeAddressList(1,500,column,column);
 			  DVConstraint dvConstraint = DVConstraint.createExplicitListConstraint(dropDownList);
 			  DataValidation dataValidation = new HSSFDataValidation(addressList, dvConstraint);
@@ -817,21 +816,6 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		
 		
 		public File getClientContactsTemplate(Long orgLocationId) throws Exception {
-			/*Workbook wb = (Workbook) new HSSFWorkbook();
-			Sheet sheet = wb.createSheet("clientContact");
-			sheet = setCLirntTemplateHeaders(sheet);
-			String[] vendorsList = getClientList(orgLocationId);
-		    sheet.addValidationData(getDropDownListForCell(vendorsList,0,"xls"));
-			sheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN,5,"xls"));
-			File file = new File("clients_contacts_Import.xls");
-			FileOutputStream fos = new FileOutputStream(file);
-			try {
-				wb.write(fos);
-				fos.close();
-			} catch (IOException e) {
-				logger.error("template download failed due to "+e.getMessage());
-			}
-			return file;*/
 			HSSFWorkbook workbook = new HSSFWorkbook();
 			HSSFSheet realSheet = workbook.createSheet("clientContact");
 			realSheet = setCLirntTemplateHeaders(realSheet);
@@ -886,21 +870,6 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		}
 
 		public File getVendorContactsTemplate(Long orgLocationId) throws Exception {
-	/*		Workbook wb = (Workbook) new HSSFWorkbook();
-			Sheet sheet = wb.createSheet("vendorContact");
-			sheet = setTemplateHeaders(sheet);
-			String[] vendorsList = getVendorsList(orgLocationId);
-		    sheet.addValidationData(getDropDownListForCell(vendorsList,0,"xls"));
-			sheet.addValidationData(getDropDownListForCell(Constants.VENDOR_CONTACTS_STATUS_DROPDOWN,5,"xls"));
-			File file = new File("vendors_contacts_Import.xls");
-			FileOutputStream fos = new FileOutputStream(file);
-			try {
-				wb.write(fos);
-				fos.close();
-			} catch (IOException e) {
-				logger.error("template download failed due to "+e.getMessage());
-			}
-			return file;*/
 			
 			//modified by prasanna vadla
  			
