@@ -159,6 +159,7 @@ public class Constants {
 	public static String CLIENT_RATE_NEGOTIATION = "ClientRateNegotiation";
 	public static String VENDOR_RATE_NEGOTIATION = "VendorRateNegotiation";
 	public static String USER_ACCEPT_RATE_NEGOTIATION = "UserAcceptRateNegotiation";
+	public static String USER_REJECT_RATE_NEGOTIATION = "UserRejectRateNegotiation";
 
 
 
