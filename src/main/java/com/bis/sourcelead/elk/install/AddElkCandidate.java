@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -72,15 +73,31 @@ public class AddElkCandidate{
 					candidateIndex.setAddress(rs.getString("ADDRESS"));
 					candidateIndex.setSummary(rs.getString("SUMMARY"));
 					candidateIndex.setCandidateType(rs.getString("CANDIDATE_TYPE"));
-					candidateIndex.setExperienceYears(rs.getString("EXPERIENCE_YEARS"));
-					candidateIndex.setExperienceMonths(rs.getString("EXPERIENCE_MONTHS"));
+					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_YEARS"))){
+						if(rs.getString("EXPERIENCE_YEARS").equalsIgnoreCase("25+")){
+							candidateIndex.setExperienceYears(26);
+						}
+						else{
+							candidateIndex.setExperienceYears(Integer.parseInt(rs.getString("EXPERIENCE_YEARS")));
+						}
+					}
+					
+					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_MONTHS"))){
+						candidateIndex.setExperienceMonths(Integer.parseInt(rs.getString("EXPERIENCE_MONTHS")));
+					}
 					candidateIndex.setDesignation(rs.getString("DESIGNATION"));
 					candidateIndex.setDesignationType(rs.getString("DESIGNATION_TYPE"));
 					candidateIndex.setNoticePriod(rs.getString("NOTICE_PERIOD"));
-					candidateIndex.setCurrentRate(rs.getString("CURRENT_RATE"));
 					candidateIndex.setCurrentRateType(rs.getString("CURRENT_RATE_TYPE"));
 					candidateIndex.setCurrentRateCurrency(rs.getString("CURRENT_RATE_CURRENCY"));
-					candidateIndex.setExpectedRate(rs.getString("EXPECTED_RATE"));
+					
+					if(StringUtils.isNotEmpty(rs.getString("CURRENT_RATE"))){
+						candidateIndex.setCurrentRate(Float.parseFloat(rs.getString("CURRENT_RATE")));
+					}
+					
+					if(StringUtils.isNotEmpty(rs.getString("EXPECTED_RATE"))){
+						candidateIndex.setExpectedRate(Float.parseFloat(rs.getString("EXPECTED_RATE")));
+					}
 					candidateIndex.setRateType(rs.getString("RATE_TYPE"));
 					candidateIndex.setExpectedRateCurrencey(rs.getString("EXPECTED_RATE_CURRENCY"));
 					candidateIndex.setInvitationstatus(rs.getString("INVITATION_STATUS"));
