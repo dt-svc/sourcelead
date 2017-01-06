@@ -123,7 +123,7 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEmployers  cEmp left join fetch cEmp.candidateId where cEmp.id = :candidateEmployersId and cEmp.candidateId.id = :candidateId ";
+		String query = "from CandidateEmployers  cEmp left join fetch cEmp.candidateId left join fetch cEmp.orgLocationId where cEmp.id = :candidateEmployersId and cEmp.candidateId.id = :candidateId ";
 		List<CandidateEmployers> employersList =  session.createQuery(query.toString()).setLong("candidateEmployersId", candidateEmployersId).setLong("candidateId", candidateId)
 				.setCacheable(true).list();
 		

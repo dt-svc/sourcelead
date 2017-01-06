@@ -194,10 +194,15 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public ProjectApproverHierarchy getApproverUsersByProjectIdLevel1(Long projectId, Long userId) {
+		ProjectApproverHierarchy projectApproverHierarchy = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId  and projectHirachy.level=1 ";
 		List<ProjectApproverHierarchy> projectApproverHierarchies =  session.createQuery(query.toString()).setLong("projectId", projectId).setCacheable(true).list();
-		 return projectApproverHierarchies.get(0);
+		if(projectApproverHierarchies != null){
+			return projectApproverHierarchy = projectApproverHierarchies.get(0);	
+		}
+		return projectApproverHierarchy;
+		
 	}
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	

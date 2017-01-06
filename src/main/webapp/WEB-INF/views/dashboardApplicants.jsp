@@ -31,11 +31,7 @@ function ApplicantAuthorization(status){
 			success : function(data) {
 				var json = JSON.parse(data);
 				if(data != null && data != 'undefined' && data != "" && data != '[]'){
-              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }else{
+              		
 	              			$("#accepted").empty();
 	        	        	$("#requestSent").empty();
 	              			$("#accepted").removeAttr("style");
@@ -113,7 +109,6 @@ function ApplicantAuthorization(status){
 	            				$("#requestSentTab").removeClass("active");
 	            				
 	            	        } 
-              		 	}
 					}else{
 	               	 	$("#accepted").removeAttr("style");
 	               	 	$("#accepted").empty();
