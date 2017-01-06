@@ -396,13 +396,26 @@ $(document).ready(function () {
                 <div class="input-group-btn selp-custom-min">
                   
                 <select class="selectpicker" id="currencyCode" name="currencyCode">
-                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${requirement.currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
-                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+               
+                <c:if test="${empty requirement.id}">
+	                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+	                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
+                 
+                 <c:if test="${! empty requirement.id}">
+	                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${requirement.currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+	                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
                 </select>
+                
                 
                
                 
