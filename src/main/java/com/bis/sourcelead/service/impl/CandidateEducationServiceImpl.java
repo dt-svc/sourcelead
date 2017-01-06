@@ -132,7 +132,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		candidateEducation = candidateEducationDao.storeCandidateEducation(candidateEducation);
 		
 		/*
-		 * updating Candidate Skills DB data in existing candidateindex
+		 * updating Candidate Education DB data in existing candidateindex
 		 */
 		saveOrUpdateCandidateElkDocumentWithEducationDetails(candidateEducation.getCandidateId(),orgLocationId);
 		
