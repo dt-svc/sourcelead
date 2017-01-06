@@ -123,7 +123,7 @@ public interface UserService  {
 	 * @param orgLocationsId,teamOwnerUserId
 	 * @return List<User> 
 	 */
-	List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId ,Long orgLocationsId) throws Exception;
+	List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId ,Long orgLocationsId, Long tabId) throws Exception;
 
 	/**
 	 * Rajashekar
@@ -132,6 +132,8 @@ public interface UserService  {
 	 * @return List<User>
 	 */
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
+	
+	List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
 	
 	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId)throws Exception;
 

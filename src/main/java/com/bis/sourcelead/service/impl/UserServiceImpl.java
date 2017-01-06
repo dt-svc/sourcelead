@@ -646,9 +646,9 @@ public class UserServiceImpl implements UserService {
 	 */
 	
 	@Override
-	public List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId, Long orgLocationsId)
+	public List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId, Long orgLocationsId, Long tabId)
 			throws Exception {
-		return userDao.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId,orgLocationsId);
+		return userDao.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId,orgLocationsId, tabId);
 	}
 
 	
@@ -785,6 +785,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> getUsersByTeamType(Long id, String teamType) throws Exception {
 		return userDao.getUsersByTeamType(id,teamType);
+	}
+	
+	@Override
+	public List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId) throws Exception {
+		return userDao.getUsersByTeamTypeAndTabId(id,teamType,tabId);
 	}
 
 

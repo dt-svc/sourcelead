@@ -273,6 +273,16 @@ public class RequirementRestController {
 								} else if (status.equalsIgnoreCase("REJECTED")) {
 									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
 								}
+								 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
+								RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
+						    	 List<RequirementAssignTo> reqAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirementId,orgLocation.getId());
+					    			if(hierarchy!= null && "APPROVED".equals(hierarchy.getRequirementApproverStatus().toString())){
+					    				for(RequirementAssignTo reqAssign:reqAssignTo ){
+												if(reqAssign.getAssignUserId() != null && !loginUser.getId().equals(reqAssign.getAssignUserId().getId())){
+													requirementService.AssignToTeamMembersEmail(loginUser, reqAssign.getAssignUserId(), requirement,new StringBuilder(),orgLocation);
+												}
+					    				}
+					    		}
 						}else{
 
 							    RequirementApproverHierarchy level2approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
@@ -451,29 +461,30 @@ public class RequirementRestController {
 		
 	    // This is made static as requirment action id is 146
 		
-		String requirementActionId = "146";
 		ArrayList<User> mynewList =  new ArrayList<User>();
-		List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
-        
+		List<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
+       
+		//   Commented because Team Lead not required to show in team Members List By Default he is added in to the  RequirementAssignTo
+		
+		/*
 		// adding team owner as  a Team Member
 		if(!teamType.equalsIgnoreCase("") && !teamType.equalsIgnoreCase("undefined") && !teamType.contains("role") && !teamType.contains("All")){
 			Team team = teamService.getTeamByTeamId(Long.parseLong(teamType));
 			usersList.add(team.getOwnerUserId());
-		}
+		}*/
+		
+		
 		for(User user : usersList){
 	            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId());
 	            user.setAssignJobCount(assign.size());
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
 				if(userRole !=null){
 					user.setUserType(userRole.getUserType());
-					 boolean requirementAction  = sourceleadRolesService.roleHaveActionAccessOrNot(requirementActionId,userRole.getUserType());
-					 if (requirementAction){
-						 mynewList.add(user);
-					    }
+					 mynewList.add(user);
 				}
 		   }
 		
-		resultJson = commonUtil.toJSON(mynewList);
+		resultJson = commonUtil.toJSON(usersList);
 		return resultJson;
 		
 		/*List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
@@ -689,7 +700,7 @@ public class RequirementRestController {
 		    }
 	 
 	 
-	 @RequestMapping(value = "/terminateRequirementTemplate", method = RequestMethod.POST)
+	 /*@RequestMapping(value = "/terminateRequirementTemplate", method = RequestMethod.POST)
 		public @ResponseBody String terminateRequirementTemplate(String requirementId, String status, HttpServletRequest request) throws Exception {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -709,6 +720,6 @@ public class RequirementRestController {
 				requirementService.updateRequirementTemplate(rt);
 			}
 			return "success";
-		}
+		}*/
 
 }

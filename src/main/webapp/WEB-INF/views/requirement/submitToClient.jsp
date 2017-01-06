@@ -83,6 +83,12 @@ function submitToClient(requirementId){
 		    		for(var i=0; i<json.length; i++){
 		    			var report = json[i];
 		    			
+		    			if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
+	   	        			orgName = "("+report.orgName+")";
+	   	        		}else{
+	   	        			orgName = "";
+	   	        		}
+		    			
 	    			    result = result + '<tr>';
 	    			    result = result + '<td><input type="checkbox"  class="shortlistedChecks" value='+report.id+' name="shortlist[]" ></td>';
 	    			    
@@ -132,7 +138,7 @@ function submitToClient(requirementId){
 			    	     }
 			           
 			           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.userName+'</span></div></td>';
+			        	   result = result + '<td><div><span>'+report.userName+''+orgName+'</span></div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
@@ -540,11 +546,13 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate){
 	          	     dataType : 'json',
 					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate,
 					success : function(result) {
+
 						$(".submitnew-wrap").removeClass("submitnew-wrap_active");
-			    		$(".side_mask").fadeOut(200);
-			    		$("body").css('overflow-y', 'auto');
-			    		var allApplicants = 'all';
-			    		requirementPipeline(requirementId,allApplicants);
+						$(".new_side_wrap").removeClass("new_side_wrap_active");
+                        $(".side_mask").fadeOut(200);
+                        $("body").css('overflow-y', 'auto');
+                        var allApplicants = 'all';
+                        requirementPipeline(requirementId,allApplicants); 
 					},
 				}); 
 	 }

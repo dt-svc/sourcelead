@@ -139,7 +139,7 @@ public class UserMailBox implements Serializable{
 	
 	//to calculate days
 	@Transient
-	private Long calDays;
+	private String calDays;
 	
 	@Transient
 	List<Candidate> candidatesList;
@@ -315,11 +315,13 @@ public class UserMailBox implements Serializable{
 		this.dateValue = dateValue;
 	}
 
-	public Long getCalDays() {
+	
+
+	public String getCalDays() {
 		return calDays;
 	}
 
-	public void setCalDays(Long calDays) {
+	public void setCalDays(String calDays) {
 		this.calDays = calDays;
 	}
 
