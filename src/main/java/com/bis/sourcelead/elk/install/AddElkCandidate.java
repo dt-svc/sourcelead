@@ -76,6 +76,7 @@ public class AddElkCandidate{
 					candidateIndex.setExperienceMonths(rs.getString("EXPERIENCE_MONTHS"));
 					candidateIndex.setDesignation(rs.getString("DESIGNATION"));
 					candidateIndex.setDesignationType(rs.getString("DESIGNATION_TYPE"));
+					candidateIndex.setNoticePriod(rs.getString("NOTICE_PERIOD"));
 					candidateIndex.setCurrentRate(rs.getString("CURRENT_RATE"));
 					candidateIndex.setCurrentRateType(rs.getString("CURRENT_RATE_TYPE"));
 					candidateIndex.setCurrentRateCurrency(rs.getString("CURRENT_RATE_CURRENCY"));
@@ -139,7 +140,19 @@ public class AddElkCandidate{
 								}
 		    	           }
 							
-							
+						   String sql5= "SELECT * FROM sourcelead.CANDIDATE_CERTIFICATIONS candidateCertifications where candidateCertifications.CANDIDATE_ID = '"+ candidateId+"' ";
+						   Statement stmt5 = conn.createStatement();
+							ResultSet rs5 = stmt5.executeQuery(sql5);
+							if(rs5 != null){
+								ArrayList<String> certList = new ArrayList<>();
+								 while(rs5.next()){
+									 certList.add(rs5.getString("NAME"));
+							    }
+							    if(null != certList && !certList.isEmpty()){
+									candidateIndex.setCertifications(certList);
+								}
+		    	           }
+								
 						   String sql4= "SELECT * FROM sourcelead.CANDIDATE_RESUMES candidateResumes where candidateResumes.CANDIDATE_ID = '"+ candidateId+"'  and candidateResumes.CREATED_DATE IN (SELECT max(canresume.CREATED_DATE) FROM sourcelead.CANDIDATE_RESUMES canresume where canresume.CANDIDATE_ID = '"+ candidateId+"' and canresume.status = '1') and candidateResumes.status = '1' ";
 						   Statement stmt4 = conn.createStatement();
 							ResultSet rs4 = stmt4.executeQuery(sql4);
