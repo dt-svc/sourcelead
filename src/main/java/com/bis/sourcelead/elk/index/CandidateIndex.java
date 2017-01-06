@@ -7,7 +7,7 @@ import java.util.Date;
 public class CandidateIndex implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	 
+
 	private Long candidateId;
 
 	private Long orgLocationId;
@@ -78,7 +78,7 @@ public class CandidateIndex implements Serializable {
 
 	private String updatedBy;
 	
-    private Integer noticePriod;
+    private String noticePriod;
 	
 	private Long currentResumeId;
 	
@@ -366,11 +366,11 @@ public class CandidateIndex implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public Integer getNoticePriod() {
+	public String getNoticePriod() {
 		return noticePriod;
 	}
 
-	public void setNoticePriod(Integer noticePriod) {
+	public void setNoticePriod(String noticePriod) {
 		this.noticePriod = noticePriod;
 	}
 

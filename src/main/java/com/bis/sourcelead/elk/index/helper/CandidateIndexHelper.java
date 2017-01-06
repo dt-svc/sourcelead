@@ -1,6 +1,7 @@
 package com.bis.sourcelead.elk.index.helper;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,6 +37,7 @@ public class CandidateIndexHelper {
 			candidateIndex.setState(candidate.getState());
 			candidateIndex.setCity(candidate.getCity());
 			candidateIndex.setAddress(candidate.getAddress());
+			candidateIndex.setNoticePriod(candidate.getNoticePeriod());
 			candidateIndex.setSummary(candidate.getSummary());
 			candidateIndex.setCandidateType(candidate.getCandidateType());
 			if(null != candidate.getCandidateSkills() && !candidate.getCandidateSkills().isEmpty()){
@@ -87,9 +89,14 @@ public class CandidateIndexHelper {
 			candidateIndex.setInvitationstatus(candidate.getInvitationstatus());
 			candidateIndex.setStatus(candidate.getStatus());
 			candidateIndex.setTerminateReason(candidate.getTerminateReason());
-			candidateIndex.setCreatedDate(candidate.getCreatedDate());
+			if(candidate.getCreatedDate() != null){
+				candidateIndex.setCreatedDate(new Date(candidate.getCreatedDate().getTime()));
+			}
 			candidateIndex.setCreatedBy(candidate.getCreatedBy());
-			candidateIndex.setUpdatedDate(candidate.getUpdatedDate());
+			if(candidate.getUpdatedDate() != null){
+				candidateIndex.setUpdatedDate(new Date(candidate.getUpdatedDate().getTime()));
+			}
+			
 			candidateIndex.setUpdatedBy(candidate.getUpdatedBy());
 		}
 		

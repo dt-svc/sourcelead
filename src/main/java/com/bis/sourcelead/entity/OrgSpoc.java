@@ -127,6 +127,15 @@ public class OrgSpoc implements Serializable{
 	private String releasedRequirement;
 	
 	@Transient
+	private String clientCurrencyCode;
+	
+	@Transient
+	private String clientRate;
+	
+	@Transient
+	private String clientRateType;
+	
+	@Transient
 	private String msg;
 
 	public Long getSpocLocationId() {
@@ -383,4 +392,29 @@ public class OrgSpoc implements Serializable{
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
+
+	public String getClientCurrencyCode() {
+		return clientCurrencyCode;
+	}
+
+	public void setClientCurrencyCode(String clientCurrencyCode) {
+		this.clientCurrencyCode = clientCurrencyCode;
+	}
+
+	public String getClientRate() {
+		return clientRate;
+	}
+
+	public void setClientRate(String clientRate) {
+		this.clientRate = clientRate;
+	}
+
+	public String getClientRateType() {
+		return clientRateType;
+	}
+
+	public void setClientRateType(String clientRateType) {
+		this.clientRateType = clientRateType;
+	}
+	
 }
