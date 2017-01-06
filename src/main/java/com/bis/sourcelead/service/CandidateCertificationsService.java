@@ -57,7 +57,7 @@ public interface CandidateCertificationsService {
 	 */
 	public CandidateCertifications getCandidateCertificateBycandidateIdandCertificateId(Long candidateId,Long candidateCertificateId)  throws Exception;
 	
-	
+	public void saveOrUpdateCandidateElkDocumentWithCertificationDetails(Long candidateId,Long locationId) throws Exception;
 
 	
 }
