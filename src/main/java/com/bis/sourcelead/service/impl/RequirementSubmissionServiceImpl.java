@@ -2179,10 +2179,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	        		
 	                reqsub.setCandidateName(sb.append(reqsub.getCandidate().getFirstName()).append(" ").append(reqsub.getCandidate().getLastName()).toString());
         	}else{
-        		
                     reqsub.setCandidateName(sb.append(reqsub.getCandidate().getFirstName()).toString());
         	}
-        	
+        	reqsub.setRequirementId(reqsub.getRequirement().getId());
         	StringBuilder jbt = new  StringBuilder();
             reqsub.setRequirementName(jbt.append(reqsub.getRequirement().getJobTitle()).toString());
             /*if("ACCEPTED".equalsIgnoreCase(reqsub.getSubmissionRateStatus().toString())){
