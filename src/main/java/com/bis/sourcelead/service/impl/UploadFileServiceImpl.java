@@ -662,7 +662,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 					if (rate != null && !"".equalsIgnoreCase(rate)) {
 						isValidated = isRateLengthValid(rate);
 						if(isValidated == false){
-							userImport.setReason("Incorrect Value");
+							userImport.setReason("Incorrect Rate");
 							return isValidated;
 						}
 					}
@@ -688,8 +688,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				userImport.setReason("Required fields is not filled");
 				return false;
 			}
-				if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
-					String dayHours = getCellValueAsString(row.getCell(10), fileName);
+				if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+					String dayHours = getCellValueAsString(row.getCell(9), fileName);
 					if (dayHours != null && !"".endsWith(dayHours)) {
 						isValidated = isDayHourValid(dayHours);
 						if (isValidated == false) {
@@ -1008,8 +1008,14 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	
 	private boolean isRateLengthValid(String rate){
 		boolean flag;
-		if (rate.length() > 1 && rate.length() <= 8) {
-			flag = true;
+		String regex = "\\d+";
+		if (rate.matches(regex)) {
+			if (rate.length() > 1 && rate.length() <= 8) {
+				flag = true;
+			} else {
+				flag = false;
+			}
+			
 		} else {
 			flag = false;
 		}

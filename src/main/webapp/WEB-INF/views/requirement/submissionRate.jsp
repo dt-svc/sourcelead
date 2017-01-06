@@ -285,11 +285,10 @@ width: auto;
 		                    	     }else{
 		                    	    	 result  = result + ' <td><div><span>--</span></div></td>';
 		                    	     }
-			                    	 
 			                    	 if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined' && opt.expectedRateType != null && opt.expectedRateType != '' && opt.expectedRateType != 'undefined'){
 			                    	 result  = result + ' <td><div><span>'+opt.expectedRate+'/'+opt.expectedRateType+'</span></div></td>';
 			                    	 }else{
-			                    		 result  = result + ' <td><div><span>'+opt.expectedRate+'</span></div></td>';
+			                    		 result  = result + ' <td><div><span>---</span></div></td>';
 			                    	 } 
 			                    	 /* if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
 				                    	 result  = result + '<td><div><span>'+opt.expectedRate+'</span></div></td>';
