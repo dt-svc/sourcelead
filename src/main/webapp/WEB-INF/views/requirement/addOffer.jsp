@@ -156,7 +156,7 @@ function loadRemiderDiv(){
            </select>
      </div>
      <div class="positionRelative float">
-     	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" >
+     	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" data-validation="validate_length length1-20" data-validation-optional="true">
      </div>
    	 <div class="positionRelative float">
            <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode">
