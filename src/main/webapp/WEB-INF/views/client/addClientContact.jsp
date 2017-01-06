@@ -659,7 +659,7 @@ function getRolesList(){
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId, 
+		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId+"&type=client",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";

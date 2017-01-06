@@ -545,16 +545,40 @@ public class UserDaoImpl implements UserDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<User> getUserListExceptExistedUsersList(List<Long> userIds, Long orgLocationId)
+	public List<User> getUserListExceptExistedUsersList(List<Long> userIds, Long orgLocationId, Long tabId)
 			throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
+		 
+		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
+	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).setCacheable(true).list();
+	     
+	     String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationId ";
+	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+	     List<Long> ownerRolesList = new ArrayList<Long>();
+	     
+	     for(Roles roles : rolesList){
+	    	 if(null != roles.getActionId()){
+	    		 List<Long> roleActionsList = new ArrayList<Long>();
+	    		 for (String s : roles.getActionId().split(",")){
+	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }
+	        	 
+	        	 roleActionsList.retainAll(tabActionsIds);
+	        	 if(roleActionsList.size() > 0){
+	        		 ownerRolesList.add(roles.getId());
+	        	 }
+	    	 }
+	     }
+		 
+		 
+		 
 		 List<User> userRoleList;
 		 if(userIds != null && !userIds.isEmpty()){
-			 String query = "from User user where user.id NOT IN (:userIds) and user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationId and userRole.userState != 'INACTIVE')  "; 
-			 userRoleList = session.createQuery(query).setParameterList("userIds", userIds).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+			 String query = "from User user where user.id NOT IN (:userIds) and user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationId and userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) )  "; 
+			 userRoleList = session.createQuery(query).setParameterList("userIds", userIds).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
 		 }else{
-			 String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationId and userRole.userState != 'INACTIVE')  ";
-			 userRoleList = session.createQuery(query).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+			 String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationId and userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) )  ";
+			 userRoleList = session.createQuery(query).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
 		 }
 		 return userRoleList;
 		
