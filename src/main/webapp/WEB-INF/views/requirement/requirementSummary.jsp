@@ -440,13 +440,7 @@ function sideBar(requirementId){
            success :function(data) {  
                 if(data != null && data != 'undefined' && data != ""){  
                 	 var json = JSON.parse(data);
-              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-              		 else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }
-              		 else{
+              		
               			var result = '';
               			
               			var jobType = '';
@@ -628,7 +622,6 @@ function sideBar(requirementId){
 								$("body").css('overflow-y', 'auto');
 						 });	 */
 			 			 
-			    	} 
                 }else{
                	 $("#requirementSideDiv").removeAttr("style");
  	    	         var result ="";
@@ -675,13 +668,7 @@ function requirementDetails(requirementId){
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{  
+            		  
 							var result ="";
 				            result = result +' <div class="require_wrap_details">';
 				           
@@ -945,7 +932,6 @@ function requirementDetails(requirementId){
 							     $(".project_tabs_inn").not(tab).css("display", "none");
 							     $(tab).fadeIn();
 							 });
-            		 }
               }else{
                      	 $("#requirementSideDiv").removeAttr("style");
        	    	         var result ="";
