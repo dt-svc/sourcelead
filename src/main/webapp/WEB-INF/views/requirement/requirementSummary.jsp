@@ -2278,11 +2278,33 @@ function getRateListDiv(submissionId, candidateId){
 		                    	 }
 	                    	 }
 		                     result = result + '      <tr class="redtxt">';
-		                     result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
-		                     result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
-		                     result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
-		                     result = result + '        <td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
+		                     if(report.proposeByName != null && report.proposeByName != 'undefined' && report.proposeByName !=''){
+		                    	 result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
+		                     }else{
+		                    	 result = result + '        <td><div class="tbldata-dotdot-sm">---</div></td>';
+		                     }
+		                     
+		                     if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+		                    	 result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
+		                     }else if(report.expectedRate != null && report.expectedRate != 'undefined' && report.expectedRate !=''){
+		                    	 result = result + '        <td><div class="tblminwidth-75">'+report.expectedRate+'</div></td>';
+		                     }else{
+		                    	 result = result + '        <td><div class="tblminwidth-75">---/div></td>';
+		                     }
+		                     
+		                     if(report.rateReason != null && report.rateReason != 'undefined' && report.rateReason !=''){
+		                    	 result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
+		                     }else{
+		                    	 result = result + '        <td><div class="tbldata-dotdot">---</div></td>';
+		                     }
+		                     
+		                     if(report.createdDateStr != null && report.createdDateStr != 'undefined' && report.createdDateStr !=''){
+		                    	 result = result + '        <td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
+		                     }else{
+		                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
+		                     }
 		                     result = result + '        <td>';
+		                     
 		                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
 		                    	 var Accepted = 'Accepted';
 		                    	 var Rejected = 'Rejected';
