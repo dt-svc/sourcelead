@@ -259,14 +259,14 @@ function candidateCertificateList(candidateId){
 				            	}
 	                    	 result  = result + '         <tr>';
 	                    	 result  = result + '           <td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.provider+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span title = "'+opt.provider+'">'+opt.provider+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+score+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+description+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span title = "'+description+'">'+description+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
 	                    	 
-	                    	 result  = result + '           <td><div class="tblicons">';
+	                    	 result  = result + '           <td><div class="tblicons tblminwidth-75">';
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
 	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';

@@ -3,6 +3,7 @@ package com.bis.sourcelead.elk.index.helper;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -76,14 +77,30 @@ public class CandidateIndexHelper {
 				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
 				candidateIndex.setResumeContent("");
 			}
-			candidateIndex.setExperienceYears(candidate.getExperienceYears());
-			candidateIndex.setExperienceMonths(candidate.getExperienceMonths());
+			if(StringUtils.isNotEmpty(candidate.getExperienceYears())){
+				if(candidate.getExperienceYears().equalsIgnoreCase("25+")){
+					candidateIndex.setExperienceYears(26);
+				}
+				else{
+					candidateIndex.setExperienceYears(Integer.parseInt(candidate.getExperienceYears()));
+				}
+				
+			}
+			if(StringUtils.isNotEmpty(candidate.getExperienceMonths())){
+				candidateIndex.setExperienceMonths(Integer.parseInt(candidate.getExperienceMonths()));	
+			}
+			
 			candidateIndex.setDesignation(candidate.getDesignation());
 			candidateIndex.setDesignationType(candidate.getDesignationType());
-			candidateIndex.setCurrentRate(candidate.getCurrentRate());
+			if(StringUtils.isNotEmpty(candidate.getCurrentRate())){
+				candidateIndex.setCurrentRate(Float.parseFloat(candidate.getCurrentRate()));
+			}
+			
 			candidateIndex.setCurrentRateType(candidate.getCurrentRateType());
 			candidateIndex.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
-			candidateIndex.setExpectedRate(candidate.getExpectedRate());
+			if(StringUtils.isNotEmpty(candidate.getExpectedRate())){
+				candidateIndex.setExpectedRate(Float.parseFloat(candidate.getExpectedRate()));
+			}
 			candidateIndex.setRateType(candidate.getRateType());
 			candidateIndex.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
 			candidateIndex.setInvitationstatus(candidate.getInvitationstatus());

@@ -9,8 +9,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -271,12 +273,12 @@ public class CandidateListRestController {
 			    	String minYears= jsonObj.getString("minExpYears").replaceAll("[^0-9\\.]+", "");
 			    	String maxYears= jsonObj.getString("maxExpYears").replaceAll("[^0-9\\.]+", "");
 			    	try{
-			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("experienceYears").from(new Integer(minYears)).to(new Integer(maxYears)));
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("experienceYears").gte(new Integer(minYears)).lte(new Integer(maxYears)));
 			    	}
 			    	catch(NumberFormatException e){}
 			    }
 				//minExpYears
-				else if(jsonObj.has("minExpYears") && StringUtils.isNotEmpty(jsonObj.getString("minExpYears"))){
+			    else if(jsonObj.has("minExpYears") && StringUtils.isNotEmpty(jsonObj.getString("minExpYears"))){
 			    	String minYears= jsonObj.getString("minExpYears").replaceAll("[^0-9\\.]+", "");
 			    	try{
 			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("experienceYears").gte(new Integer(minYears)));
@@ -302,7 +304,7 @@ public class CandidateListRestController {
 			    	String minRate= jsonObj.getString("minRate").replaceAll("[^0-9\\.]+", "");
 			    	String maxRate= jsonObj.getString("maxRate").replaceAll("[^0-9\\.]+", "");
 			    	try{
-			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("expectedRate").from(new Float(minRate)).to(new Float(maxRate)));
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("expectedRate").gte(new Float(minRate)).lte(new Float(maxRate)));
 			    	}
 			    	catch(NumberFormatException e){}
 			    }
@@ -327,6 +329,19 @@ public class CandidateListRestController {
 				if(jsonObj.has("rateType") && StringUtils.isNotEmpty(jsonObj.getString("rateType"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
 			    }
+				
+				//updatedOn
+				if(jsonObj.has("updatedOn") && StringUtils.isNotEmpty(jsonObj.getString("updatedOn"))){
+					try{
+				    	 Calendar c = Calendar.getInstance();
+					     c.setTime(new Date());
+					     Integer dateRange = Integer.parseInt(jsonObj.getString("updatedOn"));
+				         c.add(Calendar.DATE, -dateRange); 
+				 	     boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").from(c.getTime()));
+					}
+			    	catch(NumberFormatException e){}
+			    }
+				
 				//Educations
 				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
 				//educationArray.removeAll(excludeEducationArray);
