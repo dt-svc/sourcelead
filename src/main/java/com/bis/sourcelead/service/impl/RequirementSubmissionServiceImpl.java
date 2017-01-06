@@ -2101,6 +2101,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(users.getUserCode());
 		 emailMessage.setFromName(requirementSubmission.getRequirement().getManagerUserId().getFirstName()+" "+requirementSubmission.getRequirement().getManagerUserId().getLastName());
+		
+        // To get the RateNegatiotion of RequirementSubmission based on Submission Id
+		 
+		 RequirementRateSubmissionNegotiation reqRateNegotiation  = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+		
 		 
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 if(requirementSubmission.getRequirement().getJobTitle() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobTitle())){
@@ -2109,26 +2114,27 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 globalVarsMap.put("RequirementName","--");
 		 }
 		 
-		 if(requirementSubmission.getCandidate().getFirstName() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getLastName())){
-			 globalVarsMap.put("ApplicantName", requirementSubmission.getCandidate().getFirstName()+""+requirementSubmission.getCandidate().getLastName());
+		 if(requirementSubmission.getCandidate().getLastName() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getLastName())){
+			 globalVarsMap.put("ApplicantName", requirementSubmission.getCandidate().getFirstName()+" "+requirementSubmission.getCandidate().getLastName());
 		 }else{
-			 globalVarsMap.put("ApplicantName","--");
+			 globalVarsMap.put("ApplicantName",requirementSubmission.getCandidate().getFirstName());
 		 }
-		 
-		 if(loginOrgLocation.getCountry() != null && !"".equalsIgnoreCase(loginOrgLocation.getCountry())){
-			 globalVarsMap.put("RequirementLocation", loginOrgLocation.getCountry());
+		
+		 if(requirementSubmission.getRequirement().getState() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getState())){
+			 globalVarsMap.put("RequirementLocation", requirementSubmission.getRequirement().getCountry() +", "+ requirementSubmission.getRequirement().getState());
+		 }else if(loginOrgLocation.getCity() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getCity())){
+			 globalVarsMap.put("RequirementLocation",requirementSubmission.getRequirement().getCountry() +", "+ requirementSubmission.getRequirement().getState() +", "+requirementSubmission.getRequirement().getCity());
 		 }else{
-			 globalVarsMap.put("RequirementLocation","--");
+			 globalVarsMap.put("RequirementLocation", requirementSubmission.getRequirement().getCountry());
 		 }
-		 
-		 if(loginOrgLocation.getCountry() != null && !"".equalsIgnoreCase(loginOrgLocation.getCountry())){
-			 globalVarsMap.put("EmploymentType", loginOrgLocation.getCountry());
+		 if(requirementSubmission.getRequirement().getJobType() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobType())){
+			 globalVarsMap.put("EmploymentType", requirementSubmission.getRequirement().getJobType());
 		 }else{
 			 globalVarsMap.put("EmploymentType","--");
 		 }
 		 
-		 if(requirementSubmission.getCandidate().getRate() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getRate())){
-			 globalVarsMap.put("Rate", requirementSubmission.getCandidate().getRate());
+		 if(reqRateNegotiation.getExpectedRate() != null && !"".equalsIgnoreCase(reqRateNegotiation.getExpectedRate())){
+			 globalVarsMap.put("Rate", reqRateNegotiation.getExpectedRate());
 		 }else{
 			 globalVarsMap.put("Rate","--");
 		 }
