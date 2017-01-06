@@ -461,9 +461,8 @@ public class RequirementRestController {
 		
 	    // This is made static as requirment action id is 146
 		
-		String requirementActionId = "146";
 		ArrayList<User> mynewList =  new ArrayList<User>();
-		List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
+		List<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
        
 		//   Commented because Team Lead not required to show in team Members List By Default he is added in to the  RequirementAssignTo
 		
@@ -481,10 +480,6 @@ public class RequirementRestController {
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
 				if(userRole !=null){
 					user.setUserType(userRole.getUserType());
-					/* boolean requirementAction  = sourceleadRolesService.roleHaveActionAccessOrNot(requirementActionId,userRole.getUserType());
-					 if (requirementAction){
-						 mynewList.add(user);
-					    }*/
 					 mynewList.add(user);
 				}
 		   }
