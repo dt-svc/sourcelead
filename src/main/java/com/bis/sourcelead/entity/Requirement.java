@@ -285,6 +285,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String approvedBy;
 	
+	@Transient
+	private String createdByName;
+	
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -898,6 +901,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setApprovedBy(String approvedBy) {
 		this.approvedBy = approvedBy;
+	}
+
+	public String getCreatedByName() {
+		return createdByName;
+	}
+
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
 	}
 	
 }
