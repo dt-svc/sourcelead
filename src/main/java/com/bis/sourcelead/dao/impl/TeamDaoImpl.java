@@ -74,7 +74,7 @@ public class TeamDaoImpl  implements TeamDao{
 	public List<Team> getTeamListByOrgLocationID(Long orgLocationId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Team team  where team.orgLocationsId =:orgLocationId and  team.status <> 0";
+		String query = "from Team team  where team.orgLocationsId =:orgLocationId and  team.status <> 0 ORDER BY team.id DESC";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
 	}
