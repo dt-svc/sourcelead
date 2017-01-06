@@ -32,21 +32,21 @@ public class CandidateIndex implements Serializable {
 
 	private String address;
 
-	private String experienceYears;
+	private Integer experienceYears;
 
-	private String experienceMonths;
+	private Integer experienceMonths;
 
 	private String designation;
 
 	private String designationType;
 
-	private String currentRate;
+	private Float currentRate;
 
 	private String currentRateType;
 
 	private String currentRateCurrency;
 
-	private String expectedRate;
+	private Float expectedRate;
 
 	private String rateType;
 
@@ -182,19 +182,19 @@ public class CandidateIndex implements Serializable {
 		this.address = address;
 	}
 
-	public String getExperienceYears() {
+	public Integer getExperienceYears() {
 		return experienceYears;
 	}
 
-	public void setExperienceYears(String experienceYears) {
+	public void setExperienceYears(Integer experienceYears) {
 		this.experienceYears = experienceYears;
 	}
 
-	public String getExperienceMonths() {
+	public Integer getExperienceMonths() {
 		return experienceMonths;
 	}
 
-	public void setExperienceMonths(String experienceMonths) {
+	public void setExperienceMonths(Integer experienceMonths) {
 		this.experienceMonths = experienceMonths;
 	}
 
@@ -214,11 +214,11 @@ public class CandidateIndex implements Serializable {
 		this.designationType = designationType;
 	}
 
-	public String getCurrentRate() {
+	public Float getCurrentRate() {
 		return currentRate;
 	}
 
-	public void setCurrentRate(String currentRate) {
+	public void setCurrentRate(Float currentRate) {
 		this.currentRate = currentRate;
 	}
 
@@ -238,11 +238,11 @@ public class CandidateIndex implements Serializable {
 		this.currentRateCurrency = currentRateCurrency;
 	}
 
-	public String getExpectedRate() {
+	public Float getExpectedRate() {
 		return expectedRate;
 	}
 
-	public void setExpectedRate(String expectedRate) {
+	public void setExpectedRate(Float expectedRate) {
 		this.expectedRate = expectedRate;
 	}
 
