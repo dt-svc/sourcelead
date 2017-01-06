@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
@@ -49,6 +50,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -90,6 +92,9 @@ public class SubmissionsRestController {
 	@Autowired
 	private RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 
+	@Autowired
+	RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService; 
+	
 	@Autowired
 	private UserService userService;
 
@@ -273,10 +278,13 @@ public class SubmissionsRestController {
 			throws Exception {
 
 		String resultJson = null;
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		List<RequirementSubmission> shortlistedList = requirementSubmissionService
-				.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations.getId(), requirementId, status);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+		List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations, requirementId, status,user,loginUserRole);
+		
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
 
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
@@ -291,9 +299,18 @@ public class SubmissionsRestController {
 			}
 
 			requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
-			requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+			RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+			if(pastRequirementRateSubmissionNegotiation != null){
+				requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+			}
+			
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+			
+			if(requirementSubmission.getVendorLocationId() != null){
+				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+			}
+			
 			if (requirementSubmission.getCreatedDate() != null) {
 				requirementSubmission
 						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
@@ -337,6 +354,11 @@ public class SubmissionsRestController {
 			requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+			
+			if(requirementSubmission.getVendorLocationId() != null){
+				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+			}
+	
 			if (requirementSubmission.getCreatedDate() != null) {
 				requirementSubmission
 						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
@@ -410,6 +432,7 @@ public class SubmissionsRestController {
 
 		String resultJson = null;
 
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		StringBuilder skillsList = new StringBuilder();
 		Set<CandidateSkills> candidateSkills = submission.getCandidate().getCandidateSkills();
@@ -425,6 +448,7 @@ public class SubmissionsRestController {
 		}
 
 		submission.setSkillsList(skillsList.toString());
+		submission.setRequirementSubmissionTemplateFields(requirementSubmissionTemplateFields);
 		resultJson = toJSON(submission);
 		return resultJson;
 

@@ -560,6 +560,15 @@ public class RequirementServiceImpl implements RequirementService {
 					    	if(!assignedTeamId.contains("role") && !assignedTeamId.contains("All")){
 					    		teamId = Long.parseLong(assignedTeamId);
 							    team = teamService.getTeamByTeamId(teamId);
+							    // Adding Team Owner as RequirementAssignTo
+							    RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+									User assUser = userService.getUserById(team.getOwnerUserId().getId());
+									requirementAssignTo.setAssignUserId(assUser);
+									requirementAssignTo.setRequirementId(requirement);
+									requirementAssignTo.setTeamId(team);
+									UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
+									requirementAssignTo.setRoleId(userRole.getRoles());
+									requirementAssignToList.add(requirementAssignTo);
 					    	}
 						}   
 					    // User roleUser = team.getOwnerUserId();
@@ -1712,8 +1721,8 @@ public class RequirementServiceImpl implements RequirementService {
 			StringBuilder sb = new StringBuilder(); 
 			writeRow.createCell(3).setCellValue(sb.append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString()); 
 		}
-		if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
-			 writeRow.createCell(4).setCellValue(requirement.getCity()); 
+		if(requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry())){
+			 writeRow.createCell(4).setCellValue(requirement.getCountry()); 
 		}
 		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
 			 writeRow.createCell(5).setCellValue(requirement.getSkills()); 

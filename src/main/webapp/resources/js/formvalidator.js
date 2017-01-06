@@ -1024,7 +1024,7 @@ jQueryFormUtils.validateMaskZipCode = function(val) {
 };
 //Below is REGEX for firstName
 jQueryFormUtils.validateName = function(val) {
-	return val.match(/^[A-Za-z][A-Za-z0-9( \()+&$@#!.,*-_?:;"']*$/) !== null;
+	return val.match(/^[ A-Za-z0-9_*@.,/?:";$!()#&+-]*$/) !== null;
 };
 // Below is REGEX for SpecialChar
  jQueryFormUtils.validateSpecialChar = function(val) {

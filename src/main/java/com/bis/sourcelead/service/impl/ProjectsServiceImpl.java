@@ -380,7 +380,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			for(ProjectMembers projectMembers : projectMemberList){
 				if(projectMembers.getEmployee() != null){
 					Employees emp = projectMembers.getEmployee();
-					if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+					if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty() && jsonObj.has("level2Manager") && jsonObj.getString("level2Manager") != null && !jsonObj.getString("level2Manager").isEmpty()){
 						User  approverUserId1 =new User();
 						User  approverUserId2 =new User();
 						approverUserId1.setId(Long.valueOf(jsonObj.getString("level1Manager")));

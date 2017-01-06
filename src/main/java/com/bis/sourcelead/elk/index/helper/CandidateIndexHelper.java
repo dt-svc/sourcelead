@@ -36,6 +36,7 @@ public class CandidateIndexHelper {
 			candidateIndex.setState(candidate.getState());
 			candidateIndex.setCity(candidate.getCity());
 			candidateIndex.setAddress(candidate.getAddress());
+			candidateIndex.setNoticePriod(candidate.getNoticePeriod());
 			candidateIndex.setSummary(candidate.getSummary());
 			candidateIndex.setCandidateType(candidate.getCandidateType());
 			if(null != candidate.getCandidateSkills() && !candidate.getCandidateSkills().isEmpty()){
@@ -87,9 +88,14 @@ public class CandidateIndexHelper {
 			candidateIndex.setInvitationstatus(candidate.getInvitationstatus());
 			candidateIndex.setStatus(candidate.getStatus());
 			candidateIndex.setTerminateReason(candidate.getTerminateReason());
-			candidateIndex.setCreatedDate(candidate.getCreatedDate());
+			if(candidate.getCreatedDate() != null){
+				candidateIndex.setCreatedDate(candidate.getCreatedDate());
+			}
 			candidateIndex.setCreatedBy(candidate.getCreatedBy());
-			candidateIndex.setUpdatedDate(candidate.getUpdatedDate());
+			if(candidate.getUpdatedDate() != null){
+				candidateIndex.setUpdatedDate(candidate.getUpdatedDate());
+			}
+			
 			candidateIndex.setUpdatedBy(candidate.getUpdatedBy());
 		}
 		
