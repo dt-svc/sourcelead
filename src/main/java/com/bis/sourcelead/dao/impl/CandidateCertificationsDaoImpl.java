@@ -121,7 +121,7 @@ public class CandidateCertificationsDaoImpl implements CandidateCertificationsDa
 			Long candidateCertificateId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateCertifications  cEmp left join fetch cEmp.candidateId where cEmp.id = :candidateCertificateId and cEmp.candidateId.id = :candidateId ";
+		String query = "from CandidateCertifications  cEmp left join fetch cEmp.candidateId left join fetch cEmp.orgLocationId where cEmp.id = :candidateCertificateId and cEmp.candidateId.id = :candidateId ";
 		List<CandidateCertifications> certificatesList =  session.createQuery(query.toString()).setLong("candidateCertificateId", candidateCertificateId).setLong("candidateId", candidateId)
 				.setCacheable(true).list();
 		

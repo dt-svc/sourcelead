@@ -47,13 +47,7 @@ function requirementApproverList(statusType){
            url: sourceleadUrl+"/getApproverRequirementApproverListByOrgLocationIDAndUserId?statusType="+statusType,    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){  
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
+               	
 			    	     $("#requirementApproverList").removeAttr("style");
 	                	 $("#requirementApproverList").empty();
 	                	 var result = "";
@@ -118,7 +112,6 @@ function requirementApproverList(statusType){
 	                     result = result +"</table>"; 
 	                     $("#requirementApproverList").append(result); 
 	                     requirementApprovalPagination(); 
-			    	} 
                  }else{
                 	 $("#requirementApproverList").removeAttr("style");
 					 $("#requirementApproverList").empty();

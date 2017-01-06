@@ -69,56 +69,56 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    	   var designation = '';
 	    	   var experience = '';
 	    	   
-	    	   if(json.candidate.designation != null && json.candidate.designation != '' && json.candidate.designation !='undefined'){
-	    		   designation = json.candidate.designation;
+	    	   if(json.requirementSubmissionTemplateFields.designation != null && json.requirementSubmissionTemplateFields.designation != '' && json.requirementSubmissionTemplateFields.designation !='undefined'){
+	    		   designation = json.requirementSubmissionTemplateFields.designation;
 	    	   }
 	    	   
-	    	   if(json.candidate.experienceYears != null && json.candidate.experienceYears != '' && json.candidate.experienceYears !='undefined'){
-	    		   experience = 'Experience -'+json.candidate.experienceYears+ 'Years';
+	    	   if(json.requirementSubmissionTemplateFields.workExperience != null && json.requirementSubmissionTemplateFields.workExperience != '' && json.requirementSubmissionTemplateFields.workExperience !='undefined'){
+	    		   experience = 'Experience -'+json.requirementSubmissionTemplateFields.workExperience+ 'Years';
 	    	   }
 	    	   
-	    	   if(json.candidate.rateType != null && json.candidate.rateType != '' && json.candidate.rateType !='undefined'){
+	    	   /* if(json.candidate.rateType != null && json.candidate.rateType != '' && json.candidate.rateType !='undefined'){
 	    		   rateType = json.candidate.rateType; 
 	    	   }else{
 	    		   rateType = " ";
-	    	   }
+	    	   } */
 	    	   
-	    	   if(json.candidate.expectedRate != null && json.candidate.expectedRate != '' && json.candidate.expectedRate !='undefined'){
-	    		   expectedRate = json.candidate.expectedRate; 
+	    	   if(json.requirementSubmissionTemplateFields.expectedCTC != null && json.requirementSubmissionTemplateFields.expectedCTC != '' && json.requirementSubmissionTemplateFields.expectedCTC !='undefined'){
+	    		   expectedRate = json.requirementSubmissionTemplateFields.expectedCTC; 
 	    	   }else{
 	    		   expectedRate = " ";
 	    	   }
 	    	   
-	    	   if(json.candidate.currentRateCurrency != null && json.candidate.currentRateCurrency != '' && json.candidate.currentRateCurrency !='undefined'){
+	    	   /* if(json.candidate.currentRateCurrency != null && json.candidate.currentRateCurrency != '' && json.candidate.currentRateCurrency !='undefined'){
 	    		   currentRateCurrency = json.candidate.currentRateCurrency; 
 	    	   }else{
 	    		   currentRateCurrency  = " ";
-	    	   }
+	    	   } */
 	    	   
-	    	   if(json.candidate.currentRate != null && json.candidate.currentRateCurrency != '' && json.candidate.currentRateCurrency !='undefined'){
-	    		   currentRate = json.candidate.currentRate; 
+	    	   if(json.requirementSubmissionTemplateFields.currentCTC != null && json.requirementSubmissionTemplateFields.currentCTC != '' && json.requirementSubmissionTemplateFields.currentCTC !='undefined'){
+	    		   currentRate = json.requirementSubmissionTemplateFields.currentCTC; 
 	    	   }else{
 	    		   currentRate = " ";
 	    	   }
-	    	   if(json.candidate.state != null && json.candidate.state != '' && json.candidate.state !='undefined'){
-	    		   state = ' , ' +json.candidate.state;
+	    	   if(json.requirementSubmissionTemplateFields.state != null && json.requirementSubmissionTemplateFields.state != '' && json.requirementSubmissionTemplateFields.state !='undefined'){
+	    		   state = ' , ' +json.requirementSubmissionTemplateFields.state;
 	    	   }else{
 	    		   state = " ";
 	    	   }
 	    	   
-	    	   if(json.candidate.city != null && json.candidate.city != '' && json.candidate.city !='undefined'){
-	    		   city =' , ' + json.candidate.city; 
+	    	   if(json.requirementSubmissionTemplateFields.city != null && json.requirementSubmissionTemplateFields.city != '' && json.requirementSubmissionTemplateFields.city !='undefined'){
+	    		   city =' , ' + json.requirementSubmissionTemplateFields.city; 
 	    	   }else{
 	    		   city = " ";
 	    	   }
 	    	   
-	    	   if(json.candidate.lastName != null && json.candidate.lastName != '' && json.candidate.lastName != 'undefined'){
-	    		   lastName = json.candidate.lastName;
+	    	   if(json.requirementSubmissionTemplateFields.lastName != null && json.requirementSubmissionTemplateFields.lastName != '' && json.requirementSubmissionTemplateFields.lastName != 'undefined'){
+	    		   lastName = json.requirementSubmissionTemplateFields.lastName;
 	    	   }else{
 	    		   lastName = "";
 	    	   }
-	    	   if(json.candidate.country != null && json.candidate.country != null && json.candidate.country != 'undefined'){
-	    		   country = json.candidate.country;
+	    	   if(json.requirementSubmissionTemplateFields.country != null && json.requirementSubmissionTemplateFields.country != null && json.requirementSubmissionTemplateFields.country != 'undefined'){
+	    		   country = json.requirementSubmissionTemplateFields.country;
 	    	   }else{
 	    		   country = "";
 	    	   }
@@ -131,7 +131,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '<div class="imageParent"><img onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+json.candidate.id+'"/>" alt="candidate" title="Candidate"></div>';
                result = result + ' </div>';
                result = result + ' <div class="media-body candidate-details">';
-               result = result + ' <h4 class="media-heading">'+json.candidate.firstName+' '+lastName+'</h4>';
+               result = result + ' <h4 class="media-heading">'+json.requirementSubmissionTemplateFields.firstName+' '+lastName+'</h4>';
                result = result + ' <ul class="list-unstyled">';
                result = result + ' <li><strong>'+designation+'</strong></li>';
                result = result + ' <li>'+experience+'</li>';
@@ -165,13 +165,13 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + ' <div class="row">';
 		       result = result + ' <div class="col-md-6">';
 		       result = result + '<ul class="list-unstyled can-perdt">';
-		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.candidate.email+'</a></li>';
-		       result = result + '<li><i class="fa fa-phone"></i>'+json.candidate.mobilePhone+'</li>';
+		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.requirementSubmissionTemplateFields.emailId+'</a></li>';
+		       result = result + '<li><i class="fa fa-phone"></i>'+json.requirementSubmissionTemplateFields.phoneNumber+'</li>';
 		       result = result + '<li><i class="fa fa-location-arrow"></i>';
 		       result = result +country +''+ state +''+ city
 		       result = result +'</li>';
-		       result = result + '<li><i class="fa fa-rupee"></i>'+currentRate+' / '+currentRateCurrency+' - Current Rate / Salary</li>';
-		       result = result + '<li><i class="fa fa-rupee"></i>'+expectedRate+' / '+rateType+' - Expected Rate / Salary</li>';
+		       result = result + '<li><i class="fa fa-rupee"></i>'+currentRate+' - Current CTC </li>';
+		       result = result + '<li><i class="fa fa-rupee"></i>'+expectedRate+' - Expected CTC </li>';
 		       result = result + '</ul>';
 		       result = result + ' </div>';
 		       

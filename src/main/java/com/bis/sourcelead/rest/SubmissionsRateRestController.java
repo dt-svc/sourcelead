@@ -338,7 +338,13 @@ public class SubmissionsRateRestController {
 			requirementRateSubmissionNegotiation.setCreatedDateStr(commonDateFormat.toString());
 			
 			if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE){
-				requirementRateSubmissionNegotiation.setProposeByName(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getFirstName());
+				if(requirementSubmissionTemplateFields.getLastName() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+					StringBuilder candiSB = new StringBuilder();
+					requirementRateSubmissionNegotiation.setProposeByName(candiSB.append(requirementSubmissionTemplateFields.getFirstName()).append(requirementSubmissionTemplateFields.getLastName()).toString());
+				}else{
+					requirementRateSubmissionNegotiation.setProposeByName(requirementSubmissionTemplateFields.getFirstName());
+				}
+				
 			}else if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CLIENT || requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.VENDOR || requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.ORG){
 				User proposedUser = userService.getUserDetailsByUserCode(requirementRateSubmissionNegotiation.getCreatedBy());
 				requirementRateSubmissionNegotiation.setProposeByName(proposedUser.getFirstName());
