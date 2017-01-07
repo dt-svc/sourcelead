@@ -210,7 +210,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				orgRelation.setNoOfContatcs(orgSpocs.size());
 				if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocationId.longValue()){
 					if(orgRelation.getResponderLocationId() != null){
-						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+						if(orgRelation.getResponderLocationId().getOrg().getWebSite() !=null){
+							orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+						}
 						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
 						orgRelation.setState(orgRelation.getResponderLocationId().getState());
