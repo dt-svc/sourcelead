@@ -264,10 +264,8 @@ function getContactsLists(){
 			   		    	var json = JSON.parse(data);
 			   	        	var result = "";
 			   	        	var resultVendors = "";
-			   	        	
 			                result = result +'<div class="require_wrap_table release-jobs-tbl">';
-			                result = result +'<table >';
-			                result = result +'<tbody>';
+			                result = result +'<table id="candidatePagination" class="display" cellspacing="0" width="100%">';
 			   	        	result = result +'<thead>';
 			   	        	result = result +'<tr>';
 			   	            result = result +'<th><input type="checkbox" id="contactscheckbox" onclick="toggle(this);"/></th>'; 
@@ -278,11 +276,10 @@ function getContactsLists(){
 			   	        	result = result +' <th>Release</th>';
 			   	        	result = result +'</tr>';
 			   	        	result = result +'</thead>';
-			   	        	
+			   	        	result = result +'<tbody>';
 			   	        	for (var i=0; i<json.length; i++)
 			   				{
 			   	        		var report = json[i];
-			   	        		
 				   	        		resultVendors = resultVendors + '';
 				   	        		result = result +'<tr>';
 				   	        		if(report.releasedRequirement =="true"){
@@ -317,7 +314,6 @@ function getContactsLists(){
 					        		}
 					        			result = result +'</td>';
 				   	        		    result = result +'</tr>';
-			   	        	
 			   				}
 			   	        	result = result +'</tbody>';
 			   	        	result = result +'</table>';
@@ -329,6 +325,7 @@ function getContactsLists(){
 			   	    	    $("#vendor").empty();
 			   	    	 	$("#vendorContacts").empty();
 			   	    	    $("#vendorContacts").append(result);
+			   	    	 	candidatePagination();
                		}
 	   		    	}else{
 	               	 $("#vendorContacts").removeAttr("style");
@@ -344,23 +341,6 @@ function getContactsLists(){
    		    },
 	 });
 }	
-</script>
-
-
-<script>
-function pagination(){  
-   	$('#vendor').DataTable( { 
-       	"scrollCollapse": false,
-       	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-       	"bLengthChange": false,
-       	"bDestroy": true,
-       	"ordering": false,
-       	"oLanguage": {
-        		"sSearch": ""
-        	}
-   		
-       } );
-}
 </script>
 
 
@@ -400,8 +380,7 @@ function getVendorLists(){
 	           	        	var result = "";
 	           	        	
 	                        result = result +'<div class="require_wrap_table release-jobs-tbl">';
-	                        result = result +'<table>';
-	                        result = result +'<tbody>';
+	                        result = result +'<table id="vendorPagination" class="display" cellspacing="0" width="100%">';
 	           	        	result = result +'<thead>';
 	           	        	result = result +'<tr>';
 	           	            result = result +'<th><input type="checkbox" id="checkbox1" onclick="toggle(this);"/></th>'; 
@@ -412,7 +391,7 @@ function getVendorLists(){
 	           	        	result = result +' <th>Release</th>';
 	           	        	result = result +'</tr>';
 	           	        	result = result +'</thead>';
-	           	        	
+	           	        	result = result +'<tbody>';
 	           	        	for (var i=0; i<json.length; i++)
 	           				{  
 	           	        		var report = json[i];
@@ -471,7 +450,7 @@ function getVendorLists(){
 	           	    	    $("#vendorContacts").empty();  
 	           	    	 	$("#vendor").empty();
 	           	    	    $("#vendor").append(result);
-	           	    	 	/* pagination(); */
+	           	    	 	vendorPagination();
                		 }
    		    		
 	   		    	}else{
@@ -489,6 +468,38 @@ function getVendorLists(){
    		    },
 	 });
 }	
+</script>
+
+
+
+<script>
+function vendorPagination(){  
+   	$('#vendorPagination').DataTable( { 
+       	"scrollCollapse": false,
+       	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+       	"bLengthChange": false,
+       	"bDestroy": true,
+       	"ordering": false,
+       	"oLanguage": {
+        		"sSearch": ""
+        	}
+       } );
+}
+</script>
+
+<script>
+function candidatePagination(){ 
+    $('#candidatePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
 </script>
 
 <script type="text/javascript">

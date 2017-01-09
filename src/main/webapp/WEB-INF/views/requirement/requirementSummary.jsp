@@ -2435,7 +2435,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     }else if(report.expectedRate != null && report.expectedRate != 'undefined' && report.expectedRate !=''){
 		                    	 result = result + '        <td><div class="tblminwidth-75">'+report.expectedRate+'</div></td>';
 		                     }else{
-		                    	 result = result + '        <td><div class="tblminwidth-75">---/div></td>';
+		                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
 		                     }
 		                     
 		                     if(report.rateReason != null && report.rateReason != 'undefined' && report.rateReason !=''){
