@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -333,7 +334,7 @@ public class CandidateListRestController {
 				//updatedOn
 				if(jsonObj.has("updatedOn") && StringUtils.isNotEmpty(jsonObj.getString("updatedOn"))){
 					try{
-				    	 Calendar c = Calendar.getInstance();
+						 Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 					     c.setTime(new Date());
 					     Integer dateRange = Integer.parseInt(jsonObj.getString("updatedOn"));
 				         c.add(Calendar.DATE, -dateRange); 

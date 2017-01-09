@@ -179,7 +179,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		if (isadmin || requirement.getManagerUserId().getId().longValue() == user.getId().longValue() ) {
 			String query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left "
 					+ "join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes  "
-					+ "where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId ";
+					+ "where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId ORDER BY reqSub.id DESC ";
 			 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
 		}
 		//to get applicates list of the team lead and team submissions
@@ -193,7 +193,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				User usercode= userDao.getUserById(requirementAssignTo.getAssignUserId().getId());
 				userCodes.add(usercode.getUserCode());
 			}
-			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId";
+			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId ORDER BY reqSub.id DESC";
 			requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setParameterList("usercode", userCodes).setLong("requirementId", requirementId).setCacheable(true).list();
 
 			  
@@ -209,7 +209,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch "
 					+ "reqSub.candidate left join fetch reqSub.sourceSubmission "
 					+ "left join fetch reqSub.candidateResumes where (reqSub.orgLocations.id =:loginOrgLocation or "
-					+ "reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId";
+					+ "reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId ORDER BY reqSub.id DESC";
 		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).setCacheable(true).list();
 		}
 		
@@ -574,13 +574,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			if(requirement.getManagerUserId() !=null){
 				if (isadmin && requirement.getManagerUserId().getId().longValue() !=user.getId().longValue()) {
 					String query = "select count(*) from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+subQuery+" ";
-					candidatesCount = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
+					candidatesCount = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
 				}	
 			}
 			if(requirement.getManagerUserId().getId() !=null){
 				if(requirement.getManagerUserId().getId().longValue() == user.getId().longValue()){
 					String query = "select count(*) from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+subQuery+" ";
-					candidatesCount = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
+					candidatesCount = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
 				}
 			}
 			
