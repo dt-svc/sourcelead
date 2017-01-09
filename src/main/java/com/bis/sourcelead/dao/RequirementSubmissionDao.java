@@ -65,6 +65,26 @@ public interface RequirementSubmissionDao {
 	
 	Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId,String submissionStatus);
 	
+	/**
+	 * @author Prasad Salina
+	 * @param requirementId
+	 * @param user
+	 * @param loginOrgLocation
+	 * @param subQuery
+	 * @return
+	 */
+	Integer getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user, OrgLocations loginOrgLocation, String subQuery) throws Exception;
+	
+	/**
+	 * @author Prasad Salina
+	 * @param requirementId
+	 * @param user
+	 * @param loginOrgLocation
+	 * @return
+	 * @throws Exception
+	 */
+	Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,OrgLocations loginOrgLocation)throws Exception;
+	
 	RequirementSubmission getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(Long vendorSubmissionId, Long vendororgLocationsId);
 	
 	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode) throws Exception;

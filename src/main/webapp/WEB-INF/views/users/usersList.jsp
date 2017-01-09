@@ -322,13 +322,16 @@ function exportToPdf(){
 
 				   }
 	 			result = result + '<div class="clear"></div>';
+	 			$("#noUsers").val("")
 	   		    }
             }else if(type == "scroll"){
+            	$("#noUsers").val("nousers")
             	$('#loadMoreDiv').empty(); 
             	$("#loading").removeAttr("style");
 	         	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No More Records..</div>';
 	         	$('#loadMoreDiv').append(result);
             }else{
+            	$("#noUsers").val("nousers")
             	$('#loadMoreDiv').empty(); 
             	$("#loading").removeAttr("style");
 	         	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No  Records..</div>';

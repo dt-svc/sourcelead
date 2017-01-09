@@ -3789,7 +3789,7 @@ p.comment-text{
 	margin: 0;
 }
 .dashboard-widget.candidate-profile .nav-tabs li a:hover {
-	border:none;
+	border-bottom: 1px solid #f60;
 	border-bottom:none;
 	color:#2F2F2F;
 	background-color: #ccc;
@@ -5294,6 +5294,10 @@ max-height: 150px !important;
 }
 .exp-drop .dropdown-menu {
        max-height: 250px !important;
+}
+.attachfile {
+    z-index:1;
+    position: relative;
 }
 /* media 320px */
 @media (max-width: 320px) {

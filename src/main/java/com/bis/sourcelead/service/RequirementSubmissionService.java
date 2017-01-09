@@ -81,6 +81,19 @@ public interface RequirementSubmissionService {
 	
 	Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId, String submissionStatus);
 	
+	/**
+	 * @author Prasad Salina
+	 * @param requirementId
+	 * @param user
+	 * @param loginOrgLocation
+	 * @param subQuery
+	 * @return
+	 * To get piplenine counts
+	 */
+	Integer getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user, OrgLocations loginOrgLocation, String submissionStatus)  throws Exception;
+	
+	Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,OrgLocations loginOrgLocation)throws Exception;
+	
 	Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId,User user,String loginUserRole) throws Exception;
 	
 	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode) throws Exception;

@@ -350,13 +350,21 @@ public class DashboardRestController {
 									requirement.setApprovedBy(sb.append(approvedUser.getFirstName()).append(" ").append(approvedUser.getLastName()).toString());
 			                    }
 			                    newList.add(requirement);
-			}else if("OPEN".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString()) || "REJECTED".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
-				 User approvedUser = userService.getUserByUserCode(requirement.getUpdatedBy());
-                 if(approvedUser !=null ){
-                 	StringBuilder sb = new StringBuilder();
-						requirement.setApprovedBy(sb.append(approvedUser.getFirstName()).append(" ").append(approvedUser.getLastName()).toString());
-                 }
-                 newList.add(requirement);
+			}else if(!"SUBMITTED".equalsIgnoreCase(statusType) && !"".equalsIgnoreCase(statusType)){
+				
+				 List<RequirementApproverHierarchy>  rahlist = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
+			                if(rahlist !=null ){
+									 for(RequirementApproverHierarchy rah :rahlist ){
+						            	  if("APPROVED".equalsIgnoreCase(rah.getRequirementApproverStatus().toString()) || "REJECTED".equalsIgnoreCase(rah.getRequirementApproverStatus().toString())  || "OPEN".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
+						            		  User approvedUser = userService.getUserByUserCode(rah.getUpdatedBy());
+						            		  if(approvedUser !=null ){
+							                    	StringBuilder sb = new StringBuilder();
+													requirement.setApprovedBy(sb.append(approvedUser.getFirstName()).append(" ").append(approvedUser.getLastName()).toString());
+							                    }
+						            		  newList.add(requirement);
+						            	  }
+					              }
+			                }
 			}
 		}	
 		resultJson = commonUtil.toJSON(newList);

@@ -132,7 +132,7 @@ width: auto;
 										   <div class="clearfix">
 										  <div class="row">
 										  <div class="col-md-3">
-										  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-8">
+										  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-10">
 										  </div> 
 										  <input type="hidden" name="candidateId" id="candidateId" value="${requirementSubmission.candidate.id}"/> 
 										  <div class="col-md-3 select-field">

@@ -1,4 +1,5 @@
 
+  
 #User accept rate negotiation of the Requirement.
 
 INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('UserRejectRateNegotiation','Email');

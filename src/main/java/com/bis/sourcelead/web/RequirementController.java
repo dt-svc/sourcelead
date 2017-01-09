@@ -240,6 +240,15 @@ public class RequirementController {
 	    model.addObject("add_clientList", orgClientList);
 	    model.addObject("loginOrgLocId", orgLocations.getId());
 	    
+	    if(requirement.getClientId() != null && requirement.getClientId().getId() != null){
+	    	OrgRelations orgClient =orgRelationsService.getOrRelationsById(requirement.getClientId().getId()); 
+			if(orgClient != null){
+				orgClient.setOrgName(orgClient.getResponderLocationId().getOrg().getOrgName());
+				orgClient.setOrgid(orgClient.getResponderLocationId().getOrg().getId());
+			 }
+		    model.addObject("orgClient", orgClient);
+	    }
+	    
 	    //for get the owners list for spocs
 		List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
 		model.addObject("spocOwnersList", userList);
@@ -259,6 +268,15 @@ public class RequirementController {
 			model.addObject("clientSubmissionTempletesList", clientSubmissionTempletesList);
 		}
 		
+		if(requirement.getClientId() != null){
+			if(requirement.getParentRequirement() != null && requirement.getParentRequirement().getSubmissionTemplateId() != null){
+				SubmissionTemplate   clientSubmissionTemplete = submissionTemplateService.getSubmissionTemplateById(requirement.getParentRequirement().getSubmissionTemplateId().getId());
+				model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
+			}else{
+				SubmissionTemplate   clientSubmissionTemplete = submissionTemplateService.getSubmissionTemplateById(requirement.getClientSubmissionTemplateId().getId());
+				model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
+			}
+		}
 
 		return model;
 
