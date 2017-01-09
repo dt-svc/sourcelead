@@ -142,6 +142,134 @@ $(document).ready(function() {
 });	
 </script>
 
+
+<script>
+function prepareAllCounts(requirementId){
+    $('#applicantli').load(allApplicantsCount(requirementId)); 
+    $('#duplicataplctli').load(duplicateCount(requirementId));
+    $('#requestSentli').load(requestSentCount(requirementId));
+    $('#shortListli').load(shortListCount(requirementId));
+    $('#submitToClientli').load(submitToClientCount(requirementId));
+    $('#interviewli').load(interviewsCount(requirementId));
+    $('#offerMadeli').load(offerMadeCount(requirementId));
+    $('#rejectedli').load(rejectedCount(requirementId));  
+}
+</script>
+
+
+
+<script>
+function allApplicantsCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=APPLICANTS",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#applicantsCount").html(json);
+        },
+	  });
+}
+</script>
+
+<script>
+function duplicateCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	  $.ajax({
+      type : "POST",
+       url: sourceleadUrl+"/getDuplicateSubmissionsCountByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+       success :function(data) { 
+      	 var json = JSON.parse(data);
+      	 $("#duplicateApplicantsCount").html(json);
+       },
+	  }); 
+}
+</script>
+
+<script>
+function requestSentCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+      type : "POST",
+       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=REQUESTSENT",        
+       success :function(data) { 
+      	    var json = JSON.parse(data);
+      	    $("#requestSent").html(json);
+         },
+	  });
+}
+</script>
+
+<script>
+function shortListCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+     type : "POST",
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=SHORTLISTED",        
+      success :function(data) { 
+     	    var json = JSON.parse(data);
+     	    $("#shortlistCount").html(json);
+        },
+	  });
+}
+</script>
+
+<script>
+function submitToClientCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+     type : "POST",
+     url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=SUBMIT_TO_CLIENT",        
+     success :function(data) { 
+    	    var json = JSON.parse(data);
+    	    $("#submitToClientCount").html(json);
+       },
+	  });
+}
+</script>
+
+<script>
+function interviewsCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+      type : "POST",
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=INTERVIEWED",        
+      success :function(data) { 
+    	    var json = JSON.parse(data);
+    	    $("#interviewCount").html(json);
+       },
+	  });
+}
+</script>
+
+<script>
+function offerMadeCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+      type : "POST",
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=OFFERED",        
+      success :function(data) { 
+    	    var json = JSON.parse(data);
+    	    $("#offersCount").html(json);
+       },
+	  });
+}
+</script>
+
+<script>
+function rejectedCount(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+      type : "POST",
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType=REJECTED",        
+      success :function(data) { 
+    	    var json = JSON.parse(data);
+    	    $("#rejectedCount").html(json);
+       },
+	  });
+}
+</script>
+
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -440,13 +568,7 @@ function sideBar(requirementId){
            success :function(data) {  
                 if(data != null && data != 'undefined' && data != ""){  
                 	 var json = JSON.parse(data);
-              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-              		 else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }
-              		 else{
+              		
               			var result = '';
               			
               			var jobType = '';
@@ -458,9 +580,10 @@ function sideBar(requirementId){
               			
               			
               			result = result+'    <div class="profile_details requirement_details clearfix reqrementsummary">';
-              			if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined'){
-    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
-
+              			if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType != '' && json.jobType != null && json.jobType != 'undefined'){
+    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'</span><i></i></h4></a>';
+               			}else if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined'){
+    				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobId+'">'+json.jobTitle+'-'+json.jobId+'</span><i></i></h4></a>';
                			}
                			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined'){
      				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
@@ -627,7 +750,6 @@ function sideBar(requirementId){
 								$("body").css('overflow-y', 'auto');
 						 });	 */
 			 			 
-			    	} 
                 }else{
                	 $("#requirementSideDiv").removeAttr("style");
  	    	         var result ="";
@@ -674,13 +796,7 @@ function requirementDetails(requirementId){
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{  
+            		  
 							var result ="";
 				            result = result +' <div class="require_wrap_details">';
 				           
@@ -750,7 +866,7 @@ function requirementDetails(requirementId){
 				            result = result +'   <h2> Requirement Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
-				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+json.positions+'</span>';
+				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b>'+json.positions+'';
 				            }
 				            else{
 				            result = result +'<div class="require_wrap_details_cta"> <b>No. of positions:</b> <span> -- </span>';	
@@ -759,7 +875,7 @@ function requirementDetails(requirementId){
 				            result = result +'     </div>';
 				            
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-					            	result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
+					            	result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b>'+json.fileName+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
@@ -768,7 +884,7 @@ function requirementDetails(requirementId){
 				            result = result +'     </div>';
 				            
 				            if(json.education != null && json.education != '' && json.education != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta require_education"> <b>Education:</b> <span>'+json.education+'</span>';
+					            result = result +'<div class="require_wrap_details_cta require_education"> <b>Education:</b>'+json.education+'';
 					            }else{
 					           	result = result +'<div class="require_wrap_details_cta"> <b>Education:</b> <span> -- </span>';
 					            }
@@ -849,7 +965,7 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            if(json.clientSubmissionTemplate != '' && json.clientSubmissionTemplate != null && json.clientSubmissionTemplate != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span>'+json.clientSubmissionTemplate+'</span>';
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b>'+json.clientSubmissionTemplate+'';
 					            }
 					            else{
 						        result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span> --- </span>';
@@ -867,7 +983,7 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            if(json.isClientJob  == 'N'){
 				            if(json.clientSubmissionTemplate != '' && json.clientSubmissionTemplate != null && json.clientSubmissionTemplate != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>'+json.clientSubmissionTemplate+'</span>';
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b>'+json.clientSubmissionTemplate+'';
 					            }
 					            else{
 						        result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span> --- </span>';
@@ -876,7 +992,7 @@ function requirementDetails(requirementId){
 				            }
 				            result = result +'     </div>';
 				            if(json.highestLevel == '1'){
-				            	result = result +'<div class="require_wrap_details_cta"> <b>Approvers:</b> <span>';
+				            	result = result +'<div class="require_wrap_details_cta"> <b>Approvers:</b>';
 				            	for (var i=0; i<json.approverNames.length; i++)
 				   				{
 				            	    if(json.approverNames[i] == json.approverNames[0]){
@@ -885,7 +1001,6 @@ function requirementDetails(requirementId){
 				            	    	result = result +","+json.approverNames[i]; 
 				            	    }
 				   				}
-				            	result = result +'</span>';
 				            	result = result +'</div>';
 				            }else{
 				            	for (var i=0; i<json.approverNames.length; i++)
@@ -893,9 +1008,8 @@ function requirementDetails(requirementId){
 				            		var level = 1;
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
-					            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b> <span>'; 
+					            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b>'; 
 					            		result = result +json.approverNames[i];
-					            		result = result +'</span>';
 					            		result = result +'</div>';
 					            		level = level+1;
 					   				}
@@ -944,7 +1058,6 @@ function requirementDetails(requirementId){
 							     $(".project_tabs_inn").not(tab).css("display", "none");
 							     $(tab).fadeIn();
 							 });
-            		 }
               }else{
                      	 $("#requirementSideDiv").removeAttr("style");
        	    	         var result ="";
@@ -1076,7 +1189,7 @@ function requirementPipeline(requirementId,submissionType){
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
          success :function(data) {  
-        	requirementSubmissionCount(requirementId);
+        	//requirementSubmissionCount(requirementId);
         	 var result =""; 
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
@@ -1271,14 +1384,14 @@ function requirementPipeline(requirementId,submissionType){
 
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           '</sec:authorize>';
 						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
 						           '</sec:authorize>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';
+						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -1533,6 +1646,7 @@ function requirementPipeline(requirementId,submissionType){
 							     $(".project_tabs_inn").not(tab).css("display", "none");
 							     $(tab).fadeIn();
 							 });
+							prepareAllCounts(requirementId);
 							
             		 }
               }else{
@@ -1553,6 +1667,7 @@ function requirementPipeline(requirementId,submissionType){
                },
                  
             }); 
+	 
 }
 </script>
 
@@ -1632,14 +1747,14 @@ function requirementSubmissionCount(requirementId){
         	 var json = JSON.parse(data);
         	 var report1 = json[0];
         	 
-        	 $("#applicantsCount").html(report1.numOfSubmissions);
+        	 //$("#applicantsCount").html(report1.numOfSubmissions);
         	 $("#shortlistCount").html(report1.numOfShortList);
         	 $("#submitToClientCount").html(report1.numOfSubmitToClient);
         	 $("#interviewCount").html(report1.numOfInterview);
         	 $("#offersCount").html(report1.numOfOffers);
         	 $("#rejectedCount").html(report1.numOfRejected);
         	 $("#requestSent").html(report1.numofrequestsent);
-        	 $("#duplicateApplicantsCount").html(report1.duplicateCount);
+        	 //$("#duplicateApplicantsCount").html(report1.duplicateCount);
          },
 	  });
 }
@@ -1908,7 +2023,29 @@ function clientSideBar(candidateId){
 			             var skills = [];
 			             skills = skillsList.split(",");
 			             
-	                	 var result = "";
+			             var country = '';
+				         var state = '';
+				         var city = '';
+			             
+			             if(json.country != null && json.country != '' && json.country != 'undefined'){
+	         			 		country = ','+json.country;
+	             			 	}else{
+	             			 		country = '';
+	             			 	}
+	         			 	
+	         			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
+	         			 		state =json.state;
+	             			 	}else{
+	             			 		state = '';
+	             			 	}
+	         			 	
+	         			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
+	         			 		city =json.city+',';
+	             			 	}else{
+	             			 		city = '';
+	             			 	}
+			             
+	                	       var result = "";
 	                	 
 	                	 if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
 	                		 lastName  = json.lastName;
@@ -2009,11 +2146,9 @@ function clientSideBar(candidateId){
 			                                                	  
 			             result = result+'                   <li><i class="fa fa-phone"></i>----</li>';         	  
 			                                                  }
-			                                                  if(json.address != null && json.address != '' && json.address != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+json.address+'</li>';
-			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-location-arrow"></i>----</li>';                                  	  
-			                                                  }
+			                                                  
+			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
+			             
 			                                                  if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
 			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.currentRate+'/Per Hour - Current Rate / Salary</li>';
 			                                                  }else{
@@ -2257,15 +2392,43 @@ function getRateListDiv(submissionId, candidateId){
 		                    	 }
 	                    	 }
 		                     result = result + '      <tr class="redtxt">';
-		                     result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
-		                     result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
-		                     result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
-		                     result = result + '        <td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
+		                     if(report.proposeByName != null && report.proposeByName != 'undefined' && report.proposeByName !=''){
+		                    	 result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
+		                     }else{
+		                    	 result = result + '        <td><div class="tbldata-dotdot-sm">---</div></td>';
+		                     }
+		                     
+		                     if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+		                    	 result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
+		                     }else if(report.expectedRate != null && report.expectedRate != 'undefined' && report.expectedRate !=''){
+		                    	 result = result + '        <td><div class="tblminwidth-75">'+report.expectedRate+'</div></td>';
+		                     }else{
+		                    	 result = result + '        <td><div class="tblminwidth-75">---/div></td>';
+		                     }
+		                     
+		                     if(report.rateReason != null && report.rateReason != 'undefined' && report.rateReason !=''){
+		                    	 result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
+		                     }else{
+		                    	 result = result + '        <td><div class="tbldata-dotdot">---</div></td>';
+		                     }
+		                     
+		                     if(report.createdDateStr != null && report.createdDateStr != 'undefined' && report.createdDateStr !=''){
+		                    	 result = result + '        <td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
+		                     }else{
+		                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
+		                     }
 		                     result = result + '        <td>';
+		                     
 		                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
 		                    	 var Accepted = 'Accepted';
 		                    	 var Rejected = 'Rejected';
 		                     	result = result + '			<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';
+		                     }else{
+		                    	 if(report.rateStage == 'ACCEPTED'){
+		                     		result = result + '<b class="text-primary"> Accepted </b>';
+		                     	}else if(report.rateStage == 'REJECTED'){
+		                     		result = result + '<b class="text-danger"> Rejected </b>';
+		                     	}
 		                     }
 		                     result = result + '		</td>';
 		                     result = result + '      </tr>';

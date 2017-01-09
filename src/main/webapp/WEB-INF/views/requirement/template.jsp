@@ -65,13 +65,7 @@ function requirementTemplateList(){
            url: sourceleadUrl+"/getRequirementTemplateListByOrgLocationsId?${_csrf.parameterName}=${_csrf.token}",    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
+               		
 			    	     $("#requirementTemplateList").removeAttr("style");
 	                	 $("#requirementTemplateList").empty();
 	                	 
@@ -84,7 +78,7 @@ function requirementTemplateList(){
 	                      result = result +"<th>Experience</th>";
 	                     result = result +"<th>Skills</th>";
 	                     result = result +"<th>Created by</th>";
-	                    /*  result = result +"<th>Action</th>"; */
+	                      result = result +"<th>Action</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -113,18 +107,18 @@ function requirementTemplateList(){
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 		                     
-		                     if(opt.requirementCreatedDateToString!=null && opt.requirementCreatedDateToString !='' && opt.requirementCreatedDateToString !='undefined'){
-		                    	 result = result +"<td><div>"+opt.requirementCreatedDateToString+"</div></td>";
+		                     if(opt.createdByName!=null && opt.createdByName !='' && opt.createdByName !='undefined'){
+		                    	 result = result +"<td><div>"+opt.createdByName+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
-		                    
+		                     result = result +"<td><div><a id='edit-user' href='#' onClick='deleteRequirementTemplate("+opt.id+");'><i class='glyphicon glyphicon-trash'></i></div></td>";
 		                    result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     $("#requirementTemplateList").append(result); 
-			    	} 
+			    	
                  }else{
                  	 $("#requirementTemplateList").removeAttr("style");
    	    	         var result ="";
@@ -164,6 +158,29 @@ function pagination(){
 }
 </script>
 
-
+<script>
+function deleteRequirementTemplate(requirementId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var message = confirm("You are choosing to delete the Requirement Template");
+	if (message == true) {
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/terminateRequirementTemplate?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
+   		    success: function(data) {
+   		    	if( data.indexOf('Sign In') >= 0){
+		    		location.replace(sourceleadUrl);
+		    	 }
+        		 else if (data.indexOf('exception') >= 0) {
+        			 location.replace(sourceleadUrl+"/errorPage");
+        		 }
+        		 else{
+        			 location.replace(sourceleadUrl+"/template");
+        			 
+        		 }
+   		    }
+	     });
+	}
+}
+</script>
 
  <jsp:include page="../masterFooter.jsp" />

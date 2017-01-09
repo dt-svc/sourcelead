@@ -132,7 +132,7 @@ width: auto;
 										   <div class="clearfix">
 										  <div class="row">
 										  <div class="col-md-3">
-										  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-8">
+										  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-10">
 										  </div> 
 										  <input type="hidden" name="candidateId" id="candidateId" value="${requirementSubmission.candidate.id}"/> 
 										  <div class="col-md-3 select-field">
@@ -149,7 +149,7 @@ width: auto;
 										  </div>
 										  <div class="clearfix"></div>
 										  <div class="col-md-6 mt">
-											  <textarea class="form-control" rows="2" name="comment" placeholder="Comment" id="comment"></textarea>	
+											  <textarea class="form-control" rows="2" name="comment" placeholder="Comment" id="comment" field-name="Comment" data-validation="required"></textarea>	
 										  </div>
 										  </div>
 										  </div>
@@ -262,14 +262,13 @@ width: auto;
 						success : function(data) {
 							if("success"){
 								var json = JSON.parse(data);
-								
 								var result = "";
 								result = result +"<html>";
 			                	 result = result +"<table id='rateNegotiationTable' width='100%' cellpadding='0' border='2' cellspacing='0'>"; 
 			                     result = result +"<thead>"; 
 			                     result = result +"  <tr>"; 
 			                     result  = result + '<th> Requirement Title </th>';
-			                 	 result  = result + '<th> Requirement Rate </th>';
+// 			                 	 result  = result + '<th> Requirement Rate </th>';
 			                 	 result  = result + '<th> Proposed Rate </th>';
 			                 	 result  = result + '<th> Proposed By </th>';
 			                     result = result +"  </tr>"; 
@@ -286,17 +285,16 @@ width: auto;
 		                    	     }else{
 		                    	    	 result  = result + ' <td><div><span>--</span></div></td>';
 		                    	     }
-			                    	 
-			                    	 if(opt.requirementRate != null && opt.requirementRate != '' && opt.requirementRate != 'undefined'){
-			                    	 result  = result + ' <td><div><span>'+opt.requirementRate+'</span></div></td>';
+			                    	 if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined' && opt.expectedRateType != null && opt.expectedRateType != '' && opt.expectedRateType != 'undefined'){
+			                    	 result  = result + ' <td><div><span>'+opt.expectedRate+'/'+opt.expectedRateType+'</span></div></td>';
 			                    	 }else{
-			                    		 result  = result + ' <td><div><span>--</span></div></td>';
+			                    		 result  = result + ' <td><div><span>---</span></div></td>';
 			                    	 } 
-			                    	 if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
+			                    	 /* if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
 				                    	 result  = result + '<td><div><span>'+opt.expectedRate+'</span></div></td>';
 			                    	 }else{
 			                    		 result  = result + '<td><div><span>--</span></div></td>'; 
-			                    	 }
+			                    	 } */
 			                    	 
 			                    	 if(opt.proposeByName != null && opt.proposeByName != '' && opt.proposeByName != 'undefined'){
 				                    	 result  = result + '<td><div><span>'+opt.proposeByName+'</span></div></td>';

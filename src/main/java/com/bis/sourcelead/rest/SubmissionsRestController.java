@@ -278,10 +278,13 @@ public class SubmissionsRestController {
 			throws Exception {
 
 		String resultJson = null;
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		List<RequirementSubmission> shortlistedList = requirementSubmissionService
-				.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations.getId(), requirementId, status);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+		List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations, requirementId, status,user,loginUserRole);
+		
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
 
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
@@ -429,6 +432,7 @@ public class SubmissionsRestController {
 
 		String resultJson = null;
 
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		StringBuilder skillsList = new StringBuilder();
 		Set<CandidateSkills> candidateSkills = submission.getCandidate().getCandidateSkills();
@@ -444,6 +448,7 @@ public class SubmissionsRestController {
 		}
 
 		submission.setSkillsList(skillsList.toString());
+		submission.setRequirementSubmissionTemplateFields(requirementSubmissionTemplateFields);
 		resultJson = toJSON(submission);
 		return resultJson;
 

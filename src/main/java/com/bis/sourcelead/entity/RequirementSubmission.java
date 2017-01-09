@@ -268,9 +268,14 @@ public class RequirementSubmission implements Serializable{
 	private int duplicateCount;
 	
 	@Transient
+	private Long requirementId;
+	
+	@Transient
 	private String orgName;
 	
-
+	@Transient
+	private RequirementSubmissionTemplateFields requirementSubmissionTemplateFields;
+	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
 	}
@@ -866,11 +871,28 @@ public class RequirementSubmission implements Serializable{
 		this.duplicateCount = duplicateCount;
 	}
 
+	public Long getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(Long requirementId) {
+		this.requirementId = requirementId;
+	}
+
 	public String getOrgName() {
 		return orgName;
 	}
 
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
+	}
+
+	public RequirementSubmissionTemplateFields getRequirementSubmissionTemplateFields() {
+		return requirementSubmissionTemplateFields;
+	}
+
+	public void setRequirementSubmissionTemplateFields(
+			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields) {
+		this.requirementSubmissionTemplateFields = requirementSubmissionTemplateFields;
 	}
 }

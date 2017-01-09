@@ -64,4 +64,6 @@ public interface CandidateEmployersService {
 	public CandidateEmployers getCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateId,Long candidateEmployerId)  throws Exception;
 
 	
+	public void saveOrUpdateCandidateElkDocumentWithEmployerDetails(Long candidateId,Long locationId) throws Exception;
+	
 }

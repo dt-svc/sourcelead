@@ -362,7 +362,12 @@ public class EMailJobScheduler {
 											     }
 												  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
 												  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
-												  tempHTML.append("<td>"+managerProjectApproverHierarchy.getApproverUserId().getFirstName()+"</td>");
+												 if(managerProjectApproverHierarchy !=null){
+													 tempHTML.append("<td>"+managerProjectApproverHierarchy.getApproverUserId().getFirstName()+"</td>"); 
+												 }else{
+													 tempHTML.append("<td>--</td>");
+												 }
+												  
 												 tempHTML.append("</tr>");
 											
 											}
@@ -447,7 +452,11 @@ public class EMailJobScheduler {
 									     }
 										  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
 										  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
-										  tempHTML.append("<td>"+managerProjectApproverHierarchy.getApproverUserId().getFirstName()+"</td>");
+                                            if(managerProjectApproverHierarchy !=null){
+                                            	 tempHTML.append("<td>"+managerProjectApproverHierarchy.getApproverUserId().getFirstName()+"</td>");
+										         }else{
+										        	 tempHTML.append("<td>--</td>"); 
+										         }
 										 tempHTML.append("</tr>");
 									
 									}
@@ -529,8 +538,12 @@ public class EMailJobScheduler {
 											     }
 												  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
 												  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
-												  tempHTML.append("<td>"+managerProjectApproverHierarchy.getApproverUserId().getFirstName()+"</td>");
-												 tempHTML.append("</tr>");
+												 if(managerProjectApproverHierarchy !=null){
+													 tempHTML.append("<td>"+managerProjectApproverHierarchy.getApproverUserId().getFirstName()+"</td>");
+												 }else{
+													 tempHTML.append("<td>--</td>");
+												 }
+												  tempHTML.append("</tr>");
 											
 											}
 										}
