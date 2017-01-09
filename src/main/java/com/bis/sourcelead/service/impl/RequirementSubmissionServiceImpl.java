@@ -1296,6 +1296,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					requirementSubmission.setSubmissionRateFileContentType(multiFile.getOriginalFilename());
 					requirementSubmission.setSubmissionRateFileName(multiFile.getContentType());
 				}
+				StringBuilder name = new StringBuilder();
+				if(null !=user.getLastName() && !" ".equalsIgnoreCase(user.getLastName())){
+					requirementSubmission.setSubmissionRequestUser(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					requirementSubmission.setSubmissionRequestUser(user.getFirstName());
+				}
+				
 				sendEmailtoApplicant(loginOrg, user,requirementSubmission,loginOrgLocation);
 			}
 			else if(StringUtils.equalsIgnoreCase(decision, "reject")){
