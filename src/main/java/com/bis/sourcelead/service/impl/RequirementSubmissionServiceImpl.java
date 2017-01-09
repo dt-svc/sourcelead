@@ -859,23 +859,23 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
-		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+		 if(null!= requirement.getJobTitle() && !"".equalsIgnoreCase(requirement.getJobTitle())){
 			 globalVarsMap.put("requirementName", requirement.getJobTitle());
 			 }else{
 				 globalVarsMap.put("requirementName","--");
 			 }
-		 if(orgLocations.getOrg().getOrgName()!= null && !"".equalsIgnoreCase(orgLocations.getOrg().getOrgName())){
+		 if(null!= orgLocations.getOrg().getOrgName() && !"".equalsIgnoreCase(orgLocations.getOrg().getOrgName())){
 			 globalVarsMap.put("organizationName", orgLocations.getOrg().getOrgName());
 			 }else{
 				 globalVarsMap.put("organizationName","--");
 			 }
-		 if(candidate.getFirstName() != null && candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()) && !"".equalsIgnoreCase(candidate.getLastName())){
+		 if(null != candidate.getFirstName() && null!= candidate.getLastName() && !"".equalsIgnoreCase(candidate.getFirstName()) && !"".equalsIgnoreCase(candidate.getLastName())){
 			 StringBuilder candidateBuild = new StringBuilder();
 			 globalVarsMap.put("applicantName", candidateBuild.append(candidate.getFirstName()).append("").append(candidate.getLastName()).toString());
 			 }else{
 				 globalVarsMap.put("applicantName",candidate.getFirstName());
 			 }
-		 if((requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+		 if((null!= requirement.getMinExp() && !"".equalsIgnoreCase(requirement.getMinExp())) && (null!= requirement.getMaxExp() && !"".equalsIgnoreCase(requirement.getMaxExp()))){
 			 StringBuilder expBuild = new StringBuilder();
 			 globalVarsMap.put("experience",expBuild.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString()); 
 		 	 }else if(requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())){
@@ -892,7 +892,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 	}else{
 			globalVarsMap.put("location","--");
 			}
-		 if(requirementSubmissionTemplateFields.getExpectedCTC()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedCTC())){
+		 if(null != requirementSubmissionTemplateFields.getExpectedCTC() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedCTC())){
 			 globalVarsMap.put("requirementRate", requirementSubmissionTemplateFields.getExpectedCTC());
 			 }else{
 				 globalVarsMap.put("requirementRate","--");
@@ -902,16 +902,16 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("skills","--");
 			 }
-		 if(requirement.getDescription()!= null && !"".equalsIgnoreCase(requirement.getDescription())){
+		 if(null!= requirement.getDescription() && !"".equalsIgnoreCase(requirement.getDescription())){
 			 globalVarsMap.put("jobDescription", requirement.getDescription());
 			 }else{
 				 globalVarsMap.put("jobDescription","--");
 			 }
-		 if((loginUser.getFirstName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName())) && (loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getLastName()))){
+		 if((null!= loginUser.getFirstName() && !"".equalsIgnoreCase(loginUser.getFirstName())) && (null!= loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName()))){
 			 StringBuilder nameBuild = new StringBuilder();
 			 globalVarsMap.put("loginUserName", nameBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			 }
-		 else if(loginUser.getFirstName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName())){
+		 else if(null!= loginUser.getFirstName() && !"".equalsIgnoreCase(loginUser.getFirstName())){
 			 globalVarsMap.put("loginUserName", loginUser.getFirstName());
 		 	}else{
 			 globalVarsMap.put("loginUserName","--");
