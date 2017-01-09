@@ -298,7 +298,7 @@ $(document).ready(function () {
 	       </div>
 
 		<div class="form-group">
-         <label class="col-md-3">Employment type</label>
+         <label class="col-md-3">Employment Type</label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="jobType" name="jobType" onChange="getJobType(this);" >
 	                 <option value="">&nbsp;&nbsp;&nbsp;&nbsp;------ Select -----</option>
@@ -322,7 +322,7 @@ $(document).ready(function () {
           </div>
            
             <div class="form-group jobTypeDiv" id="jobTypeDiv" style="display:none">
-            <label class="col-md-3">Job Type</label>
+            <label class="col-md-3">Employment Type</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}"  field-name="Job Type" value="">
             </div>
