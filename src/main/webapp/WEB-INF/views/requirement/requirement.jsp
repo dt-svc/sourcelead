@@ -298,7 +298,7 @@ $(document).ready(function () {
 	       </div>
 
 		<div class="form-group">
-         <label class="col-md-3">Employment type</label>
+         <label class="col-md-3">Employment Type</label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="jobType" name="jobType" onChange="getJobType(this);" >
 	                 <option value="">&nbsp;&nbsp;&nbsp;&nbsp;------ Select -----</option>
@@ -321,8 +321,8 @@ $(document).ready(function () {
             </div>
           </div>
            
-            <div class="form-group" id="jobTypeDiv" style="display:none">
-            <label class="col-md-3">Job Type</label>
+            <div class="form-group jobTypeDiv" id="jobTypeDiv" style="display:none">
+            <label class="col-md-3">Employment Type</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}"  field-name="Job Type" value="">
             </div>
@@ -390,27 +390,27 @@ $(document).ready(function () {
           </div>
           
           <div class="form-group">
-            <label class="col-md-3">Pay Rate/Salary </label>
+            <label class="col-md-3">Pay Rate/Salary${SourceLeadWeb_currencyCode}</label>
             <div class="col-md-9">
              <div class="input-group">
                 <div class="input-group-btn selp-custom-min">
                   
-                  <select class="selectpicker" id="currencyCode" name="currencyCode">
+                  <select class="selectpicker" id="currencyCode" name="currencyCode" >
                
                 <c:if test="${empty requirement.id}">
-	                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-	                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-	                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-	                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
-	                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-	                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
                  </c:if>
                  
                  <c:if test="${! empty requirement.id}">
 	                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
 	                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
 	                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-	                 <option ${requirement.currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+	                 <option ${requirement.currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
 	                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
 	                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  </c:if>
@@ -709,7 +709,7 @@ $(document).ready(function () {
 	                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
 	                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
 	                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-	                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+	                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
 	                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
 	                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  </c:if>
@@ -718,7 +718,7 @@ $(document).ready(function () {
 	                 <option ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}>INR</option>
 	                 <option ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
 	                 <option ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-	                 <option ${requirement.clientCurrencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+	                 <option ${requirement.clientCurrencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
 	                 <option ${requirement.clientCurrencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
 	                 <option ${requirement.clientCurrencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  </c:if>
@@ -1232,13 +1232,13 @@ function getAllCountries(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryReq').empty();
-        	$('#countryReq').append('<option value="">---select Country---</option>');
+        	$('#countryReq').append('<option value="">---Select Country---</option>');
         	for(var i=0;i<json.length;i++){
             	if(json[i] == countryName ){
             		
             		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
-            	else if((countryName ==null ||  countryName =='' || countryName =='undefined') && (json[i] == '${loginCountryName}')){
+            	else if((countryName ==null ||  countryName =='' || countryName =='undefined') && (json[i] == '${SourceLeadWeb_loginCountryName}')){
             		
             		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
@@ -1277,7 +1277,7 @@ function getStates(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select State---</option>');
+	        	$('#state').append('<option value="">---Select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
 	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1294,10 +1294,10 @@ function getStates(){
 	    });
 	}else{
 		$('#state').empty();
-    	$('#state').append('<option value="">---select State---</option>');
+    	$('#state').append('<option value="">---Select State---</option>');
     	$('#state').trigger("chosen:updated");
     	$('#city').empty();
-    	$('#city').append('<option value="">---select State---</option>');
+    	$('#city').append('<option value="">---Select State---</option>');
         $('#city').trigger("chosen:updated");
 	}
 }
@@ -1325,7 +1325,7 @@ function getCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select City---</option>');
+	        	$('#city').append('<option value="">---Select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
 	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1341,7 +1341,7 @@ function getCities(){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---select City---</option>');
+    	$('#city').append('<option value="">---Select City---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }
@@ -1556,6 +1556,8 @@ function setTemplateValues(){
 			    	 existedFile = json.fileName;
 			    	 $("#uploadFile").val(existedFile);
 			    	 $('#uploadFile').trigger("chosen:updated");
+			   
+			    	 $( ".jobTypeDiv" ).hide();
 		    	}else{
 		    		
 		    		$("#jobTitle").val('');
@@ -1577,8 +1579,9 @@ function setTemplateValues(){
 		            $("#education").val('');
 			    	$("#description").val('');
 			    	$("#rate").val('');
-			    	$("#currencyCode").val('');
+			     	$("#currencyCode").val('');
 			    	$("#rateType").val('');
+			    	$( ".jobTypeDiv" ).show();
 			    	existedFile = json.fileName;
 			    	 $("#fileName").val(existedFile);
 			    	 $('#fileName').trigger("chosen:updated");
@@ -1597,6 +1600,7 @@ function setTemplateValues(){
 		 getAllCountries(); 		
 		 $("#rate").val('');
 		 $("#description").val('');
+		
 		 
 	}
 }
