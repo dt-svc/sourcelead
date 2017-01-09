@@ -1302,7 +1302,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				if(jsonObj.has("comment")){
-					requirementSubmission.setSubmissionRateComment(jsonObj.getString("comment"));
+					requirementSubmission.setRejectedReason(jsonObj.getString("comment"));
 				}
 			}
 			else if(StringUtils.equalsIgnoreCase(decision, "request")){
