@@ -142,7 +142,7 @@
 	          result = result +"    <th>&nbsp;</th>";
 	          result = result +"    <th>Name</th>"; 
 	          result = result +"    <th>Designation</th>"; 
-	          result = result +"    <th>Employment type</th>"; 
+	          result = result +"    <th>Employment Type</th>"; 
 	          result = result +"    <th>Email</th>"; 
 	          result = result +"    <th>Mobile</th>"; 
 	          result = result +"    <th>Type</th>"; 
@@ -190,16 +190,19 @@
 		            	}else{
 		            		lastName = "";
 		            	}
-		            	if(opt.state != null && opt.state != "" && opt.state != 'undefined'){
-		            		state = opt.state;
-		            	}else{
-		            		state = "";
+		            	var location = "---";
+		            	
+		            	if(opt.country != null && opt.country != "" && opt.country != 'undefined'){
+		            		location = opt.country;
+		            		if(opt.state != null && opt.state != "" && opt.state != 'undefined'){
+		            			location = location+", "+opt.state;
+			            	}
+		            		if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
+		            			location = location+", "+opt.city;
+			            	}
 		            	}
-		            	if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
-		            		city = opt.city;
-		            	}else{
-		            		city = "";
-		            	}
+		            	
+		            	
 		            	
 		            	
 	              result = result +"<tr>";
@@ -232,15 +235,8 @@
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 	              result = result +"  <td><div>"+mobilePhone+"</div></td>";
 	              result = result +"  <td><div>"+opt.candidateType+"</div></td>";
-	              if(state !='' && state != 'undefined' && city !='' && city != 'undefined'){
-	                  result = result +"  <td><div><span title='"+opt.country+", "+state+", "+city+"'>"+opt.country+", "+state+", "+city+"</span></div></td>";
-	                   } else if(state !='' && state != 'undefined')
-	                 {
-	                  result = result +"  <td><div><span title='"+opt.country+", "+state+"'>"+opt.country+", "+state+"</span></div></td>";
-	                 }
-	                 else{
-	                 result = result +"  <td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
-	                 }
+	              
+	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
 	              result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
 	              result = result +"</tr>"; 
@@ -355,7 +351,7 @@ function candidateSideBar(candidateId){
              			 	}
          			 	
          			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
-         			 	designationType = 'Employment type'+ ' - '+json.designationType;
+         			 	designationType = 'Employment Type'+ ' - '+json.designationType;
          			 	}else{
          			 		designationType = '';
          			 	}

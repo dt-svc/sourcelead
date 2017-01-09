@@ -131,7 +131,7 @@ function submitToClient(requirementId){
 			    	     }
 			           
 			           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-			        	   result = result + '<td><div><input type="text" class="form-control" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.expectedCTC+'"></div></td>';
+			        	   result = result + '<td><div><input type="text" class="form-control" data-validation="validate_length length1-10" data-validation-optional="true" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.expectedCTC+'"></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div><input type="text" class="form-control" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
