@@ -312,10 +312,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 		 requirementSubmission = requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 		
-		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit())){
-			 applicantReceiveMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
-		 }
-		 
 		 RequirementSubmissionTemplateFields templateFields = new RequirementSubmissionTemplateFields();
 		 templateFields.setRequirementSubmission(requirementSubmission);
 		
@@ -393,6 +389,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 templateFields.setCreatedDate(new Date());
 		 templateFields.setUpdatedDate(commonUtil.currentDate());
 		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(templateFields);
+		 
+		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit())){
+			 applicantReceiveMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
+		 }
+		 
 		return requirementSubmission;
 		
 	}
@@ -880,9 +881,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 	}else{
 			globalVarsMap.put("location","--");
 			}
-		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
-			 StringBuilder rateBuild = new StringBuilder();
-			 globalVarsMap.put("requirementRate", rateBuild.append(requirement.getCurrencyCode()).append("-").append(requirement.getRate()).append("-").append(requirement.getRateType()).toString());
+		 if(requirementSubmissionTemplateFields.getExpectedCTC()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedCTC())){
+			 globalVarsMap.put("requirementRate", requirementSubmissionTemplateFields.getExpectedCTC());
 			 }else{
 				 globalVarsMap.put("requirementRate","--");
 			 }

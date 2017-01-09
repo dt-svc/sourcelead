@@ -264,10 +264,10 @@ public class SubmissionsRateRestController {
 			        	 User proposedUser = userService.getUserByUserCode(negotiations.getCreatedBy());
 			        	 tempHTML.append("<td>").append(proposedUser.getFirstName()).append(" ").append(proposedUser.getLastName()).append("</td>");
 			         }else{
-			        	 if(candidate.getLastName() != null){
-			        		 tempHTML.append("<td>").append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).append("</td>");
+			        	 if(requirementSubmissionTemplateFields.getLastName() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+			        		 tempHTML.append("<td>").append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).append("</td>");
 			        	 }else{
-			        		 tempHTML.append("<td>").append(candidate.getFirstName()).append("</td>");
+			        		 tempHTML.append("<td>").append(requirementSubmissionTemplateFields.getFirstName()).append("</td>");
 			        	 }
 			         }
 			         tempHTML.append("</tr>");
@@ -299,25 +299,26 @@ public class SubmissionsRateRestController {
 															 @RequestParam(value = "candidateId", required = false) Long candidateId
 															) throws Exception {
 		 
+		
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
+		RequirementRateSubmissionNegotiation requirementRateSubmission = new RequirementRateSubmissionNegotiation();
+		if(requirementSubmissionTemplateFields != null){
+				requirementRateSubmission.setRequirementName(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getJobTitle());
+				requirementRateSubmission.setExpectedRate(requirementSubmissionTemplateFields.getExpectedCTC());
+				User proposedByUser = userService.getUserDetailsByUserCode(requirementSubmissionTemplateFields.getCreatedBy());
+				if(proposedByUser.getFirstName() != null && proposedByUser.getLastName()!= null && !"".equalsIgnoreCase(proposedByUser.getFirstName()) && !"".equalsIgnoreCase(proposedByUser.getLastName())){
+					 StringBuilder sb = new StringBuilder();
+					 requirementRateSubmission.setProposeByName(sb.append(proposedByUser.getFirstName()).append(" ").append(proposedByUser.getLastName()).toString());
+				}else{
+					requirementRateSubmission.setProposeByName(proposedByUser.getFirstName());
+				}
+				DateFormat date = new SimpleDateFormat( "yyyy-MM-dd");
+				String commonDate = date.format(requirementSubmissionTemplateFields.getCreatedDate());
+				requirementRateSubmission.setCreatedDateStr(commonDate.toString());
+		}
+		
 		//to get rate history of a requirement
 		List<RequirementRateSubmissionNegotiation> allSubmissionRateHistory = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId,candidateId);
-		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
-		
-		RequirementRateSubmissionNegotiation requirementRateSubmission = new RequirementRateSubmissionNegotiation();
-		if(allSubmissionRateHistory.isEmpty()){
-			requirementRateSubmission.setRequirementName(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getJobTitle());
-			requirementRateSubmission.setExpectedRate(requirementSubmissionTemplateFields.getExpectedCTC());
-			User proposedUser = userService.getUserDetailsByUserCode(requirementSubmissionTemplateFields.getCreatedBy());
-			if(proposedUser.getFirstName() != null && proposedUser.getLastName()!= null && !"".equalsIgnoreCase(proposedUser.getFirstName()) && !"".equalsIgnoreCase(proposedUser.getLastName())){
-				 StringBuilder sb = new StringBuilder();
-				 requirementRateSubmission.setProposeByName(sb.append(proposedUser.getFirstName()).append(" ").append(proposedUser.getLastName()).toString());
-			}else{
-				requirementRateSubmission.setProposeByName(proposedUser.getFirstName());
-			}
-			DateFormat standardFormat = new SimpleDateFormat( "yyyy-MM-dd");
-			String commonDateFormat = standardFormat.format(requirementSubmissionTemplateFields.getCreatedDate());
-			requirementRateSubmission.setCreatedDateStr(commonDateFormat.toString());
-		}
 		for(RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation : allSubmissionRateHistory){
 			
 			RequirementRateSubmissionNegotiation rate = allSubmissionRateHistory.get(allSubmissionRateHistory.size()-1);
