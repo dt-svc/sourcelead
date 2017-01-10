@@ -149,7 +149,7 @@ width: auto;
 										  </div>
 										  <div class="clearfix"></div>
 										  <div class="col-md-6 mt">
-											  <textarea class="form-control" rows="2" name="comment" placeholder="Comment" id="comment" field-name="Comment" data-validation="required"></textarea>	
+											  <textarea class="form-control" rows="2" name="comment" placeholder="Comment" id="comment" field-name="Comment"></textarea>	
 										  </div>
 										  </div>
 										  </div>
@@ -287,9 +287,11 @@ width: auto;
 		                    	     }
 			                    	 if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined' && opt.expectedRateType != null && opt.expectedRateType != '' && opt.expectedRateType != 'undefined'){
 			                    	 result  = result + ' <td><div><span>'+opt.expectedRate+'/'+opt.expectedRateType+'</span></div></td>';
+			                    	 }else if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
+			                    		 result  = result + ' <td><div><span>'+opt.expectedRate+'</span></div></td>';
 			                    	 }else{
 			                    		 result  = result + ' <td><div><span>---</span></div></td>';
-			                    	 } 
+			                    	 }
 			                    	 /* if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
 				                    	 result  = result + '<td><div><span>'+opt.expectedRate+'</span></div></td>';
 			                    	 }else{
