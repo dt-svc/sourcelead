@@ -478,15 +478,13 @@ public class CandidateListRestController {
 				Float expYears = Float.valueOf(matcher.group());
 				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
 				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths", keywd));
+				String mobileKeywd =matcher.group().replaceAll("91", "");
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
 			}
 			if(StringUtils.isNumeric(keywd)){
 				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRate", keywd));
-			}
-			String mobileKeywd = keywd.replaceAll("[+91]", ""); 
-			if(mobileKeywd.length() > 10  && StringUtils.isNumeric(mobileKeywd)){
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
 			}
 			
 				

@@ -1753,7 +1753,7 @@ function getCities(){
 	    $('#rateType').val(''); 
 
 	    $('#emailDiv').find('p.jquery_form_error_message').remove();
-	    
+	    $('#search_candidate').removeAttr('disabled');
 	    $('#minRateDiv').find('p.jquery_form_error_message').remove();
 	    $('#maxRateDiv').find('p.jquery_form_error_message').remove();
 	    $('#currencyDiv').find('p.jquery_form_error_message').remove();
