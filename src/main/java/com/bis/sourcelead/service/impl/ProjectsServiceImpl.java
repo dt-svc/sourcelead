@@ -377,17 +377,28 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		//send mail to assigned team members
 		if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
+			
+			User  approverUserId2  = null;
+			User  approverUserId1 = null;
+			if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+				  approverUserId1 =   userService.getUserById(Long.valueOf(jsonObj.getString("level1Manager")));
+			if(jsonObj.has("level2Manager") && jsonObj.getString("level2Manager") != null && !jsonObj.getString("level2Manager").isEmpty()){
+		      approverUserId2 =   userService.getUserById(Long.valueOf(jsonObj.getString("level2Manager")));
+			}
+			
 			for(ProjectMembers projectMembers : projectMemberList){
 				if(projectMembers.getEmployee() != null){
 					Employees emp = projectMembers.getEmployee();
-					if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty() && jsonObj.has("level2Manager") && jsonObj.getString("level2Manager") != null && !jsonObj.getString("level2Manager").isEmpty()){
-						User  approverUserId1 =new User();
-						User  approverUserId2 =new User();
-						approverUserId1.setId(Long.valueOf(jsonObj.getString("level1Manager")));
-						approverUserId2.setId(Long.valueOf(jsonObj.getString("level2Manager")));
-						if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue() &&  approverUserId2.getId().longValue() != emp.getUser().getId().longValue()){
-							sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
-						}
+						
+					//if  we have   both level1 and Level2 ProjectManagers
+					if(approverUserId1 !=null && approverUserId2 !=null){
+						  if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue() && approverUserId2.getId().longValue() != emp.getUser().getId().longValue()){
+							  sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
+				    }
+						//if  we have   both level1 only One ProjectManagers
+					}else if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue()){
+						  sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
+					}   
 						
 					}
 				}
@@ -763,6 +774,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 					    		previousEndDate = projects.getEndDate();
 					    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
 								projects.setEndDate(endDate);
+					    	}else{
+					    		Date endDate = null;
+					    		projects.setEndDate(endDate);
 					    	}
 			    	}
 		    	
@@ -870,17 +884,18 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    projects.setUpdatedBy(user.getUserCode());
 			    projects.setUpdatedDate(currentDate);
 			    if(projects.getProjectStatus().equals(Project_Status.COMPLETED)){
-			    	if(currentDate.before(projects.getStartDate())){
+			    	/*if(currentDate.before(projects.getStartDate())){
 			    		projects.setEndDate(projects.getStartDate());
-			    	}else{
+			    	}else{*/
 			    		projects.setEndDate(currentDate);
-			    	}
+			    	/*}*/
 			    	projects = commonUtil.terminateProject(projects);
 			    	 updateProject(projects);
 			    }
 			    else if(projects.getEndDate() != null && currentDate.after(projects.getEndDate()) && !(projects.getEndDate().equals(currentDate))) {
-			    	projects = commonUtil.terminateProject(projects);
-			    	updateProject(projects);
+			    		projects = commonUtil.terminateProject(projects);
+				    	updateProject(projects);
+			    	
 			    }
 			    else{
 			    	projects = updateProject(projects);
@@ -917,7 +932,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	     *   in-activate the submissions whose startDate is greaterthan project endDate
 	    	     */
 	    	    if(projects.getEndDate() != null) {
-	    	    	commonUtil.terminateProjectMembersWhoseAssignedDateOrTerminatedisGreaterThanProjectEndDate(projects, user);
+	    	    		commonUtil.terminateProjectMembersWhoseAssignedDateOrTerminatedisGreaterThanProjectEndDate(projects, user);
 	    	    }
 		 return "success";
 	}

@@ -91,7 +91,17 @@ public class VendorController {
 		}
 		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
 		for(OrgRelations orgRelation :vendorsList){
-			orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+			if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == orgLoc.getId().longValue()){
+				if(orgRelation.getResponderLocationId() != null){
+					orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+				}
+			}
+			if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue() == orgLoc.getId().longValue()){
+				if(orgRelation.getLocationId() != null){
+					orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
+				}
+			}
+			
 		}
 		model.addObject("vendor_list", vendorsList);
         model.addObject(vendorsList);

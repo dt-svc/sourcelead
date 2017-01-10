@@ -241,15 +241,15 @@
 						result = result + '	<label>Status</label>';
 						result = result	+ '<select id="projectStatusId" name="projectStatusId">';
 						if (json.projectStatus == 'STARTED') {
-							result = result	+ '<option selected>Started</option>';
+							result = result	+ '<option selected >Started</option>';
 						} else {
-							result = result + '<option>Started</option>';
+							result = result + '<option onclick="projectStatus();">Started</option>';
 						}
 
 						if (json.projectStatus == 'INPROGRESS') {
 							result = result	+ '<option selected>In-Progress</option>';
 						} else {
-							result = result + '<option>In-Progress</option>';
+							result = result + '<option onclick="projectStatus();">In-Progress</option>';
 						}
 
 						if (json.projectStatus == 'COMPLETED') {
@@ -261,7 +261,7 @@
 						if (json.projectStatus == 'ONHOLD') {
 							result = result	+ '<option selected>On-Hold</option>';
 						} else {
-							result = result + '<option>On-Hold</option>';
+							result = result + '<option onclick="projectStatus();">On-Hold</option>';
 						}
 
 						result = result + '</select>';
@@ -443,7 +443,16 @@
 	}
 </script>
 
+<script>
+function projectStatus(){
+	var projectStatus = $("#projectStatusId").val();
+	var projectEnddateString = $("#endDateStr1").val();
+	if(projectStatus == "Started" || projectStatus == "In-Progress" || projectStatus == "On-Hold"){
+		 $("#endDateStr1").val('');
+	}
+}
 
+</script>
 <script type="text/javascript">
 	function updateProjectDetails(projectId) {
 		if ($('#editProject_form').validate(false, validationSettings)) {

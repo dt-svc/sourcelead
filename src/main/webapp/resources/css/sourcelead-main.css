@@ -5044,7 +5044,17 @@ display: none;
 .mail-content table.dataTable.no-footer {
 border-bottom: 1px solid #ccc;
 }
-.addcandidate-popup {
+.addcandidate-popup{
+    display: none;
+    position:absolute;
+    padding: 15px;
+    left: 15%;
+    width: 70%;
+    z-index: 99999;
+    top: 30%;
+    border-radius: 5px;
+}
+.addconsultant-popup {
     display: none;
     position:absolute;
     padding: 15px;
@@ -5294,6 +5304,11 @@ max-height: 150px !important;
 }
 .exp-drop .dropdown-menu {
        max-height: 250px !important;
+}
+.errorInptgroup p.jquery_form_error_message {
+    position: absolute;
+    left: 0;
+    bottom: -16px;
 }
 /* media 320px */
 @media (max-width: 320px) {
