@@ -387,11 +387,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 			}
 			
 			for(ProjectMembers projectMembers : projectMemberList){
-				if(projectMembers.getEmployee() != null){
+				if(null != projectMembers.getEmployee()){
 					Employees emp = projectMembers.getEmployee();
 						
 					//if  we have   both level1 and Level2 ProjectManagers
-					if(approverUserId1 !=null && approverUserId2 !=null){
+					if( null != approverUserId1 && null != approverUserId2){
 						  if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue() && approverUserId2.getId().longValue() != emp.getUser().getId().longValue()){
 							  sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
 				    }
@@ -407,7 +407,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		
 		if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
-			if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+			if(jsonObj.has("level1Manager") && null != jsonObj.getString("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
 				User  approverUserId1 =new User();
 				approverUserId1.setId(Long.valueOf(jsonObj.getString("level1Manager")));
 				if(approverUserId1 != null && user.getId() != approverUserId1.getId()){
@@ -422,10 +422,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 			 * 
 			 */
 			
-			if(jsonObj.has("level2Manager") && jsonObj.getString("level2Manager") != null && !jsonObj.getString("level2Manager").isEmpty()){
+			if(jsonObj.has("level2Manager") && null != jsonObj.getString("level2Manager") && !jsonObj.getString("level2Manager").isEmpty()){
 				User  approverUserId2 =new User();
 				approverUserId2.setId(Long.valueOf(jsonObj.getString("level2Manager")));
-				if(!jsonObj.getString("level2Manager").isEmpty() && approverUserId2 != null && user.getId() != approverUserId2.getId()){
+				if(!jsonObj.getString("level2Manager").isEmpty() && null !=  approverUserId2 && user.getId() != approverUserId2.getId()){
 					sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, "", loginOrgCode);
 				}
 			}
