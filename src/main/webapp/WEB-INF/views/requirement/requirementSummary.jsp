@@ -1223,13 +1223,7 @@ function requirementPipeline(requirementId,submissionType){
         	 var result =""; 
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{ 
+            		
             			 var submitToClient = '';
             			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
             				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
@@ -1680,7 +1674,6 @@ function requirementPipeline(requirementId,submissionType){
 							 });
 							prepareAllCounts(requirementId);
 							
-            		 }
               }else{
                      	 $("#requirementSideDiv").removeAttr("style");
       		    	     result = result+"   <div class='row'>"; 
