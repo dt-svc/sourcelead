@@ -74,10 +74,10 @@ public class ProjectsController {
 				Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId(), loginUser.getId());
 				for(OrgRelations ocl :orgClientList){
 					
-					if(ocl.getResponderLocationId() != null){
+					if(null != ocl.getResponderLocationId()){
 						ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
 					}
-					if(ocl.getLocationId() != null){
+					if(null != ocl.getLocationId()){
 						ocl.setOrgName(ocl.getLocationId().getOrg().getOrgName());
 					}
 					ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());

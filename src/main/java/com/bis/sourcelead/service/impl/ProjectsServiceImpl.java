@@ -380,9 +380,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			
 			User  approverUserId2  = null;
 			User  approverUserId1 = null;
-			if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+			if( null !=  jsonObj.getString("level1Manager")  && jsonObj.has("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
 				  approverUserId1 =   userService.getUserById(Long.valueOf(jsonObj.getString("level1Manager")));
-			if(jsonObj.has("level2Manager") && jsonObj.getString("level2Manager") != null && !jsonObj.getString("level2Manager").isEmpty()){
+			if(null != jsonObj.getString("level2Manager") &&jsonObj.has("level2Manager")  && !jsonObj.getString("level2Manager").isEmpty()){
 		      approverUserId2 =   userService.getUserById(Long.valueOf(jsonObj.getString("level2Manager")));
 			}
 			

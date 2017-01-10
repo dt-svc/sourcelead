@@ -110,12 +110,12 @@ public class ClientController {
 			model.setViewName("client/clientDashboard");
 			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 			for (OrgRelations orgRelation : clientsList) {
-				if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				if(null != orgRelation.getLocationId() && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					if(orgRelation.getResponderLocationId() != null){
 						orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
 					}
 				}
-				if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				if(null != orgRelation.getResponderLocationId() && null != orgRelation.getResponderLocationId().getId() && orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					if(orgRelation.getLocationId() != null){
 						orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
 					}
