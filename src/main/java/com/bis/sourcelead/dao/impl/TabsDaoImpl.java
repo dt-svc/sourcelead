@@ -127,4 +127,30 @@ public class TabsDaoImpl implements TabsDao{
 	    return tabsList;
 	}
 
+	@Override
+	@Transactional
+	public boolean getTabAccessByRoleIdAndTabId(Long roleId, Long orgLocationId, Long tabId) throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+        List<Roles> rolesList = new ArrayList<Roles>();
+		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		 List<Long> roleActionsList = new ArrayList<Long>();
+		 for(Roles roles : rolesList){
+			 for (String s : roles.getActionId().split(",")){
+				 roleActionsList.add(Long.parseLong(s));
+			 }
+		 }
+		
+	    String query = "select tabs.id from Tabs tabs where tabs.id IN (select sa.tabs.id from SourceleadActions sa where sa.id IN (:roleActionsList)) ";
+	    List<Long> tabIds = session.createQuery(query.toString()).setParameterList("roleActionsList", roleActionsList).setCacheable(true).list();
+   
+	    for(Long id : tabIds){
+	    	if(id.equals(tabId)){
+	    		flag = true;
+	    	}
+	    }
+	    return flag;
+	}
+
 }
