@@ -517,7 +517,36 @@ public class RequirementController {
 			} catch (FileNotFoundException e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
-		}
+   }
+	
+	
+	@RequestMapping(value = "/downloadRateDocumentBySubmissionId", method = RequestMethod.GET)
+    public void downloadRateDocumentBySubmissionId(@RequestParam(value="submissionId", required=false) String submissionId ,HttpServletResponse response) throws Exception {
+		
+			RequirementSubmission requirementSubmission =  requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+	        StringBuilder filename = new StringBuilder();
+	        
+		    response.setContentType("application/octet-stream");
+	        response.setHeader("content-disposition", filename.append("attachment; filename=\"").append(requirementSubmission.getSubmissionRateFileName()).append("\"").toString());
+	        
+			InputStream inputStream = new ByteArrayInputStream(requirementSubmission.getSubmissionRateDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+
+				inputStream.close();
+				outStream.close();
+
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+   }
 	
 
 	private boolean isNullOrEmpty(String msg) {
