@@ -3789,7 +3789,7 @@ p.comment-text{
 	margin: 0;
 }
 .dashboard-widget.candidate-profile .nav-tabs li a:hover {
-	border:none;
+	border-bottom: 1px solid #f60;
 	border-bottom:none;
 	color:#2F2F2F;
 	background-color: #ccc;
@@ -5305,10 +5305,23 @@ max-height: 150px !important;
 .exp-drop .dropdown-menu {
        max-height: 250px !important;
 }
+
 .errorInptgroup p.jquery_form_error_message {
     position: absolute;
     left: 0;
     bottom: -16px;
+
+.attachfile {
+    z-index:1;
+    position: relative;
+}
+.error-field p.jquery_form_error_message{
+	position: absolute;
+	bottom: -10px;
+	width: 100%;
+	left: 0;
+	font-size: 10px;
+
 }
 /* media 320px */
 @media (max-width: 320px) {

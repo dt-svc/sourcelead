@@ -46,13 +46,7 @@ function requirementList(){
            url: sourceleadUrl+"/getAssignedRequirementListByOrgLocationIDAndUserId?${_csrf.parameterName}=${_csrf.token}",    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
+               		
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
@@ -123,7 +117,6 @@ function requirementList(){
 	                     $("#requirementList").append(result); 
 	                     $("#assignedRequirementsDiv").css("display", "block");
 	                     pagination(); 
-			    	} 
                  }else{
                 	 $("#requirementList").removeAttr("style");
   	    	      /*    var result ="";

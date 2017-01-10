@@ -132,7 +132,7 @@ width: auto;
 										   <div class="clearfix">
 										  <div class="row">
 										  <div class="col-md-3">
-										  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-8">
+										  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-10">
 										  </div> 
 										  <input type="hidden" name="candidateId" id="candidateId" value="${requirementSubmission.candidate.id}"/> 
 										  <div class="col-md-3 select-field">
@@ -149,7 +149,7 @@ width: auto;
 										  </div>
 										  <div class="clearfix"></div>
 										  <div class="col-md-6 mt">
-											  <textarea class="form-control" rows="2" name="comment" placeholder="Comment" id="comment" field-name="Comment" data-validation="required"></textarea>	
+											  <textarea class="form-control" rows="2" name="comment" placeholder="Comment" id="comment" field-name="Comment"></textarea>	
 										  </div>
 										  </div>
 										  </div>
@@ -285,12 +285,13 @@ width: auto;
 		                    	     }else{
 		                    	    	 result  = result + ' <td><div><span>--</span></div></td>';
 		                    	     }
-			                    	 
 			                    	 if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined' && opt.expectedRateType != null && opt.expectedRateType != '' && opt.expectedRateType != 'undefined'){
 			                    	 result  = result + ' <td><div><span>'+opt.expectedRate+'/'+opt.expectedRateType+'</span></div></td>';
-			                    	 }else{
+			                    	 }else if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
 			                    		 result  = result + ' <td><div><span>'+opt.expectedRate+'</span></div></td>';
-			                    	 } 
+			                    	 }else{
+			                    		 result  = result + ' <td><div><span>---</span></div></td>';
+			                    	 }
 			                    	 /* if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
 				                    	 result  = result + '<td><div><span>'+opt.expectedRate+'</span></div></td>';
 			                    	 }else{

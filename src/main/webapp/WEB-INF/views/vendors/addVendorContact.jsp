@@ -135,7 +135,7 @@
                 <div class="form-group">
 	              <label class="col-md-3">Last Name</label>
 	              <div class="col-md-9">
-	                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true">
+	                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
 	              </div>
 	            </div>
 	            
@@ -589,7 +589,7 @@ function validateEmail(){
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId, 
+		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId+"&type=vendor", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";

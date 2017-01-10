@@ -349,13 +349,15 @@ public class RequirementServiceImpl implements RequirementService {
 						requirement.setDocFile(templateRequirement.getDocFile());
 						requirement.setFileName(templateRequirement.getFileName());
 						requirement.setFileContentType(templateRequirement.getFileContentType());
+						requirement.setIsClientJob("N");
 					 }
-				     requirement.setIsClientJob("N");
 			 }	
 			 
 			 
 			if(jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
+			}else if(jsonObj.has("isClient")){
+				requirement.setIsClientJob("N");
 			}
 		if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient")) &&  jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y")){
 		requirementClient = (jsonObj.getString("isClient"));
@@ -1974,9 +1976,15 @@ public class RequirementServiceImpl implements RequirementService {
 		List<Requirement>  list = requirementDao.getAllRequirementTeplateJobsByOrgLocationId(orgLocationId, user);
 		
 		for(Requirement req :list){
-			
+			User createdUser = userService.getUserByUserCode(req.getCreatedBy());
+			if(createdUser != null){
+				String lastName = "";
+				if(StringUtils.isNotEmpty(createdUser.getLastName())){
+					lastName = " "+createdUser.getLastName();
+				}
+				req.setCreatedByName(createdUser.getFirstName()+lastName);
+			}
 			req.setRequirementCreatedDateToString(Constants.DF_YMD.format(req.getCreatedDate()));
-
 		}
 			
 		return list;

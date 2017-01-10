@@ -8,7 +8,6 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,7 +32,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Org;
@@ -191,7 +189,7 @@ public class CandidateRestController {
 	        multiFile = request.getFile(itrator.next());
 		}
 		String resumeDetails = null;
-		if(multiFile != null){
+		if(null != multiFile){
 			resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(),request);
 		}
 		return resumeDetails;
@@ -209,7 +207,7 @@ public class CandidateRestController {
 		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	Candidate candidate = candidateService.findByCandidateEmail(email,orgLocation.getId());
 		 	
-		 	if (candidate != null) {
+		 	if (null != candidate) {
 				result = "true";
 			}else{
 				result = "false";
@@ -221,7 +219,7 @@ public class CandidateRestController {
 	 public @ResponseBody  Boolean validateSkillName(@RequestParam(value="skillName", required=false) String skillName, @RequestParam(value="candidateId", required=false) String candidateId, HttpServletRequest request) throws Exception {
 		 	Boolean flag = false;
 		 	CandidateSkills candidateSkills = candidateSkillsService.getSkillsByCandidateIdSkillName(candidateId,skillName);
-		    if(candidateSkills != null){
+		    if(null != candidateSkills){
 		    	flag = candidateSkillsService.validateSkillName(skillName);
 		    }
 			return flag;
@@ -256,7 +254,7 @@ public class CandidateRestController {
 		    String resultJson = null;
 			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			Boolean isCandidateActive = false;
-			if(candidate != null){
+			if(null != candidate){
 				 if(candidate.getStatus() == 1){
 					 isCandidateActive = true;
 				 }
@@ -361,7 +359,7 @@ public class CandidateRestController {
 			List<User> userList = userService.getUsersForAddAsConsultant(org,orgLocations.getId());
 			for (User user : userList) {
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				if(userRole != null){
+				if(null != userRole){
 					user.setUserType(userRole.getRoles().getDisplayName());
 				}
 			}
@@ -431,8 +429,8 @@ public class CandidateRestController {
 				 req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName());
 			 }
 			
-			 if(req.getRequirement().getSpocId() != null){
-				 if(!"".equalsIgnoreCase(req.getRequirement().getSpocId().getSpocUser().getLastName()) && req.getRequirement().getSpocId().getSpocUser().getLastName() != null ){
+			 if(null != req.getRequirement().getSpocId()){
+				 if(!"".equalsIgnoreCase(req.getRequirement().getSpocId().getSpocUser().getLastName()) && null != req.getRequirement().getSpocId().getSpocUser().getLastName() ){
 					 req.setClientName(req.getRequirement().getSpocId().getSpocUser().getFirstName() +""+req.getRequirement().getSpocId().getSpocUser().getLastName());
 				 }else{
 					 req.setClientName(req.getRequirement().getSpocId().getSpocUser().getFirstName());
@@ -464,14 +462,14 @@ public class CandidateRestController {
 		 List<RequirementSubmissionHistory>  requirementSubmissionhistory =  requirementSubmissionHistoryService.getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(candidateId, loginOrgLocation.getId(), requirementId, submissionId);
 		 for(RequirementSubmissionHistory rsh:requirementSubmissionhistory){
 			 RequirementOffers ros =  requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
-			 if(ros != null){
+			 if(null != ros){
 				 rsh.setOfferResumeid(ros.getId());
 			 }
-			 if(rsh.getSubmissionId().getCandidateResumes() != null){
+			 if(null != rsh.getSubmissionId().getCandidateResumes()){
 				 rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getId());
 				 rsh.setFileName(rsh.getSubmissionId().getCandidateResumes().getFileName());
 			 }
-			 if(!"".equalsIgnoreCase(rsh.getSubmissionId().getOrgLocations().getOrg().toString()) && rsh.getSubmissionId().getOrgLocations().getOrg() != null){
+			 if(!"".equalsIgnoreCase(rsh.getSubmissionId().getOrgLocations().getOrg().toString()) && null != rsh.getSubmissionId().getOrgLocations().getOrg()){
 				 rsh.setOrgLocationId(rsh.getSubmissionId().getOrgLocations().getOrg().getOrgCode());
 			 }
 			 rsh.setToStage(rsh.getToStage());
@@ -479,7 +477,7 @@ public class CandidateRestController {
 			 rsh.setRequirementReson(rsh.getSubmissionId().getRejectedReason());
 			 
 			 StringBuilder userName  = new StringBuilder();
-			 if(rsh.getSubmissionId().getCandidate().getLastName() != null){
+			 if(null != rsh.getSubmissionId().getCandidate().getLastName()){
 				 rsh.setUserName(userName.append(rsh.getSubmissionId().getCandidate().getFirstName()).append(" ").append(rsh.getSubmissionId().getCandidate().getLastName()).toString());	 
 			 }else{
 				 rsh.setUserName(userName.append(rsh.getSubmissionId().getCandidate().getFirstName()).toString());
@@ -488,14 +486,14 @@ public class CandidateRestController {
 			 // user related data is getting
 			 User user = userService.getUserDetailsByUserCode(rsh.getCreatedBy());
 			 StringBuilder  loginUserName = new StringBuilder();
-			 if(user.getLastName() != null){
+			 if(null != user.getLastName()){
 				 rsh.setLoginUserName(loginUserName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			 }else{
 				 rsh.setLoginUserName(loginUserName.append(user.getFirstName()).toString());
 			 }
 			 
 			 //get the inteviewerName
-				 if(rsh.getInterviewerId() != null && rsh.getInterviewerId().getId() != null){
+				 if(null != rsh.getInterviewerId() && null != rsh.getInterviewerId().getId()){
 					 RequirementInterviewer requirementInterviewer =requirementInterviewerService.getInterviwerstByInterviewId(rsh.getInterviewerId().getId());
 					 StringBuilder interviewerName = new StringBuilder();
 						 if(!"".equalsIgnoreCase(requirementInterviewer.getInterviewerUser().getLastName()) && requirementInterviewer.getInterviewerUser().getLastName() != null){
@@ -511,7 +509,7 @@ public class CandidateRestController {
 				for(RequirementOfferHistory roh : requirementOfferHistory){
 					StringBuilder offerClientName = new StringBuilder();
 					user = userService.getUserDetailsByUserCode(roh.getCreatedBy());
-					if(user.getLastName() != null){
+					if(null != user.getLastName()){
 						roh.setClientName(offerClientName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 					 }else{
 						 roh.setClientName(offerClientName.append(user.getFirstName()).toString());
@@ -534,7 +532,7 @@ public class CandidateRestController {
 					 StringBuilder clientName = new StringBuilder();
 					 rh.setInterviewSourceType(rh.getInterviewSourceType());
 					 user = userService.getUserDetailsByUserCode(rh.getCreatedBy());
-					 if(user.getLastName() != null){
+					 if(null != user.getLastName()){
 						rh.setClientName(clientName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 					 }else{
 						 rh.setClientName(clientName.append(user.getFirstName()).toString());
@@ -544,17 +542,17 @@ public class CandidateRestController {
 				     Object object =  getCnadidateHistoryTimeConversion(diff,rh);
 					 rh = (RequirementInterviewHistory)object;
 					
-					if(rh.getInterviewId() != null){
-						if(rh.getInterviewId().getDateOfInterview() != null){
+					if(null != rh.getInterviewId()){
+						if(null != rh.getInterviewId().getDateOfInterview()){
 							rh.setDateOfInterviewStr(Constants.DMY.format(rh.getInterviewId().getDateOfInterview()));
 						    }
-						    if(rh.getInterviewId().getStartTime() != null){
+						    if(null != rh.getInterviewId().getStartTime()){
 						    	StringBuilder startTime = new StringBuilder(); 
 						    	 String hours = Integer.toString(rh.getInterviewId().getStartTime().getHours());
 						    	 String minutes = Integer.toString(rh.getInterviewId().getStartTime().getMinutes());
 						    	 rh.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(startTime.append(hours).append(":").append(minutes).toString()));
 						    }
-						    if(rh.getInterviewId().getEndTime() != null){
+						    if(null != rh.getInterviewId().getEndTime()){
 						    	StringBuilder endTime = new StringBuilder(); 
 						    	 String hours = Integer.toString(rh.getInterviewId().getEndTime().getHours());
 						    	 String minutes = Integer.toString(rh.getInterviewId().getEndTime().getMinutes());
@@ -573,16 +571,16 @@ public class CandidateRestController {
 				//interview related data is getting
 				List<RequirementInterview> RequirementInterview = requirementInterviewService.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId, loginOrgLocation.getId());
 				for(RequirementInterview requirementInterview :RequirementInterview){
-					 if(requirementInterview.getDateOfInterview() != null){
+					 if(null != requirementInterview.getDateOfInterview()){
 						 rsh.setInterviewDateStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
 					    }
-					    if(requirementInterview.getStartTime() != null){
+					    if(null != requirementInterview.getStartTime()){
 					    	StringBuilder startTime = new StringBuilder(); 
 					    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
 					    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
 					    	 rsh.setInterviewStartTime(CalendarUtil.get12FormatTimeFrom24FormatTime(startTime.append(hours).append(":").append(minutes).toString()));
 					    }
-					    if(requirementInterview.getEndTime() != null){
+					    if(null != requirementInterview.getEndTime()){
 					    	StringBuilder endTime = new StringBuilder(); 
 					    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
 					    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());

@@ -65,13 +65,7 @@ function requirementTemplateList(){
            url: sourceleadUrl+"/getRequirementTemplateListByOrgLocationsId?${_csrf.parameterName}=${_csrf.token}",    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
+               		
 			    	     $("#requirementTemplateList").removeAttr("style");
 	                	 $("#requirementTemplateList").empty();
 	                	 
@@ -113,8 +107,8 @@ function requirementTemplateList(){
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 		                     
-		                     if(opt.createdBy!=null && opt.createdBy !='' && opt.createdBy !='undefined'){
-		                    	 result = result +"<td><div>"+opt.createdBy+"</div></td>";
+		                     if(opt.createdByName!=null && opt.createdByName !='' && opt.createdByName !='undefined'){
+		                    	 result = result +"<td><div>"+opt.createdByName+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
@@ -124,7 +118,7 @@ function requirementTemplateList(){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     $("#requirementTemplateList").append(result); 
-			    	} 
+			    	
                  }else{
                  	 $("#requirementTemplateList").removeAttr("style");
    	    	         var result ="";

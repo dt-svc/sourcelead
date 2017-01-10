@@ -778,9 +778,9 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public List<User> getUserListExceptExistedUsersList(List<Long> userIds, Long orgLocationId)
+	public List<User> getUserListExceptExistedUsersList(List<Long> userIds, Long orgLocationId,Long tabId)
 			throws Exception {
-		return userDao.getUserListExceptExistedUsersList(userIds, orgLocationId);
+		return userDao.getUserListExceptExistedUsersList(userIds, orgLocationId,tabId);
 	}
 
 	@Override

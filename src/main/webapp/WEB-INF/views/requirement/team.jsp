@@ -219,7 +219,7 @@ function teamEditDetails(teamId){
 	        	outPut = outPut+ '<div class="col-md-6">';
 	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
 	        	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
-	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="'+json.name+'">';
+	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'">';
 	        	outPut = outPut+ '                </div>';
 	        	
 	        	
@@ -759,15 +759,17 @@ function storeTeam(){
 			var frm = $('#team_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
-		  
+		    
+			//It will escape all the special characters
 		     var jsonData = encodeURIComponent(con);
+			
 			 var sourceleadUrl = '${sourceleadUrl}';
 			
 			 $("#add_team").attr("disabled", "disabled");
 			
 			$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success :function(data) {  
 						location.replace(sourceleadUrl+"/team");
 				      }, 

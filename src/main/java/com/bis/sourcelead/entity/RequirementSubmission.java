@@ -273,6 +273,12 @@ public class RequirementSubmission implements Serializable{
 	@Transient
 	private String orgName;
 	
+	@Transient
+	private String submitToClientRate;
+	
+	@Transient
+	private RequirementSubmissionTemplateFields requirementSubmissionTemplateFields;
+	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
 	}
@@ -882,5 +888,22 @@ public class RequirementSubmission implements Serializable{
 
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
+	}
+
+	public String getSubmitToClientRate() {
+		return submitToClientRate;
+	}
+
+	public void setSubmitToClientRate(String submitToClientRate) {
+		this.submitToClientRate = submitToClientRate;
+	}
+
+	public RequirementSubmissionTemplateFields getRequirementSubmissionTemplateFields() {
+		return requirementSubmissionTemplateFields;
+	}
+
+	public void setRequirementSubmissionTemplateFields(
+			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields) {
+		this.requirementSubmissionTemplateFields = requirementSubmissionTemplateFields;
 	}
 }

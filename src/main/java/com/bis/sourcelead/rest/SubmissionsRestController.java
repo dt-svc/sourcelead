@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -355,6 +356,12 @@ public class SubmissionsRestController {
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 			
+			if(StringUtils.isNotEmpty(requirementSubmission.getFinalizedRate())){
+				requirementSubmission.setSubmitToClientRate(requirementSubmission.getFinalizedRate());
+			}else{
+				requirementSubmission.setSubmitToClientRate(requirementSubmissionTemplateFields.getExpectedCTC());
+			}
+			
 			if(requirementSubmission.getVendorLocationId() != null){
 				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
 			}
@@ -432,6 +439,7 @@ public class SubmissionsRestController {
 
 		String resultJson = null;
 
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		StringBuilder skillsList = new StringBuilder();
 		Set<CandidateSkills> candidateSkills = submission.getCandidate().getCandidateSkills();
@@ -447,6 +455,7 @@ public class SubmissionsRestController {
 		}
 
 		submission.setSkillsList(skillsList.toString());
+		submission.setRequirementSubmissionTemplateFields(requirementSubmissionTemplateFields);
 		resultJson = toJSON(submission);
 		return resultJson;
 
