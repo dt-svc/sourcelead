@@ -475,7 +475,7 @@ public class CandidateListRestController {
 			
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
-				int expYears = Integer.valueOf(matcher.group());
+				Float expYears = Float.valueOf(matcher.group());
 				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
 				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths", keywd));
 			}
