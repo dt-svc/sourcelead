@@ -147,13 +147,13 @@ public class RequirementRestController {
 
 		Requirement requirement = requirementService.storeRequirement(jsonObj, orgLocation, user, multiFile);
 		
-		if(jsonObj.getString("saveType").equalsIgnoreCase("draft") &&  (jsonObj.get("requirementId") == null || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
+		if(jsonObj.getString("saveType").equalsIgnoreCase("draft") &&  (null == (jsonObj.get("requirementId")) || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
 			StringBuilder reqUpdateMsg = new StringBuilder();
 			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved to Draft").toString());
-		}else if(jsonObj.getString("saveType").equalsIgnoreCase("save") &&  (jsonObj.get("requirementId") == null || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
+		}else if(jsonObj.getString("saveType").equalsIgnoreCase("save") &&  (null == (jsonObj.get("requirementId")) || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
 			StringBuilder reqUpdateMsg1 = new StringBuilder();
 			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg1.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved").toString());
-		}else if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval") && (jsonObj.get("requirementId") == null || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
+		}else if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval") && (null == (jsonObj.get("requirementId")) || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
 			StringBuilder reqUpdateMsg2 = new StringBuilder();
 			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg2.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  submitted for approval").toString());
 		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("save"))){
