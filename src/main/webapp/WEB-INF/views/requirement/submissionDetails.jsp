@@ -194,13 +194,47 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 								result = result + '		<div class="acceptreject-pop" id="reject">';
 								result = result + '		</div>';
 								result = result + '	</li>';
-			    	    	}/* else{
-			    	    		result = result + '	<li>';
-			    	    		result = result + json.submissionRateStatus;
-								result = result + '	</li>';
-			    	    	} */
+			    	    	}
 			    	    	result = result + '</span>';
 			    	    	result = result + '</ul>';
+			    	    	
+			    	    	result = result + '<ul class="list-unstyled">';
+			    	   		result = result + '<span id="statusDiv">';
+			    	    	if(json.submissionRateStatus == 'ACCEPTED' || json.submissionRateStatus == 'REJECTED'){ 
+			    	    		if(json.submissionRateStatus == 'REJECTED'){
+			    	    			if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
+				    	    			result = result + '	<li>';
+					    	    		result = result + 'Candidate status : '+json.submissionRateStatus;
+										result = result + '	</li>';
+			    	    			}
+									if(json.rejectedReason != null && json.rejectedReason != '' && json.rejectedReason != 'undefined'){
+										result = result + '	<li>';
+					    	    		result = result + 'Rejected Reason : '+json.rejectedReason;
+										result = result + '	</li>';
+									}
+			    	    		}
+			    	    		if(json.submissionRateStatus == 'ACCEPTED'){
+			    	    			if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
+				    	    			result = result + '	<li>';
+					    	    		result = result + 'Candidate status : '+json.submissionRateStatus;
+										result = result + '	</li>';
+			    	    			}
+									if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
+										result = result + '	<li>';
+					    	    		result = result + 'Request Comment : '+json.submissionRequestComment;
+										result = result + '	</li>';
+									}
+									if(json.submissionRequestFileName != null && json.submissionRequestFileName != '' && json.submissionRequestFileName != 'undefined'){
+										result = result + '	<li>';
+										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
+										result = result + '	</li>';
+									}	
+									
+			    	    		}
+			    	    	} 
+			    	    	result = result + '</span>';
+			    	    	result = result + '</ul>';
+			    	    	
 						</c:if>
 						    result = result + '<ul class="list-unstyled">';
 							if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
