@@ -218,7 +218,7 @@
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
 	              '</sec:authorize>';
 	
-	              result = result +"  <td><div><span>"+designation+"</span></div></td>";
+	              result = result +"  <td><div><span title="+designation+">"+designation+"</span></div></td>";
 	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 	             	 {
 	                   result = result +"  <td><div>"+opt.designationType+"</div></td>";
