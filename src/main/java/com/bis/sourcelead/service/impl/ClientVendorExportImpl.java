@@ -30,7 +30,9 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ClientVendorExport;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
 
@@ -43,6 +45,10 @@ import com.bis.sourcelead.util.PdfUtil;
  */
 @Service
 public class ClientVendorExportImpl implements ClientVendorExport {
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(ClientVendorExportImpl.class);
 
 	@Autowired
@@ -170,8 +176,9 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 	 * @param writeRow
 	 * @param orgSpoc
 	 * @return Sheet
+	 * @throws Exception 
 	 */
-	private Sheet createContactXlsSheet(Sheet sheet, Row writeRow, OrgSpoc orgSpoc) {
+	private Sheet createContactXlsSheet(Sheet sheet, Row writeRow, OrgSpoc orgSpoc) throws Exception {
 		
 		if (orgSpoc.getOrgName() != null && !"".equalsIgnoreCase(orgSpoc.getOrgName())) {
 			writeRow.createCell(0).setCellValue(orgSpoc.getOrgName());
@@ -188,8 +195,11 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		if (orgSpoc.getOwnerName() != null && !"".equalsIgnoreCase(orgSpoc.getOwnerName())) {
 			writeRow.createCell(4).setCellValue(orgSpoc.getOwnerName());
 		}
-		if (orgSpoc.getOwnerUser().getUserType() != null && !"".equalsIgnoreCase(orgSpoc.getOwnerUser().getUserType())) {
-			writeRow.createCell(5).setCellValue(orgSpoc.getOwnerUser().getUserType());
+		
+		UserRole userRole = userRoleService.getUserRoleByUserId(orgSpoc.getOwnerUser().getId());
+		
+		if (userRole.getRoles().getDisplayName() != null && !"".equalsIgnoreCase(userRole.getRoles().getDisplayName())) {
+			writeRow.createCell(5).setCellValue(userRole.getRoles().getDisplayName());
 		}
 		if (orgSpoc.getSpocStatus() != null && !"".equalsIgnoreCase(orgSpoc.getSpocStatus())) {
 			writeRow.createCell(6).setCellValue(orgSpoc.getSpocStatus());
