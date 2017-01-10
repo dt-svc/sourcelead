@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
@@ -37,6 +38,7 @@ import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -81,6 +83,9 @@ public class SubmissionsRateRestController {
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
+	@Autowired
+	RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
+	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
@@ -98,13 +103,13 @@ public class SubmissionsRateRestController {
 		RequirementRateSubmissionNegotiation  requirementRateSubmissionNegotiation = new RequirementRateSubmissionNegotiation();
 		
 		String permission = "YES";
-		if(pastRequirementRateSubmissionNegotiation != null && (pastRequirementRateSubmissionNegotiation.getRateStage() != SubmissionRateStatus.ACCEPTED || pastRequirementRateSubmissionNegotiation.getRateStage() != SubmissionRateStatus.REJECTED) && (pastRequirementRateSubmissionNegotiation.getCreatedBy() == "" || pastRequirementRateSubmissionNegotiation.getCreatedBy() == null)){
+		if(null != pastRequirementRateSubmissionNegotiation && (pastRequirementRateSubmissionNegotiation.getRateStage() != SubmissionRateStatus.ACCEPTED || pastRequirementRateSubmissionNegotiation.getRateStage() != SubmissionRateStatus.REJECTED) && (pastRequirementRateSubmissionNegotiation.getCreatedBy() == "" || null == pastRequirementRateSubmissionNegotiation.getCreatedBy())){
 			permission = "NO";
-		}else if(requirementSubmission != null && (requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.REJECTED) || requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.SUBMISSION))){
+		}else if(null != requirementSubmission && (requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.REJECTED) || requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.SUBMISSION))){
 			permission = "NO";
 		}
-		if(permission.equalsIgnoreCase("YES")){
-			if(allSubmissionRateHistory != null && !allSubmissionRateHistory.isEmpty()){
+//		if(permission.equalsIgnoreCase("YES")){
+			if(null != allSubmissionRateHistory && !allSubmissionRateHistory.isEmpty()){
 				requirementRateSubmissionNegotiation.setRequirementsubmissionId(requirementSubmission);
 				requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(requirementSubmission.getCandidate().getOrgLocationId());
 				requirementRateSubmissionNegotiation.setCurrentRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
@@ -128,12 +133,14 @@ public class SubmissionsRateRestController {
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				requirementSubmission.setSubmissionRateComment(rejectreason);*/
 			}else{
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-				requirementSubmission.setRejectedReason(rejectreason);
+				if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+					requirementSubmission.setRejectedReason(rejectreason);
+				}
 				/*requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				requirementSubmission.setSubmissionRateComment(rejectreason);*/
 			}
-			requirementSubmission.setCreatedDate(commonUtil.currentDate());
+			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
@@ -145,13 +152,18 @@ public class SubmissionsRateRestController {
 			Requirement requirement = requirementSubmission.getRequirement();
 			Candidate candidate = requirementSubmission.getCandidate();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
-			requirementSubmissionService.applicantRejectMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations,rejectreason);
-			return "success";
-		}else{
-			return "failure";	
+			List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidate.getId());
+			StringBuilder tempHTML = buildNegotiationHistory(negotiationList,requirement,candidate,submissionId,type);
+			if("user".equalsIgnoreCase(type)){
+				requirementSubmissionService.userRejectRateNegotiation(requirement,userRole.getUser(),candidate,orgLocations,requirementRateSubmissionNegotiation,rejectreason,tempHTML);
+			}else{
+				requirementSubmissionService.applicantRejectMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations,rejectreason,tempHTML);
 			}
+			
+			return "success";
+		}
 
-	}
+//	}
 	
 	@RequestMapping(value = "/storeNegotiation", method = RequestMethod.POST)
 	public @ResponseBody String storeNegotiation(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "submissionId", required = false) Long submissionId,@RequestParam(value = "type", required = false) String type) throws Exception {
@@ -175,7 +187,7 @@ public class SubmissionsRateRestController {
 		if(jsonObj.has("rateType")){
 			requirementRateSubmissionNegotiation.setExpectedRateType(jsonObj.getString("rateType"));
 		}
-		if(pastRequirementRateSubmissionNegotiation != null){
+		if(null != pastRequirementRateSubmissionNegotiation){
 			requirementRateSubmissionNegotiation.setCurrentRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 			requirementRateSubmissionNegotiation.setCurrentRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
 		}
@@ -223,30 +235,39 @@ public class SubmissionsRateRestController {
 	
 	
 	private StringBuilder buildNegotiationHistory(List<RequirementRateSubmissionNegotiation>  negotiationList, Requirement requirement, Candidate candidate, Long submissionId, String type) throws Exception {
+		
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
+		
 		StringBuilder tempHTML = new StringBuilder();
-		 if(negotiationList != null){
+		 if(null != negotiationList){
 			 
 	         tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
 	         tempHTML.append("<tr>");
 	         tempHTML.append("<th> Requirement Title </th>");
-	         tempHTML.append("<th> Requirement Rate </th>");
+//	         tempHTML.append("<th> Requirement Rate </th>");
 	         tempHTML.append("<th> Rate </th>");
 	         tempHTML.append("<th> By </th>");
 	         //tempHTML.append("<th> Action </th>");
 	         tempHTML.append("</tr>");
+	         
 	        	 for (RequirementRateSubmissionNegotiation negotiations : negotiationList) {
 			         tempHTML.append("<tr>");
 			         tempHTML.append("<td>").append(requirement.getJobTitle()).append("</td>");
-			         tempHTML.append("<td>").append(requirement.getRate()).append("</td>");
-			         tempHTML.append("<td>").append(negotiations.getExpectedRate()).append("</td>");
+//			         tempHTML.append("<td>").append(requirement.getRate()).append("</td>");
+			         if(null != negotiations.getExpectedRate() && "" != negotiations.getExpectedRate()){
+			        	 tempHTML.append("<td>").append(negotiations.getExpectedRate()).append("</td>");
+			         }else{
+			        	 tempHTML.append("<td>---</td>");
+			         }
+			        
 			         if(negotiations.getCreatedBy() != null && "" != negotiations.getCreatedBy()){
 			        	 User proposedUser = userService.getUserByUserCode(negotiations.getCreatedBy());
 			        	 tempHTML.append("<td>").append(proposedUser.getFirstName()).append(" ").append(proposedUser.getLastName()).append("</td>");
 			         }else{
-			        	 if(candidate.getLastName() != null){
-			        		 tempHTML.append("<td>").append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).append("</td>");
+			        	 if(requirementSubmissionTemplateFields.getLastName() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+			        		 tempHTML.append("<td>").append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).append("</td>");
 			        	 }else{
-			        		 tempHTML.append("<td>").append(candidate.getFirstName()).append("</td>");
+			        		 tempHTML.append("<td>").append(requirementSubmissionTemplateFields.getFirstName()).append("</td>");
 			        	 }
 			         }
 			         tempHTML.append("</tr>");
@@ -260,8 +281,9 @@ public class SubmissionsRateRestController {
 			        tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");
 		        }else if("Vendor".equalsIgnoreCase(type) || "Client".equalsIgnoreCase(type)){
 		        	/*tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRateNegotiateClientOrVendorRates?status=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
-		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRateNegotiateClientOrVendorRates?status=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");*/
-			        tempHTML.append("<a href='").append(sourceleadUrl).append("/style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#214b90;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRateNegotiateClientOrVendorRates?status=Rejected&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
+			        tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRateNegotiateClientOrVendorRates?rateStatus=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");*/
+		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 		        }else{
 		        	//these links are provided in applicant to user Negotiate email
 		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateUserRates?rateStatus=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
@@ -277,21 +299,41 @@ public class SubmissionsRateRestController {
 															 @RequestParam(value = "candidateId", required = false) Long candidateId
 															) throws Exception {
 		 
+		
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
+		RequirementRateSubmissionNegotiation requirementRateSubmission = new RequirementRateSubmissionNegotiation();
+		if(null != requirementSubmissionTemplateFields){
+				requirementRateSubmission.setRequirementName(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getJobTitle());
+				requirementRateSubmission.setExpectedRate(requirementSubmissionTemplateFields.getExpectedCTC());
+				User proposedByUser = userService.getUserDetailsByUserCode(requirementSubmissionTemplateFields.getCreatedBy());
+				if(null != proposedByUser.getFirstName() && null != proposedByUser.getLastName() && !"".equalsIgnoreCase(proposedByUser.getFirstName()) && !"".equalsIgnoreCase(proposedByUser.getLastName())){
+					 StringBuilder sb = new StringBuilder();
+					 requirementRateSubmission.setProposeByName(sb.append(proposedByUser.getFirstName()).append(" ").append(proposedByUser.getLastName()).toString());
+				}else{
+					requirementRateSubmission.setProposeByName(proposedByUser.getFirstName());
+				}
+				DateFormat date = new SimpleDateFormat( "yyyy-MM-dd");
+				String commonDate = date.format(requirementSubmissionTemplateFields.getCreatedDate());
+				requirementRateSubmission.setCreatedDateStr(commonDate.toString());
+		}
+		
 		//to get rate history of a requirement
 		List<RequirementRateSubmissionNegotiation> allSubmissionRateHistory = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId,candidateId);
 		for(RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation : allSubmissionRateHistory){
 			
 			RequirementRateSubmissionNegotiation rate = allSubmissionRateHistory.get(allSubmissionRateHistory.size()-1);
-			if(rate != null){
-				if(rate.getCreatedBy() != null && "" != rate.getCreatedBy()){
+			if(null != rate){
+				if(null != rate.getCreatedBy() && "" != rate.getCreatedBy()){
 					requirementRateSubmissionNegotiation.setPreviouslyProposedBy("User");
 				}else{
 					requirementRateSubmissionNegotiation.setPreviouslyProposedBy("Candidate");
 				}
 			}
 		
+			requirementRateSubmissionNegotiation.setRateStage(requirementRateSubmissionNegotiation.getRateStage());
 			requirementRateSubmissionNegotiation.setRequirementName(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getRequirement().getJobTitle());
-			requirementRateSubmissionNegotiation.setRequirementRate(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getRequirement().getRate());
+			requirementRateSubmissionNegotiation.setRequirementRate(requirementRateSubmissionNegotiation.getExpectedRate());
+			requirementRateSubmissionNegotiation.setExpectedRateType(requirementRateSubmissionNegotiation.getExpectedRateType());
 			
 			/*if(requirementRateSubmissionNegotiation.getCreatedBy() != null && "" != requirementRateSubmissionNegotiation.getCreatedBy()){
 	        	 User proposedUser = userService.getUserByUserCode(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getCreatedBy());
@@ -309,7 +351,13 @@ public class SubmissionsRateRestController {
 			requirementRateSubmissionNegotiation.setCreatedDateStr(commonDateFormat.toString());
 			
 			if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE){
-				requirementRateSubmissionNegotiation.setProposeByName(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getFirstName());
+				if(null != requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+					StringBuilder candiSB = new StringBuilder();
+					requirementRateSubmissionNegotiation.setProposeByName(candiSB.append(requirementSubmissionTemplateFields.getFirstName()).append(requirementSubmissionTemplateFields.getLastName()).toString());
+				}else{
+					requirementRateSubmissionNegotiation.setProposeByName(requirementSubmissionTemplateFields.getFirstName());
+				}
+				
 			}else if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CLIENT || requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.VENDOR || requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.ORG){
 				User proposedUser = userService.getUserDetailsByUserCode(requirementRateSubmissionNegotiation.getCreatedBy());
 				requirementRateSubmissionNegotiation.setProposeByName(proposedUser.getFirstName());
@@ -320,8 +368,10 @@ public class SubmissionsRateRestController {
 			requirementRateSubmissionNegotiation.setRateAndType(rateTypeSB.append(requirementRateSubmissionNegotiation.getExpectedRate()).append(" ").append(requirementRateSubmissionNegotiation.getExpectedRateType()).toString());
 		}
 		
-		String resultJson = commonUtil.toJSON(allSubmissionRateHistory);
-		 return resultJson;
+		if(allSubmissionRateHistory.isEmpty()){
+			allSubmissionRateHistory.add(requirementRateSubmission);
+		}
+		 return commonUtil.toJSON(allSubmissionRateHistory);
 	}
 	
 	
@@ -359,18 +409,18 @@ public class SubmissionsRateRestController {
 			if(jsonObj.has("rateComment")){
 				requirementRateSubmissionNegotiation.setRateReason(jsonObj.getString("rateComment"));
 			}
-			if(pastRequirementRateSubmissionNegotiation != null){
+			if(null != pastRequirementRateSubmissionNegotiation){
 				requirementRateSubmissionNegotiation.setCurrentRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 				requirementRateSubmissionNegotiation.setCurrentRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
 			}
 			
-			if(requirementSubmission.getVendorLocationId() != null && requirementSubmission.getVendorLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
+			if(null != requirementSubmission.getVendorLocationId() && requirementSubmission.getVendorLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
 				candidate = requirementSubmission.getCandidate();
 				if(!isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
 					pastUser = userService.getUserByUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
 				}
-			}else if(requirementSubmission.getVendorLocationId() != null &&  requirementSubmission.getVendorLocationId().getId().longValue() != loginOrgLocation.getId().longValue()){
+			}else if(null != requirementSubmission.getVendorLocationId() &&  requirementSubmission.getVendorLocationId().getId().longValue() != loginOrgLocation.getId().longValue()){
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.CLIENT);
 				candidate = requirementSubmission.getCandidate();
 				if(!isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
@@ -402,7 +452,7 @@ public class SubmissionsRateRestController {
 			 }else{
 				 RequirementRateSubmissionNegotiation neogtation = requirementSubmissionService.getRequirementRateBySubmissionById(submissionId);
 				 List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidate.getId());
-				 if(requirementSubmission.getVendorLocationId() != null){
+				 if(null != requirementSubmission.getVendorLocationId()){
 					 StringBuilder tempHTML = buildNegotiationHistory(negotiationList,requirementSubmission.getRequirement(),candidate,submissionId,"Client");
 					 requirementSubmissionService.sendEmailtoVendor(loginOrg,users,pastUser,requirementSubmission.getRequirement(),candidate,tempHTML,loginOrgLocation);
 				 }else{
@@ -437,16 +487,16 @@ public class SubmissionsRateRestController {
 			
 			requirementRateSubmissionNegotiation.setRequirementsubmissionId(requirementSubmission);
 			
-			if(pastRequirementRateSubmissionNegotiation != null){
+			if(null != pastRequirementRateSubmissionNegotiation){
 				requirementRateSubmissionNegotiation.setCurrentRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 				requirementRateSubmissionNegotiation.setCurrentRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
 				requirementRateSubmissionNegotiation.setExpectedRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 				requirementRateSubmissionNegotiation.setExpectedRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
 			}
 			
-			if(requirementSubmission.getVendorLocationId() != null && requirementSubmission.getVendorLocationId() == loginOrgLocation){
+			if(null != requirementSubmission.getVendorLocationId() && requirementSubmission.getVendorLocationId() == loginOrgLocation){
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
-			}else if(requirementSubmission.getVendorLocationId() != null &&  requirementSubmission.getVendorLocationId() != loginOrgLocation){
+			}else if(null != requirementSubmission.getVendorLocationId() &&  requirementSubmission.getVendorLocationId() != loginOrgLocation){
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.CLIENT);
 			}else{
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.ORG);

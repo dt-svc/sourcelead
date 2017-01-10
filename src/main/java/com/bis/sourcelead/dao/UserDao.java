@@ -68,7 +68,7 @@ public interface UserDao {
 	//Prasad Salina to get managers list baded on role type and except current user
 	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,Long roleId , Long orgLocationsId) throws Exception;
 	
-	public List<User>  getUserListExceptExistedUsersList(List<Long> userIds,Long orgLocationId)throws Exception;
+	public List<User>  getUserListExceptExistedUsersList(List<Long> userIds,Long orgLocationId, Long tabId)throws Exception;
 
 	User getUserDetailsByUserCode(String userCode);
 
@@ -88,9 +88,11 @@ public interface UserDao {
 	public List<User> getAllUsersByOrgLocationCodeExcludingEmployees(Long orgLocationsId) throws Exception;
 	
 	
-	List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId ,Long orgLocationsId) throws Exception;
+	List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId ,Long orgLocationsId, Long tabId) throws Exception;
 
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
+	
+	List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
 
 	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId);
 

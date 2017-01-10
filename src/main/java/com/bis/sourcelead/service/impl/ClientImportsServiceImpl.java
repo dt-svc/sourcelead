@@ -15,8 +15,10 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
+import org.apache.poi.hssf.usermodel.HSSFName;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.CellRangeAddressList;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataValidation;
@@ -24,6 +26,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
@@ -55,6 +58,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.fasterxml.jackson.core.sym.Name;
 /**
  * 
  * @author Rajashekar
@@ -280,7 +284,12 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		try {
 			isCLientExist =  orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
 			if(isCLientExist){
+				if(responderType.equalsIgnoreCase("Client")){
 				client.setReason("duplicate client");
+				}
+				if(responderType.equalsIgnoreCase("Vendor")){
+					client.setReason("duplicate vendor");
+					}
 				isCLientExist = true;
 			}
 		} catch (Exception e) {
@@ -783,7 +792,6 @@ public class ClientImportsServiceImpl implements ClientImportsService{
  * @return
  */
 		private DataValidation getDropDownListForCell(String[] dropDownList, int column) {
-			@SuppressWarnings("deprecation")
 			  CellRangeAddressList addressList = new CellRangeAddressList(1,500,column,column);
 			  DVConstraint dvConstraint = DVConstraint.createExplicitListConstraint(dropDownList);
 			  DataValidation dataValidation = new HSSFDataValidation(addressList, dvConstraint);
@@ -813,24 +821,34 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		
 		
 		public File getClientContactsTemplate(Long orgLocationId) throws Exception {
-			Workbook wb = (Workbook) new HSSFWorkbook();
-			Sheet sheet = wb.createSheet("clientContact");
-			sheet = setCLirntTemplateHeaders(sheet);
+			HSSFWorkbook workbook = new HSSFWorkbook();
+			HSSFSheet realSheet = workbook.createSheet("clientContact");
+			realSheet = setCLirntTemplateHeaders(realSheet);
+			HSSFSheet hidden = workbook.createSheet("hidden");
 			String[] vendorsList = getClientList(orgLocationId);
-		    sheet.addValidationData(getDropDownListForCell(vendorsList,0,"xls"));
-			sheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN,5,"xls"));
-			File file = new File("clients_contacts_Import.xls");
-			FileOutputStream fos = new FileOutputStream(file);
-			try {
-				wb.write(fos);
-				fos.close();
-			} catch (IOException e) {
-				logger.error("template download failed due to "+e.getMessage());
-			}
-			return file;
+			for (int i = 0, length= vendorsList.length; i < length; i++) {
+			   String name = vendorsList[i];
+			   HSSFRow row = hidden.createRow(i);
+			   HSSFCell cell = row.createCell(0);
+			   cell.setCellValue(name);
+			 }
+			 org.apache.poi.ss.usermodel.Name namedCell = workbook.createName();
+			 namedCell.setNameName("hidden");
+			 namedCell.setRefersToFormula("hidden!$A$1:$A$" + vendorsList.length);
+			 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+			 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
+			 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+			 workbook.setSheetHidden(1, true);
+			 realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN,5,"xls"));
+			 realSheet.addValidationData(validation);
+			 File file = new File("clients_contacts_Import.xls");
+			 FileOutputStream stream = new FileOutputStream(file);
+			 workbook.write(stream);
+			 stream.close();
+			 return file;
 		}
 		
-		private Sheet setCLirntTemplateHeaders(Sheet sheet) {
+		private HSSFSheet setCLirntTemplateHeaders(HSSFSheet sheet) {
 			String headers[] = Constants.CLIENT_CONTACTS_HEADERS;
 			Row excelHeader = sheet.createRow(0);
 			for (int i = 0; i < headers.length; i++) {
@@ -857,23 +875,36 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		}
 
 		public File getVendorContactsTemplate(Long orgLocationId) throws Exception {
-			Workbook wb = (Workbook) new HSSFWorkbook();
-			Sheet sheet = wb.createSheet("vendorContact");
-			sheet = setTemplateHeaders(sheet);
+			
+			//modified by prasanna vadla
+ 			
+			HSSFWorkbook workbook = new HSSFWorkbook();
+			HSSFSheet realSheet = workbook.createSheet("vendorContact");
+			realSheet = setTemplateHeaders(realSheet);
+			HSSFSheet hidden = workbook.createSheet("hidden");
 			String[] vendorsList = getVendorsList(orgLocationId);
-		    sheet.addValidationData(getDropDownListForCell(vendorsList,0,"xls"));
-			sheet.addValidationData(getDropDownListForCell(Constants.VENDOR_CONTACTS_STATUS_DROPDOWN,5,"xls"));
-			File file = new File("vendors_contacts_Import.xls");
-			FileOutputStream fos = new FileOutputStream(file);
-			try {
-				wb.write(fos);
-				fos.close();
-			} catch (IOException e) {
-				logger.error("template download failed due to "+e.getMessage());
-			}
-			return file;
+			for (int i = 0, length= vendorsList.length; i < length; i++) {
+			   String name = vendorsList[i];
+			   HSSFRow row = hidden.createRow(i);
+			   HSSFCell cell = row.createCell(0);
+			   cell.setCellValue(name);
+			 }
+			 org.apache.poi.ss.usermodel.Name namedCell = workbook.createName();
+			 namedCell.setNameName("hidden");
+			 namedCell.setRefersToFormula("hidden!$A$1:$A$" + vendorsList.length);
+			 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+			 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
+			 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+			 workbook.setSheetHidden(1, true);
+			 realSheet.addValidationData(getDropDownListForCell(Constants.VENDOR_CONTACTS_STATUS_DROPDOWN,5,"xls"));
+			 realSheet.addValidationData(validation);
+			 File file = new File("vendors_contacts_Import.xls");
+			 FileOutputStream stream = new FileOutputStream(file);
+			 workbook.write(stream);
+			 stream.close();
+			 return file;
 		}
-		private Sheet setTemplateHeaders(Sheet sheet) {
+		private HSSFSheet setTemplateHeaders(HSSFSheet sheet) {
 			String headers[] = Constants.VENDOR_CONTACTS_HEADERS;
 			Row excelHeader = sheet.createRow(0);
 			for (int i = 0; i < headers.length; i++) {

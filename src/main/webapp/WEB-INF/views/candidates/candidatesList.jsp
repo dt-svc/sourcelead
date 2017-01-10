@@ -142,7 +142,7 @@
 	          result = result +"    <th>&nbsp;</th>";
 	          result = result +"    <th>Name</th>"; 
 	          result = result +"    <th>Designation</th>"; 
-	          result = result +"    <th>Employment type</th>"; 
+	          result = result +"    <th>Employment Type</th>"; 
 	          result = result +"    <th>Email</th>"; 
 	          result = result +"    <th>Mobile</th>"; 
 	          result = result +"    <th>Type</th>"; 
@@ -190,16 +190,19 @@
 		            	}else{
 		            		lastName = "";
 		            	}
-		            	if(opt.state != null && opt.state != "" && opt.state != 'undefined'){
-		            		state = opt.state;
-		            	}else{
-		            		state = "";
+		            	var location = "---";
+		            	
+		            	if(opt.country != null && opt.country != "" && opt.country != 'undefined'){
+		            		location = opt.country;
+		            		if(opt.state != null && opt.state != "" && opt.state != 'undefined'){
+		            			location = location+", "+opt.state;
+			            	}
+		            		if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
+		            			location = location+", "+opt.city;
+			            	}
 		            	}
-		            	if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
-		            		city = opt.city;
-		            	}else{
-		            		city = "";
-		            	}
+		            	
+		            	
 		            	
 		            	
 	              result = result +"<tr>";
@@ -232,15 +235,8 @@
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 	              result = result +"  <td><div>"+mobilePhone+"</div></td>";
 	              result = result +"  <td><div>"+opt.candidateType+"</div></td>";
-	              if(state !='' && state != 'undefined' && city !='' && city != 'undefined'){
-	                  result = result +"  <td><div><span title='"+opt.country+", "+state+", "+city+"'>"+opt.country+", "+state+", "+city+"</span></div></td>";
-	                   } else if(state !='' && state != 'undefined')
-	                 {
-	                  result = result +"  <td><div><span title='"+opt.country+", "+state+"'>"+opt.country+", "+state+"</span></div></td>";
-	                 }
-	                 else{
-	                 result = result +"  <td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
-	                 }
+	              
+	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
 	              result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
 	              result = result +"</tr>"; 
@@ -355,7 +351,7 @@ function candidateSideBar(candidateId){
              			 	}
          			 	
          			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
-         			 	designationType = 'Employment type'+ ' - '+json.designationType;
+         			 	designationType = 'Employment Type'+ ' - '+json.designationType;
          			 	}else{
          			 		designationType = '';
          			 	}
@@ -385,7 +381,31 @@ function candidateSideBar(candidateId){
              			 		city = '';
              			 	}
          			 	
-
+         			 	 if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
+         			 		currentRate = json.currentRate;
+         			 	 }else{
+         			 		currentRate = '';
+         			 	 }
+                           
+         			 	if(json.currentRateType != null && json.currentRateType != '' && json.currentRateType != 'undefined'){
+         			 		currentRateType = json.currentRateType;
+         			 	}else{
+         			 		currentRateType = '';
+         			 	}
+         			 	
+         			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
+         			 		expectedRate = json.expectedRate;
+         			 	}else{
+         			 		expectedRate = '';
+         			 	}
+         			 	
+         			 	if(json.rateType != null && json.rateType != '' && json.rateType != 'undefined'){
+         			 		rateType = json.rateType;
+         			 	}else{
+         			 		rateType = '';
+         			 	}
+         			 	 
+         			 	currentRateType
 	                	 var result = "";
 	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -433,7 +453,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                     </div>'; */
 			             result = result+'                     <div class="media-body candidate-details">';
 			             
-			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
+			             result = result+'                       <h4 class="media-heading" title = "'+json.firstName+' '+lastName+'">'+json.firstName+' '+lastName+'</h4>';
 			            
 			             result = result+'                       <ul class="list-unstyled">';
 			             
@@ -504,7 +524,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                 </div>';
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
-			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.email+'</a></li>';
+			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="'+json.email+'">'+json.email+'</a></li>';
 			                                                  if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
 			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
 			                                                  }else{
@@ -515,19 +535,11 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'<li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
 			             
-		             	 if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-			             	result = result+''+json.currentRate+' '+json.currentRateType+'';
-			             }else{
-			             	result = result+'---- ';                                    
-			             }
+			             	result = result+''+currentRate+' '+currentRateType+'';
 		             	 result = result+'				     <b>Expected:</b> ';
-			             if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-			             	result = result+''+json.expectedRate+' '+json.rateType+'';
-			             }else{
-			             	result = result+'----';                                  	  
-			             }
+			             	result = result+''+expectedRate+' '+rateType+'';
 			             result = result+'</li>'; 
-			             result = result+'                 </ul>';
+			             result = result+' </ul>';
 			             
 			            /* New comments div creation Nov 8th, 2016 */ 
 			            if(json.status == '1' ){
@@ -963,10 +975,10 @@ function cancel(candidateId){
     <div class="vendor_wrap" style="overflow-x: auto;">
     
      <div class="pull-left cand-advsrche">
-			 <!--  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
-			  </a> -->
+			  </a> 
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
 				  <div class="cand-advsrch-popup" >
 					  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -1010,7 +1022,7 @@ function cancel(candidateId){
 							<div class="row">
 								<div class="col-md-6">
 									<label>Rate</label>
-									 <div class="input-group">
+									 <div class="input-group error-field">
 										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
 										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
 										        <option value="">Currency</option>
@@ -1023,15 +1035,15 @@ function cancel(candidateId){
 				                            </select>
 										</div>
 										 <div id="minRateDiv">
-									      <input type="text" id="minRate" name="minRate" field-name="Min Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  class="form-control input-sm" placeholder="Min Rate">
+									      <input type="text" id="minRate" name="minRate" field-name="Min Rate" data-validation="validate_Space validate_float" data-validation-optional="true"  class="form-control input-sm" placeholder="Min Rate">
 								         </div>
 								    </div>
 								</div> 
 							<div class="col-md-6">
 								<label>&nbsp;</label> 
-								<div class="input-group">
+								<div class="input-group error-field">
 								    <div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  placeholder="Max Rate">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
 									</div>
 									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
@@ -1056,7 +1068,7 @@ function cancel(candidateId){
 							  <div class="clearfix row">
 							  <div class="col-md-6">
 								  <select class="chosen-select"  id="minExpYears" name="minExpYears" data-placeholder="Years">
-									  <option selected>Min Years</option>
+									  <option selected value="">Min Years</option>
 									 <c:forEach begin="0" end="24" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
@@ -1064,7 +1076,7 @@ function cancel(candidateId){
 							  </div>
 							  <div class="col-md-6">
 								  <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months">
-									  <option selected>Max Years</option>
+									  <option selected value="">Max Years</option>
 									  <c:forEach begin="0" end="24" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
@@ -1084,19 +1096,19 @@ function cancel(candidateId){
 				                </select>
 							  </div>
 						  </div>
-						  <div class="col-md-4">
-							  <label>Updated On</label>
+						  <div class="col-md-4"> &nbsp;
+							<!--   <label>Updated On</label>
 							  <div class="clearfix">
 								  <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Updated On">
-									  <option value="All">All</option>
-									  <option value="1 Day Ago">1 Day Ago</option>
-									  <option value="3 Days Ago">3 Days Ago</option>
-									  <option value="1 Week Ago">1 Week Ago</option>
-									  <option value="2 Weeks Ago">2 Weeks Ago</option>
-									  <option value="1 Month Ago">1 Month Ago</option>
-									  <option value="3 Months Ago">3 Months Ago</option>
+									  <option value="">All</option>
+									  <option value="1">1 Day Ago</option>
+									  <option value="3">3 Days Ago</option>
+									  <option value="7">1 Week Ago</option>
+									  <option value="14">2 Weeks Ago</option>
+									  <option value="30">1 Month Ago</option>
+									  <option value="90">3 Months Ago</option>
 								  </select>
-							  </div>
+							  </div> -->
 						  </div>
 						  </div>
 						  <div class="clearfix">
@@ -1182,8 +1194,8 @@ function cancel(candidateId){
 								   <select class="chosen-select" name="applicantType" id="applicantType" field-name="Applicant Type"  >
 								      <option value="">---select Applicant Type---</option>
 								      <option value="candidate">Candiate</option>
-									  <option value="candidate">Consultant</option> 
-				                 </select>
+									  <option value="consultant">Consultant</option> 
+				                   </select>
 							  </div>
 						  </div>
 						  </div>
@@ -1761,7 +1773,26 @@ function getCities(){
 <!-- Country,State,City Script Ends Here -->	
 <script type="text/javascript">	
 	function loadChosenScripts(){
-		$("#anyOfKeyword").val('').trigger("chosen:updated");
+	    
+	    $('#minRate').val(''); 
+	    $('#maxRate').val(''); 
+	    $('#currency').val(''); 
+	    $('#rateType').val(''); 
+	    
+	    $('#country').val('${loginCountryName}'); 
+	    $('#state').val(''); 
+	    $('#city').val(''); 
+	    $('#rateType').val(''); 
+
+	    $('#emailDiv').find('p.jquery_form_error_message').remove();
+	    
+	    $('#minRateDiv').find('p.jquery_form_error_message').remove();
+	    $('#maxRateDiv').find('p.jquery_form_error_message').remove();
+	    $('#currencyDiv').find('p.jquery_form_error_message').remove();
+	    $('#rateTypeDiv').find('p.jquery_form_error_message').remove();
+	    
+	    
+	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
 	    $("#designation").val('').trigger("chosen:updated");
@@ -1772,17 +1803,6 @@ function getCities(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#candidateSkills").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
-	    
-	    $('#minRate').val(''); 
-	    $('#maxRate').val(''); 
-	    $('#currency').val(''); 
-	    $('#rateType').val(''); 
-	       
-	    $('#minRateDiv').find('p.jquery_form_error_message').remove();
-	    $('#maxRateDiv').find('p.jquery_form_error_message').remove();
-	    $('#currencyDiv').find('p.jquery_form_error_message').remove();
-	    $('#rateTypeDiv').find('p.jquery_form_error_message').remove();
-	    
 	    
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();

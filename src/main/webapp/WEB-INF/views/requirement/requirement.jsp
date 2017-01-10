@@ -298,7 +298,7 @@ $(document).ready(function () {
 	       </div>
 
 		<div class="form-group">
-         <label class="col-md-3">Employment type</label>
+         <label class="col-md-3">Employment Type</label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="jobType" name="jobType" onChange="getJobType(this);" >
 	                 <option value="">&nbsp;&nbsp;&nbsp;&nbsp;------ Select -----</option>
@@ -321,8 +321,8 @@ $(document).ready(function () {
             </div>
           </div>
            
-            <div class="form-group" id="jobTypeDiv" style="display:none">
-            <label class="col-md-3">Job Type</label>
+            <div class="form-group jobTypeDiv" id="jobTypeDiv" style="display:none">
+            <label class="col-md-3">Employment Type</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}"  field-name="Job Type" value="">
             </div>
@@ -390,19 +390,32 @@ $(document).ready(function () {
           </div>
           
           <div class="form-group">
-            <label class="col-md-3">Pay Rate/Salary </label>
+            <label class="col-md-3">Pay Rate/Salary${SourceLeadWeb_currencyCode}</label>
             <div class="col-md-9">
              <div class="input-group">
                 <div class="input-group-btn selp-custom-min">
                   
-                <select class="selectpicker" id="currencyCode" name="currencyCode">
-                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${requirement.currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
-                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                  <select class="selectpicker" id="currencyCode" name="currencyCode" >
+               
+                <c:if test="${empty requirement.id}">
+	                 <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
+                 
+                 <c:if test="${! empty requirement.id}">
+	                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${requirement.currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
                 </select>
+                
                 
                
                 
@@ -477,7 +490,7 @@ $(document).ready(function () {
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9">
-              <div class="input-group">
+              <div class="input-group attachfile">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                        <input type="file" name="uploadBtn" id="uploadBtn"  class="hidden upload">
@@ -494,7 +507,7 @@ $(document).ready(function () {
            <div class="form-group">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
+             <textarea rows="5" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description"  data-validation-optional="true">${requirement.description}</textarea>
             </div>
           </div>
           
@@ -502,7 +515,16 @@ $(document).ready(function () {
             
             <label class="col-md-3">Is Template</label>
             <div class="col-md-9">
-            <input type="checkbox" name="isTemplate" id="isTemplate" value="" onclick="getTemplateVal();">
+            
+            <c:set var="val" value="${requirement.isClientJob}"/>
+			<c:choose> 
+			  <c:when test="${val == 'Y'}">
+			   		    <input disabled="disabled" type="checkbox" name="isTemplate" id="isTemplate" value="" onclick="getTemplateVal();">
+			  </c:when>
+			  <c:otherwise>
+						<input type="checkbox" name="isTemplate" id="isTemplate" value="" onclick="getTemplateVal();">
+			  </c:otherwise>
+			</c:choose>
 		    </div>
         </div>
         
@@ -515,7 +537,8 @@ $(document).ready(function () {
 			<c:choose> 
 			  <c:when test="${val == 'Y'}">
 			   				<div class="ml">
-					            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
+			   				<!-- here the isClient checkbox name is changes to isClientEdit because, readonly check box is not working and onclick methods are effected (Venkat Kesav) -->
+					            <input type="checkbox" name="isClientEdit" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 					            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();" disabled="disabled" checked="checked">
 					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 					            &nbsp;&nbsp;
@@ -530,7 +553,7 @@ $(document).ready(function () {
 								&nbsp;&nbsp;
 							   </label>
 							</div>
-						  </c:otherwise>
+						 </c:otherwise>
 			</c:choose>
 	        </c:if>
 	      
@@ -540,22 +563,20 @@ $(document).ready(function () {
             </div>
             <div class="clearfix">
               <div class="form-group">
-                <label class="col-md-3">Client <span class="text-danger">*</span></label>
+                <label class="col-md-3">Client<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
                    <c:set var="val" value="${requirement.isClientJob}"/>
                    <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
-			   				<select class="chosen-select form-control select-bg" disabled="disabled" data-validation-optional="true" field-name = "Client" name="selectClient" id="addClientId" onchange="getContactList(this); getClientSubmissionTemplates(this); ">
-                    			<option value="">-- Select Client --</option>
-	                   			 <c:forEach var="report" items="${add_clientList}">
+			   				<select class="chosen-select form-control select-bg" disabled="disabled" data-validation-optional="true" field-name = "Client" name="selectClient" id="addClientId">
+                    			<c:set var="report" value="${orgClient}"/>
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
-			                    	<option disabled="disabled" value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
+			                    	<option selected="selected" value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
 			                    </c:if>  
 			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<option disabled="disabled" value="${report.id},${report.locationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+			                  	 	<option selected="selected" value="${report.id},${report.locationId.id}">${report.locationId.org.orgName}</option>
 			                    </c:if>
-								</c:forEach>
                    		    </select>
 						 </c:when>
 						  <c:otherwise>
@@ -569,7 +590,7 @@ $(document).ready(function () {
 			                  	 	<option value="${report.id},${report.locationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 			                    </c:if>
 							</c:forEach>
-                    </select>
+                    	  </select>
 						  </c:otherwise>
 				</c:choose>
                 
@@ -680,15 +701,28 @@ $(document).ready(function () {
            			</div>
 			 </c:when>
 			    <c:otherwise>
-						 <div class="input-group-btn selp-custom-min">
-	                  <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
-		                 <option  ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-		                 <option  ${requirement.clientCurrencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
-	                </select>
+  
+				<div class="input-group-btn selp-custom-min">
+	             <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
+		         
+		          <c:if test="${empty requirement.id}">
+	                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
+                 
+                 <c:if test="${! empty requirement.id}">
+	                 <option ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${requirement.clientCurrencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${requirement.clientCurrencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${requirement.clientCurrencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
+                </select>
 	                
 	                </div>
 	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
@@ -717,31 +751,24 @@ $(document).ready(function () {
                 <label class="col-md-3">Submission Form<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                  
-                  
-                  
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
-			 	<c:when test="${val == 'Y'}">
-			   		<select class="chosen-select form-control" disabled="disabled" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
-                       <option value="">-- Select Submission Form --</option>
-                       <c:forEach var="report" items="${clientSubmissionTempletesList}">
-							 <%-- 	<c:if test="${report.id == loginOrgLocId}">   --%>
-			                    	<option value="${report.id}" ${report.id  == requirement.clientSubmissionTemplateId.id  ? 'selected' : ''} >${report.templateName}</option>
-			                 <%--    </c:if>   --%>
-						</c:forEach>
-					</select>
-			    </c:when>
-			    <c:otherwise>
-						<select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
-                       <option value="">-- Select Submission Form --</option>
-                       <c:forEach var="report" items="${clientSubmissionTempletesList}">
-							 <%-- 	<c:if test="${report.id == loginOrgLocId}">   --%>
-			                    	<option value="${report.id}" ${report.id  == requirement.clientSubmissionTemplateId.id  ? 'selected' : ''} >${report.templateName}</option>
-			                 <%--    </c:if>   --%>
-						</c:forEach>
+				 	<c:when test="${val == 'Y'}">
+				   		<select class="chosen-select form-control" disabled="disabled" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
+	                       <c:set var="report" value="${clientSubmissionTemplete}"/>
+				           <option value="${report.id}">${report.templateName}</option>
 						</select>
-				</c:otherwise>
+				    </c:when>
+				    <c:otherwise>
+							<select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
+	                       <option value="">-- Select Submission Form --</option>
+	                       <c:forEach var="report" items="${clientSubmissionTempletesList}">
+								 <%-- 	<c:if test="${report.id == loginOrgLocId}">   --%>
+				                    	<option value="${report.id}" ${report.id  == requirement.clientSubmissionTemplateId.id  ? 'selected' : ''} >${report.templateName}</option>
+				                 <%--    </c:if>   --%>
+							</c:forEach>
+							</select>
+					</c:otherwise>
 				</c:choose>
                   </div>
                 </div>
@@ -972,7 +999,7 @@ $(document).ready(function () {
                             <label class="col-lg-4">Team Name <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                               <!-- <input type="text" class="form-control" value=""> -->
-                              <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">
+                              <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="">
                               </div>
                             </div>
                             <div class="form-group">
@@ -1141,7 +1168,7 @@ function storeTeam(){
 			
 			$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success :function(data) { 
 						$('#addTeam').modal('hide');
 				      }, 
@@ -1205,13 +1232,13 @@ function getAllCountries(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryReq').empty();
-        	$('#countryReq').append('<option value="">---select Country---</option>');
+        	$('#countryReq').append('<option value="">---Select Country---</option>');
         	for(var i=0;i<json.length;i++){
             	if(json[i] == countryName ){
             		
             		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
-            	else if((countryName ==null ||  countryName =='' || countryName =='undefined') && (json[i] == '${loginCountryName}')){
+            	else if((countryName ==null ||  countryName =='' || countryName =='undefined') && (json[i] == '${SourceLeadWeb_loginCountryName}')){
             		
             		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
@@ -1250,7 +1277,7 @@ function getStates(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select State---</option>');
+	        	$('#state').append('<option value="">---Select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
 	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1267,10 +1294,10 @@ function getStates(){
 	    });
 	}else{
 		$('#state').empty();
-    	$('#state').append('<option value="">---select State---</option>');
+    	$('#state').append('<option value="">---Select State---</option>');
     	$('#state').trigger("chosen:updated");
     	$('#city').empty();
-    	$('#city').append('<option value="">---select State---</option>');
+    	$('#city').append('<option value="">---Select State---</option>');
         $('#city').trigger("chosen:updated");
 	}
 }
@@ -1298,7 +1325,7 @@ function getCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select City---</option>');
+	        	$('#city').append('<option value="">---Select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
 	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1314,7 +1341,7 @@ function getCities(){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---select City---</option>');
+    	$('#city').append('<option value="">---Select City---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }
@@ -1439,18 +1466,6 @@ function getTemplateVal(){
 
 </script>
 
-<!-- <script type="text/javascript">
- function disableMonths() {
-     $("#minExp").change(function() {
-    	 
-         if ($(this).val() == '25+'){
-             $("#maxExp").attr("disabled", true);
-             $("#maxExp").val("disabled", true);
-         }else
-        	 $("#maxExp").attr("disabled", false); 
-     });
- }
- </script> -->
 
 <script>
 function setTemplateValues(){
@@ -1541,6 +1556,8 @@ function setTemplateValues(){
 			    	 existedFile = json.fileName;
 			    	 $("#uploadFile").val(existedFile);
 			    	 $('#uploadFile').trigger("chosen:updated");
+			   
+			    	 $( ".jobTypeDiv" ).hide();
 		    	}else{
 		    		
 		    		$("#jobTitle").val('');
@@ -1562,8 +1579,9 @@ function setTemplateValues(){
 		            $("#education").val('');
 			    	$("#description").val('');
 			    	$("#rate").val('');
-			    	$("#currencyCode").val('');
+			     	$("#currencyCode").val('');
 			    	$("#rateType").val('');
+			    	$( ".jobTypeDiv" ).show();
 			    	existedFile = json.fileName;
 			    	 $("#fileName").val(existedFile);
 			    	 $('#fileName').trigger("chosen:updated");
@@ -1582,6 +1600,7 @@ function setTemplateValues(){
 		 getAllCountries(); 		
 		 $("#rate").val('');
 		 $("#description").val('');
+		
 		 
 	}
 }
@@ -2137,7 +2156,7 @@ var existingValue = document.getElementById('isClientJob').value;
 		 $('.selectpicker').selectpicker('refresh');
 		  */
 		  
-		  $("#clientCurrencyCode").val('');
+		 // $("#clientCurrencyCode").val('');
 			
 		 $('#clientRate').val('');
 		 

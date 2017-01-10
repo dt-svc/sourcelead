@@ -118,24 +118,24 @@ public class RequirementController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		if(requirementId != null && !requirementId.isEmpty()){
+		if(null != requirementId && !requirementId.isEmpty()){
 			requirement = this.requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
-			if(requirement.getEducation() != null){
+			if(null != requirement.getEducation()){
 					String[] educationList = requirement.getEducation().split(",");
 					requirement.setReqEducationList(educationList);
 					requirement.setReqEducationListString(requirement.getEducation());
 			}
 			
-			if(requirement.getSkills() != null){		
+			if(null != requirement.getSkills()){		
 					String[] skillsList = requirement.getSkills().split(",");
 					requirement.setReqSkillsList(skillsList);
 					requirement.setReqSkillsListString(requirement.getSkills());
 			}
 			String requirementAssignedIds = "";
-			if(requirement.getRequirementAssignTo() != null){
+			if(null != requirement.getRequirementAssignTo()){
 				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
 				for(RequirementAssignTo rat : requirementAssignToList){
-					if(requirementAssignedIds != null && !requirementAssignedIds.isEmpty()  && requirementAssignedIds != "" ){
+					if(null != requirementAssignedIds && !requirementAssignedIds.isEmpty()  && "" != requirementAssignedIds ){
 						StringBuilder assignUserIdsSB = new StringBuilder();
 						requirementAssignedIds = assignUserIdsSB.append(requirementAssignedIds).append("&").append(rat.getAssignUserId().getId().toString()).toString();
 					}else{
@@ -147,9 +147,9 @@ public class RequirementController {
 			model.addObject("requirementAssignedIds",requirementAssignedIds);
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirementId);
-			if(requirement.getClientId() != null){
+			if(null != requirement.getClientId()){
 				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId());
-				if(clientContactList != null){
+				if(null != clientContactList){
 					for(OrgSpoc orgSpoc : clientContactList){
 						orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
 					}
@@ -165,9 +165,9 @@ public class RequirementController {
 			Long sequentialApprover2 = null;
 			String parallelApproverIds = null ;
 			Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
-			if(maxLevel != null && maxLevel >1){
+			if(null != maxLevel && maxLevel >1){
 				approverMode = "Sequential";
-				if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty()){
+				if(null != requirementApproverHierarchyList && !requirementApproverHierarchyList.isEmpty()){
 					for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
 						if(requirementApproverHierarchy.getLevel() == 1){
 							sequentialApprover1 = requirementApproverHierarchy.getApproverUserId().getId();
@@ -177,12 +177,12 @@ public class RequirementController {
 						}
 					}
 				}
-			}else if(maxLevel != null && maxLevel ==1){
+			}else if(null != maxLevel && maxLevel ==1){
 				approverMode = "Parallel";
 				int i = 0;
-				if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty()){
+				if(null != requirementApproverHierarchyList && !requirementApproverHierarchyList.isEmpty()){
 					for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
-						if(parallelApproverIds != null && parallelApproverIds != ""){
+						if(null != parallelApproverIds && "" != parallelApproverIds){
 							StringBuilder parallelApproverIdsSB = new StringBuilder();
 							parallelApproverIds =  parallelApproverIdsSB.append(parallelApproverIds).append(",").append(requirementApproverHierarchy.getApproverUserId().getId().toString()).toString();
 						}else{
@@ -206,15 +206,13 @@ public class RequirementController {
 		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		
-		if(orgLocations != null && StringUtils.isNotEmpty(orgLocations.getCountry())){
+		/*if(null != orgLocations && StringUtils.isNotEmpty(orgLocations.getCountry())){
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-			if(countries != null){
+			if(null != countries){
 			model.addObject("loginCountryName", countries.getName());
-			model.addObject("currencyCode", countries.getCurrency());
 			}
 	        
-		}
-        
+		}*/
         
         List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
@@ -240,6 +238,15 @@ public class RequirementController {
 	    model.addObject("add_clientList", orgClientList);
 	    model.addObject("loginOrgLocId", orgLocations.getId());
 	    
+	    if(requirement.getClientId() != null && requirement.getClientId().getId() != null){
+	    	OrgRelations orgClient =orgRelationsService.getOrRelationsById(requirement.getClientId().getId()); 
+			if(null != orgClient){
+				orgClient.setOrgName(orgClient.getResponderLocationId().getOrg().getOrgName());
+				orgClient.setOrgid(orgClient.getResponderLocationId().getOrg().getId());
+			 }
+		    model.addObject("orgClient", orgClient);
+	    }
+	    
 	    //for get the owners list for spocs
 		List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
 		model.addObject("spocOwnersList", userList);
@@ -254,11 +261,20 @@ public class RequirementController {
 		
 		
 		//client submission template 
-		if(requirement.getClientId() != null){
+		if(null != requirement.getClientId()){
 			List<SubmissionTemplate>   clientSubmissionTempletesList = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(requirement.getClientId().getResponderLocationId().getId(), orgLocations.getId(),"Submission");
 			model.addObject("clientSubmissionTempletesList", clientSubmissionTempletesList);
 		}
 		
+		if(null != requirement.getClientId()){
+			if(null != requirement.getParentRequirement() && null != requirement.getParentRequirement().getSubmissionTemplateId()){
+				SubmissionTemplate   clientSubmissionTemplete = submissionTemplateService.getSubmissionTemplateById(requirement.getParentRequirement().getSubmissionTemplateId().getId());
+				model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
+			}else{
+				SubmissionTemplate   clientSubmissionTemplete = submissionTemplateService.getSubmissionTemplateById(requirement.getClientSubmissionTemplateId().getId());
+				model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
+			}
+		}
 
 		return model;
 
@@ -298,27 +314,22 @@ public class RequirementController {
 			model.addObject("timezonesList", timezonesList);
 		}*/
 		
-		if(requirement.getIsClientJob() != null && requirement.getIsClientJob().equalsIgnoreCase("Y")){
+		if(null != requirement.getIsClientJob() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
 			model.addObject("clientSubmissions","Y");
 		}else{
 			model.addObject("clientSubmissions","N");
 		}
 		
 		Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
-        if(parentRequirement != null){
+        if(null != parentRequirement){
             model.addObject("parentRequirement","Y");
         }else{
             model.addObject("parentRequirement","N");
         }
         
-        Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		if(countries != null){
-			model.addObject("loginCountryName", countries.getName());
-		}
-        
-        if(requirement.getSpocId() != null && requirement.getSpocId().getId() != null){
+        if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
 			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
-			if(orgSpoc != null && orgSpoc.getSpocStatus() != null && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
+			if(null != orgSpoc && null != orgSpoc.getSpocStatus() && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
 				model.addObject("isSpocActive", Constants.NO);
 			}else{
 				model.addObject("isSpocActive", Constants.YES);
@@ -339,7 +350,7 @@ public class RequirementController {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String fullName = null;
-   	      if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName() !=null){
+   	      if(!"".equalsIgnoreCase(user.getLastName()) && null != user.getLastName()){
    	    	     StringBuilder userNameSB = new StringBuilder();
    		         fullName = userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
 		   	 }else{
@@ -350,7 +361,7 @@ public class RequirementController {
 		 model.addObject("loginUserEmail",user.getEmail());
 		 model.setViewName("requirement/mail-compose");
 		Requirement req =requirementService.getRequirementByRequirementId(requirementId);
-	    if(req != null && req.getParentRequirement() !=null){
+	    if(null != req && null != req.getParentRequirement()){
 			 model.addObject("toEmailId",req.getParentRequirement().getManagerUserId().getEmail());
 			 StringBuilder toFullNameSB = new StringBuilder();
 			 model.addObject("toFullName",toFullNameSB.append(req.getParentRequirement().getManagerUserId().getFirstName()).append(" ").append(req.getParentRequirement().getManagerUserId().getLastName()).toString());
@@ -391,17 +402,17 @@ public class RequirementController {
 			ModelAndView model = new ModelAndView();
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("requirement/addTemplate");
-			if(requirementId != null){
+			if(null != requirementId){
 				requirement = requirementService.getRequirementTemplateByRequirementId(requirementId, orgLocations.getId());
 			 model.addObject("requirement", requirement);
 			 
-			 if(requirement.getEducation() != null){
+			 if(null != requirement.getEducation()){
 					String[] educationList = requirement.getEducation().split(",");
 					requirement.setReqEducationList(educationList);
 					requirement.setReqEducationListString(requirement.getEducation());
 			}
 			
-			if(requirement.getSkills() != null){		
+			if(null != requirement.getSkills()){		
 					String[] skillsList = requirement.getSkills().split(",");
 					requirement.setReqSkillsList(skillsList);
 					requirement.setReqSkillsListString(requirement.getSkills());
@@ -447,11 +458,11 @@ public class RequirementController {
 		
 		if(offerStatus.equalsIgnoreCase("Accepted")){
 			
-		    if(requirementOfferHistories != null && !requirementOfferHistories.isEmpty() ){  
+		    if(null != requirementOfferHistories && !requirementOfferHistories.isEmpty() ){  
 			    if(offerStatus.equalsIgnoreCase("Accepted")){
 			    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
 			    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
-				    		if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+				    		if(null != requirementOfferHistory.getOfferSourceType() && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
 				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
 				    		}else{
 				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
@@ -469,7 +480,7 @@ public class RequirementController {
 			    	
 					
 			    	  //Changing the status of offerTable 
-				      if(requirementOffers  != null){
+				      if(null != requirementOffers){
 						    requirementOffers.setOfferStatus("OFFERACCEPTED");
 						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 						    requirementOffersService.saveOfferStatus(requirementOffers);
@@ -506,7 +517,36 @@ public class RequirementController {
 			} catch (FileNotFoundException e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
-		}
+   }
+	
+	
+	@RequestMapping(value = "/downloadRateDocumentBySubmissionId", method = RequestMethod.GET)
+    public void downloadRateDocumentBySubmissionId(@RequestParam(value="submissionId", required=false) String submissionId ,HttpServletResponse response) throws Exception {
+		
+			RequirementSubmission requirementSubmission =  requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+	        StringBuilder filename = new StringBuilder();
+	        
+		    response.setContentType("application/octet-stream");
+	        response.setHeader("content-disposition", filename.append("attachment; filename=\"").append(requirementSubmission.getSubmissionRateFileName()).append("\"").toString());
+	        
+			InputStream inputStream = new ByteArrayInputStream(requirementSubmission.getSubmissionRateDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+
+				inputStream.close();
+				outStream.close();
+
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+   }
 	
 
 	private boolean isNullOrEmpty(String msg) {

@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,12 +10,16 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateCertificationsDao;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCertificationsService;
@@ -34,6 +39,9 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	 @Autowired
+	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 
 	
 	/**
@@ -124,7 +132,14 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 			
 		}
 			logger.debug("In CandidateCertificationsServiceImpl class save method");
-			return candidateCertificationsDao.storeCandidateCertifications(candidatecertificate);
+			candidatecertificate = candidateCertificationsDao.storeCandidateCertifications(candidatecertificate);
+			
+			/*
+			 * updating Candidate Certification DB data in existing candidateindex
+			 */
+			saveOrUpdateCandidateElkDocumentWithCertificationDetails(candidateId, orgLocationId.getId());
+			
+			return candidatecertificate;
 		}
 		
 	
@@ -178,7 +193,15 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 
 	     CandidateCertifications can = candidateCertificationsDao.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificateId);
 	     can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
-	     return candidateCertificationsDao.storeCandidateCertifications(can);
+	     can = candidateCertificationsDao.storeCandidateCertifications(can);
+	     
+
+	     /*
+		 * updating Candidate Employer DB data in existing candidateindex
+		 */
+	     saveOrUpdateCandidateElkDocumentWithCertificationDetails(candidateId,can.getOrgLocationId().getId());
+	     
+	     return can;
 
 	}
 
@@ -201,6 +224,24 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 			Long candidateCertificateId) throws Exception {
 
 		  return candidateCertificationsDao.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificateId);
+	}
+	
+	@Override
+    @Async
+	public void saveOrUpdateCandidateElkDocumentWithCertificationDetails(Long candidateId,Long locationId) throws Exception {
+		if(null != candidateId){
+			CandidateIndex candidateIndex = new CandidateIndex();
+			candidateIndex.setCandidateId(candidateId);
+			ArrayList<CandidateCertifications> certificationList =(ArrayList<CandidateCertifications>) getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId,locationId);
+			if(null != certificationList && !certificationList.isEmpty()){
+				ArrayList<String> certList = new ArrayList<>();
+				for(CandidateCertifications cert :certificationList){
+					certList.add(cert.getName());
+				}
+				candidateIndex.setCertifications(certList);
+			}
+			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateId.toString());
+		}
 	}
 		
 

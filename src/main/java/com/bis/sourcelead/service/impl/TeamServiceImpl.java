@@ -94,9 +94,11 @@ public class TeamServiceImpl implements TeamService {
 			team.setOrgLocationsId(orgLocations);;
 			}
 		
-		if(jsonObj.has("name")){
+		if(jsonObj.has("name") && !jsonObj.getString("name").isEmpty()){
 			team.setName(jsonObj.getString("name"));
 			}
+		
+		//URLDecoder.decode(request.getParameter("text"), "UTF-8");
 		if(jsonObj.has("ownerUserId") && !jsonObj.getString("ownerUserId").isEmpty()){
 			User user = new User();
 			user.setId(Long.parseLong(jsonObj.getString("ownerUserId")));

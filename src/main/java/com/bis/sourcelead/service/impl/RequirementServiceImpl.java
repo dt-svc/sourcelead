@@ -325,13 +325,15 @@ public class RequirementServiceImpl implements RequirementService {
 						requirement.setDocFile(templateRequirement.getDocFile());
 						requirement.setFileName(templateRequirement.getFileName());
 						requirement.setFileContentType(templateRequirement.getFileContentType());
+						requirement.setIsClientJob("N");
 					 }
-				     requirement.setIsClientJob("N");
 			 }	
 			 
 			 
 			if(jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
+			}else if(jsonObj.has("isClient")){
+				requirement.setIsClientJob("N");
 			}
 		if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient")) &&  jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y")){
 		requirementClient = (jsonObj.getString("isClient"));
@@ -560,6 +562,15 @@ public class RequirementServiceImpl implements RequirementService {
 					    	if(!assignedTeamId.contains("role") && !assignedTeamId.contains("All")){
 					    		teamId = Long.parseLong(assignedTeamId);
 							    team = teamService.getTeamByTeamId(teamId);
+							    // Adding Team Owner as RequirementAssignTo
+							    RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+									User assUser = userService.getUserById(team.getOwnerUserId().getId());
+									requirementAssignTo.setAssignUserId(assUser);
+									requirementAssignTo.setRequirementId(requirement);
+									requirementAssignTo.setTeamId(team);
+									UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
+									requirementAssignTo.setRoleId(userRole.getRoles());
+									requirementAssignToList.add(requirementAssignTo);
 					    	}
 						}   
 					    // User roleUser = team.getOwnerUserId();
@@ -1941,9 +1952,15 @@ public class RequirementServiceImpl implements RequirementService {
 		List<Requirement>  list = requirementDao.getAllRequirementTeplateJobsByOrgLocationId(orgLocationId, user);
 		
 		for(Requirement req :list){
-			
+			User createdUser = userService.getUserByUserCode(req.getCreatedBy());
+			if(createdUser != null){
+				String lastName = "";
+				if(StringUtils.isNotEmpty(createdUser.getLastName())){
+					lastName = " "+createdUser.getLastName();
+				}
+				req.setCreatedByName(createdUser.getFirstName()+lastName);
+			}
 			req.setRequirementCreatedDateToString(Constants.DF_YMD.format(req.getCreatedDate()));
-
 		}
 			
 		return list;
