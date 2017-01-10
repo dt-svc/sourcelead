@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -19,6 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +28,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.FuzzyQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -185,53 +185,53 @@ public class CandidateListRestController {
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			 
 			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId());
-		   	    //Exclude Keyword
-				/*ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+		   	   //Exclude Keyword
+				ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 				if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
 					BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : excludeKeyWordArray){
-						ArrayList<FuzzyQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
 						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(FuzzyQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
 								excludeBoolQueryBuilder.should(matchQueryBuilder);
 							}
-							excludeBoolQueryBuilder.minimumShouldMatch("1");
-							boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+							//excludeBoolQueryBuilder.minimumShouldMatch("1");
+						    boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
 						}
 					}
-				}*/
+				}
 				//Any Keyword
-				/*ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
-				anyKeyWordArray.removeAll(excludeKeyWordArray);
+				ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+				//anyKeyWordArray.removeAll(excludeKeyWordArray);
 				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
-					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : anyKeyWordArray){
-						ArrayList<FuzzyQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
 						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(FuzzyQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
 								anyBoolQueryBuilder.should(matchQueryBuilder);
 							}
-							anyBoolQueryBuilder.minimumShouldMatch("1");
-							boolQueryBuilder.should(anyBoolQueryBuilder);
+							anyBoolQueryBuilder.minimumNumberShouldMatch(1);
+						    boolQueryBuilder.should(anyBoolQueryBuilder);
 						}
 					}
-				}*/
+				}
 				//All Keywords
-				/*ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
-				allKeyWordArray.remove(anyKeyWordArray);
+				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				//allKeyWordArray.remove(anyKeyWordArray);
 				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
-					for(String keywd : anyKeyWordArray){
-						ArrayList<FuzzyQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+					BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : allKeyWordArray){
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
 						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(FuzzyQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolQueryBuilder.should(matchQueryBuilder);
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolQueryBuilder.should(matchQueryBuilder);
 							}
-							anyBoolQueryBuilder.minimumShouldMatch("1");
-							boolQueryBuilder.should(anyBoolQueryBuilder);
+							//allBoolQueryBuilder.minimumShouldMatch("1");
+							boolQueryBuilder.must(allBoolQueryBuilder);
 						}
 					}
-				}*/
+				}
 				//Designation
 				ArrayList<String> designationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "designation");
 				//designationArray.removeAll(excludeKeyWordArray);
@@ -269,8 +269,7 @@ public class CandidateListRestController {
 					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
 			    }
 				//minExpYears && maxExpYears
-			    if(jsonObj.has("minExpYears") && StringUtils.isNotEmpty(jsonObj.getString("minExpYears")) &&
-			    		jsonObj.has("maxExpYears") && StringUtils.isNotEmpty(jsonObj.getString("maxExpYears"))){
+			    if(StringUtils.isNotEmpty(jsonObj.getString("minExpYears")) && StringUtils.isNotEmpty(jsonObj.getString("maxExpYears"))){
 			    	String minYears= jsonObj.getString("minExpYears").replaceAll("[^0-9\\.]+", "");
 			    	String maxYears= jsonObj.getString("maxExpYears").replaceAll("[^0-9\\.]+", "");
 			    	try{
@@ -337,8 +336,9 @@ public class CandidateListRestController {
 						 Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 					     c.setTime(new Date());
 					     Integer dateRange = Integer.parseInt(jsonObj.getString("updatedOn"));
-				         c.add(Calendar.DATE, -dateRange); 
-				 	     boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").from(c.getTime()));
+				         c.add(Calendar.DATE, -dateRange);
+				         Date utilDate = c.getTime();
+				 	     boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(utilDate));
 					}
 			    	catch(NumberFormatException e){}
 			    }
@@ -460,39 +460,50 @@ public class CandidateListRestController {
          return keyWordList;
      }
 
-	 private ArrayList<FuzzyQueryBuilder> getMatchQueryBuilderList(String keywd){
-		    ArrayList<FuzzyQueryBuilder> matchQueryBuilderList = new ArrayList<FuzzyQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("firstName", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("lastName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("email", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("alternateEmail", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("alternateMobilePhone", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("mobilePhone", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("country", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("city", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("state", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("address", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("experienceYears", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("experienceYears", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("designation", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("designationType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("currentRate", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("currentRateType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("currentRateCurrency", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("expectedRate", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("rateType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("expectedRateCurrencey", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("summary", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("education", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("skills", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("employer", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("certifications", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("candidateType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("noticePriod", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("currentResumeName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.fuzzyQuery("resumeContent", keywd));
+	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("address", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("designation", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateCurrency", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rateType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRateCurrencey", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("noticePriod", keywd));
+			//matchQueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("resumeContent", keywd));
 			
 			
+			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			if(matcher.find()){
+				int expYears = Integer.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
+				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths", keywd));
+			}
+			if(StringUtils.isNumeric(keywd)){
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRate", keywd));
+			}
+			String mobileKeywd = keywd.replaceAll("[+91]", ""); 
+			if(mobileKeywd.length() > 10  && StringUtils.isNumeric(mobileKeywd)){
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+			}
+			
+				
 			return matchQueryBuilderList; 
 	 }
 	 

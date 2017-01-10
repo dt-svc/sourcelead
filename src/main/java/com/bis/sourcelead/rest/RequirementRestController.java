@@ -240,7 +240,7 @@ public class RequirementRestController {
 					// to get RequirementApproverHierarchy with maximum Level
 					Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
 
-					if (maxLevel != null) {
+					if (null != maxLevel) {
 						if (maxLevel.equals(requirementApproverHierarchy.getLevel())) {
 								if (status.equalsIgnoreCase("APPROVED")) {
 									requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
@@ -271,9 +271,9 @@ public class RequirementRestController {
 								 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
 								RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
 						    	 List<RequirementAssignTo> reqAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirementId,orgLocation.getId());
-					    			if(hierarchy!= null && "APPROVED".equals(hierarchy.getRequirementApproverStatus().toString())){
+					    			if(null != hierarchy && "APPROVED".equals(hierarchy.getRequirementApproverStatus().toString())){
 					    				for(RequirementAssignTo reqAssign:reqAssignTo ){
-												if(reqAssign.getAssignUserId() != null && !loginUser.getId().equals(reqAssign.getAssignUserId().getId())){
+												if(null != reqAssign.getAssignUserId() && !loginUser.getId().equals(reqAssign.getAssignUserId().getId())){
 													requirementService.AssignToTeamMembersEmail(loginUser, reqAssign.getAssignUserId(), requirement,new StringBuilder(),orgLocation);
 												}
 					    				}
@@ -283,7 +283,7 @@ public class RequirementRestController {
 							    RequirementApproverHierarchy level2approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
 								User approverUser = userService.getUserById(level2approver.getApproverUserId().getId());
 								if (status.equalsIgnoreCase("APPROVED")) {
-									if (level2approver != null) {
+									if (null != level2approver) {
 										// this is for sending email to second level approver
 										requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, null,	orgLocation);
 									}
@@ -473,7 +473,7 @@ public class RequirementRestController {
 	            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId());
 	            user.setAssignJobCount(assign.size());
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
-				if(userRole !=null){
+				if(null != userRole){
 					user.setUserType(userRole.getUserType());
 					 mynewList.add(user);
 				}
@@ -545,7 +545,7 @@ public class RequirementRestController {
 				user.getId(), orgLocations.getId());
 		for (OrgSpoc orgSpoc : orgSpocsList) {
 			String ownerLastName = "";
-			if (orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null) {
+			if (null != orgSpoc.getOwnerUser() && null != orgSpoc.getOwnerUser().getLastName()) {
 				ownerLastName = orgSpoc.getOwnerUser().getLastName();
 			}
 			StringBuilder spocNameSB = new StringBuilder();
@@ -581,14 +581,14 @@ public class RequirementRestController {
 		Boolean isTeamViewAccess = commonUtil.hasRole("ROLE_VIEW_TEAM");
 		if (isTeamViewAccess) {
 			List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
-			if (teamsList != null) {
+			if (null != teamsList) {
 				combinedList.setTeams(teamsList);
 			}
 		}
 
 		List<Roles> rolesList = roleService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),
 				Long.valueOf(Constants.TAB_REQUIREMENT));
-		if (rolesList != null) {
+		if (null != rolesList) {
 			combinedList.setRoles(rolesList);
 		}
 
@@ -693,28 +693,5 @@ public class RequirementRestController {
 				Boolean validatejobName = requirementService.validateRequirementTitle(templateName,orgLocation.getId());
 				return validatejobName.toString();
 		    }
-	 
-	 
-	 /*@RequestMapping(value = "/terminateRequirementTemplate", method = RequestMethod.POST)
-		public @ResponseBody String terminateRequirementTemplate(String requirementId, String status, HttpServletRequest request) throws Exception {
-			
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
-			Requirement rt =  requirementService.getRequirementTemplateByRequirementId(Long.parseLong(requirementId),orgLocation.getId());
-			if(rt != null){
-				
-				if(status.equalsIgnoreCase("remove")){
-					rt.setStatus(Constants.MEMBER_IN_ACTIVE);
-				}else if(status.equalsIgnoreCase("reActive")){
-					rt.setStatus(Constants.MEMBER_ACTIVE);
-				}
-				
-				rt.setUpdatedBy(user.getUserCode());
-				rt.setUpdatedDate(commonUtil.currentDate());
-				requirementService.updateRequirementTemplate(rt);
-			}
-			return "success";
-		}*/
 
 }
