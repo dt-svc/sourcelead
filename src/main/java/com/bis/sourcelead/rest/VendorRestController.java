@@ -633,6 +633,8 @@ public class VendorRestController {
 				inputStream.close();
 				response.getOutputStream().close();
 				response.getOutputStream().flush();
-			
+			if(file!= null){
+				file.delete();
+			}
 		}
 }

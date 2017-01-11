@@ -39,11 +39,7 @@ function interviews(dateRange){
 			success : function(data) {
 				var json = JSON.parse(data);
 				if(data != null && data != 'undefined' && data != "" && data != '[]'){
-              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }else{
+              
 	              			$("#today").empty();
 	        	        	$("#upcoming").empty();
 	        	        	$("#previous").empty();
@@ -68,10 +64,10 @@ function interviews(dateRange){
 	            		       			clientName = report.clientName;
 	            		       		}
 	            						resultToday = resultToday+'	  <tr>';
-	            						resultToday = resultToday+'	   <td><div><span>'+report.candidateName+'</span></div></td>';
-	            						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementId='+report.requirementId+'">'+report.requirementTitle+'</a></div></td>';
+	            						resultToday = resultToday+'	   <td><div><span title='+report.candidateName+'>'+report.candidateName+'</span></div></td>';
+	            						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementId='+report.requirementId+'"><span title='+report.requirementTitle+'>'+report.requirementTitle+'</span></a></div></td>';
 	            						resultToday = resultToday+'	   <td><div class="tblminwidth-150">'+report.interviewStartDateTimeStr+'</div></td>';
-	            						resultToday = resultToday+'	   <td><div><span>'+clientName+'</span></div></td>';
+	            						resultToday = resultToday+'	   <td><div><span title='+clientName+'>'+clientName+'</span></div></td>';
 	            						//resultToday = resultToday+'	 <td><a class="btn btn-sm btn-primary fa fa-handshake-o" href="'+sourceleadUrl+'/'+'publicInterviewFeedBackTemplate?requirementInterviewid='+report.id+'"></a></td>';
 	            						resultToday = resultToday+'	 </tr>';
 	            					}
@@ -103,7 +99,6 @@ function interviews(dateRange){
 	            				$("#upcomingTab").removeClass("active");
 	            				$("#previousTab").removeClass("active");
 	            	        }
-              		 	}
 					}else{
 	               	 	$("#today").removeAttr("style");
 	               	 	$("#today").empty();

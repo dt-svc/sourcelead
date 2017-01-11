@@ -103,7 +103,7 @@
         <div class="form-group">
           <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length2-100" value="">
+            <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length1-100" value="">
             <div class="input-group hidden">
               <div class="input-group-btn">
                 <button type="button" class="btn btn-danger dropdown-toggle"
@@ -125,7 +125,7 @@
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" value="">
+           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_Space validate_length length1-100" data-validation-optional="true" value="">
           </div>
         </div>
         <div class="form-group" id="emailDiv">
@@ -171,7 +171,7 @@
         <div class="form-group">
           <label class="col-md-3">Address</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="" data-validation-optional="true">
           </div>
         </div>
         
@@ -274,7 +274,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
@@ -437,10 +437,13 @@
 			var frm = $('#candidate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
+			
+			//It will escape all the special characters
 		    var jsonData = encodeURIComponent(con);
+			
 			var form = $('#candidate_form')[0];
       		var formData = new FormData(form); 
-			//It will escape all the special characters
+			
 			$("#store_candidate").attr("disabled", "disabled");
 			$("#store_candidate").addClass('button').val('Processing..');
 

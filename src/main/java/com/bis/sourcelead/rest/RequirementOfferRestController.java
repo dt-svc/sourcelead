@@ -128,15 +128,16 @@ public class RequirementOfferRestController {
 			                                              HttpServletRequest request) throws Exception {
 		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		String resultJson = null;
 	
-		List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations.getId(), requirementId,existingApplicantsIds,isClientOffer);
+		List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations, requirementId,existingApplicantsIds,isClientOffer,loginUser,loginUserRole);
 		for (RequirementSubmission requirementSubmission : shortListCandidatesList) {
+			 StringBuilder nameBuilder = new StringBuilder();
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 			if(requirementSubmissionTemplateFields.getLastName() != null){
-				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+				requirementSubmission.setCandidateName(nameBuilder.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
 			}else{
 				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
 			}
@@ -549,12 +550,14 @@ public class RequirementOfferRestController {
 		if(StringUtils.isNotEmpty(submissionId)){
 			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
 			if(StringUtils.equalsIgnoreCase(status, "accept")){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 				requirementSubmission.setSubmissionRequestUser(user.getFirstName()+""+user.getLastName());
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 				requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
 			}
 			else if(StringUtils.equalsIgnoreCase(status, "rejected")){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 				requirementSubmission.setSubmissionRequestUser(user.getFirstName()+""+user.getLastName());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);

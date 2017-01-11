@@ -128,7 +128,7 @@ width:100% !important;
 <script>
  window.onload = function() { 
  	 requirementList();
- 	 requirementListIndividualStatusCounts();
+ 	// requirementListIndividualStatusCounts();
 };
 </script>
 
@@ -165,13 +165,7 @@ function requirementList(){
            url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
+               	
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
@@ -236,9 +230,12 @@ function requirementList(){
 		                     }
 		                    
 		                     if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-			                     result = result +"<td><div><span><span>"+opt.country+" ,"+opt.state+" ,"+opt.city+" </span></span></div></td>";
+			                     result = result +"<td><div><span title='"+opt.country+', '+opt.state+', '+opt.city+"'>"+opt.country+', '+opt.state+', '+opt.city+"</span></div></td>";
+		                     }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
+			                     result = result +"<td><div><span title='"+opt.country+', '+opt.state+"'>"+opt.country+', '+opt.state+"</span></div></td>";
+
 		                     }else{
-			                     result = result +"<td><div><span><span>"+opt.country+"</span></span></div></td>";
+			                     result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
 		                     }
 		                     if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
 		                    	 result = result +"<td><div>"+opt.positions+"</div></td>";
@@ -251,7 +248,7 @@ function requirementList(){
 		                    	 result = result +"<td><div>0</div></td>";
 		                     }
 		                     if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-		                    	 result = result +"<td><div>"+opt.manager+"</div></td>";
+		                    	 result = result +"<td><div><span title="+opt.manager+">"+opt.manager+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
@@ -377,7 +374,6 @@ function requirementList(){
 	                     $("#requirementList").append(result); 
 	                     pagination(); 
 	                     msgFadein1(); 
-			    	} 
                  }else{
                 	 $("#requirementList").empty();
                 	 $("#requirementList").removeAttr("style");
@@ -1174,7 +1170,7 @@ function requirementPipeline(requirementId){
       <div class="timesheet_head">
         <ul>
         <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
-		<li><i class="glyphicon glyphicon-export"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
+		<li><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" onClick ="requirementListIndividualStatusCounts();"id="filter2ApprovePop"></i>
 		            <div id="filter2ApprovedPop" class="approved_pop">
 		              <ul>
                 		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="NEW"  onclick="requirementList();"><label for="c6">New<span id="newRequirementCount"></span></label></li>

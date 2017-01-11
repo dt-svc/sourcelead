@@ -69,13 +69,6 @@ function teamList(){
             url: sourceleadUrl+"/getTeamListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}",       
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
 			    	     $("#teamList").removeAttr("style");
 	                	 $("#teamList").empty();
 	                	 var result = "";
@@ -94,12 +87,9 @@ function teamList(){
 	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
-	                    	 result = result +"<tr>";
-	                    	
-				            /*  result = result +"<td><div><span>"+opt.name+"</span></div></td>"; */
+	                    	 result = result +"<tr id='deleteTeam"+opt.id+"'>";
 				             
 				             result = result +' <td><div>'+opt.name+'</div></td>';
-				             
 				             
 				             if(opt.teamOwnerName != null && opt.teamOwnerName != '' && opt.teamOwnerName != 'undefined'){
 				             result = result +"<td><div><span>"+opt.teamOwnerName+"</span></div></td>";
@@ -113,7 +103,7 @@ function teamList(){
 				             	result = result +"<i class='glyphicon glyphicon-pencil' onclick='sideBar("+opt.id+");'></i>";
 				             '</sec:authorize>';
 				             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_TEAM\')">'; 
-				             	result = result +"<i class='glyphicon glyphicon-trash' onclick='deleteTeam("+opt.id+");'></i>";
+				             	result = result +'<i class="glyphicon glyphicon-trash" onclick="deleteTeam('+opt.id+',\''+opt.name+'\');"></i>';
 				             '</sec:authorize>';
 				             result = result +"</div></td>";
 				             result = result +"</tr>";
@@ -122,7 +112,6 @@ function teamList(){
 	                     result = result +"</table>"; 
 	                     $("#teamList").append(result); 
 	                     pagination(); 
-			    	} 
                  }else{
                 	 $("#teamList").removeAttr("style");
   	    	         var result ="";
@@ -230,7 +219,7 @@ function teamEditDetails(teamId){
 	        	outPut = outPut+ '<div class="col-md-6">';
 	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
 	        	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
-	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="'+json.name+'">';
+	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'">';
 	        	outPut = outPut+ '                </div>';
 	        	
 	        	
@@ -519,23 +508,10 @@ function projectMemberList(teamId){
 	            url: sourceleadUrl+"/getTeamMembersListByTeamID?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId,       
 	            success :function(data) {
 	                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	               		 if( data.indexOf('Sign In') >= 0){
-				    		location.replace(sourceleadUrl);
-				    	 }
-	               		 else if (data.indexOf('exception') >= 0) {
-	               			 location.replace(sourceleadUrl+"/errorPage");
-	               		 }
-	               		 else{
 				    	     $("#projectMemberList").removeAttr("style");
 		                	 $("#projectMemberList").empty();
 		                	 
-		                	 
-		                	
-		                      
-		                      
-		                	 
 		                	 var result = "";
-		                	 
 		                	
 		                	 result = result +"";
 		                	 
@@ -595,7 +571,6 @@ function projectMemberList(teamId){
 		                     $("#projectMemberList").append(result); 
 		                     TeamMemberpagination(); 
 		                     teamEditDetails(teamId);
-				    	} 
 	                 }else{
 	                	 $("#projectMemberList").removeAttr("style");
 	  	    	         var result ="";
@@ -663,17 +638,9 @@ function deleteTeamMember(teamMemberId,teamId){
          url: sourceleadUrl+"/deleteTeamMemberByCandidateId?${_csrf.parameterName}=${_csrf.token}&teamMemberId="+teamMemberId+"&reason="+reason,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
             			 projectMemberList(teamId);
             			 $("#removeCandidateAlert").empty();
             			 $(".project_inn_mask").fadeOut(200);
-            		 }
                 }
                  }, 
               }); 
@@ -742,7 +709,7 @@ function TeamMemberpagination(){
       <div class="project_tabs_inn_table vendor_wrap_inn_table">
        			<div id="popUpDivTeamParent" class="edit-details col-md-4"></div>  
       			<div id="teamList"></div>
-      			
+      			<div id="deleteTeamPopUp"></div>
               </div>
         </div>      
   
@@ -792,15 +759,17 @@ function storeTeam(){
 			var frm = $('#team_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
-		  
+		    
+			//It will escape all the special characters
 		     var jsonData = encodeURIComponent(con);
+			
 			 var sourceleadUrl = '${sourceleadUrl}';
 			
 			 $("#add_team").attr("disabled", "disabled");
 			
 			$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success :function(data) {  
 						location.replace(sourceleadUrl+"/team");
 				      }, 
@@ -878,30 +847,60 @@ function getTeamMembers(){
 </script>
 
 <script>
-function deleteTeam(teamId){
+function deleteTeam(teamId,teamName){
+	
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure to delete <strong>"+teamName+"</strong> ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedTeam("+teamId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#deleteTeamPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	
+	
+	
+}
+</script>  
+
+<script type="text/javascript">
+function cancel(){
+	$("#deleteTeamPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+<script>
+function deleteSelectedTeam(teamId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var message = confirm("You are choosing to delete the team");
-	if (message == true) {
-		$.ajax({
+	 if (teamId) {
+		 
+	     $("#deleteTeamPopUp").empty();
+		 $(".project_inn_mask").fadeOut(200);
+			
+		 $("#deleteTeam"+teamId).html("<td colspan='5'  id='loading"+teamId+"'></td>");
+		 $("#loading"+teamId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		 
+		 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/deleteTeamById?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId, 
    		    success: function(data) {
    		    	
    		    	if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}
-             		else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}else{
-             			teamList();
-             		}
+             			document.getElementById("deleteTeam"+teamId).remove();
+             			$("#loading"+teamId).removeAttr("style"); 
    		    	}
    		    }
-	     });
-	}
+	     }); 
+	} 
 }
-</script>         
+</script>
+
+
+      
  
  <!-- Team Member Store -->
  
@@ -1147,13 +1146,6 @@ function getCandidateListForTeam(teamId,teamName){
 	    	url: sourceleadUrl+"/getHotCandidateListForTeamByTeamId?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId,
 	    	  success: function(data) {
 	    		  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	               		 if( data.indexOf('Sign In') >= 0){
-				    		location.replace(sourceleadUrl);
-				    	 }
-	               		 else if (data.indexOf('exception') >= 0) {
-	               			 location.replace(sourceleadUrl+"/errorPage");
-	               		 }
-	               		 else{
 	               			 $("#teamSideDiv").removeAttr("style");
 		                	 $("#teamSideDiv").empty();
 		                	 var result = "";
@@ -1236,7 +1228,6 @@ function getCandidateListForTeam(teamId,teamName){
 		                     result = result +"</table>";
 		                     $("#teamSideDiv").append(result);
 		                     cpagination();
-				    	} 
 	                 }else{
 	                	 $("#teamSideDiv").removeAttr("style");
 	  	    	         var result ="";

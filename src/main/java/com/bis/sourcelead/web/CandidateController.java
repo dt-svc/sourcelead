@@ -77,7 +77,7 @@ public class CandidateController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-			if(countries != null){
+			if(null != countries){
             model.addObject("loginCountryName", countries.getName());
             model.addObject("currencyCode", countries.getCurrency());
 			}
@@ -105,7 +105,7 @@ public class CandidateController {
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				
 				Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-				if(countries != null){
+				if(null != countries){
 	            model.addObject("loginCountryName", countries.getName());
 	            model.addObject("currencyCode", countries.getCurrency());
 				}
@@ -137,10 +137,10 @@ public class CandidateController {
 		List<Countries> countryList = countriesService.getAllCountries();
 		model.addObject("countryList", countryList);
 		
-		if(orgLocations != null && StringUtils.isNotEmpty(orgLocations.getCountry())){
+		if(null != orgLocations && StringUtils.isNotEmpty(orgLocations.getCountry())){
 		
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-			if(countries != null){
+			if(null != countries){
 			   model.addObject("loginCountryName", countries.getName());
 			}
 	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
@@ -157,7 +157,7 @@ public class CandidateController {
 		model.addObject("educationsList", educationsList);
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
+		if(null == sessionData)
 		{
 			sessionData = new SessionMaintainanceData();
 		}
@@ -167,7 +167,7 @@ public class CandidateController {
 		
 		//this block is for success messages --@Yashoda
 				String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "candidateCreateMsg");
-				if(msg != null && !"".equals(msg)){
+				if(null != msg && !"".equals(msg)){
 					model.addObject("msg", msg);
 					SourceLeadSessionManager.removeSessionAttribute(request, "candidateCreateMsg");
 				}
@@ -192,7 +192,7 @@ public class CandidateController {
 		model.setViewName("candidates/assignHotListToTeam");
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
+		if(null == sessionData)
 		{
 			sessionData = new SessionMaintainanceData();
 		}
@@ -209,7 +209,7 @@ public class CandidateController {
 	
 	@PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
 	@RequestMapping(value = "/addConsultant")
-	public ModelAndView addConsultant(HttpServletRequest request) throws Exception {
+	public ModelAndView addConsultant(@RequestParam(value="type", required=false) String  type,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -221,12 +221,13 @@ public class CandidateController {
 		
 		model.setViewName("candidates/addConsultant");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("type", type);
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		if(countries != null){
+		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
 		}
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
+		if(null == sessionData)
 		{
 			sessionData = new SessionMaintainanceData();
 		}
