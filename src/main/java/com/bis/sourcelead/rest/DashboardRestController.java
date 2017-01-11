@@ -154,7 +154,7 @@ public class DashboardRestController {
 	   * @throws NullPointer
 	   */
 	 
-	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
+	 @PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getAssignedRequirementListByOrgLocationIDAndUserId")
 	 public String getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
 
