@@ -774,8 +774,10 @@ public class PdfUtil {
 		
 		UserRole userRole = userRoleService.getUserRoleByUserId(orgSpoc.getSpocUser().getId());
 		
+		if(null != userRole){
 		if (userRole.getRoles().getDisplayName() != null && !"".equalsIgnoreCase(userRole.getRoles().getDisplayName())) {
 			contactsArray[5] = userRole.getRoles().getDisplayName();
+		}
 		}else{
 			contactsArray[5] = "--";
 		}
