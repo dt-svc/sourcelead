@@ -669,7 +669,7 @@ $(document).ready(function () {
               </div>
               <div class="form-group">
                 <label class="col-md-3">Bill Rate / Salary</label>
-              <div class="col-md-9 pras">
+              <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
