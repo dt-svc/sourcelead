@@ -248,7 +248,7 @@ function requirementList(){
 		                    	 result = result +"<td><div>0</div></td>";
 		                     }
 		                     if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-		                    	 result = result +"<td><div>"+opt.manager+"</div></td>";
+		                    	 result = result +"<td><div><span title="+opt.manager+">"+opt.manager+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
@@ -1170,7 +1170,7 @@ function requirementPipeline(requirementId){
       <div class="timesheet_head">
         <ul>
         <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
-		<li><i class="glyphicon glyphicon-export"></i><span>Status</span><i class="glyphicon glyphicon-play" onClick ="requirementListIndividualStatusCounts();"id="filter2ApprovePop"></i>
+		<li><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" onClick ="requirementListIndividualStatusCounts();"id="filter2ApprovePop"></i>
 		            <div id="filter2ApprovedPop" class="approved_pop">
 		              <ul>
                 		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="NEW"  onclick="requirementList();"><label for="c6">New<span id="newRequirementCount"></span></label></li>

@@ -29,10 +29,10 @@
 						'</sec:authorize>';
 						
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Client name:</strong>';
+						result = result + '<strong>Client Name:</strong>';
 						
 						if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
-						result = result + '<span>'+json.orgName+'</span>';
+						result = result + '<span title='+json.orgName+'>'+json.orgName+'</span>';
 						}
 						
 						result = result + '<div class="clearfix"></div>';
@@ -41,7 +41,7 @@
 						
 						result = result + '<strong>Website:</strong>';
 						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
-						result = result + '<span>'+json.webSite+'</span><div class="clearfix"></div>';
+						result = result + '<span title='+json.webSite+'>'+json.webSite+'</span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
 					
@@ -76,7 +76,7 @@
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Created By :</strong>';
 						if(json.vendorCreateduserName != null && json.vendorCreateduserName !='' && json.vendorCreateduserName !='undefined'){
-							result = result + '<span>'+json.vendorCreateduserName+'</span><div class="clearfix"></div>';
+							result = result + '<span title='+json.vendorCreateduserName+'>'+json.vendorCreateduserName+'</span><div class="clearfix"></div>';
 						}else{
 							result = result + '<span>No Data</span><div class="clearfix"></div>';
 						}
