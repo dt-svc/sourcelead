@@ -16,7 +16,9 @@ float:none;
 float:none;
 }
 
-
+.addUser-org {
+    overflow-x: auto;
+}
 
 #uploadFileGroup p.jquery_form_error_message{
 	position: absolute;
@@ -128,7 +130,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
 	                    	 if(opt.docName != null && opt.docName != '' && opt.docName != 'undefined'){
-	                    	    result  = result + '<td><div><span>'+opt.docName+'</span></div></td>';
+	                    	    result  = result + '<td><div><span title='+opt.docName+'>'+opt.docName+'</span></div></td>';
                     	     }else{
                     	    	 result  = result + ' <td><div><span>--</span></div></td>';
                     	     }
@@ -139,13 +141,13 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 if(opt.spocName != null && opt.spocName != '' && opt.spocName != 'undefined'){
-		                    	 result  = result + '<td><div><span>'+opt.spocName+'</span></div></td>';
+		                    	 result  = result + '<td><div><span title='+opt.spocName+'>'+opt.spocName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>--</span></div></td>'; 
 	                    	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-		                    	 result  = result + '<td><div><span>'+opt.fileName+'</span></div></td>';
+		                    	 result  = result + '<td><div><span title='+opt.fileName+'>'+opt.fileName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>--</span></div></td>';
 	                    	 }
@@ -163,11 +165,11 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 }
 	                    	 
 	                    	 if(opt.ownerName != null && opt.ownerName != '' && opt.ownerName != 'undefined'){
-	                    	      result  = result + ' <td><div><span>'+opt.ownerName+'</span></div></td>';
+	                    	      result  = result + ' <td><div><span title='+opt.ownerName+'>'+opt.ownerName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	    result = result+'	 <td><div class="tblicons">';
+	                    	    result = result+'	 <td><div class="tblicons tblminwidth-75">';
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_CLIENT_DOCS\')">'; 
 	                    	    result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
 	                    	 '</sec:authorize>';

@@ -548,13 +548,13 @@ function closeCertificatePopup(){
 									}
 
 									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
-										result = result + '<td><div><span>'	+ opt.startMonth + ' -'	+ opt.startYear	+ '</span></div></td>';
+										result = result + '<td><div><span>' + opt.startYear	+ '</span></div></td>';
 									} else {
 										result = result		+ '<td><div><span>----</span></div></td>';
 									}
 
 									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										result = result + ' <td><div><span>'+ opt.endMonth + '-'+ opt.endYear+ '</span></div></td>';
+										result = result + ' <td><div><span>' + opt.endYear+ '</span></div></td>';
 									} else {
 										result = result	+ '<td><div><span>----</span></div></td>';
 									}
