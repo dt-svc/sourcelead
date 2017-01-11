@@ -72,13 +72,13 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobId+"-"+opt.jobTitle+"</a></div></td>";
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title="+opt.jobId+"-"+opt.jobTitle+">"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
 		                     }else{
-		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
+		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title="+opt.jobTitle+">"+opt.jobTitle+"</span></a></div></td>";
 		                     }
 		                     
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
+		                    	 result = result +"<td><div><span title="+opt.clientName+">"+opt.clientName+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
