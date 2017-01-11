@@ -248,7 +248,7 @@ function requirementList(){
 		                    	 result = result +"<td><div>0</div></td>";
 		                     }
 		                     if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-		                    	 result = result +"<td><div>"+opt.manager+"</div></td>";
+		                    	 result = result +"<td><div><span title="+opt.manager+">"+opt.manager+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }

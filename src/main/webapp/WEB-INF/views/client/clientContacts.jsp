@@ -132,10 +132,10 @@ function clientContacts(orgRelationID,clientLocationId){
    		    		}
 	        		
 	        		result = result + '	 <tr>';
-	                result = result + '	 	<td><div>'+opt.spocName+'</a></div></td>';
-	                result = result + '	     <td><div>'+opt.spocEmail+'</div></td>';
+	                result = result + '	 	<td><div><span title='+opt.spocName+'>'+opt.spocName+'</span></a></div></td>';
+	                result = result + '	     <td><div><span title='+opt.spocEmail+'>'+opt.spocEmail+'</span></div></td>';
 	                result = result + '	     <td><div>'+spocMobilePhone+'</div></td>';
-	                result = result + '	     <td><div>'+opt.ownerName+'</div></td>';
+	                result = result + '	     <td><div><span title='+opt.ownerName+'>'+opt.ownerName+'</span></div></td>';
 	                
 	                result = result + ' <td><div>';
 					result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+clientLocationId+');">';
@@ -412,7 +412,7 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	<div class="clearfix mb10">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	     <input type="text" class="form-control input-sm" name="lastName" id="lastName" value="" placeholder="Last name" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
+	result = result  +'	     <input type="text" class="form-control input-sm" name="lastName" id="lastName" value="" placeholder="Last name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
