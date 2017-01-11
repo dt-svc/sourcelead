@@ -125,13 +125,6 @@
  <script>
   function prepareCandidateList(data){
 	  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-		 if( data.indexOf('Sign In') >= 0){
- 		   location.replace(sourceleadUrl);
- 	     }
-		 else if (data.indexOf('exception') >= 0) {
-			 location.replace(sourceleadUrl+"/errorPage");
-		 }
-		 else{
 	 	     $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
 	     	 var result = "";
@@ -225,7 +218,7 @@
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
 	              '</sec:authorize>';
 	
-	              result = result +"  <td><div><span>"+designation+"</span></div></td>";
+	              result = result +"  <td><div><span title="+designation+">"+designation+"</span></div></td>";
 	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 	             	 {
 	                   result = result +"  <td><div>"+opt.designationType+"</div></td>";
@@ -246,7 +239,6 @@
 	          $("#noCandidates").val('');
 	          $("#candidateList").append(result);
 	          cpagination(); 
-  	    } 
 	  }
 	  else{
      	 $("#candidateList").removeAttr("style");
@@ -319,13 +311,6 @@ function candidateSideBar(candidateId){
            success :function(data) {  
                 if(data != null && data != 'undefined' && data != ""){  
                 	 var json = JSON.parse(data);
-              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-              		 else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }
-              		 else{
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
 	                	 var skillsList = json.skillsList;
@@ -645,7 +630,6 @@ function candidateSideBar(candidateId){
 						 $("body").css('overflow-y', 'hidden');
 						 candidateProfile(candidateId);
 			 			 
-			    	} 
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
  	    	         var result ="";
@@ -800,13 +784,6 @@ function refreshImageBlock(candidateId){
            success :function(data) {   
                 if(data != null && data != 'undefined' && data != ""){  
                 	 var json = JSON.parse(data);
-              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-              		 else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }
-              		 else{
 	                	 $("#candidateImageId").empty();
 	                	 var result = '';
 			             result = result+'<div class="well text-center clearfix">';
@@ -832,7 +809,6 @@ function refreshImageBlock(candidateId){
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
 						 result = result+' </div>';
 						 $("#candidateImageId").append(result);
-			    	}
                 }
          	},
       }); 
@@ -1277,7 +1253,7 @@ function cancel(candidateId){
            </sec:authorize>
            
            <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
-              <li><a href="<c:url value='/addConsultant'/>" title=""><i class="fa fa-plus"></i>Add Consultant</a></li>
+              <li><a  onclick= "addConsultant();"><i class="fa fa-plus"></i>Add Consultant</a></li>
            </sec:authorize>
            
            <sec:authorize access="hasAnyRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')">
@@ -1643,13 +1619,6 @@ function savedCommentAndCount(candidateId){
         	 var result = "";
               if(data != null && data != 'undefined' && data != ""){
               	 	 var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
             			 var totalComments = 0;
             			 if(json.length>0){
             				totalComments = json.length;
@@ -1686,7 +1655,6 @@ function savedCommentAndCount(candidateId){
 	 			           $("#latestMessage").append(result);
             			 }
             			 
-            		 }
               }
 			},
       });
@@ -1785,7 +1753,7 @@ function getCities(){
 	    $('#rateType').val(''); 
 
 	    $('#emailDiv').find('p.jquery_form_error_message').remove();
-	    
+	    $('#search_candidate').removeAttr('disabled');
 	    $('#minRateDiv').find('p.jquery_form_error_message').remove();
 	    $('#maxRateDiv').find('p.jquery_form_error_message').remove();
 	    $('#currencyDiv').find('p.jquery_form_error_message').remove();
@@ -2056,6 +2024,47 @@ function getCities(){
 			  </div>
       <div class="pop_mask"></div>
     
+    <div class="addconsultant-popup">
+				  <div class="row">
+                      <div class="col-md-offset-2 col-md-8">
+				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeConsultant()"><i class="fa fa-close"></i></a>
+                          <div class="col-md-6 mt">
+                        <div class="small-widget bg-purple">
+                            <a href="<c:url value='/addConsultant?type=parseConsultant'/>"  title="Parse Resume">
+                                <div class="clearfix mb10">
+                                <i class="fa fa-file-text-o fa-4x"></i>
+                                    <span class="fa fa-arrow-right"></span>
+                                </div>
+                                <strong class="clearfix">Parse Resume</strong>
+                                </a>
+                        </div>
+					  </div>
+					  <div class="col-md-6 mt">
+                          <div class="small-widget bg-yellow">
+                              <a href="<c:url value='/addConsultant?type=addConsultant'/>" title="Add Candidate">
+                                  <div class="clearfix mb10">
+                                      <i class="fa fa-user-circle fa-4x"></i>
+                                      <span class="fa fa-plus"></span>
+                                  </div>
+                                  <strong class="clearfix">Add Consultant</strong>
+                                </a>
+                                
+                          </div>
+					  </div>
+                      </div>
+                          <div class="col-md-4 hidden">
+                          <div class="small-widget bg-green">
+                              <a href="import-candidate.html" title="Import Candidate">
+                                  <div class="clearfix mb10">
+                                <i class="fa fa-user-circle fa-4x"></i>
+                                      <span class="fa fa-download"></span>
+                                  </div>
+                                  <strong class="clearfix">Import Candidate</strong>
+                                </a>
+                          </div>
+                      </div>
+				  </div>
+			  </div>
     
     <script>
     //addcandidate-popup script
@@ -2069,6 +2078,22 @@ function getCities(){
         $('.pop_mask').fadeOut(200);
        }
     </script>
+    
+     <script>
+    //addConsultant-popup script
+    function addConsultant(){
+        $('.addconsultant-popup').fadeIn(200);
+        $('.pop_mask').fadeIn(200);
+        $('#addmorepop').slideUp(200);
+    };
+       function closeConsultant(){
+        $('.addconsultant-popup').fadeOut(200);
+        $('.pop_mask').fadeOut(200);
+       }
+    </script>
+    
+    
+    
     
     <script type="text/javascript">
 	function searchCandidate() {
