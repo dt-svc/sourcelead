@@ -241,7 +241,7 @@
 			              			
 		              			
 		              			result = result +'<td class="mailbox-subject '+isMailRead+'"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\',\''+type+'\')">'+opt.subject+'</a></td>';
-		              			result = result +'<td class="mailbox-date">'+opt.calDays+' days ago</td>';
+		              			result = result +'<td class="mailbox-date">'+opt.calDays+'</td>';
 		              			result = result +'</tr>';
 		                    }
 		                    
@@ -499,7 +499,7 @@ function getEmailDetails(uuid,type){
 			    result = result +'<h3>'+opt.subject+'</h3>';
 			    result = result +'<h5>From: '+opt.fromMail+'' 
 			    result = result +'<h5>To: '+opt.toMail+'' 
-			    result = result +'<span class="mailbox-read-time pull-right">'+opt.calDays+' days ago</span></h5>';
+			    result = result +'<span class="mailbox-read-time pull-right">'+opt.calDays+'</span></h5>';
 			    result = result +'</div>	';
 
 	   			result = result +'<div class="mailbox-controls clearfix">';

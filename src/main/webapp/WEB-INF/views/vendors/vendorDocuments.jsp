@@ -17,6 +17,9 @@ float:none;
 float:none;
 }
 
+.addUser-org {
+    overflow-x: auto;
+}
 
 
 #uploadFileGroup p.jquery_form_error_message{
@@ -93,13 +96,6 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+vendorLocationId+"&sourceType=Vendor",        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
 	                	 $("#vendorDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -109,8 +105,8 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                 	 result  = result + '           <th>Type</th>';
 	                 	 result  = result + '           <th>Contact Person</th>';
 	                 	 result  = result + '           <th>Attachment</th>';
-	                 	 result  = result + '           <th>Start date</th>';
-	                 	 result  = result + '           <th>End date</th>';
+	                 	 result  = result + '           <th>Start Date</th>';
+	                 	 result  = result + '           <th>End Date</th>';
 	                 	 result  = result + '           <th>Owner</th>';
 	                 	 result  = result + '           <th>Action</th>';
 	                     result = result +"  </tr>"; 
@@ -121,7 +117,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
 	                    	 if(opt.docName != null && opt.docName != '' && opt.docName != 'undefined'){
-	                    	    result  = result + '<td><div><span>'+opt.docName+'</span></div></td>';
+	                    	    result  = result + '<td><div><span title="'+opt.docName+'">'+opt.docName+'</span></div></td>';
                     	     }else{
                     	    	 result  = result + ' <td><div><span>--</span></div></td>';
                     	     }
@@ -132,13 +128,13 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 if(opt.spocName != null && opt.spocName != '' && opt.spocName != 'undefined'){
-		                    	 result  = result + '<td><div><span>'+opt.spocName+'</span></div></td>';
+		                    	 result  = result + '<td><div><span title="'+opt.spocName+'">'+opt.spocName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>--</span></div></td>'; 
 	                    	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-		                    	 result  = result + '<td><div><span>'+opt.fileName+'</span></div></td>';
+		                    	 result  = result + '<td><div><span title="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>--</span></div></td>';
 	                    	 }
@@ -156,11 +152,11 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    	 }
 	                    	 
 	                    	 if(opt.ownerName != null && opt.ownerName != '' && opt.ownerName != 'undefined'){
-	                    	      result  = result + ' <td><div><span>'+opt.ownerName+'</span></div></td>';
+	                    	      result  = result + ' <td><div><span title="'+opt.ownerName+'">'+opt.ownerName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	 result = result+'	 <td><div class="tblicons">';
+	                    	 result = result+'	 <td><div class="tblicons tblminwidth-75">';
 	                    	 '<sec:authorize access="hasAnyRole(\"ROLE_DOWNLOAD_VENODR_DOCS\")">';
 	                    	 result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
 	                    	 '</sec:authorize>'; 
@@ -183,7 +179,6 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    
 	                     $("#vendorDocumentsList").append(result); 
 	                     documentpagination(); 
-			    	} 
                }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
@@ -485,13 +480,6 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
 		    	var json = JSON.parse(data);
 		    	var spoc = "";
 		    	var owner = "";
-		    	if( data.indexOf('Sign In') >= 0){
-	    		location.replace(sourceleadUrl);
-	    	 }
-    		 else if (data.indexOf('exception') >= 0) {
-    			 location.replace(sourceleadUrl+"/errorPage");
-    		 }
-    		 else{
     			 $("#uploadDocumentDiv").hide();
     			 $("#docAddButton").hide();
     			 $("#uploadFile").removeAttr("data-validation");
@@ -558,7 +546,6 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     			 $("#update_doc").attr("onclick", "storeClientDocument("+vendorLocationId+","+orgRelationId+","+json.id+");");
     			 
     			 manageDates();
-    		 }
 		    }
      });
 }
@@ -622,7 +609,7 @@ function deleteVendorDocument(vendorLocationId,orgRelationId,docId,docName){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>User delete message here</p>";
+	result = result +"		<p>Vendor delete message here</p>";
 	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorDoc("+vendorLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
@@ -650,13 +637,6 @@ function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateOrgDocumnet?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
-   		    	if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-        		 else if (data.indexOf('exception') >= 0) {
-        			 location.replace(sourceleadUrl+"/errorPage");
-        		 }
-        		 else{
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
         			 $("#vendorDocSelector").removeAttr("style");
@@ -664,7 +644,6 @@ function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
          			 $("#vendorDocMsgDiv").html(""+docName+" Removed");
         			 vendorDocumentsList(vendorLocationId,orgRelationId);
         			 vendorDocMsgFadein();
-        		 }
    		    }
 	     });
 	}else{

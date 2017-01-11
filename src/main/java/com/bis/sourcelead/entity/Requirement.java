@@ -161,7 +161,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String clientSubmissionTemplateJsonString;
 	
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="PARENT_REQUIREMENT_ID")        
     private Requirement parentRequirement;
 	
@@ -284,6 +284,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String approvedBy;
+	
+	@Transient
+	private String createdByName;
 	
 
 	public String getRequirementCreatedDateToString() {
@@ -898,6 +901,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setApprovedBy(String approvedBy) {
 		this.approvedBy = approvedBy;
+	}
+
+	public String getCreatedByName() {
+		return createdByName;
+	}
+
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
 	}
 	
 }

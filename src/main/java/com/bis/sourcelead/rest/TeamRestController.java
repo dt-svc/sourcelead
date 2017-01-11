@@ -287,8 +287,16 @@ public class TeamRestController {
 		  */
 	   	 @PreAuthorize("hasRole('ROLE_VIEW_DELETE_TEAM')")
 		 @RequestMapping(value = "/deleteTeamById", method = RequestMethod.POST,headers="Accept=application/json")
-		 public String deleteTeamById(@RequestParam( value = "teamId", required = false) Long teamId) throws Exception { 
-			 Team team = teamService.deleteTeamById(teamId);
+		 public String deleteTeamById(@RequestParam( value = "teamId", required = false) Long teamId,HttpServletRequest request) throws Exception { 
+	   		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	   		 List<CandidateHotList> hotListCandidatesList = candidateHotListService.getHotCandidateListForTeamByTeamId(teamId, orgLocations.getId());
+	   		 if(null != hotListCandidatesList){
+	   			 for(CandidateHotList hotList : hotListCandidatesList){
+	   				hotList.setTeamId(null);
+	   				candidateHotListService.saveCandidateHotList(hotList);
+	   			 }
+	   		 }
+	   		 Team team = teamService.deleteTeamById(teamId);
 			 return "success";
 
 		  }
@@ -351,7 +359,8 @@ public class TeamRestController {
 			Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
-			List<User> freshUserList = userService.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId, loginOrgLocation.getId());
+			List<User> freshUserList = userService.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId, loginOrgLocation.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+			
 			resultJson = commonUtil.toJSON(freshUserList);
 			return resultJson;
 		 } 

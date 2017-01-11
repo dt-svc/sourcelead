@@ -720,7 +720,7 @@ public class ClientServiceImpl implements ClientService{
 					}
 				}*/
 				User user = orgSpoc.getSpocUser();
-				if(user.getId().longValue()== spocUserId.longValue()){
+				if(loginUser.getId().longValue()== spocUserId.longValue()){
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
@@ -728,7 +728,7 @@ public class ClientServiceImpl implements ClientService{
 					}
 				}
 				
-				else if(user.getId().longValue()== ownerId.longValue()){
+				else if(loginUser.getId().longValue()== ownerId.longValue()){
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
@@ -745,7 +745,7 @@ public class ClientServiceImpl implements ClientService{
 				}
 				orgSpocService.addOrgSpoc(orgSpoc);
 				
-				if(orgSpoc.getTempOwnerId().longValue() != orgSpoc.getOwnerUser().getId().longValue()){
+				if(orgSpoc.getTempOwnerId() != null && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getOwnerUser().getId().longValue()){
 					user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
 					sendEmailToClientContact(user,editUser,orgLocation,loginUser);
 				}

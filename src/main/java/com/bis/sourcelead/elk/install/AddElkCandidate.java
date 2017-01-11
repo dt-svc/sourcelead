@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -72,14 +73,31 @@ public class AddElkCandidate{
 					candidateIndex.setAddress(rs.getString("ADDRESS"));
 					candidateIndex.setSummary(rs.getString("SUMMARY"));
 					candidateIndex.setCandidateType(rs.getString("CANDIDATE_TYPE"));
-					candidateIndex.setExperienceYears(rs.getString("EXPERIENCE_YEARS"));
-					candidateIndex.setExperienceMonths(rs.getString("EXPERIENCE_MONTHS"));
+					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_YEARS"))){
+						if(rs.getString("EXPERIENCE_YEARS").equalsIgnoreCase("25+")){
+							candidateIndex.setExperienceYears(26);
+						}
+						else{
+							candidateIndex.setExperienceYears(Integer.parseInt(rs.getString("EXPERIENCE_YEARS")));
+						}
+					}
+					
+					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_MONTHS"))){
+						candidateIndex.setExperienceMonths(Integer.parseInt(rs.getString("EXPERIENCE_MONTHS")));
+					}
 					candidateIndex.setDesignation(rs.getString("DESIGNATION"));
 					candidateIndex.setDesignationType(rs.getString("DESIGNATION_TYPE"));
-					candidateIndex.setCurrentRate(rs.getString("CURRENT_RATE"));
+					candidateIndex.setNoticePriod(rs.getString("NOTICE_PERIOD"));
 					candidateIndex.setCurrentRateType(rs.getString("CURRENT_RATE_TYPE"));
 					candidateIndex.setCurrentRateCurrency(rs.getString("CURRENT_RATE_CURRENCY"));
-					candidateIndex.setExpectedRate(rs.getString("EXPECTED_RATE"));
+					
+					if(StringUtils.isNotEmpty(rs.getString("CURRENT_RATE"))){
+						candidateIndex.setCurrentRate(Float.parseFloat(rs.getString("CURRENT_RATE")));
+					}
+					
+					if(StringUtils.isNotEmpty(rs.getString("EXPECTED_RATE"))){
+						candidateIndex.setExpectedRate(Float.parseFloat(rs.getString("EXPECTED_RATE")));
+					}
 					candidateIndex.setRateType(rs.getString("RATE_TYPE"));
 					candidateIndex.setExpectedRateCurrencey(rs.getString("EXPECTED_RATE_CURRENCY"));
 					candidateIndex.setInvitationstatus(rs.getString("INVITATION_STATUS"));
@@ -139,7 +157,19 @@ public class AddElkCandidate{
 								}
 		    	           }
 							
-							
+						   String sql5= "SELECT * FROM sourcelead.CANDIDATE_CERTIFICATIONS candidateCertifications where candidateCertifications.CANDIDATE_ID = '"+ candidateId+"' ";
+						   Statement stmt5 = conn.createStatement();
+							ResultSet rs5 = stmt5.executeQuery(sql5);
+							if(rs5 != null){
+								ArrayList<String> certList = new ArrayList<>();
+								 while(rs5.next()){
+									 certList.add(rs5.getString("NAME"));
+							    }
+							    if(null != certList && !certList.isEmpty()){
+									candidateIndex.setCertifications(certList);
+								}
+		    	           }
+								
 						   String sql4= "SELECT * FROM sourcelead.CANDIDATE_RESUMES candidateResumes where candidateResumes.CANDIDATE_ID = '"+ candidateId+"'  and candidateResumes.CREATED_DATE IN (SELECT max(canresume.CREATED_DATE) FROM sourcelead.CANDIDATE_RESUMES canresume where canresume.CANDIDATE_ID = '"+ candidateId+"' and canresume.status = '1') and candidateResumes.status = '1' ";
 						   Statement stmt4 = conn.createStatement();
 							ResultSet rs4 = stmt4.executeQuery(sql4);

@@ -25,8 +25,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -68,7 +66,6 @@ import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
-import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -192,11 +189,15 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			if(jsonObj.has("jobTitle")){
-				requirement.setJobTitle(jsonObj.getString("jobTitle"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("jobTitle"))){
+					requirement.setJobTitle(jsonObj.getString("jobTitle"));
+				}
+				
 			}
 			
-			if(!"".equalsIgnoreCase(jsonObj.getString("jobType"))){
-			if(jsonObj.has("jobType") ){				
+			
+			if(jsonObj.has("jobType") ){	
+				if(!"".equalsIgnoreCase(jsonObj.getString("jobType"))){
 				requirement.setJobType(jsonObj.getString("jobType"));
 			   }
 			}	
@@ -208,11 +209,17 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 						
 			if(jsonObj.has("jobId")){
-			requirement.setJobId(jsonObj.getString("jobId"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("jobId"))){
+					requirement.setJobId(jsonObj.getString("jobId"));
+				}
+			
 			}
 			
 			if(jsonObj.has("positions")){
-			requirement.setPositions(jsonObj.getString("positions"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("positions"))){
+					requirement.setPositions(jsonObj.getString("positions"));
+				}
+			
 			}
 			if(jsonObj.has("countryReq")){
 			requirement.setCountry(jsonObj.getString("countryReq"));
@@ -242,33 +249,50 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			if(jsonObj.has("maxExp")){
-			requirement.setMaxExp(jsonObj.getString("maxExp"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
+					requirement.setMaxExp(jsonObj.getString("maxExp"));
+				}
 			}
 			
 			if(jsonObj.has("minExp")){
-			requirement.setMinExp(jsonObj.getString("minExp"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("minExp"))){
+					requirement.setMinExp(jsonObj.getString("minExp"));
+				}
 			}
 			
 			if(jsonObj.has("rate")){
-			requirement.setRate(jsonObj.getString("rate"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("rate"))){
+					requirement.setRate(jsonObj.getString("rate"));
+				}
 			}
 			
 			if(jsonObj.has("rateType")){
-			requirement.setRateType(jsonObj.getString("rateType"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("rateType"))){
+					requirement.setRateType(jsonObj.getString("rateType"));
+				}
 			} 
 			
 			if(jsonObj.has("description")){
-			requirement.setDescription(jsonObj.getString("description"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("description"))){
+					requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));		
+				}
+			
 			}
 			
 			
 			if(jsonObj.has("currencyCode")){
-			requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
+					requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
+				}
+			
 			}
 			
 			
 			if(jsonObj.has("priority")){
-				requirement.setPriority(jsonObj.getString("priority"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("priority"))){
+					requirement.setPriority(jsonObj.getString("priority"));
+				}
+				
 			}
 			
 			if(jsonObj.has("isTemplate") && "Y".equalsIgnoreCase(jsonObj.getString("isTemplate"))){
@@ -325,13 +349,15 @@ public class RequirementServiceImpl implements RequirementService {
 						requirement.setDocFile(templateRequirement.getDocFile());
 						requirement.setFileName(templateRequirement.getFileName());
 						requirement.setFileContentType(templateRequirement.getFileContentType());
+						requirement.setIsClientJob("N");
 					 }
-				     requirement.setIsClientJob("N");
 			 }	
 			 
 			 
 			if(jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
+			}else if(jsonObj.has("isClient")){
+				requirement.setIsClientJob("N");
 			}
 		if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient")) &&  jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y")){
 		requirementClient = (jsonObj.getString("isClient"));
@@ -560,6 +586,15 @@ public class RequirementServiceImpl implements RequirementService {
 					    	if(!assignedTeamId.contains("role") && !assignedTeamId.contains("All")){
 					    		teamId = Long.parseLong(assignedTeamId);
 							    team = teamService.getTeamByTeamId(teamId);
+							    // Adding Team Owner as RequirementAssignTo
+							    RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+									User assUser = userService.getUserById(team.getOwnerUserId().getId());
+									requirementAssignTo.setAssignUserId(assUser);
+									requirementAssignTo.setRequirementId(requirement);
+									requirementAssignTo.setTeamId(team);
+									UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
+									requirementAssignTo.setRoleId(userRole.getRoles());
+									requirementAssignToList.add(requirementAssignTo);
 					    	}
 						}   
 					    // User roleUser = team.getOwnerUserId();
@@ -625,22 +660,23 @@ public class RequirementServiceImpl implements RequirementService {
 						    String[] approvers = parallelApprovers.split(",");
 						    for(String approver : approvers){
 						    	User approverUser = userService.getUserById(Long.parseLong(approver));
-						    	approverEmailScenario(user,approverUser,requirement,location,orgLocations);
+						    	approverEmailScenario(user,approverUser,savedRequirement,location,orgLocations);
 						    }
 					 }
 					
 					//send mail to Assigned Team 
 					//condition : if login user as team member then mail not send
-					/*Set<RequirementAssignTo> updatedRequirementAssignToList = requirement.getRequirementAssignTo();
+					// this logic will execute when no approvers are selected for requirement.
+				  if(!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)){
+					Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
 					if(updatedRequirementAssignToList != null  ){
 						for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
 							if(requirementAssignTo.getAssignUserId() != null && !user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
 								AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
 							}
+						 }
 						}
-					}*/
-					
-					
+					}
 					//send mail to manger 
 					//condition : login user as manager then  mail shoul not forwared
 					if(savedRequirement.getManagerUserId() != null && !user.getId().equals(savedRequirement.getManagerUserId().getId())){
@@ -1232,11 +1268,23 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("Experience","--"); 
 			 }
-		 if(loginUser.getFirstName() != null && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+		 
+		  if(loginUser.getFirstName() != null && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
 			 StringBuilder userBuild = new StringBuilder();
 			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }
+		  else if(loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getFirstName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).toString());
+		  	 }
+		 else{
+			 globalVarsMap.put("LoginUser","--"); 
+			 }
+		  
+		 if(loginUser.getUserType()!= null && !"".equalsIgnoreCase(loginUser.getUserType())){
+			 globalVarsMap.put("Role", loginUser.getUserType());
 			 }else{
-				 globalVarsMap.put("LoginUser",loginUser.getFirstName()); 
+				 globalVarsMap.put("Role","--"); 
 			 }
 		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
 			 globalVarsMap.put("Role",loginOrgLocation.getOrg().getOrgName() );
@@ -1699,8 +1747,8 @@ public class RequirementServiceImpl implements RequirementService {
 			StringBuilder sb = new StringBuilder(); 
 			writeRow.createCell(3).setCellValue(sb.append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString()); 
 		}
-		if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
-			 writeRow.createCell(4).setCellValue(requirement.getCity()); 
+		if(requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry())){
+			 writeRow.createCell(4).setCellValue(requirement.getCountry()); 
 		}
 		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
 			 writeRow.createCell(5).setCellValue(requirement.getSkills()); 
@@ -1928,9 +1976,15 @@ public class RequirementServiceImpl implements RequirementService {
 		List<Requirement>  list = requirementDao.getAllRequirementTeplateJobsByOrgLocationId(orgLocationId, user);
 		
 		for(Requirement req :list){
-			
+			User createdUser = userService.getUserByUserCode(req.getCreatedBy());
+			if(createdUser != null){
+				String lastName = "";
+				if(StringUtils.isNotEmpty(createdUser.getLastName())){
+					lastName = " "+createdUser.getLastName();
+				}
+				req.setCreatedByName(createdUser.getFirstName()+lastName);
+			}
 			req.setRequirementCreatedDateToString(Constants.DF_YMD.format(req.getCreatedDate()));
-
 		}
 			
 		return list;

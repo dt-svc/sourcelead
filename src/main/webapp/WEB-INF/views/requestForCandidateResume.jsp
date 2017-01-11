@@ -42,7 +42,9 @@ width: auto;
 .project_wrap_table table tr th:first-child{
 text-align: left;
 }
-
+.container {
+padding-bottom: 55px;
+}
 </style>
 <body>
 <div class="wraper"> 
@@ -304,7 +306,7 @@ $.ajax({
 function pagination(){  
     $('#candidateTable').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[6, 15, 20, -1], [6, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,

@@ -214,7 +214,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			inputStream.close();
 			response.getOutputStream().close();
 			response.getOutputStream().flush();	
-			
+			if(file!= null){
+				file.delete();
+			}
 
 	}
 

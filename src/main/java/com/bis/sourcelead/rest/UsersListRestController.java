@@ -231,9 +231,23 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				userRole.setDailyHours(employee.getDailyHours());
 				
 		 }
+		 
+		 resultJson = toJSON(userRole);
+		 return resultJson;
+	  }
+	 
+	 
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_USER','ROLE_VIEW_USER','ROLE_VIEW_DELETE_USER')")
+	 @RequestMapping(value = "/getUserDetailsByIdForTermination", method = RequestMethod.POST)
+	 public @ResponseBody String getUserDetailsByIdForTermination(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
+		 String resultJson = null;  
+		 
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 
+		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
+		 
 		
-		
-		 List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationId(userRole.getUser().getId(), userRole.getRoles().getId(), orgLocations.getId());
+		List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationId(userRole.getUser().getId(), userRole.getRoles().getId(), orgLocations.getId());
 		 for (User user : userList) {
 			    UserRole userRole1 = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				if(userRole1 != null){
@@ -244,7 +258,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		 userRole.setAllReportingManagers(userList);
 		 
 		 
-		 /*To change reporting manager*/
+		 //To change reporting manager
 		 List<Long> userIds = userRoleService.getAllAssignedUsersIdsByReportingManagerId(userId,orgLocations.getId());
 		 userRole.setAssignedUsersCountToReportingManager(userIds.size());
 		 List<User> reportManagerUsersList = new ArrayList<User>();
@@ -262,7 +276,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		 
 		 userRole.setReportingManagers(reportManagerUsersList);
 		 
-		 /*To change client owner and spoc*/
+		 //To change client owner and spoc
 		 List<Long> cleintSpocIds = orgSpocService.getAssignedAsClientOrVendorSpocCountByUserId(userId, orgLocations.getId(),"Client");
 		 userRole.setAssignedAsClientOwnerOrSpocCount(cleintSpocIds.size());
 		 List<User> clientTabUsersList = new ArrayList<User>();
@@ -278,7 +292,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		 }
 		 userRole.setClientUsersList(clientTabUsersList);
 		 
-		 /*To change vendor owner and spoc*/
+		// To change vendor owner and spoc
 		 List<Long> vendorSpocIds = orgSpocService.getAssignedAsClientOrVendorSpocCountByUserId(userId, orgLocations.getId(),"Vendor");
 		 userRole.setAssignedAsVendorOwnerOrSpocCount(vendorSpocIds.size());
 		 List<User> vendorTabUsersList = new ArrayList<User>();;
@@ -294,7 +308,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		 }
 		 userRole.setVendorUsersList(vendorTabUsersList);
 		 
-		 /*To change requirement Manager*/
+		 //To change requirement Manager
 		 Integer requirementsCountAsManager = requirementService.getManagerAssignedRequirementsCount(userId, orgLocations.getId());
 		 userRole.setRequirementsCountAsManager(requirementsCountAsManager);
 		 List<User> requirementManagersList = new ArrayList<User>();
@@ -361,6 +375,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		 resultJson = toJSON(userRole);
 		 return resultJson;
 	  }
+	 
+	 
 	 
 	 
 	    @PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")

@@ -54,12 +54,12 @@
 						if(json.orgType == 'Company'){
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
 							result = result + '<label>Vendor Name <span	class="text-danger">*</span></label>';
-							result = result + '<input type="text"  id="vendorName" name="vendorName" value="'+json.orgName+'" placeholder="vendor name" readonly="readonly" field-name="vendor name" >';
+							result = result + '<input type="text"  id="vendorName" name="vendorName" title="'+json.orgName+'" value="'+json.orgName+'" placeholder="vendor name" readonly="readonly" field-name="vendor name" >';
 							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 							result = result + '<label>Website</label>';
-							result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" readonly="readonly" value="'+json.webSite+'" placeholder="website" ></div>';
+							result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" readonly="readonly" title="'+json.webSite+'" value="'+json.webSite+'" placeholder="website" ></div>';
 							result = result + '</div>';
 							
 							
@@ -80,7 +80,7 @@
 						}else{
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
 							result = result + '<label>Vendor Name <span	class="text-danger">*</span></label>';
-							result = result + '<input type="text"  id="vendorName" name="vendorName" value="'+json.orgName+'" placeholder="vendor name" field-name="vendor name" data-validation="required validate_Space validate_length length2-250" onblur="flushVendor(); validateClientName(\''+json.orgName+'\',\''+orgRelationId+'\');" >';
+							result = result + '<input type="text"  id="vendorName" name="vendorName" title="'+json.orgName+'" value="'+json.orgName+'" placeholder="vendor name" field-name="vendor name" data-validation="required validate_Space validate_length length2-250" onblur="flushVendor(); validateClientName(\''+json.orgName+'\',\''+orgRelationId+'\');" >';
 							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';

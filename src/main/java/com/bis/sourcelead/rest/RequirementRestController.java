@@ -147,31 +147,26 @@ public class RequirementRestController {
 
 		Requirement requirement = requirementService.storeRequirement(jsonObj, orgLocation, user, multiFile);
 		
-		StringBuilder reqCreateMsg = new StringBuilder();
-		if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved to Draft").toString());
-		}else if(jsonObj.getString("saveType").equalsIgnoreCase("save")){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved").toString());
-		}else if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  submitted for approval").toString());
+		if(jsonObj.getString("saveType").equalsIgnoreCase("draft") &&  (null == (jsonObj.get("requirementId")) || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
+			StringBuilder reqUpdateMsg = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved to Draft").toString());
+		}else if(jsonObj.getString("saveType").equalsIgnoreCase("save") &&  (null == (jsonObj.get("requirementId")) || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
+			StringBuilder reqUpdateMsg1 = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg1.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved").toString());
+		}else if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval") && (null == (jsonObj.get("requirementId")) || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
+			StringBuilder reqUpdateMsg2 = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg2.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  submitted for approval").toString());
 		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("save"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg",  reqCreateMsg.append("Success!! ").append(requirement.getJobTitle()).append(" details updated").toString());
-		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! ").append(requirement.getJobTitle()).append(" Updated and Submitted "));
-		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("draft"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!!  ").append(requirement.getJobTitle()).append(" Updated in Draft Stage").toString());
+			StringBuilder reqUpdateMs3 = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg",  reqUpdateMs3.append("Success!! ").append(requirement.getJobTitle()).append(" details updated").toString());
+		} else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval"))){
+			StringBuilder reqUpdateMsg4 = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg4.append("Success!! ").append(requirement.getJobTitle()).append(" Updated and Submitted ").toString());
+		} else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("draft"))){
+			StringBuilder reqUpdateMs5 = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMs5.append("Success!!  ").append(requirement.getJobTitle()).append(" Updated in Draft Stage").toString());
 		}
 		
-		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("save"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! "+requirement.getJobTitle()+" details updated");
-		}
-		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! "+requirement.getJobTitle()+" Updated and Submitted ");
-		}
-		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("draft"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!!  "+requirement.getJobTitle()+" Updated in Draft Stage");
-		}
-
 		return "success";
 
 	}
@@ -245,7 +240,7 @@ public class RequirementRestController {
 					// to get RequirementApproverHierarchy with maximum Level
 					Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
 
-					if (maxLevel != null) {
+					if (null != maxLevel) {
 						if (maxLevel.equals(requirementApproverHierarchy.getLevel())) {
 								if (status.equalsIgnoreCase("APPROVED")) {
 									requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
@@ -273,12 +268,22 @@ public class RequirementRestController {
 								} else if (status.equalsIgnoreCase("REJECTED")) {
 									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
 								}
+								 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
+								RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
+						    	 List<RequirementAssignTo> reqAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirementId,orgLocation.getId());
+					    			if(null != hierarchy && "APPROVED".equals(hierarchy.getRequirementApproverStatus().toString())){
+					    				for(RequirementAssignTo reqAssign:reqAssignTo ){
+												if(null != reqAssign.getAssignUserId() && !loginUser.getId().equals(reqAssign.getAssignUserId().getId())){
+													requirementService.AssignToTeamMembersEmail(loginUser, reqAssign.getAssignUserId(), requirement,new StringBuilder(),orgLocation);
+												}
+					    				}
+					    		}
 						}else{
 
 							    RequirementApproverHierarchy level2approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
 								User approverUser = userService.getUserById(level2approver.getApproverUserId().getId());
 								if (status.equalsIgnoreCase("APPROVED")) {
-									if (level2approver != null) {
+									if (null != level2approver) {
 										// this is for sending email to second level approver
 										requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, null,	orgLocation);
 									}
@@ -451,29 +456,30 @@ public class RequirementRestController {
 		
 	    // This is made static as requirment action id is 146
 		
-		String requirementActionId = "146";
 		ArrayList<User> mynewList =  new ArrayList<User>();
-		List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
-        
+		List<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
+       
+		//   Commented because Team Lead not required to show in team Members List By Default he is added in to the  RequirementAssignTo
+		
+		/*
 		// adding team owner as  a Team Member
 		if(!teamType.equalsIgnoreCase("") && !teamType.equalsIgnoreCase("undefined") && !teamType.contains("role") && !teamType.contains("All")){
 			Team team = teamService.getTeamByTeamId(Long.parseLong(teamType));
 			usersList.add(team.getOwnerUserId());
-		}
+		}*/
+		
+		
 		for(User user : usersList){
 	            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId());
 	            user.setAssignJobCount(assign.size());
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
-				if(userRole !=null){
+				if(null != userRole){
 					user.setUserType(userRole.getUserType());
-					 boolean requirementAction  = sourceleadRolesService.roleHaveActionAccessOrNot(requirementActionId,userRole.getUserType());
-					 if (requirementAction){
-						 mynewList.add(user);
-					    }
+					 mynewList.add(user);
 				}
 		   }
 		
-		resultJson = commonUtil.toJSON(mynewList);
+		resultJson = commonUtil.toJSON(usersList);
 		return resultJson;
 		
 		/*List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
@@ -539,7 +545,7 @@ public class RequirementRestController {
 				user.getId(), orgLocations.getId());
 		for (OrgSpoc orgSpoc : orgSpocsList) {
 			String ownerLastName = "";
-			if (orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null) {
+			if (null != orgSpoc.getOwnerUser() && null != orgSpoc.getOwnerUser().getLastName()) {
 				ownerLastName = orgSpoc.getOwnerUser().getLastName();
 			}
 			StringBuilder spocNameSB = new StringBuilder();
@@ -575,14 +581,14 @@ public class RequirementRestController {
 		Boolean isTeamViewAccess = commonUtil.hasRole("ROLE_VIEW_TEAM");
 		if (isTeamViewAccess) {
 			List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
-			if (teamsList != null) {
+			if (null != teamsList) {
 				combinedList.setTeams(teamsList);
 			}
 		}
 
 		List<Roles> rolesList = roleService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),
 				Long.valueOf(Constants.TAB_REQUIREMENT));
-		if (rolesList != null) {
+		if (null != rolesList) {
 			combinedList.setRoles(rolesList);
 		}
 
@@ -687,28 +693,5 @@ public class RequirementRestController {
 				Boolean validatejobName = requirementService.validateRequirementTitle(templateName,orgLocation.getId());
 				return validatejobName.toString();
 		    }
-	 
-	 
-	 @RequestMapping(value = "/terminateRequirementTemplate", method = RequestMethod.POST)
-		public @ResponseBody String terminateRequirementTemplate(String requirementId, String status, HttpServletRequest request) throws Exception {
-			
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
-			Requirement rt =  requirementService.getRequirementTemplateByRequirementId(Long.parseLong(requirementId),orgLocation.getId());
-			if(rt != null){
-				
-				if(status.equalsIgnoreCase("remove")){
-					rt.setStatus(Constants.MEMBER_IN_ACTIVE);
-				}else if(status.equalsIgnoreCase("reActive")){
-					rt.setStatus(Constants.MEMBER_ACTIVE);
-				}
-				
-				rt.setUpdatedBy(user.getUserCode());
-				rt.setUpdatedDate(commonUtil.currentDate());
-				requirementService.updateRequirementTemplate(rt);
-			}
-			return "success";
-		}
 
 }

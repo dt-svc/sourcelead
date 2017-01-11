@@ -55,18 +55,10 @@ $(document).ready(function() {
             url: sourceleadUrl+"/getArrovalSubmissions?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId,        
             success :function(data) {
                  if(data != null && data != 'undefined' && data != ""){
-               		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}
-               		else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		}
-               		else{
 			    		 $("#timesheetApprList").removeAttr("style");
 	                	 $("#timesheetApprList").empty();
 	                     $("#timesheetApprList").append(data); 
 	                     pagination();
-			    	}
                  }else{
                 	 $("#timesheetApprList").removeAttr("style");
   	    	         var result ="";
@@ -114,16 +106,9 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 		   	type: "POST",
 		    url: sourceleadUrl+"/dynamicTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&memberId="+memberId+"&projectMemberUserId="+projectMemberUserId+"&employeeId="+employeeId, 	   
 				    success: function(data) {
-				    	if( data.indexOf('Sign In') >= 0){
-				    		location.replace(sourceleadUrl);
-				    	}
-	               		else if (data.indexOf('exception') >= 0) {
-	               			 location.replace(sourceleadUrl+"/errorPage");
-	               		}else{
 				    		$("#row"+projectMemberUserId).empty();
 					        $("#row"+projectMemberUserId).append(data);
 					        /* pagination(); */
-				    	}
 				        
 				    }
 		    });

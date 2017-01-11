@@ -208,14 +208,14 @@ function getOrgDetails()
                 <div class="form-group">
 	              <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
-	                <input class="form-control error" id="firstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length2-100" type="text">
+	                <input class="form-control error" id="firstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" type="text">
 	              </div>
 	            </div>
                 
                 <div class="form-group">
 	              <label class="col-md-3">Last Name</label>
 	              <div class="col-md-9">
-	                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true">
+	                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
 	              </div>
 	            </div>
 				
@@ -659,7 +659,7 @@ function getRolesList(){
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId, 
+		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId+"&type=client",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";

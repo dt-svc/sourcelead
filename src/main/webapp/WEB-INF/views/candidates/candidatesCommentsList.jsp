@@ -25,13 +25,6 @@ function candidateCommentsList(candidateId,submissionId){
         	 var result = "";
               if(data != null && data != 'undefined' && data != ""){
               	 	 var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
             			  result  = result + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
             	          for(var i=0;i<json.length;i++){
             	            	var report = json[i];
@@ -52,7 +45,6 @@ function candidateCommentsList(candidateId,submissionId){
             	        	    result = result+'     </div>';
             	        	    result = result+'</div>';
             	          }
-            		 }
 	              }else{
 	               	 	 $("#tab-7").removeAttr("style");
 	 	    	         var result ="";
@@ -75,8 +67,10 @@ function candidateCommentsList(candidateId,submissionId){
               $("#tab-4").empty();  
               $("#tab-5").empty();  
               $("#tab-6").empty();
+              $("#tab-8").empty();
               $("#tab-7").empty();
               $("#tab-7").append(result);
+              
          },
          
       });
