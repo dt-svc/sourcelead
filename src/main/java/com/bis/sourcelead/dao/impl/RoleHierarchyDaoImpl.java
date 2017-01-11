@@ -56,7 +56,7 @@ public class RoleHierarchyDaoImpl implements RoleHierarchyDao {
 	@Transactional
 	public List<RoleHierarchy> getRoleHierarchyByOrgLocationId(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.createQuery("from RoleHierarchy roleHierarchy where roleHierarchy.orgLocations.id = :orgLocationId and roleHierarchy.status = '1' ").setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return session.createQuery("from RoleHierarchy roleHierarchy where roleHierarchy.orgLocations.id = :orgLocationId and roleHierarchy.status = '1' ORDER BY roleHierarchy.hierarchyLevel ASC ").setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 
 	@Override
@@ -82,6 +82,37 @@ public class RoleHierarchyDaoImpl implements RoleHierarchyDao {
 		List<RoleHierarchy> roleHierarchy = new ArrayList<RoleHierarchy>();
 		logger.debug("RoleHierarchy start");
 		roleHierarchy = session.createQuery("from RoleHierarchy roleHierarchy where roleHierarchy.id = :id" ).setLong("id", id).setCacheable(true).list();
+		logger.debug("RoleHierarchy end");
+		if (roleHierarchy.size() > 0) {
+			return roleHierarchy.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional
+	public Integer getMaxHierarchyValueByOrgLocationId(Long orgLocationId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "select max(roleHierarchy.hierarchyLevel) from RoleHierarchy roleHierarchy where roleHierarchy.orgLocations.id = :orgLocationId ";
+		
+		List<Integer> hierarchyList = (List<Integer>)session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		Integer maxHierarchyCount = null;
+		
+			if(hierarchyList != null && !hierarchyList.isEmpty()){
+				maxHierarchyCount = hierarchyList.get(0);
+			}
+		return maxHierarchyCount;
+	}
+
+	@Override
+	@Transactional
+	public RoleHierarchy getRoleHierarchyByHierarchyLevelNameAndOrgLocationId(String levelName, Long orgLocationId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RoleHierarchy> roleHierarchy = new ArrayList<RoleHierarchy>();
+		logger.debug("RoleHierarchy start");
+		roleHierarchy = session.createQuery("from RoleHierarchy roleHierarchy where roleHierarchy.hierarchyName = :levelName and roleHierarchy.orgLocations.id = :orgLocationId" ).setString("levelName", levelName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		logger.debug("RoleHierarchy end");
 		if (roleHierarchy.size() > 0) {
 			return roleHierarchy.get(0);
