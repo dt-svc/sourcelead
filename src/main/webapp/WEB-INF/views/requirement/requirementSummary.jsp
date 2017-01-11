@@ -2489,7 +2489,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + ' </div>';
 		                     
 		                     result = result + '  <div class="form-group col-md-12">';
-		                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" field-name="Reason" data-validation="required"></textarea>';
+		                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" field-name="Reason"></textarea>';
 		                     result = result + '  </div>';
 		                     result = result + '  <div class="form-group col-md-12">';
 		                     result = result + '    <div class="pull-right">';
