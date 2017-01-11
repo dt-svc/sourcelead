@@ -231,11 +231,11 @@ public class VendorController {
 				
 				String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
 				
-				if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
+				if (fileName.equalsIgnoreCase(isFileCreated)) {
 					model.addAttribute("errorMessage", "Please download Error file here");
-		             model.addAttribute("fileName", "xlsx");
+		             model.addAttribute("fileName", fileName);
 					return "upload/uploadVendorForm";
-				}else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
+				}/*else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
 					model.addAttribute("errorMessage", "Please download Error file here");
 		            model.addAttribute("fileName", "xls");
 					return "upload/uploadVendorForm";
@@ -243,7 +243,7 @@ public class VendorController {
 					model.addAttribute("fileNameWrong", "File name should follow as vendors_contacts_Import/vendors_import_template with .xls or .xlsx");
 		            model.addAttribute("fileName", "xls");
 					return "upload/uploadClientForm";
-				}
+				}*/
 			}else{
 				return "upload/uploadClientForm";
 			}
@@ -259,14 +259,20 @@ public class VendorController {
 		 * @throws IOException
 		 */
 	    
-		@RequestMapping(value = "/downloadVendorErrorFile/{fileName}", method = RequestMethod.GET)
+		@RequestMapping(value = "/downloadVendorErrorFile/{fileName:.+}", method = RequestMethod.GET)
 		public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
 			
 				File file;
-				if("xlsx".equalsIgnoreCase(fileName)){
-					file = new File("FailureUsersForCheck.xlsx");
+//				vendors_import_template.xls
+//				vendors_contacts_Import.xls
+				if("vendors_import_template.xls".equalsIgnoreCase(fileName)){
+					 file = new File("vendors_import_template.xls");
+				}else if("vendors_contacts_Import.xls".equalsIgnoreCase(fileName)){
+					 file = new File("vendors_contacts_Import.xls");
+				}else if("vendors_import_template.xlsx".equalsIgnoreCase(fileName)){
+					file = new File("vendors_import_template.xlsx");
 				}else{
-					 file = new File("FailureUsersForCheck.xls");
+					file = new File("vendors_contacts_Import.xlsx");
 				}
 				
 				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
