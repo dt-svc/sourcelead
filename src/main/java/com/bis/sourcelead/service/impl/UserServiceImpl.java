@@ -341,6 +341,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		userRole.setRoles(roles);
+		userRole.setUserType(roles.getDisplayName());
 		userRole.setCreatedDate(commonUtil.currentDate());
 		userRole.setCreatedBy(userCode);
 		return userRole;
