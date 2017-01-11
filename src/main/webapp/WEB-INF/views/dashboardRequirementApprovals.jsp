@@ -89,9 +89,9 @@ function requirementApproverList(statusType){
 	                    	 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
-		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobId+"-"+opt.jobTitle+"</a></div></td>";
+		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title="+opt.jobId+"-"+opt.jobTitle+">"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
 		                     }else{
-		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
+		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title="+opt.jobTitle+">"+opt.jobTitle+"</span></a></div></td>";
 		                     }
 	                    	 
 		                     if(opt.rate!=null && opt.rate !='' && opt.rate !='undefined'){
@@ -111,9 +111,9 @@ function requirementApproverList(statusType){
 		                    	 result = result + '<a  href="javascript:void(0)"  onClick="rejectRequirementAlertMessage(\''+ REJECTED+ '\','+opt.id+');"  ><i class="fa fa-close text-danger"></i></a>';
    				           	 
 				             }else if((opt.requirementApproverHierarchyStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN')  || (opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null)){
-				            	 result = result +'<div  id="requirementStatus"  >'+opt.approvedBy+'</div>';
+				            	 result = result +'<div  id="requirementStatus"  ><span title='+opt.approvedBy+'>'+opt.approvedBy+'</span></div>';
     				         }else if( opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementApproverHierarchyStatus == 'REJECTED'  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
-    				        	 result = result +'<div  id="requirementStatus" >'+opt.approvedBy+'</div>';
+    				        	 result = result +'<div  id="requirementStatus" ><span title='+opt.approvedBy+'>'+opt.approvedBy+'</span></div>';
 		                     }else{
 		                    	 result = result +"<div>-----</div>";
 		                     }  

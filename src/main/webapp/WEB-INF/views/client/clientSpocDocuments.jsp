@@ -83,7 +83,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
 	                    	 if(opt.docName != null && opt.docName != '' && opt.docName != 'undefined'){
-	                    	    result  = result + '<td><div><span>'+opt.docName+'</span></div></td>';
+	                    	    result  = result + '<td><div><span title='+opt.docName+'>'+opt.docName+'</span></div></td>';
                     	     }else{
                     	    	 result  = result + ' <td><div><span>--</span></div></td>';
                     	     }
@@ -94,13 +94,13 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 if(opt.spocName != null && opt.spocName != '' && opt.spocName != 'undefined'){
-		                    	 result  = result + '<td><div><span>'+opt.spocName+'</span></div></td>';
+		                    	 result  = result + '<td><div><span title='+opt.spocName+'>'+opt.spocName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>--</span></div></td>'; 
 	                    	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-		                    	 result  = result + '<td><div><span>'+opt.fileName+'</span></div></td>';
+		                    	 result  = result + '<td><div><span title='+opt.fileName+'>'+opt.fileName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>--</span></div></td>';
 	                    	 }
@@ -118,11 +118,11 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    	 }
 	                    	 
 	                    	 if(opt.ownerName != null && opt.ownerName != '' && opt.ownerName != 'undefined'){
-	                    	      result  = result + ' <td><div><span>'+opt.ownerName+'</span></div></td>';
+	                    	      result  = result + ' <td><div><span title='+opt.ownerName+'>'+opt.ownerName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	 result = result+'	 <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
+	                    	 result = result+'	 <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 
 	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+',\''+spocName+'\','+userId+');  getClientSpocDocument('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+opt.id+');"></a>';
