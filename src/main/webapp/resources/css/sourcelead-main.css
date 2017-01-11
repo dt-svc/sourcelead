@@ -1,4 +1,5 @@
 ﻿@charset "utf-8";
+@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
@@ -1993,6 +1994,25 @@ ul.tree-checkbox::before {
 	font-family: FontAwesome;
 	color: #fff;
 }
+ul.hierachy-role li span.sellevel:before {
+    content: "\f067";
+    font-family: FontAwesome;
+    font-size: 10px;
+    cursor: pointer;
+    font-weight:normal;
+    padding: 3px 5px;
+    background: #ccc;
+    margin-right: 5px;
+    border-radius: 3px;
+}
+ul.hierachy-role li span.role-active:before {
+    content: "\f068";
+    font-family: FontAwesome;
+    font-size: 10px;
+    color: a6a6a6;
+    cursor: pointer;
+    padding: 3px 5px;margin-right: 5px;
+}
 /* Accordion Styles ends */
 .btn-default {
 	background-image: linear-gradient(to bottom, #fff 0px, #e0e0e0 100%);
@@ -3890,8 +3910,9 @@ ul.pipeline li{
 }
 /* Create level styels */
 .create-level ul li {
-	font-size: 15px;
-	font-weight: 600;
+	/*font-size: 15px;*/
+	font-weight: normal;
+    padding: 5px 0;
 }
 .create-level ul li ul {
 	margin-left: 30px;
@@ -3900,7 +3921,7 @@ ul.pipeline li{
 .create-level ul li ul li{
 	list-style-type: none;
 }
-li.sellevel:before {
+/*li.sellevel:before {
     content: '\f067';
 	font-family: FontAwesome;
 	font-weight: normal;
@@ -3909,7 +3930,7 @@ li.sellevel:before {
 
 li.sellevel:before {
     content: "\f068";
-}
+}*/
 .create-level{
 	padding:10px 15px;
 	background: #fff;
@@ -5299,6 +5320,54 @@ max-height: 150px !important;
     z-index:1;
     position: relative;
 }
+.view-level ul > li.sellevel {
+    color:#333;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.view-level ul > li span.fa{
+    margin-right:10px;
+}
+.hierachy-role li.sellevel ul li{
+    line-height: 26px;
+    padding-left: 10px;
+}
+.hierachy-role .sellevel > span {
+    padding:2px 5px;
+    background: #ccc;
+    border-radius: 3px;
+}
+.hierachy-role li span.sellevel{
+    cursor: pointer;
+    font-weight: 600;
+}
+.hierachy-role li .fa-edit{
+    cursor: pointer;
+    margin-left: 30px;
+    float: right;
+    margin-right: 60%;
+    color: #ccc;
+    transition: all 0.3s ease-in-out;
+}
+.hierachy-role li:hover .fa-edit{
+    color: #333;
+}
+.errorInptgroup p.jquery_form_error_message {
+    position: absolute;
+    left: 0;
+    bottom: -16px;
+}
+.addconsultant-popup {
+    display: none;
+    position:absolute;
+    padding: 15px;
+    left: 15%;
+    width: 70%;
+    z-index: 99999;
+    top: 30%;
+    border-radius: 5px;
+}
+
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

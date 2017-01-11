@@ -130,11 +130,11 @@ function submitToClient(requirementId){
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
-			           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-			        	   result = result + '<td><div><input type="text" class="form-control" data-validation="validate_length length1-10" data-validation-optional="true" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.expectedCTC+'"></div></td>';
+			           if(report.submitToClientRate != null && report.submitToClientRate != '' && report.submitToClientRate != 'undefined'){
+			        	   result = result + '<td><div><input type="text" class="form-control" onkeypress="validateRate(event,'+report.id+')" data-validation="validate_length length1-10" data-validation-optional="true" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.submitToClientRate+'"></div></td>';
 				           }
 				       else{
-				    	   result = result + '<td><div><input type="text" class="form-control" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
+				    	   result = result + '<td><div><input type="text" class="form-control" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
 			    	     }
 			           
 			           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
@@ -179,8 +179,19 @@ function submitToClient(requirementId){
 }
 </script>
 
-
-
+<!-- this script is used for validate the rate, which accepts only numerics and upto 10 digits (Venkat Kesav) -->
+<script>
+function validateRate(evt, rateId) {
+  var theEvent = evt || window.event;
+  var key = theEvent.keyCode || theEvent.which;
+  key = String.fromCharCode( key );
+  var regex = /[0-9]/;
+  if( !regex.test(key) || $("#submissionRate"+rateId+"").val().length>9) {
+    theEvent.returnValue = false;
+    if(theEvent.preventDefault) theEvent.preventDefault();
+  }
+}
+</script>
 
 <script>
 function pagination(){  

@@ -125,13 +125,6 @@
  <script>
   function prepareCandidateList(data){
 	  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-		 if( data.indexOf('Sign In') >= 0){
- 		   location.replace(sourceleadUrl);
- 	     }
-		 else if (data.indexOf('exception') >= 0) {
-			 location.replace(sourceleadUrl+"/errorPage");
-		 }
-		 else{
 	 	     $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
 	     	 var result = "";
@@ -225,7 +218,7 @@
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
 	              '</sec:authorize>';
 	
-	              result = result +"  <td><div><span>"+designation+"</span></div></td>";
+	              result = result +"  <td><div><span title="+designation+">"+designation+"</span></div></td>";
 	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 	             	 {
 	                   result = result +"  <td><div>"+opt.designationType+"</div></td>";
@@ -246,7 +239,6 @@
 	          $("#noCandidates").val('');
 	          $("#candidateList").append(result);
 	          cpagination(); 
-  	    } 
 	  }
 	  else{
      	 $("#candidateList").removeAttr("style");
@@ -319,13 +311,6 @@ function candidateSideBar(candidateId){
            success :function(data) {  
                 if(data != null && data != 'undefined' && data != ""){  
                 	 var json = JSON.parse(data);
-              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-              		 else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }
-              		 else{
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
 	                	 var skillsList = json.skillsList;
@@ -645,7 +630,6 @@ function candidateSideBar(candidateId){
 						 $("body").css('overflow-y', 'hidden');
 						 candidateProfile(candidateId);
 			 			 
-			    	} 
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
  	    	         var result ="";
@@ -800,13 +784,6 @@ function refreshImageBlock(candidateId){
            success :function(data) {   
                 if(data != null && data != 'undefined' && data != ""){  
                 	 var json = JSON.parse(data);
-              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-              		 else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }
-              		 else{
 	                	 $("#candidateImageId").empty();
 	                	 var result = '';
 			             result = result+'<div class="well text-center clearfix">';
@@ -832,7 +809,6 @@ function refreshImageBlock(candidateId){
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
 						 result = result+' </div>';
 						 $("#candidateImageId").append(result);
-			    	}
                 }
          	},
       }); 
@@ -975,10 +951,10 @@ function cancel(candidateId){
     <div class="vendor_wrap" style="overflow-x: auto;">
     
      <div class="pull-left cand-advsrche">
-			 <!--  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
-			  </a> -->
+			  </a> 
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
 				  <div class="cand-advsrch-popup" >
 					  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -1022,7 +998,7 @@ function cancel(candidateId){
 							<div class="row">
 								<div class="col-md-6">
 									<label>Rate</label>
-									 <div class="input-group">
+									 <div class="input-group error-field">
 										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
 										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
 										        <option value="">Currency</option>
@@ -1035,15 +1011,15 @@ function cancel(candidateId){
 				                            </select>
 										</div>
 										 <div id="minRateDiv">
-									      <input type="text" id="minRate" name="minRate" field-name="Min Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  class="form-control input-sm" placeholder="Min Rate">
+									      <input type="text" id="minRate" name="minRate" field-name="Min Rate" data-validation="validate_Space validate_float" data-validation-optional="true"  class="form-control input-sm" placeholder="Min Rate">
 								         </div>
 								    </div>
 								</div> 
 							<div class="col-md-6">
 								<label>&nbsp;</label> 
-								<div class="input-group">
+								<div class="input-group error-field">
 								    <div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  placeholder="Max Rate">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
 									</div>
 									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
@@ -1068,7 +1044,7 @@ function cancel(candidateId){
 							  <div class="clearfix row">
 							  <div class="col-md-6">
 								  <select class="chosen-select"  id="minExpYears" name="minExpYears" data-placeholder="Years">
-									  <option selected>Min Years</option>
+									  <option selected value="">Min Years</option>
 									 <c:forEach begin="0" end="24" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
@@ -1076,7 +1052,7 @@ function cancel(candidateId){
 							  </div>
 							  <div class="col-md-6">
 								  <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months">
-									  <option selected>Max Years</option>
+									  <option selected value="">Max Years</option>
 									  <c:forEach begin="0" end="24" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
@@ -1096,19 +1072,19 @@ function cancel(candidateId){
 				                </select>
 							  </div>
 						  </div>
-						  <div class="col-md-4">
-							  <label>Updated On</label>
+						  <div class="col-md-4"> &nbsp;
+							<!--   <label>Updated On</label>
 							  <div class="clearfix">
 								  <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Updated On">
-									  <option value="All">All</option>
-									  <option value="1 Day Ago">1 Day Ago</option>
-									  <option value="3 Days Ago">3 Days Ago</option>
-									  <option value="1 Week Ago">1 Week Ago</option>
-									  <option value="2 Weeks Ago">2 Weeks Ago</option>
-									  <option value="1 Month Ago">1 Month Ago</option>
-									  <option value="3 Months Ago">3 Months Ago</option>
+									  <option value="">All</option>
+									  <option value="1">1 Day Ago</option>
+									  <option value="3">3 Days Ago</option>
+									  <option value="7">1 Week Ago</option>
+									  <option value="14">2 Weeks Ago</option>
+									  <option value="30">1 Month Ago</option>
+									  <option value="90">3 Months Ago</option>
 								  </select>
-							  </div>
+							  </div> -->
 						  </div>
 						  </div>
 						  <div class="clearfix">
@@ -1194,8 +1170,8 @@ function cancel(candidateId){
 								   <select class="chosen-select" name="applicantType" id="applicantType" field-name="Applicant Type"  >
 								      <option value="">---select Applicant Type---</option>
 								      <option value="candidate">Candiate</option>
-									  <option value="candidate">Consultant</option> 
-				                 </select>
+									  <option value="consultant">Consultant</option> 
+				                   </select>
 							  </div>
 						  </div>
 						  </div>
@@ -1277,7 +1253,7 @@ function cancel(candidateId){
            </sec:authorize>
            
            <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
-              <li><a href="<c:url value='/addConsultant'/>" title=""><i class="fa fa-plus"></i>Add Consultant</a></li>
+              <li><a  onclick= "addConsultant();"><i class="fa fa-plus"></i>Add Consultant</a></li>
            </sec:authorize>
            
            <sec:authorize access="hasAnyRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')">
@@ -1643,13 +1619,6 @@ function savedCommentAndCount(candidateId){
         	 var result = "";
               if(data != null && data != 'undefined' && data != ""){
               	 	 var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
             			 var totalComments = 0;
             			 if(json.length>0){
             				totalComments = json.length;
@@ -1686,7 +1655,6 @@ function savedCommentAndCount(candidateId){
 	 			           $("#latestMessage").append(result);
             			 }
             			 
-            		 }
               }
 			},
       });
@@ -1773,7 +1741,26 @@ function getCities(){
 <!-- Country,State,City Script Ends Here -->	
 <script type="text/javascript">	
 	function loadChosenScripts(){
-		$("#anyOfKeyword").val('').trigger("chosen:updated");
+	    
+	    $('#minRate').val(''); 
+	    $('#maxRate').val(''); 
+	    $('#currency').val(''); 
+	    $('#rateType').val(''); 
+	    
+	    $('#country').val('${loginCountryName}'); 
+	    $('#state').val(''); 
+	    $('#city').val(''); 
+	    $('#rateType').val(''); 
+
+	    $('#emailDiv').find('p.jquery_form_error_message').remove();
+	    $('#search_candidate').removeAttr('disabled');
+	    $('#minRateDiv').find('p.jquery_form_error_message').remove();
+	    $('#maxRateDiv').find('p.jquery_form_error_message').remove();
+	    $('#currencyDiv').find('p.jquery_form_error_message').remove();
+	    $('#rateTypeDiv').find('p.jquery_form_error_message').remove();
+	    
+	    
+	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
 	    $("#designation").val('').trigger("chosen:updated");
@@ -1784,17 +1771,6 @@ function getCities(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#candidateSkills").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
-	    
-	    $('#minRate').val(''); 
-	    $('#maxRate').val(''); 
-	    $('#currency').val(''); 
-	    $('#rateType').val(''); 
-	       
-	    $('#minRateDiv').find('p.jquery_form_error_message').remove();
-	    $('#maxRateDiv').find('p.jquery_form_error_message').remove();
-	    $('#currencyDiv').find('p.jquery_form_error_message').remove();
-	    $('#rateTypeDiv').find('p.jquery_form_error_message').remove();
-	    
 	    
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
@@ -2048,6 +2024,47 @@ function getCities(){
 			  </div>
       <div class="pop_mask"></div>
     
+    <div class="addconsultant-popup">
+				  <div class="row">
+                      <div class="col-md-offset-2 col-md-8">
+				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeConsultant()"><i class="fa fa-close"></i></a>
+                          <div class="col-md-6 mt">
+                        <div class="small-widget bg-purple">
+                            <a href="<c:url value='/addConsultant?type=parseConsultant'/>"  title="Parse Resume">
+                                <div class="clearfix mb10">
+                                <i class="fa fa-file-text-o fa-4x"></i>
+                                    <span class="fa fa-arrow-right"></span>
+                                </div>
+                                <strong class="clearfix">Parse Resume</strong>
+                                </a>
+                        </div>
+					  </div>
+					  <div class="col-md-6 mt">
+                          <div class="small-widget bg-yellow">
+                              <a href="<c:url value='/addConsultant?type=addConsultant'/>" title="Add Candidate">
+                                  <div class="clearfix mb10">
+                                      <i class="fa fa-user-circle fa-4x"></i>
+                                      <span class="fa fa-plus"></span>
+                                  </div>
+                                  <strong class="clearfix">Add Consultant</strong>
+                                </a>
+                                
+                          </div>
+					  </div>
+                      </div>
+                          <div class="col-md-4 hidden">
+                          <div class="small-widget bg-green">
+                              <a href="import-candidate.html" title="Import Candidate">
+                                  <div class="clearfix mb10">
+                                <i class="fa fa-user-circle fa-4x"></i>
+                                      <span class="fa fa-download"></span>
+                                  </div>
+                                  <strong class="clearfix">Import Candidate</strong>
+                                </a>
+                          </div>
+                      </div>
+				  </div>
+			  </div>
     
     <script>
     //addcandidate-popup script
@@ -2061,6 +2078,22 @@ function getCities(){
         $('.pop_mask').fadeOut(200);
        }
     </script>
+    
+     <script>
+    //addConsultant-popup script
+    function addConsultant(){
+        $('.addconsultant-popup').fadeIn(200);
+        $('.pop_mask').fadeIn(200);
+        $('#addmorepop').slideUp(200);
+    };
+       function closeConsultant(){
+        $('.addconsultant-popup').fadeOut(200);
+        $('.pop_mask').fadeOut(200);
+       }
+    </script>
+    
+    
+    
     
     <script type="text/javascript">
 	function searchCandidate() {
