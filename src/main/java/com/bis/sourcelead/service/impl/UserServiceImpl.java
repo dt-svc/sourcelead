@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
 		if(null != user && null != user.getId()){
 			employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
 		}
-		if(employee == null){
+		if(null == employee){
 			employee = getEmployeeDetails(user,jsonObj,orgLocations.getId(),loginuser.getUserCode());
 			HashSet<Employees> employeeList = new HashSet<Employees>();
 			employeeList.add(employee);
