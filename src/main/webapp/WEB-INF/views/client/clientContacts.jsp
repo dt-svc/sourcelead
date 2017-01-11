@@ -132,10 +132,10 @@ function clientContacts(orgRelationID,clientLocationId){
    		    		}
 	        		
 	        		result = result + '	 <tr>';
-	                result = result + '	 	<td><div>'+opt.spocName+'</a></div></td>';
-	                result = result + '	     <td><div>'+opt.spocEmail+'</div></td>';
+	                result = result + '	 	<td><div><span title='+opt.spocName+'>'+opt.spocName+'</span></a></div></td>';
+	                result = result + '	     <td><div><span title='+opt.spocEmail+'>'+opt.spocEmail+'</span></div></td>';
 	                result = result + '	     <td><div>'+spocMobilePhone+'</div></td>';
-	                result = result + '	     <td><div>'+opt.ownerName+'</div></td>';
+	                result = result + '	     <td><div><span title='+opt.ownerName+'>'+opt.ownerName+'</span></div></td>';
 	                
 	                result = result + ' <td><div>';
 					result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+clientLocationId+');">';

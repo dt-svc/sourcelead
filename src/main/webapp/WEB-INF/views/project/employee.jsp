@@ -143,14 +143,23 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
         	result = result + '<input type="hidden" name="assignStatus" id="assignStatus" value="'+status+'" >';
 
         	result = result + '    	<div class="timesheet_head clearfix">';
-    		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
+    		
     		result = result	+ '<ul>';
 
-    		result = result +'<li>';
-    		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
-    		result = result + '<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
-    		'</sec:authorize>';
-    		result = result +'</li>';
+    		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
+    			result = result +'<li>';
+        		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
+        		result = result + '<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
+        		'</sec:authorize>';
+        		result = result +'</li>';
+    		}else{
+    			result = result +'<li>';
+        		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
+        		result = result + '<a href="javascript:void(0)"  ><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
+        		'</sec:authorize>';
+        		result = result +'</li>';
+    		}
+    		
 
     		/* result = result +'<li>';
     		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_EMPLOYEES\')">';
@@ -160,18 +169,29 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     	
     		'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
     		result = result +'<li>';
-    		result = result +' <a id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+    		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
+    			result = result +' <a id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';	
+    		}else{
+    			result = result +' <a><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+    		}
+    		
     		result = result +'<div class="export_pop">';
     		result = result +'<ul>';
-    		result = result +'<li onclick="exportToPdf(\''+projectId+'\',\''+projectName+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-    		result = result +'<li onclick="exportToExcel(\''+projectId+'\',\''+projectName+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+    		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
+    			result = result +'<li onclick="exportToPdf(\''+projectId+'\',\''+projectName+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+        		result = result +'<li onclick="exportToExcel(\''+projectId+'\',\''+projectName+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+    		}else{
+    			result = result +'<li>PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+        		result = result +'<li>Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+    		}
+    		
     		result = result +'</ul>';
     		result = result +'</div>';
     		result = result +'</li> ';
     		'</sec:authorize>';
     		
     		result = result +'</ul>';
-           	}
+      
     		result = result	+ '</span>';
     		result = result + '		</div>';
     		result = result + '        <div class="project_tabs_inn_table">';
