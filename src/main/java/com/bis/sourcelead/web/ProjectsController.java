@@ -58,6 +58,7 @@ public class ProjectsController {
 		public ModelAndView projects(HttpServletRequest request) throws Exception {
 		     String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		   
 				ModelAndView model = new ModelAndView();
 				
@@ -70,9 +71,15 @@ public class ProjectsController {
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 				
-				Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+				Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId(), loginUser.getId());
 				for(OrgRelations ocl :orgClientList){
-					ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+					
+					if(null != ocl.getResponderLocationId()){
+						ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+					}
+					if(null != ocl.getLocationId()){
+						ocl.setOrgName(ocl.getLocationId().getOrg().getOrgName());
+					}
 					ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
 				 }
 			    model.addObject("add_clientList", orgClientList);
