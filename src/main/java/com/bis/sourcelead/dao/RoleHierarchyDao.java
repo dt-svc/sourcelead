@@ -14,4 +14,10 @@ public interface RoleHierarchyDao {
 	RoleHierarchy getRoleHierarchyByHierarchyLevelAndOrgLocationId(Integer hierarchyLevel,Long orgLocationId) throws Exception;
 	
 	RoleHierarchy getRoleHierarchyById(Long id) throws Exception;
+	
+	Integer getMaxHierarchyValueByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	RoleHierarchy getRoleHierarchyByHierarchyLevelNameAndOrgLocationId(String levelName,Long orgLocationId) throws Exception;
+	
+	
 }
