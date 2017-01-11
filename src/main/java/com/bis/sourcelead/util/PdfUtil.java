@@ -772,8 +772,7 @@ public class PdfUtil {
 			contactsArray[4] = "--";
 		}
 		
-		UserRole userRole = userRoleService.getUserRoleByUserId(orgSpoc.getOwnerUser().getId());
-		userRole.getRoles().getDisplayName();
+		UserRole userRole = userRoleService.getUserRoleByUserId(orgSpoc.getSpocUser().getId());
 		
 		if (userRole.getRoles().getDisplayName() != null && !"".equalsIgnoreCase(userRole.getRoles().getDisplayName())) {
 			contactsArray[5] = userRole.getRoles().getDisplayName();
