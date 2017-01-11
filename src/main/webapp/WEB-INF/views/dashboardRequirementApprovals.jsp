@@ -71,6 +71,22 @@ function requirementApproverList(statusType){
 	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
+	                    	 
+	                    	 var minExp = '';
+	                    	 var maxExp = '';
+	                    	 
+	                    	  if(opt.minExp !=null && opt.minExp !='' && opt.minExp !='undefined'){
+	                    		  minExp = opt.minExp+"-";
+	                    	  }else{
+	                    		  minExp = '';
+	                    	  }
+	                    	  
+	                    	  if(opt.maxExp !=null && opt.maxExp !='' && opt.maxExp !='undefined'){
+	                    		  maxExp = opt.maxExp;
+	                    	  }else{
+	                    		  maxExp = '';
+	                    	  }
+	                    	 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
 		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobId+"-"+opt.jobTitle+"</a></div></td>";
@@ -83,12 +99,8 @@ function requirementApproverList(statusType){
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
-	                    	  if(opt.minExp !=null && opt.minExp !='' && opt.minExp !='undefined'){
                                   
-		                     result = result +"<td><div>"+opt.minExp+"</div></td>";
-                                  }else{
-                             result = result +"<td><div>-----</div></td>";
-                             }
+		                     result = result +"<td><div>"+minExp+""+maxExp+"</div></td>";
 	                    	  
                              var APPROVED = "APPROVED";     
  				             var REJECTED = "REJECTED";
