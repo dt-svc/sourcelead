@@ -567,7 +567,7 @@ overflow-x: auto;
 			              <div class="clearfix mt col-md-12">
 			                <div class="pull-right">
 			                  <input type="button" class="btn btn-primary btn-sm" value="Submit" onclick="saveTask();">
-			                  <input type="button" class="btn btn-default btn-sm ml10" value="Cancel">
+			                  <input type="button" class="btn btn-default btn-sm ml10" value="Cancel"  onclick="taskwidget();">
 			                </div>
 			              </div>
 			            </div>
@@ -654,6 +654,9 @@ $(".collpase-div").click(function(){
  function showtaskdiv(){
 	 $("#myTask").hide();
 	 $(".newTask-widget").fadeIn(200);
+	 $(".newTask-widget").val();
+	 $('.newTask-widget').find('p.jquery_form_error_message').remove();	
+	 document.getElementById("task_form").reset();
 	 
  };
 </script>
