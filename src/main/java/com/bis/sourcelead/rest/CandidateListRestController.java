@@ -478,7 +478,7 @@ public class CandidateListRestController {
 				Float expYears = Float.valueOf(matcher.group());
 				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
 				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths", keywd));
-				String mobileKeywd =matcher.group().replaceAll("+91", "");
+				String mobileKeywd =matcher.group().replaceAll("[+91]", "");
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
 			}
