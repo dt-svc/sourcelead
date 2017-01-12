@@ -458,8 +458,10 @@ function getAllCandidateCountries(){
             	} 
             	
             }
-            $('html #candidateCountry').trigger("chosen:updated");
+            
             getAllCandidateStates();
+            $('html #candidateCountry').trigger("chosen:updated");
+           
         },
         error: function(e){
         }
@@ -480,11 +482,6 @@ var countryName = $("html #candidateCountry").val();
 		stateName = document.getElementById("updateState").value;
 	}
 	
-	/* var countryName = $("#updateCountry").val();
-	
-	//to set existing state value(Auto populate)
-	var stateName = $("#updateState").val(); */
-	
 	//end state Auto populate
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
@@ -503,8 +500,10 @@ var countryName = $("html #candidateCountry").val();
 	            		$('html #candidateState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            	} 
 	            }
-	            $('html #candidateState').trigger("chosen:updated");
+	            
 	            getCandidateCities();
+	            $('html #candidateState').trigger("chosen:updated");
+	            
 	        },
 	        error: function(e){
 	        }
@@ -531,14 +530,6 @@ function getCandidateCities(){
 	if(cityName == null || cityName == 'undefined' || cityName == ''){
 		cityName = document.getElementById("updateCity").value;
 	}
-	   /* var countryName = $("#updateCountry").val();
-	
-	//to set existing state value(Auto populate)
-	var stateName = $("#updateState").val();
-	
-	//to set existing city value(Auto populate)
-	var cityName = $("#updateCity").val();
-	//end city Auto populate */
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
@@ -570,16 +561,6 @@ function getCandidateCities(){
 }
 </script> 
 
- <!-- <script>
-function updateValues(){
-	var str_array = sequentialApprover1.split(',');
-	for (var i = 0; i < str_array.length; i++) {
-	    str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	}
-	$("#sequentialApprover1").val(str_array).trigger("chosen:updated");
-}
-</script> 
- -->
 
 <!-- Country,State,City Script Ends Here -->
 
