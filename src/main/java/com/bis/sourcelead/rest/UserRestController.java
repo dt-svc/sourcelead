@@ -430,7 +430,7 @@ public class UserRestController {
 				projectMembers.setMemberHistoryList(pmhList);
 				
 				projectMembersService.saveProjectMember(projectMembers);
-				commonUtil.storeTimesheetSubmissionRecords(user);
+				//commonUtil.storeTimesheetSubmissionRecords(user);
 				return "success";
 			}
 			/**
@@ -574,7 +574,7 @@ public class UserRestController {
 					  projectMembers.setStatus(status);
 					  projectMembers =  projectMembersService.saveProjectMember(projectMembers);
 					  projectMembers = projectMembersService.getProjectMemberById(projectMembers.getId());
-					  commonUtil.storeTimesheetSubmissionRecords(projectMembers.getEmployee().getUser());
+					  //commonUtil.storeTimesheetSubmissionRecords(projectMembers.getEmployee().getUser());
 			  	   }
 				
 			    } catch (Exception e) {
