@@ -59,7 +59,6 @@ bottom:-14px;
 						<div class="form-group" id="jobTitleDiv">
 							<label class="col-md-3">Title<span class="text-danger">*</span></label>
 							<div class="col-md-9">
-								<div class="input-group">
 									<input type="text" id="jobTitle" name="jobTitle"
 										value="${requirement.jobTitle}" field-name="Job Title"
 										data-validation="required validate_Space validate_length length2-250"
@@ -67,7 +66,15 @@ bottom:-14px;
                                      <input type="hidden" value="${requirement.id}" name="requirementId">
                                       <input type="hidden" value="Y" name="isTemplate">
 									<div class="input-group-btn selp-custom-min">
-										<select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
+									</div>
+							</div>
+						</div>
+	
+	
+							<div class="form-group">
+								<label class="col-md-3">Employment Type</label>
+									<div class="col-md-9">
+										<select class="selectpicker form-control" id="jobType" name="jobType" onChange="getJobType(this);">
 											<option value="">Select</option>
 											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}><a href="#">C2C</a></option>
 											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}><a href="#">W-2</a></option>
@@ -77,25 +84,17 @@ bottom:-14px;
 											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}><a href="#">Full Time</a></option>
 											<option ${requirement.jobType  == "Other" ? 'selected' : ''}><a href="#">Other</a></option>
 										</select>
-									</div>
 								</div>
 							</div>
-						</div>
-
-
-
 
 						<div class="form-group" id="jobTypeDiv" style="display: none">
-							<label class="col-md-3">Job Type</label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" id="jobOtherType"
-									name="jobOtherType" value="${requirement.otherJobType}"
-									field-name="Job Type" value="">
-							</div>
+							<label class="col-md-3">Employment Type</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}" field-name="Job Type" value="">
+								</div>
 						</div>
-
-
-						<div class="form-group">
+					
+					<div class="form-group">
 							<label class="col-md-3">Education</label>
 							<div class="col-md-9">
 								<select multiple class="chosen-select form-control"
@@ -267,6 +266,21 @@ bottom:-14px;
 	})(jQuery);
 </script>
 
+<script type="text/javascript">
+		window.onload = function () {
+			var jobType = '${requirement.jobType}';
+			if(null != jobType && jobType != "" && jobType != "undefined" && jobType == 'Other'){
+				  document.getElementById("jobTypeDiv").style.display="block";
+				  $("#jobOtherType").attr("data-validation-optional", "true");
+				  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+			}else{
+				document.getElementById("jobTypeDiv").style.display="none";
+				  $("#jobOtherType").attr("data-validation-optional", "true");
+				  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
+				  $("#jobOtherType").val('');
+			}
+		 };
+</script> 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
 			var config = {
@@ -366,7 +380,8 @@ function getJobType(jobType){
 	var existingJobType = '${requirement.jobType}';
 	if(jobType.value == 'Other'){
 		  document.getElementById("jobTypeDiv").style.display="";
-		  $("#jobOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
+		  $("#jobOtherType").attr("data-validation-optional", "true");
+		  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
 	}else{
 		document.getElementById("jobTypeDiv").style.display="none";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
