@@ -266,17 +266,17 @@
 
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '	<label>Status</label>';
-						result = result	+ '<select id="projectStatusId" name="projectStatusId">';
+						result = result	+ '<select id="projectStatusId" name="projectStatusId" onchange="projectStatus();">';
 						if (json.projectStatus == 'STARTED') {
 							result = result	+ '<option selected >Started</option>';
 						} else {
-							result = result + '<option onclick="projectStatus();">Started</option>';
+							result = result + '<option>Started</option>';
 						}
 
 						if (json.projectStatus == 'INPROGRESS') {
 							result = result	+ '<option selected>In-Progress</option>';
 						} else {
-							result = result + '<option onclick="projectStatus();">In-Progress</option>';
+							result = result + '<option>In-Progress</option>';
 						}
 
 						if (json.projectStatus == 'COMPLETED') {
@@ -288,7 +288,7 @@
 						if (json.projectStatus == 'ONHOLD') {
 							result = result	+ '<option selected>On-Hold</option>';
 						} else {
-							result = result + '<option onclick="projectStatus();">On-Hold</option>';
+							result = result + '<option>On-Hold</option>';
 						}
 
 						result = result + '</select>';
@@ -507,6 +507,13 @@ function projectStatus(){
 	            			$("#docMsgDiv2").html("Success!! Project details updated");
 							projectDetails(projectId);
 							docMsgFadein();
+							
+							var json = JSON.parse(data);
+							$("#empTab").removeAttr("onClick");
+			   		    	$("#empTab").attr("onclick","projectEmployee('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
+			   		    	
+			   		    	$("#taskTab").removeAttr("onClick");
+			   		    	$("#taskTab").attr("onclick","projectTask('"+projectId+"', '"+json.projectStatus+"')");
 						}
 					});
 			return true;

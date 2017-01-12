@@ -750,12 +750,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 	  * @param projectId
 	  * @param json
 	  * @param request
-	  * @return String
+	  * @return Projects
 	  * @throws Exception
+	  * 
+	  * update by prasad salina here changed method return type String to Projects
 	  */
 	
 	@Override
-	public String getProjectDetailsUpdateByProjectId(Long projectId, User user, JSONObject jsonObj) throws Exception {
+	public Projects getProjectDetailsUpdateByProjectId(Long projectId, User user, JSONObject jsonObj) throws Exception {
 		
 		 Date currentDate = new Date();
 		 Date previousEndDate = null;
@@ -796,11 +798,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		
 			    	}
 		    		
-		    		if(jsonObj.has("invoiceFrequency")){
+		    		/*if(jsonObj.has("invoiceFrequency")){
 			        	  if(jsonObj.getString("invoiceFrequency") != null){
 					    	 projects.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
 					     }
-				        }
+				        }*/
 		    		
 		    		
 		    		if((jsonObj.has("isTimesheetAttachmentRequired")) && StringUtils.isNotEmpty(jsonObj.getString("isTimesheetAttachmentRequired")) && ("Y".equals(jsonObj.getString("isTimesheetAttachmentRequired")))){
@@ -948,7 +950,17 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	    if(projects.getEndDate() != null) {
 	    	    		commonUtil.terminateProjectMembersWhoseAssignedDateOrTerminatedisGreaterThanProjectEndDate(projects, user);
 	    	    }
-		 return "success";
+	    	    
+	    	    /**
+	    	     * To use onclick parameters for emp tab and task tab
+	    	     */
+	    	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+			    if(projects.getEndDate() != null){
+			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+			    }
+	    	    
+	    	    
+		 return projects;
 	}
 
 	 /**
