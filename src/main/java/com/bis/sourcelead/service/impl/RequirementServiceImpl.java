@@ -25,8 +25,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -68,7 +66,6 @@ import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
-import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -192,11 +189,15 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			if(jsonObj.has("jobTitle")){
-				requirement.setJobTitle(jsonObj.getString("jobTitle"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("jobTitle"))){
+					requirement.setJobTitle(jsonObj.getString("jobTitle"));
+				}
+				
 			}
 			
-			if(!"".equalsIgnoreCase(jsonObj.getString("jobType"))){
-			if(jsonObj.has("jobType") ){				
+			
+			if(jsonObj.has("jobType") ){	
+				if(!"".equalsIgnoreCase(jsonObj.getString("jobType"))){
 				requirement.setJobType(jsonObj.getString("jobType"));
 			   }
 			}	
@@ -208,11 +209,17 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 						
 			if(jsonObj.has("jobId")){
-			requirement.setJobId(jsonObj.getString("jobId"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("jobId"))){
+					requirement.setJobId(jsonObj.getString("jobId"));
+				}
+			
 			}
 			
 			if(jsonObj.has("positions")){
-			requirement.setPositions(jsonObj.getString("positions"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("positions"))){
+					requirement.setPositions(jsonObj.getString("positions"));
+				}
+			
 			}
 			if(jsonObj.has("countryReq")){
 			requirement.setCountry(jsonObj.getString("countryReq"));
@@ -242,33 +249,50 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			if(jsonObj.has("maxExp")){
-			requirement.setMaxExp(jsonObj.getString("maxExp"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
+					requirement.setMaxExp(jsonObj.getString("maxExp"));
+				}
 			}
 			
 			if(jsonObj.has("minExp")){
-			requirement.setMinExp(jsonObj.getString("minExp"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("minExp"))){
+					requirement.setMinExp(jsonObj.getString("minExp"));
+				}
 			}
 			
 			if(jsonObj.has("rate")){
-			requirement.setRate(jsonObj.getString("rate"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("rate"))){
+					requirement.setRate(jsonObj.getString("rate"));
+				}
 			}
 			
 			if(jsonObj.has("rateType")){
-			requirement.setRateType(jsonObj.getString("rateType"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("rateType"))){
+					requirement.setRateType(jsonObj.getString("rateType"));
+				}
 			} 
 			
 			if(jsonObj.has("description")){
-			requirement.setDescription(jsonObj.getString("description"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("description"))){
+					requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));		
+				}
+			
 			}
 			
 			
 			if(jsonObj.has("currencyCode")){
-			requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
+					requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
+				}
+			
 			}
 			
 			
 			if(jsonObj.has("priority")){
-				requirement.setPriority(jsonObj.getString("priority"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("priority"))){
+					requirement.setPriority(jsonObj.getString("priority"));
+				}
+				
 			}
 			
 			if(jsonObj.has("isTemplate") && "Y".equalsIgnoreCase(jsonObj.getString("isTemplate"))){
@@ -1987,42 +2011,46 @@ public class RequirementServiceImpl implements RequirementService {
 			 reqTemplate.setOrgLocationId(orgLocations);
 			}
 		 
-		 if(jsonObj.has("jobTitle")){
+		 if(jsonObj.has("jobTitle") && !"".equalsIgnoreCase(jsonObj.getString("jobTitle"))){
 			 reqTemplate.setJobTitle(jsonObj.getString("jobTitle"));
+		}
+			
+		 if(jsonObj.has("jobType") && !"".equalsIgnoreCase(jsonObj.getString("jobType"))){	
+					reqTemplate.setJobType(jsonObj.getString("jobType"));
+			}	
+			
+			if(jsonObj.has("jobOtherType") &&  "Other".equalsIgnoreCase(jsonObj.getString("jobType"))){
+				reqTemplate.setOtherJobType(jsonObj.getString("jobOtherType"));
+			}else{
+				reqTemplate.setOtherJobType(null);
 			}
 			
-			if(!"".equalsIgnoreCase(jsonObj.getString("jobType"))){
-			if(jsonObj.has("jobType") ){				
-				reqTemplate.setJobType(jsonObj.getString("jobType"));
-			   }
-			}
-			
-			if(jsonObj.has("maxExp")){
+			if(jsonObj.has("maxExp") && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
 				reqTemplate.setMaxExp(jsonObj.getString("maxExp"));
 				}
 				
-				if(jsonObj.has("minExp")){
+				if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp"))){
 					reqTemplate.setMinExp(jsonObj.getString("minExp"));
 				}
 				
-				if(jsonObj.has("rate")){
+				if(jsonObj.has("rate") && !"".equalsIgnoreCase(jsonObj.getString("rate"))){
 					reqTemplate.setRate(jsonObj.getString("rate"));
 				}
 				
-				if(jsonObj.has("rateType")){
+				if(jsonObj.has("rateType") && !"".equalsIgnoreCase(jsonObj.getString("rateType"))){
 					reqTemplate.setRateType(jsonObj.getString("rateType"));
 				} 
 				
-				if(jsonObj.has("description")){
+				if(jsonObj.has("description") && !"".equalsIgnoreCase(jsonObj.getString("description"))){
 					reqTemplate.setDescription(jsonObj.getString("description"));
 				}
 				
 				
-				if(jsonObj.has("currencyCode")){
+				if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
 					reqTemplate.setCurrencyCode(jsonObj.getString("currencyCode"));
 				}
 				
-	             if(jsonObj.has("skills")){
+	             if(jsonObj.has("skills") && !"".equalsIgnoreCase(jsonObj.getString("skills"))){
 					
 					String skillId =null;
 					try{
@@ -2041,7 +2069,7 @@ public class RequirementServiceImpl implements RequirementService {
 					reqTemplate.setSkills(null);	
 				}
 				
-				if(jsonObj.has("education")){
+				if(jsonObj.has("education") && !"".equalsIgnoreCase(jsonObj.getString("education"))){
 					
 	             String educationId =null;
 					try{

@@ -74,7 +74,7 @@ function requirementTemplateList(){
 	                     result = result +"<thead>"; 
 	                     result = result +"<tr>"; 
 	                     result = result +"<th>Title</th>"; 
-	                     result = result +"<th>Position Type</th>"; 
+	                     result = result +"<th>Employment Type</th>"; 
 	                      result = result +"<th>Experience</th>";
 	                     result = result +"<th>Skills</th>";
 	                     result = result +"<th>Created by</th>";
@@ -89,12 +89,16 @@ function requirementTemplateList(){
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
 		                     	result = result +'<td><div class="proj_show tbldata-dotdot"><a href="<c:url value="/requirementTemplateSummary?requirementId='+opt.id+'"/>" ><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-binoculars"></i></span></a></div></td>';
 		                     '</sec:authorize>';
-		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
-		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
+		                     if(null != opt.jobType && opt.jobType !='' && opt.jobType !='undefined'){
+		                    	 if(opt.jobType=='Other'){
+		                    		 result = result +"<td><div><span title="+opt.otherJobType+">"+opt.otherJobType+"</span></div></td>";
+		                    	 }else{
+		                    		 result = result +"<td><div>"+opt.jobType+"</div></td>";
+		                    	 }
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
-		                    
+		                     
 		                     if(opt.minExp!=null && opt.minExp !='' && opt.minExp !='undefined'){
 		                    	 result = result +"<td><div>"+opt.minExp+"-"+opt.maxExp+"</div></td>";
 		                     }else{
@@ -102,13 +106,13 @@ function requirementTemplateList(){
 		                     }
 		                     
 		                     if(opt.skills!=null && opt.skills !='' && opt.skills !='undefined'){
-		                    	 result = result +"<td><div title='"+opt.skills+"'>"+opt.skills+"</div></td>";
+		                    	 result = result +"<td><div><span title='"+opt.skills+"'>"+opt.skills+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 		                     
 		                     if(opt.createdByName!=null && opt.createdByName !='' && opt.createdByName !='undefined'){
-		                    	 result = result +"<td><div>"+opt.createdByName+"</div></td>";
+		                    	 result = result +"<td><div><span title="+opt.createdByName+">"+opt.createdByName+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }

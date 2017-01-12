@@ -93,7 +93,7 @@
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-5000"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-500"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -122,7 +122,7 @@
 											<span class="badge" id="addTaskCount">0</span>
 										</button>
 										<sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT_TASKS')"> 
-											<button class="btn btn-primary" id="david" type="button" onclick="addSourceleadTasks();" data-toggle="modal" data-target="#addTask">
+											<button class="btn btn-primary" id="david" type="button" onclick="addSourceleadTasks();flushProjectTasks();" data-toggle="modal" data-target="#addTask">
 												<i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View / Add Tasks 
 											</button>
 										</sec:authorize>
@@ -135,7 +135,7 @@
 										<!-- Modal content-->
 										<div class="modal-content">
 											<div class="modal-header">
-												<button type="button" class="close" data-dismiss="modal">&times;</button>
+												<button type="button" class="close" data-dismiss="modal" onclick="flushProjectTasks();">&times;</button>
 												<h4 class="modal-title">Add Tasks</h4>
 											</div>
 											<div class="modal-body clearfix">
@@ -157,10 +157,10 @@
 																<input type="text" value="" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control">
 															</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group" id="descriptionDiv">
 															<label class="col-md-3">Description</label>
 															<div class="col-md-9">
-																<textarea class="form-control" placeholder="Enter Task Description" id="taskDescription" name="taskDescription" rows="2"></textarea>
+																<textarea class="form-control" placeholder="Enter Task Description" id="taskDescription" name="taskDescription"></textarea>
 															</div>
 														</div>
 													</div>
@@ -171,7 +171,7 @@
 												
 											</div>
 											<div class="modal-footer">
-												<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+												<button type="button" class="btn btn-default" data-dismiss="modal" onclick="flushProjectTasks();">Close</button>
 											</div>
 										</div>
 									</div>
@@ -184,7 +184,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkbox">
-									<label> <input type="checkbox" value="Y"  name="isMailToProjectManager"> 
+									<label> <input type="checkbox" value="Y"  checked="checked" name="isMailToProjectManager"> 
 									Mail to Project Manager
 									</label>
 								</div>
@@ -320,7 +320,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkbox">
-									<label> <input type="checkbox" value="Y" 
+									<label> <input type="checkbox" value="Y"  checked="checked"
 										name="isMailToTeamMembers"> Mail to Team Members
 									</label>
 								</div>
@@ -390,14 +390,20 @@
 	function addTasks() {
 
 		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
-
-		if ($('#taskName').val() == '') {
-			$("input#taskName")
-					.after(
-							"<p class='jquery_form_error_message'>Task Name is required</span>");
+		$('#descriptionDiv').find('p.jquery_form_error_message').remove();
+		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200 || $("#taskName").val().length > 100) {
+			if ($('#taskName').val() == '') {
+				$("input#taskName") .after( "<p class='jquery_form_error_message'>Task Name is required</span>");
+			}
+			if($("#taskName").val().length > 100){
+				$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between10-100 characters</span>");
+			}
+			if ($("#taskDescription").val().length > 200) {
+				$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between10-200 characters</span>");
+			}
 			return true;
-		}
-
+		} 
+		
 		var tbl = document.getElementById("projectTaskTbl");
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 		$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
@@ -572,8 +578,11 @@
 </script>
 
 <!-- Add Task Script Ends -->
-
-
+<script type="text/javascript">
+function flushProjectTasks(){
+	$('#addTask').find('p.jquery_form_error_message').remove();	
+}
+</script>
 
 <script type="text/javascript">
 	function saveProject() {
@@ -583,6 +592,7 @@
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
+		$('#addTask').find('p.jquery_form_error_message').remove();
 		if ($('#project_form').validate(false, validationSettings)) {
 			var frm = $('#project_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -590,7 +600,7 @@
 
 			//It will escape all the special characters
 			var jsonData = encodeURIComponent(con);
-
+			
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_project").attr("disabled", "disabled");
 			$("#save_project").addClass('button').val('Processing..');

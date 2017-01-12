@@ -44,13 +44,6 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationIdAndSpocUserId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&userId="+userId,        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
              			 var json = JSON.parse(data);
              			/* for (var i = 0; i < 1; i++) { 
              				var val= json[i];
@@ -141,7 +134,6 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                     result = result +"</table>";
 	                     $("#spocDocumentsList").append(result); 
 	                     spocDocumentpagination(); 
-			    	} 
                }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
@@ -456,13 +448,6 @@ function saveReason(clientLocationId,orgRelationId,spocName,userId,docId,docName
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateOrgDocumnet?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
-   		    	if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-        		 else if (data.indexOf('exception') >= 0) {
-        			 location.replace(sourceleadUrl+"/errorPage");
-        		 }
-        		 else{
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
         			 $("#selector2").removeAttr("style");
@@ -470,7 +455,7 @@ function saveReason(clientLocationId,orgRelationId,spocName,userId,docId,docName
          			 $("#docMsgDiv").html(""+docName+" Removed");
         			 spocDocumentsList(clientLocationId,orgRelationId,userId,spocName);
         			 docMsgFadein();
-        		 }
+        		 
    		    }
 	     });
 	}else{
@@ -500,13 +485,6 @@ function getClientSpocDocument(clientLocationId,orgRelationId,spocName,userId,do
 		    	var json = JSON.parse(data);
 		    	var spoc = "";
 		    	var owner = "";
-		    	if( data.indexOf('Sign In') >= 0){
-	    		location.replace(sourceleadUrl);
-	    	 }
-    		 else if (data.indexOf('exception') >= 0) {
-    			 location.replace(sourceleadUrl+"/errorPage");
-    		 }
-    		 else{
     			 $("#uploadDocumentDiv").hide();
     			 $("#docAddButton").hide();
     			 $("#uploadFile").removeAttr("data-validation");
@@ -560,7 +538,6 @@ function getClientSpocDocument(clientLocationId,orgRelationId,spocName,userId,do
     			 $("#update_doc").attr("onclick", 'storeSpocDocument(\''+clientLocationId+'\',\''+orgRelationId+'\',\''+userId+'\',\''+spocName+'\',\''+json.id+'\');');
     			 
     			 manageDates();
-    		 }
 		    }
      });
 }

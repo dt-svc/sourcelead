@@ -106,8 +106,8 @@ function clientSubmissionTemplate(clientLocationId){
 	        		
 	        		
 	        		result = result + '<tr>';
-	                result = result + '<td><div>'+opt.templateName+'</a></div></td>';
-	                result = result + '<td><div class="tbldata-dotdot">'+opt.description+'</div></td>';
+	                result = result + '<td><div><span title="'+opt.templateName+'">'+opt.templateName+'</span></a></div></td>';
+	                result = result + '<td><div class="tbldata-dotdot"><span title="'+opt.description+'">'+opt.description+'</span</div></td>';
 	                result = result + '<td><div>';
 	                '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_SUBMISSION_TEMPLATE\')">';
 	                result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+clientLocationId+','+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;';
@@ -466,9 +466,10 @@ function validateTemplateName(clientLocationId){
          }
     });
     	
+  $('body').on('blur', '#sjfb', function() {
    	$('#sjfb').showHelpOnFocus();
     $('#sjfb').validateOnBlur(false, validationSettings); 
-  
+	});
   </script>
   
 
