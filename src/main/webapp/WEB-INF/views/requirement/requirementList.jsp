@@ -7,6 +7,9 @@
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="resources/js/formvalidator.js"></script>
 
+<link href="resources/css/chosen.min.css" rel="stylesheet">
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
 
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
@@ -1168,6 +1171,208 @@ function requirementPipeline(requirementId){
   <div class="timesheet_out">
     <div class="vendor_wrap">
       <div class="timesheet_head">
+       <div class="pull-left cand-advsrch">
+            <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop()"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+            <div class="row">
+              <div class="col-md-4">
+                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+                <div class="clearfix">
+                  <input type="text" class="form-control input-sm" placeholder="Any of Keyword">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+                <div class="clearfix">
+                  <input type="text" class="form-control input-sm" placeholder="All Keywords">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+                <div class="clearfix">
+                  <input type="text" class="form-control input-sm" placeholder="Exclude Keyword">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h4>Details:</h4>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Requirement Title</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Requirement Title">
+                  </div>
+                </div>
+               <div class="form-group">
+            <label class="col-md-3">Pay Rate/Salary${SourceLeadWeb_currencyCode}</label>
+            <div class="col-md-6">
+             <div class="input-group">
+                <div class="input-group-btn selp-custom-min">
+                  
+                  <select class="selectpicker" id="currencyCode" name="currencyCode" >
+               
+                <c:if test="${empty requirement.id}">
+	                 <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
+                 
+                 <c:if test="${! empty requirement.id}">
+	                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${requirement.currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
+                </select>
+                </div>
+                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
+                <div class="input-group-btn selp-custom-min">
+                  <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
+                    <option value="">Rate Per</option>
+                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Experience</label>
+                  <div class="clearfix row">
+                    <div class="col-md-6">
+                      <select class="chosen-select" data-placeholder="Years">
+                        <option selected>Years</option>
+                        <option>1 years</option>
+                        <option>2 years</option>
+                        <option>3 years</option>
+                        <option>4 years</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <select class="chosen-select" data-placeholder="Months">
+                        <option selected>Months</option>
+                        <option>15 Days</option>
+                        <option>one month</option>
+                        <option>Two month</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>Requirement status </label>
+                  <div class="clearfix">
+                    <select id="np" class="chosen-select" data-placeholder="Requirement status " multiple>
+                      <option>New</option>
+                      <option>Draft</option>
+                      <option>Submitted</option>
+                      <option>Open</option>
+                      <option>cancel</option>
+                      <option>On Hold</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>Updated On</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="Updated On">
+                      <option>All</option>
+                      <option>1 Day Ago</option>
+                      <option>3 Days Ago</option>
+                      <option>1 Week Ago</option>
+                      <option>2 Weeks Ago</option>
+                      <option>1 Month Ago</option>
+                      <option>3 Months Ago</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Country</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="Country">
+                      <option>India</option>
+                      <option>USA</option>
+                      <option>Germany</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>State</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="State">
+                      <option>Andhra Pradesh</option>
+                      <option>Telangana</option>
+                      <option>Punjab</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>City</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="City">
+                      <option>India</option>
+                      <option>USA</option>
+                      <option>Germany</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Education</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="Education" multiple>
+                      <option>MCA</option>
+                      <option>MBA</option>
+                      <option>B.Sc.(Computers)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label>Client<i class="fa fa-info-circle" title="Employers"></i></label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="Employers" multiple>
+                      <option>TCS</option>
+                      <option>IBM</option>
+                      <option>CTS</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-12">
+                  <label>Skills</label>
+                  <div class="clearfix">
+                    <select class="chosen-select"  multiple data-placeholder="Select Skills">
+                      <option>Skill-1</option>
+                      <option>Skill-2</option>
+                      <option>Skill-2</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row form-footer">
+              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> </div>
+            </div>
+          </div>
+        </div>
         <ul>
         <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
 		<li><i class="glyphicon glyphicon-export"></i><span>Status</span><i class="glyphicon glyphicon-play" onClick ="requirementListIndividualStatusCounts();"id="filter2ApprovePop"></i>
@@ -1183,6 +1388,7 @@ function requirementPipeline(requirementId){
 		            </div>
           </li>
           </sec:authorize>
+          
           <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
           	<li> <a href="<c:url value='/requirement'/>"><i class="fa fa-plus"></i>Add Requirement</a></li>
           </sec:authorize>
@@ -1270,7 +1476,8 @@ function requirementPipeline(requirementId){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 
-});
+			});
+			$('#np').trigger("chosen:updated");
  		</script> 
 <script>
 $('#selector').delay(2000).fadeOut('slow');
@@ -1532,4 +1739,33 @@ function getActions(){
  	});	
 }
 </script>
+
+<script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+		}
+		function openPop(){
+			$("div.cand-advsrch-popup").toggle();
+		}
+	</script> 
+
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+
+});
+ 		</script> 
+<script>
 <jsp:include page="../masterFooter.jsp" />
