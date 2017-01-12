@@ -111,7 +111,7 @@ $(document).ready(function() {
 		window.onload = function () {
 			var jobType = '${requirement.jobType}';
 			if(jobType !=null && jobType != "" && jobType != "undefined" && jobType == 'Other'){
-				  document.getElementById("jobTypeDiv").style.display="";
+				  document.getElementById("jobTypeDiv").style.display="block";
 				  $("#jobOtherType").attr("data-validation-optional", "true");
 				  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
 			}else{
@@ -1491,12 +1491,24 @@ function setTemplateValues(){
 		    		
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
+			    	$("#jobOtherType").val(json.otherJobType);
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#jobId").val(json.jobId);
 			    	$("#positions").val(json.positions);
 			    	
 			    	$("#minExp").val(json.minExp);
 			    	$("#maxExp").val(json.maxExp);
+			    	
+			    	if(null != json.jobType && json.jobType != "" && json.jobType != "undefined" && json.jobType == 'Other'){
+						  $( ".jobTypeDiv" ).show();
+						  $("#jobOtherType").attr("data-validation-optional", "true");
+						  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250"); 
+					}else{
+						  $( ".jobTypeDiv" ).hide();
+						  $("#jobOtherType").attr("data-validation-optional", "true");
+						  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
+						  $("#jobOtherType").val('');
+					}
 			    	
 			    	var country = '';
 					 var state = '';
@@ -1557,11 +1569,12 @@ function setTemplateValues(){
 			    	 $("#uploadFile").val(existedFile);
 			    	 $('#uploadFile').trigger("chosen:updated");
 			   
-			    	 $( ".jobTypeDiv" ).hide();
+			    	 //$( ".jobTypeDiv" ).hide();
 		    	}else{
 		    		
 		    		$("#jobTitle").val('');
 			    	$("#jobType").val('');
+			    	$("#jobOtherType").val('');
 			    	$("#jobId").val('');
 			    	$("#positions").val('');
 			    	$("#minExp").val('');
@@ -1582,6 +1595,8 @@ function setTemplateValues(){
 			     	$("#currencyCode").val('');
 			    	$("#rateType").val('');
 			    	$( ".jobTypeDiv" ).show();
+			    	$(".")
+			    	
 			    	existedFile = json.fileName;
 			    	 $("#fileName").val(existedFile);
 			    	 $('#fileName').trigger("chosen:updated");
@@ -2402,7 +2417,7 @@ function removeEditButton() {
 function getJobType(jobType){
 	var existingJobType = '${requirement.jobType}';
 	if(jobType.value == 'Other'){
-		 document.getElementById("jobTypeDiv").style.display="";
+		 document.getElementById("jobTypeDiv").style.display="block";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
 	}else{
