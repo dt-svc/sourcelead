@@ -209,7 +209,7 @@ public class CandidateController {
 	
 	@PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
 	@RequestMapping(value = "/addConsultant")
-	public ModelAndView addConsultant(HttpServletRequest request) throws Exception {
+	public ModelAndView addConsultant(@RequestParam(value="type", required=false) String  type,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -221,6 +221,7 @@ public class CandidateController {
 		
 		model.setViewName("candidates/addConsultant");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("type", type);
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());

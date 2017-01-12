@@ -146,6 +146,8 @@ $(document).ready(function() {
 				    $("#apprverReq").click(enable_cb);
 				    $("#parallelapprovers").click(enable_cb);
 				    $("#seqentialApprovers").click(enable_cb);
+				    /* $('#sequentialApprover1').click(enable_cb);
+					$('#sequentialApprover2').click(enable_cb); */
 				});
 				function enable_cb() {
 					$("#parallelApprover").prop('disabled', true).trigger('chosen:updated');
@@ -154,8 +156,11 @@ $(document).ready(function() {
 					$('#apprverReq').prop("disabled", !this.checked);
 					$('#parallelapprovers').prop("disabled", !this.checked);
 					$('#seqentialApprovers').prop("disabled", !this.checked);
+					/* $('#sequentialApprover1').prop("disabled", !this.checked); 
+					$('#sequentialApprover2').prop("disabled", !this.checked); 
 					$('#sequentialApprover1').attr("data-validation-optional","true"); 
-					$('#sequentialApprover2').attr("data-validation-optional","true"); 
+					$('#sequentialApprover2').attr("data-validation-optional","true");  */
+					$('#seqentialApprovers').attr("data-validation-optional","true");
 					$('#parallelApprover').attr("data-validation-optional","true"); 
 					
 				}
@@ -164,7 +169,8 @@ $(document).ready(function() {
 				$('#apprverReq').removeAttr("disabled");
 				$('#parallelapprovers').removeAttr("disabled")
 				$('#seqentialApprovers').removeAttr("disabled")
-				
+				$('#sequentialApprover1').removeAttr("disabled")
+				$('#sequentialApprover2').removeAttr("disabled")
 				
 			}
 		});
@@ -857,39 +863,46 @@ $(document).ready(function () {
          <div class="form-group sequential" id="addLvl" style="display:none;">
                 <label class="col-md-3">Approver1<span class="text-danger">*</span></label>
                 <div class="col-md-9">   
-                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true" onchange="getLevel2Approvers();">
+                    
                         <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
+                        <select  disabled="disabled" class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true" onchange="getLevel2Approvers();">
 	                       <option value="">Select Approver1</option>
 	                       <c:forEach var="report" items="${approverList}">
-			                    <option value="${report.id}"    disabled="disabled">${report.firstName}&nbsp;${report.lastName}</option>
+			                    <option value="${report.id}" >${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
+			               </select>
 		               </c:if>
 		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
+		               <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true" onchange="getLevel2Approvers();">
 	                       <option value="">Select Approver1</option>
 	                       <c:forEach var="report" items="${approverList}">
-			                    <option value="${report.id}"    >${report.firstName}&nbsp;${report.lastName}</option>
+			                    <option value="${report.id}" >${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
+			              </select>
 		               </c:if>
-                    </select>
                     <!-- <span onClick="addLvl();"><i class="fa fa-level-down btn btn-default formic1" data-toggle="tooltip" data-placement="left" title="Add Level"></i></span> -->
                 </div>
                 
 	            <label class="col-md-3 mt">Approver2<span class="text-danger">*</span></label>
 	            <div class="col-md-9 mt">
-	              		<select   class="chosen-select form-control" id="sequentialApprover2" name="sequentialApprover2" field-name="Approver 2" data-validation="required" data-validation-optional="true">
+	              		
                        <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
+                       <select  disabled="disabled" class="chosen-select form-control" id="sequentialApprover2" name="sequentialApprover2" field-name="Approver 2" data-validation="required" data-validation-optional="true">
 	                       <option value="">Select Approver2</option>
 	                       <c:forEach var="report" items="${approverList}">
-			                    <option value="${report.id}" disabled="disabled"   >${report.firstName}&nbsp;${report.lastName}</option>
+			                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
+			           </select>
 		               </c:if>
 		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
+		               <select   class="chosen-select form-control" id="sequentialApprover2" name="sequentialApprover2" field-name="Approver 2" data-validation="required" data-validation-optional="true">
 	                       <option value="">Select Approver2</option>
 	                       <c:forEach var="report" items="${approverList}">
 			                    <option value="${report.id}"    >${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
+			               </select>
 		               </c:if>
-	                    </select>
+	                    
 	              </div>
               
               </div>
