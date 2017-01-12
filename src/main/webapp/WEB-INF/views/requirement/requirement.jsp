@@ -1545,11 +1545,15 @@ function setTemplateValues(){
 			            $('#education').trigger("chosen:updated");
 					}
 					
-					 
+					
 			    	
 			    	$("#description").val(json.description);
 			    	$("#rate").val(json.rate);
+			    	
+			    	if(json.currencyCode != null && json.currencyCode != '' && json.currencyCode != 'undefined'){
 			    	$("#currencyCode").val(json.currencyCode);
+			    	}
+			    	
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#rateType").val(json.rateType);
 			    	$('.selectpicker').selectpicker('refresh');
