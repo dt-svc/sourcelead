@@ -359,8 +359,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		/**
 		 * this block is for submissions for project member
+		 * commented by Prasad salina on 11/01/17
 		*/
-		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(updatedProjects.getId());
+		/*Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(updatedProjects.getId());
 		if (projectMembersList != null && !projectMembersList.isEmpty()){
 			for (ProjectMembers pm : projectMembersList) {
 				if(pm.getEmployee() != null){
@@ -368,7 +369,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}
 		  	  
 			}
-		}
+		}*/
 		
 		/*
 		 * This block is for Email To Managers and Project Members
@@ -819,7 +820,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		/**
 						 * this block is for submissions for project member
 						*/
-						Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
+						/*Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
 						if (projectMembersList != null && !projectMembersList.isEmpty()){
 							for (ProjectMembers pm : projectMembersList) {
 								if(pm.getEmployee() != null){
@@ -827,7 +828,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 								}
 						  	  
 							}
-						}
+						}*/
 			    		for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
 								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
 								 Long fieldValuelong = null;
@@ -864,7 +865,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    			}
 			    		}
 			    		
-			    		if(templist != null && !templist.isEmpty()){
+			    		/*if(templist != null && !templist.isEmpty()){
 			    			//getting projectmember userId's who are added to the project
 			    			freshlist.removeAll(templist);
 			    			if(freshlist != null && !freshlist.isEmpty()){
@@ -878,7 +879,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    				
 			    			}
 			    			
-			    		}
+			    		}*/
 			    		
 		    	}
 			    projects.setUpdatedBy(user.getUserCode());
@@ -919,9 +920,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 									  projectMember.setMemberHistoryList(memberHistoryList);
 								  }
 								  projectMembersService.saveProjectMember(projectMember);
-			    	    		 if(projectMember.getEmployee()!= null && projectMember.getEmployee().getUser() != null){
+			    	    		/* if(projectMember.getEmployee()!= null && projectMember.getEmployee().getUser() != null){
 			    	    			 commonUtil.storeTimesheetSubmissionRecords(projectMember.getEmployee().getUser());
-			    	    		 }
+			    	    		 }*/
 			    	    	 }
 			    	     }
 			    	}
@@ -1597,7 +1598,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 												
 											}
 											
-											commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
+											//commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
 											
 											/**
 										    * This teamMembersList string to store all team members for mail to project manager.
@@ -1708,7 +1709,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 								}
 							}
 							
-							if(flag == false){
+							/*if(flag == false){
 								
 					    			//getting projectmember userId's who are added to the project
 					    					ProjectMembers pm = storeProjectMemberByMemberUserIdAndLoginUser(usr.getId(), user, hierarchy.getProjectId(), new Date());
@@ -1716,7 +1717,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					    						commonUtil.storeTimesheetSubmissionRecords(user);
 					    					}
 										 
-							}
+							}*/
 							
 							 if(hierarchy.getProjectId() != null && hierarchy.getProjectId().getId() != null){
 			    					ProjectMembers pm1 = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUser.getId(), hierarchy.getProjectId().getId());
@@ -1746,6 +1747,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 								projectApproverHierarchyService.updateProjectApproverHierarchy(hierarchy);
 		    		}
 		    		
+			}
+
+			@Override
+			public List<Projects> getProjectsListByOrgLocationsIdAndEmpUserId(Long locationsId, Long empUserId) {
+				return projectsDao.getProjectsListByOrgLocationsIdAndEmpUserId(locationsId,empUserId);
 			}
 
 			/*@Override

@@ -195,7 +195,7 @@ public class UserServiceImpl implements UserService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			commonUtil.storeTimesheetSubmissionRecords(user);
+			//commonUtil.storeTimesheetSubmissionRecords(user);
 		}
 		
 		   //send mail to user
@@ -264,7 +264,7 @@ public class UserServiceImpl implements UserService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			commonUtil.storeTimesheetSubmissionRecords(user);
+			//commonUtil.storeTimesheetSubmissionRecords(user);
 		}
 		
 		
