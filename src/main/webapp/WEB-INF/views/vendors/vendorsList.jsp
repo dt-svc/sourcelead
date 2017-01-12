@@ -55,7 +55,7 @@ overflow-x: auto;
 	<div class="timesheet_head datatbl-filters customtimesheet-head">
         	<ul>
         	
-        	<li id="vendorsList" ><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
+        	<li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="vendorsList" ></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
 		                    	  <c:forEach var="report" items="${vendor_list}">  
@@ -65,7 +65,7 @@ overflow-x: auto;
 		                    </div>                	
 		                </li>
 	               
-		                <li id="vendorSatatus"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+		                <li id= "filter3ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="vendorSatatus"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
@@ -76,7 +76,7 @@ overflow-x: auto;
 	                        </ul>
 	                      </div>                	
 	                  </li>
-	                  <li id="vendorInvitation"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="filter4ApprovePop"></i>|
+	                  <li  id="filter4ApprovePop"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="vendorInvitation"></i>|
 	                	<div id="filter4ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="vendorInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label>Resend</label></li>
@@ -87,7 +87,7 @@ overflow-x: auto;
 	                      </div>                	
 	                  </li>
                   
-	                
+	                	 
 						<li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
@@ -98,7 +98,8 @@ overflow-x: auto;
 		               				<li><input id="c10"  type="checkbox" name="clinetLevel"value ="Tier-5"  onclick="getVendorLists();"><label>Tier-5</label></li>
 		                        </ul>
 		                    </div>                	
-		                </li>          
+		                </li>  
+		                    
 		          <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')">
 				       <li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
 					</sec:authorize>

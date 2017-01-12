@@ -1309,7 +1309,7 @@ function requirementPipeline(requirementId,submissionType){
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
 				           
 				            
-				            result = result +' <li><a href="javascript:void(0)" class="action"> Action <i onclick="getActions();" class="fa fa-caret-down"></i></a>';
+				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
 				            result = result +'<div class="action-pop">';
 				            result = result +'	<span>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
