@@ -93,14 +93,15 @@ function requirementApproverList(statusType){
                              var APPROVED = "APPROVED";     
  				             var REJECTED = "REJECTED";
  				            result = result +"<td>";
-				             if(opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementSubmissionStatus  !='OPEN'  &&  opt.requirementApproverHierarchyStatus !='APPROVED' &&  opt.requirementApproverHierarchyStatus != 'REJECTED' && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
+ 				            
+				             if(opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementSubmissionStatus  !='OPEN' &&  opt.requirementSubmissionStatus  !='REJECTED'   &&  opt.requirementApproverHierarchyStatus !='APPROVED' &&  opt.requirementApproverHierarchyStatus != 'REJECTED' && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
 				            	
 				            	 result = result + '<a  href="javascript:void(0)"  onClick="updateReuqirementStatus(\''+ APPROVED+ '\','+opt.id+');"   ><i class="fa fa-check text-success"></i></a>';
 		                    	 result = result + '<a  href="javascript:void(0)"  onClick="rejectRequirementAlertMessage(\''+ REJECTED+ '\','+opt.id+');"  ><i class="fa fa-close text-danger"></i></a>';
    				           	 
 				             }else if((opt.requirementApproverHierarchyStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN')  || (opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null)){
 				            	 result = result +'<div  id="requirementStatus"  ><span title='+opt.approvedBy+'>'+opt.approvedBy+'</span></div>';
-    				         }else if( opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementApproverHierarchyStatus == 'REJECTED'  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
+    				         }else if( opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementSubmissionStatus =="REJECTED"){
     				        	 result = result +'<div  id="requirementStatus" ><span title='+opt.approvedBy+'>'+opt.approvedBy+'</span></div>';
 		                     }else{
 		                    	 result = result +"<div>-----</div>";
