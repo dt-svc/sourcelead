@@ -324,6 +324,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setIsMailToProjectManager(Status.N);
 		}
     	
+	    if((jsonObj.has("isTimesheetAttachmentRequired")) && StringUtils.isNotEmpty(jsonObj.getString("isTimesheetAttachmentRequired")) && ("Y".equals(jsonObj.getString("isTimesheetAttachmentRequired")))){
+	    	projects.setIsTimesheetAttachmentRequired(Constants.RECORD_ACTIVE);
+	    }else{
+	    	projects.setIsTimesheetAttachmentRequired(Constants.RECORD_INACTIVE);
+	    }
 
     	//prepare ProjectApproverHierarchy
     	Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj,request,projects);
@@ -698,11 +703,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    
 	    projects.setProjectApproverHierarchiesList(projectApproverHierarchies);
 	    
-	    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(loginOrgLocations.getId());
+	    //Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(loginOrgLocations.getId());
+	    List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 	    projects.setManagersList(userList);
 	    if(projects.getManager1() != null){
-	    	  List<User> userListwithoutmaneger1 = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId());
-			    projects.setManagersListwithoutManager1(userListwithoutmaneger1);
+	    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			  projects.setManagersListwithoutManager1(userListwithoutmaneger1);
 	    }
 	    
 	    String[] approvers = new String[projectApproverHierarchies.size()];
@@ -795,6 +801,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 					    	 projects.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
 					     }
 				        }
+		    		
+		    		
+		    		if((jsonObj.has("isTimesheetAttachmentRequired")) && StringUtils.isNotEmpty(jsonObj.getString("isTimesheetAttachmentRequired")) && ("Y".equals(jsonObj.getString("isTimesheetAttachmentRequired")))){
+		    	    	projects.setIsTimesheetAttachmentRequired(Constants.RECORD_ACTIVE);
+		    	    }else{
+		    	    	projects.setIsTimesheetAttachmentRequired(Constants.RECORD_INACTIVE);
+		    	    }	
 		    		
 		    	if(jsonObj.has("level1Manager") || jsonObj.has("level2Manager") ){
 			    		HashSet<Long> oldlist = new HashSet<>();

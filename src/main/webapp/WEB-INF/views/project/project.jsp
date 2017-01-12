@@ -181,16 +181,28 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3"></label>
-							<div class="col-md-9">
+							<label class="col-md-3">Mail to </label>
+							<div class="col-md-5">
 								<div class="checkbox">
 									<label> <input type="checkbox" value="Y"  checked="checked" name="isMailToProjectManager"> 
-									Mail to Project Manager
+									Project Manager
 									</label>
 								</div>
 								<span class="hidden">Select Check Box</span>
 							</div>
-						</div>
+							
+						<sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
+							<div class="col-md-4">
+								<div class="checkbox">
+									<label> <input type="checkbox" value="Y"  checked="checked"
+										name="isMailToTeamMembers">Team Members
+									</label>
+								</div>
+							</div>
+					  </sec:authorize>
+					</div>
+					
+					
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					 <c:if test="${empty user_List}">
@@ -302,9 +314,9 @@
 						
 						
 						<div class="form-group">
-		                  <label class="col-md-3">Invoice Frequency</label>
+		                  <label class="col-md-3">Invoice Frequency <span class="text-danger">*</span></label>
 		                  <div class="col-md-9">
-		                         <select class="form-control chosen-select" id="invoiceFrequency" name="invoiceFrequency" field-name="Invoice Frequency">
+		                         <select class="form-control chosen-select" id="invoiceFrequency" name="invoiceFrequency" field-name="Invoice Frequency" data-validation="required" >
 				                        <option value="">-Invoice Frequency-</option>
 						                <option value="Weekly">Weekly</option>
 						        	    <option value="Bi-Weekly">Bi-Weekly</option>
@@ -314,20 +326,16 @@
 		                  </div>
 		                </div>
 						
-						
-					 <sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkbox">
-									<label> <input type="checkbox" value="Y"  checked="checked"
-										name="isMailToTeamMembers"> Mail to Team Members
+									<label> <input type="checkbox" value="Y"  
+										name="isTimesheetAttachmentRequired"> Timesheet Attachment Required
 									</label>
 								</div>
-								<span class="hidden">Select Check Box</span>
 							</div>
 						</div>
-					</sec:authorize>
 					</div>
 				</div>
 				<div class="form-footer clearfix row">

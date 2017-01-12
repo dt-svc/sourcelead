@@ -22,6 +22,15 @@
 						var clientName = "";
 						var projectSequeneNumber = "";
 						var invoiceFrequency = "";
+						var isTimesheetAttachmentRequired = "";
+						
+						
+						if (json.isTimesheetAttachmentRequired != null && json.isTimesheetAttachmentRequired != '' && json.isTimesheetAttachmentRequired != 'undefined'
+								&& json.isTimesheetAttachmentRequired == '1') {
+							isTimesheetAttachmentRequired = "YES";
+					     } else {
+					    	 isTimesheetAttachmentRequired = "NO";
+					    }
 						
 						if (json.endDateStr != null && json.endDateStr != ''
 								&& json.endDateStr != 'undefined') {
@@ -55,6 +64,7 @@
 						} else {
 							clientName = "--";
 						}
+						
 						
 					
 						
@@ -158,6 +168,12 @@
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Timesheet Attachment Required:</strong>';
+						result = result + '<span>'+isTimesheetAttachmentRequired+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
 						result = result + '<div class="clearfix"></div>';
 						result = result	+ '<p><strong>Description:</strong></p>'+ description + '<div class="clearfix"></div>';
 						result = result	+ '<div class="user_summary_edit user_summary_edit_a" id="editProjectDetailsDiv"></div>';
@@ -203,6 +219,17 @@
 						var invoiceFrequency = "";
 						
 						var projectSequeneNumber = "";
+						
+                        var isTimesheetAttachmentRequired = "";
+						
+						
+						if (json.isTimesheetAttachmentRequired != null && json.isTimesheetAttachmentRequired != '' && json.isTimesheetAttachmentRequired != 'undefined'
+								&& json.isTimesheetAttachmentRequired == '1') {
+							isTimesheetAttachmentRequired = "Y";
+					     } else {
+					    	 isTimesheetAttachmentRequired = "N";
+					    }
+						
 						if (json.endDateStr != null && json.endDateStr != ''
 								&& json.endDateStr != 'undefined') {
 							endDateStr = json.endDateStr;
@@ -271,13 +298,13 @@
 						result = result	+ '		<span><input type="text" id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield" data-validation="required validate_Space validate_length length2-100" field-name="Project Name" ></span><span id=fname_msg></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '	<label>Manager 1</label>';
+						result = result + '	<label>Manager 1 <span class="text-danger">*</span></label>';
 						result = result + '<div class="row">';
-						/* if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {  */
+						 if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {  
 							result = result + '<div class="col-md-12" id="levelone-select">';
-						/* }else{
+						 }else{
 							result = result + '<div class="col-md-9" id="levelone-select">';	
-						} */
+						} 
 						result = result	+ '<select onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
 						for (var j = 0; j < json.managersList.length; j++) {
 							var manager = json.managersList[j];
@@ -290,7 +317,8 @@
 						}
 						result = result + '</select>';
 						result = result + '</div>';
-					/* 	if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
+						
+					 	if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
 						result = result + '<div class="col-md-2" id="leveltwo-btn" style="display:none">';
 						result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add Level-II</span>';
 						result = result + '</div>';
@@ -298,14 +326,14 @@
 							result = result + '<div class="col-md-2" id="leveltwo-btn" style="display:block">';
 							result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add Level-II</span>';
 							result = result + '</div>';
-						} */
+						} 
 						result = result + '</div>';
 						
 						result = result + '</div>';
 
 						 if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
 							result = result+ '<div class="user_summary_edit_cta">';
-							result = result + '<label> Manager 2: </label>';
+							result = result + '<label> Manager 2 </label>';
 							result = result	+ '<select id="level2Manager" name="level2Manager">';
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
 								var manager = json.managersListwithoutManager1[j];
@@ -320,9 +348,9 @@
 							result = result + '</select>';
 							result = result + '</div>';
 
-						}/* else{
+						} else{
 							result = result+ '<div class="user_summary_edit_cta" style="display:none;" id="demo">';
-							result = result + '<label> Manager 2: </label>';
+							result = result + '<label> Manager 2 </label>';
 							result = result	+ '<select id="level2Manager" name="level2Manager">';
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
 								var manager = json.managersListwithoutManager1[j];
@@ -337,7 +365,7 @@
 							result = result + '</select>';
 							result = result + '</div>';
 
-						} */
+						} 
 
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '	<label>Client</label>';
@@ -375,14 +403,14 @@
 						result = result + '</div>';
 
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '	<label>Start date</label>';
+						result = result + '	<label>Start date <span class="text-danger">*</span></label>';
 						result = result
 								+ '	<input class="calendar" value='+json.startDateStr+' type="text" disabled="disabled">';
 						result = result + '</div>	';
 						
 						
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Invoice Frequency</label>';
+						result = result + '<label>Invoice Frequency <span class="text-danger">*</span></label>';
 						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control">';
 							
 						result = result  +' <option '+(json.invoiceFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
@@ -411,6 +439,14 @@
 						result = result + '</div>       ';
 						result = result + '<div class="clearfix"></div>';
 						
+						result = result + '<div class="form-group">';
+						result = result + '<div class="col-md-9">';
+						result = result + '<div class="checkbox">';
+						result = result + '<label> <input type="checkbox" value="Y" '+(isTimesheetAttachmentRequired == "Y" ? "checked" : '')+'  name="isTimesheetAttachmentRequired"> Timesheet Attachment Required</label>';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '</div>';
+					result = result + '<div class="clearfix"></div>';
 						
 						result = result + '<div class="user_summary_edit_cta">';
 						
@@ -615,7 +651,7 @@ function projectStatus(){
 
 <script type="text/javascript">
 	function getLevel2Approvers(manager2) {
-		//$("#demo").toggle();
+		$("#demo").toggle();
 		var currentApproverId = document.getElementById("level1Manager").value;
 		getChildLevel1Approvers(currentApproverId, manager2);
 	}
