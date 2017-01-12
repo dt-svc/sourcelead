@@ -109,11 +109,17 @@ public class ClientController {
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
 			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
-			
-			
 			for (OrgRelations orgRelation : clientsList) {
-				orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-				
+				if(null != orgRelation.getLocationId() && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelation.getResponderLocationId() != null){
+						orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+					}
+				}
+				if(null != orgRelation.getResponderLocationId() && null != orgRelation.getResponderLocationId().getId() && orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelation.getLocationId() != null){
+						orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
+					}
+				}
 				 //to fetch user details by usercode 
 				User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
 

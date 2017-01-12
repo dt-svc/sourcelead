@@ -229,11 +229,13 @@ function getClientDetails(){
    	        			location = report.country;
    	        		}
    	        		
+   	        		var orgName = (report.orgName).replace("'","\\'");
+   	        		
    	        		result = result +'<tr>';
    	        		
    	        			result = result +'<td>';
    	        		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+report.orgName+'\',\''+report.id+'\');">';
+   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+orgName+'\',\''+report.id+'\');">';
 						result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
    	        			
    	        			result = result +'</div>';

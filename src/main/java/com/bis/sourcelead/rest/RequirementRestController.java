@@ -147,31 +147,26 @@ public class RequirementRestController {
 
 		Requirement requirement = requirementService.storeRequirement(jsonObj, orgLocation, user, multiFile);
 		
-		StringBuilder reqCreateMsg = new StringBuilder();
-		if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved to Draft").toString());
-		}else if(jsonObj.getString("saveType").equalsIgnoreCase("save")){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved").toString());
-		}else if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  submitted for approval").toString());
+		if(jsonObj.getString("saveType").equalsIgnoreCase("draft") &&  (null == (jsonObj.get("requirementId")) || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
+			StringBuilder reqUpdateMsg = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved to Draft").toString());
+		}else if(jsonObj.getString("saveType").equalsIgnoreCase("save") &&  (null == (jsonObj.get("requirementId")) || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
+			StringBuilder reqUpdateMsg1 = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg1.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved").toString());
+		}else if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval") && (null == (jsonObj.get("requirementId")) || "".equalsIgnoreCase(jsonObj.get("requirementId").toString()))){
+			StringBuilder reqUpdateMsg2 = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg2.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  submitted for approval").toString());
 		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("save"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg",  reqCreateMsg.append("Success!! ").append(requirement.getJobTitle()).append(" details updated").toString());
-		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! ").append(requirement.getJobTitle()).append(" Updated and Submitted "));
-		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("draft"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!!  ").append(requirement.getJobTitle()).append(" Updated in Draft Stage").toString());
+			StringBuilder reqUpdateMs3 = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg",  reqUpdateMs3.append("Success!! ").append(requirement.getJobTitle()).append(" details updated").toString());
+		} else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval"))){
+			StringBuilder reqUpdateMsg4 = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg4.append("Success!! ").append(requirement.getJobTitle()).append(" Updated and Submitted ").toString());
+		} else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("draft"))){
+			StringBuilder reqUpdateMs5 = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMs5.append("Success!!  ").append(requirement.getJobTitle()).append(" Updated in Draft Stage").toString());
 		}
 		
-		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("save"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! "+requirement.getJobTitle()+" details updated");
-		}
-		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! "+requirement.getJobTitle()+" Updated and Submitted ");
-		}
-		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("draft"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!!  "+requirement.getJobTitle()+" Updated in Draft Stage");
-		}
-
 		return "success";
 
 	}

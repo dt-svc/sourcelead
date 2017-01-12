@@ -97,13 +97,6 @@ function editCandidate(candidateId){
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	 var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{   
             			 	var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
@@ -406,7 +399,6 @@ function editCandidate(candidateId){
 								  })
 							});
             		 
-            		 }
                 }else{
          	    	         var result ="";
         		    	     result = result+"   <div class='row'>"; 
@@ -581,15 +573,7 @@ function deleteCandidate(candidateId){
          url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
             			 location.replace(sourceleadUrl+"/candidatesList");
-            		 }
                 }
                  },
               }); 
@@ -654,15 +638,7 @@ function reActivateCandidateAlertMessage(candidateId){
 	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reActivate="+reactivate,        
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
-	            		 if( data.indexOf('Sign In') >= 0){
-				    		location.replace(sourceleadUrl);
-				    	 }
-	            		 else if (data.indexOf('exception') >= 0) {
-	            			 location.replace(sourceleadUrl+"/errorPage");
-	            		 }
-	            		 else{
 	            			 location.replace(sourceleadUrl+"/candidatesList");
-	            		 }
 	                } 
 	                 },
 	              }); 
@@ -692,13 +668,6 @@ function candidateProfile(candidateId){
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{ 
 							var result ="";
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
@@ -905,7 +874,6 @@ function candidateProfile(candidateId){
 							     });
 							     event.preventDefault();
 								   
-            		 }
               }else{
                      	 $("#candidateSideDiv").removeAttr("style");
        	    	         var result ="";
@@ -1046,13 +1014,6 @@ function candidateSkillsList(candidateId){
           url: sourceleadUrl+"/getCandidatesSkillsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
 	                	 $("#candidateSkillList").empty();
 	                	 var result = "";
                 	     result = result + '      <table class="table table-responsive table-hover clearfix">';
@@ -1173,7 +1134,6 @@ function candidateSkillsList(candidateId){
 	                     $("#candidateSkills").trigger("chosen:updated");
 	                     
 	                     
-			    	} 
                }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
@@ -1213,15 +1173,7 @@ function removeSkillById(candidateId, skillId){
          url: sourceleadUrl+"/removeSkillBySkillId?${_csrf.parameterName}=${_csrf.token}&skillId="+skillId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
             			 candidateSkillsList(candidateId);
-            		 }
                 }
                  },
 		}); 
@@ -1294,11 +1246,6 @@ function removeSkillById(candidateId, skillId){
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
 					success : function(data) {
 						if (data != null && data != 'undefined' && data != "" && data != '[]') {
-							if (data.indexOf('Sign In') >= 0) {
-								location.replace(sourceleadUrl);
-							} else if (data.indexOf('exception') >= 0) {
-								location.replace(sourceleadUrl + "/errorPage");
-							} else {
 								$("#employeeSubmissionDetailsList").empty();
 								var result = "";
 								result = result +'        <div class="clearfix design-view">';
@@ -1359,7 +1306,6 @@ function removeSkillById(candidateId, skillId){
 								result = result +'          </div>';
 								result = result +'        </div>';
 								$("#employeeSubmissionProfile").append(result);
-							}
 						}
 					},
 
@@ -1375,13 +1321,6 @@ function educationSubmissionProfile(candidateId){
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
 	                	 $("#educationSubmissionDetailsList").empty();
 	                	 var result = "";
 	                	 
@@ -1451,7 +1390,6 @@ function educationSubmissionProfile(candidateId){
 							result = result +'          </div>';
 							result = result +'        </div>';
 	                     $("#educationSubmissionProfile").append(result); 
-			    	} 
         	  }
         },
           
@@ -1467,13 +1405,6 @@ function certificationSubmissionProfile(candidateId){
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
 	                	 $("#certificationSubmissionProfile").empty();
 	                	 var result = "";
 	                	 
@@ -1520,7 +1451,6 @@ function certificationSubmissionProfile(candidateId){
 							result = result +'        </div>';
 							
 							$("#certificationSubmissionProfile").append(result); 
-			    	} 
         	  }
         },
           
