@@ -199,10 +199,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 			 moduleIds.add(Integer.parseInt(s));
 		 }
 		 
+		 
+		/* 
+		  //commented by Prasad salina
 		  boolean flag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 		  if(flag == true){
 			  saveProject(registration, orgLocations, user, employee);
- 		}
+ 		  }*/
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		
