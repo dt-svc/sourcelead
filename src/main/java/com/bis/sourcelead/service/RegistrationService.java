@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import org.json.JSONObject;
+
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.Registration;
@@ -19,6 +21,8 @@ public interface RegistrationService {
 	public void resetPassword(PasswordResets passwordResets,String password) throws Exception;
 	
 	public void deletePasswordResets(PasswordResets passwordResets) throws Exception;
+	
+	public void addUserBySourcelead(User user,JSONObject jsonObj) throws Exception;
 
 
 
