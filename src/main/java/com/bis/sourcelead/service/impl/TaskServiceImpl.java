@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,6 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaskDao;
@@ -51,13 +56,16 @@ public class TaskServiceImpl implements TaskService{
 	public Tasks getTasksById(Long id) {
 		return taskDao.getTasksById(id);
 	}
-
+	@Override
+	public List<Tasks> assignedTasksListByIdANDOrgLocationId(Long OrgLocationId,Long userId) throws Exception {
+		
+		return taskDao.assignedTasksListByIdANDOrgLocationId(OrgLocationId,userId);
+	}
 	
 	public String saveTasks(JSONObject jsonObj) throws Exception {
-		String resultJson = null;
-	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+
 	 	String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
@@ -125,7 +133,5 @@ public class TaskServiceImpl implements TaskService{
         
 		return "sucess";
 	}
-	
-	
-
+ 
 }

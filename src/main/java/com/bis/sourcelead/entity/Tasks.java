@@ -92,6 +92,12 @@ public class Tasks implements Serializable{
     
     @Column(name = "UPDATED_BY")
     private String updatedBy;
+    
+    @Transient
+    private String taskDateStr;
+    
+    @Transient
+    private String assignedName;
 
 	public Long getId() {
 		return id;
@@ -227,5 +233,21 @@ public class Tasks implements Serializable{
 
 	public void setTaskRepeat(String taskRepeat) {
 		this.taskRepeat = taskRepeat;
+	}
+
+	public String getTaskDateStr() {
+		return taskDateStr;
+	}
+
+	public void setTaskDateStr(String taskDateStr) {
+		this.taskDateStr = taskDateStr;
+	}
+
+	public String getAssignedName() {
+		return assignedName;
+	}
+
+	public void setAssignedName(String assignedName) {
+		this.assignedName = assignedName;
 	}
 }

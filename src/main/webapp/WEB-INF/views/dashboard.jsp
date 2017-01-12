@@ -133,13 +133,14 @@ overflow-x: auto;
 		        <div class="addtsk-btn"> <span class="btn btn-success btn-sm" onClick="showtaskdiv()"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Task</span> </div>
 		        <ul class="nav nav-tabs">
 		          <li class="active"><a data-toggle="tab" href="#my-task">My Tasks</a></li>
-		          <li><a data-toggle="tab" href="#other-task">Assigned Tasks</a></li>
+		          <li><a data-toggle="tab" href="#other-task" onclick="assignedTasks();">Assigned Tasks</a></li>
 		          <li><a data-toggle="tab" href="#closed-task">Closed Task</a></li>
 		        </ul>
 				        <div class="tab-content clearfix">
 				        <div id="other-task" class="tab-pane fade">
 				            <div class="clearfix require_wrap_table">
-				              <table>
+				            <div id="assignedTasksId"></div>
+				              <!-- <table>
 				                <thead>
 				                  <tr>
 				                    <th>Subject</th>
@@ -166,91 +167,8 @@ overflow-x: auto;
 				                        </select>
 				                      </div></td>
 				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option>Open</option>
-				                          <option>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option>Open</option>
-				                          <option>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option>Open</option>
-				                          <option>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option>Open</option>
-				                          <option>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option>Open</option>
-				                          <option>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
 				                </tbody>
-				              </table>
-				              
-				              <!-- Pagenation -->
-				              <nav class="clearfix">
-				                <ul id="taskpagin" class="pagination pull-right">
-				                  <li><a href="#">Previous</a></li>
-				                  <li class="active"><a href="#">1</a></li>
-				                  <li><a href="#">2</a></li>
-				                  <li><a href="#">3</a></li>
-				                  <li><a href="#">4</a></li>
-				                  <li><a href="#">5</a></li>
-				                  <li data-page="last"><a href="#">Next</a></li>
-				                </ul>
-				              </nav>
+				              </table> -->
 				            </div>
 				          </div>
 				          
@@ -283,91 +201,9 @@ overflow-x: auto;
 				                        </select>
 				                      </div></td>
 				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option>Open</option>
-				                          <option>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option>Open</option>
-				                          <option>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option>Open</option>
-				                          <option>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option>Open</option>
-				                          <option>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option>Open</option>
-				                          <option>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
 				                </tbody>
 				              </table>
 				              
-				              <!-- Pagenation -->
-				              <nav class="clearfix">
-				                <ul id="taskpagin" class="pagination pull-right">
-				                  <li><a href="#">Previous</a></li>
-				                  <li class="active"><a href="#">1</a></li>
-				                  <li><a href="#">2</a></li>
-				                  <li><a href="#">3</a></li>
-				                  <li><a href="#">4</a></li>
-				                  <li><a href="#">5</a></li>
-				                  <li data-page="last"><a href="#">Next</a></li>
-				                </ul>
-				              </nav>
 				            </div>
 				          </div>
 				          
@@ -400,91 +236,8 @@ overflow-x: auto;
 				                        </select>
 				                      </div></td>
 				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option disabled>Open</option>
-				                          <option selected>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option disabled>Open</option>
-				                          <option selected>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option disabled>Open</option>
-				                          <option selected>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option disabled>Open</option>
-				                          <option selected>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option disabled>Open</option>
-				                          <option selected>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
 				                </tbody>
 				              </table>
-				              
-				              <!-- Pagenation -->
-				              <nav class="clearfix">
-				                <ul id="taskpaginj" class="pagination pull-right">
-				                  <li><a href="#">Previous</a></li>
-				                  <li class="active"><a href="#">1</a></li>
-				                  <li><a href="#">2</a></li>
-				                  <li><a href="#">3</a></li>
-				                  <li><a href="#">4</a></li>
-				                  <li><a href="#">5</a></li>
-				                  <li data-page="last"><a href="#">Next</a></li>
-				                </ul>
-				              </nav>
 				            </div>
 				          </div>
 				        </div>
@@ -596,9 +349,8 @@ overflow-x: auto;
 						type : "POST",
 						url : sourceleadUrl+ "/storeTasks?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 						success : function(result) {
-							if (result == 'projectDashboard') {
-								location.replace(sourceleadUrl
-										+ "/projectDashboard");
+							if (result == 'sucess') {
+								assignedTasks();
 							}
 
 						},
@@ -644,6 +396,8 @@ $(".collpase-div").click(function(){
 //Add Task Div
  $(".icon-addTask").click(function(){
 	$(".addTask-widget").toggleClass("addTask-widget-active");
+		$(".newTask-widget").hide();
+	$("#myTask").show();
  });
  
  // Close New Task div
@@ -696,4 +450,51 @@ $(".collpase-div").click(function(){
 			return o;
 		};
 	})(jQuery);
+</script>
+<script type="text/javascript">
+function assignedTasks(){
+	alert("Hi");
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getAssignedTasksList?${_csrf.parameterName}=${_csrf.token}", 
+        success: function(data) {
+        	/* var json = JSON.parse(data);
+        	 var result = "";
+        	result = result + '	 <table>';
+        	result = result + '     <thead>';
+        	result = result + '       <tr>';
+        	result = result + '         <th>Subject</th>';
+        	result = result + '         <th>Date &amp; Time</th>';
+        	result = result + '         <th>Owner</th>';
+        	result = result + '         <th>Assigned to</th>';
+        	result = result + '         <th>Description</th>';
+        	result = result + '         <th>Mode</th>';
+        	result = result + '         <th>Status</th>';
+        	result = result + '       </tr>';
+        	result = result + '     </thead>';
+        	result = result + '     <tbody>';
+        	result = result + '       <tr>';
+        	result = result + '         <td><div><span>The subject of the Task</span></div></td>';
+        	result = result + '         <td><div class="text-center">10/25/2015 12:08pm</div></td>';
+        	result = result + '         <td><div><span>ABC Corporation, India</span></div></td>';
+        	result = result + '         <td><div><span>JVS Murthy, Hyderabad</span></div></td>';
+        	result = result + '         <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>';
+        	result = result + '         <td>Email</td>';
+        	result = result + '         <td><div class="dropdown-select tblminwidth-100">';
+        	result = result + '             <select>';
+        	result = result + '               <option>Open</option>';
+        	result = result + '               <option>Close</option>';
+        	result = result + '             </select>';
+        	result = result + '           </div></td>';
+        	result = result + '       </tr>';
+        	result = result + '     </tbody>';
+        	result = result + '   </table>';
+        	 $("#assignedTasksId").empty();
+        	   $("#assignedTasksId").append(result); 
+        	 */
+        }
+	});
+	 
+}
 </script>
