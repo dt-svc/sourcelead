@@ -229,7 +229,8 @@ function getClientDetails(){
    	        			location = report.country;
    	        		}
    	        		
-   	        		var orgName = (report.orgName).replace("'","\\'");
+   	        		var pattern = new RegExp(/["'"]/g);
+   	        		var orgName = (report.orgName).replace(pattern, "\\'");
    	        		
    	        		result = result +'<tr>';
    	        		

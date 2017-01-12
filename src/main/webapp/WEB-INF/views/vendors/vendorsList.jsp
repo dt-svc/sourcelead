@@ -214,7 +214,8 @@ function getVendorLists(){
    	        			location = report.country;
    	        		}
    	        		
-   	        		var orgName = (report.orgName).replace("'","\\'");
+   	        		var pattern = new RegExp(/["'"]/g);
+   	        		var orgName = (report.orgName).replace(pattern, "\\'");
    	        		
    	        		result = result +'<tr>';
    	        		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
