@@ -305,6 +305,7 @@ var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var loginUserId = '${SourceLeadWeb_userId}';
+	  var lo
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -322,6 +323,9 @@ function candidateSideBar(candidateId){
 			            var country = '';
 			            var state = '';
 			            var city = '';
+			            var currencyCodes = '';
+			            
+			            var currencyCode = '';
 			            
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'-'+'Months';            			 		
@@ -389,8 +393,21 @@ function candidateSideBar(candidateId){
          			 	}else{
          			 		rateType = '';
          			 	}
+         			 	
+         			 	if(json.currentRateCurrency != null && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefined'){
+         			 		currentRateCurrency = '/'+json.currentRateCurrency;
+         			 	}else{
+         			 		currentRateCurrency = '';
+         			 	}
+         			 	
+         			 	if(json.expectedRateCurrencey != null && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefined'){
+         			 		expectedRateCurrencey = '/'+json.expectedRateCurrencey;
+         			 	}else{
+         			 		expectedRateCurrencey = '';
+         			 	}
+         			 	
+         			 	
          			 	 
-         			 	currentRateType
 	                	 var result = "";
 	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -518,13 +535,19 @@ function candidateSideBar(candidateId){
 			                                                  }
 			             result = result+' <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
 			             
-			             result = result+'<li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
+			             result = result+'<li><i class="fa fa-money"></i><b>Current Rate:</b>';
 			             
-			             	result = result+''+currentRate+' '+currentRateType+'';
-		             	 result = result+'				     <b>Expected:</b> ';
-			             	result = result+''+expectedRate+' '+rateType+'';
-			             result = result+'</li>'; 
-			             result = result+' </ul>';
+			             result = result+''+currentRate+' '+currentRateType+''+currentRateCurrency+'';
+			             
+			             result = result+'</li>';
+			             
+			             result = result+'<li><i class="fa fa-money"></i><b>Expected:</b>';
+			             
+			             result = result+''+expectedRate+' '+rateType+''+expectedRateCurrencey+'';
+			             
+			             result = result+'</li>';
+			             
+			             result = result+'</ul>';
 			             
 			            /* New comments div creation Nov 8th, 2016 */ 
 			            if(json.status == '1' ){

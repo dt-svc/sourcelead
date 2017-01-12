@@ -264,19 +264,22 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 			
 			List<Long> tabIds = tabsService.getTabsIdsListByUserRoleIdAndOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
-			for(Long tabId : tabIds){
-				if(tabId.equals(Long.valueOf(Constants.TAB_REQUIREMENT))){
-					SourceLeadSessionManager.setSessionAttribute(request, "REQUIREMENT_TAB", "Y");
-				}
-				
-				else if(tabId.equals(Long.valueOf(Constants.TAB_MY_TIMESHEET))){
-					SourceLeadSessionManager.setSessionAttribute(request, "MY_TIMESHEET_TAB", "Y");
-				}
-				
-				else if(tabId.equals(Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL))){
-					SourceLeadSessionManager.setSessionAttribute(request, "IMESHEET_APPROVAL_TAB", "Y");
+			if(null != tabIds){
+				for(Long tabId : tabIds){
+					if(tabId.equals(Long.valueOf(Constants.TAB_REQUIREMENT))){
+						SourceLeadSessionManager.setSessionAttribute(request, "REQUIREMENT_TAB", "Y");
+					}
+					
+					else if(tabId.equals(Long.valueOf(Constants.TAB_MY_TIMESHEET))){
+						SourceLeadSessionManager.setSessionAttribute(request, "MY_TIMESHEET_TAB", "Y");
+					}
+					
+					else if(tabId.equals(Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL))){
+						SourceLeadSessionManager.setSessionAttribute(request, "IMESHEET_APPROVAL_TAB", "Y");
+					}
 				}
 			}
+		
 			
 			
 		} catch (Exception e) {
