@@ -827,6 +827,12 @@ public class UserServiceImpl implements UserService {
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
 		return userDao.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationsId, tabId);
 	}
+	
+	@Override
+	public List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId,
+			Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocationsId, tabId);
+	}
 
 	@Override
 	public List<User> getUsersForAddAsConsultant(Org org,Long orgLocationsId) throws Exception {
