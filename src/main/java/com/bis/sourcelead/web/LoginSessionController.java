@@ -150,6 +150,9 @@ public class LoginSessionController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("dashboard");
 		
+		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
+		model.addObject("userList", userList);
+		
 		Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
 		model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
 	   

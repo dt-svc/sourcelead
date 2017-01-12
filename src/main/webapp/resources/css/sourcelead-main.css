@@ -3914,12 +3914,22 @@ ul.pipeline li{
 	font-weight: normal;
     padding: 5px 0;
 }
+.hierachy-role li span.sellevel{
+    border-bottom: 1px dotted #ccc;
+}
 .create-level ul li ul {
-	margin-left: 30px;
-
+    padding-left: 10px;
+    margin-left: 30px;
+    width: 50%;
 }
 .create-level ul li ul li{
-	list-style-type: none;
+    border-left: 1px dotted #ccc;
+    list-style-type: none;
+}
+.create-level ul li ul li:before{
+    content: '....';
+    padding-right: 10px;
+    color: #909090;
 }
 /*li.sellevel:before {
     content: '\f067';
@@ -4536,8 +4546,9 @@ import-tranhd  [class*="col-md-"]{
     overflow-y: auto;	
 }
 .cand-advsrch-popup .close-div{
-	right: 0;
-	left: auto;
+    right: 5px;
+    left: auto;
+    top: 5px;
 }
 .cand-advsrch-popup .col-md-4{
 	/*margin-bottom: 10px;*/
