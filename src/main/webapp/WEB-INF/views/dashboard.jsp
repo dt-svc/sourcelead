@@ -461,7 +461,7 @@ function assignedTasks(){
         success: function(data) {
         	/* var json = JSON.parse(data);
         	 var result = "";
-        	result = result + '	 <table>';
+        	result = result + '	 <table>';6+96
         	result = result + '     <thead>';
         	result = result + '       <tr>';
         	result = result + '         <th>Subject</th>';
