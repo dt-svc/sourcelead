@@ -288,13 +288,8 @@ function editCandidate(candidateId){
 							result = result + '<option '+(json.rateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
 							result = result + ' </select>';
 							result = result + '</div>';
-							
-							
 							result = result + '</div>';
 							result = result + '</div>';
-							
-							
-							
 							
 							result = result + '<div class="col-md-6">';
 							result = result + '<div class="row">';
@@ -1092,20 +1087,20 @@ function candidateSkillsList(candidateId){
 	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) {  
 	                    	 var opt = json[i];   
-	                    	    result = result + '          <tr>';
-		                		result = result + '            <td><p class="form-control-static">'+opt.name+'</p></td>';
+	                    	    result = result + '<tr>';
+		                		result = result + '<td><p class="form-control-static">'+opt.name+'</p></td>';
 		                		
 		                		if(window.candidateStatusGlobal == '0'){
 		                			result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
 		                			if(opt.scale == 'undefined'|| opt.scale==null || opt.scale== 0){
-			                			 result = result + '                <option selected=""disabled="">select</option>'; 
+			                			 result = result + '<option selected=""disabled="">select</option>'; 
 				                	 }else{
-		                			result = result + '                <option selected="" value="'+opt.scale+'" disabled="">'+opt.scale+'</option>';
+		                			result = result + '<option selected="" value="'+opt.scale+'" disabled="">'+opt.scale+'</option>';
 				                	 }
 		                		}else{
 		                		
-		                		result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
-		                		result = result + '                <option selected="" value="'+opt.scale+'" disabled="">Select</option>';
+		                		result = result + '<td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
+		                		result = result + '<option selected="" value="'+opt.scale+'" disabled="">Select</option>';
 		                		
 		                		if(opt.scale == "Beginner"){
 		                			result = result + '<option selected>Beginner</option>';
@@ -1136,15 +1131,15 @@ function candidateSkillsList(candidateId){
 		                		result = result + '              </select></td>';
 		                		
 		                		 if(window.candidateStatusGlobal == '0'){ 
-		                			 result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
+		                			 result = result + '<td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
 				                	 if(opt.totalExperience == 'undefined'|| opt.totalExperience==null || opt.totalExperience== 0){
-			                			 result = result + '                <option selected=""disabled="">select</option>'; 
+			                			 result = result + ' <option selected=""disabled="">select</option>'; 
 				                	 }else{
-		                			 result = result + '                <option selected="" value="'+opt.totalExperience+'" disabled="">'+opt.totalExperience+'</option>'; 
+		                			 result = result + '<option selected="" value="'+opt.totalExperience+'" disabled="">'+opt.totalExperience+'</option>'; 
 		                		 }
 				                }else{
-		                		result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
-		                		result = result + '                <option selected="" disabled="">Select</option>';
+		                		result = result + '<td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
+		                		result = result + '<option selected="" disabled="">Select</option>';
 		                		if(opt.totalExperience == "0"){
 		                			result = result + '<option selected>0</option>';   
 		                		}else{
