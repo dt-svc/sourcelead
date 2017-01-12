@@ -31,7 +31,7 @@ z-index: 9999999999 !important;
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Org Details</h2>
+        <h2>${orgloc.org.orgName}</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
     </section>
@@ -42,7 +42,14 @@ z-index: 9999999999 !important;
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		    <!-- Tab for Profile setting-area -->
 		  <div class="accountsettings-tab org-settings-area">
+		  
+		  <ul class="nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#details">Details</a></li>
+			<li><a data-toggle="tab" href="#users">Users</a></li>
+		  </ul>
+		  
 		  <div class="tab-content panel-body">
+		  <div id="details" class="tab-pane fade in active">
 			<div class="clearfix">
 			  <form:form class="login-form clearfix"  id="update_module_form"  name="update_module_form" method="post" > 
 			  
@@ -129,7 +136,13 @@ z-index: 9999999999 !important;
 					</div>
 					</form:form>
 				</div>
-
+			</div>
+			<div id="users" class="tab-pane fade">
+			
+			
+			
+			
+			</div>
 			
 			</div>
 			</div>

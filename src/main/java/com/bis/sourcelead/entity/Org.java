@@ -126,6 +126,8 @@ public class Org implements Serializable{
 	@Transient
 	private Status isMailSent;
 	
+	@Transient
+	private String location;
 	
 	public Long getId() {
 		return id;
@@ -319,6 +321,14 @@ public class Org implements Serializable{
 
 	public void setOrgAddress(String orgAddress) {
 		this.orgAddress = orgAddress;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 	
