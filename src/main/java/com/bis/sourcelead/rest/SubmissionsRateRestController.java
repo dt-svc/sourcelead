@@ -479,7 +479,7 @@ public class SubmissionsRateRestController {
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	
-		 	
+		 	String rejectreason = "";
 		 	RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 			
 			RequirementRateSubmissionNegotiation  requirementRateSubmissionNegotiation = new RequirementRateSubmissionNegotiation();
@@ -522,12 +522,19 @@ public class SubmissionsRateRestController {
 			requirementSubmission.setFinalizedRateType(requirementRateSubmissionNegotiation.getExpectedRateType());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
-			/*if("Accepted".equalsIgnoreCase(status)){
+			if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.ORG && "Accepted".equalsIgnoreCase(status)){
 				Requirement requirement = requirementSubmission.getRequirement();
 				Candidate candidate = requirementSubmission.getCandidate();
 				OrgLocations orgLocations = requirementSubmission.getOrgLocations();
 				requirementSubmissionService.userAcceptRateNegotiation(requirement,users,candidate,orgLocations,requirementRateSubmissionNegotiation);
-			}*/
+			}else if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.ORG){
+				Requirement requirement = requirementSubmission.getRequirement();
+				Candidate candidate = requirementSubmission.getCandidate();
+				OrgLocations orgLocations = requirementSubmission.getOrgLocations();
+				List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidate.getId());
+				StringBuilder tempHTML = buildNegotiationHistory(negotiationList,requirement,candidate,submissionId,"user");
+				requirementSubmissionService.userRejectRateNegotiation(requirement,users,candidate,orgLocations,requirementRateSubmissionNegotiation,rejectreason,tempHTML);
+			}
 			return "SUCCESS";
 		}
 	 

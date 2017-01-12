@@ -450,20 +450,20 @@ function getAllCandidateCountries(){
     	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
-        	$('#candidateCountry').empty();
-        	$('#candidateCountry').append('<option value="">---select---</option>');
+        	$('html #candidateCountry').empty();
+        	$('html #candidateCountry').append('<option value="">---select---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == countryName){
-            		$('#candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}else if(json[i] == '${loginCountryName}' && countryName ==null && countryName ==''){
-            		$('#candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{ 
-            		$('#candidateCountry').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            		$('html #candidateCountry').append('<option value="'+json[i]+'">'+json[i]+'</option>');
             	} 
             	
             }
-            $('#candidateCountry').trigger("chosen:updated");
+            $('html #candidateCountry').trigger("chosen:updated");
             getAllCandidateStates();
         },
         error: function(e){
@@ -476,10 +476,10 @@ function getAllCandidateCountries(){
 <script>
 function getAllCandidateStates(){
 	
-var countryName = $("#candidateCountry").val();
+var countryName = $("html #candidateCountry").val();
 	
 	//to set existing state value(Auto populate)
-	var stateName = $("#candidateState").val();
+	var stateName = $("html #candidateState").val();
 	
 	if(stateName == null || stateName == 'undefined' || stateName == ''){
 		stateName = document.getElementById("updateState").value;
@@ -498,29 +498,29 @@ var countryName = $("#candidateCountry").val();
 	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#candidateState').empty();
-	        	$('#candidateState').append('<option value="">---select---</option>');
+	        	$('html #candidateState').empty();
+	        	$('html #candidateState').append('<option value="">---select---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
-	            		$('#candidateState').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            		$('html #candidateState').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
 	            	}
 	            	else{ 
-	            		$('#candidateState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            		$('html #candidateState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            	} 
 	            }
-	            $('#candidateState').trigger("chosen:updated");
+	            $('html #candidateState').trigger("chosen:updated");
 	            getCandidateCities();
 	        },
 	        error: function(e){
 	        }
 	    });
 	}else{
-		$('#candidateState').empty();
-    	$('#candidateState').append('<option value="">---select---</option>');
-    	$('#candidateState').trigger("chosen:updated");
-    	$('#candidateCity').empty();
-    	$('#candidateCity').append('<option value="">---select---</option>');
-        $('#candidateCity').trigger("chosen:updated");
+		$('html #candidateState').empty();
+    	$('html #candidateState').append('<option value="">---select---</option>');
+    	$('html #candidateState').trigger("chosen:updated");
+    	$('html #candidateCity').empty();
+    	$('html #candidateCity').append('<option value="">---select---</option>');
+        $('html #candidateCity').trigger("chosen:updated");
 	}
 }
 </script>  
@@ -529,10 +529,10 @@ var countryName = $("#candidateCountry").val();
 <script>
 function getCandidateCities(){
 	
-	var countryName = $("#candidateCountry").val();
-	var stateName = $("#candidateState").val();
+	var countryName = $("html #candidateCountry").val();
+	var stateName = $("html #candidateState").val();
 	
-	var cityName = $("#candidateCity").val();
+	var cityName = $("html #candidateCity").val();
 	if(cityName == null || cityName == 'undefined' || cityName == ''){
 		cityName = document.getElementById("updateCity").value;
 	}
@@ -552,25 +552,25 @@ function getCandidateCities(){
 	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#candidateCity').empty();
-	        	$('#candidateCity').append('<option value="">---select---</option>');
+	        	$('html #candidateCity').empty();
+	        	$('html #candidateCity').append('<option value="">---select---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
-	            		$('#candidateCity').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            		$('html #candidateCity').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
 	            	}
 	            	else{ 
-	            		$('#candidateCity').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            		$('html #candidateCity').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            	} 
 	            }
-	            $('#candidateCity').trigger("chosen:updated");
+	            $('html #candidateCity').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
 	    });
 	}else{
-		$('#candidateCity').empty();
-    	$('#candidateCity').append('<option value="">---select---</option>');
-    	$('#candidateCity').trigger("chosen:updated");
+		$('html #candidateCity').empty();
+    	$('html #candidateCity').append('<option value="">---select---</option>');
+    	$('html #candidateCity').trigger("chosen:updated");
 	}
 }
 </script> 
@@ -586,13 +586,7 @@ function updateValues(){
 </script> 
  -->
 
-    	    
-
-
-
 <!-- Country,State,City Script Ends Here -->
-
-
 
 <%-- 
      @author : Venkat Kesav
