@@ -341,7 +341,7 @@ public class DashboardRestController {
 		for(Requirement requirement : requirementList){
 			// to get the RequirementApproverHierarchy to set the Status
 			RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), user.getId());
-			if(requirementApproverHierarchy!=null ){
+			if(null != requirementApproverHierarchy ){
 				       requirement.setRequirementApproverHierarchyStatus(requirementApproverHierarchy.getRequirementApproverStatus().toString());
 				       // to set the approved/rejected by user
 				       User approvedUser = userService.getUserByUserCode(requirementApproverHierarchy.getUpdatedBy());
@@ -575,7 +575,7 @@ public class DashboardRestController {
 					    RequirementApproverHierarchy level1approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
 						User approverUser = userService.getUserById(level1approver.getApproverUserId().getId());
 						if (status.equalsIgnoreCase("APPROVED")) {
-							if (level1approver != null) {
+							if (null != level1approver) {
 								// this is for sending email to second level approver
 								requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, null,	orgLocation);
 							}
