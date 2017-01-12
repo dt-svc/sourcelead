@@ -1749,6 +1749,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 		    		
 			}
 
+			@Override
+			public List<Projects> getProjectsListByOrgLocationsIdAndEmpUserId(Long locationsId, Long empUserId) {
+				return projectsDao.getProjectsListByOrgLocationsIdAndEmpUserId(locationsId,empUserId);
+			}
+
 			/*@Override
 			public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception {
 				return projectsDao.getAllUserTimeSheetSubmissionStatusCurrentWeek();

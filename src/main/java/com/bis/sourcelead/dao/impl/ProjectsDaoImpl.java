@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Projects;
@@ -593,6 +594,15 @@ public Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId, Lon
 		}
 		return count;
     
+}
+
+@Override
+public List<Projects> getProjectsListByOrgLocationsIdAndEmpUserId(Long locationsId, Long empUserId) {
+	logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = "from Projects pj where pj.orgLocationsId = :orgLocationsId and pj.id  IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ) and pm.id IN (select pmh.projectMemberId.id from ProjectMembersHistory pmh where pmh.status = '"+Constants.PROJECT_MEMBER_HISTORY_OPEN+"')) ";
+	List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", locationsId).setLong("userId", empUserId).setCacheable(true).list();
+	return projectsList;
 }
 
 /*@Override
