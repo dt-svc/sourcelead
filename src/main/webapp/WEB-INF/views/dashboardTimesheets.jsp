@@ -24,12 +24,16 @@ $(document).ready(function(){
           <h4 class="clearfix">${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'My Timesheets' : onlyApprovalTimesheets ? 'Approval Timesheets' : ''} &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
            <div class="clearfix require_wrap_table dashboard-data mt">
-           <c:if test="${bothTimesheets}">
+            
+             <c:if test="${bothTimesheets}">
              <ul class="nav nav-tabs">
-              <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');" href="#today-req">My Timesheets</a></li>
-              <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');" href="#prev-req">Employees</a></li>
+             
+               <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');" href="#today-req">My Timesheets</a></li>
+               
+               <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');" href="#prev-req">Employees</a></li>
              </ul>
              </c:if>
+             
             <div class="db-widget-sm row">
               <div class="col-xs-12 col-sm-3">
                 <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-floppy-o" aria-hidden="true"></i> </span>

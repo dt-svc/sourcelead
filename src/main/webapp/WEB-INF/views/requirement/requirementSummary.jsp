@@ -617,25 +617,25 @@ function sideBar(requirementId){
 				        
 				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '')
 				    	   {
-				        result = result+' <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+				        result = result+' <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
 				    	   }
 				       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
 					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
 				       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
-					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
 				       }
 				       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
-					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
    
 				       }
 				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
-					   result = result+'<li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
    
 				       }
 				       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
-					   result = result+'<li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
   
 				       }
 				       else{
@@ -2489,7 +2489,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + ' </div>';
 		                     
 		                     result = result + '  <div class="form-group col-md-12">';
-		                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" field-name="Reason" data-validation="required"></textarea>';
+		                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" field-name="Reason"></textarea>';
 		                     result = result + '  </div>';
 		                     result = result + '  <div class="form-group col-md-12">';
 		                     result = result + '    <div class="pull-right">';
