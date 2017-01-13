@@ -16,4 +16,8 @@ public interface TaskService {
 	
 	List<Tasks> assignedTasksListByIdANDOrgLocationId(Long OrgLocationId,Long userId)throws Exception;
 	
+	List<Tasks> myTasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId,Long userId)throws Exception;
+	
+	List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId,Long userId,String Status)throws Exception;
+	
 }

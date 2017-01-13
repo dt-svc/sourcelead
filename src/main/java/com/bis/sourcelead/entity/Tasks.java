@@ -98,6 +98,10 @@ public class Tasks implements Serializable{
     
     @Transient
     private String assignedName;
+    
+    @Transient
+    private String taskOwnerName;
+    
 
 	public Long getId() {
 		return id;
@@ -249,5 +253,13 @@ public class Tasks implements Serializable{
 
 	public void setAssignedName(String assignedName) {
 		this.assignedName = assignedName;
+	}
+
+	public String getTaskOwnerName() {
+		return taskOwnerName;
+	}
+
+	public void setTaskOwnerName(String taskOwnerName) {
+		this.taskOwnerName = taskOwnerName;
 	}
 }

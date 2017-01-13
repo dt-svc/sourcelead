@@ -9,6 +9,9 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link rel="stylesheet" href="resources/css/jquery.timepicker.css">
 <script src="resources/js/jquery.timepicker.js"></script>
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 <style>
 .dashboard-widget {
 /* min-height: 400px !important; */
@@ -60,9 +63,12 @@ overflow-x: auto;
 }
 </style>
 
- 
-
-
+ <script type="text/javascript">
+ $( document ).ready(function() {
+	 tasksList('myTask');
+	});
+</script>
+  
 <section class="content-wraper">
 	    <section class="content-header clearfix">
 	      <div class="pull-left">
@@ -132,112 +138,27 @@ overflow-x: auto;
 		      <div class="clearfix require_wrap_table dashboard-data" id="myTask">
 		        <div class="addtsk-btn"> <span class="btn btn-success btn-sm" onClick="showtaskdiv()"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Task</span> </div>
 		        <ul class="nav nav-tabs">
-		          <li class="active"><a data-toggle="tab" href="#my-task">My Tasks</a></li>
-		          <li><a data-toggle="tab" href="#other-task" onclick="assignedTasks();">Assigned Tasks</a></li>
-		          <li><a data-toggle="tab" href="#closed-task">Closed Task</a></li>
+		          <li class="active"><a data-toggle="tab" href="#my-task" onclick="tasksList('myTask');">My Tasks</a></li>
+		          <li><a data-toggle="tab" href="#other-task" onclick="tasksList('assignedTasks');">Assigned Tasks</a></li>
+		          <li><a data-toggle="tab" href="#closed-task" onclick="tasksList('closedTasks');">Closed Task</a></li>
 		        </ul>
 				        <div class="tab-content clearfix">
 				        <div id="other-task" class="tab-pane fade">
 				            <div class="clearfix require_wrap_table">
-				            <div id="assignedTasksId"></div>
-				              <!-- <table>
-				                <thead>
-				                  <tr>
-				                    <th>Subject</th>
-				                    <th>Date &amp; Time</th>
-				                    <th>Owner</th>
-				                    <th>Assigned to</th>
-				                    <th>Description</th>
-				                    <th>Mode</th>
-				                    <th>Status</th>
-				                  </tr>
-				                </thead>
-				                <tbody>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option>Open</option>
-				                          <option>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                </tbody>
-				              </table> -->
+				              <div id="assignedTasksId"></div>
 				            </div>
 				          </div>
 				          
 				          <div id="my-task" class="tab-pane fade in active">
 				            <div class="clearfix require_wrap_table">
-				              <table>
-				                <thead>
-				                  <tr>
-				                    <th>Subject</th>
-				                    <th>Date &amp; Time</th>
-				                    <th>Owner</th>
-				                    <th>Assigned to</th>
-				                    <th>Description</th>
-				                    <th>Mode</th>
-				                    <th>Status</th>
-				                  </tr>
-				                </thead>
-				                <tbody>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option>Open</option>
-				                          <option>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                </tbody>
-				              </table>
+				               <div id="myTasksId"></div>
 				              
 				            </div>
 				          </div>
 				          
 				          <div id="closed-task" class="tab-pane fade">
 				            <div class="clearfix require_wrap_table">
-				              <table>
-				                <thead>
-				                  <tr>
-				                    <th>Subject</th>
-				                    <th>Date &amp; Time</th>
-				                    <th>Owner</th>
-				                    <th>Assigned to</th>
-				                    <th>Description</th>
-				                    <th>Mode</th>
-				                    <th>Status</th>
-				                  </tr>
-				                </thead>
-				                <tbody>
-				                  <tr>
-				                    <td><div><span>The subject of the Task</span></div></td>
-				                    <td><div class="text-center">10/25/2015 12:08pm</div></td>
-				                    <td><div><span>ABC Corporation, India</span></div></td>
-				                    <td><div><span>JVS Murthy, Hyderabad</span></div></td>
-				                    <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>
-				                    <td>Email</td>
-				                    <td><div class="dropdown-select tblminwidth-100">
-				                        <select>
-				                          <option disabled>Open</option>
-				                          <option selected>Close</option>
-				                        </select>
-				                      </div></td>
-				                  </tr>
-				                </tbody>
-				              </table>
+				               <div id="closedTasksId"></div>
 				            </div>
 				          </div>
 				        </div>
@@ -349,10 +270,8 @@ overflow-x: auto;
 						type : "POST",
 						url : sourceleadUrl+ "/storeTasks?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 						success : function(result) {
-							if (result == 'sucess') {
-								assignedTasks();
-							}
-
+							taskwidget();
+							tasksList('assignedTasks');
 						},
 					});
 			return true;
@@ -378,10 +297,16 @@ overflow-x: auto;
 <script type="text/javascript">
 $('#taskDatpicker').datepicker({
 	dateFormat : 'dd-mm-yy',
-	changeMonth: true,
-	changeYear: true
+	 changeMonth: true,
+	changeYear: true, 
+	minDate : 0,
+	onSelect : function(selected) {
+		var dt = new Date(selected);
+		dt.setDate(dt.getDate() + 1);
+		$("#taskDatpicker").datepicker("option", "minDate", dt);
+	}
+	
 	});
-
 $('#timepicker').timepicker();
 </script>
 
@@ -451,17 +376,16 @@ $(".collpase-div").click(function(){
 		};
 	})(jQuery);
 </script>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function assignedTasks(){
-	alert("Hi");
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getAssignedTasksList?${_csrf.parameterName}=${_csrf.token}", 
         success: function(data) {
-        	/* var json = JSON.parse(data);
+        	 var json = JSON.parse(data);
         	 var result = "";
-        	result = result + '	 <table>';6+96
+        	result = result + '	 <table id="assignedTasksPagination">'; 
         	result = result + '     <thead>';
         	result = result + '       <tr>';
         	result = result + '         <th>Subject</th>';
@@ -474,27 +398,251 @@ function assignedTasks(){
         	result = result + '       </tr>';
         	result = result + '     </thead>';
         	result = result + '     <tbody>';
-        	result = result + '       <tr>';
-        	result = result + '         <td><div><span>The subject of the Task</span></div></td>';
-        	result = result + '         <td><div class="text-center">10/25/2015 12:08pm</div></td>';
-        	result = result + '         <td><div><span>ABC Corporation, India</span></div></td>';
-        	result = result + '         <td><div><span>JVS Murthy, Hyderabad</span></div></td>';
-        	result = result + '         <td><div><span>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</span></div></td>';
-        	result = result + '         <td>Email</td>';
-        	result = result + '         <td><div class="dropdown-select tblminwidth-100">';
-        	result = result + '             <select>';
-        	result = result + '               <option>Open</option>';
-        	result = result + '               <option>Close</option>';
-        	result = result + '             </select>';
-        	result = result + '           </div></td>';
-        	result = result + '       </tr>';
+        	
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        		var selected1 = '';
+        		var selected2 = '';
+        		
+        		if(report.taskStatus == 'Open'){
+        			 selected1 = 'selected';
+				}
+        		if(report.taskStatus == 'Close'){
+					 selected2 = 'selected';
+				}
+        		
+        		result = result + '       <tr>';
+        		result = result + '         <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
+            	result = result + '         <td><div class="text-center">1'+report.taskDateStr+'  '+report.taskTime+'</div></td>';
+            	result = result + '         <td><div><span>'+report.taskOwnerName+'</span></div></td>';
+            	result = result + '         <td><div><span>'+report.assignedName+'</span></div></td>';
+            	result = result + '         <td><div><span>'+report.description+'</span></div></td>';
+            	result = result + '         <td>'+report.alertType+'</td>';
+            	result = result + '         <td><div class="dropdown-select tblminwidth-100">';
+            	result = result + '             <select id="taskState'+report.id+'" name="taskState" onChange="updateTaskStatus(\''+report.id+'\');">';
+            	result = result + '               <option '+selected1+'>Open</option>';
+            	result = result + '               <option '+selected2+'>Close</option>';
+            	result = result + '             </select>';
+            	result = result + '           </div></td>';
+            	result = result + '       </tr>';
+			}
         	result = result + '     </tbody>';
         	result = result + '   </table>';
         	 $("#assignedTasksId").empty();
-        	   $("#assignedTasksId").append(result); 
-        	 */
+        	 $("#assignedTasksId").append(result); 
+        	 assignedTasksPagination();
         }
 	});
 	 
+}
+</script> -->
+
+<script>
+function updateTaskStatus(taskId){
+    var taskStatus = $('#taskState'+taskId).val();
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/changeTaskStatus?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId+"&taskStatus="+taskStatus,	    	   
+	    success: function(data) {
+	    	assignedTasks();
+	    }
+   });
+}
+</script>
+
+<!-- 
+<script type="text/javascript">
+function myTasks(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var myTasksurl = sourceleadUrl+"/getMyTasksList?${_csrf.parameterName}=${_csrf.token}";
+	$.ajax({
+    	type: "POST",
+        url: myTasksurl,
+        success: function(data) {
+        	 var json = JSON.parse(data);
+        	 var result = "";
+        	result = result + '	 <table id="myTasksPagination">'; 
+        	result = result + '     <thead>';
+        	result = result + '       <tr>';
+        	result = result + '         <th>Subject</th>';
+        	result = result + '         <th>Date &amp; Time</th>';
+        	result = result + '         <th>Owner</th>';
+        	result = result + '         <th>Assigned to</th>';
+        	result = result + '         <th>Description</th>';
+        	result = result + '         <th>Mode</th>';
+        	result = result + '         <th>Status</th>';
+        	result = result + '       </tr>';
+        	result = result + '     </thead>';
+        	result = result + '     <tbody>';
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        		var selected1 = '';
+        		var selected2 = '';
+        		
+        		if(report.taskStatus == 'Open'){
+        			 selected1 = 'selected';
+				}
+        		if(report.taskStatus == 'Close'){
+					 selected2 = 'selected';
+				}
+        		
+        		result = result + '       <tr>';
+        		result = result + '         <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
+            	result = result + '         <td><div class="text-center">1'+report.taskDateStr+'  '+report.taskTime+'</div></td>';
+            	result = result + '         <td><div><span>'+report.taskOwnerName+'</span></div></td>';
+            	result = result + '         <td><div><span>'+report.assignedName+'</span></div></td>';
+            	result = result + '         <td><div><span>'+report.description+'</span></div></td>';
+            	result = result + '         <td>'+report.alertType+'</td>';
+            	result = result + '         <td><div class="dropdown-select tblminwidth-100">';
+            	result = result + '             <select id="taskState'+report.id+'" name="taskState" onChange="updateTaskStatus(\''+report.id+'\');">';
+            	result = result + '               <option '+selected1+'>Open</option>';
+            	result = result + '               <option '+selected2+'>Close</option>';
+            	result = result + '             </select>';
+            	result = result + '           </div></td>';
+            	result = result + '       </tr>';
+			}
+        	result = result + '     </tbody>';
+        	result = result + '   </table>';
+        	 $("#myTasksId").empty();
+        	 $("#myTasksId").append(result); 
+        	 myTasksPagination();
+        }
+	});
+	 
+}
+</script>
+ -->
+<script type="text/javascript">
+function tasksList(status){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getTasksList?${_csrf.parameterName}=${_csrf.token}&status="+status,
+        success: function(data) {
+        	 var json = JSON.parse(data);
+        	 var result = "";
+       		if(status == "myTask"){
+       			result = result + '	 <table id="myTasksPagination">'; 
+       		}else if(status == "assignedTasks"){
+       			result = result + '	 <table id="assignedTasksPagination">'; 
+       		}else if(status == "closedTasks"){
+       			result = result + '	 <table id="closedTasksPagination">'; 
+       		}
+        	result = result + '     <thead>';
+        	result = result + '       <tr>';
+        	result = result + '         <th>Subject</th>';
+        	result = result + '         <th>Date &amp; Time</th>';
+        	result = result + '         <th>Owner</th>';
+        	result = result + '         <th>Assigned to</th>';
+        	result = result + '         <th>Description</th>';
+        	result = result + '         <th>Mode</th>';
+        	result = result + '         <th>Status</th>';
+        	result = result + '       </tr>';
+        	result = result + '     </thead>';
+        	result = result + '     <tbody>';
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        	 
+        		result = result + '       <tr>';
+        		result = result + '         <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
+            	result = result + '         <td><div class="text-center">1'+report.taskDateStr+'  '+report.taskTime+'</div></td>';
+            	result = result + '         <td><div><span>'+report.taskOwnerName+'</span></div></td>';
+            	result = result + '         <td><div><span>'+report.assignedName+'</span></div></td>';
+            	result = result + '         <td><div><span>'+report.description+'</span></div></td>';
+            	result = result + '         <td>'+report.alertType+'</td>';
+            	result = result + '         <td><div class="dropdown-select tblminwidth-100">';
+            	
+            		if(status == "myTask" || status == "assignedTasks" ){
+            			result = result + '             <select id="taskState'+report.id+'" name="taskState" onChange="updateTaskStatus(\''+report.id+'\');">';
+                    	if (report.taskStatus == 'Open') {
+        					result = result	+ '<option selected >'+report.taskStatus+'</option>';
+        				} else {
+        					result = result + '<option>Open</option>';
+        				}
+                    	if (report.taskStatus == 'Closed') {
+        					result = result	+ '<option selected >'+report.taskStatus+'</option>';
+        				} else {
+        					result = result + '<option>Closed</option>';
+        				}
+                    	result = result + '             </select>';
+                    	 
+            		}else if(status == "closedTasks"){
+            			result = result + '             <select disabled>';
+        					result = result	+ '<option>'+report.taskStatus+'</option>';
+                    	result = result + '             </select>';
+            		}
+            	
+            	result = result + '           </div></td>';
+            	result = result + '       </tr>';
+			}
+        	result = result + '     </tbody>';
+        	result = result + '   </table>';
+        	
+        	if(status == "myTask"){
+	        	 $("#myTasksId").empty();
+	           	 $("#myTasksId").append(result); 
+	           	 myTasksPagination();
+        	}else if(status == "assignedTasks"){
+        		 $("#assignedTasksId").empty();
+	           	 $("#assignedTasksId").append(result); 
+	           	 assignedTasksPagination();
+        	}else if(status == "closedTasks"){
+        		 $("#closedTasksId").empty();
+	           	 $("#closedTasksId").append(result); 
+	           	 closedTasksPagination();
+       		}
+        	
+        	 
+        }
+	});
+	 
+}
+</script>
+
+<script>
+function myTasksPagination(){
+    $('#myTasksPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+<script>
+function assignedTasksPagination(){
+    $('#assignedTasksPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+<script>
+function closedTasksPagination(){
+    $('#closedTasksPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
 }
 </script>

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -66,6 +67,36 @@ public class TaskDaoImpl implements TaskDao{
         return tasksList;
 	}
 	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Tasks> myTasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId,Long userId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId and tasks.assignedUserId =:userId ";
+	    List<Tasks> tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setCacheable(true).list();
+        return tasksList;
+	}
+
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId, String Status) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(Status)){
+			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.assignedUserId =:userId )";
+		}else if(Constants.TASK_STATUS_ASSIGNTASK.equalsIgnoreCase(Status)){
+			 query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId ";
+		}else if(Constants.TASK_STATUS_CLOSEDTASK.equalsIgnoreCase(Status)){
+			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and (tasks.taskOwnerId =:userId OR tasks.assignedUserId =:userId) and  tasks.taskStatus = 'Closed'";
+		}
+	    List<Tasks> tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setCacheable(true).list();
+        return tasksList;
+	}
+
+
+
 
 }
 

@@ -62,6 +62,16 @@ public class TaskServiceImpl implements TaskService{
 		return taskDao.assignedTasksListByIdANDOrgLocationId(OrgLocationId,userId);
 	}
 	
+	@Override
+	public List<Tasks> myTasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId) throws Exception {
+		return taskDao.myTasksListByIdAndOrgLocationIdAssignedUserId(OrgLocationId,userId);
+	}
+	
+	@Override
+	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId,String Status) throws Exception {
+		return taskDao.tasksListByIdAndOrgLocationIdAssignedUserId(OrgLocationId,userId,Status);
+	}
+
 	public String saveTasks(JSONObject jsonObj) throws Exception {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -131,7 +141,9 @@ public class TaskServiceImpl implements TaskService{
 			}
         }
         
-		return "sucess";
+		return "success";
 	}
+
+
  
 }

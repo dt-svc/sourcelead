@@ -108,7 +108,10 @@ public class Constants {
 	public static String MAIL_BOX_INBOX = "Inbox";
 	
 	public static String TASK_STATUS_OPEN = "Open";
-	public static String TASK_STATUS_CLOSE = "Close";
+	public static String TASK_STATUS_CLOSE = "Closed";
+	public static String TASK_STATUS_MYTASK = "myTask";
+	public static String TASK_STATUS_ASSIGNTASK = "assignedTasks";
+	public static String TASK_STATUS_CLOSEDTASK = "closedTasks";
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
