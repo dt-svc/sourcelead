@@ -547,13 +547,33 @@ function tasksList(status){
 			{
         		var report = json[i];
         	 
+        		if(report.alertType != null && report.alertType != '' && report.alertType != 'undefined'){
+        			alertType = report.alertType;
+        		}else{
+        			alertType = "---";
+        		}
+        		if(report.taskDateStr != null && report.taskDateStr != '' && report.taskDateStr != 'undefined'){
+        			taskDateStr = report.taskDateStr
+        		}else{
+        			taskDateStr = "---";
+        		}
+        		if(report.taskTime != null && report.taskTime != '' && report.taskTime != 'undefined'){
+        			taskTime = report.taskTime;
+        		}else{
+        			taskTime = "---";
+        		}
+        		if(report.description != null && report.description != '' && report.description != 'undefined'){
+        			description = report.description;
+        		}else{
+        			description = "---";
+        		}
         		result = result + '       <tr>';
         		result = result + '         <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
-            	result = result + '         <td><div class="text-center">1'+report.taskDateStr+'  '+report.taskTime+'</div></td>';
-            	result = result + '         <td><div><span>'+report.taskOwnerName+'</span></div></td>';
-            	result = result + '         <td><div><span>'+report.assignedName+'</span></div></td>';
-            	result = result + '         <td><div><span>'+report.description+'</span></div></td>';
-            	result = result + '         <td>'+report.alertType+'</td>';
+            	result = result + '         <td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + '         <td><div title="'+report.taskOwnerName+'"><span>'+report.taskOwnerName+'</span></div></td>';
+            	result = result + '         <td><div title="'+report.assignedName+'"><span>'+report.assignedName+'</span></div></td>';
+            	result = result + '         <td><div title="'+description+'"><span>'+description+'</span></div></td>';
+            	result = result + '         <td>'+alertType+'</td>';
             	result = result + '         <td><div class="dropdown-select tblminwidth-100">';
             	
             		if(status == "myTask" || status == "assignedTasks" ){

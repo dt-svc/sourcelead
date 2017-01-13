@@ -151,7 +151,9 @@ public class TaskRestController {
 			 
 			for(Tasks tk :taklist){
 				tk.setSubject(tk.getSubject());
-				tk.setTaskDateStr(Constants.DMY.format(tk.getTaskDate()));
+				if(null != tk.getTaskDate()){
+					tk.setTaskDateStr(Constants.DMY.format(tk.getTaskDate()));	
+				}
 				tk.setTaskTime(tk.getTaskTime());
 				tk.setDescription(tk.getDescription());
 				tk.setAlertType(tk.getAlertType());
