@@ -68,15 +68,15 @@ public class TaskServiceImpl implements TaskService{
 	}
 	
 	@Override
-	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId,String Status) throws Exception {
-		return taskDao.tasksListByIdAndOrgLocationIdAssignedUserId(OrgLocationId,userId,Status);
+	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId,String Status,String date) throws Exception {
+		return taskDao.tasksListByIdAndOrgLocationIdAssignedUserId(OrgLocationId,userId,Status,date);
 	}
 
 	public String saveTasks(JSONObject jsonObj) throws Exception {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
-	 	String pattern = "dd-MM-yyyy";
+	 	String pattern = "dd-mm-yy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
        

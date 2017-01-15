@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -16,6 +17,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.ibm.icu.text.SimpleDateFormat;
 
 @Repository
 public class TaskDaoImpl implements TaskDao{
@@ -81,17 +83,34 @@ public class TaskDaoImpl implements TaskDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId, String Status) throws Exception {
+	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId, String Status,String date) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery = "";
+		List<Tasks> tasksList  = null;
+		String strDate = null;
 		String query = null;
-		if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(Status)){
-			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.assignedUserId =:userId )";
-		}else if(Constants.TASK_STATUS_ASSIGNTASK.equalsIgnoreCase(Status)){
-			 query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId ";
-		}else if(Constants.TASK_STATUS_CLOSEDTASK.equalsIgnoreCase(Status)){
-			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and (tasks.taskOwnerId =:userId OR tasks.assignedUserId =:userId) and  tasks.taskStatus = 'Closed'";
+		if(null != date && "" != date){
+			Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(date);
+			 strDate = new SimpleDateFormat("yyyy-MM-dd").format(date1);
+			subQuery = "and tasks.taskDate =:strDate";	
+		}else{
+			subQuery = "";
 		}
-	    List<Tasks> tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setCacheable(true).list();
+		 
+		if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(Status)){
+			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.assignedUserId =:userId "+subQuery+" ORDER BY tasks.createdDate DESC";
+		}else if(Constants.TASK_STATUS_ASSIGNTASK.equalsIgnoreCase(Status)){
+			 query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId "+subQuery+" ORDER BY tasks.createdDate DESC";
+		}else if(Constants.TASK_STATUS_CLOSEDTASK.equalsIgnoreCase(Status)){
+			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and (tasks.taskOwnerId =:userId OR tasks.assignedUserId =:userId) and  tasks.taskStatus = 'Closed' "+subQuery+" ORDER BY tasks.createdDate DESC";
+		}
+		if(null != date && "" != date){
+			 tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setString("strDate", strDate).setCacheable(true).list();	
+		}else{
+			tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setCacheable(true).list();
+		}
+	    
         return tasksList;
 	}
 

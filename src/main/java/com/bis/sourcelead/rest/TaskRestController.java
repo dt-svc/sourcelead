@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -142,12 +143,12 @@ public class TaskRestController {
 	 
 	    
 	    @RequestMapping(value = "/getTasksList", method = RequestMethod.POST)
-		public @ResponseBody String getTasksList(@RequestParam(value = "status", required = false) String status,HttpServletRequest request) throws Exception {
+		public @ResponseBody String getTasksList(@RequestParam(value = "status", required = false) String status,
+				@RequestParam(value = "date", required = false) String date,HttpServletRequest request) throws Exception {
 			
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			
-			List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(orgLocations.getId(),user.getId(),status);
+			List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(orgLocations.getId(),user.getId(),status,date);
 			 
 			for(Tasks tk :taklist){
 				tk.setSubject(tk.getSubject());

@@ -143,6 +143,11 @@ overflow-x: auto;
 		          <li><a data-toggle="tab" href="#closed-task" onclick="tasksList('closedTasks');">Closed Task</a></li>
 		        </ul>
 				        <div class="tab-content clearfix">
+				        <div class="col-md-6">
+				                  <input class="form-control"  name="myTaskDatpicker" id="myTaskDatpicker" onclick="tasksList('myTask');" type="text" >
+				                  <input class="form-control"  name="assignedTaskDatpicker" id="assignedTaskDatpicker" onclick="tasksList('assignedTasks');" type="text" style="display:none" >
+				                  <input class="form-control"  name="closedTaskDatpicker" id="closedTaskDatpicker" onclick="tasksList('closedTasks');" type="text" style="display:none" >
+		                   </div>
 				        <div id="other-task" class="tab-pane fade">
 				            <div class="clearfix require_wrap_table">
 				              <div id="assignedTasksId"></div>
@@ -304,6 +309,32 @@ $('#taskDatpicker').datepicker({
 		var dt = new Date(selected);
 		dt.setDate(dt.getDate() + 1);
 		$("#taskDatpicker").datepicker("option", "minDate", dt);
+	}
+	
+	});
+	
+$('#myTaskDatpicker').datepicker({
+	dateFormat : 'dd-mm-yy',
+	 //changeMonth: true,
+	//changeYear: true, 
+	//minDate : 0,
+	onSelect : function(selected) {
+		var dt = new Date(selected);
+		dt.setDate(dt.getDate() + 1);
+		$("#myTaskDatpicker").datepicker("option", "minDate", dt);
+	}
+	
+	});
+	
+$('#assignedTaskDatpicker').datepicker({
+	dateFormat : 'dd-mm-yy',
+	 //changeMonth: true,
+	//changeYear: true, 
+	//minDate : 0,
+	onSelect : function(selected) {
+		var dt = new Date(selected);
+		dt.setDate(dt.getDate() + 1);
+		$("#assignedTaskDatpicker").datepicker("option", "minDate", dt);
 	}
 	
 	});
@@ -515,12 +546,25 @@ function myTasks(){
 }
 </script>
  -->
+<!--  <script type="text/javascript">
+function  searchTaskDatpicker(){
+	tasksList(status);
+}
+</script> --> 
 <script type="text/javascript">
 function tasksList(status){
 	var sourceleadUrl ='${sourceleadUrl}';
+	if(status == "myTask"){
+		var date = $("#myTaskDatpicker").val();
+	}else if(status == "assignedTasks"){
+		var date = $("#assignedTaskDatpicker").val(); 
+	}else if(status == "closedTasks"){
+		var date = $("#closedTaskDatpicker").val(); 
+	}
+	
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getTasksList?${_csrf.parameterName}=${_csrf.token}&status="+status,
+        url: sourceleadUrl+"/getTasksList?${_csrf.parameterName}=${_csrf.token}&status="+status+"&date="+date,
         success: function(data) {
         	 var json = JSON.parse(data);
         	 var result = "";
@@ -603,14 +647,17 @@ function tasksList(status){
         	result = result + '   </table>';
         	
         	if(status == "myTask"){
+        	 	 $("#searchTaskDatpicker").val('');
 	        	 $("#myTasksId").empty();
 	           	 $("#myTasksId").append(result); 
 	           	 myTasksPagination();
         	}else if(status == "assignedTasks"){
+        	 	 $("#searchTaskDatpicker").val('');
         		 $("#assignedTasksId").empty();
 	           	 $("#assignedTasksId").append(result); 
 	           	 assignedTasksPagination();
         	}else if(status == "closedTasks"){
+        	 	 $("#searchTaskDatpicker").val('');
         		 $("#closedTasksId").empty();
 	           	 $("#closedTasksId").append(result); 
 	           	 closedTasksPagination();
