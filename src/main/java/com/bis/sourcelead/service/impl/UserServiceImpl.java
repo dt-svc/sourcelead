@@ -169,10 +169,16 @@ public class UserServiceImpl implements UserService {
 		user.setUserRole(userRoleList);
 		
 	   //For saving Employee details (Every User is an Employee)
-		Employees employee = getEmployeeDetails(user,jsonObj,orgLocations.getId(),loginuser.getUserCode());
-		HashSet<Employees> employeeList = new HashSet<Employees>();
-		employeeList.add(employee);
-		user.setEmployee(employeeList);
+		Employees employee = null;
+		if(null != user && null != user.getId()){
+			employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
+		}
+		if(null == employee){
+			employee = getEmployeeDetails(user,jsonObj,orgLocations.getId(),loginuser.getUserCode());
+			HashSet<Employees> employeeList = new HashSet<Employees>();
+			employeeList.add(employee);
+			user.setEmployee(employeeList);
+		}
 		
 		 //For saving the User  
 		try {

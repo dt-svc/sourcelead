@@ -1410,11 +1410,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
    		 
    		 
-   		 String clientRate = clientShortlistsRate[i];
+   		 
 		 RequirementRateSubmissionNegotiation rateNegotiation = new RequirementRateSubmissionNegotiation();
 		 rateNegotiation.setRequirementsubmissionId(clientSubmission);
-		 rateNegotiation.setExpectedRate(clientRate);
-		 rateNegotiation.setExpectedRateType("Yearly");
+		 if(clientShortlistsRate.length >0){
+			 String clientRate = clientShortlistsRate[i];
+			 rateNegotiation.setExpectedRate(clientRate);
+		 }
+		      rateNegotiation.setExpectedRateType("Yearly");
 			 rateNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
 			 rateNegotiation.setInitiatorOrgLocationId(loginOrgLocation);
 			 rateNegotiation.setRateReason("");
