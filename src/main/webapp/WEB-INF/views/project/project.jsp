@@ -106,8 +106,8 @@
 									<div class="col-lg-6 positionRelative" id="StartDateDiv">
 										<input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 									</div>
-									<div class="col-lg-6 positionRelative">
-										<input type="text" class="form-control" value="" id="EndDate" name="EndDate" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
+									<div class="col-lg-6 positionRelative" id="endDateDiv">
+										<input type="text" class="form-control" value="" id="EndDate" name="EndDate" field-name="End Date" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 									</div>
 									<span class="hidden">Enter Project Id</span>
 								</div>
@@ -181,16 +181,28 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3"></label>
-							<div class="col-md-9">
+							<label class="col-md-3">Mail to </label>
+							<div class="col-md-5">
 								<div class="checkbox">
 									<label> <input type="checkbox" value="Y"  checked="checked" name="isMailToProjectManager"> 
-									Mail to Project Manager
+									Project Manager
 									</label>
 								</div>
 								<span class="hidden">Select Check Box</span>
 							</div>
-						</div>
+							
+						<sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
+							<div class="col-md-4">
+								<div class="checkbox">
+									<label> <input type="checkbox" value="Y"  checked="checked"
+										name="isMailToTeamMembers">Team Members
+									</label>
+								</div>
+							</div>
+					  </sec:authorize>
+					</div>
+					
+					
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					 <c:if test="${empty user_List}">
@@ -291,7 +303,7 @@
 						<div class="form-group">
 							<label class="col-md-3" for="Project Id">Status</label>
 							<div class="col-md-9 select-field">
-								<select class="form-control" name="Satatus" id="Satatus">
+								<select class="form-control" name="Satatus" id="Satatus" onchange="getStatus();">
 									<option>Started</option>
 									<option>In-Progress</option>
 									<option>Completed</option>
@@ -302,9 +314,9 @@
 						
 						
 						<div class="form-group">
-		                  <label class="col-md-3">Invoice Frequency</label>
+		                  <label class="col-md-3">Invoice Frequency <span class="text-danger">*</span></label>
 		                  <div class="col-md-9">
-		                         <select class="form-control chosen-select" id="invoiceFrequency" name="invoiceFrequency" field-name="Invoice Frequency">
+		                         <select class="form-control chosen-select" id="invoiceFrequency" name="invoiceFrequency" field-name="Invoice Frequency" data-validation="required" >
 				                        <option value="">-Invoice Frequency-</option>
 						                <option value="Weekly">Weekly</option>
 						        	    <option value="Bi-Weekly">Bi-Weekly</option>
@@ -314,20 +326,16 @@
 		                  </div>
 		                </div>
 						
-						
-					 <sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkbox">
-									<label> <input type="checkbox" value="Y"  checked="checked"
-										name="isMailToTeamMembers"> Mail to Team Members
+									<label> <input type="checkbox" value="Y"  
+										name="isTimesheetAttachmentRequired"> Timesheet Attachment Required
 									</label>
 								</div>
-								<span class="hidden">Select Check Box</span>
 							</div>
 						</div>
-					</sec:authorize>
 					</div>
 				</div>
 				<div class="form-footer clearfix row">
@@ -343,6 +351,21 @@
 	</div>
 </section>
 <!-- Content Area Ends-->
+
+<script>
+function getStatus(){
+	$('#endDateDiv').find('p.jquery_form_error_message').remove(); 
+	var status = $("#Satatus").val();
+	if(status != null && status != "" && status != "undefined" && status == "Completed"){
+		 $('#EndDate').removeAttr('data-validation-optional');
+		 $('#EndDate').attr("data-validation","required"); 
+	 }else{
+		 $('#EndDate').removeAttr('data-validation');
+		 $('#EndDate').attr("data-validation-optional","true"); 
+	 }
+}
+
+</script>
 
 <!-- Add Client Model DialogBox ends-->
 
@@ -861,7 +884,7 @@ function assignEmployeespagination(){
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() - 1);
 				$("#StartDate").datepicker("option", "maxDate", dt);
-				
+				addValidClass();
 				//this is section is for compare project end date with current date
 				//if project end date is less than current date, the project state should be COMPLETED
 				var dummyDate = $(this).val();
@@ -896,6 +919,11 @@ function assignEmployeespagination(){
 		 var StartDate = document.getElementById("StartDate").value;
 		 if(StartDate){
 			 $('#StartDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+		 var EndDate = document.getElementById("EndDate").value;
+		 if(EndDate){
+			 $('#endDateDiv').find('p.jquery_form_error_message').remove(); 
 		 }
 }
 </script>
