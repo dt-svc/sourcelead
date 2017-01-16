@@ -903,7 +903,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	/*if(currentDate.before(projects.getStartDate())){
 			    		projects.setEndDate(projects.getStartDate());
 			    	}else{*/
-			    		projects.setEndDate(currentDate);
+			    		//projects.setEndDate(currentDate);
 			    	/*}*/
 			    	projects = commonUtil.terminateProject(projects);
 			    	 updateProject(projects);
