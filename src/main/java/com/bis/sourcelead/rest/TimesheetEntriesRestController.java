@@ -134,12 +134,12 @@ public class TimesheetEntriesRestController {
 		 	
 			 
 			List<Long> ids = new ArrayList<Long>();
-			String[] avilableProjectTaskId = avilableProjectTaskIds.split(",");
+			/*String[] avilableProjectTaskId = avilableProjectTaskIds.split(",");
 			for(String id  : avilableProjectTaskId){
 				if(id != null && !id.isEmpty()){
 					ids.add(Long.parseLong(id));
 				}
-			}
+			}*/
 			
 			 String resultJson;
 			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndExistedProjectTaskIds(projectId, ids);
