@@ -27,4 +27,6 @@ public interface UserMailBoxService {
 	
 	UserMailBox getUserNextMail(Long Id,Long userId,Long orgLocationId,String type) throws Exception;
 	
+	public void saveOrUpdateUserMailBoxELK(UserMailBox userMailBox) throws Exception;
+	
 }

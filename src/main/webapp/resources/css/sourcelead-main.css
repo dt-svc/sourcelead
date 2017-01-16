@@ -5379,6 +5379,29 @@ max-height: 150px !important;
     border-radius: 5px;
 }
 
+.collapse-div-adduser.orgsummary-adduser {
+left: 45px; 
+}
+.orgsummaryuser-pop{
+margin-top: 0;
+}
+.orgsummaryuser-pop:after {
+border-bottom: 10px solid #909090;
+border-left: 10px solid transparent;
+border-right: 10px solid transparent;
+clear: both;
+content: "";
+height: 0;
+position: absolute;
+left: 10px;
+top: -10px;
+width: 0;
+}
+.close-div.closediv-pop{
+left:auto;
+right:-15px;
+}
+
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
