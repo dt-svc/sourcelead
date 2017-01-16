@@ -34,6 +34,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.index.helper.RequirementHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
@@ -139,6 +143,12 @@ public class RequirementServiceImpl implements RequirementService {
 	 
 	 @Autowired
 	 private PdfUtil pdfUtil;
+	 
+	 @Autowired
+	 private RequirementHelper requirementHelper;
+	 
+	 @Autowired
+	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -682,9 +692,15 @@ public class RequirementServiceImpl implements RequirementService {
 					if(savedRequirement.getManagerUserId() != null && !user.getId().equals(savedRequirement.getManagerUserId().getId())){
 						mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 					}
-		 }			
-		
+		 }		
+			       saveElkRequirement(requirement);
 		return savedRequirement;
+	}
+
+	private void saveElkRequirement(Requirement requirement) {
+		 
+		RequirementIndex requirementIndex = requirementHelper.populateRequirementIndex(requirement);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirement.getId().toString());
 	}
 
 	@Override
@@ -2136,6 +2152,15 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception {
 		return requirementDao.validateJobid(id,orgLocationsId);
+	}
+
+	@Override
+	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj) throws Exception {
+		
+		
+		
+		return null;
+		
 	}
 
 }
