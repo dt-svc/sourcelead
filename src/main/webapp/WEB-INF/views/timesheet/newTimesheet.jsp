@@ -1,6 +1,327 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-   
+
+<!-- this is for mask -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script src="resources/js/bootstrap.min.js"></script>
+<script src="resources/js/jquery-fun.js"></script>
+<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
+<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="resources/js/formvalidator.js"></script>
+
+<script>
+// project side bar tabs
+$(document).ready(function() {
+	newTimesheetDummy();
+});
+</script>  
+
+
+<script>
+	function newTimesheetDummy(){ 
+	               var sourceleadUrl ='${sourceleadUrl}';
+	        	   $.ajax({
+		      	          type : "POST",
+		          	      dataType : 'json',
+	        	      	  url: sourceleadUrl+"/newTimesheetDummy?${_csrf.parameterName}=${_csrf.token}",		
+	        		      success :function(result) {
+	        		    	  	$("#timesheetDynamicDiv").append(result);
+	        		    	  	maskme();
+	        		    	  	
+	        		    	  	$("#tab-1").show()
+	        		    	    $(".project-tabs-menu a").click(function(event) {
+	        		    	        event.preventDefault();
+	        		    	        $(this).parent().addClass("current");
+	        		    	        $(this).parent().siblings().removeClass("current");
+	        		    	        var tab = $(this).attr("href");
+	        		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+	        		    	        $(tab).fadeIn();
+	        		    	    });
+	        		      }
+	        	      	  
+	        	    }); 
+	}
+</script>
+
+
+<!-- this script is for add row functionality at Timesheet screen -->
+<script>
+function addTimeSheetRow(projectId) {
+	          
+		    var tbl = document.getElementById("timesheet");
+			var rowNum = $("#maxRowNumber").val();
+			var maxRowNum = parseInt(rowNum);
+			$("#maxRowNumber").val(maxRowNum + 1); 
+			var row = tbl.insertRow(maxRowNum+1);
+			row.setAttribute("id", "timesheetRow"+maxRowNum);
+			
+			  
+		    var previousMaxRowNum =parseInt(rowNum-1);
+			var cell0 = row.insertCell(0);
+			var divadttTd0Str = document.getElementById("divadttTd1").innerHTML;
+			divadttTd0Str = divadttTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd0Str = divadttTd0Str.replace(/projectId/g, (projectId)); 
+			cell0.setAttribute("class", "pname");  
+			cell0.innerHTML = divadttTd0Str;
+			
+		    var cell1 = row.insertCell(1);
+			/* var isCell1Disabled = $("#1submission"+submissionId+"timeSheetDay1Id").prop('disabled');
+			if(isCell1Disabled){
+				$("#divadttTd2 :input").attr('disabled','disabled');
+				$('.timesheet_comm','#divadttTd2').find('i').attr('class','glyphicon');
+				
+			}
+			else{
+				$("#divadttTd2 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd2').find('i').attr('class','glyphicon glyphicon-comment');
+			} */
+			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
+			divadttTd1Str = divadttTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+            divadttTd1Str = divadttTd1Str.replace(/projectId/g, (projectId));
+			cell1.innerHTML = divadttTd1Str;
+			
+			
+			var cell2 = row.insertCell(2);
+			/* var isCell2Disabled = $("#1submission"+submissionId+"timeSheetDay2Id").prop('disabled');
+			if(isCell2Disabled){
+				$("#divadttTd3 :input").attr('disabled','disabled');
+				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon');
+			}
+			else{
+				$("#divadttTd3 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon glyphicon-comment');
+			} */
+			var divadttTd2Str = document.getElementById("divadttTd3").innerHTML;
+			divadttTd2Str = divadttTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd2Str = divadttTd2Str.replace(/projectId/g, (projectId));
+			cell2.innerHTML = divadttTd2Str;
+			
+			
+			var cell3 = row.insertCell(3);
+			/* var isCell3Disabled = $("#1submission"+submissionId+"timeSheetDay3Id").prop('disabled');
+			if(isCell3Disabled){
+				$("#divadttTd4 :input").attr('disabled','disabled');
+				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon');
+			}
+			else{
+				$("#divadttTd4 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon glyphicon-comment');
+			} */
+			var divadttTd3Str = document.getElementById("divadttTd4").innerHTML;
+			divadttTd3Str = divadttTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd3Str = divadttTd3Str.replace(/projectId/g, (projectId));
+			cell3.innerHTML = divadttTd3Str;
+			
+			
+			var cell4= row.insertCell(4);
+			/* var isCell4Disabled = $("#1submission"+submissionId+"timeSheetDay4Id").prop('disabled');
+			if(isCell4Disabled){
+				$("#divadttTd5 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon');
+			}else{
+				$("#divadttTd5 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon glyphicon-comment');
+			} */
+			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
+			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd4Str = divadttTd4Str.replace(/projectId/g, (projectId)); 
+			cell4.innerHTML = divadttTd4Str;
+			
+			var cell5 = row.insertCell(5);
+			/* var isCell5Disabled = $("#1submission"+submissionId+"timeSheetDay5Id").prop('disabled'); */
+			/* if(isCell5Disabled){
+				$("#divadttTd6 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon');
+			}
+			else{
+				$("#divadttTd6 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon glyphicon-comment');
+			}*/
+			var divadttTd5Str = document.getElementById("divadttTd6").innerHTML; 
+			divadttTd5Str = divadttTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd5Str = divadttTd5Str.replace(/projectId/g, (projectId)); 
+			cell5.innerHTML = divadttTd5Str;
+			
+			var cell6 = row.insertCell(6);
+			/* var isCell6Disabled = $("#1submission"+submissionId+"timeSheetDay6Id").prop('disabled');
+			if(isCell6Disabled){
+				$("#divadttTd7 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon');
+			}
+			else{
+				$("#divadttTd7 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon glyphicon-comment');
+			} */
+			var divadttTd6Str = document.getElementById("divadttTd7").innerHTML;
+			divadttTd6Str = divadttTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd6Str = divadttTd6Str.replace(/projectId/g, (projectId));
+			cell6.innerHTML = divadttTd6Str;
+			
+			var cell7 = row.insertCell(7);
+			/* var isCell7Disabled = $("#1submission"+submissionId+"timeSheetDay7Id").prop('disabled');
+			if(isCell7Disabled){
+				$("#divadttTd8 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon');
+			}else{
+				$("#divadttTd8 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon glyphicon-comment');
+			} */
+			var divadttTd7Str = document.getElementById("divadttTd8").innerHTML;
+			divadttTd7Str = divadttTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd7Str = divadttTd7Str.replace(/projectId/g, (projectId));
+			cell7.innerHTML = divadttTd7Str;
+			
+		    maskme();
+		    
+		    getProjectTasks(maxRowNum,projectId); 
+			
+		  /*   
+			var projectTaskId = maxRowNum+"submission"+submissionId+"task1Id"; */
+			
+			/* getProjectTasks(projectTaskId,projectId);  */ 
+		  
+			
+		}	
+	 
+        
+       /*  function disableInput(divId){
+        	$("#"+divId+" :input").attr("disabled", "disabled");
+        } */
+        
+       //get project tasks 
+	   function getProjectTasks(maxRowNum,projectId){ 
+		   var sourceleadUrl ='${sourceleadUrl}';
+		   $("#"+projectId).empty();
+		   $.ajax({
+   	          type : "POST",
+ 	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds=null",		
+ 		      success :function(data) {
+ 		    	        	alert("data"+data);
+ 		    	   			var json = JSON.parse(data);
+	 			   		   	$("#"+maxRowNum+"taskId").empty();
+	 			   		   	var result = "";
+	 			   		    result = result + "<option value=''>--select option--</option>";
+	  		    	    	for (var i=0; i<json.length; i++)
+	  					 	{
+	  			        		var opt = json[i];
+	  			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+	  						}
+	  		    	    	alert("maxRowNum"+maxRowNum);
+ 				    	 	$("#"+maxRowNum+"taskId").append(result);
+ 		      }
+ 	      	  
+ 	       }); 
+		   
+	   } 
+
+	 
+</script>
+
+<!-- this script is for mask for each entity  -->	
+<script>
+function maskme(){
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $(".inline_field").mask("Hh:Mm"); 
+}
+</script>
+
+<script>
+$(document).ready(function() {  
+	maskme();    
+ });
+</script>
+
+<!-- this script is for add row functionality at inline edit screen -->
+<script>
+function callInlineEdit(local){     
+       var id = local.id;
+	   $("#"+id).addClass("inline_field");
+       $("#"+id).editInPlace({
+		
+		saving_animation_color: "#ECF2F8",
+		callback: function(idOfEditor, enteredText, orinalHTMLContent, settingsParams, animationCallbacks) {
+			return enteredText;
+		}
+	});
+}
+</script>
+
+	
+<!-- this script is for timesheet comment  shown and hide  -->	      
+<script type="text/javascript">
+function timesheetComment(local){ 
+	$('.teskcomment').each(function() {
+	    var currentId = this.id;
+	    var localId = local;
+	    if(localId.trim() == currentId.trim()){
+       	 		$("#"+local).slideToggle(200); 
+        }else{
+       	    $("#"+currentId).slideUp(200); 
+        }
+	});
+} 
+</script>	
+
+<script type="text/javascript">
+		function bodyClick(){
+		    $(".teskcomment").slideUp(200);   
+		    $("html .timesheet_comm").click(function(event){
+		        event.stopPropagation();
+		    }); 
+		 }
+</script>	
+
+
+<script>
+function addAttachment(){  
+			var checkMaxTsRowNum = $("#attcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("attachmentTable");
+			var maxRowNum = parseInt($("input[name = 'attcahmentMaxRowNumber']").val());
+			$("input[name = 'attcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentTsRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			/* timesheetAttachmentValidationFun(); */
+			
+}			
+</script>
+
+<script type="text/javascript">
+	function removeAttachmentRow(rowId) {
+		var rowNum = $("#divAttachmentTsRow"+rowId).val();
+		var maxRowNum = parseInt(rowNum);
+		 document.getElementById("divAttachmentTsRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentTsRow"+rowId).value= '';
+		 var  rId = "divAttachmentTsRow"+rowId;
+		  var r = document.getElementById("attachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+	}
+</script>
+
+	
+
 <!-- Content Area -->
 <section class="content-wraper">
         <section class="content-header clearfix">
@@ -10,8 +331,74 @@
           <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
         </section>
         
+        <div id="timesheetDynamicDiv"></div>
+        
+        <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
+				         <div id="divadttTd1" style="display:none;" >   
+				             <div> 
+				              <select id="REPLACEROWIDtaskId" name="REPLACEROWIDtaskId" class="existedProjectTaskIdprojectId" onchange="getProjectTasksOnChange('REPLACEROWIDsubmissionsubmissionIdtask1Id','projectId')">  
+				                          <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
+				                              	<option value="${task.id}">${task.taskName}</option>
+				                           </c:forEach> --%>
+				             </select>
+				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID','submissionId')" class="addtaskfield removetaskfield"/>
+				             </div>
+				             
+				        </div>
+				        <div id="divadttTd2" style="display:none;">
+					    	   <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
+				               <div class="timesheet_comm">
+				                <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment1Id');"></i>
+				                <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment1Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea1Id" ></textarea></span>
+				               </div>
+				   		</div>
+				        <div id="divadttTd3" style="display:none;">
+								  <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
+				                  <div class="timesheet_comm">
+				                      <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment2Id');"></i>
+				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment2Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment2Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea2Id" ></textarea></span></div>
+				        </div>
+				        <div id="divadttTd4" style="display:none;">
+								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
+				                  <div class="timesheet_comm">
+				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment3Id');"></i>
+				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment3Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment3Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea3Id"></textarea></span></div>
+				        </div>
+				        <div id="divadttTd5" style="display:none;">
+								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
+				                  <div class="timesheet_comm">
+				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment4Id');"></i>
+				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment4Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment4Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea4Id"></textarea></span></div>           
+				        </div>
+				        <div id="divadttTd6" style="display:none;">
+								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
+				                  <div class="timesheet_comm">
+				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment5Id');"></i>
+				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment5Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment5Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea5Id"></textarea></span></div>  
+				    	 </div>
+				         <div id="divadttTd7" style="display:none;">
+							  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
+				                 <div class="timesheet_comm">
+				                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment6Id');"></i>
+				                 <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment6Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment6Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea6Id"></textarea></span></div>
+				         </div>
+				         <div id="divadttTd8" style="display:none;">
+							  <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
+				                 <div class="timesheet_comm">
+				                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment7Id');"></i>
+				                 <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment7Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment7Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea7Id"></textarea></span></div>            
+				    	 </div>
+						<!-- #### this div is for dummy timesheets entries ( useful for add rows ) above  ####-->  
+						
+						<div id="divAttachmentTd1" style="display: none; float: left;">
+								<div id='REPLACEROWIDdocFileuploadFileGroup'>
+						  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation"> 
+						  			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
+						  		</div>
+					    </div>
+    
 		<!-- Timesheet -->
-<form id="timesheet_form" name="timesheet_form">
+<!-- <form id="timesheet_form" name="timesheet_form">
 
  
 <div class="timesheet_out">
@@ -502,7 +889,7 @@
     </div>
     
     
-  <!--<div id="divadttTd1" style="display:none;"  > <div id="projectName">Sourcelead </div></div>-->
+  <div id="divadttTd1" style="display:none;"  > <div id="projectName">Sourcelead </div></div>
              <div id="divadttTd1" style="display:none;" > 
                   <div> 
                          <select>
@@ -555,7 +942,6 @@
 </div>	
 </div>       
        
-       
         
         
     <div class="timesheet_bot">
@@ -567,10 +953,10 @@
             <div class="commentTime"><textarea placeholder="comments here..."></textarea></div>
             <div class="clearfix"></div>
         </div>
-<!--    	<div class="timesheet_sub_other">
+   	<div class="timesheet_sub_other">
         	Submit to others <a href="javascript:void(0)"><i class="fa fa-envelope"></i> Email</a>
             <a href="javascript:void(0)"><i class="fa fa-users"></i> Users</a>
-        </div>-->
+        </div>
     	<div class="clearfix"></div>
         
     	<div class="timesheet_button">
@@ -594,308 +980,12 @@
 	
 </div>  
 
- </form> 		
+ </form> 		 -->
 		<!-- Timesheet -->
 		
       </section>
       <!-- Content Area Ends--> 
 
-      <!-- Footer Area -->
-      <footer class="footer-area clearfix">
-        <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-        <div class="powered-by"> Powered by: businessintelli.com </div>
-      </footer>
-      <!-- Footer Area --> 
-    </div>
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-    
-        <script src="js/moment.min.js"></script>
-        <script src="js/bootstrap-datetimepicker.min.js"></script> 
-        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-<script src="js/bootstrap-select.min.js"></script> 
-<script src="js/chosen.jquery.min.js"></script>     
-    <script src="js/jquery-fun.js"></script>	
-    
-    
-<script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-				$(document).ready(function(){
-					$("#cd").click(function(){
-						$(".clientDetails").toggleClass('hidden', 500);
-					});
-	
-	});
- 		</script>    
-    
-<script>
-
-$(document).ready(function() {
-    $("#hover").mouseenter(function(){
-		$(".app_error_mes").addClass("app_error_mes_active");
-	});
-    $("#hover").mouseleave(function(){
-		$(".app_error_mes").removeClass("app_error_mes_active");
-	});	
-});
-</script>    
-    	
-    <script src="js/masterHeaderAction.js"></script>		
-        
-    <!-- Include all compiled plugins (below), or include individual files as needed --> 
-    <script type="text/javascript">
-        $(document).ready(function(e) {
-            $('.side-menu').click(function(){
-                $('.side-bar').toggleClass("side-bar-active");
-                $('.user-panel').toggleClass("user-panel-active");
-                $('.content-wraper').toggleClass("content-wraper-active");
-                });
-            $('.srch-btn-xs').click(function(){
-              $(".search-area").toggleClass("search-area-active");
-            });
-            $('html').click(function(){
-              $(".search-area").removeClass("search-area-active");
-            });
-            $('.srch-btn-xs, .search-area-txt').click(function(e){
-              e.stopPropagation();
-            });
-            $('.login-user').click(function(){
-             $('.user-details').toggleClass('user-details-active');
-            });
-
-            $("#notification").click(function(){
-                $('.note-area').toggleClass('note-area-active');
-                $('.user-details').removeClass('user-details-active');
-                $('.setting-area').removeClass('setting-area-active');
-                $('.alert-area').removeClass('alert-area-active');
-            });
-            $("#alert").click(function(){
-                $('.alert-area').toggleClass('alert-area-active');
-                $('.user-details').removeClass('user-details-active');
-                $('.setting-area').removeClass('setting-area-active');
-                $('.note-area').removeClass('note-area-active');
-                $('.qlinks-area').removeClass('qlinks-area-active');
-            });
-            $("#qlinks").click(function(){
-                $('.qlinks-area').toggleClass('qlinks-area-active');
-                $('.alert-area').removeClass('alert-area-active');
-                $('.user-details').removeClass('user-details-active');
-                $('.setting-area').removeClass('setting-area-active');
-                $('.note-area').removeClass('note-area-active');
-            });
-            $('html').click(function(){
-              $('.user-details').removeClass("user-details-active");
-              $('.setting-area').removeClass('setting-area-active');
-              $('.note-area').removeClass('note-area-active');
-              $('.alert-area').removeClass('alert-area-active');
-              $('.qlinks-area').removeClass('qlinks-area-active');
-            });
-            $('.header-nav .navbar, .custom-navbar, .user-details').click(function(e){
-              e.stopPropagation();
-            });
-            $('.settings').click(function(){
-            $('.setting-area').toggleClass('setting-area-active');
-            $('.note-area').removeClass('note-area-active');
-            $('.user-details').removeClass('user-details-active');
-            $('.alert-area').removeClass('alert-area-active');
-            });
-            $(".collpase-div").click(function(){
-                $(".toggle-div").slideToggle(800);
-            });
-            $(".faclose").click(function(){
-                $(".remove-div").addClass('hidden');
-            });
-            $(".bell").click(function(){
-                    $(this).toggleClass('bell-active');			
-                });
-           $(".addLevel").click(function(){
-               $(".level-second").toggleClass("level-second-active");
-            });
-            /* Date and time picker script */
-
-        });   
-       </script>
-        <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-            });
-        </script>
-    </div>
-	
-	<div class="time_pop"><p>Monday hours should not be more than 24<b>X</b></p></div>
-	
-<div class="app_error_mes">	
-		 bifidshf ohdihfhd hh hodfo odjf dsofh ohsdfohf
-	</div>      
-    
-    </body>
-	
-<script>
-$(document).ready(function() {
-    $(".initiateTimesheetMax").each(function(){
-		        this.val("1");
-    });
-	
-});	
-</script> 
-<script>
  
-function callInlineEdit(local){     
-       var id = local.id;
-	   $("#"+id).addClass("inline_field");
-       $("#"+id).editInPlace({
-		
-		saving_animation_color: "#ECF2F8",
-		callback: function(idOfEditor, enteredText, orinalHTMLContent, settingsParams, animationCallbacks) {
-			return enteredText;
-		}
-	});
-}
-</script>
-
-
-<script>
- 
-function addTimeSheetRow(id) {
-	          
-		      
-		    var tbl = document.getElementById("table"+id);
-			var rowNum = $("#maxRowNumber"+id).val();
-			var maxRowNum = parseInt(rowNum);
-			$("#maxRowNumber"+id).val(maxRowNum + 1); 
-			var row = tbl.insertRow(rowNum);
-			row.setAttribute("id", "timesheetRow"+maxRowNum);
-		    
-		 
-			var cell0 = row.insertCell(0);
-			var divadttTd0Str = document.getElementById("divadttTd1").innerHTML;
-			divadttTd0Str = divadttTd0Str.replace(/REPLACEROWID/g, (id));
-			cell0.innerHTML = divadttTd0Str;
-			
-			 var cell1 = row.insertCell(1);
-			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
-			divadttTd1Str = divadttTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
-                        divadttTd1Str = divadttTd1Str.replace(/ProjectId/g, (id));
-			cell1.innerHTML = divadttTd1Str;
-			
-			
-			var cell2 = row.insertCell(2);
-			var divadttTd2Str = document.getElementById("divadttTd3").innerHTML;
-			divadttTd2Str = divadttTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd2Str = divadttTd2Str.replace(/ProjectId/g, (id));
-			cell2.innerHTML = divadttTd2Str;
-			
-			
-			var cell3 = row.insertCell(3);
-			var divadttTd3Str = document.getElementById("divadttTd4").innerHTML;
-			divadttTd3Str = divadttTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd3Str = divadttTd3Str.replace(/ProjectId/g, (id));
-			cell3.innerHTML = divadttTd3Str;
-			
-			var cell4= row.insertCell(4);
-			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
-			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd4Str = divadttTd4Str.replace(/ProjectId/g, (id)); 
-			cell4.innerHTML = divadttTd4Str;
-			
-			var cell5 = row.insertCell(5);
-			var divadttTd5Str = document.getElementById("divadttTd6").innerHTML;
-			divadttTd5Str = divadttTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd5Str = divadttTd5Str.replace(/ProjectId/g, (id)); 
-			cell5.innerHTML = divadttTd5Str;
-			
-			var cell6 = row.insertCell(6);
-			var divadttTd6Str = document.getElementById("divadttTd7").innerHTML;
-			divadttTd6Str = divadttTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd6Str = divadttTd6Str.replace(/ProjectId/g, (id));
-			cell6.innerHTML = divadttTd6Str;
-			
-			var cell7 = row.insertCell(7);
-			var divadttTd7Str = document.getElementById("divadttTd8").innerHTML;
-			divadttTd7Str = divadttTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd7Str = divadttTd7Str.replace(/ProjectId/g, (id));
-			cell7.innerHTML = divadttTd7Str;
-
-			
-			//var cell9 = row.insertCell(9);
-//			var divadttTd9Str = document.getElementById("divadttTd10").innerHTML;
-//			divadttTd9Str = divadttTd9Str.replace("REPLACEROWID", (maxRowNum));
-//			cell9.innerHTML = divadttTd9Str;
-			
-			 //mergeColumns();
-			
-			  
-		}	
-	 
-       function mergeColumns(){
-		          
-				  var previous = null;
-                  var cellToExtend = null;
-		          $( ".pname" ).each(function() {
-				        
-						var jthis = $(this);
-						var content = jthis.text()
-						var valueOne = $.trim(previous);
-					    var valueTwo = $.trim(content);
-						  
-						 
-						if (valueOne == valueTwo) {     
-							jthis.remove();
-							if (cellToExtend.attr("rowspan") == undefined) {
-								cellToExtend.attr("rowspan", 2);
-							}
-							else {    
-								currentrowspan = parseInt(cellToExtend.attr("rowspan"));
-								cellToExtend.attr("rowspan", currentrowspan + 1);
-							}
-						}
-						else {      
-							previous = content;
-							cellToExtend = jthis;
-						}
-	
-			    });
-	   }
-	 
-$(".inline_field").click(function(){
-	$(".time_pop").show();
-});
-$(".time_pop b").click(function(){
-	$(".time_pop").hide();
-});	 
-	
-
-$(".export p").click(function(){
-	$(".export ul").slideToggle(200);
-});	
-
-	 
-	</script>	
-    <div class="theme-color">
-<span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
-	<ul class="list-unstyled">
-    	<li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
-    	<li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
-    	<li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
-    </ul>
-</div>	
-	</body>
-    </html>
+      
+    
