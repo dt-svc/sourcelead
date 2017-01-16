@@ -422,10 +422,10 @@
 						result = result + '</div>';
 						result = result + '<div class="clearfix"></div>';
 
-						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<div class="user_summary_edit_cta" id="endDateDiv">';
 						result = result + '<label>End date</label>';
 						result = result
-								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" >';
+								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" field-name="End Date" >';
 						result = result + '</div>';
 						
 						
@@ -470,6 +470,9 @@
 							dateFormat : 'yy-mm-dd',
 							minDate : dt,
 							onClose : function() {
+							},
+							onSelect : function(selected) {
+								addValidClass();
 							}
 						});
 
@@ -486,9 +489,27 @@ function projectStatus(){
 	if(projectStatus == "Started" || projectStatus == "In-Progress" || projectStatus == "On-Hold"){
 		 $("#endDateStr1").val('');
 	}
+	
+	$('#endDateDiv').find('p.jquery_form_error_message').remove(); 
+	if(projectStatus != null && projectStatus != "" && projectStatus != "undefined" && projectStatus == "Completed"){
+		 $('#endDateStr1').removeAttr('data-validation-optional');
+		 $('#endDateStr1').attr("data-validation","required"); 
+	 }else{
+		 $('#endDateStr1').removeAttr('data-validation');
+		 $('#endDateStr1').attr("data-validation-optional","true"); 
+	 } 
 }
-
 </script>
+
+<script type="text/javascript"> 
+	function addValidClass(){
+		 var EndDate = document.getElementById("endDateStr1").value;
+		 if(EndDate){
+			 $('#endDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+}
+</script>
+
 <script type="text/javascript">
 	function updateProjectDetails(projectId) {
 		if ($('#editProject_form').validate(false, validationSettings)) {
