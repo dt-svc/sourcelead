@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -101,6 +103,9 @@ public class LoginSessionController {
 	@Autowired 
 	private RequirementService requirementService;
 	
+	@Autowired 
+	private CountriesService countriesService;
+	
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication) throws Exception {
 		
@@ -144,6 +149,9 @@ public class LoginSessionController {
 		}
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("dashboard");
+		
+		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
+		model.addObject("userList", userList);
 		
 		Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
 		model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
@@ -258,6 +266,21 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 			
+			List<Long> tabIds = tabsService.getTabsIdsListByUserRoleIdAndOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
+			for(Long tabId : tabIds){
+				if(tabId.equals(Long.valueOf(Constants.TAB_REQUIREMENT))){
+					SourceLeadSessionManager.setSessionAttribute(request, "REQUIREMENT_TAB", "Y");
+				}
+				
+				else if(tabId.equals(Long.valueOf(Constants.TAB_MY_TIMESHEET))){
+					SourceLeadSessionManager.setSessionAttribute(request, "MY_TIMESHEET_TAB", "Y");
+				}
+				
+				else if(tabId.equals(Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL))){
+					SourceLeadSessionManager.setSessionAttribute(request, "IMESHEET_APPROVAL_TAB", "Y");
+				}
+			}
+			
 			
 		} catch (Exception e) {
 			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
@@ -347,6 +370,17 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 		SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "country", orgLocations.getCountry());
+		
+		try {
+			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(null != countries){
+				SourceLeadSessionManager.setSessionAttribute(request, "currencyCode", countries.getCurrency());
+				SourceLeadSessionManager.setSessionAttribute(request, "loginCountryName", countries.getName());
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void setSessionOrgAttributes(Org org, HttpServletRequest request)

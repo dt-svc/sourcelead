@@ -214,7 +214,7 @@
 				 <div class="col-md-7">
 				 <hr class="mr">
 					<div class="pull-right mr">
-					  <input type="submit" value="Save" id="save_button" class="btn btn-primary mr" />
+					  <input type="submit" value="Save" id="save_button" onclick="checkPass();" class="btn btn-primary mr" />
 					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'">
 					</div>
 				  </div>

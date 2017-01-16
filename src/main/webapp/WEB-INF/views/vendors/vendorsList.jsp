@@ -193,7 +193,7 @@ function getVendorLists(){
    	        	result = result +' <th>Website</th>';
    	        	result = result +'<th>Location</th>';
    	        	result = result +'<th>Tier</th>';
-   	        	result = result +'<th>Released jobs</th>';
+   	        	result = result +'<th>Released Jobs</th>';
    	        	result = result +'<th>No.of Contacts</th>';
    	        	/* result = result +'<th>Actions</th>'; */
    	        	result = result +'</tr>';
@@ -214,10 +214,12 @@ function getVendorLists(){
    	        			location = report.country;
    	        		}
    	        		
+   	        		var orgName = (report.orgName).replace("'","\\'");
+   	        		
    	        		result = result +'<tr>';
    	        		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
    	        			result = result +'<td>';
-   	        			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
    	        		'</sec:authorize>';
@@ -365,11 +367,11 @@ function getVendorContactLists(){
    	        		
    	        		
    	        		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
-   	        				result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        				result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
    	        		'</sec:authorize>';
    	        		
    	        		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
-   	        				result = result +'<td><div class="proj_show" ><span>'+report.spocName+'</span></div></td>';
+   	        				result = result +'<td><div class="proj_show" ><span title="'+report.spocName+'">'+report.spocName+'</span></div></td>';
 	        		'</sec:authorize>';
    	        		
    	        		
@@ -380,8 +382,8 @@ function getVendorContactLists(){
    	        		}else{
    	        			result = result +'<td><div>--</div></td>';
    	        		}
-   	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
-   	        		result = result +'<td><div title='+report.orgName+'><span>'+report.orgName+'</span></div></td>';
+   	        		result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+   	        		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
    	        		
    	        		
    	        		result = result + ' <td><div>';
@@ -478,7 +480,7 @@ function terminateSpoc1(spocId, orgRelationID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>User delete message here</p>";
+	result = result +"		<p>Vendor delete message here</p>";
 	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
@@ -818,7 +820,7 @@ function pagination1(){
 							result = result + '<div class="project_details_cta">';
 								result = result + '<strong>Name:</strong>';
 								if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
-									result = result + '<span>'+json.orgName+'</span>';
+									result = result + '<span title="'+json.orgName+'">'+json.orgName+'</span>';
 								}
 								result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
@@ -826,7 +828,7 @@ function pagination1(){
 							result = result + '<div class="project_details_cta">';
 								result = result + '<strong>Website:</strong>';
 								if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
-								result = result + '<span>'+json.webSite+'</span><div class="clearfix"></div>';
+								result = result + '<span title="'+json.webSite+'">'+json.webSite+'</span><div class="clearfix"></div>';
 								}
 							result = result + '</div>';
 							
@@ -880,7 +882,7 @@ function pagination1(){
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Created By:</strong>';
 							if(json.vendorCreateduserName != null && json.vendorCreateduserName !='' && json.vendorCreateduserName !='undefined'){
-								result = result + '<span>'+json.vendorCreateduserName+'</span><div class="clearfix"></div>';
+								result = result + '<span title="'+json.vendorCreateduserName+'">'+json.vendorCreateduserName+'</span><div class="clearfix"></div>';
 							}else{
 								
 								result = result + '<span>No Data</span><div class="clearfix"></div>';	

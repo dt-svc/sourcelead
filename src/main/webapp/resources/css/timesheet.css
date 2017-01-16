@@ -167,8 +167,8 @@ a { cursor:pointer;}
     width:13%; border:none; padding:6px 5px; border-top:1px solid #dadada;
     }
 .addtaskfield {
-    border:0px; background-color:transparent; background-image:url(../images/addtask.png); background-repeat:no-repeat; background-position:center;
-    background-size:12px; width:22px; height:22px; margin:0px; position:relative; top:3px;
+    border:0px; background-color:transparent; background-image:url(../images/addtask.png); background-repeat:no-repeat; background-position:center; margin: 0px 0px 0px 2px;
+    background-size:16px; width:23px; height:23px; margin:0px; position:relative; top:5px;
     }
 .addtaskfield.removetaskfield {
  transform: rotate(-45deg); -moz-transform: rotate(-45deg); -webkit-transform: rotate(-45deg); -o-transform: rotate(-45deg);
@@ -224,7 +224,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     }*/
      
 .timesheet_bot {
-    padding:15px;
+    padding:15px; border-top: 1px solid #f1f1f1;
     }
 .timesheet_week_comm {
     }      
@@ -259,11 +259,11 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 	width:50%; float:left;
 	}
 .timesheet_week_comm span {
-	padding:0px 0px 8px 0px; display:inline-block; width:100%;
+	padding:0px 0px 12px 0px; display:inline-block; width:100%;
     }
 .timesheet_week_comm span input {
-	width:85%; display:inline-block; background-color:#367fa9; height:35px; border:1px solid #1f6791; padding:5px 5px;
-	border-radius:2px; color:#fff; margin:10px 0 0 0;
+	width:50%; display:inline-block; background-color:#367fa9; border:1px solid #1f6791; padding:4px 6px;
+	border-radius:2px; color:#fff;
     }
 .timesheet_week_comm span i {
 	display:inline-block; font-size:20px; padding:0px 0px 0px 10px; color:#454545; cursor:pointer;
@@ -1261,8 +1261,8 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
   
 .success_pop {
     position:fixed; text-align:left; margin:0px auto; left:0px; right:0px; top:54px; display:none;
-    background-color:#34c244; z-index:10000; padding:3px 15px; width:350px; border-radius:4px; font-size:15px; font-weight:500;
-    color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3);
+    background-color:#34c244; z-index:10000; padding:3px 15px; width:450px; border-radius:4px; font-size:15px; font-weight:500;
+    color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3); word-wrap: break-word;
     }
 .success_pop i {
     display:inline-block; padding:0px 10px 0px 0px; font-size:40px;
@@ -2282,3 +2282,119 @@ margin-bottom:15px !important;
 .recPop {
 	width: 600px;
 }
+
+/*  New timesheet */
+
+.timesheet_tableNew {
+    width:100%; font-size:14px; font-weight:400; max-height:400px; overflow-y:auto;
+    }
+.timesheet_tableNew table {
+    width:100%; font-size:14px; font-weight:400; border:none;
+    }   
+.timesheet_tableNew table tr.last_child {
+    background-color:#dadada;
+    }
+.timesheet_tableNew table tr.last_child td {
+    background-color:#dadada; font-weight:500; font-size:14px;
+    }  
+.timesheet_tableNew table tr.total_field {
+    border:none;
+    }      
+.timesheet_tableNew table tr th {
+    background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center; padding:0px; height:40px;
+    }
+.timesheet_tableNew table tr th i {
+    display:block; font-style:normal; font-size:12px; line-height:14px;
+    }
+.timesheet_tableNew table tr td {
+    color:#333; padding:0px;
+    } 
+.timesheet_tableNew table table {
+    border:none;
+    }
+.timesheet_tableNew table table tr:nth-child(even) {background: #f5f5f5;}
+.timesheet_tableNew table table tr:nth-child(odd) {background: #fff;}    
+.timesheet_tableNew table table tr th {
+    width:10%; padding:4px 10px; border-left: 1px solid #447eb4;
+    }
+.timesheet_tableNew table table tr th:first-child {
+    width:17%; border-left: none; text-align: left;
+    }      
+.timesheet_tableNew table table tr td {
+    width:10%; border-left: 1px solid #e8e8e8; padding:6px 10px; border-bottom: 1px solid #e8e8e8;
+    }
+.timesheet_tableNew table table tr td:first-child {
+    border-left: none; width:17%; border-top: none;
+    }
+.timesheet_tableNew table tr td b {
+    font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:11px; border-radius:3px; background-color:#3186d6;
+    text-align:center; width:75px; margin:1.5px 0px;
+    } 
+.timesheet_tableNew table table select {
+	width:150px; padding: 4px 8px; border:1px solid #ccc; border-radius: 2px;
+}
+
+.timesheetNewHead {
+	padding:8px 10px 5px;
+}
+.timeNewSe {
+	float: left; width: 170px; margin: 0px 10px 0px 0px; position: relative;
+}
+.timeNewSe .chosen-container-single .chosen-single span {
+	font-size: 14px; line-height: 29px;
+}
+.timeNewSe .chosen-container-single .chosen-single b {
+	border:none;
+}
+.timeNewSe .chosen-container-single .chosen-single {
+	height: 32px !important; line-height: 32px !important; border-radius: 3px;
+}
+.timeNewSe b {
+    font-weight:400; display:inline-block; padding:5px 0px 0px; color:#FFF; font-size:14px; border-radius:3px;
+	background-color:#3186d6; width: 60%; border: 1px solid #216fb9; text-align: center; height: 31px;
+	text-transform: uppercase;
+    }  
+.timeNewSe b.proj_active { background-color:#34c244; border: 1px solid #3c9a13;}
+.timeNewSe b.proj_deactivate { background-color:#ef4c4c; border: 1px solid #d72b2b;}
+.timeNewSe b.proj_process { background-color:#d98f47; border: 1px solid #c3762b;}
+.timeNewSe i {
+	font-size: 15px; color: #666; display: inline-block; padding: 5px 5px; margin: 0px 0px 0px 5px;
+	cursor: pointer; position: relative;
+}
+.timeNewSeMess {
+	position: absolute; width: 220px; z-index: 100; right: -50px; top: 37px; visibility: hidden; opacity: 0;
+	transition:0.2s all; -webkit-transition:0.2s all; -moz-transition:0.2s all;
+}
+.timeNewSeMess p {
+	position: relative; background: #fff; padding: 14px; box-shadow: 0px 0px 4px rgba(0,0,0,0.3);
+	border-radius: 3px; font-size: 14px; font-weight: 400; color: #666; font-family: roboto;
+	line-height: 20px;
+}
+.timeNewSeMess p:after {
+	bottom: 100%; left: 72%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-bottom-color: #999; border-width: 10px; margin-left: -10px;
+}
+.timeNewSe i:hover div {
+	visibility: visible; opacity: 1;
+}
+
+.timesheetNewTabs .project-tabs-menu {
+    margin:0px 0px; padding:4px 0px 0px 10px; position:relative; top:1px;
+    }
+.timesheetNewTabs .project-tabs-menu li {
+    float:left; margin-right:4px; background-color:#dedede; border:none; list-style-type:none;
+    border-radius:10px 10px 0px 0px; border-top:3px solid #f1f1f1;
+    }
+.timesheetNewTabs .project-tabs-menu li.current {
+    position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0; top: 1px;
+    }
+.timesheetNewTabs .project-tabs-menu li a {
+    padding:6px 25px; text-decoration:none; font-size:15px; color:#666; display:block;
+    }
+.timesheetNewTabs .project-tabs-menu .current a{
+    color:#1d6cb5;
+    }
+.timesheetNewTabs .project_tabs {
+    border:none; padding: 7px 0px 0px 0px; border-top: 1px solid #dedede;
+    }
+

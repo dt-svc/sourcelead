@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,12 +9,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -27,11 +36,35 @@ public class RequirementListController {
 	@Autowired
 	OrgRelationsService orgRelationsService;
 	
+	@Autowired
+	RequirementService requirementService;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
+	
+	@Autowired
+	 CommonUtil commonUtil;
+	
 	
 	@RequestMapping(value = "/requirementList")
 	public ModelAndView requirementList(HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		model.addObject("skillsList", skillsList);
+		
+		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+		model.addObject("educationsList", educationsList);
+		
+		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+		for(OrgRelations ocl :orgClientList){
+			ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+			ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+		 }
+	    model.addObject("add_clientList", orgClientList);
+	    model.addObject("loginOrgLocId", orgLocations.getId());
+	    
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementList");
 		
@@ -106,6 +139,24 @@ public class RequirementListController {
 		return model;
 
 	}
+	
+	 @RequestMapping(value = "/terminateRequirementTemplate", method = RequestMethod.POST)
+		public @ResponseBody String terminateRequirementTemplate(String requirementId, HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			Requirement rt =  requirementService.getRequirementTemplateByRequirementId(Long.parseLong(requirementId),orgLocation.getId());
+			if(rt != null){
+				
+				rt.setStatus(Constants.MEMBER_IN_ACTIVE);
+				
+				rt.setUpdatedBy(user.getUserCode());
+				rt.setUpdatedDate(commonUtil.currentDate());
+				requirementService.updateRequirementTemplate(rt);
+			}
+			return "success";
+		}
 	
 	 
 }

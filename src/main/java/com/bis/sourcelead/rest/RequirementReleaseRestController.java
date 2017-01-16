@@ -518,6 +518,9 @@ public class RequirementReleaseRestController {
 		requirement.setIsTemplate("N");
 		requirement.setSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
 		requirement.setClientSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
+		requirement.setClientCurrencyCode(parentRequirement.getClientCurrencyCode());
+		requirement.setClientRate(parentRequirement.getClientRate());
+		requirement.setClientRateType(parentRequirement.getClientRateType());
 		
 		if(parentRequirement.getClientSubmissionTemplateId()!=null){
 			requirement.setClientSubmissionTemplateId(parentRequirement.getClientSubmissionTemplateId());

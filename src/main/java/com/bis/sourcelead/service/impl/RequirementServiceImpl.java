@@ -25,8 +25,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,6 +34,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.index.helper.RequirementHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
@@ -68,7 +70,6 @@ import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
-import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -142,6 +143,12 @@ public class RequirementServiceImpl implements RequirementService {
 	 
 	 @Autowired
 	 private PdfUtil pdfUtil;
+	 
+	 @Autowired
+	 private RequirementHelper requirementHelper;
+	 
+	 @Autowired
+	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -192,11 +199,15 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			if(jsonObj.has("jobTitle")){
-				requirement.setJobTitle(jsonObj.getString("jobTitle"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("jobTitle"))){
+					requirement.setJobTitle(jsonObj.getString("jobTitle"));
+				}
+				
 			}
 			
-			if(!"".equalsIgnoreCase(jsonObj.getString("jobType"))){
-			if(jsonObj.has("jobType") ){				
+			
+			if(jsonObj.has("jobType") ){	
+				if(!"".equalsIgnoreCase(jsonObj.getString("jobType"))){
 				requirement.setJobType(jsonObj.getString("jobType"));
 			   }
 			}	
@@ -208,11 +219,17 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 						
 			if(jsonObj.has("jobId")){
-			requirement.setJobId(jsonObj.getString("jobId"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("jobId"))){
+					requirement.setJobId(jsonObj.getString("jobId"));
+				}
+			
 			}
 			
 			if(jsonObj.has("positions")){
-			requirement.setPositions(jsonObj.getString("positions"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("positions"))){
+					requirement.setPositions(jsonObj.getString("positions"));
+				}
+			
 			}
 			if(jsonObj.has("countryReq")){
 			requirement.setCountry(jsonObj.getString("countryReq"));
@@ -242,33 +259,50 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			if(jsonObj.has("maxExp")){
-			requirement.setMaxExp(jsonObj.getString("maxExp"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
+					requirement.setMaxExp(jsonObj.getString("maxExp"));
+				}
 			}
 			
 			if(jsonObj.has("minExp")){
-			requirement.setMinExp(jsonObj.getString("minExp"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("minExp"))){
+					requirement.setMinExp(jsonObj.getString("minExp"));
+				}
 			}
 			
 			if(jsonObj.has("rate")){
-			requirement.setRate(jsonObj.getString("rate"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("rate"))){
+					requirement.setRate(jsonObj.getString("rate"));
+				}
 			}
 			
 			if(jsonObj.has("rateType")){
-			requirement.setRateType(jsonObj.getString("rateType"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("rateType"))){
+					requirement.setRateType(jsonObj.getString("rateType"));
+				}
 			} 
 			
 			if(jsonObj.has("description")){
-			requirement.setDescription(jsonObj.getString("description"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("description"))){
+					requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));		
+				}
+			
 			}
 			
 			
 			if(jsonObj.has("currencyCode")){
-			requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
+					requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
+				}
+			
 			}
 			
 			
 			if(jsonObj.has("priority")){
-				requirement.setPriority(jsonObj.getString("priority"));
+				if(!"".equalsIgnoreCase(jsonObj.getString("priority"))){
+					requirement.setPriority(jsonObj.getString("priority"));
+				}
+				
 			}
 			
 			if(jsonObj.has("isTemplate") && "Y".equalsIgnoreCase(jsonObj.getString("isTemplate"))){
@@ -325,13 +359,15 @@ public class RequirementServiceImpl implements RequirementService {
 						requirement.setDocFile(templateRequirement.getDocFile());
 						requirement.setFileName(templateRequirement.getFileName());
 						requirement.setFileContentType(templateRequirement.getFileContentType());
+						requirement.setIsClientJob("N");
 					 }
-				     requirement.setIsClientJob("N");
 			 }	
 			 
 			 
 			if(jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
+			}else if(jsonObj.has("isClient")){
+				requirement.setIsClientJob("N");
 			}
 		if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient")) &&  jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y")){
 		requirementClient = (jsonObj.getString("isClient"));
@@ -560,6 +596,15 @@ public class RequirementServiceImpl implements RequirementService {
 					    	if(!assignedTeamId.contains("role") && !assignedTeamId.contains("All")){
 					    		teamId = Long.parseLong(assignedTeamId);
 							    team = teamService.getTeamByTeamId(teamId);
+							    // Adding Team Owner as RequirementAssignTo
+							    RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+									User assUser = userService.getUserById(team.getOwnerUserId().getId());
+									requirementAssignTo.setAssignUserId(assUser);
+									requirementAssignTo.setRequirementId(requirement);
+									requirementAssignTo.setTeamId(team);
+									UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
+									requirementAssignTo.setRoleId(userRole.getRoles());
+									requirementAssignToList.add(requirementAssignTo);
 					    	}
 						}   
 					    // User roleUser = team.getOwnerUserId();
@@ -647,9 +692,15 @@ public class RequirementServiceImpl implements RequirementService {
 					if(savedRequirement.getManagerUserId() != null && !user.getId().equals(savedRequirement.getManagerUserId().getId())){
 						mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 					}
-		 }			
-		
+		 }		
+			       saveElkRequirement(requirement);
 		return savedRequirement;
+	}
+
+	private void saveElkRequirement(Requirement requirement) {
+		 
+		RequirementIndex requirementIndex = requirementHelper.populateRequirementIndex(requirement);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirement.getId().toString());
 	}
 
 	@Override
@@ -1941,9 +1992,15 @@ public class RequirementServiceImpl implements RequirementService {
 		List<Requirement>  list = requirementDao.getAllRequirementTeplateJobsByOrgLocationId(orgLocationId, user);
 		
 		for(Requirement req :list){
-			
+			User createdUser = userService.getUserByUserCode(req.getCreatedBy());
+			if(createdUser != null){
+				String lastName = "";
+				if(StringUtils.isNotEmpty(createdUser.getLastName())){
+					lastName = " "+createdUser.getLastName();
+				}
+				req.setCreatedByName(createdUser.getFirstName()+lastName);
+			}
 			req.setRequirementCreatedDateToString(Constants.DF_YMD.format(req.getCreatedDate()));
-
 		}
 			
 		return list;
@@ -2095,6 +2152,15 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception {
 		return requirementDao.validateJobid(id,orgLocationsId);
+	}
+
+	@Override
+	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj) throws Exception {
+		
+		
+		
+		return null;
+		
 	}
 
 }

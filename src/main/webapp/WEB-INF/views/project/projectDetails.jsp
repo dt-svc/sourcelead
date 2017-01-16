@@ -85,7 +85,7 @@
 
 						result = result	+ '	<div class="project_details_cta" id="projectNameId">';
 						result = result + '	<strong>Project name:</strong>';
-						result = result + '	<span>'+json.projectName+'</span><div class="clearfix"></div>';
+						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 
 						result = result + '<div class="project_details_cta">';
@@ -118,7 +118,7 @@
 
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
-						result = result + '<span>'+clientName+'</span><div class="clearfix"></div>';
+						result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
@@ -129,32 +129,32 @@
 						result = result + '<div class="clearfix"></div>';
 						result = result	+ '<div class="project_details_cta">';
 						result = result + '<strong>Start date:</strong>';
-						result = result + '<span>'+json.startDateStr+'</span><div class="clearfix"></div>';
+						result = result + '<span title="'+json.startDateStr+'">'+json.startDateStr+'</span><div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result	+ '<div class="project_details_cta">';
 						result = result + '<strong>End date:</strong>';
-						result = result + '<span>'+endDateStr+'</span><div class="clearfix"></div>';
+						result = result + '<span title="'+endDateStr+'">'+endDateStr+'</span><div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result + '<div class="clearfix"></div>';
 
 						result = result	+ '<div class="project_details_cta">';
-						result = result	+ '<strong>Created By:</strong><span>'+json.createdBy+'</span><div class="clearfix"></div>';
+						result = result	+ '<strong>Created By:</strong><span title="'+json.createdBy+'">'+json.createdBy+'</span><div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result	+ '<div class="project_details_cta">';
-						result = result	+ '<strong>Created date:</strong><span>'+json.createdDateStr+'</span><div class="clearfix"></div>';
+						result = result	+ '<strong>Created date:</strong><span title="'+json.createdDateStr+'">'+json.createdDateStr+'</span><div class="clearfix"></div>';
 
 						result = result + '</div>';
 						if (json.updatedDateStr != null
 								&& json.updatedDateStr != ''
 								&& json.updatedDateStr != 'undefiend') {
 							result = result	+ '<div class="project_details_cta">';
-							result = result	+ '<strong>Last Updated:</strong><span>'+json.updatedDateStr+'</span><div class="clearfix"></div>';
+							result = result	+ '<strong>Last Updated:</strong><span title="'+json.updatedDateStr+'">'+json.updatedDateStr+'</span><div class="clearfix"></div>';
 							result = result + '</div>';
 						}
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Invoice Frequencey:</strong>';
-						result = result + '<span>'+invoiceFrequency+'</span><div class="clearfix"></div>';
+						result = result + '<span title="'+invoiceFrequency+'">'+invoiceFrequency+'</span><div class="clearfix"></div>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
@@ -241,15 +241,15 @@
 						result = result + '	<label>Status</label>';
 						result = result	+ '<select id="projectStatusId" name="projectStatusId">';
 						if (json.projectStatus == 'STARTED') {
-							result = result	+ '<option selected>Started</option>';
+							result = result	+ '<option selected >Started</option>';
 						} else {
-							result = result + '<option>Started</option>';
+							result = result + '<option onclick="projectStatus();">Started</option>';
 						}
 
 						if (json.projectStatus == 'INPROGRESS') {
 							result = result	+ '<option selected>In-Progress</option>';
 						} else {
-							result = result + '<option>In-Progress</option>';
+							result = result + '<option onclick="projectStatus();">In-Progress</option>';
 						}
 
 						if (json.projectStatus == 'COMPLETED') {
@@ -261,7 +261,7 @@
 						if (json.projectStatus == 'ONHOLD') {
 							result = result	+ '<option selected>On-Hold</option>';
 						} else {
-							result = result + '<option>On-Hold</option>';
+							result = result + '<option onclick="projectStatus();">On-Hold</option>';
 						}
 
 						result = result + '</select>';
@@ -443,7 +443,16 @@
 	}
 </script>
 
+<script>
+function projectStatus(){
+	var projectStatus = $("#projectStatusId").val();
+	var projectEnddateString = $("#endDateStr1").val();
+	if(projectStatus == "Started" || projectStatus == "In-Progress" || projectStatus == "On-Hold"){
+		 $("#endDateStr1").val('');
+	}
+}
 
+</script>
 <script type="text/javascript">
 	function updateProjectDetails(projectId) {
 		if ($('#editProject_form').validate(false, validationSettings)) {

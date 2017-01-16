@@ -74,7 +74,7 @@ public class TeamDaoImpl  implements TeamDao{
 	public List<Team> getTeamListByOrgLocationID(Long orgLocationId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Team team  where team.orgLocationsId =:orgLocationId and  team.status <> 0";
+		String query = "from Team team  where team.orgLocationsId =:orgLocationId and  team.status <> 0 ORDER BY team.id DESC";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
 	}
@@ -185,6 +185,27 @@ public class TeamDaoImpl  implements TeamDao{
 					+ "where (team.ownerUserId.id = :userId and team.orgLocationsId.id = :orgLocationId and team.status = '1') OR "
 					+ " (team.id IN (select tm.teamId.id from TeamMembers tm where tm.memberUserId.id = :userId and tm.status = '1'))";
 		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+	}
+
+	@Override
+	public Boolean getTeamOwnersListByUserIdAndRequirementId(User user, Long orgLocationId, Long requirement) {
+		// TODO Auto-generated method stub
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Team> teamList = new ArrayList<>();
+		teamList = session.createQuery("from Team team where team.ownerUserId.id =:userId and team.orgLocationsId =:orgLocationId and team.status <> 0 and team.id IN (select rato.teamId.id from RequirementAssignTo  rato   where rato.requirementId.id = :requirement )")
+						   .setLong("userId", user.getId())
+						   .setLong("orgLocationId", orgLocationId)
+						   .setLong("requirement", requirement)
+						   .setCacheable(true)
+						   .list();
+		
+		Boolean flag = false;
+		if (teamList.size() > 0) {
+			flag = true;
+		} 
+		return flag;
 		
 	}
 

@@ -129,7 +129,7 @@ function addResume(candidateId) {
 	result = result+'	                  </div>';
 	result = result+'	                  <div class="clearfix mb10">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation="validate_Space validate_Description validate_length length2-250" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation="validate_length length2-250" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	result = result+'	                  <div class="clearfix mb10" id="uploadResumeDiv">';
@@ -294,13 +294,6 @@ function addResume(candidateId) {
 			success : function(data) {
 				if (data != null && data != 'undefined' && data != "" && data != '[]') {
 					var json = JSON.parse(data);
-					if (data.indexOf('Sign In') >= 0) {
-		    		location.replace(sourceleadUrl);
-		    	 }
-        		 else if (data.indexOf('exception') >= 0) {
-        			 location.replace(sourceleadUrl+"/errorPage");
-        		 }
-        		 else{
         			 /* for (var i = 0; i < 1; i++) {
                          var val= json[i];
                          var opt = "";
@@ -345,8 +338,8 @@ function addResume(candidateId) {
 					            	}
 					            	
 					            	result = result+'<tr>';
-					           		result = result+'<td><div><span>'+title+'</span></div></td>';
-					           		result = result+'<td><div><span>'+opt.fileName+'</span></div></td>';
+					           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
+					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
 					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
 					           		result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+opt.id+'\"></a>';
@@ -362,7 +355,6 @@ function addResume(candidateId) {
 				             }
 				            result = result+'	          </tbody>';
 				       		result = result+'	      </table>';
-						}
 					if(resumesCount>4){
 						$("#addCandidateResume").hide();
 						closeResumePopup();
@@ -410,20 +402,12 @@ function deleteResume(candidateId, resumeId){
    		    success: function(data) {
    		    	
    		    	if(data != null && data != 'undefined' && data != ""){
-   		    	if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-        		 else if (data.indexOf('exception') >= 0) {
-        			 location.replace(sourceleadUrl+"/errorPage");
-        		 }
-        		 else{
         			 $("#selector2").removeAttr("style");
          			 $("#selector2").css({ display: "block" });
          			 $("#resMsgDiv").html("Resume deleted");
         			 $("#popUpDivResume").removeClass("edit-details-active");
         		     candidateResumesList(candidateId);
         		     resMsgFadein();
-        		 }
    		    	}
    		    },
 	     });
@@ -447,13 +431,6 @@ function getResume(candidateId, resumeId){
 		    url: sourceleadUrl+"/getResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, 	   
    		    success: function(data) {
    		    	var json = JSON.parse(data);
-   		    	if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-        		 else if (data.indexOf('exception') >= 0) {
-        			 location.replace(sourceleadUrl+"/errorPage");
-        		 }
-        		 else{
         			 $("#uploadResumeDiv").hide();
         			 $("#resumeAddButton").hide();
         			 $("#uploadFile").removeAttr("data-validation");
@@ -469,7 +446,6 @@ function getResume(candidateId, resumeId){
         			 }
         			 
         			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");
-        		 }
    		    }
 	     });
 }

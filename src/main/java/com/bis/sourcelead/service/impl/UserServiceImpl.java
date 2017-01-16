@@ -169,10 +169,16 @@ public class UserServiceImpl implements UserService {
 		user.setUserRole(userRoleList);
 		
 	   //For saving Employee details (Every User is an Employee)
-		Employees employee = getEmployeeDetails(user,jsonObj,orgLocations.getId(),loginuser.getUserCode());
-		HashSet<Employees> employeeList = new HashSet<Employees>();
-		employeeList.add(employee);
-		user.setEmployee(employeeList);
+		Employees employee = null;
+		if(null != user && null != user.getId()){
+			employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
+		}
+		if(null == employee){
+			employee = getEmployeeDetails(user,jsonObj,orgLocations.getId(),loginuser.getUserCode());
+			HashSet<Employees> employeeList = new HashSet<Employees>();
+			employeeList.add(employee);
+			user.setEmployee(employeeList);
+		}
 		
 		 //For saving the User  
 		try {
@@ -341,6 +347,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		userRole.setRoles(roles);
+		userRole.setUserType(roles.getDisplayName());
 		userRole.setCreatedDate(commonUtil.currentDate());
 		userRole.setCreatedBy(userCode);
 		return userRole;
@@ -646,9 +653,9 @@ public class UserServiceImpl implements UserService {
 	 */
 	
 	@Override
-	public List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId, Long orgLocationsId)
+	public List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId, Long orgLocationsId, Long tabId)
 			throws Exception {
-		return userDao.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId,orgLocationsId);
+		return userDao.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId,orgLocationsId, tabId);
 	}
 
 	
@@ -777,14 +784,19 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public List<User> getUserListExceptExistedUsersList(List<Long> userIds, Long orgLocationId)
+	public List<User> getUserListExceptExistedUsersList(List<Long> userIds, Long orgLocationId,Long tabId)
 			throws Exception {
-		return userDao.getUserListExceptExistedUsersList(userIds, orgLocationId);
+		return userDao.getUserListExceptExistedUsersList(userIds, orgLocationId,tabId);
 	}
 
 	@Override
 	public List<User> getUsersByTeamType(Long id, String teamType) throws Exception {
 		return userDao.getUsersByTeamType(id,teamType);
+	}
+	
+	@Override
+	public List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId) throws Exception {
+		return userDao.getUsersByTeamTypeAndTabId(id,teamType,tabId);
 	}
 
 
