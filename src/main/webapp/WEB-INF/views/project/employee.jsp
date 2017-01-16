@@ -607,7 +607,7 @@ function assignEmployee(){
 	 	var projectId = $("#projectId").val();
 	 	var projectStartDateStr =  $("#projectStartDateStr").val();
 	 	var projectEndDateStr =  $("#projectEndDateStr").val(); 
-	 	
+	 	var status = $("#assignStatus").val();
 	    var result = "";
 	    var mailtoMembers = "NO";
 	    if(document.getElementById('membermailCheckbox').checked) {
