@@ -171,13 +171,14 @@ public class ProjectsDashboardRestController {
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT')")
 	 @RequestMapping(value = "/updateProjectByProjectId", method = RequestMethod.POST)
 	 public String updateProjectByProjectId(@RequestParam(value="json", required=false) String json,@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
-
+		 String resultJson;
 		 String json1 = "{"+json+"}";	
 		 JSONObject jsonObj = new JSONObject(json1);
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
-		 String ProjectDetailsUpdating = projectsService.getProjectDetailsUpdateByProjectId(projectId, user, jsonObj);
+		 Projects projects = projectsService.getProjectDetailsUpdateByProjectId(projectId, user, jsonObj);
 	
-		 return ProjectDetailsUpdating;
+		 resultJson = commonUtil.toJSON(projects);
+		 return resultJson;
 	 }
 	 
 
