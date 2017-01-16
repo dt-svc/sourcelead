@@ -880,21 +880,21 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    			}
 			    		}
 			    		
-			    		/*if(templist != null && !templist.isEmpty()){
+			    		if(templist != null && !templist.isEmpty()){
 			    			//getting projectmember userId's who are added to the project
 			    			freshlist.removeAll(templist);
 			    			if(freshlist != null && !freshlist.isEmpty()){
 			    				for(Long freshlyaddedUserId : freshlist){
 			    					ProjectMembers pm = storeProjectMemberByMemberUserIdAndLoginUser(freshlyaddedUserId, user, projects, currentDate);
-			    					User usr = userService.getUserById(freshlyaddedUserId);
+			    					/*User usr = userService.getUserById(freshlyaddedUserId);
 			    					if(pm != null){
 			    						commonUtil.storeTimesheetSubmissionRecords(usr);
-			    					}
+			    					}*/
 			    				}
 			    				
 			    			}
 			    			
-			    		}*/
+			    		}
 			    		
 		    	}
 			    projects.setUpdatedBy(user.getUserCode());
