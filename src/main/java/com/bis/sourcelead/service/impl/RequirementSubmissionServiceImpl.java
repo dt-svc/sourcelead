@@ -1298,6 +1298,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					requirementSubmission.setSubmissionRateFileContentType(multiFile.getOriginalFilename());
 					requirementSubmission.setSubmissionRateFileName(multiFile.getContentType());
 				}
+				StringBuilder name = new StringBuilder();
+				if(null !=user.getLastName() && !" ".equalsIgnoreCase(user.getLastName())){
+					requirementSubmission.setSubmissionRequestUser(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					requirementSubmission.setSubmissionRequestUser(user.getFirstName());
+				}
+				
 				sendEmailtoApplicant(loginOrg, user,requirementSubmission,loginOrgLocation);
 			}
 			else if(StringUtils.equalsIgnoreCase(decision, "reject")){
@@ -1403,11 +1410,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
    		 
    		 
-   		 String clientRate = clientShortlistsRate[i];
+   		 
 		 RequirementRateSubmissionNegotiation rateNegotiation = new RequirementRateSubmissionNegotiation();
 		 rateNegotiation.setRequirementsubmissionId(clientSubmission);
-		 rateNegotiation.setExpectedRate(clientRate);
-		 rateNegotiation.setExpectedRateType("Yearly");
+		 if(clientShortlistsRate.length >0){
+			 String clientRate = clientShortlistsRate[i];
+			 rateNegotiation.setExpectedRate(clientRate);
+		 }
+		      rateNegotiation.setExpectedRateType("Yearly");
 			 rateNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
 			 rateNegotiation.setInitiatorOrgLocationId(loginOrgLocation);
 			 rateNegotiation.setRateReason("");

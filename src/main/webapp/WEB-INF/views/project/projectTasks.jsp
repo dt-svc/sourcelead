@@ -90,8 +90,7 @@
 
 						var result = "";
 						result = result + '<div class="project_tabs_inn_head">';
-						if (status != 'COMPLETED' && status != ''
-								&& status != 'undefined' && status != null) {
+						if (status != 'COMPLETED' && status != '' && status != 'undefined' && status != null) {
 							result = result	+ '<span class="pad-sea">';
 							
 							'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_TASKS\')">';  

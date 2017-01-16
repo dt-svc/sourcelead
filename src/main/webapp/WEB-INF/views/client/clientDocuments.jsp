@@ -90,13 +90,6 @@ function clientDocumentsList(clientLocationId,orgRelationId){
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&sourceType=Client",        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
              			var json = JSON.parse(data);
              			/* for (var i = 0; i < 1; i++) { 
              				var val= json[i];
@@ -196,7 +189,6 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                     $("#clientDocumentsList").append(result); 
 	                     documentpagination(); 
 	                     //msgFadein();
-			    	} 
                }else{
             	   
             	    var val= "${SourceLeadWeb_deleteDocument}";
@@ -513,13 +505,6 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
 		    	var json = JSON.parse(data);
 		    	var spoc = "";
 		    	var owner = "";
-		    	if( data.indexOf('Sign In') >= 0){
-	    		location.replace(sourceleadUrl);
-	    	 }
-    		 else if (data.indexOf('exception') >= 0) {
-    			 location.replace(sourceleadUrl+"/errorPage");
-    		 }
-    		 else{
     			 $("#uploadDocumentDiv").hide();
     			 $("#docAddButton").hide();
     			 $("#uploadFile").removeAttr("data-validation");
@@ -587,7 +572,6 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
     			 
     			 manageDates();
     			 
-    		  }
 		    }
      });
 }
@@ -679,13 +663,6 @@ function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateOrgDocumnet?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
-   		    	if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-        		 else if (data.indexOf('exception') >= 0) {
-        			 location.replace(sourceleadUrl+"/errorPage");
-        		 }
-        		 else{
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
         			 $("#clientDocSelector").removeAttr("style");
@@ -693,7 +670,6 @@ function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
          			 $("#clientDococMsgDiv").html(""+docName+" Removed");
         			 clientDocumentsList(clientLocationId,orgRelationId);
         			 clientDocMsgFadein();
-        		 }
    		    }
 	     });
 	}else{
