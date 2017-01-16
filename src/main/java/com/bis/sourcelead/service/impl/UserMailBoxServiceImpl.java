@@ -132,12 +132,16 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 	}
 
 	@Override
-	@Async
 	public void saveOrUpdateUserMailBoxELK(UserMailBox userMailBox) throws Exception {
 		
 		 //Elastic Search Document Saving
 		CampaignIndex campaignIndex = campaignIndexHelper.getCampaignIndexFromUserMailBox(userMailBox);
 		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(campaignIndex, Constants.ELK_CAMPAIGN_INDEX, Constants.ELK_CAMPAIGN_TYPE,userMailBox.getId().toString());
+	}
+
+	@Override
+	public Long getMailBoxCountByUserIdAndOrgLocationid(Long userId, Long orgLocationId, String type) throws Exception {
+		return userMailBoxDao.getMailBoxCountByUserIdAndOrgLocationid(userId, orgLocationId, type);
 	}
 	
 }

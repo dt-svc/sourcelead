@@ -9,6 +9,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CampaignIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -66,6 +73,9 @@ public class MailBoxController {
 	
 	@Autowired
 	UserMailBoxService userMailBoxService;
+	
+	@Autowired
+	SourceleadELKBaseIndexer<CampaignIndex> sourceleadELKBaseIndexer;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -134,7 +144,9 @@ public class MailBoxController {
 		return resultJson;
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	
+	
+	/*@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/getUserMails")
 	public @ResponseBody String getUserMails(@RequestParam(value = "type", required = false) String type,
 			HttpServletRequest request) throws Exception {
@@ -150,6 +162,48 @@ public class MailBoxController {
 	    	mailBoxList = userMailBoxService.getUserFavouriteMailsByUserIdAndOrgLocationId(user.getId(), orgLocations.getId());
 	    }
 	     
+	    if(mailBoxList != null){
+			calculateDays(mailBoxList);
+		}
+	    resultJson = commonUtil.toJSON(mailBoxList);
+		return resultJson;
+	}*/
+	
+	
+	
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/getUserMailsFromELK")
+	public @ResponseBody String getUserMailsFromELK(@RequestParam(value = "type", required = false) String type,
+			HttpServletRequest request) throws Exception {
+
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    String resultJson;
+	    List<CampaignIndex> mailBoxList = new ArrayList<CampaignIndex>();
+	    Long maxResults = null;
+	    
+	     BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("userId", user.getId()));
+	    
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("mailStatus", type));
+	     maxResults = userMailBoxService.getMailBoxCountByUserIdAndOrgLocationid(user.getId(), orgLocations.getId(), type);
+	   
+	    SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CAMPAIGN_INDEX, Constants.ELK_CAMPAIGN_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+	    if(null != searchHits && searchHits.length >0){
+	    	ObjectMapper mapper = new ObjectMapper();
+	    	for (SearchHit hit : searchHits) {
+	    		String json = hit.getSourceAsString();
+	    		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    		mapper.setDateFormat(df);
+	    	    CampaignIndex campaignIndex = mapper.readValue(json, CampaignIndex.class);
+	    		mailBoxList.add(campaignIndex);
+	    	}
+	    	
+	    }
+	    
 	    if(mailBoxList != null){
 			calculateDays(mailBoxList);
 		}
@@ -219,8 +273,8 @@ public class MailBoxController {
 	
 	
 	
-	public void calculateDays(List<UserMailBox> mailBoxList) throws ParseException {
-		for (UserMailBox userMailBox : mailBoxList) {
+	public void calculateDays(List<CampaignIndex> mailBoxList) throws ParseException {
+		for (CampaignIndex userMailBox : mailBoxList) {
 			long diff = commonUtil.currentDate().getTime() - userMailBox.getCreatedDate().getTime();
 			
 		    long diffSeconds = diff / 1000 % 60;

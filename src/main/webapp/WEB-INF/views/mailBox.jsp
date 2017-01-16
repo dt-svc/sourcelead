@@ -171,7 +171,7 @@
 	  
 	  $.ajax({
           type : "POST",
-          url: sourceleadUrl+"/getUserMails?${_csrf.parameterName}=${_csrf.token}&type="+type,    
+          url: sourceleadUrl+"/getUserMailsFromELK?${_csrf.parameterName}=${_csrf.token}&type="+type,    
            success :function(data) {
            	
                 if(data != null && data != 'undefined' && data != "" && data != '[]'){

@@ -55,6 +55,8 @@ public class CampaignIndex implements Serializable{
 	
 	private String fileName;
 	
+	private String calDays;
+	
 	
 
 	public Long getMailBoxId() {
@@ -247,6 +249,14 @@ public class CampaignIndex implements Serializable{
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public String getCalDays() {
+		return calDays;
+	}
+
+	public void setCalDays(String calDays) {
+		this.calDays = calDays;
 	}
 	
 	
