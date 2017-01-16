@@ -150,8 +150,6 @@ public class LoginSessionController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("dashboard");
 		
-		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
-		model.addObject("userList", userList);
 		
 		Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
 		model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
@@ -280,6 +278,9 @@ public class LoginSessionController {
 					SourceLeadSessionManager.setSessionAttribute(request, "IMESHEET_APPROVAL_TAB", "Y");
 				}
 			}
+			
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
+			SourceLeadSessionManager.setSessionAttribute(request, "userList", userList);
 			
 			
 		} catch (Exception e) {
