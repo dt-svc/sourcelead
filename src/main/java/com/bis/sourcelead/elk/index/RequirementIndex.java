@@ -4,52 +4,76 @@ import java.util.List;
 
 /**
  * 
- * @author root
+ * @author Rajashekar and Prasanna
  * @date 11th jan 2017
  */
 public class RequirementIndex {
 
-	private Long RequirementId;
-	private Long OrgLocationId;
-	private String RequirementTitle;
+	private Long requirementId;
+	
+	private Long orgLocationId;
+	
+	private String jobTitle;
+	
 	private String rate;
+	
+	private String rateType;
+	
 	private int minExperience;
+	
 	private int maxExperience;
-	private List<String> requirementStatus;
+	
+	private String requirementStatus;
+	
 	private String country;
+	
 	private String state;
+	
 	private String city;
+	
 	private List<String> education;
-	private List<String> client;
+	
+	private String client;
+	
 	private List<String> skills;
-	private String employeeType;
+	
+	private String jobType;
+	
 	private String jobId;
+	
 	private String clientContactName;
+	
+	private String clientContactEmail;
+	
 	private String manager;
+	
 	private String priority; 
 
+	
+
 	public Long getRequirementId() {
-		return RequirementId;
+		return requirementId;
 	}
 
 	public void setRequirementId(Long requirementId) {
-		RequirementId = requirementId;
+		this.requirementId = requirementId;
 	}
 
 	public Long getOrgLocationId() {
-		return OrgLocationId;
+		return orgLocationId;
 	}
 
 	public void setOrgLocationId(Long orgLocationId) {
-		OrgLocationId = orgLocationId;
+		this.orgLocationId = orgLocationId;
 	}
 
-	public String getRequirementTitle() {
-		return RequirementTitle;
+
+	public String getJobTitle() {
+		return jobTitle;
 	}
 
-	public void setRequirementTitle(String requirementTitle) {
-		RequirementTitle = requirementTitle;
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
 	}
 
 	public String getRate() {
@@ -58,6 +82,14 @@ public class RequirementIndex {
 
 	public void setRate(String rate) {
 		this.rate = rate;
+	}
+	
+	public String getRateType() {
+		return rateType;
+	}
+
+	public void setRateType(String rateType) {
+		this.rateType = rateType;
 	}
 
 	public int getMinExperience() {
@@ -76,11 +108,11 @@ public class RequirementIndex {
 		this.maxExperience = maxExperience;
 	}
 
-	public List<String> getRequirementStatus() {
+	public String getRequirementStatus() {
 		return requirementStatus;
 	}
 
-	public void setRequirementStatus(List<String> requirementStatus) {
+	public void setRequirementStatus(String requirementStatus) {
 		this.requirementStatus = requirementStatus;
 	}
 
@@ -116,11 +148,11 @@ public class RequirementIndex {
 		this.education = education;
 	}
 
-	public List<String> getClient() {
+	public String getClient() {
 		return client;
 	}
 
-	public void setClient(List<String> client) {
+	public void setClient(String client) {
 		this.client = client;
 	}
 
@@ -132,12 +164,13 @@ public class RequirementIndex {
 		this.skills = skills;
 	}
 
-	public String getEmployeeType() {
-		return employeeType;
+
+	public String getJobType() {
+		return jobType;
 	}
 
-	public void setEmployeeType(String employeeType) {
-		this.employeeType = employeeType;
+	public void setJobType(String jobType) {
+		this.jobType = jobType;
 	}
 
 	public String getJobId() {
@@ -154,6 +187,14 @@ public class RequirementIndex {
 
 	public void setClientContactName(String clientContactName) {
 		this.clientContactName = clientContactName;
+	}
+
+	public String getClientContactEmail() {
+		return clientContactEmail;
+	}
+
+	public void setClientContactEmail(String clientContactEmail) {
+		this.clientContactEmail = clientContactEmail;
 	}
 
 	public String getManager() {

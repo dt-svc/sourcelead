@@ -337,6 +337,10 @@ public class Constants {
     		
     public static String ELK_CANDIDATE_TYPE = "candidate";
     
+    public static String ELK_REQUIREMENT_INDEX = "requirement";
+	
+    public static String ELK_REQUIREMENT_TYPE = "requirement";
+    
     public static String ELK_CANDIDATE_ID_PREFIX = "CND";
     
     public static String MAIL_TRASH = "Trash";

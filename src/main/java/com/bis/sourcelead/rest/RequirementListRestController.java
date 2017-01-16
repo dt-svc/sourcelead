@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1168,7 +1169,25 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		}
 	}
 	return requirementSubmissionCounts;
-	
-	
+}
+		/**
+		 * Search Requirement
+		 * @param json
+		 * @param request
+		 * @param response
+		 * @return
+		 * @throws Exception
+		 */
+        @RequestMapping(value = "/searchRequiremet",method = RequestMethod.GET)
+		public @ResponseBody  String searchRequirement(@RequestParam(value = "json", required = false) String json,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	      OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	      String resultJson ="";
+	      String jsonc = "{" + json + "}";
+		  JSONObject jsonObj = new JSONObject(jsonc);
+	      List<Requirement> searchRequirementList = requirementService.searchRequirement(orgLocation,jsonObj);
+//		 resultJson = commonUtil.toJSON(candList);
+		 return resultJson;
+	    
+	    
 }
 }
