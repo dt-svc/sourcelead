@@ -74,7 +74,13 @@ z-index: 9999999999 !important;
 			  </div>
 				<div class="col-xs-12 col-sm-9 col-md-9">
 					<div class="row">
-						<div class="col-md-7">
+						<div class="col-md-6">
+								
+								<div class="form-group">
+								<div class="col-md-12 clearfix">
+								<h5>Org Details</h5>
+								</div>
+								</div>
 								
 								<div class="form-group">
 								<label class="col-md-4">Company :</label>
@@ -95,9 +101,62 @@ z-index: 9999999999 !important;
 								<label class="col-md-4">Enrolled Date :</label>
 								<p><fmt:formatDate type="date"  value="${orgloc.createdDate}" /></p></p>
 								</div>
+	                  </div>
+	                  
+	                  
+	                  <div class="col-md-6">
+								<c:if test="${!empty orgloc.user.id}">
 								<div class="form-group">
-						            <label class="col-md-3">Modules :</label>
-						            <div class="col-md-14 checkbox">
+								<div class="col-md-12 clearfix">
+								<h5>Primary Contact Details</h5>
+								</div>
+								</div>
+								
+								<div class="form-group">
+								<label class="col-md-4">First Name : </label>
+								<p>${orgloc.user.firstName}</p>
+								</div>
+								
+								<div class="form-group">
+								<label class="col-md-4">Last Name : </label>
+								<c:if test="${!empty orgloc.user.lastName}">
+									<p>${orgloc.user.lastName}</p>
+								</c:if>
+								<c:if test="${empty orgloc.user.lastName}">
+									<p>NO DATA</p>
+								</c:if>
+								
+								</div>
+								
+								<div class="form-group">
+								<label class="col-md-4">Email : </label>
+								<p>${orgloc.user.email}</p>
+								</div>
+								
+								<div class="form-group">
+								<label class="col-md-4">Contact : </label>
+								<c:if test="${!empty orgloc.user.mobilePhone}">
+									<p>${orgloc.user.mobilePhone}</p>
+								</c:if>
+								<c:if test="${empty orgloc.user.mobilePhone}">
+									<p>NO DATA</p>
+								</c:if>
+								</div>
+							</c:if>
+								
+	                  </div>
+	                  
+	                  
+	                  <div class="col-md-6">
+								
+								<div class="form-group">
+								<div class="col-md-12 clearfix">
+								<h5>Registered Modules</h5>
+								</div>
+								</div>
+								
+								<div class="form-group">
+						            <div class="col-md-12 checkbox">
 							         <c:forEach var="module" items="${registeredModulesList}">
 										<ul class="list-unstyled pull-left">
 				               				 <li>
