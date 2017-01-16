@@ -1,4 +1,4 @@
-ackage com.bis.sourcelead.constants;
+package com.bis.sourcelead.constants;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
