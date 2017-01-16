@@ -328,6 +328,7 @@ public class MailBoxRestController {
 	    	
 		    	userMailbox.setIsMailRead(1);
 				userMailBoxService.saveUserMailBox(userMailbox);
+				userMailBoxService.saveOrUpdateUserMailBoxELK(userMailbox);
 				
 				Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocation.getId(), "Inbox");
 				Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocation.getId(), "Requested");
