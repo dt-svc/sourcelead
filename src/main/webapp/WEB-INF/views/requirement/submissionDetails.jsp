@@ -1264,7 +1264,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '				</div>';
 		result = result + '		    </div>';
 		result = result + '		    <div class="row">';
-		result = result + '				<div class="col-md-8">';
+		result = result + '				<div class="col-md-8" id="docFileuploadFileGroup">';
 		result = result + '					<input type="file" multiple id="docFile" name="docFile" class="mt10" data-validation="required validate_Space validatedoc" field-name="Attachment">';
 		result = result + '				</div>';
 		result = result + '			</div>';
@@ -1277,12 +1277,36 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#request').append(result);
 		$('#accpet-div').fadeOut();
 		$('#reject').fadeOut();
+		attachmentValidationFun();
 	};
 	$("#request, .acceptreject-pop, .labelsuccess").click(function(e){
 		 e.stopPropagation();
 	});
 	
 </script>
+
+
+<%-- 
+     @author : sarath kumar punnana 
+     this script is for validate document
+     1.usage     : request rate
+     2.parameter : .
+     3.ajax url implementation in CandidateResumeRestController.
+--%>
+<script type="text/javascript">
+function attachmentValidationFun(){
+	  	          var el = document.getElementById("docFile");
+	  	    	  el.addEventListener('change', function(event) {
+		        	     	var attach_id = this.id;
+		        	     	var size = $('#'+attach_id)[0].files[0].size;
+		        	     	if(size > 2000000){  
+		        		    	  $("#docFile").val('');
+		        		    	  $("html #docFileuploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+		        	     	}
+		           });
+}   
+</script>
+
 
 <%-- 
      @author : Venkat Kesav
