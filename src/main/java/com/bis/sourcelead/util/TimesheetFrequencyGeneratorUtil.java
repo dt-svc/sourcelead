@@ -23,8 +23,6 @@ public  class TimesheetFrequencyGeneratorUtil {
 	@Autowired
 	CommonUtil commonUtil;
 	
-	@Autowired
-    CalendarUtil calendarUtil;
 	
 	public HashMap<String,String> getTimesheetFrequencyListFromProjectInvoiceFrequency(ProjectMembers projectMember) throws Exception{
 		HashMap<String,String> timesheetFrequencyList = new HashMap<String,String>();
@@ -48,8 +46,8 @@ public  class TimesheetFrequencyGeneratorUtil {
 								 Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 								 cal.setLenient(false);
 								 cal.setTime(commonUtil.currentDate());
-								 Date previousMonthStartDate = calendarUtil.getMonthStartDateByGivenDate(cal.getTime(),Constants.PREVIOUS_MONTH).get("STARTDATE");
-								 Date nextMonthEndDate = calendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.NEXT_MONTH).get("ENDDATE");
+								 Date previousMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(cal.getTime(),Constants.PREVIOUS_MONTH).get("STARTDATE");
+								 Date nextMonthEndDate = CalendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.NEXT_MONTH).get("ENDDATE");
 								
 								
 								 /**
@@ -57,10 +55,10 @@ public  class TimesheetFrequencyGeneratorUtil {
 								  *
 							      *
 							     */
-								  Date empMonthStartDate = calendarUtil.getMonthStartDateByGivenDate(empStartDate,Constants.CURRENT_MONTH).get("STARTDATE");
+								  Date empMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(empStartDate,Constants.CURRENT_MONTH).get("STARTDATE");
 								  Date empMonthEndDate = null;
 								  if(empEndDate != null)
-									 empMonthEndDate = calendarUtil.getMonthEndDateByGivenDate(empEndDate,Constants.CURRENT_MONTH).get("ENDDATE");
+									 empMonthEndDate = CalendarUtil.getMonthEndDateByGivenDate(empEndDate,Constants.CURRENT_MONTH).get("ENDDATE");
 								
 								  /**
 								   * checking whether previousmoth start date is greaterthan employee month startdate or not
@@ -76,12 +74,12 @@ public  class TimesheetFrequencyGeneratorUtil {
 									   empMonthEndDate = nextMonthEndDate;
 								   }
 								   
-								   int monthdiff = calendarUtil.monthsBetween(empMonthStartDate, empMonthEndDate);
+								   int monthdiff = CalendarUtil.monthsBetween(empMonthStartDate, empMonthEndDate);
 								   for(int i=0;i<=monthdiff;i++){
 									   Date startDate = empMonthStartDate;
-									   Date endDate = calendarUtil.getMonthEndDateByGivenDate(startDate, i).get("ENDDATE");
+									   Date endDate = CalendarUtil.getMonthEndDateByGivenDate(startDate, i).get("ENDDATE");
 									   timesheetFrequencyList.put(format.format(startDate), format.format(endDate));
-									   empMonthStartDate = calendarUtil.getMonthStartDateByGivenDate(startDate, i+1).get("ENDDATE");
+									   empMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(startDate, i+1).get("ENDDATE");
 								   }
 					         }
 						    else if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Semi-Monthly")){
@@ -94,8 +92,8 @@ public  class TimesheetFrequencyGeneratorUtil {
 								 Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 								 cal.setLenient(false);
 								 cal.setTime(commonUtil.currentDate());
-								 Date previousMonthStartDate = calendarUtil.getMonthStartDateByGivenDate(cal.getTime(),Constants.PREVIOUS_MONTH).get("STARTDATE");
-								 Date nextMonthEndDate = calendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.NEXT_MONTH).get("ENDDATE");
+								 Date previousMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(cal.getTime(),Constants.PREVIOUS_MONTH).get("STARTDATE");
+								 Date nextMonthEndDate = CalendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.NEXT_MONTH).get("ENDDATE");
 						   					    
 								 
 								  /**
@@ -105,12 +103,12 @@ public  class TimesheetFrequencyGeneratorUtil {
 							      *
 							     */
 								  Date empMonthStartDate = null;
-								  Date empMonth15thDate = calendarUtil.getMonth15thDateByGivenDate(empStartDate,Constants.CURRENT_MONTH).get("STARTDATE");
+								  Date empMonth15thDate = CalendarUtil.getMonth15thDateByGivenDate(empStartDate,Constants.CURRENT_MONTH).get("STARTDATE");
 								  if(empStartDate.after(empMonth15thDate)){
-									  empMonthStartDate = calendarUtil.getMonth16thDateByGivenDate(empStartDate,Constants.CURRENT_MONTH).get("STARTDATE");
+									  empMonthStartDate = CalendarUtil.getMonth16thDateByGivenDate(empStartDate,Constants.CURRENT_MONTH).get("STARTDATE");
 								  }
 								  else{
-									  empMonthStartDate = calendarUtil.getMonthStartDateByGivenDate(empStartDate,Constants.CURRENT_MONTH).get("STARTDATE");
+									  empMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(empStartDate,Constants.CURRENT_MONTH).get("STARTDATE");
 								  }
 								  
 								  /**
@@ -125,7 +123,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 										  empMonthEndDate = empMonth15thDate;
 									  }
 									  else{
-										  empMonthEndDate = calendarUtil.getMonthEndDateByGivenDate(empEndDate,Constants.CURRENT_MONTH).get("ENDDATE");
+										  empMonthEndDate = CalendarUtil.getMonthEndDateByGivenDate(empEndDate,Constants.CURRENT_MONTH).get("ENDDATE");
 									  }
 									 
 								  }
@@ -144,16 +142,16 @@ public  class TimesheetFrequencyGeneratorUtil {
 									   empMonthEndDate = nextMonthEndDate;
 								   }
 								  
-								   int monthdiff = calendarUtil.monthsBetween(empMonthStartDate, empMonthEndDate);
+								   int monthdiff = CalendarUtil.monthsBetween(empMonthStartDate, empMonthEndDate);
 								   for(int i=0;i<=monthdiff;i++){
 									   Date startDate = empMonthStartDate;
-									   Date endDate = calendarUtil.getMonth15thDateByGivenDate(startDate, i).get("STARTDATE");
+									   Date endDate = CalendarUtil.getMonth15thDateByGivenDate(startDate, i).get("STARTDATE");
 									   timesheetFrequencyList.put(format.format(startDate), format.format(endDate));
 									   if(empMonthEndDate.after(endDate)){
-										   startDate =  calendarUtil.getMonth16thDateByGivenDate(startDate, i).get("STARTDATE");
-										   endDate   =  calendarUtil.getMonthEndDateByGivenDate(startDate, i).get("ENDDATE");
+										   startDate =  CalendarUtil.getMonth16thDateByGivenDate(startDate, i).get("STARTDATE");
+										   endDate   =  CalendarUtil.getMonthEndDateByGivenDate(startDate, i).get("ENDDATE");
 										   timesheetFrequencyList.put(format.format(startDate), format.format(endDate));
-										   empMonthStartDate = calendarUtil.getMonthStartDateByGivenDate(startDate, i+1).get("ENDDATE");
+										   empMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(startDate, i+1).get("ENDDATE");
 									   }
 									   else{
 										   break;
