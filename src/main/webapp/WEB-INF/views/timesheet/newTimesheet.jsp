@@ -57,8 +57,9 @@ function addTimeSheetRow(projectId) {
 		    var tbl = document.getElementById("timesheet");
 			var rowNum = $("#maxRowNumber").val();
 			var maxRowNum = parseInt(rowNum);
-			$("#maxRowNumber").val(maxRowNum + 1); 
-			var row = tbl.insertRow(maxRowNum+1);
+			maxRowNum = maxRowNum +1;
+			$("#maxRowNumber").val(maxRowNum); 
+			var row = tbl.insertRow(maxRowNum);
 			row.setAttribute("id", "timesheetRow"+maxRowNum);
 			
 			  
@@ -242,6 +243,186 @@ function removeTimeSheetRow(rowId) {
 		
 </script>	
 
+<!-- this script is for clear timesheet -->
+<script>
+function clearTimesheet(){ 
+	for (var i = 1; i < 8; i++){
+	 $('.NEW').each(function() {
+		 var p = this.id;
+		 for (var j = 1; j < 50; j++){
+			    $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val("00:00");
+			    $("#"+j+"submission"+p+"textArea"+i+"Id").val("");  
+		 }
+    	 });  
+	}
+	$("#weekComment").val('');
+}
+</script>
+
+<!-- this script is for validation of 24 hours -->
+<script>
+function checkHours(){ 
+	 var result = "";		
+	 var total; 
+	 for (var i = 1; i < 8; i++){
+		 var bsum = 0;
+		 var nbsum = 0;
+		 var total = 0;
+		 for (var j = 1; j < 50; j++){  
+			    var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
+			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
+			    	 var hours = btemp;
+			    	 var split = hours.split(':');
+			    	 var first = split[0];
+			    	 var second = split[1];
+					 
+					 var minute = first * 60;
+					 var minute1 = second;
+					 var finalmin = parseInt(minute) + parseInt(minute1);
+			    	 
+				     bsum = parseFloat(bsum) + parseInt(finalmin);
+				}
+			    
+		 }
+	    var t = bsum; 
+		var hours = Math.floor(t / 60); 
+		var minutes = t % 60;
+		total = hours +":"+ minutes;
+	 var time = total.split(':'); 
+	 if(!isNaN(time[0])){
+	 if(time.length === 2 && parseInt(time[0],10)>=0 && parseInt(time[0],10)<=23  && parseInt(time[1],10)>=0  && parseInt(time[1],10)<=59){
+	    	 
+	 }else{
+	    	if(i == '1'){
+	    		result = result+"MonDay ,";
+	    	}
+	    	if(i == '2'){  
+	    		result = result+"TuesDay ,";
+	    	}
+	    	if(i == '3'){  
+	    		result = result+"Wednesday ,";
+	    	}
+	    	if(i == '4'){  
+	    		result = result+"Thursday ,";
+	    	}
+	    	if(i == '5'){
+	    		result = result+"Friday ,";
+	    	}
+	    	if(i == '6'){
+	    		result = result+"Saturday ,";
+	    	}
+	    	if(i == '7'){
+	    		result = result+"Sunday ,";
+	    	}
+	    	
+	 }
+   }
+}   
+	if(result != "" && result != null && result != 'undefined'){   
+		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
+		$("#timeSheetErrorMsg").attr('style','display:block;');
+		$("#timeSheetErrorMsg").empty();
+		$("#timeSheetErrorMsg").append(outPut);
+		var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
+		$("#hideError").empty();
+		$("#hideError").append(error);
+	 }else{
+		$("#timeSheetErrorMsg").empty();
+		$("#hideError").empty();
+	} 
+	
+	$(".time_pop b").click(function(){
+		$("#timeSheetErrorMsg").attr('style','display:none;');
+	    $("#timeSheetErrorMsg").empty();
+	}); 
+	
+}
+</script>
+
+<script>
+/* this script is for calculate total hours */
+$(document).click(function(){ 
+	 var total;
+	 for (var i = 1; i < 8; i++){
+		 var bsum = 0;
+		 var nbsum = 0;
+		 var total = 0;
+		 for (var j = 1; j < 50; j++){
+			    var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
+			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
+			    	 var hours = btemp;
+			    	 var split = hours.split(':');
+			    	 var first = split[0];
+			    	 var second = split[1];
+					 
+					 var minute = first * 60;
+					 var minute1 = second;
+					 var finalmin = parseInt(minute) + parseInt(minute1);
+			    	 
+				     bsum = parseFloat(bsum) + parseInt(finalmin);
+				}
+			    
+		 }
+		 
+	    var t = bsum; 
+		var hours = Math.floor(t / 60); 
+		var minutes = t % 60;
+		
+		if (minutes < 10) {
+			minutes = '0' + minutes;
+		}
+		if (hours < 10) {
+			hours = '0' + hours;
+		}
+		if(!isNaN(hours) && !isNaN(minutes)){
+			total = hours +":"+ minutes;
+		}else{
+			total =  "00:00";
+		}
+	 $("#rowTotal"+i+"Id").val(total);
+}	
+	
+	 grandTotal();		
+});
+
+function grandTotal(){
+    var total;
+    var bsum = 0;
+    for(var i=1 ;i<8;i++){
+   	 var hours = $("#rowTotal"+i+"Id").val();
+
+   	 var split = hours.split(':');
+   	 var first = split[0];
+   	 var second = split[1];
+		 
+		 var minute = first * 60;
+		 var minute1 = second;
+		 var finalmin = parseInt(minute) + parseInt(minute1);
+   	 
+	     bsum = parseFloat(bsum) + parseInt(finalmin);
+   	 
+    }
+    var t = bsum; 
+	 var hours = Math.floor(t / 60); 
+	 var minutes = t % 60;
+	 if (minutes < 10) {
+		minutes = '0' + minutes;
+	 }
+	 if (hours < 10) {
+		hours = '0' + hours;
+	 }
+	 if(!isNaN(hours) && !isNaN(minutes)){
+		 total = hours +":"+ minutes;
+	 }else{
+		 total = "00:00"; 
+	 }
+	
+	 $("#grandTotal").val(total);
+    
+}
+
+</script>
+
 <!-- this script is for mask for each entity  -->	
 <script>
 function maskme(){
@@ -365,47 +546,47 @@ function addAttachment(){
 				             
 				        </div>
 				        <div id="divadttTd2" style="display:none;">
-					    	   <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
+					    	   <input type="text" onblur='checkHours()'  id="REPLACEROWIDtimeSheetDay1Id" name="REPLACEROWIDtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
 				               <div class="timesheet_comm">
-				                <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment1Id');"></i>
-				                <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment1Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea1Id" ></textarea></span>
+				                <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment1Id');"></i>
+				                <span class="teskcomment" id="REPLACEROWIDcomment1Id" ><textarea name="REPLACEROWIDcomment1Id" id="REPLACEROWIDtextArea1Id" ></textarea></span>
 				               </div>
 				   		</div>
 				        <div id="divadttTd3" style="display:none;">
-								  <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
+								  <input type="text" onblur='checkHours()'  id="REPLACEROWIDtimeSheetDay2Id" name="REPLACEROWIDtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
 				                  <div class="timesheet_comm">
-				                      <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment2Id');"></i>
-				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment2Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment2Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea2Id" ></textarea></span></div>
+				                      <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment2Id');"></i>
+				                  <span class="teskcomment" id="REPLACEROWIDcomment2Id" ><textarea name="REPLACEROWIDcomment2Id" id="REPLACEROWIDtextArea2Id" ></textarea></span></div>
 				        </div>
 				        <div id="divadttTd4" style="display:none;">
-								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
+								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay3Id" name="REPLACEROWIDtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
 				                  <div class="timesheet_comm">
-				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment3Id');"></i>
-				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment3Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment3Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea3Id"></textarea></span></div>
+				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment3Id');"></i>
+				                  <span class="teskcomment" id="REPLACEROWIDcomment3Id" ><textarea name="REPLACEROWIDcomment3Id" id="REPLACEROWIDtextArea3Id"></textarea></span></div>
 				        </div>
 				        <div id="divadttTd5" style="display:none;">
-								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
+								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay4Id" name="REPLACEROWIDtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
 				                  <div class="timesheet_comm">
-				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment4Id');"></i>
-				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment4Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment4Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea4Id"></textarea></span></div>           
+				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment4Id');"></i>
+				                  <span class="teskcomment" id="REPLACEROWIDcomment4Id" ><textarea name="REPLACEROWIDcomment4Id" id="REPLACEROWIDtextArea4Id"></textarea></span></div>           
 				        </div>
 				        <div id="divadttTd6" style="display:none;">
-								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
+								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay5Id" name="REPLACEROWIDtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
 				                  <div class="timesheet_comm">
-				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment5Id');"></i>
-				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment5Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment5Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea5Id"></textarea></span></div>  
+				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment5Id');"></i>
+				                  <span class="teskcomment" id="REPLACEROWIDcomment5Id" ><textarea name="REPLACEROWIDcomment5Id" id="REPLACEROWIDtextArea5Id"></textarea></span></div>  
 				    	 </div>
 				         <div id="divadttTd7" style="display:none;">
-							  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
+							  <input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay6Id" name="REPLACEROWIDtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
 				                 <div class="timesheet_comm">
-				                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment6Id');"></i>
-				                 <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment6Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment6Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea6Id"></textarea></span></div>
+				                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment6Id');"></i>
+				                 <span class="teskcomment" id="REPLACEROWIDcomment6Id" ><textarea name="REPLACEROWIDcomment6Id" id="REPLACEROWIDtextArea6Id"></textarea></span></div>
 				         </div>
 				         <div id="divadttTd8" style="display:none;">
-							  <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
+							  <input type="text" onblur='checkHours()'  id="REPLACEROWIDtimeSheetDay7Id" name="REPLACEROWIDtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
 				                 <div class="timesheet_comm">
-				                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment7Id');"></i>
-				                 <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment7Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment7Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea7Id"></textarea></span></div>            
+				                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment7Id');"></i>
+				                 <span class="teskcomment" id="REPLACEROWIDcomment7Id" ><textarea name="REPLACEROWIDcomment7Id" id="REPLACEROWIDtextArea7Id"></textarea></span></div>            
 				    	 </div>
 						<!-- #### this div is for dummy timesheets entries ( useful for add rows ) above  ####-->  
 						
@@ -1004,7 +1185,7 @@ function addAttachment(){
 		
       </section>
       <!-- Content Area Ends--> 
-
+<div class="time_pop" id="timeSheetErrorMsg"></div>
  
       
     

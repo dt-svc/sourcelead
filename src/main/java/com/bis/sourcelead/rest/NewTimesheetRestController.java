@@ -107,8 +107,11 @@ public class NewTimesheetRestController {
 							       
 		
 		HashMap<String,String> tabFrequency = new HashMap<>();
-		tabFrequency.put("2-1-2016", "8-1-2016");
-		tabFrequency.put("9-1-2016", "15-1-2016");
+		tabFrequency.put("2-1", "8-1");
+		tabFrequency.put("9-1", "15-1");
+		tabFrequency.put("16-1", "22-1");
+		tabFrequency.put("23-1", "29-1");
+		tabFrequency.put("30-1", "31-1");
 		StringBuilder tabData = new StringBuilder();
 		
 		timesheetEntriesDiv.append("			<div class='timesheetNewTabs'> ");
@@ -141,7 +144,7 @@ public class NewTimesheetRestController {
 		timesheetEntriesDiv.append("							</ul>			 ");
 		timesheetEntriesDiv.append("					</div> ");
 		timesheetEntriesDiv.append("			        <div class='clearfix'></div> ");
-		timesheetEntriesDiv.append("			    </ul> ");
+		timesheetEntriesDiv.append("			    </ul> "); 
 		
 		
 		
@@ -189,7 +192,7 @@ public class NewTimesheetRestController {
 		timesheetEntriesDiv.append("		<div class='res_total_hour'>");	
 		timesheetEntriesDiv.append("			<i></i>");	
 		timesheetEntriesDiv.append("			<p>Total hours</p>");	
-		timesheetEntriesDiv.append("		    <h2>45:30</h2>");	
+		timesheetEntriesDiv.append("		    <h2> <input disabled type='text' id='grandTotal' name='grandTotal' class='inline_field' value='HH:MM' value='00:00' /> </h2>");	
 		timesheetEntriesDiv.append("		    <span>This Week</span>");	
 		timesheetEntriesDiv.append("		</div>   ");	       
 		timesheetEntriesDiv.append("		    </div>");	
@@ -245,55 +248,87 @@ public class NewTimesheetRestController {
 		tabDiv.append("			                                              </div>");
 		tabDiv.append("			                                         </td> ");
 		tabDiv.append("													<td> <div>");
-		tabDiv.append("			                  <input type='text' id='REPLACEROWIDtimeSheetDay1Id' name='timeSheetDay1Id' class='inline_field' placeholder='HH:MM' />	");	
+		tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay1Id' name='timeSheetDay1Id' class='inline_field' placeholder='HH:MM' />	");	
 		tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment1Id\");' ></i>");
 		/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
 		tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment1Id'><textarea name='"+rowCount+"comment1Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
 		tabDiv.append("			                  </div> </td>");
 		
 		tabDiv.append("													<td> <div>");
-		tabDiv.append("			                  <input type='text' id='REPLACEROWIDtimeSheetDay1Id' name='timeSheetDay1Id' class='inline_field' placeholder='HH:MM' />	");
+		tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay2Id' name='timeSheetDay2Id' class='inline_field' placeholder='HH:MM' />	");
 		tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment2Id\");'  ></i>");
 		/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
 		tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment2Id'><textarea name='"+rowCount+"comment2Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
 		tabDiv.append("			                  </div> </td>");
 		
 		tabDiv.append("			 										<td> <div>");
-		tabDiv.append("			                  <input type='text' id='REPLACEROWIDtimeSheetDay1Id' name='timeSheetDay1Id' class='inline_field' placeholder='HH:MM' />	");
+		tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay3Id' name='timeSheetDay3Id' class='inline_field' placeholder='HH:MM' />	");
 		tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment3Id\");' ></i>");
 		/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
 		tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment3Id'><textarea name='"+rowCount+"comment3Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
 		tabDiv.append("			                  </div> </td>");
 		
 		tabDiv.append("			     										<td> <div>");
-		tabDiv.append("			                  <input type='text' id='REPLACEROWIDtimeSheetDay1Id' name='timeSheetDay1Id' class='inline_field' placeholder='HH:MM' />	");
+		tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay4Id' name='timeSheetDay4Id' class='inline_field' placeholder='HH:MM' />	");
 		tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment4Id\");' ></i>");
 		/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
 		tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment4Id'><textarea name='"+rowCount+"comment4Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
 		tabDiv.append("			                  </div> </td>");
 		
 		tabDiv.append("													<td> <div>");
-		tabDiv.append("			                  <input type='text' id='REPLACEROWIDtimeSheetDay1Id' name='timeSheetDay1Id' class='inline_field' placeholder='HH:MM' />	");
+		tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay5Id' name='timeSheetDay5Id' class='inline_field' placeholder='HH:MM' />	");
 		tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>");
 		/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
 		tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment5Id'><textarea name='"+rowCount+"comment5Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
 		tabDiv.append("			                  </div> </td>");
 		
 		tabDiv.append("													<td> <div>");
-		tabDiv.append("			                  <input type='text' id='REPLACEROWIDtimeSheetDay1Id' name='timeSheetDay1Id' class='inline_field' placeholder='HH:MM' />	");
+		tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay6Id' name='timeSheetDay6Id' class='inline_field' placeholder='HH:MM' />	");
 		tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment6Id\");'  ></i>");
 		/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
 		tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment6Id'><textarea name='"+rowCount+"comment6Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
 		tabDiv.append("			                  </div> </td>");
 		
 		tabDiv.append("													<td> <div>");
-		tabDiv.append("			                  <input type='text' id='REPLACEROWIDtimeSheetDay1Id' name='timeSheetDay1Id' class='inline_field' placeholder='HH:MM' />	");
+		tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay7Id' name='timeSheetDay7Id' class='inline_field' placeholder='HH:MM' />	");
 		tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment7Id\");' ></i>");
 		/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
 		tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment7Id'><textarea name='"+rowCount+"comment7Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
 		tabDiv.append("			                  </div> </td>    ");     
 		
-		tabDiv.append("			                  </tr>");                                                        
+		tabDiv.append("			                  </tr>");   
+		
+		
+		
+		
+		
+		tabDiv.append("	  <tr class='last_child'>"); 
+		tabDiv.append("    <td class='total_field'>Total</td>"); 
+		tabDiv.append("    <td> <div>"); 
+		tabDiv.append("    <input type='text' disabled id='rowTotal1Id' name='rowTotal1Id' class='inline_field' value='HH:MM' />"); 	
+		tabDiv.append("    </div> </td>"); 
+		tabDiv.append("    <td> <div>"); 
+		tabDiv.append("    <input type='text' disabled id='rowTotal2Id' name='rowTotal2Id' class='inline_field' value='HH:MM' />	"); 
+		tabDiv.append("    </div> </td>"); 
+		tabDiv.append("    <td> <div>"); 
+		tabDiv.append("    <input type='text' disabled id='rowTotal3Id' name='rowTotal3Id' class='inline_field' value='HH:MM' />	"); 
+		tabDiv.append("    </div> </td>"); 
+		tabDiv.append("    <td> <div>"); 
+		tabDiv.append("    <input type='text'disabled  id='rowTotal4Id' name='rowTotal4Id' class='inline_field' value='HH:MM' />	"); 
+		tabDiv.append("    </div> </td>"); 
+		tabDiv.append("    <td> <div>"); 
+		tabDiv.append("    <input type='text' disabled id='rowTotal5Id' name='rowTotal5Id' class='inline_field' value='HH:MM' />"); 	
+		tabDiv.append("    <td> <div>"); 
+		tabDiv.append("    <input type='text' disabled id='rowTotal6Id' name='rowTotal6Id' class='inline_field' value='HH:MM' />"); 	
+		tabDiv.append("    </div> </td>"); 
+		tabDiv.append("    <td> <div>"); 
+		tabDiv.append("    <input type='text' disabled id='rowTotal7Id' name='rowTotal7Id' class='inline_field' value='HH:MM' />	"); 
+		tabDiv.append("    </div> </td>"); 
+		tabDiv.append("      </tr> ");  
+			
+		
+		
+		
 		tabDiv.append("			                </tbody>");
 		tabDiv.append("			            </table>");
 		tabDiv.append("</div>");        	
