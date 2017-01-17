@@ -1,6 +1,7 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-   
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!-- Content Area -->
 <section class="content-wraper">
         <section class="content-header clearfix">
@@ -20,13 +21,11 @@
        
 		<div class="timesheetNewHead">
 			<div class="timeNewSe">
-                <select class="form-control chosen-select">
-                  <option>Project 1</option>
-                  <option>Project 2</option>
-                  <option>Project 3</option>
-                  <option>Project 4</option>
-                  <option>Project 5</option>
-                </select>
+			<select class="form-control chosen-select">
+			    <c:forEach var="pm" items="${ProjectMembersList}">  
+	                  <option value="${pm.id}">${pm.projects.projectName}</option>
+                 </c:forEach>
+             </select>
             </div>
 			<div class="timeNewSe">
                 <select class="form-control chosen-select">
