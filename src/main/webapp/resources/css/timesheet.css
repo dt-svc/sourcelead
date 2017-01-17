@@ -425,7 +425,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     }
 .timesheet_appr_table table tr th:last-child { text-align:center; border-left:none; }  
 .timesheet_appr_table table tr td {
-    color:#333; padding:7px 15px; border-left:1px solid #eae6e6; height:35px; font-weight:500; text-align:center;
+    color:#333; padding:7px 8px; border-left:1px solid #eae6e6; height:35px; font-weight:500; text-align:center;
     }
 .timesheet_appr_table table tr td:last-child {
     width:120px; text-align:left; padding:7px 5px;
@@ -474,13 +474,13 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     text-align:left;
     }
 .time_appr_user img {
-    float:left; width:42px; height:42px; border-radius:50%;
+    float:left; width:38px; height:38px; border-radius:50%;
     }
 .time_appr_user span {
-    float:left; padding:2px 0px 0px 10px; width:70%;
+    float:left; padding:0px 0px 0px 10px; width:70%;
     }
 .time_appr_user span b {
-    display:block; font-weight:500; padding:1px 0px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    display:block; font-weight:500; padding:0px 0px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
 .mask_time {
     position:fixed; width:100%; height:100%; background:rgba(0,0,0,0.4); left:0px; top:0px; z-index:1500; display:none;
@@ -2301,36 +2301,28 @@ margin-bottom:15px !important;
     border:none;
     }      
 .timesheet_tableNew table tr th {
-    background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center; padding:0px; height:40px;
+    background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center; padding:0px;
+    width:10%; padding:4px 10px; border-left: 1px solid #447eb4;
+    }
+.timesheet_tableNew table tr th:first-child {
+    width:17%; border-left: none; text-align: left;
     }
 .timesheet_tableNew table tr th i {
     display:block; font-style:normal; font-size:12px; line-height:14px;
     }
 .timesheet_tableNew table tr td {
-    color:#333; padding:0px;
-    } 
-.timesheet_tableNew table table {
-    border:none;
-    }
-.timesheet_tableNew table table tr:nth-child(even) {background: #f5f5f5;}
-.timesheet_tableNew table table tr:nth-child(odd) {background: #fff;}    
-.timesheet_tableNew table table tr th {
-    width:10%; padding:4px 10px; border-left: 1px solid #447eb4;
-    }
-.timesheet_tableNew table table tr th:first-child {
-    width:17%; border-left: none; text-align: left;
-    }      
-.timesheet_tableNew table table tr td {
     width:10%; border-left: 1px solid #e8e8e8; padding:6px 10px; border-bottom: 1px solid #e8e8e8;
     }
-.timesheet_tableNew table table tr td:first-child {
+.timesheet_tableNew table tr td:first-child {
     border-left: none; width:17%; border-top: none;
     }
+.timesheet_tableNew table tr:nth-child(even) {background: #f5f5f5;}
+.timesheet_tableNew table tr:nth-child(odd) {background: #fff;}    
 .timesheet_tableNew table tr td b {
     font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:11px; border-radius:3px; background-color:#3186d6;
     text-align:center; width:75px; margin:1.5px 0px;
     } 
-.timesheet_tableNew table table select {
+.timesheet_tableNew table select {
     width:150px; padding: 4px 8px; border:1px solid #ccc; border-radius: 2px;
 }
  
@@ -2339,6 +2331,9 @@ margin-bottom:15px !important;
 }
 .timeNewSe {
     float: left; width: 170px; margin: 0px 10px 0px 0px; position: relative;
+}
+.timeNewSe.timeNewSe_a {
+    width:240px;
 }
 .timeNewSe .chosen-container-single .chosen-single span {
     font-size: 14px; line-height: 29px;
@@ -2420,3 +2415,13 @@ margin-bottom:15px !important;
 .export ul li:hover {
     background: #f1f1f1 !important;
 }
+ 
+   .project_details_cta.project_details_view span {
+   display:inline; float:left; width:60%; text-overflow: inherit; white-space: normal; overflow: visible;
+   font-weight:500; word-wrap: break-word;
+   }
+ 
+.require_wrap_details_cta.require_wrap_details_view span  {
+   display: inline; float: left; width: 60%; text-overflow: inherit; white-space: normal; overflow: visible;
+       font-weight: 500; word-wrap: break-word;
+   }
