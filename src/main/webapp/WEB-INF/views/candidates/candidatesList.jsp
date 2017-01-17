@@ -353,13 +353,13 @@ function candidateSideBar(candidateId){
 
          			 	
          			 	if(json.country != null && json.country != '' && json.country != 'undefined'){
-         			 		country = ','+json.country;
+         			 		country =json.country;
              			 	}else{
              			 		country = '';
              			 	}
          			 	
          			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
-         			 		state =json.state;
+         			 		state =json.state+',';
              			 	}else{
              			 		state = '';
              			 	}
