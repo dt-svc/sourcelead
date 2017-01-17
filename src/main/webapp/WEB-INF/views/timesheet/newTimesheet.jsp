@@ -202,7 +202,6 @@ function addTimeSheetRow(projectId) {
    	          type : "POST",
  	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds=null",		
  		      success :function(data) {
- 		    	        	alert("data"+data);
  		    	   			var json = JSON.parse(data);
 	 			   		   	$("#"+maxRowNum+"taskId").empty();
 	 			   		   	var result = "";
@@ -212,7 +211,6 @@ function addTimeSheetRow(projectId) {
 	  			        		var opt = json[i];
 	  			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
 	  						}
-	  		    	    	alert("maxRowNum"+maxRowNum);
  				    	 	$("#"+maxRowNum+"taskId").append(result);
  		      }
  	      	  
@@ -222,6 +220,27 @@ function addTimeSheetRow(projectId) {
 
 	 
 </script>
+
+<!-- this script is for remove timesheet -->
+<script type="text/javascript">	
+
+function removeTimeSheetRow(rowId) { 
+	
+			var rowNum = $("#maxRowNumber").val();
+			var maxRowNum = parseInt(rowNum);
+			/* $("#maxRowNumber"+submissionId).val(maxRowNum - 1);  */
+			
+			 document.getElementById("timesheetRow"+rowId).style.display = 'none';
+			 document.getElementById("timesheetRow"+rowId).value= '';
+			 var  rId = "timesheetRow"+rowId;
+			  var r = document.getElementById("timesheet").rows[rId];
+	          var count = 2*(r.cells.length);
+			    for(i=0;i<=count;i++){
+			        r.deleteCell(0);
+			    } 
+		}
+		
+</script>	
 
 <!-- this script is for mask for each entity  -->	
 <script>
@@ -341,7 +360,7 @@ function addAttachment(){
 				                              	<option value="${task.id}">${task.taskName}</option>
 				                           </c:forEach> --%>
 				             </select>
-				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID','submissionId')" class="addtaskfield removetaskfield"/>
+				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="addtaskfield removetaskfield"/>
 				             </div>
 				             
 				        </div>
