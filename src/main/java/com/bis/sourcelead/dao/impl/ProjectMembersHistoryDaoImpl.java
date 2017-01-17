@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -171,6 +172,32 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		}
 		
 		return pmh;
+	}
+
+	@Override
+	public HashMap<String, Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId) throws Exception {
+		logger.debug("In ProjectMembersHistory getProjectMembersStartDateAndEndDateByProjectMemberId method");
+        Session session = this.sessionFactory.getCurrentSession();
+        Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId where pmh.projectMemberId.id = :projectMemberId");
+		@SuppressWarnings("unchecked")
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		HashMap<String,Date> dateList = new HashMap<String,Date>();
+		Date startDate = null; 
+		Date endDate  = null;
+		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
+			int count = 1;
+			for(ProjectMembersHistory pmh :projectMembersHistoryList){
+				if(count == 1){
+					startDate = pmh.getProjectAssignedDate();
+				}
+				else{
+					endDate = pmh.getProjectTerminationDate();
+				}
+			}
+			dateList.put("STARTDATE", startDate);
+			dateList.put("ENDDATE", endDate);
+		}
+		return dateList;
 	}
 
 }

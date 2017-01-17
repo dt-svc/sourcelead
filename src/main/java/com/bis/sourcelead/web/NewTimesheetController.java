@@ -15,8 +15,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CommonUtil;
@@ -40,6 +42,9 @@ public class NewTimesheetController {
 	
 	@Autowired
 	private NotificationsService notificationsService;
+	
+	@Autowired
+	private ProjectMembersService projectMembersService;
 	
 	/**
 	 * @author sarath kumar punnana 
@@ -70,6 +75,9 @@ public class NewTimesheetController {
 			List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
 			SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
 			SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationList);
+			
+			List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLoc.getId(), loginUser.getId());
+			model.addObject("ProjectMembersList", projectMembersList);
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("timesheet/newTimesheet");

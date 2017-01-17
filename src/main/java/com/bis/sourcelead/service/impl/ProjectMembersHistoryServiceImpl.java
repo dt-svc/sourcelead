@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,12 @@ public class ProjectMembersHistoryServiceImpl implements ProjectMembersHistorySe
 	public ProjectMembersHistory getProjectMembersRecentClosedByProjectMemberId(Long projectMemberId) throws Exception {
 		// TODO Auto-generated method stub
 		return projectMembersHistoryDao.getProjectMembersRecentClosedByProjectMemberId(projectMemberId);
+	}
+
+	@Override
+	public HashMap<String, Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId)
+			throws Exception {
+		return projectMembersHistoryDao.getProjectMembersStartDateAndEndDateByProjectMemberId(projectMemberId);
 	}
 
 }
