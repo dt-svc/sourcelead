@@ -86,6 +86,7 @@
 						result = result + json.projectStatus;
 						result = result + '	</i></span>';
 						result = result	+ '</div></span><div class="clearfix"></div>';
+						result = result + '<input type="hidden" name="dbProjectStatus" id="dbProjectStatus" value="'+json.projectStatus+'" >';
 
 						result = result + '<div class="clearfix"></div>';
 						result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
@@ -409,23 +410,23 @@
 						result = result + '</div>	';
 						
 						
-						result = result + '<div class="user_summary_edit_cta">';
+						/* result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Invoice Frequency <span class="text-danger">*</span></label>';
 						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control">';
-							
 						result = result  +' <option '+(json.invoiceFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
 						result = result  +'	 <option '+(json.invoiceFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
 						result = result  +'	 <option '+(json.invoiceFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
 						result = result  +'	<option '+(json.invoiceFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
 						result = result  +'	</select>';
-											
-						result = result + '</div>';
+						result = result + '</div>'; */
+						
 						result = result + '<div class="clearfix"></div>';
 
 						result = result + '<div class="user_summary_edit_cta" id="endDateDiv">';
-						result = result + '<label>End date</label>';
+						result = result + '<label>End date <span class="text-danger" id="endDateSpan" style="display: none; ">*</span></label>';
 						result = result
 								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" field-name="End Date" >';
+						result = result + '<input type="hidden" name="dbEndDateStr" id="dbEndDateStr" value="'+endDateStr+'" >';
 						result = result + '</div>';
 						
 						
@@ -485,16 +486,21 @@
 <script>
 function projectStatus(){
 	var projectStatus = $("#projectStatusId").val();
-	var projectEnddateString = $("#endDateStr1").val();
-	if(projectStatus == "Started" || projectStatus == "In-Progress" || projectStatus == "On-Hold"){
+	var dbProjectStatus = $("#dbProjectStatus").val();
+	var dbEndDateStr = $("#dbEndDateStr").val();
+	if((projectStatus == "Started" || projectStatus == "In-Progress" || projectStatus == "On-Hold") && dbProjectStatus == "COMPLETED"){
 		 $("#endDateStr1").val('');
+	}else{
+		$("#endDateStr1").val(dbEndDateStr);
 	}
 	
 	$('#endDateDiv').find('p.jquery_form_error_message').remove(); 
 	if(projectStatus != null && projectStatus != "" && projectStatus != "undefined" && projectStatus == "Completed"){
+		 $("#endDateSpan" ).show(); 
 		 $('#endDateStr1').removeAttr('data-validation-optional');
 		 $('#endDateStr1').attr("data-validation","required"); 
 	 }else{
+		 $("#endDateSpan" ).hide();
 		 $('#endDateStr1').removeAttr('data-validation');
 		 $('#endDateStr1').attr("data-validation-optional","true"); 
 	 } 
