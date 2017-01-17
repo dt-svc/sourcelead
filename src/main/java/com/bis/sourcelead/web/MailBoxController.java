@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -182,6 +183,7 @@ public class MailBoxController {
 	    List<CampaignIndex> mailBoxList = new ArrayList<CampaignIndex>();
 	    Long maxResults = null;
 	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    df.setTimeZone(TimeZone.getTimeZone("GMT"));
 	    
 	     BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
