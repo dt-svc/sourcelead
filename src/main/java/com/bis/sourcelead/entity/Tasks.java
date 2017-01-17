@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
@@ -263,3 +264,4 @@ public class Tasks implements Serializable{
 		this.taskOwnerName = taskOwnerName;
 	}
 }
+
