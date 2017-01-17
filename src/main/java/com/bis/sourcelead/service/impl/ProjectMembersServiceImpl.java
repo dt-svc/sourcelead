@@ -45,6 +45,7 @@ import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -67,6 +68,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	
 	 @Autowired
 	 public UserService userService;
+	 
+	 @Autowired
+	 UserRoleService userRoleService;
 	 
 	 @Autowired
 	 private ProjectsService projectsService; 
@@ -488,14 +492,21 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		if(jsonObj.has("level1Manager")){
 	    	if(jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
 	    		String levelManager = jsonObj.getString("level1Manager");
-				projectMemberList.add(saveManagersAsProjectMembers(jsonObj, projects, user, levelManager));
+	    		Boolean isAdmin = userRoleService.isUserAdmin(Long.parseLong(levelManager));
+				if(!isAdmin){
+					projectMemberList.add(saveManagersAsProjectMembers(jsonObj, projects, user, levelManager));
+				}
 	    	}
     	}
 		
 		if(jsonObj.has("level2Manager")){ 	
 			if(!jsonObj.getString("level2Manager").isEmpty()){
 				String levelManager = jsonObj.getString("level2Manager");
-				projectMemberList.add(saveManagersAsProjectMembers(jsonObj, projects, user, levelManager));
+				Boolean isAdmin = userRoleService.isUserAdmin(Long.parseLong(levelManager));
+				if(!isAdmin){
+					projectMemberList.add(saveManagersAsProjectMembers(jsonObj, projects, user, levelManager));
+				}
+				
 			}
 		 }
 		return projectMemberList;
