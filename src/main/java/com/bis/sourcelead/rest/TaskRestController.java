@@ -1,6 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.TaskService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -35,6 +35,9 @@ public class TaskRestController {
 	
 	@Autowired
 	TaskService taskService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	 
 	 @Autowired
@@ -57,133 +60,58 @@ public class TaskRestController {
 			 
 	   }
 	 
-	 /**
-	  * @author Laxman
-	  * this method is getAssignedTasksList
-	  * @param request
-	  * @return
-	  * @throws Exception
-	  */
-	 @RequestMapping(value = "/getAssignedTasksList", method = RequestMethod.POST)
-		public @ResponseBody String getAssignedTasksList(HttpServletRequest request) throws Exception {
-			
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			List<Tasks> taklist = taskService.assignedTasksListByIdANDOrgLocationId(orgLocations.getId(),user.getId());
-			for(Tasks tk :taklist){
-				tk.setSubject(tk.getSubject());
-				tk.setTaskDateStr(Constants.DMY.format(tk.getTaskDate()));
-				tk.setTaskTime(tk.getTaskTime());
-				tk.setDescription(tk.getDescription());
-				tk.setAlertType(tk.getAlertType());
-				tk.setTaskStatus(tk.getTaskStatus());
-				
-				if( null != tk.getAssignedUserId()){
-					StringBuilder assignedName= new StringBuilder();
-					if(null != tk.getAssignedUserId().getLastName()){
-						tk.setAssignedName(assignedName.append(tk.getAssignedUserId().getFirstName()+" "+tk.getAssignedUserId().getLastName()).toString());
-					}else{
-						tk.setAssignedName(assignedName.append(tk.getAssignedUserId().getFirstName()).toString());
-					}
-				}
-				
-				if( null != tk.getTaskOwnerId()){
-					StringBuilder taskOwnerName= new StringBuilder();
-					if(null != tk.getAssignedUserId().getLastName()){
-						tk.setTaskOwnerName(taskOwnerName.append(tk.getTaskOwnerId().getFirstName()+" "+tk.getTaskOwnerId().getLastName()).toString());
-					}else{
-						tk.setTaskOwnerName(taskOwnerName.append(tk.getTaskOwnerId().getFirstName()).toString());
-					}
-				}
-				
-				
-					
+	 
+    /**
+     * this method is used for all tasks list
+     * @param status
+     * @param date
+     * @param request
+     * @return json
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getTasksList", method = RequestMethod.POST)
+	public @ResponseBody String getTasksList(@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "date", required = false) String date,HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(orgLocations.getId(),user.getId(),status,date);
+		 
+		for(Tasks tk :taklist){
+			tk.setSubject(tk.getSubject());
+			if(null != tk.getTaskDate()){
+				tk.setTaskDateStr(Constants.DMY.format(tk.getTaskDate()));	
 			}
-			return commonUtil.toJSON(taklist);
-		} 
-	 
-	 
-	    @RequestMapping(value = "/getMyTasksList", method = RequestMethod.POST)
-		public @ResponseBody String getMyTasksList(HttpServletRequest request) throws Exception {
+			tk.setTaskTime(tk.getTaskTime());
+			tk.setDescription(tk.getDescription());
+			tk.setAlertType(tk.getAlertType());
+			tk.setTaskStatus(tk.getTaskStatus());
+			tk.setPriority(tk.getPriority());
 			
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			List<Tasks> taklist = taskService.myTasksListByIdAndOrgLocationIdAssignedUserId(orgLocations.getId(),user.getId());
-			for(Tasks tk :taklist){
-				tk.setSubject(tk.getSubject());
-				tk.setTaskDateStr(Constants.DMY.format(tk.getTaskDate()));
-				tk.setTaskTime(tk.getTaskTime());
-				tk.setDescription(tk.getDescription());
-				tk.setAlertType(tk.getAlertType());
-				tk.setTaskStatus(tk.getTaskStatus());
-				
-				if( null != tk.getAssignedUserId()){
-					StringBuilder assignedName= new StringBuilder();
-					if(null != tk.getAssignedUserId().getLastName()){
-						tk.setAssignedName(assignedName.append(tk.getAssignedUserId().getFirstName()+" "+tk.getAssignedUserId().getLastName()).toString());
-					}else{
-						tk.setAssignedName(assignedName.append(tk.getAssignedUserId().getFirstName()).toString());
-					}
+			if( null != tk.getAssignedUserId()){
+				StringBuilder assignedName= new StringBuilder();
+				if(null != tk.getAssignedUserId().getLastName()){
+					tk.setAssignedName(assignedName.append(tk.getAssignedUserId().getFirstName()+" "+tk.getAssignedUserId().getLastName()).toString());
+				}else{
+					tk.setAssignedName(assignedName.append(tk.getAssignedUserId().getFirstName()).toString());
 				}
-				
-				if( null != tk.getTaskOwnerId()){
-					StringBuilder taskOwnerName= new StringBuilder();
-					if(null != tk.getAssignedUserId().getLastName()){
-						tk.setTaskOwnerName(taskOwnerName.append(tk.getTaskOwnerId().getFirstName()+" "+tk.getTaskOwnerId().getLastName()).toString());
-					}else{
-						tk.setTaskOwnerName(taskOwnerName.append(tk.getTaskOwnerId().getFirstName()).toString());
-					}
-				}
-				
-				
-					
 			}
-			return commonUtil.toJSON(taklist);
-		} 
-	 
-	    
-	    @RequestMapping(value = "/getTasksList", method = RequestMethod.POST)
-		public @ResponseBody String getTasksList(@RequestParam(value = "status", required = false) String status,
-				@RequestParam(value = "date", required = false) String date,HttpServletRequest request) throws Exception {
 			
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(orgLocations.getId(),user.getId(),status,date);
-			 
-			for(Tasks tk :taklist){
-				tk.setSubject(tk.getSubject());
-				if(null != tk.getTaskDate()){
-					tk.setTaskDateStr(Constants.DMY.format(tk.getTaskDate()));	
+			if( null != tk.getTaskOwnerId()){
+				StringBuilder taskOwnerName= new StringBuilder();
+				if(null != tk.getAssignedUserId().getLastName()){
+					tk.setTaskOwnerName(taskOwnerName.append(tk.getTaskOwnerId().getFirstName()+" "+tk.getTaskOwnerId().getLastName()).toString());
+				}else{
+					tk.setTaskOwnerName(taskOwnerName.append(tk.getTaskOwnerId().getFirstName()).toString());
 				}
-				tk.setTaskTime(tk.getTaskTime());
-				tk.setDescription(tk.getDescription());
-				tk.setAlertType(tk.getAlertType());
-				tk.setTaskStatus(tk.getTaskStatus());
-				
-				if( null != tk.getAssignedUserId()){
-					StringBuilder assignedName= new StringBuilder();
-					if(null != tk.getAssignedUserId().getLastName()){
-						tk.setAssignedName(assignedName.append(tk.getAssignedUserId().getFirstName()+" "+tk.getAssignedUserId().getLastName()).toString());
-					}else{
-						tk.setAssignedName(assignedName.append(tk.getAssignedUserId().getFirstName()).toString());
-					}
-				}
-				
-				if( null != tk.getTaskOwnerId()){
-					StringBuilder taskOwnerName= new StringBuilder();
-					if(null != tk.getAssignedUserId().getLastName()){
-						tk.setTaskOwnerName(taskOwnerName.append(tk.getTaskOwnerId().getFirstName()+" "+tk.getTaskOwnerId().getLastName()).toString());
-					}else{
-						tk.setTaskOwnerName(taskOwnerName.append(tk.getTaskOwnerId().getFirstName()).toString());
-					}
-				}
-				
-				
-					
 			}
-			return commonUtil.toJSON(taklist);
-		} 
-	 
+			
+			
+				
+		}
+		return commonUtil.toJSON(taklist);
+	} 
+ 
 	 
 	  /**
 	   * @author Laxman
@@ -202,6 +130,34 @@ public class TaskRestController {
 			 }
 					return "success";
 			}
+		 
+		 
+   /**
+   * @author Laxman
+   * This method is get the users list
+   * @return json
+   * @throws Exception
+   */
+	 @RequestMapping(value = "/assignedUserList", method = RequestMethod.POST)
+	 @ResponseBody String assignedUserList(HttpServletRequest request) throws Exception{
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 List<UserRole> userRoleList = userRoleService.getAllUsersListByOrgLocationId(orgLocations.getId());
+			for(UserRole ur :userRoleList){
+				StringBuilder userName = new StringBuilder();
+				ur.setUserId(ur.getUser().getId());
+				if(null != ur.getUser()){
+					if(null != ur.getUser().getLastName()){
+						ur.setUserName(userName.append(ur.getUser().getFirstName()).append("").append(ur.getUser().getLastName()).toString());
+					}else{
+						ur.setUserName(userName.append(ur.getUser().getFirstName()).toString());
+					}
+				}
+			}
+			
+		return commonUtil.toJSON(userRoleList);
+		}
+			 
+			 
 	  
 	 
 	   protected static boolean isNullOrEmpty(String str) {

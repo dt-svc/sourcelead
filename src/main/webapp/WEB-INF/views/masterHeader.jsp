@@ -17,7 +17,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<link rel="stylesheet" href="resources/css/chosen.min.css">
+ <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link rel="stylesheet" href="resources/css/jquery.timepicker.css">
 
@@ -80,7 +80,7 @@ width: 11.5%;
 	padding: 0px; position: relative;
 }
 .newdate .fa-filter {
-	position: absolute; left: 2px; top: 1px; z-index: 100; font-size: 17px; color: #666; height: 32px; width: 34px;
+	position: absolute; left: 2px; top: 1px; z-index: 100; font-size: 17px; color: #666; height: 28px; width: 34px;
 	background-color: #f1f1f1; text-align: center; padding: 7px 0px 0px 0px;
 }
 .newdate .dashboard-datepkr {
@@ -346,7 +346,7 @@ function notificationStatusAsRead(){
 				        <div id="other-task" class="tab-pane fade">
 							 <div class="col-md-6 clearfix newdate">
 			                    <i class="fa fa-filter"></i>
-								 <span class="dashboard-datepkr"><input class="form-control TaskDate"  name="assignedTaskDatpicker" id="assignedTaskDatpicker"  type="text" readonly="readonly" >
+								 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="assignedTaskDatpicker" id="assignedTaskDatpicker"  type="text" readonly="readonly" >
 								<i class="fa fa-calendar"></i></span>
 				               </div>								
 					            <div class="clearfix require_wrap_table">
@@ -357,7 +357,7 @@ function notificationStatusAsRead(){
 				          <div id="my-task" class="tab-pane fade in active">
 				               <div class="col-md-6 clearfix newdate">
 				                    <i class="fa fa-filter"></i>
-									 <span class="dashboard-datepkr"><input class="form-control TaskDate"  name="myTaskDatpicker" id="myTaskDatpicker"  type="text" readonly="readonly">
+									 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="myTaskDatpicker" id="myTaskDatpicker"  type="text" readonly="readonly">
 									<i class="fa fa-calendar"></i></span>
 				               </div>	
 				          
@@ -370,7 +370,7 @@ function notificationStatusAsRead(){
 				          <div id="closed-task" class="tab-pane fade">
 				             <div class="col-md-6 clearfix newdate">
 				                    <i class="fa fa-filter"></i>
-									 <span class="dashboard-datepkr"><input class="form-control TaskDate"  name="closedTaskDatpicker" id="closedTaskDatpicker" type="text" readonly="readonly">
+									 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="closedTaskDatpicker" id="closedTaskDatpicker" type="text" readonly="readonly">
 									<i class="fa fa-calendar"></i></span>
 				               </div>
 				            <div class="clearfix require_wrap_table">
@@ -388,12 +388,12 @@ function notificationStatusAsRead(){
 			          <form class="form-horizontal clearfix">
 			            <h4>Add Task</h4>
 			            <div class="row">
-			              <div class="col-md-6">
-			                <label>Assign To <span class="text-danger">*</span></label>
+			              <div class="col-md-6" >
+			                <label>Assign To<span class="text-danger">*</span></label>
 			                <select class="chosen-select" multiple data-placeholder="Select Priority" id="assignTo" name="assignTo" field-name="AssignTo"  data-validation="required">
-				                 <c:forEach var="user" items="${SourceLeadWeb_userList}">
-					                     <option value="${user.id}" >${user.firstName} ${user.lastName}</option>
-				                </c:forEach>
+				                <%--  <c:forEach var="user" items="${SourceLeadWeb_userRoleList}">
+					                     <option value="${user.userId}" >${user.userName}</option>
+				                </c:forEach> --%>
 			                </select>
 			              </div>
 			              <div class="col-md-6 dropdown-select">
@@ -485,6 +485,7 @@ function notificationStatusAsRead(){
 						type : "POST",
 						url : sourceleadUrl+ "/storeTasks?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 						success : function(result) {
+							//#other-task
 							taskwidget();
 							tasksList('assignedTasks');
 						},
@@ -576,6 +577,7 @@ $(".collpase-div").click(function(){
 	  $("#myTask").show();
  };
  function showtaskdiv(){
+	 assignedUserList()
 	 $("#myTask").hide();
 	 $(".newTask-widget").fadeIn(200);
 	 $(".newTask-widget").val();
@@ -620,6 +622,29 @@ $(".collpase-div").click(function(){
 			return o;
 		};
 	})(jQuery);
+</script>
+
+<script type="text/javascript">
+function assignedUserList(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/assignedUserList?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+			}
+        	 $("#assignTo").empty();
+           	 $("#assignTo").append(result); 
+           	$('#assignTo').trigger("chosen:updated");
+	    }
+   });
+}
+
 </script>
 
 <script>

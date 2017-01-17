@@ -165,6 +165,12 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getUserByUserId(userId);
 	}
 	
+	@Override
+	public List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId) {
+		return userRoleDao.getAllUsersListByOrgLocationId(orgLocationId);
+	}
+	
+	
 	public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, List<UserRole> activeList,
 			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,String userState)
 			throws Exception {
@@ -493,6 +499,5 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 		return userRole;
 	}
-	
 
 }

@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.entity.Tasks;
-import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.ibm.icu.text.SimpleDateFormat;
 
 @Repository
@@ -60,27 +58,8 @@ public class TaskDaoImpl implements TaskDao{
 		return (Tasks) session.get(Tasks.class, id);
 	}
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<Tasks> assignedTasksListByIdANDOrgLocationId(Long OrgLocationId,Long userId) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId ";
-	    List<Tasks> tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setCacheable(true).list();
-        return tasksList;
-	}
-	
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<Tasks> myTasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId,Long userId) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId and tasks.assignedUserId =:userId ";
-	    List<Tasks> tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setCacheable(true).list();
-        return tasksList;
-	}
-
-
-
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId, String Status,String date) throws Exception {
@@ -99,16 +78,27 @@ public class TaskDaoImpl implements TaskDao{
 		}
 		 
 		if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(Status)){
-			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.assignedUserId =:userId "+subQuery+" ORDER BY tasks.createdDate DESC";
+			query = "from Tasks tasks where tasks.assignedUserId =:userId "+subQuery+" ORDER BY tasks.createdDate DESC";
+			//query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.assignedUserId =:userId "+subQuery+" ORDER BY tasks.createdDate DESC";
 		}else if(Constants.TASK_STATUS_ASSIGNTASK.equalsIgnoreCase(Status)){
-			 query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId "+subQuery+" ORDER BY tasks.createdDate DESC";
+			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId "+subQuery+" ORDER BY tasks.createdDate DESC";
 		}else if(Constants.TASK_STATUS_CLOSEDTASK.equalsIgnoreCase(Status)){
 			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and (tasks.taskOwnerId =:userId OR tasks.assignedUserId =:userId) and  tasks.taskStatus = 'Closed' "+subQuery+" ORDER BY tasks.createdDate DESC";
 		}
 		if(null != date && "" != date){
-			 tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setString("strDate", strDate).setCacheable(true).list();	
+			if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(Status)){
+				tasksList = session.createQuery(query).setLong( "userId", userId).setString("strDate", strDate).setCacheable(true).list();
+			}else{
+				tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setString("strDate", strDate).setCacheable(true).list();	
+			}
+			 	
 		}else{
-			tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setCacheable(true).list();
+			if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(Status)){
+				tasksList = session.createQuery(query).setLong( "userId", userId).setCacheable(true).list();	
+			}else{
+				tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setCacheable(true).list();
+			}
+			
 		}
 	    
         return tasksList;

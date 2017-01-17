@@ -13,18 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -55,16 +49,6 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public Tasks getTasksById(Long id) {
 		return taskDao.getTasksById(id);
-	}
-	@Override
-	public List<Tasks> assignedTasksListByIdANDOrgLocationId(Long OrgLocationId,Long userId) throws Exception {
-		
-		return taskDao.assignedTasksListByIdANDOrgLocationId(OrgLocationId,userId);
-	}
-	
-	@Override
-	public List<Tasks> myTasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId) throws Exception {
-		return taskDao.myTasksListByIdAndOrgLocationIdAssignedUserId(OrgLocationId,userId);
 	}
 	
 	@Override

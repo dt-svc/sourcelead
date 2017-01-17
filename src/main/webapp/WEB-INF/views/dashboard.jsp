@@ -2,7 +2,7 @@
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<!-- <link href="resources/css/jquery-ui.css" rel="stylesheet"> -->
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -82,7 +82,11 @@ overflow-x: auto;
 }
 </style>
 
- 
+  <script type="text/javascript">
+ $( document ).ready(function() {
+	 assignTasksList();
+	});
+</script>
   
 <section class="content-wraper">
 	    <section class="content-header clearfix">
@@ -141,11 +145,124 @@ overflow-x: auto;
 					  </div> 
 				 </sec:authorize> 
 				 
-	    <div class="clearfix row mb"> 
-	   	 <%--  <jsp:include page="dashboardTimesheetsApprovals.jsp"></jsp:include> --%>
-	    </div>
+	    
+	    <div class="row clearfix">
+	    <div class="col-md-6 mb">
+        <div class="clients_wrap_table dashboard-widget ">
+          <!-- <h4 class="pull-left">Tasks &nbsp;&nbsp;
+          <b class="newdate">
+               <i class="fa fa-filter"></i>
+              <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="dasboardTaskDatpicker" id="dasboardTaskDatpicker"  type="text" readonly="readonly" >
+           <i class="fa fa-calendar"></i></span>
+           </b>
+           </h4> -->
+           <h4 class="clearfix">Tasks
+        <b class="dashboard-datepkr"><input class="input-sm" id="dasboardTaskDatpicker" readonly="readonly" type="text"><i class="fa fa-calendar"></i></b>  
+          </h4>	
+          <div class="clearfix require_wrap_table dashboard-data">
+            <div id="assignTaskList"></div>
+            
+          </div>
+        </div>
+        <!-- Pagenation Ends --> 
+      </div>
+      </div>
+	    
+	    <div class="clearfix"></div> 
+	    
 </section>
 
 
 <jsp:include page="masterFooter.jsp" />
+<script type="text/javascript">
+$('#dasboardTaskDatpicker').datepicker({
+	dateFormat : 'dd-mm-yy',
+	onSelect : function(selected) {
+		var dt = new Date(selected);
+		dt.setDate(dt.getDate() + 1);
+		$("#dasboardTaskDatpicker").datepicker("option", "minDate", dt);
+		assignTasksList();
+		
+		
+	   }
+	});
+</script>
 
+	
+<script type="text/javascript">
+	function assignTasksList() {
+		var sourceleadUrl ='${sourceleadUrl}';
+		var date = $("#dasboardTaskDatpicker").val();
+		var status =  "myTask";
+		
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getTasksList?${_csrf.parameterName}=${_csrf.token}&status="+status+"&date="+date,
+	        success: function(data) {
+	        	 var json = JSON.parse(data);
+	        	 var result = "";
+	        	 result = result + '<table id="dasboardTasksPagination">'; 
+	        	 result = result + '<thead>';
+	         	result = result + '<tr>';
+	         	result = result + '<th>Subject</th>';
+	         	result = result + '<th>Date &amp; Time</th>';
+	         	result = result + '<th>Priority</th>';
+	         	result = result + '<th>Status</th>';
+	         	result = result + ' </tr>';
+	        	result = result + ' </thead>';
+	        	result = result + ' <tbody>';
+	        	
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var report = json[i];
+	        		
+	        		if(report.taskDateStr != null && report.taskDateStr != '' && report.taskDateStr != 'undefined'){
+	        			taskDateStr = report.taskDateStr
+	        		}else{
+	        			taskDateStr = "--";
+	        		}
+	        		if(report.taskTime != null && report.taskTime != '' && report.taskTime != 'undefined'){
+	        			taskTime = report.taskTime;
+	        		}else{
+	        			taskTime = "";
+	        		}
+	        		if(report.priority != null && report.priority != '' &&  report.priority != 'undefined'){
+	        			priority = report.priority;
+	        		}else{
+	        			priority = "--";
+	        		}
+	        		
+	        		result = result + '<tr>';
+	        		result = result + ' <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
+	        		result = result + '<td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
+	        		result = result + '<td>'+priority+'</td>';
+	        		result = result + ' <td>'+report.taskStatus+'</td>';
+	        		result = result + ' </tr>';
+	               
+				}
+	        	 result = result + '     </tbody>';
+	        	 result = result + '   </table>';
+	        	 $("#assignTaskList").empty();
+	           	 $("#assignTaskList").append(result); 
+	           	dasboardTasksPagination();
+	        }
+		});
+		
+	}
+
+	</script>
+	
+	<script>
+function dasboardTasksPagination(){
+    $('#dasboardTasksPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>

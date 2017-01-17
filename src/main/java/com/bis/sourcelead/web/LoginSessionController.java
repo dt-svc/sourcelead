@@ -279,10 +279,6 @@ public class LoginSessionController {
 				}
 			}
 			
-			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
-			SourceLeadSessionManager.setSessionAttribute(request, "userList", userList);
-			
-			
 		} catch (Exception e) {
 			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		}
