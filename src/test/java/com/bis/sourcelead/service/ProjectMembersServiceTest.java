@@ -51,7 +51,7 @@ public class ProjectMembersServiceTest {
 		employee.setId(1L);
 		projectMembers.setEmployee(employee);
 		
-		projectMembers.setTimesheetFrequency("weekly");
+		//projectMembers.setTimesheetFrequency("weekly");
 		
 		HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
 		ProjectMembersHistory pmh = new ProjectMembersHistory();
@@ -102,7 +102,7 @@ public class ProjectMembersServiceTest {
 		pmhList.add(pmh);
 		
 		
-		projectMembers.setTimesheetFrequency("weekly");
+		//projectMembers.setTimesheetFrequency("weekly");
 		projectMembers.setCurrentBillRate(500.0F);
 		projectMembers.setRateType("Monthly");
 		projectMembers.setStatus("1");

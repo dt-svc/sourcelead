@@ -1,5 +1,6 @@
 package com.bis.sourcelead.util;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,15 +13,20 @@ import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
 	
-	  public static void main(String[] args) throws Exception{
-		  Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-			  cal.setLenient(false);
-			 cal.setTime(new Date());
-			 Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
-			 System.out.println(currentMonday.getTime());
-			 System.out.println(CalendarUtil.getDateIncrementByincrement(currentMonday,-28).getTime());
+	  /*public static void main(String[] args) throws Exception{
+		  DateFormat format = Constants.DF_STD_DMY;
+	        String dateInString = "07/01/2013";
+
+	        try {
+	            Date date = format.parse(dateInString);
+	            System.out.println(date);
+	            System.out.println(format.format(date));
+
+	        } catch (ParseException e) {
+	            e.printStackTrace();
+	        }
 			 
-	  }
+	  }*/
 	
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
