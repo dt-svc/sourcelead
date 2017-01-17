@@ -187,8 +187,14 @@ public class MailBoxController {
 	     BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
 		 boolQueryBuilder.must(QueryBuilders.matchQuery("userId", user.getId()));
-	    
-		 boolQueryBuilder.must(QueryBuilders.matchQuery("mailStatus", type));
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("status", Constants.RECORD_ACTIVE));
+		 
+		 if(!type.equalsIgnoreCase("Starred")){
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("mailStatus", type));
+		 }else{
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", Constants.RECORD_ACTIVE));
+		 }
+		
 	     maxResults = userMailBoxService.getMailBoxCountByUserIdAndOrgLocationid(user.getId(), orgLocations.getId(), type);
 	   
 	    SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CAMPAIGN_INDEX, Constants.ELK_CAMPAIGN_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
