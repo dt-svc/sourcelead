@@ -1,8 +1,11 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,12 +19,19 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaskDao;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
@@ -40,6 +50,12 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Autowired
 	 private CommonUtil commonUtil;
+	
+	@Autowired
+	private EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	private EmailScenerioUtil emailScenerioUtil;
 	
 	@Override
 	public Tasks saveTasks(Tasks tasks) throws Exception {
@@ -124,7 +140,7 @@ public class TaskServiceImpl implements TaskService{
      	        taskDao.saveTasks(task);
 				 //mail logic for users
      	        if(null != task.getAlertType() && !"".equalsIgnoreCase(task.getAlertType())){
-     	        	MailToUserTask(user,ownerUser,tasks,loginOrgLocation);
+     	        	MailToUserTask(user,ownerUser,task,loginOrgLocation);
      	        }
 			}
         }
