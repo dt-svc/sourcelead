@@ -795,6 +795,7 @@ public class CandidateListRestController {
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setIsFavourite(0);
+				candidate.setTeamId(null);
 				candidateService.saveOrUpdateCandidate(candidate);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 				StringBuilder candidateRemoveMsg = new StringBuilder();
