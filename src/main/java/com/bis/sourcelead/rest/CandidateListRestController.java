@@ -400,7 +400,6 @@ public class CandidateListRestController {
 				if(searchHits != null && searchHits.length >0){
 					for (SearchHit hit : searchHits) {
 						Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(hit.getId()));
-						boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
 						candList.add(candidate);
 					}
 				}
