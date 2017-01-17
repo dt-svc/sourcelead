@@ -303,6 +303,8 @@ public class MailBoxRestController {
 						
 						 if(!isNullOrEmpty(candidate.getExperienceYears())){
 							 experienceInYears = candidate.getExperienceYears();
+						 }else{
+							 experienceInYears = "0";
 						 }
 						 
 						 if(!isNullOrEmpty(candidate.getExperienceMonths())){
