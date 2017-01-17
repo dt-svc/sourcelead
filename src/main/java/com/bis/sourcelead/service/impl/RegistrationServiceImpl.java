@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -631,6 +632,132 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Override
 	public void deletePasswordResets(PasswordResets passwordResets) throws Exception {
 		passwordResetsSevice.deletePasswordResets(passwordResets);
+	}
+
+	@Override
+	public void addUserBySourcelead(User user, JSONObject jsonObj) throws Exception {
+		
+		User orgUser = userService.findByEmail(jsonObj.getString("userEmail"));
+		UserRole userRole = new UserRole();
+		String password = null;
+		if(null == orgUser){
+			orgUser = new User();
+			orgUser.setFirstName(jsonObj.getString("firstName"));
+			
+			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+				orgUser.setLastName(jsonObj.getString("lastName"));
+			}
+			
+			orgUser.setEmail(jsonObj.getString("userEmail"));
+			orgUser.setCreatedBy(user.getUserCode());
+			orgUser.setCreatedDate(new Date());
+			orgUser.setUpdatedBy(user.getUserCode());
+			orgUser.setUserName(jsonObj.getString("userEmail"));
+			password = SourceLeadRandomCodeHelper.generateRandomPassword();
+			orgUser.setPassword(sourceleadPasswordEncoder.encode(password));
+			orgUser.setIsMailSent(Status.Y);
+			orgUser.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			orgUser.setUpdatedDate(new Date());
+			userService.addUser(orgUser);
+			userRole.setIsPrimary(1);
+		}else{
+			userRole.setIsPrimary(0);
+		}
+		
+		
+		
+		userRole.setUser(orgUser);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(jsonObj.getString("registeredOrgLocationId")));
+		userRole.setOrgLocations(orgLocations);
+		Roles roles = rolesService.getRolesById(Long.valueOf(jsonObj.getString("userRole")));
+		userRole.setRoles(roles);
+		userRole.setUserState(Status.NOT_LOGGEDIN);
+		userRole.setUserType(roles.getDisplayName());
+		
+		userRole.setCreatedBy(user.getUserCode());
+		userRole.setCreatedDate(new Date());
+		userRole.setUpdatedBy(user.getUserCode());
+		userRole.setUpdatedDate(new Date());
+		userRoleService.addUserRole(userRole);
+		
+		
+		Employees employees = new Employees();
+		employees.setUser(orgUser);
+		employees.setOrgLocations(orgLocations);
+		employees.setCreatedBy(user.getUserCode());
+		employees.setCreatedDate(new Date());
+		employees.setUpdatedBy(user.getUserCode());
+		employees.setUpdatedDate(new Date());
+		employeesService.addEmployee(employees);
+		
+		sendEmail(orgUser,user,password,orgLocations.getId());
+		
+		
+		
+	}
+	
+	
+	public void sendEmail(User user, User loginUser, String password, Long locationId) throws Exception {
+		
+		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationId);
+		 if(userRole == null){
+		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		 }
+		 
+		 boolean isUserActive = false;
+		 isUserActive = userRoleService.isUserActive(user.getId());
+		 
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 emailMessage.setOrgLocationId(locationId);
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("firstName", emailMessage.getFirstName());
+		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
+		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
+		 globalVarsMap.put("role",userRole.getUserType());
+		 StringBuilder loginBuilder = new StringBuilder();
+		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("userEmailId",user.getEmail());
+		 if(isUserActive == false){
+			 globalVarsMap.put("password",password);
+		 }else{
+			 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+		 }
+		 
+		
+		 //setting the Recipient information
+		 StringBuilder emailRecipientBuilder = new StringBuilder();
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailRecipientBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,locationId,emailRecipientList,new ArrayList<EmailAttachment>());
+		
 	}
 
 }

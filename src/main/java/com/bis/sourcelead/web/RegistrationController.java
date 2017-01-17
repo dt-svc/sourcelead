@@ -1,7 +1,6 @@
 package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,7 +12,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -21,11 +22,9 @@ import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.SourceleadActions;
-import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.ModulesService;
@@ -34,6 +33,8 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -75,6 +76,15 @@ public class RegistrationController {
 	 
 	 @Autowired
 	 RolesService rolesService;
+	 
+	 @Autowired
+	 UserService userService;
+	 
+	 @Autowired
+	 UserRoleService userRoleService;
+	 
+	 @Autowired
+	 RolesService roleService;
 	 
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
@@ -250,14 +260,64 @@ public class RegistrationController {
 				}
 				
 				model.addObject("orgloc",orgLocations);
+				model.addObject("registeredOrgLocationId",orgLocations.getId());
 				model.addObject("orgId",orgId);
 				model.setViewName("registration/enrolledOrgSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);
-				
 			
 			return model;
 
 		}
+	 
+	 
+		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+		@RequestMapping(value = "/getOrgRegisteredUsers")
+		public @ResponseBody String getOrgRegisteredUsers(@RequestParam(value = "orgId", required = false) Long orgId,
+				HttpServletRequest request) throws Exception {
+
+		    String resultJson;
+		    OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(orgId);
+
+			List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
+			List<User> orgUsersList = new ArrayList<User>(); 
+			if(null != usersList){
+				for(User user : usersList){
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+					user.setUserState(userRole.getUserState());
+					user.setRole(userRole.getRoles().getDisplayName());
+					orgUsersList.add(user);
+				}
+			}
+		    resultJson = commonUtil.toJSON(orgUsersList);
+			return resultJson;
+		}
+		
+		
+		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+		@RequestMapping(value = "/getRegisteredOrgRoles", method = RequestMethod.POST)
+		public @ResponseBody String getReportingManager(
+				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			List<Roles> rolesList = roleService.getRoles(orgLocationId);
+			resultJson = commonUtil.toJSON(rolesList);
+			return resultJson;
+		}
+		
+		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+		@RequestMapping(value = "/validateRegisteredUserEmail" , method = RequestMethod.POST)
+		 public @ResponseBody  String validateUserEmail(@RequestParam(value="emailId", required=false) String emailId,
+				 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 	String result = null;
+			 	User user = userService.findByEmailAndOrgLocationsId(emailId,orgLocationId);
+			 	
+			 	if (user != null) {
+					result = "true";
+				}else{
+					result = "false";
+				}
+				return result;
+		   }
 		
 	
 	 public void saveUserRoleActions(Long moduleId,Long tabId,OrgLocations orgLocations) throws Exception{

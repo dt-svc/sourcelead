@@ -248,7 +248,7 @@ function requirementList(){
 		                    	 result = result +"<td><div>0</div></td>";
 		                     }
 		                     if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-		                    	 result = result +"<td><div>"+opt.manager+"</div></td>";
+		                    	 result = result +"<td><div><span title="+opt.manager+">"+opt.manager+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
@@ -1170,7 +1170,7 @@ function requirementPipeline(requirementId){
       <div class="timesheet_head">
         <ul>
         <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
-		<li><i class="glyphicon glyphicon-export"></i><span>Status</span><i class="glyphicon glyphicon-play" onClick ="requirementListIndividualStatusCounts();"id="filter2ApprovePop"></i>
+		<li><b onClick ="requirementListIndividualStatusCounts();" id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></b>
 		            <div id="filter2ApprovedPop" class="approved_pop">
 		              <ul>
                 		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="NEW"  onclick="requirementList();"><label for="c6">New<span id="newRequirementCount"></span></label></li>
@@ -1191,8 +1191,8 @@ function requirementPipeline(requirementId){
           </sec:authorize>
           
           <li>
-          <a class="action" href="javascript:void(0)">Template
-          	<i onclick="getActions();" class="fa fa-caret-down"></i>
+          <a onclick="getActions();" class="action" href="javascript:void(0)">Template
+          	<i class="fa fa-caret-down"></i>
           </a>
           <div class="action-pop">
           <span>
@@ -1207,7 +1207,7 @@ function requirementPipeline(requirementId){
           </div>
           </li>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
-           <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop" onClick="mypop();"></i>
+           <li id="export-pop" ><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" onClick="mypop();"></i>
             <div class="export_pop">
               <ul>
                 <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>

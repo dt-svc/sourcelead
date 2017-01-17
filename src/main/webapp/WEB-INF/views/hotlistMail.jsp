@@ -627,7 +627,7 @@ function getCandidates(candidatesListType){
 		                    	
 		                    	 
 		                    	 result = result +'<tr>';
-		                    	 result = result +'<td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.id+','+name+'"  type="checkbox" name="candidatesIds[]" class="myCheckbox" >';
+		                    	 result = result +'<td>&nbsp;&nbsp;<input id="'+opt.candidateId+'" value="'+opt.candidateId+','+name+'"  type="checkbox" name="candidatesIds[]" class="myCheckbox" >';
 		                    	 result = result +'</td>';
 		                    	 result = result +'<td>'+name+'</td>';
 		                    	 result = result +'<td>'+opt.email+'</td>';

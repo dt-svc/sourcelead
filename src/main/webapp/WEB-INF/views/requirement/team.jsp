@@ -69,13 +69,6 @@ function teamList(){
             url: sourceleadUrl+"/getTeamListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}",       
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
 			    	     $("#teamList").removeAttr("style");
 	                	 $("#teamList").empty();
 	                	 var result = "";
@@ -119,7 +112,6 @@ function teamList(){
 	                     result = result +"</table>"; 
 	                     $("#teamList").append(result); 
 	                     pagination(); 
-			    	} 
                  }else{
                 	 $("#teamList").removeAttr("style");
   	    	         var result ="";
@@ -516,23 +508,10 @@ function projectMemberList(teamId){
 	            url: sourceleadUrl+"/getTeamMembersListByTeamID?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId,       
 	            success :function(data) {
 	                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	               		 if( data.indexOf('Sign In') >= 0){
-				    		location.replace(sourceleadUrl);
-				    	 }
-	               		 else if (data.indexOf('exception') >= 0) {
-	               			 location.replace(sourceleadUrl+"/errorPage");
-	               		 }
-	               		 else{
 				    	     $("#projectMemberList").removeAttr("style");
 		                	 $("#projectMemberList").empty();
 		                	 
-		                	 
-		                	
-		                      
-		                      
-		                	 
 		                	 var result = "";
-		                	 
 		                	
 		                	 result = result +"";
 		                	 
@@ -592,7 +571,6 @@ function projectMemberList(teamId){
 		                     $("#projectMemberList").append(result); 
 		                     TeamMemberpagination(); 
 		                     teamEditDetails(teamId);
-				    	} 
 	                 }else{
 	                	 $("#projectMemberList").removeAttr("style");
 	  	    	         var result ="";
@@ -660,17 +638,9 @@ function deleteTeamMember(teamMemberId,teamId){
          url: sourceleadUrl+"/deleteTeamMemberByCandidateId?${_csrf.parameterName}=${_csrf.token}&teamMemberId="+teamMemberId+"&reason="+reason,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
             			 projectMemberList(teamId);
             			 $("#removeCandidateAlert").empty();
             			 $(".project_inn_mask").fadeOut(200);
-            		 }
                 }
                  }, 
               }); 
@@ -920,15 +890,8 @@ function deleteSelectedTeam(teamId){
    		    success: function(data) {
    		    	
    		    	if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}
-             		else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}else{
              			document.getElementById("deleteTeam"+teamId).remove();
              			$("#loading"+teamId).removeAttr("style"); 
-             		}
    		    	}
    		    }
 	     }); 
@@ -1183,13 +1146,6 @@ function getCandidateListForTeam(teamId,teamName){
 	    	url: sourceleadUrl+"/getHotCandidateListForTeamByTeamId?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId,
 	    	  success: function(data) {
 	    		  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	               		 if( data.indexOf('Sign In') >= 0){
-				    		location.replace(sourceleadUrl);
-				    	 }
-	               		 else if (data.indexOf('exception') >= 0) {
-	               			 location.replace(sourceleadUrl+"/errorPage");
-	               		 }
-	               		 else{
 	               			 $("#teamSideDiv").removeAttr("style");
 		                	 $("#teamSideDiv").empty();
 		                	 var result = "";
@@ -1221,28 +1177,28 @@ function getCandidateListForTeam(teamId,teamName){
 		                    	 var candidateMobileNumber = "";
 		                    	 var candidateType = "";
 		                    	 var candidateLocation = "";
-		                    	 if(opt.candidateFullName != null && opt.candidateFullName != 'undefined' && opt.candidateFullName != ""){
-		                    		 candidateFullName = opt.candidateFullName;
+		                    	 if(opt.candidateName != null && opt.candidateName != 'undefined' && opt.candidateName != ""){
+		                    		 candidateFullName = opt.candidateName;
 					             }else{
 					            	 candidateFullName = "----";
 					             }
-		                    	 if(opt.candidateDesignation != null && opt.candidateDesignation != 'undefined' && opt.candidateDesignation != ""){
-		                    		 candidateDesignation = opt.candidateDesignation;
+		                    	 if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
+		                    		 candidateDesignation = opt.designation;
 					             }else{
 					            	 candidateDesignation = "----";
 					             }
-		                    	 if(opt.positionType != null && opt.positionType != 'undefined' && opt.positionType != ""){
-		                    		 positionType = opt.positionType;
+		                    	 if(opt.designationType != null && opt.designationType != 'undefined' && opt.designationType != ""){
+		                    		 positionType = opt.designationType;
 					             }else{
 					            	 positionType = "----";
 					             }
-		                    	 if(opt.candidateEmail != null && opt.candidateEmail != 'undefined' && opt.candidateEmail != ""){
-		                    		 candidateEmail = opt.candidateEmail;
+		                    	 if(opt.email != null && opt.email != 'undefined' && opt.email != ""){
+		                    		 candidateEmail = opt.email;
 					             }else{
 					            	 candidateEmail = "----";
 					             }
-		                    	 if(opt.candidateMobileNumber != null && opt.candidateMobileNumber != 'undefined' && opt.candidateMobileNumber != ""){
-		                    		 candidateMobileNumber = opt.candidateMobileNumber;
+		                    	 if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
+		                    		 candidateMobileNumber = opt.mobilePhone;
 					             }else{
 					            	 candidateMobileNumber = "----";
 					             }
@@ -1272,7 +1228,6 @@ function getCandidateListForTeam(teamId,teamName){
 		                     result = result +"</table>";
 		                     $("#teamSideDiv").append(result);
 		                     cpagination();
-				    	} 
 	                 }else{
 	                	 $("#teamSideDiv").removeAttr("style");
 	  	    	         var result ="";

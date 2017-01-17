@@ -287,13 +287,6 @@ function getUserList(teamType){
 		                    for (var i = 0; i < json.length; i++) { 
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
-		                    	 var localCheckedStatus = "";
-		                    	 $(".defaultCheckBox").each(function() { 
-		         							var localValue = this.value;
-		         							if(localValue == opt.id){
-		         								localCheckedStatus = "checked";
-		         							}  
-		                    	 });
 		                    	 result = result +'             <td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.email+'"  type="checkbox" name="emails[]" class="myCheckbox" ></td>';
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
