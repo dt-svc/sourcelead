@@ -596,14 +596,6 @@ public Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId, Lon
     
 }
 
-@Override
-public List<Projects> getProjectsListByOrgLocationsIdAndEmpUserId(Long locationsId, Long empUserId) {
-	logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
-	Session session = this.sessionFactory.getCurrentSession();
-	String query = "from Projects pj where pj.orgLocationsId = :orgLocationsId and pj.id  IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ) and pm.id IN (select pmh.projectMemberId.id from ProjectMembersHistory pmh) ";
-	List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", locationsId).setLong("userId", empUserId).setCacheable(true).list();
-	return projectsList;
-}
 
 /*@Override
 @Transactional(rollbackFor = { Exception.class })

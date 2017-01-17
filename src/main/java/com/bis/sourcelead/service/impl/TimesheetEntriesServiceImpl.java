@@ -172,7 +172,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		  StringBuilder startDateBuilder = new StringBuilder();
 		  StringBuilder endDateBuilder = new StringBuilder();
 		 
-		 String pattern = "dd-MM-yyyy";
+		  String pattern = "dd-MM-yyyy";
           SimpleDateFormat format = new SimpleDateFormat(pattern);
           Date currentStartDate = null;
           Date currentEndDate = null;
