@@ -33,4 +33,6 @@ public interface CandidateDao {
 	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId)throws Exception;
 	
 	public List<Candidate> getAllHotlistCandidatesAndNotAssignedToTeamByLocation(Long orgLocationId)throws Exception;
+	
+	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId,Integer datRange)throws Exception;
 }
