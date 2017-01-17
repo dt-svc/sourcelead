@@ -36,4 +36,15 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService{
 		return roleHierarchyDao.getRoleHierarchyById(id);
 	}
 
+	@Override
+	public Integer getMaxHierarchyValueByOrgLocationId(Long orgLocationId) throws Exception {
+		return roleHierarchyDao.getMaxHierarchyValueByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public RoleHierarchy getRoleHierarchyByHierarchyLevelNameAndOrgLocationId(String levelName, Long orgLocationId)
+			throws Exception {
+		return roleHierarchyDao.getRoleHierarchyByHierarchyLevelNameAndOrgLocationId(levelName, orgLocationId);
+	}
+
 }

@@ -14,8 +14,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RoleHierarchyDao;
 import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.enums.Status;
@@ -26,6 +28,9 @@ public class RolesDaoImpl implements RolesDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	RoleHierarchyDao roleHierarchyDao;
 	
 	
 	@Value("${SourceLead.100}")
@@ -61,8 +66,7 @@ public class RolesDaoImpl implements RolesDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Roles> getRoles(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.createQuery("from Roles roles where roles.id IN (select distinct actionRoles.roles.id from ActionRoles actionRoles "
-				+ "where actionRoles.orgLocations.id = :orgLocationId) ")
+		return session.createQuery("from Roles roles where roles.orgLocations.id = :orgLocationId and roles.actionId IS NOT NULL)")
 				.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 
@@ -187,12 +191,19 @@ public class RolesDaoImpl implements RolesDao{
         Session session = this.sessionFactory.getCurrentSession();
         
         String subQuery = "";
+        RoleHierarchy hierarchy  = null;
 		
         if("slead".equalsIgnoreCase(org.getOrgCode())){
 			subQuery = "and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' ";
 		}
         
-	    String query = "from Roles roles where roles.roleHierarchy.id between ("+hierarchyId+") and (select max(rh.id) from RoleHierarchy rh where rh.orgLocations.id = :orgLocationId) and (roles.actionId IS NOT NULL)  "+subQuery+" ";
+        try {
+			hierarchy = roleHierarchyDao.getRoleHierarchyById(hierarchyId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        
+	    String query = "from Roles roles where roles.roleHierarchy.hierarchyLevel between ("+hierarchy.getHierarchyLevel()+") and (select max(rh.hierarchyLevel) from RoleHierarchy rh where rh.orgLocations.id = :orgLocationId) and (roles.actionId IS NOT NULL) and roles.orgLocations.id = :orgLocationId  "+subQuery+" ";
 	    List<Roles> rolesList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
 		return rolesList;
@@ -334,6 +345,26 @@ public class RolesDaoImpl implements RolesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("from Roles roles where roles.id <> :roleId and roles.orgLocations.id = :orgLocationId and roles.actionId IS NOT NULL ")
 				.setLong("roleId", roleId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional
+	public List<Roles> getUserRolesListByRoleHierarchyIdAndOrgLocationId(Long orgLocationId, Long hierarchyId,String orgCode)
+			throws Exception {
+		
+		    Session session = this.sessionFactory.getCurrentSession();
+	        
+	        String subQuery = "";
+			
+	        if("slead".equalsIgnoreCase(orgCode)){
+				subQuery = "and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' ";
+			}
+	        
+		    String query = "from Roles roles  where "
+				+ "roles.roleHierarchy.id = :hierarchyId and roles.orgLocations.id = :orgLocationId and roles.status = '1' "+subQuery+" ";
+		    List<Roles> rolesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("hierarchyId", hierarchyId).setCacheable(true).list();
+			
+			return rolesList;
 	}
 
 

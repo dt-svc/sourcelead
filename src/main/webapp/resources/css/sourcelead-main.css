@@ -1,4 +1,4 @@
-﻿@charset "utf-8";
+@charset "utf-8";
 @charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
@@ -5377,6 +5377,29 @@ max-height: 150px !important;
     z-index: 99999;
     top: 30%;
     border-radius: 5px;
+}
+
+.collapse-div-adduser.orgsummary-adduser {
+left: 45px; 
+}
+.orgsummaryuser-pop{
+margin-top: 0;
+}
+.orgsummaryuser-pop:after {
+border-bottom: 10px solid #909090;
+border-left: 10px solid transparent;
+border-right: 10px solid transparent;
+clear: both;
+content: "";
+height: 0;
+position: absolute;
+left: 10px;
+top: -10px;
+width: 0;
+}
+.close-div.closediv-pop{
+left:auto;
+right:-15px;
 }
 
 /* media 320px */

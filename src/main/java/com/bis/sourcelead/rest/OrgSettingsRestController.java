@@ -185,6 +185,65 @@ public class OrgSettingsRestController {
    
    
    
+   @RequestMapping(value = "/changeHierarchyLevels" , method = RequestMethod.POST)
+   public String changeHierarchyLevels(@RequestParam(value="hierarchyOrder", required=false) String hierarchyOrder,
+		   HttpServletRequest request) throws Exception {
+	   
+	   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	   String[] hierarchyids = hierarchyOrder.split(",");
+	   
+	   int val = 1;
+	   for(int i=0; i<hierarchyids.length; i++){
+		   RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyById(Long.valueOf(hierarchyids[i]));
+		   roleHierarchy.setHierarchyLevel(val);
+		   roleHierarchyService.saveRoleHierarchy(roleHierarchy);
+		   val = val+1;
+	   }
+	   
+	   
+	   return "success";
+   }
+   
+   
+   @PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
+   @RequestMapping(value = "/addNewRoleHierarcy" , method = RequestMethod.POST)
+   public String addNewRoleHierarcy(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
+	  
+	     json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+	 	 RoleHierarchy hierarchy = null;
+	 	 
+	 	 if(jsonObj.has("hierarchyId") && !isNullOrEmpty(jsonObj.getString("hierarchyId"))){
+	 		 hierarchy = roleHierarchyService.getRoleHierarchyById(Long.parseLong(jsonObj.getString("hierarchyId")));
+	 		 hierarchy.setHierarchyName(jsonObj.getString("level"));
+	 		 hierarchy.setUpdatedBy(user.getUserCode());
+		 	 hierarchy.setUpdatedDate(new Date());
+	 	 }else{
+	 		 Integer maxHirearchyLevel = roleHierarchyService.getMaxHierarchyValueByOrgLocationId(orgLocations.getId());
+		 	 hierarchy = new RoleHierarchy();
+		 	 hierarchy.setHierarchyName(jsonObj.getString("level"));
+		 	 hierarchy.setHierarchyLevel(maxHirearchyLevel+1);
+		 	 hierarchy.setOrgLocations(orgLocations);
+		 	 hierarchy.setStatus(Constants.RECORD_ACTIVE);
+		 	 hierarchy.setCreatedDate(new Date());
+		 	 hierarchy.setCreatedBy(user.getUserCode());
+		 	 hierarchy.setUpdatedBy(user.getUserCode());
+		 	 hierarchy.setUpdatedDate(new Date());
+	 	 }
+	 	 
+	 	 
+	 	 roleHierarchyService.saveRoleHierarchy(hierarchy);
+	 	 
+	 	 return "home";
+    
+   }
+   
+   
    
    
    @RequestMapping(value = "/getOrgEnrolledList")
@@ -240,7 +299,7 @@ public class OrgSettingsRestController {
 	return "success";
    }
    
-   
+   @PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')") 
    @RequestMapping(value = "/validateRoleName" , method = RequestMethod.GET)
    public String validateRoleName(@RequestParam(value="roleName", required=false) String roleName,HttpServletRequest request) throws Exception {
 	
@@ -255,7 +314,43 @@ public class OrgSettingsRestController {
    }
    
    
+   @PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
+   @RequestMapping(value = "/validateRoleHierarchyLevelName" , method = RequestMethod.GET)
+   public String validateRoleHierarchyLevelName(@RequestParam(value="levelName", required=false) String levelName,
+		   @RequestParam(value="hierarchyId", required=false) String hierarchyId,HttpServletRequest request) throws Exception {
+	
+	   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	   RoleHierarchy hierarchy = null;
+	   String result = null;
+	   
+	   if(!isNullOrEmpty(hierarchyId)){
+		   hierarchy  = roleHierarchyService.getRoleHierarchyById(Long.parseLong(hierarchyId));
+			if(hierarchy.getHierarchyName().equalsIgnoreCase(levelName)){
+				result = "valid";
+			}else{
+				hierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelNameAndOrgLocationId(levelName, orgLocations.getId());
+				if(null != hierarchy){
+					result = "invalid";
+				}else{
+					result = "valid";
+				}
+			}
+		}
+		else{
+			hierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelNameAndOrgLocationId(levelName, orgLocations.getId());
+			if(null != hierarchy){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+	 return result;
+	
+   }
    
+   
+   @PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
    @RequestMapping(value = "/addNewRole" , method = RequestMethod.POST)
 	 public  String addNewRole(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 	

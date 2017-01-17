@@ -261,6 +261,8 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailR
 	
 	userMailBoxService.saveUserMailBox(userMailBox);
 	
+	userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
+	
 }
 
 

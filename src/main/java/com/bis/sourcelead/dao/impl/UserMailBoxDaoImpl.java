@@ -186,4 +186,30 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 		}
 	}
 
+	@Override
+	@Transactional
+	public Long getMailBoxCountByUserIdAndOrgLocationid(Long userId, Long orgLocationId, String type) throws Exception {
+		logger.debug("..getMailBoxCountByUserIdAndOrgLocationid() Method Started..");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		if(!type.equalsIgnoreCase("Starred")){
+		
+			String query = "select count(*) from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId "
+			 		+ "and mailbox.mailStatus = :mailStatus and mailbox.status = '1' ";
+		List<Long> results = session.createQuery(query).setLong( "orgLocationId", orgLocationId).setLong("userId", userId).setString("mailStatus", type).setCacheable(true).list();
+		logger.debug("..getMailBoxCountByUserIdAndOrgLocationid() Method Ended..");
+		return results.get(0);
+			 
+		}else{
+			String query = "select count(*) from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId "
+		 		+ "and mailbox.isFavourite = '1' and mailbox.status = '1' ";
+			List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+			logger.debug("..getMailBoxCountByUserIdAndOrgLocationid() Method Ended..");
+			return results.get(0);
+		}
+		
+		
+		
+	}
+
 }

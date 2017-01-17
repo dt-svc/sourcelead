@@ -201,6 +201,7 @@ public class EmailServiceImpl implements EmailService {
 		
 		
 		userMailBoxService.saveUserMailBox(userMailBox);
+		userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
 		
 	}
 	
@@ -246,6 +247,7 @@ public class EmailServiceImpl implements EmailService {
 				
 				
 				userMailBoxService.saveUserMailBox(userMailBox);
+				userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
 				
 			}
 		 }
