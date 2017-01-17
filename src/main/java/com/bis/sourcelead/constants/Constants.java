@@ -334,8 +334,12 @@ public class Constants {
     public static String CLIENT = "Client";
     
     public static String ELK_CANDIDATE_INDEX = "candidates";
+    
+    public static String ELK_USER_INDEX = "users";
     		
     public static String ELK_CANDIDATE_TYPE = "candidate";
+    
+    public static String ELK_USER_TYPE = "user";
     
     public static String ELK_CANDIDATE_ID_PREFIX = "CND";
     

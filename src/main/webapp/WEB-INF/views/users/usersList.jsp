@@ -53,6 +53,100 @@ window.onload = function () {
       
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Users List </div>
     </section>
+    <div class="timesheet_out">
+    <div class="vendor_wrap" style="overflow-x: auto;">
+    
+     <div class="pull-left cand-advsrche">
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+			  Advanced Search&nbsp;&nbsp;
+			  <i class="fa fa-search"></i>
+			  </a> 
+			  <form id="user_forms" name="user_forms"  >
+				  <div class="cand-advsrch-popup" >
+					  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+					  <div class="row">
+						  <div class="col-md-4">
+							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+							  <div class="clearfix">
+							        <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
+                                    </select> -->
+							  	 <input type="text" class="form-control input-sm" placeholder="Any of Keyword" id="anyOfKeyword" name="anyOfKeyword" value="">
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+							  <div class="clearfix">
+							  	 <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
+                                 </select> -->
+                                 <input type="text" class="form-control input-sm" placeholder="All Keywords" id="allKeywords" name="allKeywords" value="">
+                                 
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+							  <div class="clearfix">
+							  	 <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
+                                 </select> -->
+                                 <input type="text" class="form-control input-sm" placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord" value="">
+                                 
+							  </div>
+						  </div>
+					  </div>
+					  <div class="row">
+					  <div class="col-md-12">
+						  <h4>Details:</h4>
+					  </div>
+						
+						  <div class="clearfix">
+						  <div class="col-md-4">
+							  <label>Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <div class="clearfix">
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Employers" id="employers" name="employers">
+                                  </select>
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>Exclude Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <div class="clearfix">
+								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
+                                  </select>
+							  </div>
+						  </div>
+						  
+						   
+						  </div>
+						
+					  </div>
+					  <div class="row form-footer mt">
+						  <div class="pull-right mr">
+							 <!--  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
+							  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> -->
+							   <input type="button" value="Search" id="search_user" onclick="searchUser();" class="btn btn-sm btn-primary"/>
+                               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
+						  </div>
+					  </div>
+				  </div>
+			  </form>
+      </div>
+      
+      <div class="candidate_wrap_table">
+        <div id="candidateList"></div>
+        <div id="emptyPopup"></div>
+      </div>
+    </div>
+    
+    <!-- Compnay details -->
+    <div class="side_mask">
+       <div class="proj_close"></div>
+    </div>
+    <div class="clients_side_wrap">
+	    <div class="clients_side_wrap_inn">
+		             <div id="candidateSideDiv">
+				     </div>  
+	    </div>			     
+    </div>
+    <!-- Compnay details Ends --> 
+  </div>
       <section class="clearfix section-action-btns">
         <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
@@ -184,7 +278,28 @@ function exportToPdf(){
 }
 </script>
    
-   
+    <script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+		}
+		function openPop(){
+		  $("div.cand-advsrch-popup").toggle();
+		  
+		}
+	</script>
+	<script type="text/javascript">	
+	function loadChosenScripts(){
+	    $('#search_user').removeAttr('disabled');
+	    
+	   
+	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	    
+	    
+	    $("#anyOfKeyword").empty();
+	    
+	}
+</script>
    
  <!--  David
   Script is used scroll based userList -->   
@@ -414,4 +529,66 @@ function getUserSummary(userId){
 	});  
 </script> 
 
-    
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+
+
+<script type="text/javascript">
+	function searchUser() {
+      		
+      		var sourceleadUrl = '${sourceleadUrl}';
+      		var frm = $('#user_forms').serializeFormJSON();
+			var con = JSON.stringify(frm);
+		 	con = con.replace(/[{}]/g, ""); 
+		    var jsonData = encodeURIComponent(con);
+		    var form = $('#user_forms')[0];
+      		var formData = new FormData(form);  
+			 $.ajax({
+						 type : "POST",
+		        	     data: formData,
+		        	     processData: false,
+		    	         contentType:false,
+		        	     dataType : 'json',
+						 url : sourceleadUrl+"/searchUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						 success : function(data) {
+							$("#search_user").addClass('button').val('Search');
+							$("#search_user").removeAttr("disabled");
+							closePop();
+							prepareUsersList(data);
+						},
+					}); 
+			return true;
+		 
+	} 
+	
+	$('body').on('blur', '#user_forms', function() {
+		$("#user_forms").showHelpOnFocus();
+		$("#user_forms").validateOnBlur(false, validationSettings);
+	});
+</script>
+
+<script>
+  function prepareUsersList(data){
+	  alert("hhhhhhhhhhhh");
+	  $('#usersListBody').empty();
+  }
+</script>    

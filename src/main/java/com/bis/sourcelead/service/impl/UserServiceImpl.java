@@ -15,12 +15,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -86,12 +90,19 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	UserIndexHelper userIndexHelper;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<UserIndex> sourceleadELKBaseIndexer;
+	
 	 
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
 	@Autowired
-	CommonUtil commonUtil;
+	private CommonUtil commonUtil;
 	
 
 	@Override
@@ -220,7 +231,10 @@ public class UserServiceImpl implements UserService {
 			/*if(userRole != null && StringUtils.isNotEmpty(userRole.getRoles().getRoleName()) && userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
 				commonUtil.addAdminAsSecondLevelManager(orgLocations.getId(), user, loginuser);
 			}*/
-		 
+			/*
+			 * Saving Candidate DB data as ElasticSearch Documents
+			 */
+			saveOrUpdateUserElkDocument(user1,orgLocations);
         return user1;
 				
 		
@@ -855,7 +869,15 @@ public class UserServiceImpl implements UserService {
 			throws Exception {
 		return userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocationsId, userId, tabId);
 	}
+
 	
-	
-	
+	@Override
+	public void saveOrUpdateUserElkDocument(User user,OrgLocations orgLocations) throws Exception {
+		//Elastic Search Document Saving
+		
+		UserIndex userIndex = userIndexHelper.getUserIndexFromUser(user, orgLocations);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,user.getId().toString());
+		
+	}
+
 }

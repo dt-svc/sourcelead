@@ -7,6 +7,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -162,6 +163,7 @@ public interface UserService  {
 	
 	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId,Long userId,Long tabId) throws Exception;
 	
+	public void saveOrUpdateUserElkDocument(User user,OrgLocations orgLocations) throws Exception;
 }	
 		
 	
