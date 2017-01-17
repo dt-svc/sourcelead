@@ -501,4 +501,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Integer getAllCandidatesCountForCampaignByTeam(List<Long> teamId, String type,Long orgLocationId) throws Exception {
 		return candidateDao.getAllCandidatesCountForCampaignByTeam(teamId, type,orgLocationId);
 	}
+
+	@Override
+	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer datRange)
+			throws Exception {
+		return candidateDao.getAllCandidatesForHotListingWhoAreTerminating(orgLocationId,datRange);
+	}
 }

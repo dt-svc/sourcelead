@@ -421,5 +421,46 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return count;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer dateRange)
+			throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = null;
+		String updatedDate  ="";
+		Date currentDate =  commonUtil.currentDate();
+		List<Candidate> candidateList ;
+		java.sql.Date sqlCurrentDate = null;
+		
+		// for current Date Converting to Sql Date Format
+		 if(currentDate != null){
+				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+		 }
+		
+		 
+		// This Code is for  getting the sql enddate based on range
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	     Calendar c = Calendar.getInstance();
+	      c.setTime(new Date()); // Now use today date.
+	    dateRange = dateRange;
+	    c.add(Calendar.DATE, +dateRange); // Adding  The DateRange days
+	    updatedDate     = dateFormat.format(c.getTime());
+	    Date parsed = dateFormat.parse(updatedDate);
+	    java.sql.Date endDate = new java.sql.Date(parsed.getTime());
+	   
+	    subQuery =   " from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and  candidate.candidateType = 'Consultant' and candidate.id  NOT IN (select hotList.candidateId.id from CandidateHotList  hotList )  and candidate.consultantUser.id IN (select emp.user.id from Employees emp where emp.id IN (select pm.employee.id from ProjectMembers pm where pm.id IN ( select pmh.projectMemberId.id from ProjectMembersHistory pmh  where pmh.projectTerminationDate BETWEEN :sqlCurrentDate AND :endDate)  ) )"; 
+
+	    candidateList = session.createQuery(subQuery)
+					    		.setDate("sqlCurrentDate", sqlCurrentDate)
+					    		.setDate("endDate", endDate)
+				                .setLong("orgLocationId", orgLocationId)
+				                .setCacheable(true)
+				               .list();
+	  /*  System.err.println("das"+candidateList.size());*/
+	return candidateList;
+	}
 	
 }
