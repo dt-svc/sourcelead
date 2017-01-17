@@ -69,7 +69,7 @@ public class ProjectMembersRestController {
 			employee.setId(1L);
 			projectMembers.setEmployee(employee);
 			
-			projectMembers.setTimesheetFrequency("weekly");
+			//projectMembers.setTimesheetFrequency("weekly");
 			
 			
 			HashSet<ProjectMembersHistory> pmhList = new HashSet<>();
@@ -115,7 +115,7 @@ public class ProjectMembersRestController {
 			employee.setId(1L);
 			projectMembers.setEmployee(employee);
 			
-			projectMembers.setTimesheetFrequency("weekly");
+			//projectMembers.setTimesheetFrequency("weekly");
             HashSet<ProjectMembersHistory> pmhList = new HashSet<>();
 			ProjectMembersHistory pmh = new ProjectMembersHistory();
 			pmh.setProjectMemberId(projectMembers);

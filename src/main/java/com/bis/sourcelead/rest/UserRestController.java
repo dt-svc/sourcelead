@@ -393,7 +393,7 @@ public class UserRestController {
 				ProjectMembers projectMembers = new ProjectMembers();
 				projectMembers.setEmployee(employee);
 				projectMembers.setProjects(projects);
-				projectMembers.setTimesheetFrequency("weekly");
+				//projectMembers.setTimesheetFrequency("weekly");
 				
 				User user = userService.getUserById(userId);
 				

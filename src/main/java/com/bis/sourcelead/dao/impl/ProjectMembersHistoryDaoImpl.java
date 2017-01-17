@@ -175,6 +175,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public HashMap<String, Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId) throws Exception {
 		logger.debug("In ProjectMembersHistory getProjectMembersStartDateAndEndDateByProjectMemberId method");
         Session session = this.sessionFactory.getCurrentSession();
