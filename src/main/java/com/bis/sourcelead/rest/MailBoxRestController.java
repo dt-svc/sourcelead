@@ -33,7 +33,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
@@ -222,6 +221,7 @@ public class MailBoxRestController {
 			}
 			
 			userMailBoxService.saveUserMailBox(mailBox);
+			userMailBoxService.saveOrUpdateUserMailBoxELK(mailBox);
 		}
 		
 		return "success";
@@ -250,6 +250,7 @@ public class MailBoxRestController {
 				userMailBox.setUpdatedBy(user.getCreatedBy());
 				userMailBox.setUpdatedDate(new Date());
 				userMailBoxService.saveUserMailBox(userMailBox);
+				userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
 			}
 		}
 		
@@ -327,6 +328,7 @@ public class MailBoxRestController {
 	    	
 		    	userMailbox.setIsMailRead(1);
 				userMailBoxService.saveUserMailBox(userMailbox);
+				userMailBoxService.saveOrUpdateUserMailBoxELK(userMailbox);
 				
 				Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocation.getId(), "Inbox");
 				Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocation.getId(), "Requested");

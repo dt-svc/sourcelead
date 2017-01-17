@@ -5,11 +5,15 @@ import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserMailBoxDao;
+import com.bis.sourcelead.elk.index.CampaignIndex;
+import com.bis.sourcelead.elk.index.helper.CampaignIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -19,6 +23,13 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 	
 	@Autowired
 	UserMailBoxDao userMailBoxDao;
+	
+	@Autowired
+	CampaignIndexHelper campaignIndexHelper;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<CampaignIndex> sourceleadELKBaseIndexer;
+	
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -88,6 +99,7 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			
 			mailBox.setIsMailRead(1);
 			userMailBoxDao.saveUserMailBox(mailBox);
+			saveOrUpdateUserMailBoxELK(userMailBox);
 		}
 		
 	}
@@ -117,6 +129,19 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 	@Override
 	public UserMailBox getUserNextMail(Long Id, Long userId, Long orgLocationId,String type) throws Exception {
 		return userMailBoxDao.getUserNextMail(Id, userId, orgLocationId,type);
+	}
+
+	@Override
+	public void saveOrUpdateUserMailBoxELK(UserMailBox userMailBox) throws Exception {
+		
+		 //Elastic Search Document Saving
+		CampaignIndex campaignIndex = campaignIndexHelper.getCampaignIndexFromUserMailBox(userMailBox);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(campaignIndex, Constants.ELK_CAMPAIGN_INDEX, Constants.ELK_CAMPAIGN_TYPE,userMailBox.getId().toString());
+	}
+
+	@Override
+	public Long getMailBoxCountByUserIdAndOrgLocationid(Long userId, Long orgLocationId, String type) throws Exception {
+		return userMailBoxDao.getMailBoxCountByUserIdAndOrgLocationid(userId, orgLocationId, type);
 	}
 	
 }

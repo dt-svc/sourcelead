@@ -174,7 +174,8 @@
 		            		candidateUpdateDateToString = "---";
 		            	}
 		            	
-		            	if(opt.isFavourite == 'Y'){
+		            	
+		            	if(opt.isFavourite == '1'){
 		            		isFavourite = "checked";
 		            		isFavClass = "activestar-rating";
 		            	}
