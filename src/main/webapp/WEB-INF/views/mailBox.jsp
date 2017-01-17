@@ -120,7 +120,7 @@
 			  <!-- /.box-tools -->
 			
 	<!-- mail box table -->
-			<div class="table-responsive mailbox-messages">
+			<div class="mailbox-messages">
                  <div id="mailBoxList"></div>
               </div>
 	<!-- mail box table ends -->   

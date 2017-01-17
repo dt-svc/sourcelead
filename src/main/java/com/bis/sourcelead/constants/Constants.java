@@ -346,6 +346,10 @@ public class Constants {
     
     public static String ELK_CAMPAIGN_ID_PREFIX = "CAMPAIGN";
     
+    public static String CANDIDATE = "Candidate";
+    
+    public static String CONSULTANT = "Consultant";
+    
     
     public static String MAIL_TRASH = "Trash";
     public static String MAIL_DELETE = "Deleted";
