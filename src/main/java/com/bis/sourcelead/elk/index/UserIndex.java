@@ -47,6 +47,10 @@ public class UserIndex implements Serializable {
 	private Date updatedDate;
 
 	private String updatedBy;
+	
+	private String userState;
+	
+	private String isMailSent;
 
 	public Long getUserId() {
 		return userId;
@@ -210,9 +214,19 @@ public class UserIndex implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public String getUserState() {
+		return userState;
 	}
-	
 
+	public void setUserState(String userState) {
+		this.userState = userState;
+	}
+
+	public String getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(String isMailSent) {
+		this.isMailSent = isMailSent;
+	}
 }

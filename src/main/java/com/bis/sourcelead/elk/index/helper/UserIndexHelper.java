@@ -7,34 +7,37 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 
 @Component
 public class UserIndexHelper {
 	
 	
 	
-	public UserIndex getUserIndexFromUser(User user, OrgLocations orgLocations) throws Exception{
+	public UserIndex getUserIndexFromUser(UserRole userRole, String loginUserCode) throws Exception{
 		UserIndex userIndex = null;
-		if(null != user && null != user.getId()){
+		if(null != userRole && null != userRole.getId()){
 			userIndex = new UserIndex();
-			userIndex.setUserId(user.getId());
-			userIndex.setFirstName(user.getFirstName());
-			userIndex.setLastName(user.getLastName());
-			userIndex.setOrgLocationId(orgLocations.getId());
-			userIndex.setEmail(user.getEmail());
-			userIndex.setMobilePhone(user.getMobilePhone());
-		
-			userIndex.setStatus(user.getStatus());
-			userIndex.setTerminateReason(user.getTerminateReason());
-			if(user.getCreatedDate() != null){
-				userIndex.setCreatedDate(new Date(user.getCreatedDate().getTime()));
+			userIndex.setUserId(userRole.getUser().getId());
+			userIndex.setFirstName(userRole.getUser().getFirstName());
+			userIndex.setLastName(userRole.getUser().getLastName());
+			userIndex.setOrgLocationId(userRole.getOrgLocations().getId());
+			userIndex.setEmail(userRole.getUser().getEmail());
+			userIndex.setMobilePhone(userRole.getUser().getMobilePhone());
+			userIndex.setIsMailSent(userRole.getUser().getIsMailSent().toString());
+			userIndex.setUserState(userRole.getUserState().toString());
+			userIndex.setUserType(userRole.getUserType());
+			userIndex.setStatus(userRole.getUser().getStatus());
+			userIndex.setTerminateReason(userRole.getTerminateReason());
+			if(userRole.getCreatedDate() != null){
+				userIndex.setCreatedDate(new Date(userRole.getCreatedDate().getTime()));
 			}
-			userIndex.setCreatedBy(user.getCreatedBy());
-			if(user.getUpdatedDate() != null){
-				userIndex.setUpdatedDate(new Date(user.getUpdatedDate().getTime()));
+			userIndex.setCreatedBy(loginUserCode);
+			if(userRole.getUpdatedDate() != null){
+				userIndex.setUpdatedDate(new Date(userRole.getUpdatedDate().getTime()));
 			}
 			
-			userIndex.setUpdatedBy(user.getUpdatedBy());
+			userIndex.setUpdatedBy(loginUserCode);
 		}
 		
 		

@@ -234,7 +234,7 @@ public class UserServiceImpl implements UserService {
 			/*
 			 * Saving Candidate DB data as ElasticSearch Documents
 			 */
-			saveOrUpdateUserElkDocument(user1,orgLocations);
+			saveOrUpdateUserElkDocument(userRole,loginuser.getUserCode());
         return user1;
 				
 		
@@ -872,11 +872,11 @@ public class UserServiceImpl implements UserService {
 
 	
 	@Override
-	public void saveOrUpdateUserElkDocument(User user,OrgLocations orgLocations) throws Exception {
+	public void saveOrUpdateUserElkDocument(UserRole userRole, String loginUserCode) throws Exception {
 		//Elastic Search Document Saving
 		
-		UserIndex userIndex = userIndexHelper.getUserIndexFromUser(user, orgLocations);
-		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,user.getId().toString());
+		UserIndex userIndex = userIndexHelper.getUserIndexFromUser(userRole,loginUserCode);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,userRole.getUser().getId().toString());
 		
 	}
 

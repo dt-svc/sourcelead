@@ -242,11 +242,23 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					 boolQueryBuilder.must(anyBoolQueryBuilder);
 				}
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-				ArrayList<User>   freshUserList = new ArrayList<>();
+				ArrayList<UserRole>   freshUserList = new ArrayList<>();
 				if(searchHits != null && searchHits.length >0){
 					for (SearchHit hit : searchHits) {
-						User user = userService.getUserById(Long.parseLong(hit.getId()));
-						freshUserList.add(user);
+						//User user = userService.getUserById(Long.parseLong(hit.getId()));
+						UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(Long.parseLong(hit.getId()), loginOrgLocation.getId());
+						StringBuilder userName = new StringBuilder();
+						userRole.setUserRoleName(userRole.getRoles().getDisplayName());
+						if(!isNullOrEmpty(userRole.getUser().getLastName())){
+							userName = userName.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
+							userRole.setUserName(userName.toString());
+						}else{
+							userRole.setUserName(userRole.getUser().getFirstName());
+						}
+						userRole.setUserEmail(userRole.getUser().getEmail());
+						userRole.setUserId(userRole.getUser().getId());
+						userRole.setIsMailSent(userRole.getUser().getIsMailSent().toString());
+						freshUserList.add(userRole);
 					}
 				}
 			 String resultJson;

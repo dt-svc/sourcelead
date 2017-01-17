@@ -13,6 +13,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
 public interface UserService  {
 
@@ -163,7 +164,7 @@ public interface UserService  {
 	
 	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId,Long userId,Long tabId) throws Exception;
 	
-	public void saveOrUpdateUserElkDocument(User user,OrgLocations orgLocations) throws Exception;
+	public void saveOrUpdateUserElkDocument(UserRole userRole, String loginUserCode) throws Exception;
 }	
 		
 	
