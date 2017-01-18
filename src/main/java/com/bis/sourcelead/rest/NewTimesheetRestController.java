@@ -1,6 +1,8 @@
 package com.bis.sourcelead.rest;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,7 +30,6 @@ import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
-
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
@@ -181,6 +182,7 @@ public class NewTimesheetRestController {
 		    	   
 		    }
 		}
+		weekStartDate = "2017-09-01";
 		tabData =	projectTabDataByDates(weekStartDate, weekEndDate);
 		timesheetEntriesDiv.append("					<div class='export'> ");
 		timesheetEntriesDiv.append("						<p><i class='glyphicon glyphicon-export'></i>Export<i class='fa fa-caret-down'></i></p> ");
@@ -264,13 +266,26 @@ public class NewTimesheetRestController {
 		tabDiv.append("			            	<tbody>");
 		tabDiv.append("			                	<tr>");
 		tabDiv.append("			                        <th>Tasks </th>");
+		
 		tabDiv.append("			                        <th>Mon<i>09-01-2017</i></th>");
-		tabDiv.append("			                        <th>Tue<i>11-01-2017</i></th>");
-		tabDiv.append("			                        <th>Wed<i>12-01-2017</i></th>");
-		tabDiv.append("			                        <th>Thu<i>13-01-2017</i></th>");
-		tabDiv.append("			                        <th>Fri<i>14-01-2017</i></th>");
-		tabDiv.append("			                        <th>Sat<i>15-01-2017</i></th>");
-		tabDiv.append("			                        <th>Sun<i>16-01-2017</i></th>");
+		String tuesDayDate =  getNextDate(startDate);
+		tabDiv.append("			                        <th>Tue<i>").append(tuesDayDate).append("</i></th>");
+		
+		String WednesDayDate =  getNextDate(tuesDayDate);
+		tabDiv.append("			                        <th>Wed<i>").append(WednesDayDate).append("</i></th>");
+		
+		String ThursDayDate =  getNextDate(WednesDayDate);
+		tabDiv.append("			                        <th>Thu<i>").append(ThursDayDate).append("</i></th>");
+		
+		String FriDayDate =  getNextDate(ThursDayDate);
+		tabDiv.append("			                        <th>Fri<i>").append(FriDayDate).append("</i></th>");
+		
+		String SaturdayDate =  getNextDate(FriDayDate);
+		tabDiv.append("			                        <th>Sat<i>").append(SaturdayDate).append("</i></th>");
+		
+		String SundayDate =  getNextDate(FriDayDate);
+		tabDiv.append("			                        <th>Sun<i>").append(SundayDate).append("</i></th>");
+		
 		tabDiv.append("			                    </tr>");
 		
 		
@@ -920,5 +935,14 @@ public class NewTimesheetRestController {
 			return total;
 		}
 
+		
+		public static String getNextDate(String  curDate) throws ParseException {
+			  final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			  final Date date = format.parse(curDate);
+			  final Calendar calendar = Calendar.getInstance();
+			  calendar.setTime(date);
+			  calendar.add(Calendar.DAY_OF_YEAR, 1);
+			  return format.format(calendar.getTime()); 
+		}
  
 }
