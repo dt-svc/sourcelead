@@ -451,7 +451,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	    Date parsed = dateFormat.parse(updatedDate);
 	    java.sql.Date endDate = new java.sql.Date(parsed.getTime());
 	   
-	    subQuery =   " from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and  candidate.candidateType = 'Consultant' and candidate.id  NOT IN (select hotList.candidateId.id from CandidateHotList  hotList )  and candidate.consultantUser.id IN (select emp.user.id from Employees emp where emp.id IN (select pm.employee.id from ProjectMembers pm where pm.id IN ( select pmh.projectMemberId.id from ProjectMembersHistory pmh  where pmh.projectTerminationDate BETWEEN :sqlCurrentDate AND :endDate)  ) )"; 
+	    subQuery =   " from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and  candidate.candidateType = 'Consultant' and candidate.isFavourite <> '1'  and candidate.consultantUser.id IN (select emp.user.id from Employees emp where emp.id IN (select pm.employee.id from ProjectMembers pm where pm.id IN ( select pmh.projectMemberId.id from ProjectMembersHistory pmh  where pmh.projectTerminationDate BETWEEN :sqlCurrentDate AND :endDate)  ) )"; 
 
 	    candidateList = session.createQuery(subQuery)
 					    		.setDate("sqlCurrentDate", sqlCurrentDate)
@@ -461,6 +461,12 @@ public class CandidateDaoImpl implements CandidateDao {
 				               .list();
 	  /*  System.err.println("das"+candidateList.size());*/
 	return candidateList;
+	}
+
+	@Override
+	public List<Candidate> getAllHotlistCandidatesAndNotAssignedToTeamByLocation(Long orgLocationId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
