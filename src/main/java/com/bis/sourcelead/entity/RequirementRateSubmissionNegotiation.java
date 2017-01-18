@@ -97,6 +97,9 @@ public class RequirementRateSubmissionNegotiation {
 	@Transient
 	private String requirementRate;
 	
+	@Transient
+	private String submissionRateStatus;
+	
 
 	public Long getId() {
 		return id;
@@ -272,6 +275,14 @@ public class RequirementRateSubmissionNegotiation {
 
 	public void setRequirementRate(String requirementRate) {
 		this.requirementRate = requirementRate;
+	}
+
+	public String getSubmissionRateStatus() {
+		return submissionRateStatus;
+	}
+
+	public void setSubmissionRateStatus(String submissionRateStatus) {
+		this.submissionRateStatus = submissionRateStatus;
 	}
 	
 }

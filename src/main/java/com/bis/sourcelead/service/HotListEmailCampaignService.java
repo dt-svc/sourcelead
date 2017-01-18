@@ -9,4 +9,6 @@ import com.bis.sourcelead.entity.User;
 public interface HotListEmailCampaignService {
 
 	public void sendHotListEmailCampaign(JSONObject jsonObj,User user,OrgLocations orgLocation,MultipartFile multiFile) throws Exception;
+	
+	
 }

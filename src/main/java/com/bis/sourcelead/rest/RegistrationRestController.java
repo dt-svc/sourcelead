@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,8 @@ public class RegistrationRestController {
 					regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
 					UserRole userRole = userRoleService.getUserByUserId(regOrg.getUser().getId());
 					regOrg.setUserState(userRole.getUserState());
+					OrgLocations orglocations = orgLocationService.getOrgLocationByOrgId(regOrg.getId());
+					regOrg.setLocation(orglocations.getCountry());
 				}
 				
 				regOrgsList.add(regOrg);
@@ -109,6 +112,8 @@ public class RegistrationRestController {
 		return resultJson;
 
 	}
+	 
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(
 				@RequestParam(value="json", required=false) String json ,
@@ -143,7 +148,30 @@ public class RegistrationRestController {
 	     
 	   }
 	
-	   
+	
+	
+	
+	
+	
+	
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @RequestMapping(value = "/createUesrBySourceleadAdmin" , method = RequestMethod.POST)
+	 public  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	 registrationService.addUserBySourcelead(user, jsonObj);
+	 	
+		 return "success";
+	   }
+	
+	 
+	 
+	
+	  @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	   @RequestMapping(value = "/updateOrgModules" , method = RequestMethod.POST)
 	   public String updateOrgModules(@RequestParam(value="orgId", required=false) Long orgId,
 				@RequestParam(value="modulesList", required=false) String modulesList ,

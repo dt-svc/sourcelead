@@ -86,6 +86,10 @@ public class CandidateIndex implements Serializable {
 	
 	private String resumeContent;
 
+	private Long teamId;
+	
+	private Integer isFavourite;
+	
 	public Long getCandidateId() {
 		return candidateId;
 	}
@@ -400,6 +404,24 @@ public class CandidateIndex implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	
+
+	public Long getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(Long teamId) {
+		this.teamId = teamId;
+	}
+
+	public Integer getIsFavourite() {
+		return isFavourite;
+	}
+
+	public void setIsFavourite(Integer isFavourite) {
+		this.isFavourite = isFavourite;
 	}
 	
 

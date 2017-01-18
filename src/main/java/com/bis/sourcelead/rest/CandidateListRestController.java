@@ -139,19 +139,8 @@ public class CandidateListRestController {
 		List<Candidate> candList = new ArrayList<Candidate>();
 		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
 		
-		if(null != candidatesList){
-			for(Candidate candidate : candidatesList){
-				boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
-				if(flag == true){
-					candidate.setIsFavourite(Constants.YES);
-				}else{
-					candidate.setIsFavourite(Constants.NO);
-				}
-				candList.add(candidate);
-			}
-		}
 		
-		resultJson = commonUtil.toJSON(candList);
+		resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
 	 }
 	 
@@ -412,11 +401,6 @@ public class CandidateListRestController {
 					for (SearchHit hit : searchHits) {
 						Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(hit.getId()));
 						boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
-						if(flag == true){
-							candidate.setIsFavourite(Constants.YES);
-						}else{
-							candidate.setIsFavourite(Constants.NO);
-						}
 						candList.add(candidate);
 					}
 				}
@@ -811,7 +795,9 @@ public class CandidateListRestController {
 				
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
+				candidate.setIsFavourite(0);
 				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 				StringBuilder candidateRemoveMsg = new StringBuilder();
 				SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateRemoveMsg.append("").append(candidate.getFirstName()).append(" Removed").toString());
 	
@@ -828,31 +814,19 @@ public class CandidateListRestController {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Candidate candidate = new Candidate();
-			candidate.setId(candidateId);
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			
-			CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(candidateId, orgLocation.getId());
-			if(null != hotList){
-				if(hotList.getStatus().equals(1)){
-					hotList.setStatus(0);
+			if(null != candidate){
+				if(null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_ACTIVE)){
+					candidate.setIsFavourite(Constants.RECORD_INACTIVE);
 				}else{
-					hotList.setStatus(1);
+					candidate.setIsFavourite(Constants.RECORD_ACTIVE);
 				}
-				hotList.setTeamId(null);
-				hotList.setUpdatedBy(user.getUserCode());
-				hotList.setUpdatedDate(new Date());
-				candidateHotListService.saveCandidateHotList(hotList);
 				
-			}else{
-				hotList = new CandidateHotList();
-				hotList.setCandidateId(candidate);
-				hotList.setOrgLocationId(orgLocation);
-				hotList.setStatus(1);
-				hotList.setCreatedBy(user.getUserCode());
-				hotList.setCreatedDate(new Date());
-				hotList.setUpdatedBy(user.getUserCode());
-				hotList.setUpdatedDate(new Date());
-				candidateHotListService.saveCandidateHotList(hotList);
+				candidate.setTeamId(null);
+				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
+				
 			}
 			
 			
@@ -870,16 +844,15 @@ public class CandidateListRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
 			String[] candidateIds = hotlist.split(",");
-			Team team =new Team();
+			Team team = new Team();
 			team.setId(teamId);
 			
 			for(int i = 0; i < candidateIds.length; i++){
 				
-				CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(Long.valueOf(candidateIds[i]), orgLocation.getId());
-				hotList.setTeamId(team);
-				hotList.setUpdatedBy(user.getUserCode());
-				hotList.setUpdatedDate(new Date());
-				candidateHotListService.saveCandidateHotList(hotList);
+				Candidate candidate = candidateService.getCandidateByCandidateId(Long.valueOf(candidateIds[i]));
+				candidate.setTeamId(team);
+				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}
 			
 			
@@ -913,6 +886,7 @@ public class CandidateListRestController {
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}
 			return "success";
 		 }
