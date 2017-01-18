@@ -105,6 +105,17 @@ public class CandidateIndexHelper {
 			candidateIndex.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
 			candidateIndex.setInvitationstatus(candidate.getInvitationstatus());
 			candidateIndex.setStatus(candidate.getStatus());
+			
+			if(null != candidate.getTeamId() && null != candidate.getTeamId().getId()){
+				candidateIndex.setTeamId(candidate.getTeamId().getId());
+			}else{
+				candidateIndex.setTeamId(0L);
+			}
+			
+			if(null != candidate.getIsFavourite()){
+				candidateIndex.setIsFavourite(candidate.getIsFavourite());
+			}
+			
 			candidateIndex.setTerminateReason(candidate.getTerminateReason());
 			if(candidate.getCreatedDate() != null){
 				candidateIndex.setCreatedDate(new Date(candidate.getCreatedDate().getTime()));
@@ -115,8 +126,8 @@ public class CandidateIndexHelper {
 			}
 			
 			candidateIndex.setUpdatedBy(candidate.getUpdatedBy());
+			
 		}
-		
 		
 		return candidateIndex;
 		

@@ -189,6 +189,7 @@ public class TeamDaoImpl  implements TeamDao{
 	}
 
 	@Override
+	@Transactional
 	public Boolean getTeamOwnersListByUserIdAndRequirementId(User user, Long orgLocationId, Long requirement) {
 		// TODO Auto-generated method stub
 
@@ -207,6 +208,38 @@ public class TeamDaoImpl  implements TeamDao{
 		} 
 		return flag;
 		
+	}
+
+	@Override
+	@Transactional
+	public List<Long> getTeamIdsListByOrgLocationID(Long orgLocationId) throws Exception {
+		
+		
+		logger.debug("In TeamDaoImpl class getTeamIdsListByOrgLocationID method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+			 
+		String query = "select team.id from Team team  where team.orgLocationsId =:orgLocationId and  team.status <> 0 ORDER BY team.id DESC ";
+		List<Long> teamIdList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId)
+									.setCacheable(true).list();
+		
+		return teamIdList;
+	}
+
+	@Override
+	@Transactional
+	public List<Long> getUserAssignedTeamIdsListByOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		
+		logger.debug("In TeamDaoImpl class getUserAssignedTeamIdsListByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+			 
+		String query = "select team.id from Team team  where (team.ownerUserId.id = :userId and team.orgLocationsId.id = :orgLocationId and team.status = '1') OR "
+					+ " (team.id IN (select tm.teamId.id from TeamMembers tm where tm.memberUserId.id = :userId and tm.status = '1')) ";
+		List<Long> teamIdList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setLong("userId", userId)
+									.setCacheable(true).list();
+		
+		return teamIdList;
 	}
 
 
