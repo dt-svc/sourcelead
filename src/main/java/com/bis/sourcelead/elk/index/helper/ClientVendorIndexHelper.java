@@ -19,26 +19,28 @@ public class ClientVendorIndexHelper {
 		
 		if(null != clientOrgLocations){
 			
-			if(!"".equalsIgnoreCase(clientOrgLocations.getCountry())){
-				clientVendorIndex.setCountry(clientOrgLocations.getCountry());
-			}
-			if(!"".equalsIgnoreCase(clientOrgLocations.getState())){
-				clientVendorIndex.setState(clientOrgLocations.getState());
-			}
-			if(!"".equalsIgnoreCase(clientOrgLocations.getCity())){
-				clientVendorIndex.setCity("Hyderabad");
-			}
+				if(!"".equalsIgnoreCase(clientOrgLocations.getCountry())){
+					clientVendorIndex.setCountry(clientOrgLocations.getCountry());
+				}
+				if(!"".equalsIgnoreCase(clientOrgLocations.getState())){
+					clientVendorIndex.setState(clientOrgLocations.getState());
+				}
+				if(!"".equalsIgnoreCase(clientOrgLocations.getCity())){
+					clientVendorIndex.setCity(clientOrgLocations.getCity());
+				}
 			
 		}
 		if(null != org){
+			
 			clientVendorIndex.setOrgName(org.getOrgName());
 		}
 		if(null != submissionTemplate){
+			
 			clientVendorIndex.setSubmissionTemplateName(submissionTemplate.getTemplateName());
 		}
 		
-		
 		if(null != orgRelationsList){
+			
 			clientVendorIndex.setOrgRelationId(orgRelationsList.getId());
 			clientVendorIndex.setResponderType(orgRelationsList.getResponderType());
 			clientVendorIndex.setInitiatorType(orgRelationsList.getInitiatorType());
@@ -49,6 +51,7 @@ public class ClientVendorIndexHelper {
 			clientVendorIndex.setStatus(orgRelationsList.getStatus());
 		}
 		if(null != orgSpoc){
+			
 			clientVendorIndex.setOwnerId(orgSpoc.getOwnerUser().getId());
 		}
 		

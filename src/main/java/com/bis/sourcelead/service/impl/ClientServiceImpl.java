@@ -830,8 +830,8 @@ public class ClientServiceImpl implements ClientService{
 		
 		@Override
 		public void saveOrUpdateClientVendorElkDocument(Org org, OrgLocations clientOrgLocations,String responderType,OrgSpoc orgSpoc,OrgRelations orgRelation, SubmissionTemplate submissionTemplate) throws Exception{
-			 //Elastic Search Document Saving
 			
+			         //Elastic Search Document Saving
 			       ClientVendorIndex clientVendorIndex = clientVendorIndexHelper.getClientVendorIndexFromCandidate(org,clientOrgLocations,responderType,orgSpoc,orgRelation,submissionTemplate);
 			       sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,orgRelation.getId().toString());
 
