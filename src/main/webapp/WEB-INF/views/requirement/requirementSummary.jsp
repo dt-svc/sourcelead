@@ -1740,8 +1740,20 @@ function cancelRejectApplicant(){
 <script>
 function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 	var sourceleadUrl = '${sourceleadUrl}';
-	var reason = document.getElementById("reasonForReject").value;
-	if(reason.match(/^[^\s-](.*)*$/) != null){
+	var reason ;
+	var rejectedReason;
+	
+	 if ($('#reasonForReject').length){
+		 rejectedReason = document.getElementById("reasonForReject").value; 
+		 
+		 //It will escape all the special characters
+	      reason = encodeURIComponent(rejectedReason);
+	 }
+	 else{
+		 reason = '';
+	 }
+	
+	if(rejectedReason.match(/^[^\s-](.*)*$/) != null){
 		$("#reasonForApplicantDiv").empty();
 		$.ajax({
 		   	type: "POST",
@@ -1753,13 +1765,12 @@ function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 		    }
 	   });
 	}else{
-		if(reason){
+		if(rejectedReason){
 			$("#reasonForApplicantDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
 		}else{
 			$("#reasonForApplicantDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 		}
 	}
-	  
 }
 </script>
 
