@@ -720,5 +720,17 @@ public class RequirementDaoImpl implements RequirementDao {
 		 }
 		return flag;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getRequirementListByOrgLocationID(Long orgLocationId) {
+		logger.debug("..getCandidatesCount() Method Started..");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "select count(*) from Requirement requirement  where requirement.orgLocationId.id =:orgLocationId and requirement.status = '1'";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		logger.debug("..getCandidatesCount() Method Ended..");
+		return results.get(0);
+	}
 	
 }

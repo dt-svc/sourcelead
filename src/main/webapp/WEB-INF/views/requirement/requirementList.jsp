@@ -16,6 +16,14 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
+
+
 <%-- 
      @author : David Raju.
      this script is to get filter popup
@@ -409,7 +417,6 @@ function prepareRequirementData(data){
     result = result +" </tbody>";
     result = result +"</table>"; 
     $("#noReq").val('');
-    alert(result);
     $("#requirementList").append(result); 
     pagination(); 
     msgFadein1(); 
@@ -1183,27 +1190,34 @@ function requirementPipeline(requirementId){
     <div class="vendor_wrap">
       <div class="timesheet_head">
        <div class="pull-left cand-advsrch">
-            <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop()"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+            <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
             <div class="row">
               <div class="col-md-4">
                 <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+                
                 <div class="clearfix">
-                  <input type="text" id="anyKeyWord" name="anyKeyWord" class="form-control input-sm" placeholder="Any of Keyword">
-                </div>
+				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyKeyWord" name="anyKeyWord"></select>
+					<!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> -->
+				 </div>
               </div>
               <div class="col-md-4">
                 <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
                 <div class="clearfix">
-                  <input type="text" id="allKeyWord" name="allKeyWord" class="form-control input-sm" placeholder="All Keywords">
-                </div>
+				 <select class="chosen-select form-control input-sm" multiple data-placeholder="All KeyWord" id="allReqKeyWord" name="allKeyWord"></select>
+					<!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> -->
+				 </div>
+                
               </div>
               <div class="col-md-4">
                 <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
                 <div class="clearfix">
-                  <input type="text" id="excludeKeyWord" name="excludeKeyWord" class="form-control input-sm" placeholder="Exclude Keyword">
-                </div>
+				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude KeyWord" id="excludeReqKeyWord" name="excludeKeyWord"></select>
+					<!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> -->
+				 </div>
+                
+                
               </div>
             </div>
             <div class="row">
@@ -1322,37 +1336,37 @@ function requirementPipeline(requirementId){
                 </div>
               </div>
               <div class="clearfix">
-                <div class="col-md-4">
-                  <label>Country</label>
-                  <div class="clearfix">
-                    <select class="chosen-select" id="country" name="country" data-placeholder="Country">
-                      <option>India</option>
-                      <option>USA</option>
-                      <option>Germany</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <label>State</label>
-                  <div class="clearfix">
-                    <select class="chosen-select" id="state" name="state" data-placeholder="State">
-                      <option>Andhra Pradesh</option>
-                      <option>Telangana</option>
-                      <option>Punjab</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <label>City</label>
-                  <div class="clearfix">
-                    <select class="chosen-select" id="city" name="city" data-placeholder="City">
-                      <option>India</option>
-                      <option>USA</option>
-                      <option>Germany</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
+						   <div class="col-md-4">
+							  <label>Country</label>
+							  <div class="clearfix adv-srh-chosen">
+								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
+								     <c:forEach var="cntry" items="${countryList}">
+							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+						                </c:forEach>
+				                 </select>
+							  </div>
+						  </div>
+						  
+						  <div class="col-md-4"> 
+							  <label>State</label>
+							  <div class="clearfix adv-srh-chosen">
+								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
+								        <option value="">---select state---</option>
+								        <c:forEach var="state" items="${statesList}">
+							                     <option value="${state.stateName}">${state.stateName}</option>
+						                </c:forEach>
+                                 </select>
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>City</label>
+							  <div class="clearfix adv-srh-chosen">
+								  <select  class="chosen-select" name="city" id="city" field-name="City"  >
+								      <option value="">---select city---</option>
+                                  </select>
+							  </div>
+						  </div>
+						  </div>
               <div class="clearfix">
                 <div class="col-md-4">
                   <label>Education</label>
@@ -1813,7 +1827,6 @@ function getActions(){
  		</script> 
 <script>
 function searchRequirement(){
-	alert("Hi-1");
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
@@ -1845,6 +1858,23 @@ function searchRequirement(){
 							$("#search_requiremet").addClass('button').val('Search');
 							$("#search_requiremet").removeAttr("disabled");
 							closePop();
+							if(data != null && data != 'undefined' && data != "" && data != '[]'){
+			                	 prepareRequirementData(data);
+		                 }else{
+		                	 $("#requirementList").empty();
+		                	 $("#requirementList").removeAttr("style");
+		                	 $("#requirementEmptyListMessage").val("noRequirement");
+		  	    	         var result ="";
+				    	    
+							 result = result+"			<div class='blank-pages'>";
+							 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+							 result = result+"			        <p>No Requirement Found</p>";
+							 result = result+"			 </div>";
+							/*  noRequirements();
+							$("#noReq").val("noreq"); */
+							$("#requirementList").empty();
+						    $("#requirementList").append(result); 
+		                }
 						},
 					}); 
 			return true;
@@ -1878,5 +1908,179 @@ $('body').on('blur', '#requirement_form', function() {
 		};
 	})(jQuery);
 </script>
+
+
+<script type="text/javascript">
+    	   var config = {
+    				  '.chosen-select'           : {},
+    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+    				  '.chosen-select-no-single' : {disable_search_threshold:10},
+    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+    				  '.chosen-select-width'     : {width:"95%"}
+    	   }
+			//Adding Customized Any Of Keyword to the list 
+		    var select, chosen;
+		    select = $("#anyKeyWord");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keyup', function(e)
+		    {
+		    	var anyofKeyword = this.value.replace(",","");
+		        if ((e.which == 13 || e.which == 188) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
+		            select.append(option);
+		            select.find(option).prop('selected', true);
+                    $("#anyKeyWord option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#anyKeyWord").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    var selectone, chosenone;
+		    selectone = $("#allReqKeyWord");
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenone = selectone.data('chosen');
+		    chosenone.search_field.on('keyup', function(e1)
+		    {
+		    	var allofKeyWord = this.value.replace(",","");
+		        if ((e1.which == 13 || e1.which == 188) && (allofKeyWord != null  && allofKeyWord != '' && allofKeyWord != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(allofKeyWord).text(allofKeyWord);
+		            selectone.append(option);
+		            selectone.find(option).prop('selected', true);
+                    $("#allReqKeyWord option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#allReqKeyWord").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selecttwo, chosentwo;
+		    selecttwo = $("#excludeReqKeyWord");
+		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosentwo = selecttwo.data('chosen');
+		    chosentwo.search_field.on('keyup', function(e2)
+		    {
+		    	var excludeKeyWord = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyWord != null  && excludeKeyWord != '' && excludeKeyWord != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(excludeKeyWord).text(excludeKeyWord);
+		            selecttwo.append(option);
+		            selecttwo.find(option).prop('selected', true);
+                    $("#excludeReqKeyWord option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#excludeReqKeyWord").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		      $("#country").on('change', function (e) {
+		    	   getStates();
+		       });
+		       $("#state").on('change', function (e) {
+		    	   getCities();
+		       });
+				for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+</script> 
+
+<script>
+function loadChosenRequirementScripts(){
+	 $('#country').val('${loginCountryName}'); 
+     $('#state').val(''); 
+     $('#city').val('');
+	
+	 $("#anyKeyWord").val('').trigger("chosen:updated");
+	 $("#allReqKeyWord").val('').trigger("chosen:updated");
+	 $("#excludeReqKeyWord").val('').trigger("chosen:updated");
+	 
+	 $("#anyKeyWord").empty();
+	 $("#allReqKeyWord").empty();
+	 $("#excludeReqKeyWord").empty();
+}
+</script>
+
+<script>
+function getStates(){
+	var countryName = $("#country").val();
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').empty();
+	        	$('#state').append('<option value="">---select state---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#state').trigger("chosen:updated");
+	            
+	            $('#city').empty();
+	            $('#city').append('<option value="">---select city---</option>');
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#state').empty();
+    	$('#state').append('<option value="">---select state---</option>');
+    	$('#state').trigger("chosen:updated");
+    	$('#city').empty();
+    	$('#city').append('<option value="">---select city---</option>');
+        $('#city').trigger("chosen:updated");
+	}
+}
+</script> 
+
+
+<script>
+function getCities(){
+	var countryName = $("#country").val();
+	var stateName = $("#state").val();
+	
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#city').empty();
+	        	$('#city').append('<option value="">---select city---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#city').empty();
+    	$('#city').append('<option value="">---select city---</option>');
+    	$('#city').trigger("chosen:updated");
+	}
+}
+</script>
+
+
+<!-- Country,State,City Script Ends Here -->	
+
 
 <jsp:include page="../masterFooter.jsp" />
