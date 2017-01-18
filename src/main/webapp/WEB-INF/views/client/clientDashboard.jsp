@@ -57,7 +57,7 @@ overflow-x: auto;
 				<div class="timesheet_head datatbl-filters customtimesheet-head">
 					<ul>
 
-		                  <li id="clientsList" ><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
+		                  <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
 		                    	  <c:forEach var="report" items="${clientsList}">  
@@ -67,7 +67,7 @@ overflow-x: auto;
 		                    </div>                	
 		                </li>
 	               
-		                <li id="clientSatatus"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+		                <li  id="filter3ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="clientSatatus"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="clientStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
@@ -78,7 +78,7 @@ overflow-x: auto;
 	                        </ul>
 	                      </div>                	
 	                  </li>
-	                  <li id="clientInvitation"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="filter4ApprovePop"></i>|
+	                  <li  id="filter4ApprovePop"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="clientInvitation"></i>|
 	                	<div id="filter4ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="clientInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label>Resend</label></li>
@@ -229,11 +229,14 @@ function getClientDetails(){
    	        			location = report.country;
    	        		}
    	        		
+   	        		var pattern = new RegExp(/["'"]/g);
+   	        		var orgName = (report.orgName).replace(pattern, "\\'");
+   	        		
    	        		result = result +'<tr>';
    	        		
    	        			result = result +'<td>';
    	        		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+report.orgName+'\',\''+report.id+'\');">';
+   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+orgName+'\',\''+report.id+'\');">';
 						result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
    	        			
    	        			result = result +'</div>';

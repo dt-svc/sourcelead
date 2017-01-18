@@ -151,6 +151,8 @@ public interface UserService  {
 	
 	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId,Long userId,Long tabId) throws Exception;
 	
+	public List<User> getUsersListByOrglocationId(Long orgLocationId) throws Exception;
+	
 }	
 		
 	

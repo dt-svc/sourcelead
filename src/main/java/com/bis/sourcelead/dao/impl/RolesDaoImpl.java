@@ -66,8 +66,7 @@ public class RolesDaoImpl implements RolesDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Roles> getRoles(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.createQuery("from Roles roles where roles.id IN (select distinct actionRoles.roles.id from ActionRoles actionRoles "
-				+ "where actionRoles.orgLocations.id = :orgLocationId) ")
+		return session.createQuery("from Roles roles where roles.orgLocations.id = :orgLocationId and roles.actionId IS NOT NULL)")
 				.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 
