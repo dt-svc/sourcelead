@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -572,19 +573,32 @@ public class RequirementListRestController {
 			File file =null;
 			
 			TimeSheetSubmissionCount requirementSubCount = getRequirementCount(requirementList);
+			StringBuilder sb = new StringBuilder();
 			for(Requirement requirement : requirementList){
 				if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-						if(requirement.getClientId().getResponderLocationId() != null  && requirement.getClientId().getResponderLocationId().getUser() !=null){
+						if(requirement.getClientId().getResponderLocationId() != null){
 							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
-							requirement.setClientContactName(requirement.getClientId().getResponderLocationId().getUser().getFirstName());
-							requirement.setClientContactEmail(requirement.getClientId().getResponderLocationId().getUser().getEmail());
+							if(requirement.getSpocId().getSpocUser().getFirstName() !=null && requirement.getSpocId().getSpocUser().getLastName() !=null){
+								sb.append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName());
+							}else{
+								sb.append(requirement.getSpocId().getSpocUser().getFirstName());
+							}
+							
+							requirement.setClientContactName(sb.toString());
+							requirement.setClientContactEmail(requirement.getSpocId().getSpocUser().getEmail());
 						}
 					}
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
 						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
-						requirement.setClientContactName(requirement.getClientId().getLocationId().getUser().getFirstName());
-						requirement.setClientContactEmail(requirement.getClientId().getLocationId().getUser().getEmail());
+						
+						if(requirement.getSpocId().getSpocUser().getFirstName() !=null && requirement.getSpocId().getSpocUser().getLastName() !=null){
+							sb.append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName());
+						}else{
+							sb.append(requirement.getSpocId().getSpocUser().getFirstName());
+						}
+						requirement.setClientContactName(sb.toString());
+						requirement.setClientContactEmail(requirement.getSpocId().getSpocUser().getEmail());
 					}
 				}
 				if(requirement.getManagerUserId() != null){
@@ -1168,7 +1182,27 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		}
 	}
 	return requirementSubmissionCounts;
-	
-	
+}
+		/**
+		 * Search Requirement
+		 * @param json
+		 * @param request
+		 * @param response
+		 * @return
+		 * @throws Exception
+		 */
+        @RequestMapping(value = "/searchRequiremet",method = RequestMethod.GET)
+		public @ResponseBody  String searchRequirement(@RequestParam(value = "json", required = false) String json,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String resultJson = "";
+		String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);
+
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Requirement> searchRequirementList = requirementService.searchRequirement(orgLocation, jsonObj,org);
+		resultJson = commonUtil.toJSON(searchRequirementList);
+		return resultJson;
+	    
+	    
 }
 }

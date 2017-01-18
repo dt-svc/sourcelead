@@ -150,6 +150,7 @@ public class LoginSessionController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("dashboard");
 		
+		
 		Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
 		model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
 	   
@@ -277,7 +278,6 @@ public class LoginSessionController {
 					SourceLeadSessionManager.setSessionAttribute(request, "IMESHEET_APPROVAL_TAB", "Y");
 				}
 			}
-			
 			
 		} catch (Exception e) {
 			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));

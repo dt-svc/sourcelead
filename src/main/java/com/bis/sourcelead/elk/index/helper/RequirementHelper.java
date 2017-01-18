@@ -1,0 +1,94 @@
+package com.bis.sourcelead.elk.index.helper;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.service.RequirementService;
+
+@Component
+public class RequirementHelper {
+	
+	private static final Logger logger = LoggerFactory.getLogger(RequirementHelper.class);
+	
+	@Autowired
+	private RequirementService requirementService;
+	public RequirementIndex populateRequirementIndex(Requirement requirement) throws Exception {
+		RequirementIndex requirementIndex = new RequirementIndex();
+		if(null != requirement){
+			requirementIndex.setRequirementId(requirement.getId());
+			requirementIndex.setOrgLocationId(requirement.getOrgLocationId().getId());
+			requirementIndex.setJobTitle(requirement.getJobTitle());
+			if(null != requirement.getRate() && !"".equalsIgnoreCase(requirement.getRate())){
+				requirementIndex.setRate(Float.parseFloat(requirement.getRate()));
+			}
+			
+			requirementIndex.setRateType(requirement.getRateType());
+			if(null != requirement.getMinExp() && !"".equalsIgnoreCase(requirement.getMinExp())){
+				requirementIndex.setMaxExperience(Integer.parseInt(requirement.getMinExp()));
+			}
+			if(null != requirement.getMaxExp() && !"".equalsIgnoreCase(requirement.getMaxExp())){
+				requirementIndex.setMaxExperience(Integer.parseInt(requirement.getMaxExp()));
+			}
+			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
+			requirementIndex.setCountry(requirement.getCountry());
+			requirementIndex.setState(requirement.getState());
+			requirementIndex.setCity(requirement.getCity());
+//			education
+			if(null != requirement.getEducation() && !"".equalsIgnoreCase(requirement.getEducation())){
+             String [] education = requirement.getEducation().split(",");
+             requirementIndex.setEducation(education);
+			}
+			if(requirement.getClientId() != null){
+				Requirement   requirement1 = requirementService.getRequirementByRequirementId(requirement.getId());
+				StringBuilder sb = new StringBuilder();
+				if("Client".equalsIgnoreCase(requirement1.getClientId().getResponderType())){
+					if(requirement1.getClientId().getResponderLocationId() != null){
+						requirementIndex.setClient(requirement1.getClientId().getResponderLocationId().getOrg().getOrgName());
+						if(requirement1.getSpocId().getSpocUser().getFirstName() !=null && requirement1.getSpocId().getSpocUser().getLastName() !=null){
+							sb.append(requirement1.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement1.getSpocId().getSpocUser().getLastName());
+						}else{
+							sb.append(requirement1.getSpocId().getSpocUser().getFirstName());
+						}
+						requirementIndex.setClientContactName(sb.toString());
+						requirementIndex.setClientContactEmail(requirement1.getSpocId().getSpocUser().getEmail());
+					}
+				}
+				if(("Vendor").equalsIgnoreCase(requirement1.getClientId().getResponderType())){
+					requirementIndex.setClient(requirement1.getClientId().getLocationId().getOrg().getOrgName());
+					if(requirement1.getSpocId().getSpocUser().getFirstName() !=null && requirement1.getSpocId().getSpocUser().getLastName() !=null){
+						sb.append(requirement1.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement1.getSpocId().getSpocUser().getLastName());
+					}else{
+						sb.append(requirement1.getSpocId().getSpocUser().getFirstName());
+					}
+					requirementIndex.setClientContactName(sb.toString());
+					requirementIndex.setClientContactEmail(requirement1.getClientId().getLocationId().getUser().getEmail());
+				}
+			}
+//			requirementIndex.setClient(requirement.getClientName());
+//			skill pending
+			if(null != requirement.getSkills() && !"".equalsIgnoreCase(requirement.getSkills())){
+	             String [] skills = requirement.getSkills().split(",");
+	             requirementIndex.setSkills(skills);
+				}
+			requirementIndex.setJobType(requirement.getJobType());
+			requirementIndex.setJobId(requirement.getJobId());
+//			requirementIndex.setClientContactName(requirement.getClientContactName());
+//			requirementIndex.setClientContactEmail(requirement.getClientContactName());
+			requirementIndex.setManager(requirement.getManager());
+			requirementIndex.setPriority(requirement.getPriority());
+			requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());
+ 			requirementIndex.setNumberOfPositions(requirement.getPositions());
+			requirementIndex.setNumberOfApplicants(requirement.getNoOfApplicants());
+			
+		}
+		return requirementIndex;
+	}
+
+}

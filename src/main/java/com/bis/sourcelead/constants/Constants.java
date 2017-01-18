@@ -107,6 +107,15 @@ public class Constants {
 	public static String MAIL_BOX_SENT = "Sent";
 	public static String MAIL_BOX_INBOX = "Inbox";
 	
+
+	public static String TASK_STATUS_OPEN = "Open";
+	public static String TASK_STATUS_CLOSE = "Closed";
+	public static String TASK_STATUS_MYTASK = "myTask";
+	public static String TASK_STATUS_ASSIGNTASK = "assignedTasks";
+	public static String TASK_STATUS_CLOSEDTASK = "closedTasks";
+
+	public static String TASK_MECHANISM_EMAIL ="Task Mechanism";
+    public static String TASK_MECHANISM_NOTIFICATION="Task Mechanism";
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
@@ -336,6 +345,10 @@ public class Constants {
     public static String ELK_CANDIDATE_INDEX = "candidates";
     		
     public static String ELK_CANDIDATE_TYPE = "candidate";
+    
+    public static String ELK_REQUIREMENT_INDEX = "requirement";
+	
+    public static String ELK_REQUIREMENT_TYPE = "requirement";
     
     public static String ELK_CANDIDATE_ID_PREFIX = "CND";
     
