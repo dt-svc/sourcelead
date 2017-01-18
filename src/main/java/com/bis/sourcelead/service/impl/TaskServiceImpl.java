@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,14 +66,17 @@ public class TaskServiceImpl implements TaskService{
 	public Tasks getTasksById(Long id) {
 		return taskDao.getTasksById(id);
 	}
-
+	
 	@Override
+	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId,String Status,String date) throws Exception {
+		return taskDao.tasksListByIdAndOrgLocationIdAssignedUserId(OrgLocationId,userId,Status,date);
+	}
+
 	public String saveTasks(JSONObject jsonObj) throws Exception {
-		String resultJson = null;
-	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-	 	String pattern = "dd-MM-yyyy";
+
+	 	String pattern = "dd-mm-yy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
        
@@ -133,18 +137,19 @@ public class TaskServiceImpl implements TaskService{
 		    	}
 		        task.setTaskStatus(Constants.TASK_STATUS_OPEN);
 		        task.setCreatedDate(commonUtil.currentDate());
-     	        Tasks tasks = taskDao.saveTasks(task);
-     	        //mail logic for users
+     	        taskDao.saveTasks(task);
+				 //mail logic for users
      	        if(null != task.getAlertType() && !"".equalsIgnoreCase(task.getAlertType())){
-     	        	MailToUserTask(user,ownerUser,tasks,loginOrgLocation);
+     	        	MailToUserTask(user,ownerUser,task,loginOrgLocation);
      	        }
 			}
         }
         
-		return "sucess";
+		return "success";
 	}
-	
-	/**
+
+
+ /**
 	 * @author shivayogi
 	 * @param loginUser
 	 * @param assignedUser
@@ -249,5 +254,8 @@ public class TaskServiceImpl implements TaskService{
 			 }
 
 	}
-
 }
+	
+
+
+
