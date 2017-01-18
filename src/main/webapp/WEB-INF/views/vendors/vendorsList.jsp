@@ -4,19 +4,28 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script> 
+
 <script src="resources/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
+
+
+
+
+
 <style type="text/css">
-.vendor_wrap {
+vendor_wrap {
 overflow-x: auto;
 }
 </style>
@@ -37,21 +46,235 @@ overflow-x: auto;
             <h2>Vendors<span class="select-fild">
                 	<select id="listOfVendors" onchange="listChange(this);">
                   		 <option value="listbyVendor">List by vendor</option>
-                        <option value="listbyContact" selected="selected">List by contact</option> 
+                         <option value="listbyContact" selected="selected">List by contact</option> 
                     </select>
                 </span>            	
             </h2>
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendors list </div>
         </section>
-        
-       
-       
 		<!-- Project -->
 		 <div id="loading"></div>
-<div class="timesheet_out">
+<div class="timesheet_out timesheet_background">
+ <!-- Advanced Search -->
+  <div class="pull-left cand-advsrch">
+            <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
+          <form:form id="vendorList_form" name="vendorList_form"  enctype='multipart/form-data' >
+           
+            <div class="row">
+              <div class="col-md-4">
+                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+	                 <div class="clearfix">
+					        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
+	                        </select>
+				    </div>
+              </div>
+              <div class="col-md-4">
+                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+                <div class="clearfix">
+                  <div class="clearfix">
+					  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
+	                     </select>
+				 </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+                <div class="clearfix">
+				  	 <select class="form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
+                     </select>
+	            </div>
+              </div>
+            </div>
+            <div class="row">
+            <div id="vendorListAdvanced">
+              <div class="col-md-12">
+              
+                <h4>Details:</h4>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Vendor Name</label>
+                  <div class="clearfix">
+                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Vendor Name" id="vendorNameAdvanced" name="vendorNameAdvanced">
+                    </select>
+                  </div>
+                </div>
+                
+              </div>
+              <div class="clearfix">
+                
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Country </label>
+                  <div class="clearfix">
+                    <select class="chosen-select" name="country" id="country" field-name="Country"  >
+								     <c:forEach var="cntry" items="${countryList}">
+							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+						                </c:forEach>
+				                 </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>State</label>
+                  <div class="clearfix">
+					<select  class="chosen-select" name="state" id="state" field-name="State"  >
+					
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>City</label>
+                  <div class="clearfix">
+                     <select  class="chosen-select" name="city" id="city" field-name="City"  >
+                     </select>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Tier</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="Tier" name="tierAdvanced" id="tierAdvanced"  multiple>
+	                     <option value="Tier-1">Tier-1</option>
+	                     <option value="Tier-2">Tier-2</option>
+	                     <option value="Tier-3">Tier-3</option>
+	                     <option value="Tier-4">Tier-4</option>
+	                     <option selected="selected" value="Tier-5">Tier-5</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Created By</label>
+                  <div class="clearfix">
+                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Created By" id="createdByAdvanced" name="createdByAdvanced"></select>
+                  </div>
+                </div>
+                
+              </div>
+             
+               </div>
+                
+                <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Document Name</label>
+                  <div class="clearfix">
+                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Document Name" id="documentNameAdvanced" name="documentNameAdvanced">
+                    </select>
+                  </div>
+                </div>
+              
+                <div class="col-md-4">
+                  <label>Document Type</label>
+                  <div class="clearfix">
+                   <select class="chosen-select form-control input-sm" multiple data-placeholder="Document Type" id="documentTypeAdvanced" name="documentTypeAdvanced">
+                    </select>
+                  </div>
+                </div>
+                
+              
+                <div class="col-md-4">
+                  <label>Submission Template</label>
+                  <div class="clearfix">
+                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Submission Template" id="submissionTemplateAdvanced" name="submissionTemplateAdvanced">
+                    </select>
+                  </div>
+                </div>
+                 </div>
+             </div> 
+              <div id="vendorContactListAdvanced">   
+               <div class="col-md-12">
+                <h4>Vendor Contact:</h4>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Contact Name</label>
+                  <div class="clearfix">
+                 	  <select class="chosen-select form-control input-sm" multiple data-placeholder="Contact Name" id="contactNameAdvanced" name="contactNameAdvanced">
+                      </select>
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <label>Email</label>
+                  <div class="clearfix">
+                        <select class="chosen-select form-control input-sm" multiple data-placeholder="Email" id="emailAdvanced" name="emailAdvanced">
+                        </select>
+                  </div>
+                </div>
+                
+                 <div class="col-md-4">
+                  <label>Phone Number</label>
+                  <div class="clearfix">
+                      <select class="chosen-select form-control input-sm" multiple data-placeholder="Phone Number" id="phoneNumberAdvanced" name="phoneNumberAdvanced">
+                     </select>
+                  </div>
+                </div>
+                
+              </div>
+              <div class="clearfix">
+                
+              </div>
+                
+                 <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Owner</label>
+                  <div class="clearfix">
+                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Owner" id="ownerAdvanced" name="ownerAdvanced">
+                     </select>
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <label>Vendor</label>
+                  <div class="clearfix">
+                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Vendor" id="vendorAdvanced" name="vendorAdvanced">
+                    </select>
+                  </div>
+                </div>
+                
+                 <div class="col-md-4">
+                  <label>Status</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Status" id="statusAdvanced" name="statusAdvanced">
+                  </div>
+                </div>
+                
+              </div>
+              
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Invitation</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Invitation" id="invitationAdvanced" name="invitationAdvanced">
+                  </div>
+                </div>
+              </div>
+            </div>  
+              
+            </div>
+            <div class="row form-footer mt">
+              <div class="pull-right mr"> 
+                <input type="button" value="Search" id="search_vendor" onclick="searchVendor();" class="btn btn-sm btn-primary"/>
+                <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
+              
+            </div>
+            </form:form>
+          </div>
+        </div>
+<!-- Advanced Search Ends -->
 
-<div class="vendor_wrap">
+
+
+<div class="clearfix"></div>
+<div class="vendor_wrap vendor_wrap_shadownone" style="overflow-x: auto;" >
+
+     
+
 	<div class="timesheet_head datatbl-filters customtimesheet-head">
         	<ul>
         	
@@ -138,6 +361,7 @@ overflow-x: auto;
             </ul>
             <div class="clearfix"></div>
         </div>
+        
     <div class="clients_wrap_table">
 	    <input type="hidden" name="emptyVendorcontactList" id="emptyVendorcontactList">
 	    <input type="hidden" name="emptyVendorList" id="emptyVendorList">
@@ -145,6 +369,7 @@ overflow-x: auto;
     	<table id="vendorList" class="display" cellspacing="0" width="100%"> </table>
     	<table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
    </div>	
+   
 </div>
 
 <div class="side_mask"><div class="proj_close"></div></div>
@@ -161,12 +386,350 @@ overflow-x: auto;
 		</div>
 
  </div>
+ 
+</div>
 <!-- Client Side Nav Div Ends -->
 </section>
+
+
+
+
+<script type="text/javascript">
+    	   var config = {
+    				  '.chosen-select'           : {},
+    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+    				  '.chosen-select-no-single' : {disable_search_threshold:10},
+    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+    				  '.chosen-select-width'     : {width:"95%"}
+    	   }
+			//Adding Customized Any Of Keyword to the list 
+		    var select, chosen;
+		    select = $("#anyOfKeyword");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keyup', function(e)
+		    {
+		    	var anyKeyword = this.value.replace(",","");
+		        if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(anyKeyword).text(anyKeyword);
+		            select.append(option);
+		            select.find(option).prop('selected', true);
+                    $("#anyOfKeyword option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#anyOfKeyword").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		  //Adding Customized Any Of Keyword to the list
+		    var selectone, chosenone;
+		    selectone = $("#allKeywords");
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenone = selectone.data('chosen');
+		    chosenone.search_field.on('keyup', function(e1)
+		    {
+		    	var allKeyword = this.value.replace(",","");
+		        if ((e1.which == 13 || e1.which == 188) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(allKeyword).text(allKeyword);
+		            selectone.append(option);
+		            selectone.find(option).prop('selected', true);
+                    $("#allKeywords option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#allKeywords").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selecttwo, chosentwo;
+		    selecttwo = $("#excludeKeyWord");
+		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosentwo = selecttwo.data('chosen');
+		    chosentwo.search_field.on('keyup', function(e2)
+		    {
+		    	var excludeKeyword = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
+		            selecttwo.append(option);
+		            selecttwo.find(option).prop('selected', true);
+                    $("#excludeKeyWord option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#excludeKeyWord").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    // These are choosen fields for vendor List Multiselect
+		    
+		    
+		    // This is for vendorName 
+		    
+		    var selectthree, chosenthree;
+		    selectthree = $("#vendorNameAdvanced");
+		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Vendor Name:' });
+		    chosenthree = selectthree.data('chosen');
+		    chosenthree.search_field.on('keyup', function(e3)
+		    {
+		    	var desg = this.value.replace(",","");
+		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(desg).text(desg);
+		            selectthree.append(option);
+		            selectthree.find(option).prop('selected', true);
+                    $("#vendorNameAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#vendorNameAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		   // This is for Created By 
+		    var selectcreatedByAdvanced, chosencreatedByAdvanced;
+		    selectcreatedByAdvanced = $("#createdByAdvanced");
+		    selectcreatedByAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Document Type:' });
+		    chosencreatedByAdvanced = selectcreatedByAdvanced.data('chosen');
+		    chosencreatedByAdvanced.search_field.on('keyup', function(e3)
+		    {
+		    	var desg = this.value.replace(",","");
+		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(desg).text(desg);
+		            selectcreatedByAdvanced.append(option);
+		            selectcreatedByAdvanced.find(option).prop('selected', true);
+                    $("#createdByAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#createdByAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    
+		    // This is for DocumentName
+		    var selectdocumentNameAdvanced, chosendocumentNameAdvanced;
+		    selectdocumentNameAdvanced = $("#documentNameAdvanced");
+		    selectdocumentNameAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Document Name:' });
+		    chosendocumentNameAdvanced = selectdocumentNameAdvanced.data('chosen');
+		    chosendocumentNameAdvanced.search_field.on('keyup', function(e3)
+		    {
+		    	var desg = this.value.replace(",","");
+		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(desg).text(desg);
+		            selectdocumentNameAdvanced.append(option);
+		            selectdocumentNameAdvanced.find(option).prop('selected', true);
+                    $("#documentNameAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#documentNameAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    
+		    
+		    
+		    // This is for DocumentType
+		    var selectdocumentTypeAdvanced, chosendocumentTypeAdvanced;
+		    selectdocumentTypeAdvanced = $("#documentTypeAdvanced");
+		    selectdocumentTypeAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Document Type:' });
+		    chosendocumentTypeAdvanced = selectdocumentTypeAdvanced.data('chosen');
+		    chosendocumentTypeAdvanced.search_field.on('keyup', function(e3)
+		    {
+		    	var desg = this.value.replace(",","");
+		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(desg).text(desg);
+		            selectdocumentTypeAdvanced.append(option);
+		            selectdocumentTypeAdvanced.find(option).prop('selected', true);
+                    $("#documentTypeAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#documentTypeAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		 // This is for Submission Template Name
+		    var selectsubmissionTemplateAdvanced, chosensubmissionTemplateAdvanced;
+		    selectsubmissionTemplateAdvanced = $("#submissionTemplateAdvanced");
+		    selectsubmissionTemplateAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Submission Template Name:' });
+		    chosensubmissionTemplateAdvanced = selectsubmissionTemplateAdvanced.data('chosen');
+		    chosensubmissionTemplateAdvanced.search_field.on('keyup', function(e3)
+		    {
+		    	var desg = this.value.replace(",","");
+		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(desg).text(desg);
+		            selectsubmissionTemplateAdvanced.append(option);
+		            selectsubmissionTemplateAdvanced.find(option).prop('selected', true);
+                    $("#submissionTemplateAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#submissionTemplateAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    
+		    
+		    
+		    
+		    //  This is for contact Name
+		    var selectcontactNameAdvanced, chosencontactNameAdvanced;
+		    selectcontactNameAdvanced = $("#contactNameAdvanced");
+		    selectcontactNameAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Contact Name:' });
+		    chosencontactNameAdvanced = selectcontactNameAdvanced.data('chosen');
+		    chosencontactNameAdvanced.search_field.on('keyup', function(e3)
+		    {
+		    	var desg = this.value.replace(",","");
+		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(desg).text(desg);
+		            selectcontactNameAdvanced.append(option);
+		            selectcontactNameAdvanced.find(option).prop('selected', true);
+                    $("#contactNameAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#contactNameAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    //  This is for Email
+		    var selectemailAdvanced, chosenemailAdvanced;
+		    selectemailAdvanced = $("#emailAdvanced");
+		    selectemailAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Email:' });
+		    chosenemailAdvanced = selectemailAdvanced.data('chosen');
+		    chosenemailAdvanced.search_field.on('keyup', function(e3)
+		    {
+		    	var desg = this.value.replace(",","");
+		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(desg).text(desg);
+		            selectemailAdvanced.append(option);
+		            selectemailAdvanced.find(option).prop('selected', true);
+                    $("#emailAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#emailAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    //  This is for Phone Number
+		    var selectphoneNumberAdvanced, chosenphoneNumberAdvanced;
+		    selectphoneNumberAdvanced = $("#phoneNumberAdvanced");
+		    selectphoneNumberAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Phone Number:' });
+		    chosenphoneNumberAdvanced = selectphoneNumberAdvanced.data('chosen');
+		    chosenphoneNumberAdvanced.search_field.on('keyup', function(e3)
+		    {
+		    	var desg = this.value.replace(",","");
+		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(desg).text(desg);
+		            selectphoneNumberAdvanced.append(option);
+		            selectphoneNumberAdvanced.find(option).prop('selected', true);
+                    $("#phoneNumberAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#phoneNumberAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    //  This is for Owner
+		    var selectownerAdvanced, chosenownerAdvanced;
+		    selectownerAdvanced = $("#ownerAdvanced");
+		    selectownerAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Owner:' });
+		    chosenownerAdvanced = selectownerAdvanced.data('chosen');
+		    chosenownerAdvanced.search_field.on('keyup', function(e3)
+		    {
+		    	var desg = this.value.replace(",","");
+		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(desg).text(desg);
+		            selectownerAdvanced.append(option);
+		            selectownerAdvanced.find(option).prop('selected', true);
+                    $("#ownerAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#ownerAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		//  This is for Vendor
+		    var selectvendorAdvanced, chosenvendorAdvanced;
+		    selectvendorAdvanced = $("#vendorAdvanced");
+		    selectvendorAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Vendor:' });
+		    chosenvendorAdvanced = selectvendorAdvanced.data('chosen');
+		    chosenvendorAdvanced.search_field.on('keyup', function(e3)
+		    {
+		    	var desg = this.value.replace(",","");
+		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(desg).text(desg);
+		            selectvendorAdvanced.append(option);
+		            selectvendorAdvanced.find(option).prop('selected', true);
+                    $("#vendorAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#vendorAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    
+		  
+		      $("#country").on('change', function (e) {
+		    	   getStates();
+		       });
+		       $("#state").on('change', function (e) {
+		    	   getCities();
+		       });
+				for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+</script> 
+
+
 
 <script> 
 $(document).ready(function(){
 	getVendorContactLists();
+
     listChange("listbyContact");
 	document.getElementById('listOfVendors').value = 'listbyContact';
 });
@@ -295,6 +858,7 @@ function pagination1(){
 
 <script>
 function getVendorContactLists(){
+	closePop();
 	var vendorId = [];
 	$('input:checkbox[name=vendorNameById]:checked').each(function() 
     {
@@ -1314,3 +1878,111 @@ function exportVendorContactToExcel(){
         $('#editVendorMsg').delay(2000).fadeOut('slow');
 	}
 </script> 
+
+<script>
+    // Close Advanced Search
+    function closePop(){
+    $("div.cand-advsrch-popup").hide();
+    };
+    function openPop(){
+    $("div.cand-advsrch-popup").toggle();
+    };
+</script> 
+
+  
+
+<script>
+function getStates(){
+	var countryName = $("#country").val();
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').empty();
+	        	$('#state').append('<option value="">---select state---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#state').trigger("chosen:updated");
+	            
+	            $('#city').empty();
+	            $('#city').append('<option value="">---select city---</option>');
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#state').empty();
+    	$('#state').append('<option value="">---select state---</option>');
+    	$('#state').trigger("chosen:updated");
+    	$('#city').empty();
+    	$('#city').append('<option value="">---select city---</option>');
+        $('#city').trigger("chosen:updated");
+	}
+}
+</script> 
+
+
+<script>
+function getCities(){
+	var countryName = $("#country").val();
+	var stateName = $("#state").val();
+	
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#city').empty();
+	        	$('#city').append('<option value="">---select city---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#city').empty();
+    	$('#city').append('<option value="">---select city---</option>');
+    	$('#city').trigger("chosen:updated");
+	}
+}
+</script>  
+
+
+<script type="text/javascript">	
+	function loadChosenScripts(){
+		
+		var selectedList = document.getElementById('listOfVendors').value;
+		if(selectedList == "listbyContact" ){
+			
+			 document.getElementById("vendorContactListAdvanced").style.display="block";
+			 document.getElementById("vendorListAdvanced").style.display="none";
+			 
+		}else if(selectedList == "listbyVendor" ){
+			
+			 document.getElementById("vendorListAdvanced").style.display="block";
+			 document.getElementById("vendorContactListAdvanced").style.display="none";
+		}
+		
+	    $('#country').val('${loginCountryName}'); 
+	    $('#state').val(''); 
+	    $('#city').val(''); 
+	    
+	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	    $("#allKeywords").val('').trigger("chosen:updated");
+	    $("#excludeKeyWord").val('').trigger("chosen:updated");
+
+	    $("#anyOfKeyword").empty();
+	    $("#allKeywords").empty();
+	    $("#excludeKeyWord").empty();
+	}
+</script>      

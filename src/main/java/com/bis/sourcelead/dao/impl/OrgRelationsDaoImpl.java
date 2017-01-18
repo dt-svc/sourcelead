@@ -541,6 +541,45 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			List<OrgRelations> relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setString("type", type).setCacheable(true).list();
 			return relationsList;
 	}
+
+	@Override
+	@Transactional
+	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception {
+
+		logger.debug("In OrgRelations getAllClientsCountByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> clientsCount = null;
+		
+		
+		// to  get the Clients count based on OrgLocation Id
+		Query clientsListQuery= session.createQuery("select count(*) from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor' )");
+		clientsCount = clientsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		Integer count = 0;
+		if(clientsCount != null && !clientsCount.isEmpty()){
+				count = clientsCount.get(0).intValue();
+		}
+		return count;
+	}
+
+	@Override
+	@Transactional
+	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId) throws Exception {
+
+		logger.debug("In OrgRelations getAllVendorsCountByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		List<Long> vendorsCount = null;
+		Query vendorsListQuery= session.createQuery("select count(*) from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
+		vendorsCount = vendorsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+
+		Integer count = 0;
+		if(vendorsCount != null && !vendorsCount.isEmpty()){
+				count = vendorsCount.get(0).intValue();
+		}
+		return count;
+
+	}
 	
 	
 }
