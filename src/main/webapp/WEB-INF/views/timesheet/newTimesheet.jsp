@@ -1186,6 +1186,82 @@ function addAttachment(){
       </section>
       <!-- Content Area Ends--> 
 <div class="time_pop" id="timeSheetErrorMsg"></div>
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+                
+<!-- this script is for save Timesheet -->               
+<script type="text/javascript">
+function newSaveTimesheet(status,savingType){ 
+	 checkHours();
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	 }; 
+	 if ($('#timesheet_form').validate(false, validationSettings)){ 
+				 
+		  		
+               var frm = $('#timesheet_form').serializeFormJSON();
+               
+               var sourceleadUrl ='${sourceleadUrl}';
+               var startdate;
+           	   var navigation;
+               
+       		   var mydata = JSON.stringify(frm);
+       		   mydata = mydata.replace(/[{}]/g, "");
+       		   mydata = encodeURIComponent(mydata);
+       		
+       		   var form = $('#timesheet_form')[0];
+       		   var formData = new FormData(form); 
+       		   var submissionIds = $("#submissionId").val();
+       		   $("#dynamic").empty();
+       		   $("#dynamic").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+        	   $.ajax({
+	      	          type : "POST",
+	          	      data: formData,
+	          	      contentType : 'application/json; charset=utf-8',
+	          	      enctype: 'multipart/form-data',
+	      	          processData: false,
+	      	          contentType:false,
+	          	      dataType : 'json',
+        	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
+        		      success :function(result) {
+        		    	   dynamicTimesheet("left",result); 
+        		    	  /* dynamicTimesheet(); */
+        		      }
+        	      	  
+        	    }); 
+        	   return true;
+	 	}else{ 
+			return false;
+	 } 
+}
+
+$('body').on('blur', '#timesheet_form', function() {
+	$("#timesheet_form").showHelpOnFocus();
+	$("#timesheet_form").validateOnBlur(false, validationSettings);  
+});
+</script>
  
       
     
