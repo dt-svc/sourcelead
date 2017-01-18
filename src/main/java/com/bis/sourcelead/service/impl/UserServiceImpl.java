@@ -231,9 +231,9 @@ public class UserServiceImpl implements UserService {
 				commonUtil.addAdminAsSecondLevelManager(orgLocations.getId(), user, loginuser);
 			}*/
 			/*
-			 * Saving Candidate DB data as ElasticSearch Documents
+			 * Saving USER DB data as ElasticSearch Documents
 			 */
-			saveOrUpdateUserElkDocument(userRole,loginuser.getUserCode());
+			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
         return user1;
 				
 		
@@ -871,10 +871,9 @@ public class UserServiceImpl implements UserService {
 
 	
 	@Override
-	public void saveOrUpdateUserElkDocument(UserRole userRole, String loginUserCode) throws Exception {
+	public void saveOrUpdateUserElkDocument(UserRole userRole, Employees employee, String loginUserCode) throws Exception {
 		//Elastic Search Document Saving
-		
-		UserIndex userIndex = userIndexHelper.getUserIndexFromUser(userRole,loginUserCode);
+		UserIndex userIndex = userIndexHelper.getUserIndexFromUser(userRole,employee,loginUserCode);
 		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,userRole.getUser().getId().toString());
 		
 	}

@@ -7,7 +7,8 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
 <style type="text/css">
 #loadMoreDiv{
 text-align: center;
@@ -68,26 +69,26 @@ window.onload = function () {
 						  <div class="col-md-4">
 							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
 							  <div class="clearfix">
-							        <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
-                                    </select> -->
-							  	 <input type="text" class="form-control input-sm" placeholder="Any of Keyword" id="anyOfKeyword" name="anyOfKeyword" value="">
+							        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
+                                    </select>
+							  	 <!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword" id="anyOfKeyword" name="anyOfKeyword" value=""> -->
 							  </div>
 						  </div>
 						  <div class="col-md-4">
 							  <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
 							  <div class="clearfix">
-							  	  <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
-                                 </select> --> 
-                                 <input type="text" class="form-control input-sm" placeholder="All Keywords" id="allKeywords" name="allKeywords" value="">
+							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
+                                 </select> 
+                                 <!-- <input type="text" class="form-control input-sm" placeholder="All Keywords" id="allKeywords" name="allKeywords" value=""> -->
                                  
 							  </div>
 						  </div>
 						  <div class="col-md-4">
 							  <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
 							  <div class="clearfix">
-							  	 <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
-                                 </select> -->
-                                 <input type="text" class="form-control input-sm" placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord" value="">
+							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
+                                 </select>
+                                <!--  <input type="text" class="form-control input-sm" placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord" value=""> -->
                                  
 							  </div>
 						  </div>
@@ -98,48 +99,44 @@ window.onload = function () {
 						  <div class="col-md-4">
 							  <label>Email<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix">
-								  <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Employers" id="employers" name="employers">
-                                  </select> -->
-                                   <input type="text" class="form-control input-sm" placeholder="Email" id="email" name="email" value="">
-                                  
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Email" id="email" name="email">
+                                  </select>
 							  </div>
 						  </div>
 						  <div class="col-md-4">
 							  <label>Phone Number<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix">
-								 <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
-                                  </select> -->
-                                 <input type="text" class="form-control input-sm" placeholder="Phone Number" id="mobilePhone" name="mobilePhone" value="">
-                                  
+								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Phone Number" id="mobilePhone" name="mobilePhone">
+                                  </select>
 							  </div>
 						  </div>
 						  
 						   <div class="col-md-4">
 							  <label>Role<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix">
-								 <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
-                                  </select> -->
-                                 <input type="text" class="form-control input-sm" placeholder="Role" id="userType" name="userType" value="">
-                                  
+								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Role" id="userType" name="userType">
+                                  <c:forEach var="option" items="${rolesList}">
+	                                   <option value="${option.displayName}">${option.displayName}</option>
+                                  </c:forEach>
+                                  </select>
 							  </div>
 						  </div>
 						  <div class="col-md-4">
 							  <label>Employee Id<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix">
-								 <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
-                                  </select> -->
-                                 <input type="text" class="form-control input-sm" placeholder="Employee Id" id="employeeId" name="employeeId" value="">
-                                  
+								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Employee Id" id="employeeId" name="employeeId">
+                                  </select>
 							  </div>
 						  </div>
 						  
 						  <div class="col-md-4">
 							  <label>User Status<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix">
-								 <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
-                                  </select> -->
-                                 <input type="text" class="form-control input-sm" placeholder="User Status" id="userState" name="userState" value="">
-                                  
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="User Status" id="userState" name="userState">
+                                     <option value="ACTIVE" >Active</option>
+									 <option value="INACTIVE" >In Active</option>
+									 <option value="NOT_LOGGEDIN">Not Logged IN</option>
+                                  </select>
 							  </div>
 						  </div>
 						  </div>
@@ -327,15 +324,20 @@ function exportToPdf(){
 	<script type="text/javascript">	
 	function loadChosenScripts(){
 	    $('#search_user').removeAttr('disabled');
-	    
 	   
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
-	    
-	    
+	    $("#email").val('').trigger("chosen:updated");
+	    $("#mobilePhone").val('').trigger("chosen:updated");
+	    $("#userType").val('').trigger("chosen:updated");
+	    $("#employeeId").val('').trigger("chosen:updated");
+	    $("#userState").val('').trigger("chosen:updated");
 	    
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
+	    $("#email").empty();
+	    $("#mobilePhone").empty();
+	    $("#employeeId").empty();
 	    
 	}
 </script>
@@ -701,7 +703,161 @@ function getUserSummary(userId){
 	 			result = result + '<div class="clear"></div>';
 	 			$("#noUsers").val("")
 	   		    }
-	  }
+	  }else{
+      	  $("#usersListBody").removeAttr("style");
+      	  $('#usersListBody').empty();
+          var result ="";
+       	  result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No  Records..</div>';
+       	  $('#usersListBody').append(result);
+      }
   }
 </script>    
 
+
+<script type="text/javascript">
+    	   var config = {
+    				  '.chosen-select'           : {},
+    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+    				  '.chosen-select-no-single' : {disable_search_threshold:10},
+    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+    				  '.chosen-select-width'     : {width:"95%"}
+    	   }
+			//Adding Customized Any Of Keyword to the list 
+		    var select, chosen;
+		    select = $("#anyOfKeyword");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keyup', function(e)
+		    {
+		    	var anyKeyword = this.value.replace(",","");
+		        if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(anyKeyword).text(anyKeyword);
+		            select.append(option);
+		            select.find(option).prop('selected', true);
+                    $("#anyOfKeyword option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#anyOfKeyword").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		  //Adding Customized Any Of Keyword to the list
+		    var selectone, chosenone;
+		    selectone = $("#allKeywords");
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenone = selectone.data('chosen');
+		    chosenone.search_field.on('keyup', function(e1)
+		    {
+		    	var allKeyword = this.value.replace(",","");
+		        if ((e1.which == 13 || e1.which == 188) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(allKeyword).text(allKeyword);
+		            selectone.append(option);
+		            selectone.find(option).prop('selected', true);
+                    $("#allKeywords option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#allKeywords").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selecttwo, chosentwo;
+		    selecttwo = $("#excludeKeyWord");
+		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosentwo = selecttwo.data('chosen');
+		    chosentwo.search_field.on('keyup', function(e2)
+		    {
+		    	var excludeKeyword = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
+		            selecttwo.append(option);
+		            selecttwo.find(option).prop('selected', true);
+                    $("#excludeKeyWord option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#excludeKeyWord").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectthree, chosenthree;
+		    selectthree = $("#email");
+		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Email:' });
+		    chosenthree = selectthree.data('chosen');
+		    chosenthree.search_field.on('keyup', function(e3)
+		    {
+		    	var desg = this.value.replace(",","");
+		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(desg).text(desg);
+		            selectthree.append(option);
+		            selectthree.find(option).prop('selected', true);
+                    $("#email option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#email").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectfour, chosenfour;
+		    selectfour = $("#mobilePhone");
+		    selectfour.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Mobile Phone:' });
+		    chosenfour = selectfour.data('chosen');
+		    chosenfour.search_field.on('keyup', function(e6)
+		    {
+		    	var cert = this.value.replace(",","");
+		        if ((e6.which == 13 || e6.which == 188) && (cert != null  && cert != '' && cert != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(cert).text(cert);
+		            selectfour.append(option);
+		            selectfour.find(option).prop('selected', true);
+                    $("#mobilePhone option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#mobilePhone").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		     var selectfive, chosenfive;
+		    selectfive = $("#employeeId");
+		    selectfive.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add EmployeeId:' });
+		    chosenfive = selectfive.data('chosen');
+		    chosenfive.search_field.on('keyup', function(e6)
+		    {
+		    	var cert = this.value.replace(",","");
+		        if ((e6.which == 13 || e6.which == 188) && (cert != null  && cert != '' && cert != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(cert).text(cert);
+		            selectfive.append(option);
+		            selectfive.find(option).prop('selected', true);
+                    $("#employeeId option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#employeeId").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+				for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+</script> 

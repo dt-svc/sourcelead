@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -210,6 +211,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
 			
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
@@ -223,6 +225,23 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				 
 				 maxResults =  userList.size();
 			 }
+			 
+			//Exclude Keyword
+			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+			 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+				 for(String keywd : excludeKeyWordArray){
+					 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+							excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+						}
+						excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+					}
+				}
+				 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+			  }
 			 
 			 
 			//Any Keyword
@@ -257,24 +276,94 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					}
 					 boolQueryBuilder.must(allBoolQueryBuilder);
 				}
+				
+				//Email
+				ArrayList<String> emailArray = getSearchKeywordsFromChosenSelectField(jsonObj, "email");
+				if(emailArray != null && !emailArray.isEmpty()){
+					BoolQueryBuilder emailBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : emailArray){
+						emailBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("email", "*"+keywd+"*"));
+					}
+					boolQueryBuilder.must(emailBoolQueryBuilder);
+				}
+				
+				
+				//Mobile Phone
+			    ArrayList<String> mobilePhoneArray = getSearchKeywordsFromChosenSelectField(jsonObj, "mobilePhone");
+				if(mobilePhoneArray != null && !mobilePhoneArray.isEmpty()){
+					BoolQueryBuilder mobilePhoneBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : mobilePhoneArray){
+						mobilePhoneBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
+					}
+					boolQueryBuilder.must(mobilePhoneBoolQueryBuilder);
+				}
+				
+				
+				//Role
+				ArrayList<String> userTypeArray = getSearchKeywordsFromChosenSelectField(jsonObj, "userType");
+				if(userTypeArray != null && !userTypeArray.isEmpty()){
+					BoolQueryBuilder userTypeBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : userTypeArray){
+						userTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("userType", keywd));
+					}
+					boolQueryBuilder.must(userTypeBoolQueryBuilder);
+				}
+				
+				
+				//Employee Id
+				ArrayList<String> employeeIdArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeId");
+				if(employeeIdArray != null && !employeeIdArray.isEmpty()){
+					BoolQueryBuilder employeeIdBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : employeeIdArray){
+						employeeIdBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("employeeId", keywd));
+					}
+					boolQueryBuilder.must(employeeIdBoolQueryBuilder);
+				}
+				
+				
+				//User State
+				ArrayList<String> userStateArray = getSearchKeywordsFromChosenSelectField(jsonObj, "userState");
+				if(userStateArray != null && !userStateArray.isEmpty()){
+					BoolQueryBuilder userStateBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : userStateArray){
+						userStateBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("userState", keywd));
+					}
+					boolQueryBuilder.must(userStateBoolQueryBuilder);
+				}
+				
+				//Rate
+				if(jsonObj.has("rate") && StringUtils.isNotEmpty(jsonObj.getString("rate"))){
+			    	String minRate= jsonObj.getString("rate").replaceAll("[^0-9\\.]+", "");
+			    	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("rate").gte(new Float(minRate)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
+				
+				//Rate Per
+				if(jsonObj.has("ratePer") && StringUtils.isNotEmpty(jsonObj.getString("ratePer"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("ratePer", jsonObj.getString("ratePer")));
+			    }
+				
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 				ArrayList<UserRole>   freshUserList = new ArrayList<>();
 				if(searchHits != null && searchHits.length >0){
 					for (SearchHit hit : searchHits) {
-						//User user = userService.getUserById(Long.parseLong(hit.getId()));
-						UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(Long.parseLong(hit.getId()), loginOrgLocation.getId());
-						StringBuilder userName = new StringBuilder();
-						userRole.setUserRoleName(userRole.getRoles().getDisplayName());
-						if(!isNullOrEmpty(userRole.getUser().getLastName())){
-							userName = userName.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
-							userRole.setUserName(userName.toString());
-						}else{
-							userRole.setUserName(userRole.getUser().getFirstName());
+						UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationIdAndNotLoginUser(Long.parseLong(hit.getId()), loginOrgLocation.getId(),user.getId());
+						if(null != userRole){
+							StringBuilder userName = new StringBuilder();
+							userRole.setUserRoleName(userRole.getRoles().getDisplayName());
+							if(!isNullOrEmpty(userRole.getUser().getLastName())){
+								userName = userName.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
+								userRole.setUserName(userName.toString());
+							}else{
+								userRole.setUserName(userRole.getUser().getFirstName());
+							}
+							userRole.setUserEmail(userRole.getUser().getEmail());
+							userRole.setUserId(userRole.getUser().getId());
+							userRole.setIsMailSent(userRole.getUser().getIsMailSent().toString());
+							freshUserList.add(userRole);
 						}
-						userRole.setUserEmail(userRole.getUser().getEmail());
-						userRole.setUserId(userRole.getUser().getId());
-						userRole.setIsMailSent(userRole.getUser().getIsMailSent().toString());
-						freshUserList.add(userRole);
 					}
 				}
 			 String resultJson;
@@ -309,7 +398,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
-
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("ratePer", keywd));
 
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
@@ -727,7 +817,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					userRole.setPreviousUserState(userRole.getUserState());
 					userRole.setUserState(Status.INACTIVE);
 					userRole.setTerminateReason(jsonObj.getString("reason"));
-					userRoleService.addUserRole(userRole);
+					UserRole updateUserRole = userRoleService.addUserRole(userRole);
 					
 					//to assign primary role to another user
 					UserRole existinguserRole = userRoleService.getNotPrimaryUser(userId);
@@ -735,7 +825,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 						existinguserRole.setIsPrimary(1);
 						userRoleService.addUserRole(existinguserRole);
 					}
-					
+					Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(updateUserRole.getUser().getId(), orgLocations.getId());
+					userService.saveOrUpdateUserElkDocument(updateUserRole,employee,user.getUserCode());
 				}
 			
 				return "success";
@@ -958,6 +1049,11 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					employees.setUpdatedDate(commonUtil.currentDate());
 					employeesService.updateEmployee(employees);
 			    }
+			    /*
+				 * update USER DB data as ElasticSearch Documents
+				 */
+			    userService.saveOrUpdateUserElkDocument(userRole,employees,loginUser.getUserCode());
+			    
 				return "success";
 		}
 	

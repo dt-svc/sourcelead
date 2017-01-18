@@ -9,7 +9,7 @@ public class UserIndex implements Serializable {
 
 	private Long userId;
 	
-	private Long employeeId;
+	private String employeeId;
 
 	private Long orgLocationId;
 
@@ -189,11 +189,11 @@ public class UserIndex implements Serializable {
 		this.isMailSent = isMailSent;
 	}
 
-	public Long getEmployeeId() {
+	public String getEmployeeId() {
 		return employeeId;
 	}
 
-	public void setEmployeeId(Long employeeId) {
+	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
 	}
 

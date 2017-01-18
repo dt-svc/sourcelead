@@ -39,6 +39,17 @@ public interface UserRoleService {
 	
 	public UserRole getUserDetailsByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
 	
+	/**
+	 * @author Prasad salina
+	 * @param userId
+	 * @param locationId
+	 * @param loginUserId
+	 * @return
+	 * @throws Exception 
+	 * To get list of users except currently login user, this method used in User Elastic search
+	 */
+	public UserRole getUserDetailsByUserIdAndLocationIdAndNotLoginUser(Long userId,Long locationId,Long loginUserId) throws Exception;
+	
 	public UserRole getUserByUserId(Long userId) throws Exception;
 	
 	/**To get user role by userid and locationId

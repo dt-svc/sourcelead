@@ -164,7 +164,7 @@ public interface UserService  {
 	
 	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId,Long userId,Long tabId) throws Exception;
 	
-	public void saveOrUpdateUserElkDocument(UserRole userRole, String loginUserCode) throws Exception;
+	public void saveOrUpdateUserElkDocument(UserRole userRole, Employees employee, String loginUserCode) throws Exception;
 }	
 		
 	

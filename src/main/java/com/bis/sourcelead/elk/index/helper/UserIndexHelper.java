@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.UserRole;
 
 @Component
@@ -12,7 +13,7 @@ public class UserIndexHelper {
 	
 	
 	
-	public UserIndex getUserIndexFromUser(UserRole userRole, String loginUserCode) throws Exception{
+	public UserIndex getUserIndexFromUser(UserRole userRole, Employees employee, String loginUserCode) throws Exception{
 		UserIndex userIndex = null;
 		if(null != userRole && null != userRole.getId()){
 			userIndex = new UserIndex();
@@ -27,6 +28,10 @@ public class UserIndexHelper {
 			userIndex.setUserType(userRole.getUserType());
 			userIndex.setStatus(userRole.getUser().getStatus());
 			userIndex.setTerminateReason(userRole.getTerminateReason());
+			userIndex.setEmployeeId(employee.getEmployeeId());
+			userIndex.setRate(employee.getRate());
+			userIndex.setRatePer(employee.getRatePer());
+			
 			if(userRole.getCreatedDate() != null){
 				userIndex.setCreatedDate(new Date(userRole.getCreatedDate().getTime()));
 			}

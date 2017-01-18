@@ -340,6 +340,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getUserDetailsByUserIdAndLocationId(Long userId, Long locationId) throws Exception {
 		return userRoleDao.getUserDetailsByUserIdAndLocationId(userId, locationId);
 	}
+	
+	@Override
+	public UserRole getUserDetailsByUserIdAndLocationIdAndNotLoginUser(Long userId, Long locationId,Long loginUserId) throws Exception {
+		return userRoleDao.getUserDetailsByUserIdAndLocationIdAndNotLoginUser(userId, locationId,loginUserId);
+	}
 
 	@Override
 	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
