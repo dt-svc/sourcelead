@@ -49,6 +49,7 @@ public class Constants {
 	public static final String CITY = "City";
 	public static final String LEVEL = "Tier";
 	public static final String VENDOR_NAME = "Vendor Name*";
+	public static final String JOB_OTHER = "Other";
 
 	public static final Integer RECORD_ACTIVE = 1;
 	public static final Integer RECORD_INACTIVE = 0;
