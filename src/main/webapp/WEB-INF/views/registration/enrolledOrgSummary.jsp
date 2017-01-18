@@ -1,6 +1,18 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 
+
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,9 +43,9 @@ z-index: 9999999999 !important;
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Org Details</h2>
+        <h2>${orgloc.org.orgName}</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/enrolledOrgsList'/>">Orgs List</a> &raquo; Org Summary</div>
     </section>
     <div class="content-area clearfix">
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
@@ -42,7 +54,14 @@ z-index: 9999999999 !important;
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		    <!-- Tab for Profile setting-area -->
 		  <div class="accountsettings-tab org-settings-area">
+		  
+		  <ul class="nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#details" onclick="flushUser(); removeAddUserPopUp();">Details</a></li>
+			<li><a data-toggle="tab" href="#users" onclick="getUserList();">Users</a></li>
+		  </ul>
+		  
 		  <div class="tab-content panel-body">
+		  <div id="details" class="tab-pane fade in active">
 			<div class="clearfix">
 			  <form:form class="login-form clearfix"  id="update_module_form"  name="update_module_form" method="post" > 
 			  
@@ -55,7 +74,13 @@ z-index: 9999999999 !important;
 			  </div>
 				<div class="col-xs-12 col-sm-9 col-md-9">
 					<div class="row">
-						<div class="col-md-7">
+						<div class="col-md-6">
+								
+								<div class="form-group">
+								<div class="col-md-12 clearfix">
+								<h5>Org Details</h5>
+								</div>
+								</div>
 								
 								<div class="form-group">
 								<label class="col-md-4">Company :</label>
@@ -76,9 +101,62 @@ z-index: 9999999999 !important;
 								<label class="col-md-4">Enrolled Date :</label>
 								<p><fmt:formatDate type="date"  value="${orgloc.createdDate}" /></p></p>
 								</div>
+	                  </div>
+	                  
+	                  
+	                  <div class="col-md-6">
+								<c:if test="${!empty orgloc.user.id}">
 								<div class="form-group">
-						            <label class="col-md-3">Modules :</label>
-						            <div class="col-md-14 checkbox">
+								<div class="col-md-12 clearfix">
+								<h5>Primary Contact Details</h5>
+								</div>
+								</div>
+								
+								<div class="form-group">
+								<label class="col-md-4">First Name : </label>
+								<p>${orgloc.user.firstName}</p>
+								</div>
+								
+								<div class="form-group">
+								<label class="col-md-4">Last Name : </label>
+								<c:if test="${!empty orgloc.user.lastName}">
+									<p>${orgloc.user.lastName}</p>
+								</c:if>
+								<c:if test="${empty orgloc.user.lastName}">
+									<p>NO DATA</p>
+								</c:if>
+								
+								</div>
+								
+								<div class="form-group">
+								<label class="col-md-4">Email : </label>
+								<p>${orgloc.user.email}</p>
+								</div>
+								
+								<div class="form-group">
+								<label class="col-md-4">Contact : </label>
+								<c:if test="${!empty orgloc.user.mobilePhone}">
+									<p>${orgloc.user.mobilePhone}</p>
+								</c:if>
+								<c:if test="${empty orgloc.user.mobilePhone}">
+									<p>NO DATA</p>
+								</c:if>
+								</div>
+							</c:if>
+								
+	                  </div>
+	                  
+	                  
+	                  <div class="col-md-6">
+								
+								<div class="form-group">
+								<div class="col-md-12 clearfix">
+								<h5>Registered Modules</h5>
+								</div>
+								</div>
+								
+								<div class="form-group">
+						            <div class="col-md-12 checkbox">
 							         <c:forEach var="module" items="${registeredModulesList}">
 										<ul class="list-unstyled pull-left">
 				               				 <li>
@@ -129,7 +207,58 @@ z-index: 9999999999 !important;
 					</div>
 					</form:form>
 				</div>
-
+			</div>
+			<div id="users" class="tab-pane fade">
+			 <div class="project_tabs_inn_table vendor_wrap_inn_table mt">
+			 <a href="javascript:void(0)" class="addcon-pop btn btn-sm btn-primary mb10" onclick="getRegisteredOrgRoles();"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add User</a>
+			 
+			 
+			 <!-- Popup Div -->
+                    <div class="collapse-div-adduser orgsummaryuser-pop orgsummary-adduser col-md-4" id="addNewUserPopup"> <i class="fa fa-close close-div closediv-pop" onclick="flushUser();"></i>
+                          <div class="form-horizontal clearfix">
+                          <div id="userLoading"></div> 
+                        <form:form id="adduser_form"  name="adduser_form" method="post">                             
+                            
+                            <div class="clearfix mb10">
+	                              <div class="col-md-12" id="userEmailDiv">
+	                                <input type="text" data-validation="required validate_Space validate_length length2-100 validate_email"  field-name="Email" onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();"  name="userEmail" id="userEmail" class="form-control input-sm"  placeholder="Email">
+	                              	<input type="hidden" name="registeredOrgLocationId" value="${registeredOrgLocationId}">
+	                              </div>
+                              </div>
+                              
+                             <div class="clearfix mb10">
+	                              <div class="col-md-12" id="firstNameDiv">
+	                                <input type="text" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" field-name="First Name" name="firstName" id="firstName" class="form-control input-sm"  placeholder="First Name">
+	                              </div>
+                              </div>
+                              
+                              <div class="clearfix mb10">
+	                              <div class="col-md-12" id="lastNameDiv">
+	                                <input type="text" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true"  field-name="Last Name"  name="lastName" id="lastName" class="form-control input-sm"  placeholder="Last Name">
+	                              </div>
+                              </div>
+                              
+                            
+                            <div class="clearfix mb10">
+                              <div class="col-md-12" id="userRoleDiv">
+                                <select class="form-control chosen-select" data-validation="required" field-name="Role" id="userRole" name="userRole">
+                                	 <option value="">-Select Role-</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="clearfix mr">
+                              <button type="submit" id="add_user"  class="btn btn-sm btn-primary pull-right">Add</button>
+                            </div>
+                          </form:form>  
+                            
+                          </div>
+                        </div>
+				<!-- Popup Div --> 
+				
+			 <div id="userList"></div>
+			 <div id="loading"></div>
+			 </div>
+			</div>
 			
 			</div>
 			</div>
@@ -145,6 +274,321 @@ z-index: 9999999999 !important;
 </body>
 
 
+
+<script type="text/javascript">
+ function getUserByUserEmail() {
+	 var EmailId = document.getElementById("userEmail").value; 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getUserByUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data != null && data != ''){
+		        		var json = JSON.parse(data);
+		        		if(json.firstName != null && json.firstName != ''){
+		        			$("#firstName").val(json.firstName);
+				        	$("#firstName").attr("disabled", true);
+				        	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
+			        		
+			        		if(json.lastName != null && json.lastName != ''){
+			        			$("#lastName").val(json.lastName);
+					        	$("#lastName").attr("disabled", true);
+			        		}else{
+			        			 $("#lastName").attr("disabled", false);
+			        			 $("#lastName").val('');
+			        		}
+			        		
+			        		
+		        		}else{
+		        			 $("#firstName").attr("disabled", false);
+		        			 $("#firstName").val('');
+		        			 
+		        			 $("#lastName").attr("disabled", false);
+		        			 $("#lastName").val('');
+		        		}
+		        		
+		        	}
+		        },
+		    });
+	 }else{
+		 $("#FirstName").attr("disabled", false);
+		 $("#FirstName").val('');
+		 
+		 $("#lastName").attr("disabled", false);
+		 $("#lastName").val('');
+		 
+		
+	 }
+ }
+ </script>     
+ 
+ 
+ <script type="text/javascript">
+ function validateUserEmail() {
+	 var emailId = document.getElementById("userEmail").value; 
+	 var orgLocationId = '${registeredOrgLocationId}';
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(emailId != null && emailId != ""){
+		 $("#add_user").attr("disabled", "disabled");
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateRegisteredUserEmail?${_csrf.parameterName}=${_csrf.token}&emailId="+emailId+"&orgLocationId="+orgLocationId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#userEmailDiv').find('p.jquery_form_error_message').remove();
+						  $("input#userEmail").after("<p class='jquery_form_error_message'>"+emailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',emailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#userEmail').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#userEmailDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#add_user").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script> 
+ 
+
+
+
+<script type="text/javascript">
+	function flushUser() {
+		$("#add_user").removeAttr("disabled");
+		$('#firstName').val('');
+		$('#lastName').val('');
+		$('#userEmail').val('');
+		$('#userRole').val('');
+		$(".error").removeClass("error");
+		$('#firstNameDiv').find('p.jquery_form_error_message').remove();
+		$('#lastNameDiv').find('p.jquery_form_error_message').remove();
+		$('#userEmailDiv').find('p.jquery_form_error_message').remove();
+		$('#userRoleDiv').find('p.jquery_form_error_message').remove();
+		
+	}
+</script>
+
+
+<script>
+function removeAddUserPopUp(){
+	 document.getElementById("addNewUserPopup").removeAttribute("class")
+	 document.getElementById('addNewUserPopup').className = 'collapse-div-adduser orgsummaryuser-pop orgsummary-adduser col-md-4'
+}
+</script>
+
+
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#adduser_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		    e.preventDefault(); 
+	          		
+        		    var frm = $('#adduser_form').serializeFormJSON();
+        	        var con = JSON.stringify(frm);
+        	        con = con.replace(/[{}]/g, "");
+        	        
+        	        //It will escape all the special characters
+        	        var jsonData = encodeURIComponent(con);
+				    
+	          		var sourceleadUrl ='${sourceleadUrl}';
+	          		
+	          		 $("#add_user").attr("disabled", "disabled");
+	          		 $("#userLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	          		
+	          	      $.ajax({
+	     		    	type: "POST",
+	     		    	 url: sourceleadUrl+"/createUesrBySourceleadAdmin?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+	     		        success: function(data) {
+	     		        	if(data != null && data != '' && data == 'success'){
+	     	   	        		getUserList();
+	     		        	}
+	     			        
+	     		        },
+	     		    }); 
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+         $('#adduser_form').showHelpOnFocus();
+         $('#adduser_form').validateOnBlur(false, validationSettings); 
+            
+     
+</script> 
+
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+
+<script>
+function getUserList(){  
+	 flushUser(); 
+	 removeAddUserPopUp();
+	  var sourceleadUrl ='${sourceleadUrl}';
+      var orgId = '${orgId}';
+	  
+	  $("#loading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $.ajax({
+		  type : "POST",
+		  url: sourceleadUrl+"/getOrgRegisteredUsers?${_csrf.parameterName}=${_csrf.token}&orgId="+orgId,      
+            success :function(data) {
+                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+			    	     $("#userList").removeAttr("style");
+	                	 $("#userList").empty();
+	                	 var result = "";
+	                	 result = result +"<table id='example' class='display' cellspacing='0' width='100%' >"; 
+	                     result = result +"<thead>"; 
+	                     result = result +"<tr>"; 
+	                     result = result +'<th>Name</th>';
+                		 result = result +'<th>Email</th>';
+                		 result = result +'<th>Phone</th>';
+                		 result = result +'<th>Role</th>';
+                		 result = result +'<th>Status</th>';
+	                     result = result +"</tr>"; 
+	                     result = result +"</thead>";
+	                     result = result +"<tbody>"; 
+	                     
+	                     var json = JSON.parse(data);
+	                     for (var i = 0; i < json.length; i++) { 
+	                    	 var opt = json[i]; 
+	                    	 var mobilePhone = '';
+	                    	 
+	                    	 if(null != opt.mobilePhone && mobilePhone != '' && mobilePhone != 'undefined'){
+	                    		 mobilePhone = opt.mobilePhone;
+	                    	 }else{
+	                    		 mobilePhone = '------'
+	                    	 }
+	                    	 
+	                    	 
+	                    	 result = result +'<tr>';
+	                    	 result = result +'<td>'+opt.firstName+' '+opt.lastName+'</td>';
+	                    	 result = result +'<td>'+opt.email+'</td>';
+	                    	 result = result +'<td>'+mobilePhone+'</td>';
+	                    	 result = result +'<td>'+opt.role+'</td>';
+	                    	 
+	                    	 if(opt.userState == 'NOT_LOGGEDIN'){
+				 			    	 result = result +"<td><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+opt.id+");' >&nbsp;&nbsp;Resend</a></td>";
+			 			      }else if(opt.userState == 'ACTIVE'){
+			 			    	  result = result +'<td>Active</td>';
+				 			    }else if(opt.userState == 'INACTIVE'){
+				 			    	result = result +'<td>In-active</td>';
+				 			    } 
+	                    	 
+	                    	 result = result +'</tr>';
+	                    	
+                     }
+	                     result = result +" </tbody>";
+	                     result = result +"</table>"; 
+	                     $("#userList").append(result); 
+	                     $("#loading").removeAttr("style");
+	                     pagination(); 
+                 }else{
+                	 $("#loading").removeAttr("style");
+  	    	         var result ="";
+		    	    
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No User Found</p>";
+					 result = result+"			 </div>";
+					
+					$("#userList").empty();
+				    $("#userList").append(result); 
+                }
+          },
+            
+       }); 
+  } 
+</script>
+
+
+<script type="text/javascript">
+function resendInvitation(userId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(userId != null && userId != ""){
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+			        success: function(result) {
+			        },
+			    });
+		 }
+	}
+  
+</script>
+
+
+<script>
+function pagination(){
+    $("#example").DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+
+
+
+<script type="text/javascript">
+ function getRegisteredOrgRoles() {
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var orgLocationId = '${registeredOrgLocationId}';
+	 
+	 var orgId = '${orgId}';
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getRegisteredOrgRoles?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Role --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.displayName+"</option>";
+					}
+		        	$("#userRole").empty();
+			        $("#userRole").append(output);
+			        $('#userRole').trigger("chosen:updated");
+		        },
+		    });
+	
+ }
+</script>
 
 
 <script type="text/javascript">
@@ -184,7 +628,37 @@ z-index: 9999999999 !important;
     
 
 
-	
+	<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+
+});
+ 		</script> 
+
+ 		
+<script>
+$(".addcon-pop").click(function(){
+	 $(".collapse-div-adduser").toggleClass("show-div");
+	 $(".collapse-div").removeClass("show-div");
+ });
+ $(".close-div").click(function(){
+	 $(this).parent().removeClass("show-div");
+	 });
+ $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
+	 e.stopPropagation();
+ });
+</script>
 	
 
 

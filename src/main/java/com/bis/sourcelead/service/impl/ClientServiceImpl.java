@@ -3,8 +3,6 @@ package com.bis.sourcelead.service.impl;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +19,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -44,7 +45,6 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
@@ -109,6 +109,12 @@ public class ClientServiceImpl implements ClientService{
 	
 	@Autowired
 	private SourceleadRolesService sourceleadRolesService;
+	
+	@Autowired
+	CandidateIndexHelper candidateIndexHelper;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
 	
 	
 	@Value("${SourceLead.100}")

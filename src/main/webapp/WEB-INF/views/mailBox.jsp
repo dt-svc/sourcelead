@@ -120,7 +120,7 @@
 			  <!-- /.box-tools -->
 			
 	<!-- mail box table -->
-			<div class="table-responsive mailbox-messages">
+			<div class="mailbox-messages">
                  <div id="mailBoxList"></div>
               </div>
 	<!-- mail box table ends -->   
@@ -171,7 +171,7 @@
 	  
 	  $.ajax({
           type : "POST",
-          url: sourceleadUrl+"/getUserMails?${_csrf.parameterName}=${_csrf.token}&type="+type,    
+          url: sourceleadUrl+"/getUserMailsFromELK?${_csrf.parameterName}=${_csrf.token}&type="+type,    
            success :function(data) {
            	
                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -217,18 +217,18 @@
 	                    			 isMailRead = "mail-unread"
 	                    		 }
 		                    	 
-		                    	result = result +' <tr id="checkbox'+opt.id+'">';
+		                    	result = result +' <tr id="checkbox'+opt.mailBoxId+'">';
 		              			result = result +'<td style="width : 20px;">';
 		              			result = result +'<div class="mrleft8">';
-		              			result = result +'<input id="check'+opt.id+'" value="'+opt.id+'" class="checkbox-custom" onclick="deleteMail();" name="mailIds[]" type="checkbox">';
-		              			result = result +'<label for="check'+opt.id+'" class="checkbox-custom-label"></label>';
+		              			result = result +'<input id="check'+opt.mailBoxId+'" value="'+opt.mailBoxId+'" class="checkbox-custom" onclick="deleteMail();" name="mailIds[]" type="checkbox">';
+		              			result = result +'<label for="check'+opt.mailBoxId+'" class="checkbox-custom-label"></label>';
 		              			result = result +'</div>';
 		              			result = result +'</td>';
 		              			
 	              			    if(opt.mailStatus != 'Trash'){
 	              			    	result = result +"<td style='width : 25px;'>";
-			                        result = result +"<div class='star-rating mailbox-rating positionRelative "+isFavClass+"' id='favourite"+opt.id+"'>";
-			                        result = result +"<input type='checkbox' id='fav"+opt.id+"' "+isFavourite+" onclick='addFavourite("+opt.id+")'></input>";
+			                        result = result +"<div class='star-rating mailbox-rating positionRelative "+isFavClass+"' id='favourite"+opt.mailBoxId+"'>";
+			                        result = result +"<input type='checkbox' id='fav"+opt.mailBoxId+"' "+isFavourite+" onclick='addFavourite("+opt.mailBoxId+")'></input>";
 		              			
 		                        result = result +" <label></label>";
 		                        result = result +"</div>";

@@ -713,7 +713,7 @@ function sideBar(requirementId){
 					    result = result+'    <ul class="project-tabs-menu">';
 					    result = result+'      <li class="current"><a href="#tab-1" onclick="requirementDetails('+requirementId+');">Details</a></li>';
 					   
-					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
+					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'REJECTED' &&  json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
                             var all = 'all';
 					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Pipeline</a></li>';
 					    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
@@ -829,11 +829,11 @@ function requirementDetails(requirementId){
 				             if(json.requirementSubmissionStatus  !='DRAFT'  &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
                					 result = result +'<button  class="btn btn-success mr" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
                		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
-   				           	 }else if(json.requirementApproverHierarchyStatus == 'APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+   				           	 }/* else if(json.requirementApproverHierarchyStatus == 'APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
       						              result = result +'<strong  id="requirementStatus" class="pull-right mr btn btn-success disabled">OPEN</strong>';
     				         }else if( json.requirementSubmissionStatus  !='DRAFT'  && json.requirementApproverHierarchyStatus == 'REJECTED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
 					              result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">REJECTED</button>';
-		                     }
+		                     } */
 				             
 				             
 				             result = result +'     </div>';
@@ -875,7 +875,7 @@ function requirementDetails(requirementId){
 				            result = result +'     </div>';
 				            
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-					            	result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b>'+json.fileName+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
+					            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
@@ -884,9 +884,9 @@ function requirementDetails(requirementId){
 				            result = result +'     </div>';
 				            
 				            if(json.education != null && json.education != '' && json.education != 'undefined'){
-					            result = result +'<div class="require_wrap_details_cta require_education"> <b>Education:</b>'+json.education+'';
+					            result = result +'<div class="require_wrap_details_cta require_wrap_details_view  require_education"> <b>Education:</b><span>'+json.education+'</span>';
 					            }else{
-					           	result = result +'<div class="require_wrap_details_cta"> <b>Education:</b> <span> -- </span>';
+					           	result = result +'<div class="require_wrap_details_cta "> <b>Education:</b> <span> -- </span>';
 					            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
@@ -902,19 +902,19 @@ function requirementDetails(requirementId){
 				            
 				            if(json.spocName != '' && json.spocName !=null && json.spocName != 'undefined'){
 				            	
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Client Contact:</b> <span class="pull-left"> '+json.spocName+' </span>';
+				            result = result +'     <div class="require_wrap_details_cta require_wrap_details_view"> <b>Client Contact:</b> <span class="pull-left"> <span>'+json.spocName+'</span>';
 				            }
 				            else{
-					        result = result +'     <div class="require_wrap_details_cta"> <b>Client contact:</b> <span class="pull-left"> -- </span>';
+					        result = result +'     <div class="require_wrap_details_cta "> <b>Client contact:</b> <span class="pull-left"> -- </span>';
 
 				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            if(json.clientName != '' && json.clientName !=null && json.clientName != 'undefined'){
-					        result = result +'     <div class="require_wrap_details_cta"> <b>Client Name:</b> <span class="pull-left"> '+json.clientName+' </span>';
+					        result = result +'     <div class="require_wrap_details_cta require_wrap_details_view"> <b>Client Name:</b> <span class="pull-left"> '+json.clientName+' </span>';
 				            }
 				            else{
-						        result = result +'     <div class="require_wrap_details_cta"> <b>Client Name:</b> <span class="pull-left"> ---  </span>';
+						        result = result +'     <div class="require_wrap_details_cta "> <b>Client Name:</b> <span class="pull-left"> ---  </span>';
 				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>'; 
@@ -1022,7 +1022,7 @@ function requirementDetails(requirementId){
 				            }
 				            result = result +'     </div>';
 				            if(json.highestLevel == '1'){
-				            	result = result +'<div class="require_wrap_details_cta"> <b>Approvers:</b>';
+				            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view"> <b>Approvers:</b> <span>';
 				            	for (var i=0; i<json.approverNames.length; i++)
 				   				{
 				            	    if(json.approverNames[i] == json.approverNames[0]){
@@ -1031,6 +1031,7 @@ function requirementDetails(requirementId){
 				            	    	result = result +","+json.approverNames[i]; 
 				            	    }
 				   				}
+				            	result = result +'</span>';
 				            	result = result +'</div>';
 				            }else{
 				            	for (var i=0; i<json.approverNames.length; i++)
@@ -1038,14 +1039,14 @@ function requirementDetails(requirementId){
 				            		var level = 1;
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
-					            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b>'; 
+					            		result = result +'<div class="require_wrap_details_cta require_wrap_details_view"> <b>Approvers '+level+':</b> <span>'; 
 					            		result = result +json.approverNames[i];
+					            		result = result +'</span>';
 					            		result = result +'</div>';
 					            		level = level+1;
 					   				}
-					            	
 				   				}
-				            } 
+				            }
 				            
 				            
 				           /*  if(json.approverNames != null && json.approverNames != '' && json.approverNames != 'undefined'){
@@ -1309,7 +1310,7 @@ function requirementPipeline(requirementId,submissionType){
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
 				           
 				            
-				            result = result +' <li><a href="javascript:void(0)" class="action"> Action <i onclick="getActions();" class="fa fa-caret-down"></i></a>';
+				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
 				            result = result +'<div class="action-pop">';
 				            result = result +'	<span>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
@@ -1354,7 +1355,7 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<th>Ph. No</th>';
 				           }
 				           result = result + '<th>Resume</th>';
-				           if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT'){
+				           /* if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT'){
 				        	   result = result + '<th>Applied on</th>';
 					           result = result + '<th>Rate</th>';
 					           
@@ -1366,7 +1367,24 @@ function requirementPipeline(requirementId,submissionType){
 					        	result = result + '<th>Sub. Rate</th>';
 					         }
 					           result = result + '<th>Source</th>';
+				            } */
+				            
+				            
+				            
+				           if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT'){
+				        	   result = result + '<th>Applied on</th>';
+				        	if(submissionType != 'SUBMIT_TO_CLIENT'){
+					           result = result + '<th>Rate</th>';
+				        	}  
+					         if(clientSubmissions == 'Y' && submissionType == 'SUBMIT_TO_CLIENT'){
+					           result = result + '<th>Sub. Rate</th>';
+					         }/* else{
+					        	result = result + '<th>Sub. Rate</th>';
+					         } */
+					           result = result + '<th>Source</th>';
 				            }
+				            
+				            
 						  
 				           if(submissionType == 'INTERVIEW'){
 						   result = result + '<th>No.of Interviews</th>'; 
@@ -1447,14 +1465,32 @@ function requirementPipeline(requirementId,submissionType){
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     }
-							           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+							           /* if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
 							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop" id="ratepop"></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
+							    	     } */
+							    	     
+						        	   if(submissionType != 'SUBMIT_TO_CLIENT'){
+								           if(report.vendorLocationId != null && report.sourceSubmission != null){
+								        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+									        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
+										           }
+										       else{
+										        	result = result + '         <td><div><span>--</span></div></td>';
+									    	     }
+								           }else{
+								        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+									        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop" id="ratepop"></div></td>';
+										           }
+										       else{
+										        	result = result + '         <td><div><span>--</span></div></td>';
+									    	     }
+								           }
+						        	   }
 							          
-							           if(submissionType != 'REQUEST_SENT'){
+							    	   if(clientSubmissions == 'Y' && submissionType == 'SUBMIT_TO_CLIENT'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
@@ -2447,7 +2483,10 @@ function getRateListDiv(submissionId, candidateId){
 		                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
 		                    	 var Accepted = 'Accepted';
 		                    	 var Rejected = 'Rejected';
-		                     	result = result + '			<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';
+		                    	 if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){
+		                    		 result = result + '<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';
+		                    	 }
+		                     	
 		                     }else{
 		                    	 if(report.rateStage == 'ACCEPTED'){
 		                     		result = result + '<b class="text-primary"> Accepted </b>';
@@ -2464,7 +2503,7 @@ function getRateListDiv(submissionId, candidateId){
     			  		 result = result + ' </div>'; */
 	                     result = result + '</section>';
 	                     if(isLastNegotiator=="false"){
-	                    	 
+	                    	 if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){
 		                     result = result + '<div class="clearfix row">';
 		                     result = result + '<form name="rate_form" id="rate_form" method="post">';
 		                     result = result + '  <div class="form-group col-md-6">';
@@ -2499,6 +2538,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + '  </div>';
 		                     result = result + '</form>';
 		                     result = result + '</div>';
+	                    	 }
 	                     }
 	                     result = result + '</i>';
 	                     $("#ratepop").empty();  
@@ -2520,7 +2560,7 @@ function getRateListDiv(submissionId, candidateId){
 					 result = result+"		</div>"; 
 					 result = result+"	</div>"; 
 					 result = result+"  </div> ";
-		    	     
+					 if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){
 		    	     result = result + '<div class="clearfix row">';
 		    	     result = result + '<form name="rate_form" id="rate_form" method="post">';
                      result = result + '  <div class="form-group col-md-6">';
@@ -2555,6 +2595,7 @@ function getRateListDiv(submissionId, candidateId){
                      result = result + '  </div>';
                      result = result + '</form>';
                      result = result + '</div>';
+        	 		 }
                      result = result + '</i>';
                      $("#ratepop").empty();  
 	      	 		 $("#ratepop").append(result); 

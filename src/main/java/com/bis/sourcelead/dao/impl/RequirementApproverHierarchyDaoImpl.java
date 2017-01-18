@@ -195,6 +195,22 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 	 
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementApproverHierarchy getRequirementApproverHierarchyByRequirementIdExcludingApproverHierarchyId(
+			Long requirementApproverHierarchyId, Long requirementId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementApproverHierarchy hierarchy where hierarchy.id != :requirementApproverHierarchyId and  hierarchy.requirementId.id = :requirementId";
+		List<RequirementApproverHierarchy> requirementApproverHierarchyList =  session.createQuery(query).setLong("requirementId", requirementId).setLong("requirementApproverHierarchyId", requirementApproverHierarchyId).setCacheable(true).list();
+		RequirementApproverHierarchy requirementApproverHierarchy = null;
+		if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty())
+		{
+			requirementApproverHierarchy = requirementApproverHierarchyList.iterator().next();
+		}
+		return requirementApproverHierarchy;
+		 
+		}
 	
     
   }
