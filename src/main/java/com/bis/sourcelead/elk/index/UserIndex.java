@@ -1,7 +1,6 @@
 package com.bis.sourcelead.elk.index;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class UserIndex implements Serializable {
@@ -9,6 +8,8 @@ public class UserIndex implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long userId;
+	
+	private Long employeeId;
 
 	private Long orgLocationId;
 
@@ -18,19 +19,9 @@ public class UserIndex implements Serializable {
 
 	private String email;
 
-	private String alternateEmail;
-
-	private String alternateMobilePhone;
-
 	private String mobilePhone;
 
 	private String userType;
-
-	private String state;
-
-	private String city;
-
-	private String address;
 
 	private String roleName;
 
@@ -39,6 +30,12 @@ public class UserIndex implements Serializable {
 	private String terminateReason;
 
 	private String status;
+	
+	private Date hireDate;
+	
+	private String rate;
+	
+	private String ratePer;
 
 	private Date createdDate;
 
@@ -92,21 +89,6 @@ public class UserIndex implements Serializable {
 		this.email = email;
 	}
 
-	public String getAlternateEmail() {
-		return alternateEmail;
-	}
-
-	public void setAlternateEmail(String alternateEmail) {
-		this.alternateEmail = alternateEmail;
-	}
-
-	public String getAlternateMobilePhone() {
-		return alternateMobilePhone;
-	}
-
-	public void setAlternateMobilePhone(String alternateMobilePhone) {
-		this.alternateMobilePhone = alternateMobilePhone;
-	}
 
 	public String getMobilePhone() {
 		return mobilePhone;
@@ -124,29 +106,6 @@ public class UserIndex implements Serializable {
 		this.userType = userType;
 	}
 
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
 
 	public String getRoleName() {
 		return roleName;
@@ -229,4 +188,37 @@ public class UserIndex implements Serializable {
 	public void setIsMailSent(String isMailSent) {
 		this.isMailSent = isMailSent;
 	}
+
+	public Long getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(Long employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public Date getHireDate() {
+		return hireDate;
+	}
+
+	public void setHireDate(Date hireDate) {
+		this.hireDate = hireDate;
+	}
+
+	public String getRate() {
+		return rate;
+	}
+
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
+
+	public String getRatePer() {
+		return ratePer;
+	}
+
+	public void setRatePer(String ratePer) {
+		this.ratePer = ratePer;
+	}
+	
 }

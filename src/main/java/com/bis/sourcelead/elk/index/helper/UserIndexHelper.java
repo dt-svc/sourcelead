@@ -5,8 +5,6 @@ import java.util.Date;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.elk.index.UserIndex;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 
 @Component

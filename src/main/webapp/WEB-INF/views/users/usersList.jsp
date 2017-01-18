@@ -76,8 +76,8 @@ window.onload = function () {
 						  <div class="col-md-4">
 							  <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
 							  <div class="clearfix">
-							  	 <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
-                                 </select> -->
+							  	  <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
+                                 </select> --> 
                                  <input type="text" class="form-control input-sm" placeholder="All Keywords" id="allKeywords" name="allKeywords" value="">
                                  
 							  </div>
@@ -93,28 +93,77 @@ window.onload = function () {
 						  </div>
 					  </div>
 					  <div class="row">
-					  <div class="col-md-12">
-						  <h4>Details:</h4>
-					  </div>
 						
 						  <div class="clearfix">
 						  <div class="col-md-4">
-							  <label>Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <label>Email<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix">
-								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Employers" id="employers" name="employers">
-                                  </select>
+								  <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Employers" id="employers" name="employers">
+                                  </select> -->
+                                   <input type="text" class="form-control input-sm" placeholder="Email" id="email" name="email" value="">
+                                  
 							  </div>
 						  </div>
 						  <div class="col-md-4">
-							  <label>Exclude Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <label>Phone Number<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix">
-								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
-                                  </select>
+								 <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
+                                  </select> -->
+                                 <input type="text" class="form-control input-sm" placeholder="Phone Number" id="mobilePhone" name="mobilePhone" value="">
+                                  
 							  </div>
 						  </div>
 						  
-						   
+						   <div class="col-md-4">
+							  <label>Role<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <div class="clearfix">
+								 <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
+                                  </select> -->
+                                 <input type="text" class="form-control input-sm" placeholder="Role" id="userType" name="userType" value="">
+                                  
+							  </div>
 						  </div>
+						  <div class="col-md-4">
+							  <label>Employee Id<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <div class="clearfix">
+								 <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
+                                  </select> -->
+                                 <input type="text" class="form-control input-sm" placeholder="Employee Id" id="employeeId" name="employeeId" value="">
+                                  
+							  </div>
+						  </div>
+						  
+						  <div class="col-md-4">
+							  <label>User Status<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <div class="clearfix">
+								 <!-- <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
+                                  </select> -->
+                                 <input type="text" class="form-control input-sm" placeholder="User Status" id="userState" name="userState" value="">
+                                  
+							  </div>
+						  </div>
+						  </div>
+						  
+						  <div class="col-md-6">
+								<label>&nbsp;</label> 
+								<div class="input-group error-field">
+								    <div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="rate"  name="rate"  field-name="Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Rate">
+									</div>
+									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
+									      <select class="selectpicker" name="ratePer" id="ratePer" field-name="Rate Per"  >
+									            <option value="">-Rate Per-</option>
+						                        <option>Hourly</option>
+						                        <option>Daily</option>
+						                        <option>Weekly</option>
+						                        <option>Bi-Weekly</option>
+						                        <option>Semi-Monthly</option>
+						                        <option>Monthly</option>
+						                        <option>Yearly</option>
+				                            </select> 
+									</div>
+								</div>
+							</div>
 						
 					  </div>
 					  <div class="row form-footer mt">
@@ -129,23 +178,10 @@ window.onload = function () {
 			  </form>
       </div>
       
-      <div class="candidate_wrap_table">
-        <div id="candidateList"></div>
-        <div id="emptyPopup"></div>
-      </div>
+     
     </div>
     
-    <!-- Compnay details -->
-    <div class="side_mask">
-       <div class="proj_close"></div>
-    </div>
-    <div class="clients_side_wrap">
-	    <div class="clients_side_wrap_inn">
-		             <div id="candidateSideDiv">
-				     </div>  
-	    </div>			     
-    </div>
-    <!-- Compnay details Ends --> 
+    
   </div>
       <section class="clearfix section-action-btns">
         <ul class="pull-right list-unstyled list-inline">
@@ -294,9 +330,12 @@ function exportToPdf(){
 	    
 	   
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	    $("#allKeywords").val('').trigger("chosen:updated");
+	    
 	    
 	    
 	    $("#anyOfKeyword").empty();
+	    $("#allKeywords").empty();
 	    
 	}
 </script>
@@ -665,3 +704,4 @@ function getUserSummary(userId){
 	  }
   }
 </script>    
+

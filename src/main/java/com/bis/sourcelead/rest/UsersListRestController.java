@@ -241,6 +241,22 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					}
 					 boolQueryBuilder.must(anyBoolQueryBuilder);
 				}
+				//All Keywords
+				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(allBoolQueryBuilder);
+				}
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 				ArrayList<UserRole>   freshUserList = new ArrayList<>();
 				if(searchHits != null && searchHits.length >0){
@@ -291,6 +307,10 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
+
+
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
 				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths", keywd));
