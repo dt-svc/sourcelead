@@ -553,7 +553,7 @@ $('#closedTaskDatpicker').datepicker({
 	  }
 	});
 	
-$('#timepicker').timepicker();
+$('#timepicker').timepicker({ 'timeFormat': 'h:i A' });
 </script>
 
 <script>
