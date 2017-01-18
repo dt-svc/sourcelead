@@ -624,13 +624,25 @@ public class RequirementListRestController {
 							if(requirement.getClientId() != null){
 								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
 									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
-									requirement.setClientContactName(requirement.getClientId().getResponderLocationId().getUser().getFirstName());
-									requirement.setClientContactEmail(requirement.getClientId().getResponderLocationId().getUser().getEmail());
+									if(requirement.getSpocId().getSpocUser().getFirstName() !=null && requirement.getSpocId().getSpocUser().getLastName() !=null){
+										sb.append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName());
+									}else{
+										sb.append(requirement.getSpocId().getSpocUser().getFirstName());
+									}
+									
+									requirement.setClientContactName(sb.toString());
+									requirement.setClientContactEmail(requirement.getSpocId().getSpocUser().getEmail());
 								}
 								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
 									requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
-									requirement.setClientContactName(requirement.getClientId().getLocationId().getUser().getFirstName());
-									requirement.setClientContactEmail(requirement.getClientId().getLocationId().getUser().getEmail());
+									if(requirement.getSpocId().getSpocUser().getFirstName() !=null && requirement.getSpocId().getSpocUser().getLastName() !=null){
+										sb.append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName());
+									}else{
+										sb.append(requirement.getSpocId().getSpocUser().getFirstName());
+									}
+									
+									requirement.setClientContactName(sb.toString());
+									requirement.setClientContactEmail(requirement.getSpocId().getSpocUser().getEmail());
 								}
 							}
 							if(requirement.getManagerUserId() != null){

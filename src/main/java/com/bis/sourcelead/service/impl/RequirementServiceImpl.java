@@ -2253,8 +2253,8 @@ public class RequirementServiceImpl implements RequirementService {
 		    }
 			
 			// currency
-		    if(jsonObj.has("currency") && !"".equalsIgnoreCase(jsonObj.getString("currency"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("currentRateCurrency", jsonObj.getString("currency")));
+		    if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("currentRateCurrency", jsonObj.getString("currencyCode")));
 		    }
 		    
 		     //rate
@@ -2393,7 +2393,7 @@ public class RequirementServiceImpl implements RequirementService {
 		   
 		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-		  /*  matchQueryBuilderList.add(QueryBuilders.matchQuery("rate", keywd));
+		  /*  matchQueryBuilderList.add(QueryBuilders.matchQuery("rate", keywd));requirementId numberOfPositions
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rateType", keywd));*/
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
@@ -2408,6 +2408,7 @@ public class RequirementServiceImpl implements RequirementService {
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactEmail", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("numberOfPositions", keywd));
 			
 			
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
