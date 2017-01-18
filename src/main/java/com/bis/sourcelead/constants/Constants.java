@@ -65,6 +65,8 @@ public class Constants {
 	public static DateFormat DF_STD_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
 	
 	public static DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
+	public static DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
+	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd/MM");
 	
 	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
 	public static String INVITE_USER = "Invite User";
@@ -358,6 +360,10 @@ public class Constants {
     
     public static int level1 =1;
     public static int level2 =2;
+    
+    public static int PREVIOUS_MONTH =-1;
+    public static int NEXT_MONTH =1;
+    public static int CURRENT_MONTH =1;
     
     public static String SHORTLIST_COUNT= "Shortlisted Applicants:";
     public static String INTERVIEW_COUNT= "Interview Applicants: ";

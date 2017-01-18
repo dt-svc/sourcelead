@@ -54,9 +54,6 @@ public interface ProjectsService {
 		List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
 		
 		List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
-		
-		List<Projects> getProjectsListByOrgLocationsIdAndEmpUserId(Long locationsId, Long empUserId);
-		
 	
 		Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
 	
