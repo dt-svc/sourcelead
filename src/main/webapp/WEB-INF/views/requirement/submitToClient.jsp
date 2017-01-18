@@ -419,11 +419,11 @@ function addEmailtemplate(requirementId){
                         ,placeholderText:"Enter emails"
                         ,allowDuplicates: false
                      	,afterTagAdded: function(evt, ui){
-                    	              checkEmails();
+                    	              checkEmailsForSubmitToClient();
                     	              return false;
                     	    }
                         ,afterTagRemoved: function(evt, ui){
-                           checkEmails();
+                           checkEmailsForSubmitToClient();
                            return false;
                       }
                     });
@@ -445,17 +445,17 @@ function addEmailtemplate(requirementId){
 </script>
 
 <script language="javascript">
-function checkEmail(email) {
+function validateEmail(email) {
    var regExp = /^.+@.+\..{2,3}$/
    return regExp.test(email);
 }
 
-function checkEmails(){
+function checkEmailsForSubmitToClient(){
 	var emails = document.getElementById("othersMailId").value;
 	var emailArray = emails.split(",");
 	var invEmails = "";
 	for(i = 0; i <= (emailArray.length - 1); i++){
-		if(checkEmail(emailArray[i])){
+		if(validateEmail(emailArray[i])){
 			//Do what ever with the email.
 		}else{
 			invEmails += "'" +emailArray[i]+ "'"+ "\n";

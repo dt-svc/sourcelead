@@ -1682,13 +1682,13 @@ function changeStatus(requirementId){
                 });
             });
         </script>
-<div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
+<!-- <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
   <ul class="list-unstyled">
     <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
     <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
     <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
   </ul>
-</div>
+</div> -->
 </body>
 </html>
 
