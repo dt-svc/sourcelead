@@ -1474,22 +1474,33 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			globalVarsMap.put("loginUserName", "--");
 		}
-		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
-				&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName()))  {
-			StringBuilder userBuild = new StringBuilder();
+		StringBuilder userBuild = new StringBuilder();
+		if (loginUser.getFirstName() != null && loginUser.getLastName() != null	&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName()))  {
 			globalVarsMap.put("approverName", userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		} else {
-			globalVarsMap.put("approverName", "--");
+		} else if(loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getFirstName())) {
+			globalVarsMap.put("approverName", userBuild.append(loginUser.getFirstName()).toString());
+		}else{
+			globalVarsMap.put("approverName","--");
 		}
-		if (loginUser.getUserType() != null && !"".equalsIgnoreCase(loginUser.getUserType())) {
-			globalVarsMap.put("role", loginUser.getUserType());
-		} else {
+		
+		
+		UserRole userRole = userRoleService.getUserRoleByUserId(loginUser.getId());
+		if(null != userRole.getRoles()){
+		if (userRole.getRoles().getDisplayName() != null && !"".equalsIgnoreCase(userRole.getRoles().getDisplayName())) {
+			globalVarsMap.put("role", userRole.getRoles().getDisplayName());
+		} }else {
 			globalVarsMap.put("role", "--");
 		}
-		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
-			globalVarsMap.put("requirementId-Name",requirement.getJobId()+"-"+requirement.getJobTitle());
-		} else {
-			globalVarsMap.put("requirementId-Name", "--");
+		
+		StringBuilder appendString = new StringBuilder();
+		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId()) && (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()))) {
+			globalVarsMap.put("requirementId-Name",appendString.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
+		} else if(requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())) {
+			globalVarsMap.put("requirementId-Name", requirement.getJobTitle());
+		}else if(requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())){
+			globalVarsMap.put("requirementId-Name", requirement.getJobId());
+		}else{
+			globalVarsMap.put("requirementId-Name", requirement.getJobId());
 		}
 		if (loginUser.getUserName() != null && !"".equalsIgnoreCase(loginUser.getUserName()) ) {
 			globalVarsMap.put("jobInitiatorName", initiatorUser.getFirstName());
