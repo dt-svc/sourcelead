@@ -322,11 +322,11 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				
 				
 				//User State
-				ArrayList<String> userStateArray = getSearchKeywordsFromChosenSelectField(jsonObj, "userState");
+				ArrayList<String> userStateArray = getSearchKeywordsFromChosenSelectField(jsonObj, "userStatus");
 				if(userStateArray != null && !userStateArray.isEmpty()){
 					BoolQueryBuilder userStateBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : userStateArray){
-						userStateBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("userState", keywd));
+						userStateBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("userStatus", keywd));
 					}
 					boolQueryBuilder.must(userStateBoolQueryBuilder);
 				}
@@ -342,7 +342,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				
 				//Rate Per
 				if(jsonObj.has("ratePer") && StringUtils.isNotEmpty(jsonObj.getString("ratePer"))){
-					boolQueryBuilder.must(QueryBuilders.matchQuery("ratePer", jsonObj.getString("ratePer")));
+					boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("ratePer", jsonObj.getString("ratePer")));
 			    }
 				
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
@@ -396,17 +396,20 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("ratePer", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+
 
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
-				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths", keywd));
 				String mobileKeywd =matcher.group().replaceAll("[+91]", "");
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+			}
+			if(StringUtils.isNumeric(keywd)){
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
 			}
 			return matchQueryBuilderList; 
 	 }

@@ -45,7 +45,7 @@ public class UserIndex implements Serializable {
 
 	private String updatedBy;
 	
-	private String userState;
+	private String userStatus;
 	
 	private String isMailSent;
 
@@ -173,12 +173,12 @@ public class UserIndex implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public String getUserState() {
-		return userState;
+	public String getUserStatus() {
+		return userStatus;
 	}
 
-	public void setUserState(String userState) {
-		this.userState = userState;
+	public void setUserStatus(String userStatus) {
+		this.userStatus = userStatus;
 	}
 
 	public String getIsMailSent() {

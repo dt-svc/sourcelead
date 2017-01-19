@@ -57,7 +57,14 @@ window.onload = function () {
     <div class="timesheet_out">
     <div class="vendor_wrap" style="overflow-x: auto;">
     
-     <div class="pull-left cand-advsrche">
+     
+     
+    </div>
+    
+    
+  </div>
+      <section class="clearfix section-action-btns positionRelative">
+      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
@@ -89,24 +96,23 @@ window.onload = function () {
 							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
                                  </select>
                                 <!--  <input type="text" class="form-control input-sm" placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord" value=""> -->
-                                 
 							  </div>
 						  </div>
 					  </div>
 					  <div class="row">
 						
-						  <div class="clearfix">
+	
 						  <div class="col-md-4">
 							  <label>Email<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix">
 								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Email" id="email" name="email">
                                   </select>
 							  </div>
-						  </div>
+							  </div>
 						  <div class="col-md-4">
 							  <label>Phone Number<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix">
-								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Phone Number" id="mobilePhone" name="mobilePhone">
+								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Phone Number" data-validation="validate_Space validate_phone" data-validation-optional="true" id="mobilePhone" name="mobilePhone">
                                   </select>
 							  </div>
 						  </div>
@@ -121,6 +127,8 @@ window.onload = function () {
                                   </select>
 							  </div>
 						  </div>
+						  </div>
+						  <div class="row">
 						  <div class="col-md-4">
 							  <label>Employee Id<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix">
@@ -132,17 +140,17 @@ window.onload = function () {
 						  <div class="col-md-4">
 							  <label>User Status<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix">
-								  <select class="chosen-select form-control input-sm" multiple data-placeholder="User Status" id="userState" name="userState">
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="User Status" id="userStatus" name="userStatus">
                                      <option value="ACTIVE" >Active</option>
 									 <option value="INACTIVE" >In Active</option>
 									 <option value="NOT_LOGGEDIN">Not Logged IN</option>
                                   </select>
 							  </div>
 						  </div>
-						  </div>
 						  
-						  <div class="col-md-6">
-								<label>&nbsp;</label> 
+						  
+						  <div class="col-md-4">
+								<label>Rate</label> 
 								<div class="input-group error-field">
 								    <div id="maxRateDiv">
 									  <input type="text" class="form-control input-sm" id="rate"  name="rate"  field-name="Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Rate">
@@ -175,12 +183,7 @@ window.onload = function () {
 			  </form>
       </div>
       
-     
-    </div>
-    
-    
-  </div>
-      <section class="clearfix section-action-btns">
+      
         <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           <li><i class="fa fa-filter"></i>&nbsp;
@@ -327,14 +330,16 @@ function exportToPdf(){
 	   
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
+	    $("#excludeKeyWord").val('').trigger("chosen:updated");
 	    $("#email").val('').trigger("chosen:updated");
 	    $("#mobilePhone").val('').trigger("chosen:updated");
 	    $("#userType").val('').trigger("chosen:updated");
 	    $("#employeeId").val('').trigger("chosen:updated");
-	    $("#userState").val('').trigger("chosen:updated");
+	    $("#userStatus").val('').trigger("chosen:updated");
 	    
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
+	    $("#excludeKeyWord").empty();
 	    $("#email").empty();
 	    $("#mobilePhone").empty();
 	    $("#employeeId").empty();
