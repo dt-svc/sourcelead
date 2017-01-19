@@ -1,17 +1,10 @@
-<link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/jquery-fun.js"></script> 
-
-
 <script src="https://code.jquery.com/jquery-1.12.3.js"></script>
 <!-- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> -->
-<script src="resources/js/jquery.dataTables.min.js"></script> 
 
 <!-- Content Area -->
 <section class="content-wraper">

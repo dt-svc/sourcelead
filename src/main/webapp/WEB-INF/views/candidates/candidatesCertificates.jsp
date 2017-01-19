@@ -1,5 +1,3 @@
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style>
 .clsDatePicker {
@@ -434,6 +432,8 @@ function addCertification(candidateId) {
 
 	  $('#StartDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
@@ -443,6 +443,8 @@ function addCertification(candidateId) {
 	  
 	  $('#EndDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	        onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);
