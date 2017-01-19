@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -77,6 +78,9 @@ public class RegistrationRestController {
 	 
 	 @Autowired
 	 OrgLocationService orgLocationService;
+	 
+	 @Autowired
+		private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	 
 	 @RequestMapping(value = "/getOrgsList")
 		public @ResponseBody String getUsersList(HttpServletRequest request,
@@ -150,10 +154,6 @@ public class RegistrationRestController {
 	
 	
 	
-	
-	
-	
-	
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/createUesrBySourceleadAdmin" , method = RequestMethod.POST)
 	 public  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
@@ -167,6 +167,47 @@ public class RegistrationRestController {
 	 	
 		 return "success";
 	   }
+	 
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @RequestMapping(value = "/editOrgPrimaryUser" , method = RequestMethod.POST)
+	 public  String editOrgPrimaryUser(@RequestParam(value="json", required=false) String json, 
+			 @RequestParam(value="userId", required=false) Long userId ,HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	 OrgLocations orgLocations= (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	 
+	 	 User primaryUser = userService.getUserById(userId);
+	 	 if(null != primaryUser){
+	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserFirstName"))){
+	 			primaryUser.setFirstName(jsonObj.getString("primaryUserFirstName"));
+	 		 }
+	 		 
+	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserLastName"))){
+		 			primaryUser.setLastName(jsonObj.getString("primaryUserLastName"));
+	 		 }
+	 		 
+	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserEmail"))){
+		 			primaryUser.setEmail(jsonObj.getString("primaryUserEmail"));
+		 			primaryUser.setUserName(jsonObj.getString("primaryUserEmail"));
+	 		 }
+	 		 
+	 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+	 		primaryUser.setPassword(sourceleadPasswordEncoder.encode(password));
+	 		userService.addUser(primaryUser);
+	 		
+	 		userService.sendEmail(primaryUser, user, password,orgLocations.getId());
+	 		
+	 	 }
+	 	
+		 return "success";
+	   }
+	
 	
 	 
 	 
