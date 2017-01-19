@@ -6,7 +6,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
  <style type="text/css">
  .overflow-data {
@@ -321,7 +320,7 @@ function rejectedCount(requirementId){
 
 
   
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -337,7 +336,7 @@ function rejectedCount(requirementId){
 				$this.next().css({'width': '100%'});
 
 });
-</script> 
+</script>  -->
 
 <!-- Show success message after form submission script -->
 <script>

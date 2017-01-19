@@ -2,17 +2,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
- 
-
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css">
-<script src="resources/js/jquery.timepicker.js"></script> 
-
-
 <!--  No auto completes are used in addInterview -->
 
 <!-- these files for autocomplete with tagit -->
@@ -223,7 +214,7 @@ function checkEmails(){
 
 
 <div id="divTaskTd1" style="display: none; float: left;">
-       <select multiple data-placeholder="select applicants" class="chosen-select blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
+       <select multiple data-placeholder="select applicants" class="blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
@@ -252,7 +243,7 @@ function checkEmails(){
 </div> 
 
 <div id="divTaskTd6" style="display: none; float: left;">
-		  <select multiple data-placeholder="select interviewer" class="chosen-select" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
+		  <select multiple data-placeholder="select interviewer" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
 			
 	  </select>
 </div> 

@@ -1,6 +1,4 @@
 
-<script src="resources/js/jquery-1.11.3.min.js"></script> 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
 <script>
 function educationSubmissionDetails(candidateId){

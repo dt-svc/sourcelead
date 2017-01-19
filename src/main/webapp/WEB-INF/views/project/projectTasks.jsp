@@ -6,7 +6,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 <!-- Modal -->
 <div class="modal fade" id="addTask" role="dialog">
 	<div class="modal-dialog modal-lg">

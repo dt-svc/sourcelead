@@ -6,16 +6,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/formvalidator.js"></script>
-
-<link href="resources/css/chosen.min.css" rel="stylesheet">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
-
 <%-- 
      @author : David Raju.
      this script is to get filter popup
@@ -1504,7 +1494,7 @@ function requirementPipeline(requirementId){
             });
         </script> 
 <script type="text/javascript">
-			var config = {
+		/* 	var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
 			  '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -1518,7 +1508,7 @@ function requirementPipeline(requirementId){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 
-			});
+			}); */
 			$('#np').trigger("chosen:updated");
 			
 			
@@ -1794,7 +1784,7 @@ function getActions(){
 		}
 	</script> 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -1810,7 +1800,7 @@ function getActions(){
 				$this.next().css({'width': '100%'});
 
 });
- 		</script> 
+ 		</script>  -->
 <script>
 function searchRequirement(){
 	alert("Hi-1");

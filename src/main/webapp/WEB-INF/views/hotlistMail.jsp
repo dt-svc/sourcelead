@@ -5,12 +5,6 @@
 <link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css" type="text/css">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <style>

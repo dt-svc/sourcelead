@@ -13,15 +13,13 @@
 <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css" type="text/css" >
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<link rel="stylesheet" href="resources/css/jquery.timepicker.css">
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css">
-
-
-
+ 
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -30,13 +28,15 @@
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
 </head>
-<script src="resources/js/formvalidator.js"></script>
+
 <script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/jquery-1.11.1.min.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script>
 <script src="resources/js/jquery-ui.js"></script>
+<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/jquery.dataTables.min.js"></script> 
 <script src="resources/js/jquery.timepicker.js"></script>
+<script src="resources/js/formvalidator.js"></script>
 <style>
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;
@@ -597,23 +597,6 @@ $(".collpase-div").click(function(){
 	 
  };
 </script>
-<!-- <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				});
-			$('#assignTo').trigger('chosen:updated');
-</script> -->
 <script type="text/javascript">
 	(function($) {
 		$.fn.serializeFormJSON = function() {
