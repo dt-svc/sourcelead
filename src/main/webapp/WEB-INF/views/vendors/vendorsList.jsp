@@ -82,7 +82,7 @@ overflow-x: auto;
               <div class="col-md-4">
                 <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
                 <div class="clearfix">
-				  	 <select class="form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
+				  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
                      </select>
 	            </div>
               </div>
