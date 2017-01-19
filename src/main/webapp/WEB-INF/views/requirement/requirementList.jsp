@@ -221,7 +221,12 @@ function requirementList(){
 		                     }
 		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 if(opt.jobType=='Other'){
+		                    		 if(opt.otherJobType != null && opt.otherJobType != '' && opt.otherJobType != 'undefined'){
 		                    		 result = result +"<td><div>"+opt.otherJobType+"</div></td>";
+		                    		 }else{
+		                    			 result = result +"<td><div>----</div></td>"; 
+		                    		 }
+		                    		 
 		                    	 }else{
 		                    		 result = result +"<td><div>"+opt.jobType+"</div></td>";
 		                    	 }
