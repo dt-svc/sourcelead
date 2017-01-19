@@ -79,8 +79,8 @@ text-align:left;
 </style>
 <script>
 function editCandidate(candidateId){
-	$("#profileEditPopup").show();
-	 var loginCountryName = '${loginCountryName}';
+	  $("#profileEditPopup").show();
+	  var loginCountryName = '${loginCountryName}';
 	  var sourceleadUrl ='${sourceleadUrl}';
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -458,7 +458,7 @@ function getAllCandidateCountries(){
         error: function(e){
         }
     });
-	}, 150);
+	}, 75);
 } 
 </script>
  
