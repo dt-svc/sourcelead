@@ -690,6 +690,17 @@ public class RegistrationServiceImpl implements RegistrationService{
 		employees.setUpdatedDate(new Date());
 		employeesService.addEmployee(employees);
 		
+		if(null == orgLocations.getUser()){
+			if(roles.getRoleName().equalsIgnoreCase("ROLE_ADMIN")){
+				orgLocations.setUser(orgUser);
+				orgLocationService.updateOrgLocations(orgLocations);
+				Org org = orgLocations.getOrg();
+				org.setUser(orgUser);
+				orgService.addOrganization(org);
+			}	
+		}
+		
+		
 		sendEmail(orgUser,user,password,orgLocations.getId());
 		
 		

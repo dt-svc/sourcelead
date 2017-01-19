@@ -263,6 +263,12 @@ public class RegistrationController {
 				model.addObject("registeredOrgLocationId",orgLocations.getId());
 				model.addObject("orgId",orgId);
 				model.setViewName("registration/enrolledOrgSummary");
+				
+				if(null != orgLocations.getUser()){
+					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocations.getId());
+					model.addObject("userState",userRole.getUserState());
+				}
+				
 				model.addObject("sourceleadUrl", sourceleadUrl);
 			
 			return model;
@@ -318,6 +324,29 @@ public class RegistrationController {
 				}
 				return result;
 		   }
+		
+		
+		 @RequestMapping(value = "/validateOrgPrimaryUserEmail",  method = RequestMethod.GET)
+		    public @ResponseBody String validateOrgPrimaryUserEmail(@RequestParam(value="email", required=false) String email,
+		    		@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
+		    		@RequestParam(value="json", required=false) String json) throws Exception {
+				
+			    String result = null;
+			    User user = null;
+			 	user = userService.findByEmailAndOrgLocationsId(email,orgLocationId);
+			 	if (null != user) {
+					result = "success";
+				}else{
+					user = userService.findByEmail(email);
+					if(null == user){
+						result = "success";
+					}else{
+						result = "Existed Email";
+					}
+				}
+				return result;
+			}
+		   
 		
 	
 	 public void saveUserRoleActions(Long moduleId,Long tabId,OrgLocations orgLocations) throws Exception{
