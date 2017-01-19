@@ -3121,22 +3121,19 @@ a.collpase-div .fa-angle-down:hover{
 }
 .addTask {
 	position:absolute;
-	right: 1%;
-    top: 5.8%;
+	right: 0px;
+    top: 90px;
 }
 .addTask .icon-addTask{
-	background:linear-gradient(#2196f3,#1565c0);
-	padding:12px;
+	background:linear-gradient(#2bddb8,#17aa8c);
+	padding:5px;
 	color:#fff;
 	cursor:pointer;
-	-webkit-border-radius:50%;
-	-moz-border-radius:50%;
-	-ms-border-radius:50%;
-	border-radius:50%;
+	border-radius:4px 0px 0px 4px;
 	box-shadow:0 1px 1px rgba(0, 0, 0, 0.1);
 }
 .addTask .icon-addTask .fa{
-	font-size:18px;
+	font-size:15px;
 }
 .addTasUl {
 	background-color:#ff6f00;
@@ -3192,22 +3189,22 @@ ul.addTasUl li .fa{
 .addTask-widget {
 	background-color:#424242;
 	background:#55688a;
-	border-radius:5px;
+	border-radius:4px 0px 0px 4px;
     position: absolute;
-    right:-1000px;
-	top:35px;
+    right:-1100px;
+	top:40px;
 	-webkit-transition: all 0.3s ease-in-out 0s;
 	-ms-transition: all 0.3s ease-in-out 0s;
 	-moz-transition: all 0.3s ease-in-out 0s;
 	transition: all 0.3s ease-in-out 0s;
-	width:950px;
+	width:1000px;
 	padding:10px;
 	z-index:99999;
-	box-shadow: 0 0 5px #000000;
+	box-shadow: 0 0 4px #000000;
 }
 .addTask-widget:after {
 	bottom: 100%;
-	right:2%;
+	right:10px;
 	border: solid transparent;
 	content: " ";
 	height: 0;
