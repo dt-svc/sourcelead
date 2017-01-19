@@ -108,7 +108,7 @@ z-index: 9999999999 !important;
 								<c:if test="${!empty orgloc.user.id}">
 								<div class="form-group">
 								<div class="col-md-12 clearfix">
-								<h5>Primary Contact Details</h5>
+								<h5>Primary Contact Details&nbsp;<!-- <a id="edit-user" href="javascript:editPrimaryUser();"><i class="fa fa-edit"></i></a> --></h5>
 								</div>
 								</div>
 								

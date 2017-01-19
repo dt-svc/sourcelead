@@ -2146,15 +2146,20 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 globalVarsMap.put("RequirementLocation", requirementSubmission.getRequirement().getCountry());
 		 }
-		 if(requirementSubmission.getRequirement().getJobType() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobType())){
+		 
+		 if(Constants.JOB_OTHER.equalsIgnoreCase(requirementSubmission.getRequirement().getJobType())) {
+			 globalVarsMap.put("EmploymentType", requirementSubmission.getRequirement().getOtherJobType());
+		 }
+		 else if(requirementSubmission.getRequirement().getJobType() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobType())){
 			 globalVarsMap.put("EmploymentType", requirementSubmission.getRequirement().getJobType());
 		 }else{
 			 globalVarsMap.put("EmploymentType","--");
 		 }
 		 
-		 
 		 if( reqRateNegotiation !=null && reqRateNegotiation.getExpectedRate() != null && !"".equalsIgnoreCase(reqRateNegotiation.getExpectedRate())){
 			 globalVarsMap.put("Rate", reqRateNegotiation.getExpectedRate());
+		 }else if(requirementSubmission.getCandidate().getExpectedRate() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getExpectedRate())){
+			 globalVarsMap.put("Rate", requirementSubmission.getCandidate().getExpectedRate());
 		 }else{
 			 globalVarsMap.put("Rate","--");
 		 }
@@ -2162,14 +2167,15 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 if(requirementSubmission.getCandidate().getFirstName()!= null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getFirstName()) && requirementSubmission.getCandidate().getLastName()!= null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getLastName())){
 			 globalVarsMap.put("AssignedUser", requirementSubmission.getCandidate().getFirstName()+" "+requirementSubmission.getCandidate().getLastName());
 		 }else{
-			 globalVarsMap.put("AssignedUser","--");
+			 globalVarsMap.put("AssignedUser",requirementSubmission.getCandidate().getFirstName());
 		 }
 		 
 		 if(requirementSubmission.getRequirement().getManagerUserId().getFirstName() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getManagerUserId().getLastName())){
 			 globalVarsMap.put("ManagerName", requirementSubmission.getRequirement().getManagerUserId().getFirstName() +""+requirementSubmission.getRequirement().getManagerUserId().getLastName() );
 		 }else{
-			 globalVarsMap.put("ManagerName","--");
+			 globalVarsMap.put("ManagerName",requirementSubmission.getRequirement().getManagerUserId().getFirstName());
 		 }
+		 
 		 
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();

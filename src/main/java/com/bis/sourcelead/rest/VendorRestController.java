@@ -138,7 +138,6 @@ public class VendorRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    //List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
  
-			
 		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
 				
 				if(orgRelation.getLocationId()!= null && orgRelation.getLocationId().getId()!=null &&orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
