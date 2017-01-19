@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- <link href="resources/css/jquery-ui.css" rel="stylesheet"> -->
+
+
+
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -93,29 +97,26 @@ overflow-x: auto;
 	      <div class="pull-left">
 	        <h2>Dashboard</h2>
 	      </div>
-	     <!--  <div class="pull-right brud-crum">Dashboard</div> -->
 	    </section>
 	    
 	    <div class="clearfix row mb">
 	      <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
-			<%-- <c:if test = "${SourceLeadWeb_timesheet == 'Y'}">     --%>  
+			 <c:if test = "${SourceLeadWeb_timesheet == 'Y'}">       
 			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
-			<%-- </c:if> --%>
+			 </c:if> 
 	      </sec:authorize>
 			 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-			<%-- <c:if test = "${SourceLeadWeb_userType != 'Employee'}"> --%>
 				<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 					<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
 				</c:if>
-			<%-- </c:if> --%>
 		     </sec:authorize>
-	      	 <%-- <jsp:include page="dashboardTasks.jsp"></jsp:include> --%>
 	    </div>
-    	<%-- <c:if test = "${SourceLeadWeb_userType != 'Employee'}"> --%>
+	    	
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 					<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> 
 					</sec:authorize>
+					
 			    <div class="clearfix row mb"> 
 			    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 			   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
@@ -130,7 +131,6 @@ overflow-x: auto;
 		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
 		     	</c:if>
 		     </div>
-	    <%-- </c:if> --%>
 	    
 	   			 <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
 	   				  <div class='row'>
@@ -169,7 +169,9 @@ overflow-x: auto;
       </div>
 	    
 	    <div class="clearfix"></div> 
-	    
+	    <div class="clearfix row mb"> 
+	    </div>
+
 </section>
 
 

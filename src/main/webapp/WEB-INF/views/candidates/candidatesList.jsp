@@ -174,7 +174,8 @@
 		            		candidateUpdateDateToString = "---";
 		            	}
 		            	
-		            	if(opt.isFavourite == 'Y'){
+		            	
+		            	if(opt.isFavourite == '1'){
 		            		isFavourite = "checked";
 		            		isFavClass = "activestar-rating";
 		            	}
@@ -305,6 +306,7 @@ var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var loginUserId = '${SourceLeadWeb_userId}';
+	  var lo
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -322,6 +324,9 @@ function candidateSideBar(candidateId){
 			            var country = '';
 			            var state = '';
 			            var city = '';
+			            var currencyCodes = '';
+			            
+			            var currencyCode = '';
 			            
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'-'+'Months';            			 		
@@ -389,8 +394,21 @@ function candidateSideBar(candidateId){
          			 	}else{
          			 		rateType = '';
          			 	}
+         			 	
+         			 	if(json.currentRateCurrency != null && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefined'){
+         			 		currentRateCurrency = '/'+json.currentRateCurrency;
+         			 	}else{
+         			 		currentRateCurrency = '';
+         			 	}
+         			 	
+         			 	if(json.expectedRateCurrencey != null && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefined'){
+         			 		expectedRateCurrencey = '/'+json.expectedRateCurrencey;
+         			 	}else{
+         			 		expectedRateCurrencey = '';
+         			 	}
+         			 	
+         			 	
          			 	 
-         			 	currentRateType
 	                	 var result = "";
 	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -518,13 +536,19 @@ function candidateSideBar(candidateId){
 			                                                  }
 			             result = result+' <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
 			             
-			             result = result+'<li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
+			             result = result+'<li><i class="fa fa-money"></i><b>Current Rate:</b>';
 			             
-			             	result = result+''+currentRate+' '+currentRateType+'';
-		             	 result = result+'				     <b>Expected:</b> ';
-			             	result = result+''+expectedRate+' '+rateType+'';
-			             result = result+'</li>'; 
-			             result = result+' </ul>';
+			             result = result+''+currentRate+' '+currentRateType+''+currentRateCurrency+'';
+			             
+			             result = result+'</li>';
+			             
+			             result = result+'<li><i class="fa fa-money"></i><b>Expected:</b>';
+			             
+			             result = result+''+expectedRate+' '+rateType+''+expectedRateCurrencey+'';
+			             
+			             result = result+'</li>';
+			             
+			             result = result+'</ul>';
 			             
 			            /* New comments div creation Nov 8th, 2016 */ 
 			            if(json.status == '1' ){
@@ -1202,7 +1226,7 @@ function cancel(candidateId){
       <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
         <ul>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
-          <li><i class="glyphicon glyphicon-export"></i><span>Export</span>&nbsp;<i class="glyphicon glyphicon-play" id="candidate-export"></i>
+          <li id="candidate-export"><i class="glyphicon glyphicon-export"></i><span>Export</span>&nbsp;<i class="glyphicon glyphicon-play" ></i>
             <div class="export_pop">
               <ul>
                 <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
@@ -1212,7 +1236,7 @@ function cancel(candidateId){
           </li>
           </sec:authorize>
 	      
-           <li><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+           <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
                   	<ul>
 	                    <li><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2" onclick="candidateList();"  ><label for="c5">All</label></li>
@@ -1222,7 +1246,7 @@ function cancel(candidateId){
                   </div>                	
           </li>
           
-          <li><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+          <li id="filter3ApprovePop"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
 	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="candidateList();"  ><label for="c5">All</label></li>
@@ -1232,7 +1256,7 @@ function cancel(candidateId){
                   </div>                	
           </li>
           
-            <li><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
+            <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
                   	<ul>
                          <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="c5">All</label></li>
@@ -1245,7 +1269,7 @@ function cancel(candidateId){
                     </ul>
                   </div>                	
           </li>  
-          <li><i class="fa fa-plus"></i>&nbsp;<span>Add</span>&nbsp;<i class="glyphicon glyphicon-play" id="addmore"></i>
+          <li><b id="addmore"><i class="fa fa-plus"></i>&nbsp;<span>Add</span>&nbsp;<i class="glyphicon glyphicon-play"></i></b>
           <div id="addmorepop" class="approved_pop">
            <ul>
              <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">

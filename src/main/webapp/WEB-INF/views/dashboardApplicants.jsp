@@ -58,24 +58,24 @@ function ApplicantAuthorization(status){
                                        var report = json[i];
                                       resultToday = resultToday+'      <tr>';
                                       if(report.candidateName != '' && report.candidateName != null && report.candidateName !='undefined'){
-                                          resultToday  = resultToday + '           <td><div><span>'+report.candidateName+'</span></div></td>';
+                                          resultToday  = resultToday + '           <td><div><span title='+report.candidateName+'>'+report.candidateName+'</span></div></td>';
                                       }else{
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
                                       if(report.requirementName != '' && report.requirementName != null && report.requirementName !='undefined'){
-                                          resultToday = resultToday +'<td><div class="tbldata-dotdot-sm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementId='+report.requirementId+'">'+report.requirementName+'</a></div></td>';
+                                          resultToday = resultToday +'<td><div class="tbldata-dotdot-sm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementId='+report.requirementId+'"><span title='+report.requirementName+'>'+report.requirementName+'</span></a></div></td>';
 
                                       }else{
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
                                       if(report.submittedBy != '' && report.submittedBy != null && report.submittedBy !='undefined'){
-                                          resultToday  = resultToday + '           <td><div><span>'+report.submittedBy+'</span></div></td>';
+                                          resultToday  = resultToday + '           <td><div><span title='+report.submittedBy+'>'+report.submittedBy+'</span></div></td>';
                                       }else{
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
                                       if(status == 'accepted'){
-                                    	  resultToday  = resultToday + '           <td><div><span>'+report.submissionRequestUser+'</span></div></td>';
-                                          resultToday  = resultToday + '           <td><div><span>'+report.submittedOn+'</span></div></td>';
+                                    	  resultToday  = resultToday + '           <td><div><span title='+report.submissionRequestUser+'>'+report.submissionRequestUser+'</span></div></td>';
+                                          resultToday  = resultToday + '           <td><div><span title='+report.submittedOn+'>'+report.submittedOn+'</span></div></td>';
                                       }
                                       if(status == 'requestSent'){ 
                                     	  
