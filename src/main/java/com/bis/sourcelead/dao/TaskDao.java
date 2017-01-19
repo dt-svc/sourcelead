@@ -11,4 +11,6 @@ public interface TaskDao {
 	Tasks getTasksById(Long id);
 	
 	List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId,Long userId,String Status,String date)throws Exception;
+	
+	List<Tasks> getTaskByScheduledTime(String currentTime)throws Exception;
 }
