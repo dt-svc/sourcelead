@@ -157,7 +157,7 @@ public class SubmissionsRateRestController {
 			if("user".equalsIgnoreCase(type)){
 				requirementSubmissionService.userRejectRateNegotiation(requirement,userRole.getUser(),candidate,orgLocations,requirementRateSubmissionNegotiation,rejectreason,tempHTML);
 			}else{
-				requirementSubmissionService.applicantRejectMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations,rejectreason,tempHTML);
+				requirementSubmissionService.applicantRejectMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations,rejectreason,tempHTML,requirementRateSubmissionNegotiation);
 			}
 			
 			return "success";
@@ -453,13 +453,13 @@ public class SubmissionsRateRestController {
 			 if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.VENDOR){
 				 List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId,new Long(candidateId));
 				 StringBuilder tempHTML = buildNegotiationHistory(negotiationList,requirementSubmission.getRequirement(),candidate,submissionId,"Vendor");
-				 requirementSubmissionService.sendEmailtoClient(loginOrg,users,pastUser,requirementSubmission.getRequirement(),candidate,tempHTML,loginOrgLocation);
+				 requirementSubmissionService.sendEmailtoClient(loginOrg,users,pastUser,requirementSubmission,candidate,tempHTML,loginOrgLocation);
 			 }else{
 				 RequirementRateSubmissionNegotiation neogtation = requirementSubmissionService.getRequirementRateBySubmissionById(submissionId);
 				 List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidate.getId());
 				 if(null != requirementSubmission.getVendorLocationId()){
 					 StringBuilder tempHTML = buildNegotiationHistory(negotiationList,requirementSubmission.getRequirement(),candidate,submissionId,"Client");
-					 requirementSubmissionService.sendEmailtoVendor(loginOrg,users,pastUser,requirementSubmission.getRequirement(),candidate,tempHTML,loginOrgLocation);
+					 requirementSubmissionService.sendEmailtoVendor(loginOrg,users,pastUser,requirementSubmission,candidate,tempHTML,loginOrgLocation);
 				 }else{
 					 StringBuilder tempHTML = buildNegotiationHistory(negotiationList,requirementSubmission.getRequirement(),candidate,submissionId,"user");
 					 requirementSubmissionService.userNegotiateEmail(requirementSubmission.getRequirement(),users,candidate,loginOrgLocation,neogtation,tempHTML);
