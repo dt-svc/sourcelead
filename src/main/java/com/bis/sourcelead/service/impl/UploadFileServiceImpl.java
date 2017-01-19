@@ -491,6 +491,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				userService.sendEmail(user1, loginUser, password,orgLocations.getId());
 			}
 		}
+		userService.saveOrUpdateUserElkDocument(userRole,employee,loginUser.getUserCode());
+
 
 	}
 /**

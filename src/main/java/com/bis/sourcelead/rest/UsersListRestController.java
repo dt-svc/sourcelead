@@ -391,7 +391,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("ratePer", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
@@ -402,9 +401,10 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				String mobileKeywd =matcher.group().replaceAll("[+91]", "");
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
 			}
-			if(StringUtils.isNumeric(keywd)){
+			/*if(StringUtils.isNumeric(keywd)){
 				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
-			}
+			}*/
+			
 			return matchQueryBuilderList; 
 	 }
 

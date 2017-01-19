@@ -149,13 +149,13 @@ window.onload = function () {
 						  </div>
 						  
 						  
-						  <div class="col-md-4">
+						 <div class="col-md-4">
 								<label>Rate</label> 
 								<div class="input-group error-field">
-								    <div id="maxRateDiv">
+								    <div id="rateDiv">
 									  <input type="text" class="form-control input-sm" id="rate"  name="rate"  field-name="Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Rate">
 									</div>
-									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
+									<div id="ratePerDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="ratePer" id="ratePer" field-name="Rate Per"  >
 									            <option value="">-Rate Per-</option>
 						                        <option>Hourly</option>
@@ -327,7 +327,12 @@ function exportToPdf(){
 	<script type="text/javascript">	
 	function loadChosenScripts(){
 	    $('#search_user').removeAttr('disabled');
+	    $('#rate').val(''); 
+	    $('#rate').val(''); 
+	    $('#ratePer').val('');
 	   
+	    $('#rateDiv').find('p.jquery_form_error_message').remove();
+	    $('#ratePerDiv').find('p.jquery_form_error_message').remove();
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
@@ -597,10 +602,29 @@ function getUserSummary(userId){
 	})(jQuery);
 </script>
 
-
+<script type="text/javascript">
+var validationSettings = {
+		errorMessagePosition : 'element',
+		borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd'
+	};
+</script>
 <script type="text/javascript">
 	function searchUser() {
-      		
+		/* var rate = $('#rate').val();
+		 if(rate != null && rate != "" && rate !='undefined'){
+			 $('#ratePer').removeAttr('data-validation-optional');
+			 $('#ratePer').attr("data-validation","required"); 
+			 
+			 
+		 }else{
+			 $('#ratePer').removeAttr('data-validation');
+			 $('#ratePer').attr("data-validation-optional","true"); 
+			 
+		 } */
+		 
+		 if ($('#user_forms').validate(false, validationSettings)){ 
       		var sourceleadUrl = '${sourceleadUrl}';
       		var frm = $('#user_forms').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -623,7 +647,9 @@ function getUserSummary(userId){
 						},
 					}); 
 			return true;
-		 
+		 }else{ 
+				return false;
+		 } 
 	} 
 	
 	$('body').on('blur', '#user_forms', function() {
@@ -631,7 +657,6 @@ function getUserSummary(userId){
 		$("#user_forms").validateOnBlur(false, validationSettings);
 	});
 </script>
-
 <script>
   function prepareUsersList(data){
 	  var sourceleadUrl = '${sourceleadUrl}';
@@ -646,12 +671,17 @@ function getUserSummary(userId){
 	 				
 			 				var userRole = json[i];
 			 				var mobilePhone = ""
+			 				var lastName = ""
 			 			    if(userRole.mobilePhone != null && userRole.mobilePhone != ''){
 			 			    	mobilePhone = userRole.mobilePhone;
 			 			    }else{
 			 			    	mobilePhone = "No Data"
 			 			    }
-			 				
+			 				if(userRole.lastName != null && userRole.lastName != ''){
+			 					lastName = userRole.lastName;
+			 			    }else{
+			 			    	lastName = " "
+			 			    }
 			       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
 			       	    	result = result +"<div class='user-profile'>";
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
@@ -666,11 +696,11 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
 			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+"'> "+userRole.firstName+"</span> </a> </h4>";
+			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
 			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-		       	         	   result = result +"<h4><a href='#'> "+userRole.firstName+" </a> </h4>";
+		       	         	   result = result +"<h4><a href='#'> "+userRole.firstName+" " " "+lastName+"</a> </h4>";
 		       	    	    '</sec:authorize>';
 			       	    	
 			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.email+"'> "+userRole.email+"</span></lable></p>";
