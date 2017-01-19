@@ -686,7 +686,8 @@ public class VendorRestController {
 				 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 				 
 				 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
-					
+				 boolQueryBuilder.must(QueryBuilders.matchQuery("responderType", "Vendor"));
+				 
 				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId());
 			   	 
 				 //Exclude Keyword
@@ -739,6 +740,15 @@ public class VendorRestController {
 						 boolQueryBuilder.must(allBoolQueryBuilder);
 					}
 					
+					//vendorName
+					ArrayList<String> vendorNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "vendorNameAdvanced");
+					if(vendorNameArray != null && !vendorNameArray.isEmpty()){
+						BoolQueryBuilder vendorNameBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : vendorNameArray){
+							vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorNameAdvanced", keywd));
+						}
+						boolQueryBuilder.must(vendorNameBoolQueryBuilder);
+					}
 					
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 					ArrayList<OrgRelations>   orgRelationList = new ArrayList<>();
@@ -821,47 +831,230 @@ public class VendorRestController {
 
 		 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
 			    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-			    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
-			    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
+			   
+			    //Vendor Search 
+			    matchQueryBuilderList.add(QueryBuilders.matchQuery("vendorNameAdvanced", keywd));
+			    matchQueryBuilderList.add(QueryBuilders.matchQuery("tierAdvanced", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("createdByAdvanced", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("documentNameAdvanced", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("address", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("designation", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateType", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateCurrency", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rateType", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRateCurrencey", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("noticePriod", keywd));
-				//matchQueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("resumeContent", keywd));
-				
-				
-				Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
-				if(matcher.find()){
-					Float expYears = Float.valueOf(matcher.group());
-					matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
-					//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths", keywd));
-					String mobileKeywd =matcher.group().replaceAll("[+91]", "");
-					matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
-					matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
-				}
-				if(StringUtils.isNumeric(keywd)){
-					matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
-					matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRate", keywd));
-				}
-				
-					
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("documentTypeAdvanced", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("submissionTemplateAdvanced", keywd));
 				return matchQueryBuilderList; 
 		 }
 		 
+		 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForContacts(String keywd){
+			    ArrayList<MatchQueryBuilder> matchQueryBuilderListForContacts = new ArrayList<MatchQueryBuilder>();
+			   
+			    //Contact  Search 
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("orgName", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("phoneNumber", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("contactEmail", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("ownerName", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("contactStatus", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocName", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", keywd));
+			    
+				return matchQueryBuilderListForContacts; 
+		 }
+		 
+		 
+		 /**
+		   * @author 
+		   * @since  Dec 28 2016
+		   * @version 0.0.1
+		   * 
+		   *  
+		   * @return string 
+		   * 
+		   * @throws NullPointer
+		   */
+		 @RequestMapping(value = "/searchVendorContactsThroughElasticSearch", method = RequestMethod.POST)
+		 public String searchVendorContactsThroughElasticSearch(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+
+			    MultipartFile multiFile = null;
+				Iterator<String> itrator = request.getFileNames();
+				if(itrator.hasNext()){
+			        multiFile = request.getFile(itrator.next());
+				}
+				String jsonc = "{" + json + "}";
+				JSONObject jsonObj = new JSONObject(jsonc);
+				
+				 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+
+				 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+				 
+				 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+					
+				 // to   get the number of contacts 
+				 Integer maxResults = orgSpocService.getAllVendorContactsCountbyOrgLocationId(loginOrgLocation.getId());
+			   	 
+				 //Exclude Keyword
+				 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+				 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+				 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : excludeKeyWordArray){
+						 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForContacts(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+				  }
+					
+					//Any Keyword
+					ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+					if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : anyKeyWordArray){
+							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForContacts(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(anyBoolQueryBuilder);
+					}
+					//All Keywords
+					ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : allKeyWordArray){
+							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForContacts(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									allBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(allBoolQueryBuilder);
+					}
+					
+					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+					ArrayList<OrgSpoc>   orgSpockList = new ArrayList<>();
+					if(searchHits != null && searchHits.length >0){
+						for (SearchHit hit : searchHits) {
+
+							
+							OrgSpoc  orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(hit.id()));
+								 //to fetch user details by usercode 
+									if((orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue() )|| (orgSpoc.getOwnerUser() != null &&orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue())){
+										//if login user is spoc
+										if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()){
+											if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
+												StringBuilder spocNameSB = new StringBuilder();
+												orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+											}else{
+												orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName());
+											}
+											if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+												StringBuilder ownerNameSB = new StringBuilder();
+												orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+											}else{
+												orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName());
+											}
+						    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+						    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+						    				// orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+						    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+						    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+										}
+										//if login user is Owner
+										else if(orgSpoc.getOwnerUser() != null  && orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
+											if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+												StringBuilder spocNameSB1 = new StringBuilder();
+												orgSpoc.setSpocName(spocNameSB1.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+											}else{
+												orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
+											}
+											if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
+												StringBuilder ownerNameSB1 = new StringBuilder();
+												 orgSpoc.setOwnerName(ownerNameSB1.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+											}else{
+                 												orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
+											}
+												 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+												 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+												 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+												 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+												 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+											}
+											
+										 
+									}else{
+										if(orgSpoc.getInitiatorLocationId() != null  && orgSpoc.getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
+											if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+												StringBuilder spocNameSB2 = new StringBuilder();
+												orgSpoc.setSpocName(spocNameSB2.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+											}else{
+												orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
+											}
+											
+											if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
+												StringBuilder ownerNameSB2 = new StringBuilder();
+												orgSpoc.setOwnerName(ownerNameSB2.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+											}else{
+												orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
+											}
+											 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+											 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+											 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+											 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+										 }
+										if(orgSpoc.getResponderLocationId() != null  &&  orgSpoc.getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
+											if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
+												StringBuilder spocNameSB3 = new StringBuilder();
+												orgSpoc.setSpocName(spocNameSB3.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+											}else{
+												orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName());
+											}
+											
+											if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+												StringBuilder ownerNameSB3 = new StringBuilder();
+												orgSpoc.setOwnerName(ownerNameSB3.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+											}else{
+												orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName());
+											}
+										 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+										 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+										 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+										 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+										}
+									}
+									if(orgSpoc.getResponderLocationId() != null && orgSpoc.getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
+										if(orgSpoc.getInitiatorLocationId()!=null){
+										   orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
+										   orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+										}
+										
+									}
+									if(orgSpoc.getInitiatorLocationId() != null && orgSpoc.getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
+										if(orgSpoc.getResponderLocationId()!=null){
+										orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
+										orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
+										}
+									}
+									orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
+									orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+									orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
+									
+									orgSpockList.add(orgSpoc);
+								}
+						}
+				 String resultJson;
+				 resultJson = commonUtil.toJSON(orgSpockList);
+				 return resultJson;
+		 }
 }

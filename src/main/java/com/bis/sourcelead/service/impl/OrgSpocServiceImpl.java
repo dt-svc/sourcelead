@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
+import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -49,9 +52,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	@Autowired
 	private OrgLocationService orgLocationService;
 	
+	@Autowired
+    private SourceleadELKBaseIndexer<ClientVendorContactsIndex> sourceleadELKBaseIndexer;
 	
-	
-	
+
+	@Autowired
+	ClientVendorContactsIndexHelper clientVendorContactsIndexHelper;
 	
 	/**
 	 * used to add spoc for vendor and client
@@ -59,7 +65,14 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	 */
 	@Override
 	public OrgSpoc addOrgSpoc(OrgSpoc orgSpoc) throws Exception {
-		return orgSpocDao.addOrgSpoc(orgSpoc);
+		
+		OrgSpoc org = orgSpocDao.addOrgSpoc(orgSpoc);
+		
+		 //Elastic Search Document Saving
+		  ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
+		  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
+		
+		return  org;
 	}
 
 	/**
@@ -522,6 +535,14 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		return orgSpocDao.getOrgSpocByOrgRelationId(orgRelationId);
 	}
 
+	@Override
+	public Integer getAllVendorContactsCountbyOrgLocationId(Long orgId) throws Exception {
+		return orgSpocDao.getAllVendorContactsCountbyOrgLocationId(orgId);
+	}
 
+	public void saveOrUpdateClientVendorContactElkDocument(OrgSpoc orgSpoc) throws Exception {
+		
+		 
+		}
 	
 }
