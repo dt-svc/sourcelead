@@ -147,7 +147,7 @@ public class AddElkRequirement {
 				}else{
 					requirementIndex.setManager(rs.getString("FIRST_NAME"));
 				}
-				requirementIndex.setJobType(rs.getString("PRIORITY"));
+				requirementIndex.setPriority(rs.getString("PRIORITY"));
 				reqIndexList.add(requirementIndex);
 			}
 			
