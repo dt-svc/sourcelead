@@ -1136,7 +1136,7 @@ public class ClientRestController {
 				if(searchHits != null && searchHits.length >0){
 					for (SearchHit hit : searchHits) {
 						
-						OrgRelations orgRelation =  orgRelationsService.getClientByOrgLocationId(Long.parseLong(hit.id()));
+						OrgRelations orgRelation =  orgRelationsService.getOrRelationsById(Long.parseLong(hit.id()));
 							
 								if(null != orgRelation.getLocationId() && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
 									if(orgRelation.getResponderLocationId() != null){
