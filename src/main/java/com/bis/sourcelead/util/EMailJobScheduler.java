@@ -575,7 +575,7 @@ public class EMailJobScheduler {
 	
 	/**
 	 * @author David Raju
-	 * Fires on Every Firday at 6:30 PM and send mails to employees those who are not submited their timesheets
+	 * This Cron Method is to add  the Candidates which are consultants  to  HotList (i,e making  them favorite list ) When they are going to terminate  from  the Project within  the given noticePeriod 
 	 */
 	@Scheduled(cron = "0 0/1 * 1/1 * ? ")
 	public void runHotlistCandidatesDaily() throws Exception {
@@ -583,20 +583,15 @@ public class EMailJobScheduler {
 			List<Org> orgList = orgService.getOrgs();
 			for (Org org : orgList) {
 				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
+				
+				// to bring the candidates who are going to terminate in a given time 
+				
   			    List<Candidate>   candidatesListToBeAddedInHotList = candidateService.getAllCandidatesForHotListingWhoAreTerminating(orgLocations.getId(),30);
                 
   			    if(null != candidatesListToBeAddedInHotList){
-  			    	
   			    	 for(Candidate can :candidatesListToBeAddedInHotList){
-  	                	CandidateHotList candidateHotList =  new CandidateHotList();
-  	                	candidateHotList.setCandidateId(can);
-  	                	candidateHotList.setOrgLocationId(orgLocations);
-  	                	candidateHotList.setStatus(Constants.RECORD_ACTIVE);
-  	                	candidateHotList.setCreatedBy("");
-  	                	candidateHotList.setUpdatedBy("");
-  	                	candidateHotList.setCreatedDate(new  Date());
-  	                	candidateHotList.setUpdatedDate(new  Date());
-  	                	candidateHotListService.saveCandidateHotList(candidateHotList);
+  			    		can.setIsFavourite(Constants.RECORD_ACTIVE);
+  			    		candidateService.addCandidate(can);
   	                }
   			    }
   			      
