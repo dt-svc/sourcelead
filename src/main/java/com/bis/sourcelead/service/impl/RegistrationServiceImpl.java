@@ -209,6 +209,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		
+		/*
+		 * Saving USER DB data as ElasticSearch Documents
+		 */
+		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
+		
 		userService.sendEmail(user, loginUser, password,orgLocationsId);
 	
 	}

@@ -1,12 +1,14 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -37,10 +40,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -212,12 +214,12 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			JSONObject jsonObj = new JSONObject(jsonc);
 			
 			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
 			 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 			 
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 			 List<User> userList  = userService.getAllUsersByOrgLocationCode(loginOrgLocation.getId());
 
 			 Integer maxResults = 0;
@@ -345,29 +347,21 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("ratePer", jsonObj.getString("ratePer")));
 			    }
 				
+				List<UserIndex> usersList = new ArrayList<UserIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-				ArrayList<UserRole>   freshUserList = new ArrayList<>();
 				if(searchHits != null && searchHits.length >0){
+					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
-						UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationIdAndNotLoginUser(Long.parseLong(hit.getId()), loginOrgLocation.getId(),user.getId());
-						if(null != userRole){
-							StringBuilder userName = new StringBuilder();
-							userRole.setUserRoleName(userRole.getRoles().getDisplayName());
-							if(!isNullOrEmpty(userRole.getUser().getLastName())){
-								userName = userName.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
-								userRole.setUserName(userName.toString());
-							}else{
-								userRole.setUserName(userRole.getUser().getFirstName());
-							}
-							userRole.setUserEmail(userRole.getUser().getEmail());
-							userRole.setUserId(userRole.getUser().getId());
-							userRole.setIsMailSent(userRole.getUser().getIsMailSent().toString());
-							freshUserList.add(userRole);
-						}
+						json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+						usersList.add(userIndex);
 					}
 				}
 			 String resultJson;
-			 resultJson = commonUtil.toJSON(freshUserList);
+			 resultJson = commonUtil.toJSON(usersList);
 			 return resultJson;
 			 
 	 }
@@ -970,6 +964,13 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					userRole.setRoleChangeReason(jsonObj.getString("reason"));
 					userRoleService.addUserRole(userRole);
 					
+					/*
+    				 * Saving USER DB data as ElasticSearch Documents
+    				 */
+        			  Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
+        			  if(null != employee){
+        				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
+        			  }
 					
 				}
 			

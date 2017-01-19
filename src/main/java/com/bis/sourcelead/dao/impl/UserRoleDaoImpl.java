@@ -530,25 +530,6 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 	}
 	
-	
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public UserRole getUserDetailsByUserIdAndLocationIdAndNotLoginUser(Long userId,Long locationId,Long loginUserId) throws Exception {
-
-		Session session = this.sessionFactory.getCurrentSession();
-		List<UserRole> userRole = new ArrayList<UserRole>();
-		logger.debug("getUserDetailsByUserIdAndLocationIdAndNotLoginUser method  start");
-		userRole = session.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles  "
-						+ "left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId and userRole.user.id <> :loginUserId")
-				.setLong("userId", userId).setLong("loginUserId", loginUserId).setLong("locationId", locationId).setCacheable(true).list();
-		logger.debug("getUserDetailsByUserIdAndLocationIdAndNotLoginUser method ends");
-		if (userRole.size() > 0) {
-			return userRole.get(0);
-		} else {
-			return null;
-		}
-	}
-
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
