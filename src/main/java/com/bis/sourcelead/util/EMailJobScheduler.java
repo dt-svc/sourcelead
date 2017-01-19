@@ -21,6 +21,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -29,6 +30,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -41,6 +43,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -106,6 +109,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	TaskService taskService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
 	
@@ -561,5 +567,31 @@ public class EMailJobScheduler {
 			logger.error("ERROR in " + e.getMessage());
 		}
 	}
+	
+	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	@Async
+	public void scheduleUserMail() throws Exception {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		int addMinuteTime = 30;
+		Date targetTime = new Date(); // now
+		Date date = new Date();
+		targetTime = DateUtils.addMinutes(targetTime, addMinuteTime);
+		String currentTime = dateFormat.format(date);
+		DateFormat dateFormat1 = new SimpleDateFormat("HH:mm");
+		String time = dateFormat1.format(date);
+		final Date dateObj = dateFormat1.parse(time);
+		String taskTime = new SimpleDateFormat("KK:mm a").format(dateObj);
+		List<Tasks> taskDetails = taskService.getTaskByScheduledTime(currentTime);
+		for (Tasks task : taskDetails) {
+
+			if (taskTime.equals(task.getTaskTime())) {
+				if (taskTime.equalsIgnoreCase(task.getTaskTime())) {
+				taskService.mailToUserTask(task);
+			}
+		  }
+		}
+
+	}
+	
 	
 }

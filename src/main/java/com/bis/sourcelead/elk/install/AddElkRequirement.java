@@ -57,6 +57,7 @@ public class AddElkRequirement {
 	 * @return ArrayList<RequirementIndex>
 	 */
 	private ArrayList<RequirementIndex> getElkRequirements() {
+		ArrayList<RequirementIndex> reqIndexList = new ArrayList<>();
 		Connection conn = null ;
 		Statement stmt = null;
 		try {
@@ -73,7 +74,8 @@ public class AddElkRequirement {
 				if(rs.getString("ORG_LOCATION_ID")!=null && !"".equalsIgnoreCase(rs.getString("ORG_LOCATION_ID"))){
 					requirementIndex.setOrgLocationId(Long.parseLong(rs.getString("ORG_LOCATION_ID")));
 				}
-				requirementIndex.setJobId(rs.getString("JOB_TITLE"));
+				requirementIndex.setJobTitle(rs.getString("JOB_TITLE"));
+				requirementIndex.setJobId(rs.getString("JOB_ID"));
 				requirementIndex.setCurrentRateCurrency(rs.getString("CURRENCY_CODE"));
 				requirementIndex.setNumberOfPositions(rs.getString("POSITIONS"));
 				if(rs.getString("RATE")!=null && !"".equalsIgnoreCase(rs.getString("RATE"))){
@@ -87,9 +89,9 @@ public class AddElkRequirement {
 					requirementIndex.setMaxExperience(Integer.parseInt(rs.getString("MAX_EXP")));
 				}
 				requirementIndex.setRequirementStatus(rs.getString("REQUIREMENT_SUBMISSION_STATUS"));
-				requirementIndex.setCountry("COUNTRY");
-				requirementIndex.setState("STATE");
-				requirementIndex.setCity("CITY");
+				requirementIndex.setCountry(rs.getString("COUNTRY"));
+				requirementIndex.setState(rs.getString("STATE"));
+				requirementIndex.setCity(rs.getString("CITY"));
 				String education = rs.getString("EDUCATION");
 				if(education !=null && !"".equalsIgnoreCase(education)){
 					requirementIndex.setEducation(education.split(","));
@@ -98,23 +100,25 @@ public class AddElkRequirement {
 					ResultSet rs1 = getClientContactDetails(rs.getString("ORG_RELATION_ID"));
 					String clientName =null;;
 					while(rs1.next()){
-						String type = rs.getString("INITIATOR_TYPE");
+						String type = rs1.getString("INITIATOR_TYPE");
 						if("Client".equalsIgnoreCase(type)){
-							clientName = getClientName(rs.getString("LOCATION_ID"));
+							clientName = getClientName(rs1.getString("LOCATION_ID"));
 						}
 						else{
-							clientName = getClientName(rs.getString("RESPONDER_LOCATION_ID"));
+							clientName = getClientName(rs1.getString("RESPONDER_LOCATION_ID"));
 						}
 					}
 					requirementIndex.setClient(clientName);
 					String skills = rs.getString("SKILLS");
-					requirementIndex.setSkills(skills.split(","));
+					if(!("").equalsIgnoreCase(skills) && skills!=null){
+						requirementIndex.setSkills(skills.split(","));
+					}
 					requirementIndex.setJobType(rs.getString("JOB_TYPE"));
 					requirementIndex.setJobType(rs.getString("JOB_ID"));
 					String clientContactName = null;
 					String clientContactEmail = null;
 					while(rs1.next()){
-						String type = rs.getString("INITIATOR_TYPE");
+						String type = rs1.getString("INITIATOR_TYPE");
 						if("Client".equalsIgnoreCase(type)){
 							String clientContactSql = "SELECT user.FIRST_NAME,user.EMAIL FROM sourcelead.ORG_SPOC spoc INNER JOIN USER user on spoc.OWNER_USER_ID=user.ID where spoc.INITIATOR_LOCATION_ID = ?;";
 							ResultSet clientNameRs = getClientContactName(rs.getString("LOCATION_ID"),clientContactSql);
@@ -144,7 +148,9 @@ public class AddElkRequirement {
 					requirementIndex.setManager(rs.getString("FIRST_NAME"));
 				}
 				requirementIndex.setJobType(rs.getString("PRIORITY"));
+				reqIndexList.add(requirementIndex);
 			}
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally {
@@ -157,7 +163,7 @@ public class AddElkRequirement {
 			}
 		}
 		
-		return null;
+		return reqIndexList;
 	}
 /**
  * read client Contact name based on orgLocId
@@ -175,7 +181,7 @@ public class AddElkRequirement {
 			conn = dataSource.getConnection();
 			 ps = conn.prepareStatement(clientContactSql);
 			ps.setString(1, orgLocId);
-			rs = ps.executeQuery(clientContactSql);
+			rs = ps.executeQuery();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -206,8 +212,12 @@ public class AddElkRequirement {
 			conn = dataSource.getConnection();
 			 ps = conn.prepareStatement(sql);
 			ps.setString(1, location);
-			ResultSet rs = ps.executeQuery(sql);
-			orgName = rs.getString("ORG_NAME");
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()){
+				orgName = rs.getString("ORG_NAME");
+			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -234,17 +244,16 @@ public class AddElkRequirement {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		 try{
-			   DataSource dataSource = comboPooledDataSource();
-				String sql = "select * from ORG_RELATIONS orgRelation where orgRelation.ID = ?";
+			  logger.info("********************************8"+relationId);  
+			 DataSource dataSource = comboPooledDataSource();
+				String sql = "select * from ORG_RELATIONS as orgrel where orgrel.ID = ?";
 				 conn = dataSource.getConnection();
 				 ps = conn.prepareStatement(sql);
-				ps.setString(1, relationId);
-				 rs = ps.executeQuery(sql);
+				 ps.setString(1, relationId);
+				 rs = ps.executeQuery();
 		 }catch(Exception e){
 			 e.printStackTrace();
 		 }finally{
-			 ps.close();
-			 conn.close();
 		 }
 	     return rs;
 	}
