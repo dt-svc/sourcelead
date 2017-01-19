@@ -1,14 +1,12 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
  
  
@@ -518,6 +516,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						if(endDateStr !=  null && endDateStr != '' && endDateStr != 'undefined'){
 							$('#startDate'+opt.id).datepicker({
 								dateFormat : 'yy-mm-dd',
+								changeMonth: true,
+								changeYear: true, 
 								minDate:startDateStr,
 								maxDate:endDateStr,
 								onSelect : function(selected) {
@@ -532,6 +532,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 
 							$('#endDate'+opt.id).datepicker({
 								dateFormat : 'yy-mm-dd',
+								changeMonth: true,
+								changeYear: true, 
 								maxDate:endDateStr,
 								minDate:startDateStr,
 								onSelect : function(selected) {
@@ -546,6 +548,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						}else{
 							$('#startDate'+opt.id).datepicker({
 								dateFormat : 'yy-mm-dd',
+								changeMonth: true,
+								changeYear: true, 
 								minDate:startDateStr,
 								onSelect : function(selected) {
 									var dt = new Date(selected);
@@ -559,6 +563,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 
 							$('#endDate'+opt.id).datepicker({
 								dateFormat : 'yy-mm-dd',
+								changeMonth: true,
+								changeYear: true, 
 								minDate:startDateStr,
 								onSelect : function(selected) {
 									var dt = new Date(selected);
@@ -768,6 +774,8 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
   if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
 	  $('#Re-StartDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 		  minDate:endDate,
 		  maxDate:projectEndDateStr,
 	      onSelect: function (selected) {
@@ -779,6 +787,8 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  
 	  $('#Re-EndDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      minDate:endDate,
 	      maxDate:projectEndDateStr,
 	        onSelect: function (selected) {
@@ -791,6 +801,8 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
   else{
 	  $('#Re-StartDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 		  minDate:endDate,
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
@@ -803,6 +815,8 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	
 	  $('#Re-EndDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      minDate:endDate,
 	      maxDate:reStatertDate,
 	        onSelect: function (selected) {

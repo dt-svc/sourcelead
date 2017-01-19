@@ -2703,5 +2703,4 @@ function cancel(){
 <jsp:include page="recommendCandidatesExperience.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesEducation.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesCertificates.jsp"></jsp:include>
-<jsp:include page="recommendCandidatesActivities.jsp"></jsp:include> 
 

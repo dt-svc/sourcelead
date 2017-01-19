@@ -8,6 +8,7 @@
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css" type="text/css" >
@@ -15,11 +16,10 @@
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- <link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="resources/css/chosen.min.css">
 <link rel="stylesheet" href="resources/css/jquery.timepicker.css">
+
 
 
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -30,15 +30,14 @@
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
 </head>
-
-<!-- <link rel="stylesheet" href="resources/css/jquery.timepicker.css">
-<script src="resources/js/jquery.timepicker.js"></script> -->
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+<script src="resources/js/formvalidator.js"></script>
+<script src="resources/js/bootstrap-select.min.js"></script>
+<script src="resources/js/jquery-1.11.1.min.js"></script>
+<script src="resources/js/chosen.jquery.min.js"></script>
+<script src="resources/js/jquery-ui.js"></script>
+<script src="resources/js/jquery.dataTables.min.js"></script> 
 <script src="resources/js/jquery.timepicker.js"></script>
 <style>
- 
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;
 }
@@ -95,11 +94,7 @@ width: 11.5%;
 }
 
 </style>
- <script type="text/javascript">
- $( document ).ready(function() {
-	 tasksList('myTask');
-	});
-</script>
+
 
 <script>
 	function predefineOrgImage(imageId){
@@ -333,14 +328,15 @@ function notificationStatusAsRead(){
   
   <!-- Add Task Div -->
 		 <div class="addTask"> <span class="icon-addTask" title="Add Task"> <i class="fa fa-gears"></i> </span>
-		    <div class="clearfix col-xs-12 col-md-12 addTask-widget"> 
+		    <div class="clearfix col-xs-12 col-md-12 addTask-widget">
+		    <i class="fa fa-close close-div" onclick="closePop();"></i>  
 		      <!-- Assign Task Widget tabs -->
 		      <div class="clearfix require_wrap_table dashboard-data" id="myTask">
 		        <div class="addtsk-btn"> <span class="btn btn-success btn-sm" onClick="showtaskdiv()"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Task</span> </div>
 		        <ul class="nav nav-tabs">
 		          <li class="active"><a data-toggle="tab" href="#my-task" onclick="tasksList('myTask');">My Tasks</a></li>
-		          <li><a data-toggle="tab" href="#other-task" onclick="tasksList('assignedTasks');">Assigned Tasks</a></li>
-		          <li><a data-toggle="tab" href="#closed-task" onclick="tasksList('closedTasks');">Closed Task</a></li>
+		          <li><a data-toggle="tab" href="#other-task" onclick="assignedTasksList('assignedTasks');">Assigned Tasks</a></li>
+		          <li><a data-toggle="tab" href="#closed-task" onclick="closedTasksList('closedTasks');">Closed Task</a></li>
 		        </ul>
 				        <div class="tab-content clearfix">
 				        <div id="other-task" class="tab-pane fade">
@@ -390,7 +386,7 @@ function notificationStatusAsRead(){
 			            <div class="row">
 			              <div class="col-md-6" >
 			                <label>Assign To<span class="text-danger">*</span></label>
-			                <select class="chosen-select" multiple data-placeholder="Select Priority" id="assignTo" name="assignTo" field-name="AssignTo"  data-validation="required">
+			                <select class="chosen-select" multiple data-placeholder="Select User" id="assignTo" name="assignTo" field-name="AssignTo"  data-validation="required">
 				                <%--  <c:forEach var="user" items="${SourceLeadWeb_userRoleList}">
 					                     <option value="${user.userId}" >${user.userName}</option>
 				                </c:forEach> --%>
@@ -409,15 +405,17 @@ function notificationStatusAsRead(){
 			              <div class="col-md-6">
 			                  <div class="row">
 				                  <div class="col-md-6">
-					                <label>Date</label>
-						                <div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-						                  <input class="form-control" value="" name="taskDatpicker" id="taskDatpicker" type="text" >
+					                <label>Date<span class="text-danger">*</span></label>
+						                <div class="positionRelative"> 
+						                  <input class="form-control input-sm" value="" name="taskDatpicker" id="taskDatpicker" type="text" field-name="Date"  data-validation="required">
+						                  <span class="input-group-addon input-groupAddon icon-Addon"><i class="fa fa-calendar"></i></span>
 						                </div>
 				                   </div>
 				                  <div class="col-md-6">
 					                <label>Time</label>
-						                <div class="input-group"> <span class="input-group-addon" ><i class="fa fa-clock-o"></i></span>
-						                  <input class="form-control"  name="timepicker" id="timepicker"  type="text">
+						                <div class="positionRelative">
+						                  <input class="form-control input-sm"  name="timepicker" id="timepicker"  type="text">
+						                  <span class="input-group-addon input-groupAddon icon-Addon" ><i class="fa fa-clock-o"></i></span>
 						                </div>
 				                  </div>
 			                  </div>
@@ -469,7 +467,7 @@ function notificationStatusAsRead(){
 		    </div>
 		  </div>
 
-
+<div class="addtAsk_popmask"></div>
 
 
 
@@ -485,9 +483,8 @@ function notificationStatusAsRead(){
 						type : "POST",
 						url : sourceleadUrl+ "/storeTasks?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 						success : function(result) {
-							//#other-task
 							taskwidget();
-							tasksList('assignedTasks');
+							assignedTasksList('assignedTasks');
 						},
 					});
 			return true;
@@ -519,13 +516,14 @@ $('#taskDatpicker').datepicker({
 	onSelect : function(selected) {
 		var dt = new Date(selected);
 		dt.setDate(dt.getDate() + 1);
-		$("#taskDatpicker").datepicker("option", "minDate", dt);
 	}
 	
 	});
 	
 $('#myTaskDatpicker').datepicker({
 	dateFormat : 'dd-mm-yy',
+	changeMonth: true,
+	changeYear: true, 
 	onSelect : function(selected) {
 		var dt = new Date(selected);
 		dt.setDate(dt.getDate() + 1);
@@ -536,26 +534,36 @@ $('#myTaskDatpicker').datepicker({
 	
 $('#assignedTaskDatpicker').datepicker({
 	dateFormat : 'dd-mm-yy',
+	changeMonth: true,
+	changeYear: true, 
 	onSelect : function(selected) {
 		var dt = new Date(selected);
 		dt.setDate(dt.getDate() + 1);
 		$("#assignedTaskDatpicker").datepicker("option", "minDate", dt);
-		tasksList('assignedTasks');
+		assignedTasksList('assignedTasks');
 	   }
 	});
 $('#closedTaskDatpicker').datepicker({
 	dateFormat : 'dd-mm-yy',
+	changeMonth: true,
+	changeYear: true, 
 	onSelect : function(selected) {
 		var dt = new Date(selected);
 		dt.setDate(dt.getDate() + 1);
 		$("#closedTaskDatpicker").datepicker("option", "minDate", dt);
-		tasksList('closedTasks');
+		closedTasksList('closedTasks');
 	  }
 	});
 	
 $('#timepicker').timepicker();
 </script>
 
+<script type="text/javascript">
+function closePop(){
+	 $(".addTask-widget").removeClass("addTask-widget-active");
+	$(".addtAsk_popmask").fadeOut();
+}
+</script>
 <script>
 //Collapse div
 $(document).ready(function() {
@@ -566,11 +574,14 @@ $(".collpase-div").click(function(){
 
 //Add Task Div
  $(".icon-addTask").click(function(){
+	$('.addtAsk_popmask').toggle();
 	$(".addTask-widget").toggleClass("addTask-widget-active");
-		$(".newTask-widget").hide();
+	$(".newTask-widget").hide();
 	$("#myTask").show();
+	tasksList('myTask');
  });
  
+
  // Close New Task div
  function taskwidget(){
 	 $(".newTask-widget").hide();
@@ -586,8 +597,7 @@ $(".collpase-div").click(function(){
 	 
  };
 </script>
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -603,7 +613,7 @@ $(".collpase-div").click(function(){
 				$this.next().css({'width': '100%'});
 				});
 			$('#assignTo').trigger('chosen:updated');
-</script>
+</script> -->
 <script type="text/javascript">
 	(function($) {
 		$.fn.serializeFormJSON = function() {
@@ -647,31 +657,10 @@ function assignedUserList(){
 
 </script>
 
-<script>
-function updateTaskStatus(taskId){
-    var taskStatus = $('#taskState'+taskId).val();
-	var sourceleadUrl = '${sourceleadUrl}';
-	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/changeTaskStatus?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId+"&taskStatus="+taskStatus,	    	   
-	    success: function(data) {
-	    	assignedTasks();
-	    }
-   });
-}
-</script>
-  
 <script type="text/javascript">
 function tasksList(status){
 	var sourceleadUrl ='${sourceleadUrl}';
-	if(status == "myTask"){
-		var date = $("#myTaskDatpicker").val();
-	}else if(status == "assignedTasks"){
-		var date = $("#assignedTaskDatpicker").val(); 
-	}else if(status == "closedTasks"){
-		var date = $("#closedTaskDatpicker").val(); 
-	}
-	
+	var date = $("#myTaskDatpicker").val();
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getTasksList?${_csrf.parameterName}=${_csrf.token}&status="+status+"&date="+date,
@@ -679,13 +668,7 @@ function tasksList(status){
         	 var json = JSON.parse(data);
         	 var result = "";
         	 
-       		if(status == "myTask"){
-       			result = result + '	 <table id="myTasksPagination">'; 
-       		}else if(status == "assignedTasks"){
-       			result = result + '	 <table id="assignedTasksPagination">'; 
-       		}else if(status == "closedTasks"){
-       			result = result + '	 <table id="closedTasksPagination">'; 
-       		}
+       		result = result + '	 <table id="myTasksPagination">'; 
         	result = result + '     <thead>';
         	result = result + '       <tr>';
         	result = result + '         <th>Subject</th>';
@@ -731,45 +714,100 @@ function tasksList(status){
             	result = result + '         <td>'+alertType+'</td>';
             	result = result + '         <td><div class="dropdown-select tblminwidth-100">';
             	
-            		if(status == "myTask" || status == "assignedTasks" ){
-            			result = result + '             <select id="taskState'+report.id+'" name="taskState" onChange="updateTaskStatus(\''+report.id+'\');">';
-                    	if (report.taskStatus == 'Open') {
-        					result = result	+ '<option selected >'+report.taskStatus+'</option>';
-        				} else {
-        					result = result + '<option>Open</option>';
-        				}
-                    	if (report.taskStatus == 'Closed') {
-        					result = result	+ '<option selected >'+report.taskStatus+'</option>';
-        				} else {
-        					result = result + '<option>Closed</option>';
-        				}
-                    	result = result + '             </select>';
-                    	 
-            		}else if(status == "closedTasks"){
-            			result = result + '             <select disabled>';
-        					result = result	+ '<option>'+report.taskStatus+'</option>';
-                    	result = result + '             </select>';
-            		}
-            	
+       			result = result + ' <select id="myTaskState'+report.id+'" name="myTaskState" onChange="updateMyTaskStatus('+report.id+');">';
+       			result = result  +' <option '+(report.taskStatus == "Open" ? "selected" : '') +'>Open</option>';
+	            result = result  +'	<option '+(report.taskStatus == "Closed" ? "selected" : '') +'>Closed</option>';
+               	result = result + ' </select>';
+            		 
             	result = result + '           </div></td>';
             	result = result + '       </tr>';
 			}
         	result = result + '     </tbody>';
         	result = result + '   </table>';
         	
-        	if(status == "myTask"){
-	        	 $("#myTasksId").empty();
-	           	 $("#myTasksId").append(result); 
-	           	 myTasksPagination();
-        	}else if(status == "assignedTasks"){
-        		 $("#assignedTasksId").empty();
-	           	 $("#assignedTasksId").append(result); 
-	           	 assignedTasksPagination();
-        	}else if(status == "closedTasks"){
-        		 $("#closedTasksId").empty();
-	           	 $("#closedTasksId").append(result); 
-	           	 closedTasksPagination();
-       		}
+        	 $("#myTasksId").empty();
+           	 $("#myTasksId").append(result); 
+           	 myTasksPagination();
+        	 
+        }
+	});
+	 
+}
+</script>
+
+
+<script type="text/javascript">
+function assignedTasksList(status){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var date = $("#assignedTaskDatpicker").val();
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getTasksList?${_csrf.parameterName}=${_csrf.token}&status="+status+"&date="+date,
+        success: function(data) {
+        	 var json = JSON.parse(data);
+        	 var result = "";
+        	 
+       		 
+       		result = result + '	 <table id="assignedTasksPagination">'; 
+        	result = result + '     <thead>';
+        	result = result + '       <tr>';
+        	result = result + '         <th>Subject</th>';
+        	result = result + '         <th>Date &amp; Time</th>';
+        	result = result + '         <th>Owner</th>';
+        	result = result + '         <th>Assigned to</th>';
+        	result = result + '         <th>Description</th>';
+        	result = result + '         <th>Mode</th>';
+        	result = result + '         <th>Status</th>';
+        	result = result + '       </tr>';
+        	result = result + '     </thead>';
+        	result = result + '     <tbody>';
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        	 
+        		if(report.alertType != null && report.alertType != '' && report.alertType != 'undefined'){
+        			alertType = report.alertType;
+        		}else{
+        			alertType = "---";
+        		}
+        		if(report.taskDateStr != null && report.taskDateStr != '' && report.taskDateStr != 'undefined'){
+        			taskDateStr = report.taskDateStr
+        		}else{
+        			taskDateStr = "---";
+        		}
+        		if(report.taskTime != null && report.taskTime != '' && report.taskTime != 'undefined'){
+        			taskTime = report.taskTime;
+        		}else{
+        			taskTime = "---";
+        		}
+        		if(report.description != null && report.description != '' && report.description != 'undefined'){
+        			description = report.description;
+        		}else{
+        			description = "---";
+        		}
+        		result = result + ' <tr>';
+        		result = result + ' <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
+            	result = result + ' <td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + ' <td><div title="'+report.taskOwnerName+'"><span>'+report.taskOwnerName+'</span></div></td>';
+            	result = result + ' <td><div title="'+report.assignedName+'"><span>'+report.assignedName+'</span></div></td>';
+            	result = result + ' <td><div title="'+description+'"><span>'+description+'</span></div></td>';
+            	result = result + ' <td>'+alertType+'</td>';
+            	result = result + ' <td><div class="dropdown-select tblminwidth-100">';
+            	
+		        result = result + '<select id="assignTaskState'+report.id+'" name="assignTaskState" onchange="updateAssignTaskStatus('+report.id+');">';
+		        result = result  +'<option '+(report.taskStatus == "Open" ? "selected" : '') +'>Open</option>';
+				result = result  +'<option '+(report.taskStatus == "Closed" ? "selected" : '') +'>Closed</option>';
+		        result = result + '</select>';
+            	
+            	result = result + '</div></td>';
+            	result = result + '</tr>';
+			}
+        	result = result + '</tbody>';
+        	result = result + '</table>';
+        	
+       		 $("#assignedTasksId").empty();
+           	 $("#assignedTasksId").append(result); 
+           	 assignedTasksPagination();
         	
         	 
         }
@@ -777,6 +815,114 @@ function tasksList(status){
 	 
 }
 </script>
+
+<script type="text/javascript">
+function closedTasksList(status){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var date = $("#closedTaskDatpicker").val();
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getTasksList?${_csrf.parameterName}=${_csrf.token}&status="+status+"&date="+date,
+        success: function(data) {
+        	 var json = JSON.parse(data);
+        	 var result = "";
+        	 
+       		 
+        	result = result + '	 <table id="closedTasksPagination">'; 
+        	result = result + '     <thead>';
+        	result = result + '       <tr>';
+        	result = result + '         <th>Subject</th>';
+        	result = result + '         <th>Date &amp; Time</th>';
+        	result = result + '         <th>Owner</th>';
+        	result = result + '         <th>Assigned to</th>';
+        	result = result + '         <th>Description</th>';
+        	result = result + '         <th>Mode</th>';
+        	result = result + '         <th>Status</th>';
+        	result = result + '       </tr>';
+        	result = result + '     </thead>';
+        	result = result + '     <tbody>';
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        	 
+        		if(report.alertType != null && report.alertType != '' && report.alertType != 'undefined'){
+        			alertType = report.alertType;
+        		}else{
+        			alertType = "---";
+        		}
+        		if(report.taskDateStr != null && report.taskDateStr != '' && report.taskDateStr != 'undefined'){
+        			taskDateStr = report.taskDateStr
+        		}else{
+        			taskDateStr = "---";
+        		}
+        		if(report.taskTime != null && report.taskTime != '' && report.taskTime != 'undefined'){
+        			taskTime = report.taskTime;
+        		}else{
+        			taskTime = "---";
+        		}
+        		if(report.description != null && report.description != '' && report.description != 'undefined'){
+        			description = report.description;
+        		}else{
+        			description = "---";
+        		}
+        		result = result + ' <tr>';
+        		result = result + ' <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
+            	result = result + ' <td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + ' <td><div title="'+report.taskOwnerName+'"><span>'+report.taskOwnerName+'</span></div></td>';
+            	result = result + ' <td><div title="'+report.assignedName+'"><span>'+report.assignedName+'</span></div></td>';
+            	result = result + ' <td><div title="'+description+'"><span>'+description+'</span></div></td>';
+            	result = result + ' <td>'+alertType+'</td>';
+            	result = result + ' <td><div class="dropdown-select tblminwidth-100">';
+		        result = result + report.taskStatus;
+            	
+            	result = result + '</div></td>';
+            	result = result + '</tr>';
+			}
+        	result = result + '</tbody>';
+        	result = result + '</table>';
+        	
+        	$("#closedTasksId").empty();
+          	$("#closedTasksId").append(result); 
+          	 closedTasksPagination();
+        	
+        	 
+        }
+	});
+	 
+}
+</script>
+ 
+<script>
+function updateMyTaskStatus(taskId){
+ 	var taskStatus = $('#myTaskState'+taskId).val();	
+	var sourceleadUrl = '${sourceleadUrl}';
+
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/changeTaskStatus?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId+"&taskStatus="+taskStatus,	    	   
+	    success: function(data) {
+	    	assignedTasks();
+	    }
+   });
+}
+</script>
+
+<script>
+function updateAssignTaskStatus(taskId){
+   var taskStatus = $('#assignTaskState'+taskId).val();	
+	var sourceleadUrl = '${sourceleadUrl}';
+
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/changeTaskStatus?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId+"&taskStatus="+taskStatus,	    	   
+	    success: function(data) {
+	    	assignedTasks();
+	    }
+   });
+}
+</script>
+
+
 
 <script>
 function myTasksPagination(){
@@ -828,5 +974,14 @@ $(".nav-tabs").click(function(){
 	
 </script>
 
-
+<script>
+//scroll top top fix Header
+jQuery(window).scroll(function(){
+var top = jQuery(window).scrollTop();
+if(top>25){
+jQuery('.main-header').addClass('navbar-fixed-top');
+} else {
+jQuery('.main-header').removeClass('navbar-fixed-top');}
+});
+</script>
 <!-- Task related code Ends -->

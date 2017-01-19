@@ -49,30 +49,6 @@ width: 11.5%;
    right: 10px;
    top: 4px;
 } */
-.addTask-widget.addTask-widget-active {
-	z-index:1000 !important;
-}
-.addTask-widget .require_wrap_table {
-	overflow: visible !important;
-}
-
-.newdate {
-	padding: 0px; position: relative;
-}
-.newdate .fa-filter {
-	position: absolute; left: 2px; top: 1px; z-index: 100; font-size: 17px; color: #666; height: 32px; width: 34px;
-	background-color: #f1f1f1; text-align: center; padding: 7px 0px 0px 0px;
-}
-.newdate .dashboard-datepkr {
-	max-width:200px !important; width:200px !important;
-}
-.TaskDate {
-	width: 190px !important; padding: 6px 35px 6px 45px !important;
-}
-
-.newdate .fa-calendar {
-	position: absolute; font-size: 16px; color: #666; top: 8px; right: 18px; 
-}
 
 </style>
 
@@ -177,6 +153,8 @@ overflow-x: auto;
 <script type="text/javascript">
 $('#dasboardTaskDatpicker').datepicker({
 	dateFormat : 'dd-mm-yy',
+	changeMonth: true,
+	changeYear: true, 
 	onSelect : function(selected) {
 		var dt = new Date(selected);
 		dt.setDate(dt.getDate() + 1);
@@ -266,3 +244,4 @@ function dasboardTasksPagination(){
     } );
 }
 </script>
+
