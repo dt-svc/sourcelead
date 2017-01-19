@@ -4,21 +4,13 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="icon" type="resources/image/png"
 	href="resources/images/fav.png" />
-<link
-	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
-	rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="resources/css/register-style.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<!-- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> -->
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -738,6 +730,8 @@ function flushProjectTasks(){
 									
 									$('#startDate'+opt.id).datepicker({
 										dateFormat : 'yy-mm-dd',
+										changeMonth: true,
+										changeYear: true, 
 										minDate:projectStartDate,
 										maxDate:projectEndDate,
 										onSelect : function(selected) {
@@ -752,6 +746,8 @@ function flushProjectTasks(){
 		
 									$('#endDate'+opt.id).datepicker({
 										dateFormat : 'yy-mm-dd',
+										changeMonth: true,
+										changeYear: true, 
 										maxDate:projectEndDate,
 										minDate:projectStartDate,
 										onSelect : function(selected) {
@@ -847,6 +843,8 @@ function assignEmployeespagination(){
 
 		$('#StartDate').datepicker({
 			dateFormat : 'yy-mm-dd',
+			changeMonth: true,
+			changeYear: true, 
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() + 1);
@@ -857,6 +855,8 @@ function assignEmployeespagination(){
 
 		$('#EndDate').datepicker({
 			dateFormat : 'yy-mm-dd',
+			changeMonth: true,
+			changeYear: true, 
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() - 1);
@@ -974,7 +974,7 @@ function getChildLevel1Approvers(currentApproverId){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
+<!-- <script src="resources/js/chosen.jquery.min.js"></script>  -->
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},

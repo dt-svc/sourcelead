@@ -1,5 +1,4 @@
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
+
 
 
 <script>

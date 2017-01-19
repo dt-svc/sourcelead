@@ -270,6 +270,8 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	
 	$('#startDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
@@ -279,6 +281,8 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	  
 	  $('#endDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	        onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);

@@ -3,12 +3,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <script src="resources/js/chosen.jquery.min.js"></script> 

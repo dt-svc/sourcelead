@@ -5,9 +5,6 @@
 
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <script src="resources/js/bootstrap-select.min.js"></script>
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
  
@@ -295,6 +292,8 @@ function checkEmails(){
 		cell2.innerHTML = "<div class='positionRelative date'><input class='form-control input-sm Datepicker' placeholder='Select Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date' ></div>";
 		//$(".Datepicker").datepicker();
 		$(".Datepicker").datepicker({
+			 changeMonth: true,
+			 changeYear: true, 
 		      minDate: 0  
 		});
 		

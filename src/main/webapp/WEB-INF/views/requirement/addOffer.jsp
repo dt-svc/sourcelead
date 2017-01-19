@@ -9,8 +9,6 @@
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/chosen.jquery.min.js"></script>
 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 

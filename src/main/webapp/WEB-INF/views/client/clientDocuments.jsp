@@ -340,6 +340,8 @@ function addDocument(clientLocationId,orgRelationId) {
 	
 	$('#startDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
@@ -349,6 +351,8 @@ function addDocument(clientLocationId,orgRelationId) {
 	  
 	  $('#endDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true,  
 	        onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);

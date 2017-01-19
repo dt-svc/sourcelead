@@ -1,7 +1,5 @@
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="resources/js/jquery-1.11.3.min.js"></script> 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script>
 	function employeeSubmissionDetails(candidateId){

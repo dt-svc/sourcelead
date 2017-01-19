@@ -5,7 +5,6 @@
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
 
@@ -23,7 +22,6 @@
 <link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">

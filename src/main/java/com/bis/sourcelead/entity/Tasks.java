@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
