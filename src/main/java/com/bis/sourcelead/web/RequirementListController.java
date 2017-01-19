@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -37,6 +40,9 @@ public class RequirementListController {
 	RequirementService requirementService;
 	
 	@Autowired
+	LookUpDataService lookUpDataService;
+	
+	@Autowired
 	 CommonUtil commonUtil;
 	
 	
@@ -44,6 +50,21 @@ public class RequirementListController {
 	public ModelAndView requirementList(HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		model.addObject("skillsList", skillsList);
+		
+		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+		model.addObject("educationsList", educationsList);
+		
+		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+		for(OrgRelations ocl :orgClientList){
+			ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+			ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+		 }
+	    model.addObject("add_clientList", orgClientList);
+	    model.addObject("loginOrgLocId", orgLocations.getId());
+	    
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementList");
 		
