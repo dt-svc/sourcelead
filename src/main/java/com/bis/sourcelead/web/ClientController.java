@@ -30,8 +30,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-
-import opennlp.tools.parser.Cons;
 /**
  * Handles requests for the Client service.
  * 
@@ -146,6 +144,9 @@ public class ClientController {
 			if(countries != null){
 				model.addObject("loginCountryName", countries.getName());
 			}
+			
+			List<Countries> countryList = countriesService.getAllCountries();
+			model.addObject("countryList", countryList);
 		
 			commonUtil.highLightMenu(Constants.Clients, request);
 			String msg = "";
