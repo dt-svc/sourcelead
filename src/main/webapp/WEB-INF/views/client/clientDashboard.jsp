@@ -13,11 +13,6 @@
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<!-- these files for autocomplete with tagit -->
-<!-- <link href="resources/css/jquery-tagit.css" rel="stylesheet">
- --><!-- end files for autocomplete with tagit -->
-
-
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -26,9 +21,15 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
-
-
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+<jsp:include page="editClientSpocDetails.jsp" />
+<jsp:include page="clientDetails.jsp" />	
+<jsp:include page="clientContacts.jsp" />
+<jsp:include page="clientDocuments.jsp" />	
+<jsp:include page="clientSpocDocuments.jsp" />	
+<jsp:include page="submissionTemplateList.jsp" /> 
+
 <style type="text/css">
 .clients_wrap {
 overflow-x: auto;
@@ -116,7 +117,7 @@ overflow-x: auto;
 		                <div class="col-md-4">
 		                  <label>Country</label>
 		                  <div class="clearfix">
-		                    <select class="chosen-select" name="country" id="country" field-name="Country"  >
+		                    <select class="chosen-select" name="country" id="countrySearch" field-name="Country"  >
 						     <c:forEach var="cntry" items="${countryList}">
 					                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
 				             </c:forEach>
@@ -126,14 +127,14 @@ overflow-x: auto;
 		                <div class="col-md-4">
 		                  <label>State</label>
 		                  <div class="clearfix">
-		                    <select  class="chosen-select" name="state" id="state" field-name="State"  >
-                            </select>
+		                    <select  class="chosen-select" name="state" id="stateSearch" field-name="State">
+                           </select>
 		                  </div>
 		                </div>
 		                <div class="col-md-4">
 		                  <label>City</label>
 		                  <div class="clearfix">
-		                    <select  class="chosen-select" name="city" id="city" field-name="City"  >
+		                    <select  class="chosen-select" name="city" id="citySearch" field-name="City">
                             </select>
 		                  </div>
 		                </div>
@@ -716,10 +717,11 @@ window.onload = function () {
 		        }
 		    });
 		  
-		      $("#country").on('change', function (e) {
+
+		      $("#countrySearch").on('change', function (e) {
 		    	   getStates();
 		       });
-		       $("#state").on('change', function (e) {
+		       $("#stateSearch").on('change', function (e) {
 		    	   getCities();
 		       });
 				for (var selector in config) {
@@ -749,9 +751,9 @@ window.onload = function () {
 			 document.getElementById("vendorContactListAdvanced").style.display="none";
 		}
 		
-	    $('#country').val('${loginCountryName}'); 
-	    $('#state').val(''); 
-	    $('#city').val(''); 
+	    $('#countrySearch').val('${loginCountryName}'); 
+	    $('#stateSearch').val(''); 
+	    $('#citySearch').val(''); 
 	    
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
@@ -1905,7 +1907,7 @@ $('#selector').delay(2000).fadeOut('slow');
 
 <script>
 function getStates(){
-	var countryName = $("#country").val();
+	var countryName = $("#countrySearch").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
@@ -1913,27 +1915,27 @@ function getStates(){
 	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select state---</option>');
+	        	$('#stateSearch').empty();
+	        	$('#stateSearch').append('<option value="">---select state---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	$('#stateSearch').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
-	            $('#state').trigger("chosen:updated");
+	            $('#stateSearch').trigger("chosen:updated");
 	            
-	            $('#city').empty();
-	            $('#city').append('<option value="">---select city---</option>');
-	            $('#city').trigger("chosen:updated");
+	            $('#citySearch').empty();
+	            $('#citySearch').append('<option value="">---select city---</option>');
+	            $('#citySearch').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
 	    });
 	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---select state---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
-        $('#city').trigger("chosen:updated");
+		$('#stateSearch').empty();
+    	$('#stateSearch').append('<option value="">---select state---</option>');
+    	$('#stateSearch').trigger("chosen:updated");
+    	$('#citySearch').empty();
+    	$('#citySearch').append('<option value="">---select city---</option>');
+        $('#citySearch').trigger("chosen:updated");
 	}
 }
 </script> 
@@ -1941,8 +1943,8 @@ function getStates(){
 
 <script>
 function getCities(){
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
+	var countryName = $("#countrySearch").val();
+	var stateName = $("#stateSearch").val();
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
@@ -1951,31 +1953,23 @@ function getCities(){
 	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select city---</option>');
+	        	$('#citySearch').empty();
+	        	$('#citySearch').append('<option value="">---select city---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	$('#citySearch').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
-	            $('#city').trigger("chosen:updated");
+	            $('#citySearch').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
 	    });
 	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
-    	$('#city').trigger("chosen:updated");
+		$('#citySearch').empty();
+    	$('#citySearch').append('<option value="">---select city---</option>');
+    	$('#citySearch').trigger("chosen:updated");
 	}
 }
 </script>  
 
-
-
-<jsp:include page="editClientSpocDetails.jsp" />
-<jsp:include page="clientDetails.jsp" />	
-<jsp:include page="clientContacts.jsp" />
-<jsp:include page="clientDocuments.jsp" />	
-<jsp:include page="clientSpocDocuments.jsp" />	
-<jsp:include page="submissionTemplateList.jsp" />	
 <jsp:include page="../masterFooter.jsp" />	
 	
