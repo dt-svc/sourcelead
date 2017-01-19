@@ -811,14 +811,14 @@ $(document).ready(function () {
                 <div  class="ml pull-left apprverReq" style="display:none;">
                 <label class="rad" id="parallel">
                 <input type="radio" name="approver" id="parallelapprovers" checked="checked" onClick="approvalType('Parallel');">
-                <i class="fa fa-align-center" data-placement="top" data-toggle="tooltip"  title="Parallel"></i>
+                <i class="fa fa-align-center" title="Parallel"></i>
                 </label>
                 <label class="rad" id="sequential">
                 <input type="radio" name="approver" id="seqentialApprovers"  onClick="approvalType('Sequential');">
-                <i class="fa fa-retweet" data-placement="top" data-toggle="tooltip" title="Sequential"></i>
+                <i class="fa fa-retweet" title="Sequential"></i>
                 </label>
                 
-                 <i data-placement="top" data-toggle="tooltip" class="glyphicon glyphicon-info-sign text-info ml" title="info"></i>
+                 <i class="glyphicon glyphicon-info-sign text-info ml" title="Sequential approval mechanism is hierarchy based Parallel approval mechanism is any approver can approve requirement"></i>
                 </div>
                 <!-- Radio buttons for Sequential or Parallel function -->
                

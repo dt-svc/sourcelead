@@ -128,7 +128,8 @@ public class ClientServiceImpl implements ClientService{
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
-
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;	
 	
 	
 	/**
@@ -835,6 +836,139 @@ public class ClientServiceImpl implements ClientService{
 			       ClientVendorIndex clientVendorIndex = clientVendorIndexHelper.getClientVendorIndexFromCandidate(org,clientOrgLocations,responderType,orgSpoc,orgRelation,submissionTemplate);
 			       sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,orgRelation.getId().toString());
 
+		}
+		
+		@Override
+		public void sendAcceptEmailToClientOrVendor(OrgSpoc orgSpoc,User loginUser,OrgLocations orgLocations) throws Exception {
+			 
+			 EmailMessage emailMessage = new EmailMessage();
+			 if(null != orgSpoc.getOwnerUser()){
+				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
+				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
+			 }
+			 emailMessage.setToEmail(orgSpoc.getSpocUser().getEmail());
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 StringBuilder emailMsgBuilder = new StringBuilder();
+			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
+			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
+				 globalVarsMap.put("firstName", emailMessage.getFirstName());
+				 globalVarsMap.put("lastName",emailMessage.getLastName());
+				 globalVarsMap.put("vendorFirstName",orgSpoc.getSpocUser().getFirstName());
+				 globalVarsMap.put("vendorLastName",orgSpoc.getSpocUser().getLastName());
+				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+				  
+				 StringBuilder loginBuilder = new StringBuilder();
+				 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				
+			 }else if(Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
+					 globalVarsMap.put("firstName", emailMessage.getFirstName());
+					 globalVarsMap.put("lastName",emailMessage.getLastName());
+					 globalVarsMap.put("clientFirstName", loginUser.getFirstName());
+					 globalVarsMap.put("clientLastName",loginUser.getLastName());
+					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+					  
+					 StringBuilder loginBuilder = new StringBuilder();
+					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			}
+			 //setting the Recipient information
+			 StringBuilder recipientbuilder = new StringBuilder();
+			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+			 EmailRecipient emailRecipient = new EmailRecipient();
+			 emailRecipient.setEmail(emailMessage.getToEmail());
+			 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+			 emailRecipientList.add(emailRecipient);
+			
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = null;
+			 
+			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+			 }else if(Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+			 }
+			 
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 emailMessage.setOrgLocationId(orgLocations.getId());
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		
+		}
+
+		@Override
+		public void sendRejectEmailToClientOrVendor(OrgSpoc orgSpoc, User loginUser, OrgLocations orgLocations)throws Exception {
+			
+			EmailMessage emailMessage = new EmailMessage();
+			 if(null != orgSpoc.getOwnerUser()){
+				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
+				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
+			 }
+			 emailMessage.setToEmail(orgSpoc.getSpocUser().getEmail());
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 StringBuilder emailMsgBuilder = new StringBuilder();
+			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
+			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
+				 globalVarsMap.put("firstName", emailMessage.getFirstName());
+				 globalVarsMap.put("lastName",emailMessage.getLastName());
+				 globalVarsMap.put("vendorFirstName",orgSpoc.getSpocUser().getFirstName());
+				 globalVarsMap.put("vendorLastName",orgSpoc.getSpocUser().getLastName());
+				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+				 
+			 }else if( Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
+					 globalVarsMap.put("firstName", emailMessage.getFirstName());
+					 globalVarsMap.put("lastName",emailMessage.getLastName());
+					 globalVarsMap.put("clientFirstName", loginUser.getFirstName());
+					 globalVarsMap.put("clientLastName",loginUser.getLastName());
+					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+				}
+			 //setting the Recipient information
+			 StringBuilder recipientbuilder = new StringBuilder();
+			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+			 EmailRecipient emailRecipient = new EmailRecipient();
+			 emailRecipient.setEmail(emailMessage.getToEmail());
+			 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+			 emailRecipientList.add(emailRecipient);
+			
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = null;
+			 
+			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+			 }else if(Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+			 }
+			 
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = "";
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 emailMessage.setOrgLocationId(orgLocations.getId());
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		}
 		
 }
