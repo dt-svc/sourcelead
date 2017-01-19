@@ -218,7 +218,7 @@ z-index: 9999999999 !important;
 							</div>
 							
 							<div class="user_summary_edit_cta">
-								 <label>First Name</label>
+								 <label>First Name<span class="text-danger">&nbsp; *</span></label>
 									<input type="text" value="${orgloc.user.firstName}"  id="primaryUserFirstName" name="primaryUserFirstName" field-name="First Name" data-validation="required validate_Alphanumeric validate_Space validate_length length1-100" class="form-control">
 							</div>
 							
@@ -228,7 +228,7 @@ z-index: 9999999999 !important;
 							</div>
 							
 							<div class="user_summary_edit_cta" id="primaryUserEmailDiv">
-								 <label>Email</label>
+								 <label>Email<span class="text-danger">&nbsp; *</span></label>
 									<input type="text" value="${orgloc.user.email}" name="primaryUserEmail" id="primaryUserEmail" field-name="Email" onblur="validatePrimaryUserEmail()" data-validation="required validate_Space validate_email validate_length length2-100"  class="form-control">
 							</div>
 							
