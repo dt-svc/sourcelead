@@ -790,6 +790,10 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     display:inline-block; float:left; width:60%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
     font-weight:500;
     }
+    .project_details_cta.project_details_view span {
+    display:inline; float:left; width:60%; text-overflow: inherit; white-space: normal; overflow: visible;
+    font-weight:500; word-wrap: break-word;
+    }
 .project_details_cta span i {
     font-size:13px; color:#666; display:inline-block; padding:0px 0px 0px 10px; cursor:pointer; position:relative;
     }
@@ -1597,6 +1601,10 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
 .require_wrap_details_cta span  {
     display:block; width:60%; float:left; font-weight:500; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+    }
+    .require_wrap_details_cta.require_wrap_details_view span  {
+    display: inline; float: left; width: 60%; text-overflow: inherit; white-space: normal; overflow: visible;
+	font-weight: 500; word-wrap: break-word;
     }
 .require_one {
     padding:10px; background-color:#f8f8f8; position:relative;

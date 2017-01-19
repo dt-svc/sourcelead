@@ -105,6 +105,13 @@ public class RolesServiceImpl implements RolesService{
 	public List<Roles> getRolesListExpcetCurrentUserRole(Long roleId, Long orgLocationId) throws Exception {
 		return rolesDao.getRolesListExpcetCurrentUserRole(roleId, orgLocationId);
 	}
+
+
+	@Override
+	public List<Roles> getUserRolesListByRoleHierarchyIdAndOrgLocationId(Long orgLocationId, Long hierarchyId,String orgCode)
+			throws Exception {
+		return rolesDao.getUserRolesListByRoleHierarchyIdAndOrgLocationId(orgLocationId, hierarchyId,orgCode);
+	}
 	
 
 }

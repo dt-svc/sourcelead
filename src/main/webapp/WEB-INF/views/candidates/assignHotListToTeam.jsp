@@ -33,7 +33,7 @@
            	
            	
           
-          <li id="candFilter"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+          <li id="filter3ApprovePop"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" id="candFilter" ></i>|
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
 	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="hotListCandidates();"  ><label for="c5">All</label></li>

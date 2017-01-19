@@ -1162,28 +1162,28 @@ function getCandidateListForTeam(teamId,teamName){
 		                    	 var candidateMobileNumber = "";
 		                    	 var candidateType = "";
 		                    	 var candidateLocation = "";
-		                    	 if(opt.candidateFullName != null && opt.candidateFullName != 'undefined' && opt.candidateFullName != ""){
-		                    		 candidateFullName = opt.candidateFullName;
+		                    	 if(opt.candidateName != null && opt.candidateName != 'undefined' && opt.candidateName != ""){
+		                    		 candidateFullName = opt.candidateName;
 					             }else{
 					            	 candidateFullName = "----";
 					             }
-		                    	 if(opt.candidateDesignation != null && opt.candidateDesignation != 'undefined' && opt.candidateDesignation != ""){
-		                    		 candidateDesignation = opt.candidateDesignation;
+		                    	 if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
+		                    		 candidateDesignation = opt.designation;
 					             }else{
 					            	 candidateDesignation = "----";
 					             }
-		                    	 if(opt.positionType != null && opt.positionType != 'undefined' && opt.positionType != ""){
-		                    		 positionType = opt.positionType;
+		                    	 if(opt.designationType != null && opt.designationType != 'undefined' && opt.designationType != ""){
+		                    		 positionType = opt.designationType;
 					             }else{
 					            	 positionType = "----";
 					             }
-		                    	 if(opt.candidateEmail != null && opt.candidateEmail != 'undefined' && opt.candidateEmail != ""){
-		                    		 candidateEmail = opt.candidateEmail;
+		                    	 if(opt.email != null && opt.email != 'undefined' && opt.email != ""){
+		                    		 candidateEmail = opt.email;
 					             }else{
 					            	 candidateEmail = "----";
 					             }
-		                    	 if(opt.candidateMobileNumber != null && opt.candidateMobileNumber != 'undefined' && opt.candidateMobileNumber != ""){
-		                    		 candidateMobileNumber = opt.candidateMobileNumber;
+		                    	 if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
+		                    		 candidateMobileNumber = opt.mobilePhone;
 					             }else{
 					            	 candidateMobileNumber = "----";
 					             }
