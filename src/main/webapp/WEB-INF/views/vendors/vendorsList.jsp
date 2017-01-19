@@ -111,17 +111,16 @@ overflow-x: auto;
                   <label>Country </label>
                   <div class="clearfix">
                     <select class="chosen-select" name="country" id="country" field-name="Country"  >
-								     <c:forEach var="cntry" items="${countryList}">
-							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
-						                </c:forEach>
-				                 </select>
+						     <c:forEach var="cntry" items="${countryList}">
+					                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+				             </c:forEach>
+				     </select>
                   </div>
                 </div>
                 <div class="col-md-4">
                   <label>State</label>
                   <div class="clearfix">
 					<select  class="chosen-select" name="state" id="state" field-name="State"  >
-					
                     </select>
                   </div>
                 </div>
@@ -142,7 +141,7 @@ overflow-x: auto;
 	                     <option value="Tier-2">Tier-2</option>
 	                     <option value="Tier-3">Tier-3</option>
 	                     <option value="Tier-4">Tier-4</option>
-	                     <option selected="selected" value="Tier-5">Tier-5</option>
+	                     <option value="Tier-5">Tier-5</option>
                     </select>
                   </div>
                 </div>
@@ -392,6 +391,79 @@ overflow-x: auto;
 </section>
 
 
+<script type="text/javascript">
+	function searchVendor() {
+		var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd'
+			};
+		
+		 if ($('#vendorList_form').validate(false, validationSettings)){ 
+			
+			var sourceleadUrl = '${sourceleadUrl}';
+			var frm = $('#vendorList_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, ""); 
+		    var jsonData = encodeURIComponent(con);
+			var form = $('#vendorList_form')[0];
+      		var formData = new FormData(form); 
+			//It will escape all the special characters
+			$("#search_vendor").attr("disabled", "disabled");
+			$("#search_vendor").addClass('button').val('Processing..');
+
+			var selectedList = document.getElementById('listOfVendors').value;
+			if(selectedList == "listbyVendor" ){
+				
+				$.ajax({
+					type : "POST",
+	        	    data: formData,
+	        	    contentType : 'application/json; charset=utf-8',
+	        	    enctype: 'multipart/form-data',
+	    	        processData: false,
+	    	        contentType:false,
+	        	    dataType : 'json',
+					url : sourceleadUrl+"/searchCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					success : function(data) {
+						$("#search_vendor").addClass('button').val('Search');
+						$("#search_vendor").removeAttr("disabled");
+						closePop();
+						prepareCandidateList(data);
+					},
+				}); 
+		   return true;
+			}else if(selectedList == "listbyContact"){
+				
+				$.ajax({
+					type : "POST",
+	        	    data: formData,
+	        	    contentType : 'application/json; charset=utf-8',
+	        	    enctype: 'multipart/form-data',
+	    	        processData: false,
+	    	        contentType:false,
+	        	    dataType : 'json',
+					url : sourceleadUrl+"/searchCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					success : function(data) {
+						$("#search_vendor").addClass('button').val('Search');
+						$("#search_vendor").removeAttr("disabled");
+						closePop();
+						prepareCandidateList(data);
+					},
+				}); 
+		return true;
+			}
+			
+		 }else{ 
+				return false;
+		 } 
+	} 
+	
+	$('body').on('blur', '#vendorList_form', function() {
+		$("#vendorList_form").showHelpOnFocus();
+		$("#vendorList_form").validateOnBlur(false, validationSettings);
+	});
+</script>
 
 
 <script type="text/javascript">
@@ -737,6 +809,8 @@ $(document).ready(function(){
 
 <script>
 function getVendorLists(){
+	
+	closePop();
 	var values = [];
 	$('input:checkbox[name=clinetLevel]:checked').each(function() 
     {
