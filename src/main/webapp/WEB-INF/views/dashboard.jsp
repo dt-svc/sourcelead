@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
