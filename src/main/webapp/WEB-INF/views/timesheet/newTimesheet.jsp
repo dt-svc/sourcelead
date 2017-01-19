@@ -18,21 +18,24 @@
 <script>
 // project side bar tabs
 $(document).ready(function() {
-	newTimesheetDummy();
+	timesheetEntriesDiv();
 });
 </script>  
 
 
 <script>
-	function newTimesheetDummy(){ 
+	function timesheetEntriesDiv(){ 
 	               var sourceleadUrl ='${sourceleadUrl}';
+	               $("#timesheetEntriesDiv").empty();
+	               $("#timesheetEntriesDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        	   $.ajax({
 		      	          type : "POST",
 		          	      dataType : 'json',
 	        	      	  url: sourceleadUrl+"/newTimesheetDummy?${_csrf.parameterName}=${_csrf.token}",		
 	        		      success :function(result) {
-	        		    	    $("#timesheetDivByProject").empty();
-	        		    	  	$("#timesheetDivByProject").append(result);
+	        		    	    $("#timesheetEntriesDiv").removeAttr("style");
+	        		    	    $("#timesheetEntriesDiv").empty();
+	        		    	  	$("#timesheetEntriesDiv").append(result);
 	        		    	  	maskme();
 	        		    	  	
 	        		    	  	$("#tab-1").show()
@@ -43,12 +46,102 @@ $(document).ready(function() {
 	        		    	        var tab = $(this).attr("href");
 	        		    	        $(".project_tabs_inn").not(tab).css("display", "none");
 	        		    	        $(tab).fadeIn();
-	        		    	    });
+	        		    	    }); 
 	        		      }
 	        	      	  
 	        	    }); 
 	}
 </script>
+
+
+
+<script>
+	function timesheetEntriesDivByProject(projectId){ 
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         $("#timesheetEntriesDivByProject").empty();
+	         $("#timesheetEntriesDivByProject").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+     	          type : "POST",
+         	      dataType : 'json',
+   	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProject?${_csrf.parameterName}=${_csrf.token}",		
+   		          success :function(result) {
+   		        	 $("#timesheetEntriesDivByProject").removeAttr("style");
+   		        	 $("#timesheetEntriesDivByProject").empty();
+   		        	 $("#timesheetEntriesDivByProject").append(result);
+		    	  	 $("#tab-1").show()
+ 		    	     $(".project-tabs-menu a").click(function(event) {
+ 		    	        event.preventDefault();
+ 		    	        $(this).parent().addClass("current");
+ 		    	        $(this).parent().siblings().removeClass("current");
+ 		    	        var tab = $(this).attr("href");
+ 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+ 		    	        $(tab).fadeIn();
+ 		    	    }); 
+		    	  	 
+   		          }
+   	         }); 
+	}
+</script>	
+
+
+<script>
+	function timesheetDivByFrequency(frequency){   
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         $("#timesheetEntriesDivByProject").empty();
+	         $("#timesheetEntriesDivByProject").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+     	          type : "POST",
+         	      dataType : 'json',
+   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}",		
+   		          success :function(result) {
+	   		    	      $("#timesheetDivByFrequency").empty();
+			    	  	  $("#timesheetDivByFrequency").append(result); 
+		    	  	   
+			    	  	 $("#tab-1").show()
+	 		    	     $(".project-tabs-menu a").click(function(event) {
+	 		    	        event.preventDefault();
+	 		    	        $(this).parent().addClass("current");
+	 		    	        $(this).parent().siblings().removeClass("current");
+	 		    	        var tab = $(this).attr("href");
+	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+	 		    	        $(tab).fadeIn();
+	 		    	    });
+   		          }
+   	         }); 
+	}
+</script> 
+
+<script>
+	/* function timesheetDivByTab(startDate,endDate) */
+	function timesheetDivByTab(startDate,endDate){ 
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         $.ajax({
+    	          type : "POST",
+        	      dataType : 'json',
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}",		
+  		          success :function(result) {
+  		    	       
+  		    	       $("#timesheetDivByTab").empty();
+		    	  	   $("#timesheetDivByTab").append(result);
+		    	  	   
+		    	  	   
+			    	   $("#tab-1").show()
+	 		    	   $(".project-tabs-menu a").click(function(event) {
+	 		    	        event.preventDefault();
+	 		    	        $(this).parent().addClass("current");
+	 		    	        $(this).parent().siblings().removeClass("current");
+	 		    	        var tab = $(this).attr("href");
+	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+	 		    	        $(tab).fadeIn();
+	 		    	   });
+		    	  	   
+  		          }
+  	         }); 
+	}
+</script>
+
+   
+
 
 
 <!-- this script is for add row functionality at Timesheet screen -->
@@ -532,15 +625,13 @@ function addAttachment(){
           <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
         </section>
         
-        <div id="timesheetDivByProject">
-        
-        			<div id="timesheetDivByFrequency">
-        			
-        							<div id="timesheetDivByTab">
-        								     
-        							</div>
-        			</div>
-        				
+        <div id="timesheetEntriesDiv"> 
+        	<div id="timesheetEntriesDivByProject">
+        		 <div id="timesheetDivByFrequency">
+        			 <div id="timesheetDivByTab">
+        			 </div>
+        		  </div>
+        	</div>
         </div>
         
         <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
