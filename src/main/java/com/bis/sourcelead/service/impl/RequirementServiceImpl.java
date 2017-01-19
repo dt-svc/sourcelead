@@ -2416,6 +2416,7 @@ public class RequirementServiceImpl implements RequirementService {
 				Float expYears = Float.valueOf(matcher.group());
 				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
 				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
 			}
 //			if(StringUtils.isNumeric(keywd)){
 //				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
