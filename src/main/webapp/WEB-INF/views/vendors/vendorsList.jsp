@@ -82,7 +82,7 @@ overflow-x: auto;
               <div class="col-md-4">
                 <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
                 <div class="clearfix">
-				  	 <select class="form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
+				  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
                      </select>
 	            </div>
               </div>
@@ -162,30 +162,7 @@ overflow-x: auto;
                </div>
                 
                 <div class="clearfix">
-                <div class="col-md-4">
-                  <label>Document Name</label>
-                  <div class="clearfix">
-                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Document Name" id="documentNameAdvanced" name="documentNameAdvanced">
-                    </select>
-                  </div>
-                </div>
-              
-                <div class="col-md-4">
-                  <label>Document Type</label>
-                  <div class="clearfix">
-                   <select class="chosen-select form-control input-sm" multiple data-placeholder="Document Type" id="documentTypeAdvanced" name="documentTypeAdvanced">
-                    </select>
-                  </div>
-                </div>
-                
-              
-                <div class="col-md-4">
-                  <label>Submission Template</label>
-                  <div class="clearfix">
-                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Submission Template" id="submissionTemplateAdvanced" name="submissionTemplateAdvanced">
-                    </select>
-                  </div>
-                </div>
+               
                  </div>
              </div> 
               <div id="vendorContactListAdvanced">   
@@ -602,7 +579,7 @@ overflow-x: auto;
 		    
 		    
 		    
-		    // This is for DocumentName
+		   /*  // This is for DocumentName
 		    var selectdocumentNameAdvanced, chosendocumentNameAdvanced;
 		    selectdocumentNameAdvanced = $("#documentNameAdvanced");
 		    selectdocumentNameAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Document Name:' });
@@ -672,7 +649,7 @@ overflow-x: auto;
 		        }
 		    });
 		    
-		    
+		     */
 		    
 		    
 		    

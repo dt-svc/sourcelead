@@ -35,13 +35,8 @@ public class ClientVendorIndexHelper {
 			clientVendorIndex.setOrgName(org.getOrgName());
 			clientVendorIndex.setWebsite(org.getWebSite());
 		}
-		if(null != submissionTemplate){
-			
-			clientVendorIndex.setSubmissionTemplateName(submissionTemplate.getTemplateName());
-		}
 		
 		if(null != orgRelationsList){
-			
 			clientVendorIndex.setOrgRelationId(orgRelationsList.getId());
 			clientVendorIndex.setResponderType(orgRelationsList.getResponderType());
 			clientVendorIndex.setInitiatorType(orgRelationsList.getInitiatorType());
@@ -52,8 +47,8 @@ public class ClientVendorIndexHelper {
 			clientVendorIndex.setStatus(orgRelationsList.getStatus());
 		}
 		if(null != orgSpoc){
-			
 			clientVendorIndex.setOwnerId(orgSpoc.getOwnerUser().getId());
+			clientVendorIndex.setCreatedBy(orgSpoc.getOwnerUser().getFirstName() +""+orgSpoc.getOwnerUser().getLastName());
 		}
 		
 		return clientVendorIndex;
