@@ -30,15 +30,15 @@ public class RequirementHelper {
 			requirementIndex.setRequirementId(requirement.getId());
 			requirementIndex.setOrgLocationId(requirement.getOrgLocationId().getId());
 			requirementIndex.setJobTitle(requirement.getJobTitle());
-			if (null != requirement.getRate() && !"".equalsIgnoreCase(requirement.getRate())) {
+			if (requirement.getRate() !=null && !"".equalsIgnoreCase(requirement.getRate())) {
 				requirementIndex.setRate(Float.parseFloat(requirement.getRate()));
 			}
 
 			requirementIndex.setRateType(requirement.getRateType());
-			if (null != requirement.getMinExp() && !"".equalsIgnoreCase(requirement.getMinExp())) {
+			if (requirement.getMinExp() !=null && !"".equalsIgnoreCase(requirement.getMinExp())) {
 				requirementIndex.setMaxExperience(Integer.parseInt(requirement.getMinExp()));
 			}
-			if (null != requirement.getMaxExp() && !"".equalsIgnoreCase(requirement.getMaxExp())) {
+			if (requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())) {
 				requirementIndex.setMaxExperience(Integer.parseInt(requirement.getMaxExp()));
 			}
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
@@ -54,11 +54,11 @@ public class RequirementHelper {
 				Requirement requirement1 = requirementService.getRequirementByRequirementId(requirement.getId());
 				StringBuilder sb = new StringBuilder();
 				if ("Client".equalsIgnoreCase(requirement1.getClientId().getResponderType())) {
-					if (null != requirement1.getClientId().getResponderLocationId()) {
+					if (requirement1.getClientId().getResponderLocationId() !=null) {
 						requirementIndex
 								.setClient(requirement1.getClientId().getResponderLocationId().getOrg().getOrgName());
-						if (null != requirement1.getSpocId().getSpocUser().getFirstName()
-								&& null != requirement1.getSpocId().getSpocUser().getLastName()) {
+						if (requirement1.getSpocId().getSpocUser().getFirstName()
+								!=null &&requirement1.getSpocId().getSpocUser().getLastName() !=null) {
 							sb.append(requirement1.getSpocId().getSpocUser().getFirstName()).append(" ")
 									.append(requirement1.getSpocId().getSpocUser().getLastName());
 						} else {
@@ -70,8 +70,8 @@ public class RequirementHelper {
 				}
 				if (("Vendor").equalsIgnoreCase(requirement1.getClientId().getResponderType())) {
 					requirementIndex.setClient(requirement1.getClientId().getLocationId().getOrg().getOrgName());
-					if (null != requirement1.getSpocId().getSpocUser().getFirstName()
-							&& null != requirement1.getSpocId().getSpocUser().getLastName()) {
+					if (requirement1.getSpocId().getSpocUser().getFirstName()
+							!=null && requirement1.getSpocId().getSpocUser().getLastName()!=null) {
 						sb.append(requirement1.getSpocId().getSpocUser().getFirstName()).append(" ")
 								.append(requirement1.getSpocId().getSpocUser().getLastName());
 					} else {
