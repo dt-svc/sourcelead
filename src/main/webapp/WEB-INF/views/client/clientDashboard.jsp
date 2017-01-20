@@ -104,7 +104,7 @@ overflow-x: auto;
 		                <div class="col-md-4">
 		                  <label>Client Name</label>
 		                  <div class="clearfix">
-		                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Client Name" id="orgNameAdvanced" name="orgNameAdvanced">
+		                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Client Name" id="orgNameAdvanced" name="orgAdvanced">
 		                    </select>
                   </div>
 		                </div>
@@ -2153,8 +2153,7 @@ $('#selector').delay(2000).fadeOut('slow');
 		    var jsonData = encodeURIComponent(con);
 			var form = $('#clientlist_form')[0];
       		var formData = new FormData(form); 
-      		alert("raju"+con);
-      		
+      		var responderType = "Client";
       		
 			//It will escape all the special characters
 			$("#search_client").attr("disabled", "disabled");
@@ -2162,7 +2161,6 @@ $('#selector').delay(2000).fadeOut('slow');
 			
 			 var selectedList = document.getElementById('listOfVendors').value;
 			if(selectedList == "listbyVendor" ){
-				alert("david"+con);
 				
 				$.ajax({
 					type : "POST",
@@ -2172,7 +2170,7 @@ $('#selector').delay(2000).fadeOut('slow');
 	    	        processData: false,
 	    	        contentType:false,
 	        	    dataType : 'json',
-					url : sourceleadUrl+"/searchVendorThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					url : sourceleadUrl+"/searchVendorThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&json="+jsonData,
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");

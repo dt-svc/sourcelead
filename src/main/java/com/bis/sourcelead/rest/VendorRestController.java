@@ -672,7 +672,7 @@ public class VendorRestController {
 		   * @throws NullPointer
 		   */
 		 @RequestMapping(value = "/searchVendorThroughElasticSearch", method = RequestMethod.POST)
-		 public String searchVendorThroughElasticSearch(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+		 public String searchVendorThroughElasticSearch(@RequestParam(value = "responderType", required = false) String responderType, @RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request) throws Exception {
 
 			    MultipartFile multiFile = null;
 				Iterator<String> itrator = request.getFileNames();
@@ -687,7 +687,7 @@ public class VendorRestController {
 				 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 				 
 				 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
-				 boolQueryBuilder.must(QueryBuilders.matchQuery("responderType", "Vendor"));
+				 boolQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
 				 
 				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId());
 			   	 
@@ -901,6 +901,16 @@ public class VendorRestController {
 							}
 						}
 						 boolQueryBuilder.must(allBoolQueryBuilder);
+					}
+					
+					//vendorName
+					ArrayList<String> vendorNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "orgNameAdvanced");
+					if(vendorNameArray != null && !vendorNameArray.isEmpty()){
+						BoolQueryBuilder vendorNameBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : vendorNameArray){
+							vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("orgName", keywd));
+						}
+						boolQueryBuilder.must(vendorNameBoolQueryBuilder);
 					}
 					
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
