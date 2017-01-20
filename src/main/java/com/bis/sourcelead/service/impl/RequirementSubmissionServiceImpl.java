@@ -300,7 +300,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 }
 					 }
 					
-					
 		 }
 		 
 		 if(jsonObj.has("candidateResume") && !isNullOrEmpty(jsonObj.getString("candidateResume"))){
