@@ -43,10 +43,14 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -63,7 +67,9 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -135,6 +141,18 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
+	
+	@Autowired
+	CandidateSkillsService candidateSkillsService;
+	
+	@Autowired
+	CandidateIndexHelper candidateIndexHelper;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	RecommendationsService recommendationsService;
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -240,6 +258,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 					
 					candidateDao.storeCandidate(candidate);
+					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+					
 					requirementSubmission.setCandidate(candidate);
 					
 					if(jsonObj.has("Education") && !isNullOrEmpty(jsonObj.getString("Education"))){
@@ -266,7 +287,18 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
 						 
 					 }
-					
+					 
+					 if(jsonObj.has("candidateSkills") && !isNullOrEmpty(jsonObj.getString("candidateSkills"))){
+						 String[] skillsList = jsonObj.getString("candidateSkills").split(",");
+						 for(int i=0; i<skillsList.length; i++){
+							  CandidateSkills candSkill = new  CandidateSkills();
+				    		  candSkill.setName(skillsList[i]);
+				    		  candSkill.setCandidateId(candidate);
+				    		  candSkill.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
+				    		  candSkill.setOrgLocationID(orgLocations);
+				    		  candidateSkillsService.storeCandidateSkills(candSkill);
+						 }
+					 }
 					
 		 }
 		 
@@ -310,6 +342,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 requirementSubmission.setCreatedBy(user.getUserCode());
 		 requirementSubmission.setCreatedDate(new Date());
 		 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+		 String score = recommendationsService.getCandidateScore(candidate,requirementSubmission.getRequirement());
+		 requirementSubmission.setCandidateScore(Integer.parseInt(score));
 		 requirementSubmission = requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 		
 		 RequirementSubmissionTemplateFields templateFields = new RequirementSubmissionTemplateFields();
