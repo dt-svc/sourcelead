@@ -34,6 +34,12 @@ bottom:-14px;
 </style>
 
 
+<script>
+	$(document).ready(function() {
+		document.getElementById("requirementtemplate_form").reset();
+	});
+</script>
+
 <!-- Content Area -->
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -123,7 +129,7 @@ bottom:-14px;
 										<input type="text" class="form-control" placeholder="minExp"
 											id="minExp" name="minExp" value="${requirement.minExp}"
 											field-name="MinExp"
-											data-validation="validate_Space validate_length length1-5 validate_float"
+											data-validation="validate_Space validate_float validate_length length1-5"
 											data-validation-optional="true" onblur="minMaxExperience();"
 											value="">
 									</div>
@@ -131,7 +137,7 @@ bottom:-14px;
 										<input type="text" class="form-control" id="maxExp"
 											name="maxExp" placeholder="maxExp"
 											value="${requirement.maxExp}" field-name="MaxExp"
-											data-validation="validate_Space validate_length length1-5 validate_float"
+											data-validation="validate_Space validate_float validate_length length1-5"
 											data-validation-optional="true" onblur="minMaxExperience();"
 											value="">
 									</div>
@@ -196,16 +202,19 @@ bottom:-14px;
 
 </section>
 
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
 
+        
+</script> 
 <script type="text/javascript">
 	function storeRequiremetTemplate() {
 		
-		var validationSettings = {
-				errorMessagePosition : 'element',
-				borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd'
-			};
 		
 		 if ($('#requirementtemplate_form').validate(false, validationSettings)){ 
 			
