@@ -4,7 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="resources/js/formvalidator.js"></script>
@@ -28,7 +28,7 @@
 $(document).ready(function() {
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
-		$(".export_pop, .action-pop").slideUp(200);
+		$(".export_pop, .action-pop, #exportPop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
@@ -792,7 +792,7 @@ function requirementPipeline(requirementId){
 				            result = result +'    <li class="li-vendor">';
 				            result = result +'      <input type="text" class="vendorfild" placeholder="Search">';
 				            result = result +'      <i class="fa fa-search"></i></li>';
-				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
+				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play"></i>';
 				            result = result +'      <div class="export_pop">';
 				            result = result +'        <ul>';
 				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
@@ -1462,11 +1462,11 @@ function requirementPipeline(requirementId){
           </div>
           </li>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
-           <li id="export-pop" ><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" onClick="mypop();"></i>
-            <div class="export_pop">
+           <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="mypop"></i>
+            <div id="exportPop">
               <ul>
-                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
-                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
+                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
               </ul>
             </div>
           </li>
@@ -1689,16 +1689,21 @@ function changeStatus(requirementId){
 
 
 <script>
-    $("#export-pop").click(function(){
-		$(".export_pop").slideToggle(200);
-		$(" #filter2ApprovedPop, .action-pop").slideUp(200);
-	});
-    $("html").click(function() {
-        $(".export_pop").slideUp(200);
-    });
-    $(".export_pop, #export-pop").click(function(e) {
-        e.stopPropagation();
-    });	
+/*     function mypop(){
+		$("#exportPop").toggle();
+		$(".export_pop, #filter2ApprovedPop").slideUp();
+    }
+ */
+$('#mypop').click(function(){
+		$("#exportPop").toggle();
+		$(".export_pop, #filter2ApprovedPop, .action-pop").slideUp();
+ });
+ $("html").click(function(){
+	$("#exportPop").hide(200);
+ });
+ $("#exportPop, #mypop").click(function(e) {  
+     e.stopPropagation();
+ });
 </script>
 
 <script>
@@ -1782,7 +1787,7 @@ function cancel(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
-	$(".export_pop, #filter2ApprovedPop").slideUp(200);
+	$(".export_pop, #filter2ApprovedPop, #exportPop").slideUp(200);
 	
 	$("html").click(function(){
 		$(".action-pop").slideUp(200);
