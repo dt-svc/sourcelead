@@ -16,7 +16,7 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
 <style type="text/css">
-.vendor_wrap {
+vendor_wrap {
 overflow-x: auto;
 }
 </style>
@@ -44,14 +44,211 @@ overflow-x: auto;
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendors list </div>
         </section>
-        
-       
-       
 		<!-- Project -->
 		 <div id="loading"></div>
-<div class="timesheet_out">
+<div class="timesheet_out timesheet_background">
+ <!-- Advanced Search -->
+  <div class="pull-left cand-advsrch">
+            <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop()"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+            <div class="row">
+              <div class="col-md-4">
+                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+                <div class="clearfix">
+                  <input type="text" class="form-control input-sm" placeholder="Any of Keyword">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+                <div class="clearfix">
+                  <input type="text" class="form-control input-sm" placeholder="All Keywords">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+                <div class="clearfix">
+                  <input type="text" class="form-control input-sm" placeholder="Exclude Keyword">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h4>Details:</h4>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Vendor Name</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Designation">
+                  </div>
+                </div>
+                
+              </div>
+              <div class="clearfix">
+                
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Country</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="Country">
+                      <option>India</option>
+                      <option>USA</option>
+                      <option>Germany</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>State</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="State">
+                      <option>Andhra Pradesh</option>
+                      <option>Telangana</option>
+                      <option>Punjab</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>City</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="City">
+                      <option>India</option>
+                      <option>USA</option>
+                      <option>Germany</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Tier</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="Education" multiple>
+                      <option>MCA</option>
+                      <option>MBA</option>
+                      <option>B.Sc.(Computers)</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Created By</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Created By">
+                  </div>
+                </div>
+                
+              </div>
+             
+               </div>
+                
+                <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Document Name</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Document Name">
+                  </div>
+                </div>
+              
+                <div class="col-md-4">
+                  <label>Document Type</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Document Type">
+                  </div>
+                </div>
+                
+              
+                <div class="col-md-4">
+                  <label>Submission Template</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Submission Template">
+                  </div>
+                </div>
+                 </div>
+                 
+                 
+               <div class="col-md-12">
+                <h4>Vendor Contact:</h4>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Contact Name</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Contact Name">
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <label>Email</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Email">
+                  </div>
+                </div>
+                
+                 <div class="col-md-4">
+                  <label>Phone Number</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Phone Number">
+                  </div>
+                </div>
+                
+              </div>
+              <div class="clearfix">
+                
+              </div>
+                
+                 <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Owner</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Contact Name">
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <label>Vendor</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Email">
+                  </div>
+                </div>
+                
+                 <div class="col-md-4">
+                  <label>Status</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Phone Number">
+                  </div>
+                </div>
+                
+              </div>
+              
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Invitation</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Invitation">
+                  </div>
+                </div>
+                
+                
+              </div>
+              
+              
+            </div>
+            <div class="row form-footer mt">
+              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> </div>
+            </div>
+          </div>
+        </div>
+<!-- Advanced Search Ends -->
 
-<div class="vendor_wrap">
+
+
+<div class="clearfix"></div>
+<div class="vendor_wrap vendor_wrap_shadownone" style="overflow-x: auto;" >
+
+     
+
 	<div class="timesheet_head datatbl-filters customtimesheet-head">
         	<ul>
         	
@@ -138,6 +335,7 @@ overflow-x: auto;
             </ul>
             <div class="clearfix"></div>
         </div>
+        
     <div class="clients_wrap_table">
 	    <input type="hidden" name="emptyVendorcontactList" id="emptyVendorcontactList">
 	    <input type="hidden" name="emptyVendorList" id="emptyVendorList">
@@ -145,6 +343,7 @@ overflow-x: auto;
     	<table id="vendorList" class="display" cellspacing="0" width="100%"> </table>
     	<table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
    </div>	
+   
 </div>
 
 <div class="side_mask"><div class="proj_close"></div></div>
@@ -161,6 +360,8 @@ overflow-x: auto;
 		</div>
 
  </div>
+ 
+</div>
 <!-- Client Side Nav Div Ends -->
 </section>
 
@@ -1314,3 +1515,31 @@ function exportVendorContactToExcel(){
         $('#editVendorMsg').delay(2000).fadeOut('slow');
 	}
 </script> 
+
+<script>
+    // Close Advanced Search
+    function closePop(){
+    $("div.cand-advsrch-popup").hide();
+    };
+    function openPop(){
+    $("div.cand-advsrch-popup").toggle();
+    };
+</script> 
+
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+
+         });
+</script>            

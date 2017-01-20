@@ -291,6 +291,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Override
 	public void sendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations)	throws Exception {
 		 
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 		EmailMessage emailMessage = new EmailMessage();
 		
 		if(interviewerUser.getFirstName()!=null){
@@ -311,10 +312,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(interviewStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
-		 String candidateName = candidate.getFirstName();
-		 if(candidate.getLastName()!=null){
+		 String candidateName = requirementSubmissionTemplateFields.getFirstName();
+		 if(null != candidate.getLastName()){
 			 StringBuilder nameBuilder=new StringBuilder();
-			 candidateName=nameBuilder.append(candidateName).append(" ").append(candidate.getLastName()).toString();
+			 candidateName=nameBuilder.append(candidateName).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
 		 }
 		 
 		 String dateOfInterviewValue ="";
@@ -399,10 +400,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	@Override
 	public void sendEmailToApplicants(Candidate candidate,OrgLocations loginOrgLocations,RequirementSubmission requirementSubmission, User loginUser, Org loginOrg, RequirementInterview requirementInterview) throws Exception {
-		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(candidate.getFirstName());
-		 emailMessage.setLastName(candidate.getLastName());
-		 emailMessage.setToEmail(candidate.getEmail());
+		 
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(requirementSubmissionTemplateFields.getFirstName());
+		 emailMessage.setLastName(requirementSubmissionTemplateFields.getLastName());
+		 emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder timeStringBuilder=new StringBuilder();
@@ -740,7 +743,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	 */
 	public void interViewerFeedbackTemplateSendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations,String templateId,RequirementInterviewer interviewer)	throws Exception {
 		 Long requirementInterviewerid =interviewer.getId(); 
-		EmailMessage emailMessage = new EmailMessage();
+		 RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+		 EmailMessage emailMessage = new EmailMessage();
 		
 		if(interviewerUser.getFirstName()!=null){
 			 emailMessage.setFirstName(interviewerUser.getFirstName());
@@ -760,10 +764,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 StringBuilder timeBuilder = new StringBuilder();
 		 emailMessage.setFromName(timeBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
-		 String candidateName = candidate.getFirstName();
-		 if(candidate.getLastName()!=null){
+		 String candidateName = requirementSubmissionTemplateFields.getFirstName();
+		 if(requirementSubmissionTemplateFields.getLastName()!=null){
 			 StringBuilder nameBuilder = new StringBuilder();
-			 candidateName=nameBuilder.append(candidateName).append(" ").append(candidate.getLastName()).toString();
+			 candidateName=nameBuilder.append(candidateName).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
 		 }
 		 
 		 String dateOfInterviewValue ="";

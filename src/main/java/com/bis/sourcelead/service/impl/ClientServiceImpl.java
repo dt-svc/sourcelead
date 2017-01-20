@@ -3,8 +3,6 @@ package com.bis.sourcelead.service.impl;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +19,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -44,7 +45,6 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
@@ -110,6 +110,12 @@ public class ClientServiceImpl implements ClientService{
 	@Autowired
 	private SourceleadRolesService sourceleadRolesService;
 	
+	@Autowired
+	ClientVendorIndexHelper clientVendorIndexHelper;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
+	
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -146,6 +152,7 @@ public class ClientServiceImpl implements ClientService{
 			Set<OrgRelations> orgRelationsList = null;
 			Org org = null;
 			User spocUser = null;
+			OrgSpoc orgSpoc =null;
 			SubmissionTemplate submissionTemplate = null;
 			SubmissionTemplate sourceLeadDefaultTemplate = null;
 			if(jsonObj.has("orgLocationId")){
@@ -214,7 +221,7 @@ public class ClientServiceImpl implements ClientService{
 				String[] owners = ownersId.split(",");
 				
 				for(int i=0 ;i<owners.length;i++ ){
-					OrgSpoc orgSpoc = new OrgSpoc();
+					 orgSpoc = new OrgSpoc();
 					for(OrgLocations orl :orgLocationsList){
 						Set<OrgRelations> orgr = orl.getOrgRelationsList();
 						for (OrgRelations orgRelations : orgr) {
@@ -286,6 +293,12 @@ public class ClientServiceImpl implements ClientService{
 				submissionTemplate.setUpdatedBy(user.getUserCode());
 				submissionTemplate.setUpdatedDate(new Date());
 				submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+			}
+			
+			for(OrgRelations orgRelation :orgRelationsList){
+				
+				saveOrUpdateClientVendorElkDocument(org,clientOrgLocations,responderType,orgSpoc,orgRelation,submissionTemplate);
+
 			}
 		}
 	
@@ -814,5 +827,14 @@ public class ClientServiceImpl implements ClientService{
 			
 		}
 		
+		
+		@Override
+		public void saveOrUpdateClientVendorElkDocument(Org org, OrgLocations clientOrgLocations,String responderType,OrgSpoc orgSpoc,OrgRelations orgRelation, SubmissionTemplate submissionTemplate) throws Exception{
+			
+			         //Elastic Search Document Saving
+			       ClientVendorIndex clientVendorIndex = clientVendorIndexHelper.getClientVendorIndexFromCandidate(org,clientOrgLocations,responderType,orgSpoc,orgRelation,submissionTemplate);
+			       sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,orgRelation.getId().toString());
+
+		}
 		
 }

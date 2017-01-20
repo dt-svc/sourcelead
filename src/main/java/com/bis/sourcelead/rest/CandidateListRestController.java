@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -27,10 +29,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.search.Sort;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +55,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -137,21 +143,60 @@ public class CandidateListRestController {
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Candidate> candList = new ArrayList<Candidate>();
-		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
+		//List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
 		
-		if(null != candidatesList){
-			for(Candidate candidate : candidatesList){
-				boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
-				if(flag == true){
-					candidate.setIsFavourite(Constants.YES);
-				}else{
-					candidate.setIsFavourite(Constants.NO);
-				}
-				candList.add(candidate);
+		
+		    List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
+		    Long maxResults = null;
+		    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		    
+		    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+			
+			if(candidateStatus.equals(Constants.CANDIDATE_ACTIVE)){
+				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
+			}else if(candidateStatus.equals(Constants.CANDIDATE_IN_ACTIVE)){
+				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 0));
 			}
-		}
+			
+			if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
+			}
+			
+			if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("0")  && !updatedDateRange.equalsIgnoreCase("undefined")){
+				
+				// This Code is for  getting the sql enddate based on range
+		    	 Calendar c = Calendar.getInstance();
+			     c.setTime(new Date()); // Now use today date.
+			     Integer dateRange  = Integer.parseInt(updatedDateRange);
+		         c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
+		         String updatedDate = df.format(c.getTime());
+		         Date parsed = df.parse(updatedDate);
+		         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
+		         
+		         boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate));
+	   	    	
+			}
+			
+			 maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId());
+			 
+			 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+			    if(null != searchHits && searchHits.length >0){
+			    	ObjectMapper mapper = new ObjectMapper();
+			    	for (SearchHit hit : searchHits) {
+			    		String json = hit.getSourceAsString();
+			    		mapper.setDateFormat(df);
+			    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+			    	    if(candidateIndex.getUpdatedDate() != null){
+			    	    	candidateIndex.setCandidateUpdateDateToString(Constants.DF_YMD.format(candidateIndex.getUpdatedDate()));
+			   			}
+			    	    candidatesList.add(candidateIndex);
+			    	}
+			    	
+			    }
 		
-		resultJson = commonUtil.toJSON(candList);
+		resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
 	 }
 	 
@@ -406,22 +451,28 @@ public class CandidateListRestController {
 					boolQueryBuilder.must(skillBoolQueryBuilder);
 				} 
 				
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-				ArrayList<Candidate>   candList = new ArrayList<>();
-				if(searchHits != null && searchHits.length >0){
-					for (SearchHit hit : searchHits) {
-						Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(hit.getId()));
-						boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
-						if(flag == true){
-							candidate.setIsFavourite(Constants.YES);
-						}else{
-							candidate.setIsFavourite(Constants.NO);
-						}
-						candList.add(candidate);
-					}
-				}
+				
+				List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				    if(null != searchHits && searchHits.length >0){
+				    	ObjectMapper mapper = new ObjectMapper();
+				    	for (SearchHit hit : searchHits) {
+				    		json = hit.getSourceAsString();
+				    		mapper.setDateFormat(df);
+				    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+				    	    if(candidateIndex.getUpdatedDate() != null){
+				    	    	candidateIndex.setCandidateUpdateDateToString(Constants.DF_YMD.format(candidateIndex.getUpdatedDate()));
+				   			}
+				    	    candidatesList.add(candidateIndex);
+				    	}
+				    	
+				    }
+				
+				
 			 String resultJson;
-			 resultJson = commonUtil.toJSON(candList);
+			 resultJson = commonUtil.toJSON(candidatesList);
 			 return resultJson;
 	 }
 	 
@@ -811,7 +862,10 @@ public class CandidateListRestController {
 				
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
+				candidate.setIsFavourite(0);
+				candidate.setTeamId(null);
 				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 				StringBuilder candidateRemoveMsg = new StringBuilder();
 				SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateRemoveMsg.append("").append(candidate.getFirstName()).append(" Removed").toString());
 	
@@ -828,31 +882,19 @@ public class CandidateListRestController {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Candidate candidate = new Candidate();
-			candidate.setId(candidateId);
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			
-			CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(candidateId, orgLocation.getId());
-			if(null != hotList){
-				if(hotList.getStatus().equals(1)){
-					hotList.setStatus(0);
+			if(null != candidate){
+				if(null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_ACTIVE)){
+					candidate.setIsFavourite(Constants.RECORD_INACTIVE);
 				}else{
-					hotList.setStatus(1);
+					candidate.setIsFavourite(Constants.RECORD_ACTIVE);
 				}
-				hotList.setTeamId(null);
-				hotList.setUpdatedBy(user.getUserCode());
-				hotList.setUpdatedDate(new Date());
-				candidateHotListService.saveCandidateHotList(hotList);
 				
-			}else{
-				hotList = new CandidateHotList();
-				hotList.setCandidateId(candidate);
-				hotList.setOrgLocationId(orgLocation);
-				hotList.setStatus(1);
-				hotList.setCreatedBy(user.getUserCode());
-				hotList.setCreatedDate(new Date());
-				hotList.setUpdatedBy(user.getUserCode());
-				hotList.setUpdatedDate(new Date());
-				candidateHotListService.saveCandidateHotList(hotList);
+				candidate.setTeamId(null);
+				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
+				
 			}
 			
 			
@@ -870,16 +912,15 @@ public class CandidateListRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
 			String[] candidateIds = hotlist.split(",");
-			Team team =new Team();
+			Team team = new Team();
 			team.setId(teamId);
 			
 			for(int i = 0; i < candidateIds.length; i++){
 				
-				CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(Long.valueOf(candidateIds[i]), orgLocation.getId());
-				hotList.setTeamId(team);
-				hotList.setUpdatedBy(user.getUserCode());
-				hotList.setUpdatedDate(new Date());
-				candidateHotListService.saveCandidateHotList(hotList);
+				Candidate candidate = candidateService.getCandidateByCandidateId(Long.valueOf(candidateIds[i]));
+				candidate.setTeamId(team);
+				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}
 			
 			
@@ -913,6 +954,7 @@ public class CandidateListRestController {
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}
 			return "success";
 		 }
