@@ -114,7 +114,7 @@ public class AddElkRequirement {
 						requirementIndex.setSkills(skills.split(","));
 					}
 					requirementIndex.setJobType(rs.getString("JOB_TYPE"));
-					requirementIndex.setJobType(rs.getString("JOB_ID"));
+					requirementIndex.setJobId(rs.getString("JOB_ID"));
 					String clientContactName = null;
 					String clientContactEmail = null;
 					while(rs1.next()){
@@ -147,7 +147,7 @@ public class AddElkRequirement {
 				}else{
 					requirementIndex.setManager(rs.getString("FIRST_NAME"));
 				}
-				requirementIndex.setJobType(rs.getString("PRIORITY"));
+				requirementIndex.setPriority(rs.getString("PRIORITY"));
 				reqIndexList.add(requirementIndex);
 			}
 			
