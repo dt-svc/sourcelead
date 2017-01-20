@@ -1378,7 +1378,7 @@ function requirementPipeline(requirementId,submissionType){
 						   result = result + '<th>No.of Interviews</th>'; 
 				           }
 				           if(submissionType == 'SHORTLIST'){
-				        	   result = result + '<th>shortlisted By</th>'; 
+				        	   result = result + '<th>Shortlisted By</th>'; 
 				           }
 				           if(submissionType == 'OFFERMADE'){
 							   result = result + '<th>Offer Join Date</th>'; 
