@@ -518,7 +518,7 @@ public class RequirementListRestController {
 										requirementSubmission.setUpDatedStr(Constants.DF_YMD.format(requirementSubmission.getUpdatedDate()));
 									}
 									
-									if(null != submissionType && submissionType.equalsIgnoreCase("REJECTED")){
+									if(null != submissionType && (submissionType.equalsIgnoreCase("REJECTED") || submissionType.equalsIgnoreCase("SHORTLIST"))){
 										User usr = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 										if(usr.getFirstName() != null && usr.getLastName() !=null){
 											StringBuilder name = new StringBuilder();
