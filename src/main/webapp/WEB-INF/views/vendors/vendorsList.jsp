@@ -418,6 +418,7 @@ overflow-x: auto;
 		    var jsonData = encodeURIComponent(con);
 			var form = $('#vendorList_form')[0];
       		var formData = new FormData(form); 
+      		var responderType = "Vendor";
 			//It will escape all the special characters
 			$("#search_vendor").attr("disabled", "disabled");
 			$("#search_vendor").addClass('button').val('Processing..');
@@ -432,7 +433,7 @@ overflow-x: auto;
 	    	        processData: false,
 	    	        contentType:false,
 	        	    dataType : 'json',
-					url : sourceleadUrl+"/searchVendorThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					url : sourceleadUrl+"/searchVendorThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&json="+jsonData,
 					success : function(data) {
 						$("#search_vendor").addClass('button').val('Search');
 						$("#search_vendor").removeAttr("disabled");
@@ -443,7 +444,6 @@ overflow-x: auto;
 				}); 
 		      return true;
 			}else if(selectedList == "listbyContact"){
-				alert("listbyContact"+con);
 				
 				$.ajax({
 					type : "POST",
@@ -820,7 +820,6 @@ $(document).ready(function(){
 <!-- Vendors list preparation from ELK result -->
 <script>
 function preparedVendorsListFromElk(data){
-	alert(data);
 			var json = JSON.parse(data);
 		   	var result = "";
 		   	
