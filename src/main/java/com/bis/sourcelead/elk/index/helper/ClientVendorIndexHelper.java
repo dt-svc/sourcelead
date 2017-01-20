@@ -45,7 +45,7 @@ public class ClientVendorIndexHelper {
 			clientVendorIndex.setResponderType(orgRelationsList.getResponderType());
 			clientVendorIndex.setInitiatorType(orgRelationsList.getInitiatorType());
 			clientVendorIndex.setResponderLocationId(orgRelationsList.getResponderLocationId().getId());
-			clientVendorIndex.setLocationId(orgRelationsList.getLocationId().getId());
+			clientVendorIndex.setOrgLocationId(orgRelationsList.getLocationId().getId());
 			clientVendorIndex.setInitiatorLevel(orgRelationsList.getInitiatorLevel());
 			clientVendorIndex.setResponderLevel(orgRelationsList.getResponderLevel());
 			clientVendorIndex.setStatus(orgRelationsList.getStatus());
