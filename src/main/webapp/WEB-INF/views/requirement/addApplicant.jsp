@@ -28,6 +28,7 @@ function getAddApplicant(requirementId){
 	result = result + '<h3>Add Applicant</h3>';
 	result = result + '<div class="form-horizontal clearfix select-field">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
+	result = result + '<input type="hidden" id="candidateSkills" name="candidateSkills">';
 	
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
@@ -769,6 +770,12 @@ function init(){
 			        	 $("input[name=LastName]").val(lastName);
 			        	 $("input[name=EmailId]").val(json.email);
 			        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
+			        	 
+			        	 
+			        	var skills = json.skills;
+			        	$("#candidateSkills").val(skills);
+  						
+			        	 
 						 validateCandidateEmail();
 						 $("#loading").removeAttr("style");
 					},

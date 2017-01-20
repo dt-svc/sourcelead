@@ -122,6 +122,9 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "STATUS")
     private Integer status;
 	
+	@Column(name = "SCORE")
+    private Integer candidateScore;
+	
     @Column(name = "CREATED_DATE")
     private Date createdDate;
     
@@ -905,5 +908,13 @@ public class RequirementSubmission implements Serializable{
 	public void setRequirementSubmissionTemplateFields(
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields) {
 		this.requirementSubmissionTemplateFields = requirementSubmissionTemplateFields;
+	}
+
+	public Integer getCandidateScore() {
+		return candidateScore;
+	}
+
+	public void setCandidateScore(Integer candidateScore) {
+		this.candidateScore = candidateScore;
 	}
 }
