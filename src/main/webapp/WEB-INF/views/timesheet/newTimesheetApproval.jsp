@@ -3,6 +3,94 @@
 <jsp:include page="TimesheetScripts.jsp" />
 
 
+<script>
+// project side bar tabs
+$(document).ready(function() {
+	timesheetApprovalDiv();
+});
+</script>  
+
+
+<script>  
+	function timesheetApprovalDiv(){ 
+	               var sourceleadUrl ='${sourceleadUrl}';
+	               $("#timesheetApprovalDiv").empty();
+	               $("#timesheetApprovalDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        	   $.ajax({
+		      	          type : "POST",
+		          	      dataType : 'json',
+	        	      	  url: sourceleadUrl+"/timesheetApprovalDiv?${_csrf.parameterName}=${_csrf.token}",		
+	        		      success :function(result) {
+	        		    	    $("#timesheetApprovalDiv").removeAttr("style");
+	        		    	    $("#timesheetApprovalDiv").empty();
+	        		    	  	$("#timesheetApprovalDiv").append(result);
+	        		      }
+	        	    }); 
+	}
+</script>
+
+
+<script>
+	function timesheetApprovalDivByProject(projectId){ 
+			 
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         $("#timesheetApprovalDivByProject").empty();
+	         $("#timesheetApprovalDivByProject").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+     	          type : "POST",
+         	      dataType : 'json',
+   	      	  	  url: sourceleadUrl+"/timesheetApprovalDivByProject?${_csrf.parameterName}=${_csrf.token}",		
+   		          success :function(result) {
+   		        	 $("#timesheetApprovalDivByProject").removeAttr("style");
+   		        	 $("#timesheetApprovalDivByProject").empty();
+   		             $("#timesheetApprovalDivByProject").append(result);  
+		    	  	 
+   		          }
+   	         }); 
+	}
+</script>	
+
+   
+
+<script>
+	function timesheetApprovalDivByFrequency(frequency){   
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         $("#timesheetApprovalDivByFrequency").empty();
+	         $("#timesheetApprovalDivByFrequency").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+     	          type : "POST",
+         	      dataType : 'json',
+   	      	  	  url: sourceleadUrl+"/timesheetApprovalDivByFrequency?${_csrf.parameterName}=${_csrf.token}",		
+   		          success :function(result) {
+   		        	      $("#timesheetApprovalDivByFrequency").removeAttr("style");
+	   		    	      $("#timesheetApprovalDivByFrequency").empty();
+			    	  	  $("#timesheetApprovalDivByFrequency").append(result); 
+   		          }
+   	         }); 
+	}
+</script> 
+
+<script>
+	function timesheetApprovalDivByStatus(frequency){   
+				
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         $("#timesheetApprovalDivByStatus").empty();
+	         $("#timesheetApprovalDivByStatus").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+     	          type : "POST",
+         	      dataType : 'json',
+   	      	  	  url: sourceleadUrl+"/timesheetApprovalDivByStatus?${_csrf.parameterName}=${_csrf.token}",		
+   		          success :function(result) {
+   		        	  		
+   		        	      $("#timesheetApprovalDivByStatus").removeAttr("style");
+	   		    	      $("#timesheetApprovalDivByStatus").empty();
+			    	  	  $("#timesheetApprovalDivByStatus").append(result); 
+			    	  	  
+   		          }
+   	         }); 
+	}
+</script> 
+
 
 <script>
 	function timesheetApprovalPopup(startDate,endDate){ 
@@ -11,14 +99,12 @@
 	        /*  $("#timesheetDivByTab").empty();
 	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	          */
-	         alert("one");
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}",		
   		          success :function(result) {
   		    	       
-  		        	   alert("hai"+result);
   		        	   /* $("#timesheetDivByTab").removeAttr("style"); */
   		    	       $("#timesheetPopUp").empty();
 		    	  	   $("#timesheetPopUp").append(result); 
@@ -52,93 +138,10 @@
         </section>
         
 		<!-- Project -->
-<div class="timesheet_out">
-	<div class="timesheet_appr_wrap">
-		<div class="timesheetNewHead">
-			<div class="timeNewSe">
-                <select class="form-control chosen-select">
-                  <option>Select Project</option>
-                  <option>Project 1</option>
-                  <option>Project 2</option>
-                  <option>Project 3</option>
-                  <option>Project 4</option>
-                </select>
-            </div>
-			<div class="timeNewSe timeNewSe_a">
-                <select class="form-control chosen-select">
-                  <option>Select Week Frequency</option>
-                  <option>28/11/2016 to 04/12/2016</option>
-                  <option>05/12/2016 to 11/12/2016</option>
-                  <option>12/12/2016 to 18/12/2016</option>
-                  <option>19/12/2016 to 25/12/2016</option>
-                  <option>26/12/2016 to 01/01/2017</option>
-                  <option>02/01/2017 to 08/01/2017</option>
-                  <option>09/01/2017 to 15/01/2017</option>
-                  <option>16/12/2017 to 22/12/2017</option>
-                  <option>23/12/2016 to 29/12/2017</option>
-                 
-                  </select>
-            </div>
-			<div class="timeNewSe">
-                <select class="form-control chosen-select">
-                  <option>Stages</option>
-                  <option>New</option>
-                  <option>Submit for approval</option>
-                  <option>Rejected</option>
-                </select>
-            </div>             
-			<div class="clearfix"></div>          
-		</div>	
-		
-		<div class="timesheet_appr_table">
-    	<table>
-        	<tbody>
-			<thead>
-            	<tr>
-                	<th>Employee</th>
-                    <th>Email id</th>
-                    <th>Project</th>
-                    <th>Frequency</th>
-                    <th>Total hours</th>
-                    <th>Stage</th>
-                    <th>Action</th>
-                    <th>Approved By</th>
-                </tr>
-			</thead>	
-               <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div></div>
-					</td>
-                   	<td><div>emailid@domain.com</div></td>
-                   	<td><div>Timesheets</div></td>
-                    <td>
-						<div id="datefrequency609012017"><span class="res_date"><i class="fa fa-calendar"></i>09-01-2017 To 15-01-2017</span></div>                    	</td>
-                    <td><div><a href="javascript:void(0)" onclick="timesheetApprovalPopup();">50/50</a></div></td>
-                    <td><div>Waiting for approval</div></td>
-                    <td><div><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div>
-					</td>
-               		<td><div>Ranjit</div></td>
-                </tr>
-            </tbody>
-        </table> 
-</div>
-<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li><a href="#">4</a></li>
-	<li><a href="#">5</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-    <div class="clearfix"></div>
-	</ul>
-	<div class="clearfix"></div>
-</nav>
-	
-	</div>
-	
-</div>
+<!-- put id here -->
+		<div id="timesheetApprovalDiv"></div>
+
+
 </section>
       
 </div>
