@@ -70,6 +70,8 @@ $(document).ready(function() {
    		        	 $("#timesheetEntriesDivByProject").empty();
    		        	 $("#timesheetEntriesDivByProject").append(result);
    		        	 
+   		        	 maskme();
+   		        	 
 		    	  	 $("#tab-1").show()
  		    	     $(".project-tabs-menu a").click(function(event) {
  		    	        event.preventDefault();
@@ -98,10 +100,11 @@ $(document).ready(function() {
    	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}",		
    		          success :function(result) {
    		        	  		
-   		        	      alert("result"+result);
    		        	      $("#timesheetDivByFrequency").removeAttr("style");
 	   		    	      $("#timesheetDivByFrequency").empty();
 			    	  	  $("#timesheetDivByFrequency").append(result); 
+			    	  	  
+			    	  	  maskme();
 		    	  	   
 			    	  	 $("#tab-1").show()
 	 		    	     $(".project-tabs-menu a").click(function(event) {
@@ -135,6 +138,7 @@ $(document).ready(function() {
   		    	       $("#timesheetDivByTab").empty();
 		    	  	   $("#timesheetDivByTab").append(result);
 		    	  	   
+		    	  	   maskme();
 		    	  	   
 			    	   $("#tab-1").show()
 	 		    	   $(".project-tabs-menu a").click(function(event) {
