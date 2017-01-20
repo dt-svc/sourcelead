@@ -14,7 +14,7 @@ public class ClientVendorIndex implements Serializable {
 	
     private Long responderLocationId;
 		
-    private Long locationId;
+    private Long orgLocationId;
 	    
 	private String initiatorType;
 	
@@ -146,12 +146,12 @@ public class ClientVendorIndex implements Serializable {
 		this.ownerId = ownerId;
 	}
 
-	public Long getLocationId() {
-		return locationId;
+	public Long getOrgLocationId() {
+		return orgLocationId;
 	}
 
-	public void setLocationId(Long locationId) {
-		this.locationId = locationId;
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 }

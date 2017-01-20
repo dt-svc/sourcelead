@@ -745,7 +745,7 @@ public class VendorRestController {
 					if(vendorNameArray != null && !vendorNameArray.isEmpty()){
 						BoolQueryBuilder vendorNameBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : vendorNameArray){
-							vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorNameAdvanced", keywd));
+							vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("orgName", keywd));
 						}
 						boolQueryBuilder.must(vendorNameBoolQueryBuilder);
 					}
