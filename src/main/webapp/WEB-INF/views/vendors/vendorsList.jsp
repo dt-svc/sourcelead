@@ -82,7 +82,7 @@ overflow-x: auto;
               <div class="col-md-4">
                 <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
                 <div class="clearfix">
-				  	 <select class="form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
+				  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
                      </select>
 	            </div>
               </div>
@@ -162,30 +162,7 @@ overflow-x: auto;
                </div>
                 
                 <div class="clearfix">
-                <div class="col-md-4">
-                  <label>Document Name</label>
-                  <div class="clearfix">
-                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Document Name" id="documentNameAdvanced" name="documentNameAdvanced">
-                    </select>
-                  </div>
-                </div>
-              
-                <div class="col-md-4">
-                  <label>Document Type</label>
-                  <div class="clearfix">
-                   <select class="chosen-select form-control input-sm" multiple data-placeholder="Document Type" id="documentTypeAdvanced" name="documentTypeAdvanced">
-                    </select>
-                  </div>
-                </div>
-                
-              
-                <div class="col-md-4">
-                  <label>Submission Template</label>
-                  <div class="clearfix">
-                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Submission Template" id="submissionTemplateAdvanced" name="submissionTemplateAdvanced">
-                    </select>
-                  </div>
-                </div>
+               
                  </div>
              </div> 
               <div id="vendorContactListAdvanced">   
@@ -418,6 +395,7 @@ overflow-x: auto;
 		    var jsonData = encodeURIComponent(con);
 			var form = $('#vendorList_form')[0];
       		var formData = new FormData(form); 
+      		var responderType = "Vendor";
 			//It will escape all the special characters
 			$("#search_vendor").attr("disabled", "disabled");
 			$("#search_vendor").addClass('button').val('Processing..');
@@ -432,7 +410,7 @@ overflow-x: auto;
 	    	        processData: false,
 	    	        contentType:false,
 	        	    dataType : 'json',
-					url : sourceleadUrl+"/searchVendorThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					url : sourceleadUrl+"/searchVendorThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&json="+jsonData,
 					success : function(data) {
 						$("#search_vendor").addClass('button').val('Search');
 						$("#search_vendor").removeAttr("disabled");
@@ -443,7 +421,6 @@ overflow-x: auto;
 				}); 
 		      return true;
 			}else if(selectedList == "listbyContact"){
-				alert("listbyContact"+con);
 				
 				$.ajax({
 					type : "POST",
@@ -602,7 +579,7 @@ overflow-x: auto;
 		    
 		    
 		    
-		    // This is for DocumentName
+		   /*  // This is for DocumentName
 		    var selectdocumentNameAdvanced, chosendocumentNameAdvanced;
 		    selectdocumentNameAdvanced = $("#documentNameAdvanced");
 		    selectdocumentNameAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Document Name:' });
@@ -672,7 +649,7 @@ overflow-x: auto;
 		        }
 		    });
 		    
-		    
+		     */
 		    
 		    
 		    
@@ -820,7 +797,6 @@ $(document).ready(function(){
 <!-- Vendors list preparation from ELK result -->
 <script>
 function preparedVendorsListFromElk(data){
-	alert(data);
 			var json = JSON.parse(data);
 		   	var result = "";
 		   	
