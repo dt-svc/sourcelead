@@ -73,7 +73,7 @@ html .ui-autocomplete {
 		url(images/ui-bg_highlight-soft_75_cccccc_1x100.png)
 		/*{bgImgUrlHeader}*/   50% /*{bgHeaderXPos}*/   50% /*{bgHeaderYPos}*/
 		  repeat-x /*{bgHeaderRepeat}*/;
-	color: #222222 /*{fcHeader}*/;
+	color: #fff /*{fcHeader}*/;
 	font-weight: bold;
 }
 
@@ -84,13 +84,11 @@ html .ui-autocomplete {
 ----------------------------------*/
 .ui-state-default,.ui-widget-content .ui-state-default,.ui-widget-header .ui-state-default
 	{
-	border: 1px solid #d3d3d3 /*{borderColorDefault}*/;
-	background: #e6e6e6 /*{bgColorDefault}*/  
-		url(images/ui-bg_glass_75_e6e6e6_1x400.png) /*{bgImgUrlDefault}*/  
-		50% /*{bgDefaultXPos}*/   50% /*{bgDefaultYPos}*/   repeat-x
-		/*{bgDefaultRepeat}*/;
-	font-weight: normal /*{fwDefault}*/;
-	color: #555555 /*{fcDefault}*/;
+    border: 1px solid #cccccc;
+    background: #f6f6f6 url(../images/ui-bg_glass_100_f6f6f6_1x400.png) 50% 50% repeat-x;
+    font-weight: bold;
+    color: #1c94c4;
+
 }
 
 .ui-state-default a,.ui-state-default a:link,.ui-state-default a:visited
@@ -101,7 +99,7 @@ html .ui-autocomplete {
 
 .ui-state-hover,.ui-widget-content .ui-state-hover,.ui-widget-header .ui-state-hover,.ui-state-focus,.ui-widget-content .ui-state-focus,.ui-widget-header .ui-state-focus
 	{
-	border: 1px solid #999999 /*{borderColorHover}*/;
+	border: 1px solid #F4511E /*{borderColorHover}*/;
 	background: #dadada /*{bgColorHover}*/   url(../img/nav-bg.png)
 		/*{bgImgUrlHover}*/   50% /*{bgHoverXPos}*/   50% /*{bgHoverYPos}*/  
 		repeat-x /*{bgHoverRepeat}*/;
@@ -118,7 +116,7 @@ html .ui-autocomplete {
 
 .ui-state-active,.ui-widget-content .ui-state-active,.ui-widget-header .ui-state-active
 	{
-	border: 1px solid #aaaaaa /*{borderColorActive}*/;
+	border: 1px solid #F4511E /*{borderColorActive}*/;
 	background: #ffffff /*{bgColorActive}*/  
 		url(images/ui-bg_glass_65_ffffff_1x400.png) /*{bgImgUrlActive}*/   50%
 		/*{bgActiveXPos}*/   50% /*{bgActiveYPos}*/   repeat-x

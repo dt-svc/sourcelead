@@ -150,6 +150,7 @@ public class LoginSessionController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("dashboard");
 		
+		
 		Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
 		model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
 	   
@@ -280,7 +281,6 @@ public class LoginSessionController {
 				}
 			}
 		
-			
 			
 		} catch (Exception e) {
 			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
