@@ -5,6 +5,8 @@ import java.io.Serializable;
 public class ClientVendorIndex implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	private Long id;
 
 	private String orgName;
 	
@@ -25,6 +27,8 @@ public class ClientVendorIndex implements Serializable {
 	private String responderLevel;
 	
 	private String country;
+	
+	private String website;
 
 	private String state;
 
@@ -33,6 +37,23 @@ public class ClientVendorIndex implements Serializable {
 	private String status;
 	
 	private Long ownerId;
+
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
 
 	public Long getOrgRelationId() {
 		return orgRelationId;
