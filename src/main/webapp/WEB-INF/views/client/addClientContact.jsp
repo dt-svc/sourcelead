@@ -168,7 +168,7 @@ function getOrgDetails()
           <div class="form-group">
             <label class="col-md-3">Select Client <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
-              <div class="form-icon">
+              <div class="clearfix">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="client name" onchange="validateEmail();getSpocUserDetails();getRolesList();" data-validation="required">
                   <option value="">Select Client</option>
                    <c:forEach var="report" items="${clientContactList}">

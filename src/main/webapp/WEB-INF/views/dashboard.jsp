@@ -20,10 +20,10 @@ min-height: 225px !important;
 padding: 0;
 min-height: 100px;
 }
-.side-bar .side-nav ul li span {
+/* .side-bar .side-nav ul li span {
 display: inline-block !important;
 float: none !important;
-}
+} */
 .custom-datatble table{
  margin-top: 20px !important;
  }
@@ -34,10 +34,10 @@ float: none !important;
  .dashboard-datepkr{
        position:relative;
 }
-.main-header span.logo i{
+/* .main-header span.logo i{
 position: relative;
 top:10px;
-}
+} */
 .ui-timepicker-wrapper {
 z-index: 999999;
 width: 11.5%;
