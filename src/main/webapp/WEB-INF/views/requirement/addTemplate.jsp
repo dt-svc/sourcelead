@@ -76,7 +76,45 @@ bottom:-14px;
 							</div>
 						</div>
 	
-	
+	                       
+	                       <div class="form-group">
+							<label class="col-md-3">Education</label>
+							<div class="col-md-9">
+								<select multiple class="chosen-select form-control"
+									name="education" id="education"
+									data-validation="validate_Space"
+									data-validation-optional="true">
+									<c:forEach var="edu" items="${educationsList}">
+										<c:if
+											test="${fn:contains(requirement.reqEducationListString, edu.name)}">
+											<option selected value="${edu.name}">${edu.name}</option>
+										</c:if>
+										<c:if
+											test="${!fn:contains(requirement.reqEducationListString, edu.name)}">
+											<option value="${edu.name}">${edu.name}</option>
+										</c:if>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
+
+                           <div class="form-group">
+							<label class="col-md-3">Skills</label>
+							<div class="col-md-9">
+								<select multiple class="chosen-select form-control"
+									name="skills" id="skills" data-validation-optional="true">
+									<c:forEach var="skill" items="${skillsList}">
+										<c:if test="${fn:contains(requirement.reqSkillsListString, skill.name)}">
+											<option selected value="${skill.name}">${skill.name}</option>
+										</c:if>
+										<c:if test="${!fn:contains(requirement.reqSkillsListString, skill.name)}">
+											<option value="${skill.name}">${skill.name}</option>
+										</c:if>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
+	                       
 							<div class="form-group">
 								<label class="col-md-3">Employment Type</label>
 									<div class="col-md-9">
@@ -100,26 +138,8 @@ bottom:-14px;
 								</div>
 						</div>
 					
-					<div class="form-group">
-							<label class="col-md-3">Education</label>
-							<div class="col-md-9">
-								<select multiple class="chosen-select form-control"
-									name="education" id="education"
-									data-validation="validate_Space"
-									data-validation-optional="true">
-									<c:forEach var="edu" items="${educationsList}">
-										<c:if
-											test="${fn:contains(requirement.reqEducationListString, edu.name)}">
-											<option selected value="${edu.name}">${edu.name}</option>
-										</c:if>
-										<c:if
-											test="${!fn:contains(requirement.reqEducationListString, edu.name)}">
-											<option value="${edu.name}">${edu.name}</option>
-										</c:if>
-									</c:forEach>
-								</select>
-							</div>
-						</div>
+					
+
 
 						<div class="form-group">
 							<label class="col-md-3">Experience</label>
@@ -149,22 +169,7 @@ bottom:-14px;
 							</div>
 						</div>
 
-						<div class="form-group">
-							<label class="col-md-3">Skills</label>
-							<div class="col-md-9">
-								<select multiple class="chosen-select form-control"
-									name="skills" id="skills" data-validation-optional="true">
-									<c:forEach var="skill" items="${skillsList}">
-										<c:if test="${fn:contains(requirement.reqSkillsListString, skill.name)}">
-											<option selected value="${skill.name}">${skill.name}</option>
-										</c:if>
-										<c:if test="${!fn:contains(requirement.reqSkillsListString, skill.name)}">
-											<option value="${skill.name}">${skill.name}</option>
-										</c:if>
-									</c:forEach>
-								</select>
-							</div>
-						</div>
+						
 
 						<div class="form-group">
 							<label class="col-md-3">Description</label>
