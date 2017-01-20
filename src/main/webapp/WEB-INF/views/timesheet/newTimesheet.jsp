@@ -65,9 +65,11 @@ $(document).ready(function() {
          	      dataType : 'json',
    	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProject?${_csrf.parameterName}=${_csrf.token}",		
    		          success :function(result) {
+   		        	  
    		        	 $("#timesheetEntriesDivByProject").removeAttr("style");
    		        	 $("#timesheetEntriesDivByProject").empty();
    		        	 $("#timesheetEntriesDivByProject").append(result);
+   		        	 
 		    	  	 $("#tab-1").show()
  		    	     $(".project-tabs-menu a").click(function(event) {
  		    	        event.preventDefault();
@@ -86,14 +88,18 @@ $(document).ready(function() {
 
 <script>
 	function timesheetDivByFrequency(frequency){   
+				
 	         var sourceleadUrl ='${sourceleadUrl}';
-	         $("#timesheetEntriesDivByProject").empty();
-	         $("#timesheetEntriesDivByProject").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#timesheetDivByFrequency").empty();
+	         $("#timesheetDivByFrequency").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
    	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}",		
    		          success :function(result) {
+   		        	  		
+   		        	      alert("result"+result);
+   		        	      $("#timesheetDivByFrequency").removeAttr("style");
 	   		    	      $("#timesheetDivByFrequency").empty();
 			    	  	  $("#timesheetDivByFrequency").append(result); 
 		    	  	   
@@ -115,12 +121,17 @@ $(document).ready(function() {
 	/* function timesheetDivByTab(startDate,endDate) */
 	function timesheetDivByTab(startDate,endDate){ 
 	         var sourceleadUrl ='${sourceleadUrl}';
+	         
+	         $("#timesheetDivByTab").empty();
+	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
   	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}",		
   		          success :function(result) {
   		    	       
+  		        	   $("#timesheetDivByTab").removeAttr("style");
   		    	       $("#timesheetDivByTab").empty();
 		    	  	   $("#timesheetDivByTab").append(result);
 		    	  	   

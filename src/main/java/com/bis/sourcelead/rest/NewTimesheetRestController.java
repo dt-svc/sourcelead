@@ -158,7 +158,7 @@ public class NewTimesheetRestController {
 		timesheetEntriesDiv.append("		                </select>");
 		timesheetEntriesDiv.append("		            </div>");
 		
-		///put method
+		
 		StringBuilder projectDiv = timesheetEntriesDivByProjectId("1");
 		timesheetEntriesDiv.append(projectDiv);				       
 		
