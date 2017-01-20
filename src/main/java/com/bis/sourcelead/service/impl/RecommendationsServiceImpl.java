@@ -416,4 +416,137 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		logger.info("....getRecommendationsWithScoreByUsingElk Method Ended...");
 		return CandidateListcopy;
 	}
+
+	@Override
+	public String getCandidateScore(Candidate candidate, Requirement requirement) throws Exception {
+		
+		float locationPercentage = 0; // location 10%
+		float ratePercentage = 0;    // rate 20 %
+		float skillPercentage = 0; // skill = 50%
+		float percentPerSkill = 0;
+		List<Candidate> CandidateListcopy = new ArrayList<>();
+		String reqSkills = "";
+		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
+		     reqSkills = requirement.getSkills();
+			String [] reqMaxSkills = reqSkills.split(",");
+			 percentPerSkill = 50/(float)reqMaxSkills.length;
+		}
+		int reqMinExp = 0;
+		int reqMaxExp = 0;
+		float percentPerMonthExp = 0;
+		if(requirement.getMinExp() !=null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+			 reqMinExp = Integer.parseInt(requirement.getMinExp());
+			 reqMaxExp = Integer.parseInt(requirement.getMaxExp());
+			int reqExp = reqMaxExp *12 ;
+			 percentPerMonthExp = 20/(float)reqExp;
+		}
+		String reqCity = "";
+		if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
+			 reqCity = requirement.getCity();
+		}
+		float reqPerMonthSal = 0;
+		if(requirement.getRate() !=null && !"".equalsIgnoreCase(requirement.getRate())){
+			int reqRate = Integer.parseInt(requirement.getRate());
+			String reqRateType = requirement.getRateType();
+			if("Hourly".equalsIgnoreCase(reqRateType)){
+				int perDaySal = reqRate *9;
+				reqPerMonthSal = perDaySal * 30;
+			}else if("Weekly".equalsIgnoreCase(reqRateType)){
+				int perDaySal = reqRate /7;
+				reqPerMonthSal = perDaySal * 30;
+			}else if("Bi-weekly".equalsIgnoreCase(reqRateType)){
+				int perDaySal = reqRate /14;
+				reqPerMonthSal = perDaySal * 30;
+			}else if("Semi-Monthly".equalsIgnoreCase(reqRateType)){
+				int perDaySal = reqRate /15;
+				reqPerMonthSal = perDaySal * 30;
+			}else if("Monthly".equalsIgnoreCase(reqRateType)){
+				reqPerMonthSal = reqRate;
+			}else if("Bi-Monthly".equalsIgnoreCase(reqRateType)){
+				int perDaySal = reqRate /60;
+				reqPerMonthSal = perDaySal * 30;
+			}else{
+				reqPerMonthSal = reqRate /12;
+			}
+		}
+		
+			boolean isCandidateAdded = false;
+			float expPercentage = 0; //  experience = 20%
+			int matchedSkillCount = 0;
+			
+			List<CandidateSkills> candidateSkillList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
+			
+			  // Changed the below method by  bringing from  service as cache is implemented  for  the above method
+			
+			   // Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
+			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
+			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
+			
+			if(candidateSkillList != null && candidateSkillList.size() >0){
+				for(CandidateSkills candidateSkills : candidateSkillList){
+					if(candidateSkills.getName() !=null && !"".equalsIgnoreCase(candidateSkills.getName())){
+						if(reqSkills.contains(candidateSkills.getName())){
+							matchedSkillCount++;
+						}
+						
+					}
+				}
+			}
+			skillPercentage = matchedSkillCount*percentPerSkill;
+			if(candidate.getExperienceYears() != null && !"".equalsIgnoreCase(candidate.getExperienceYears()) && candidate.getExperienceMonths()!=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
+				int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
+				if(candidateExpMonths < reqMinExp *12){
+					expPercentage = 0;
+				}else if(candidateExpMonths >= reqMinExp *12 && candidateExpMonths <= reqMaxExp *12){
+					expPercentage = percentPerMonthExp*(float)candidateExpMonths;
+				}else{
+					expPercentage = 20;
+				}
+			}
+			if(candidate.getCity() != null && !"".equalsIgnoreCase(candidate.getCity())){
+				if(candidate.getCity().equalsIgnoreCase(reqCity)){
+					locationPercentage = 10;
+				}
+			}
+			
+			if(candidate.getExpectedRate() != null && !"".equalsIgnoreCase(candidate.getExpectedRate()) && candidate.getRateType() !=null && !"".equalsIgnoreCase(candidate.getRateType())){
+				String candidateRateType = candidate.getRateType();
+				String  expectedRate = candidate.getExpectedRate();
+				
+				int reqRate = Integer.parseInt(expectedRate);
+				float perMonthCandidateSal = 0;
+				if("Hourly".equalsIgnoreCase(candidateRateType)){
+					int perDaySal = reqRate *9;
+					perMonthCandidateSal = perDaySal * 30;
+				}else if("Weekly".equalsIgnoreCase(candidateRateType)){
+					int perDaySal = reqRate /7;
+					perMonthCandidateSal = perDaySal * 30;
+				}else if("Bi-weekly".equalsIgnoreCase(candidateRateType)){
+					int perDaySal = reqRate /14;
+					perMonthCandidateSal = perDaySal * 30;
+				}else if("Semi-Monthly".equalsIgnoreCase(candidateRateType)){
+					int perDaySal = reqRate /15;
+					perMonthCandidateSal = perDaySal * 30;
+				}else if("Monthly".equalsIgnoreCase(candidateRateType)){
+					perMonthCandidateSal = reqRate;
+				}else if("Bi-Monthly".equalsIgnoreCase(candidateRateType)){
+					int perDaySal = reqRate /60;
+					perMonthCandidateSal = perDaySal * 30;
+				}else{
+					perMonthCandidateSal = reqRate /12;
+				}
+				
+				if(perMonthCandidateSal<=reqPerMonthSal){
+					ratePercentage = 20;
+				}
+			}
+			float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage;
+			
+			int roundOff = (int) (Math.round(totalPercentage * 100.0) / 100.0);
+			String candidateScore = String.valueOf(roundOff);
+			
+			
+		return candidateScore;
+	
+	}
 }
