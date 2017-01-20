@@ -4,20 +4,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-
+<script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/jquery-fun.js"></script> 
-
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
- 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -111,7 +99,7 @@ $(document).ready(function() {
 		window.onload = function () {
 			var jobType = '${requirement.jobType}';
 			if(jobType !=null && jobType != "" && jobType != "undefined" && jobType == 'Other'){
-				  document.getElementById("jobTypeDiv").style.display="";
+				  document.getElementById("jobTypeDiv").style.display="block";
 				  $("#jobOtherType").attr("data-validation-optional", "true");
 				  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
 			}else{
@@ -146,6 +134,8 @@ $(document).ready(function() {
 				    $("#apprverReq").click(enable_cb);
 				    $("#parallelapprovers").click(enable_cb);
 				    $("#seqentialApprovers").click(enable_cb);
+				    /* $('#sequentialApprover1').click(enable_cb);
+					$('#sequentialApprover2').click(enable_cb); */
 				});
 				function enable_cb() {
 					$("#parallelApprover").prop('disabled', true).trigger('chosen:updated');
@@ -154,8 +144,11 @@ $(document).ready(function() {
 					$('#apprverReq').prop("disabled", !this.checked);
 					$('#parallelapprovers').prop("disabled", !this.checked);
 					$('#seqentialApprovers').prop("disabled", !this.checked);
+					/* $('#sequentialApprover1').prop("disabled", !this.checked); 
+					$('#sequentialApprover2').prop("disabled", !this.checked); 
 					$('#sequentialApprover1').attr("data-validation-optional","true"); 
-					$('#sequentialApprover2').attr("data-validation-optional","true"); 
+					$('#sequentialApprover2').attr("data-validation-optional","true");  */
+					$('#seqentialApprovers').attr("data-validation-optional","true");
 					$('#parallelApprover').attr("data-validation-optional","true"); 
 					
 				}
@@ -164,7 +157,8 @@ $(document).ready(function() {
 				$('#apprverReq').removeAttr("disabled");
 				$('#parallelapprovers').removeAttr("disabled")
 				$('#seqentialApprovers').removeAttr("disabled")
-				
+				$('#sequentialApprover1').removeAttr("disabled")
+				$('#sequentialApprover2').removeAttr("disabled")
 				
 			}
 		});
@@ -669,7 +663,7 @@ $(document).ready(function () {
               </div>
               <div class="form-group">
                 <label class="col-md-3">Bill Rate / Salary</label>
-              <div class="col-md-9 pras">
+              <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
@@ -857,39 +851,46 @@ $(document).ready(function () {
          <div class="form-group sequential" id="addLvl" style="display:none;">
                 <label class="col-md-3">Approver1<span class="text-danger">*</span></label>
                 <div class="col-md-9">   
-                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true" onchange="getLevel2Approvers();">
+                    
                         <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
+                        <select  disabled="disabled" class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true" onchange="getLevel2Approvers();">
 	                       <option value="">Select Approver1</option>
 	                       <c:forEach var="report" items="${approverList}">
-			                    <option value="${report.id}"    disabled="disabled">${report.firstName}&nbsp;${report.lastName}</option>
+			                    <option value="${report.id}" >${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
+			               </select>
 		               </c:if>
 		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
+		               <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true" onchange="getLevel2Approvers();">
 	                       <option value="">Select Approver1</option>
 	                       <c:forEach var="report" items="${approverList}">
-			                    <option value="${report.id}"    >${report.firstName}&nbsp;${report.lastName}</option>
+			                    <option value="${report.id}" >${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
+			              </select>
 		               </c:if>
-                    </select>
                     <!-- <span onClick="addLvl();"><i class="fa fa-level-down btn btn-default formic1" data-toggle="tooltip" data-placement="left" title="Add Level"></i></span> -->
                 </div>
                 
 	            <label class="col-md-3 mt">Approver2<span class="text-danger">*</span></label>
 	            <div class="col-md-9 mt">
-	              		<select   class="chosen-select form-control" id="sequentialApprover2" name="sequentialApprover2" field-name="Approver 2" data-validation="required" data-validation-optional="true">
+	              		
                        <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
+                       <select  disabled="disabled" class="chosen-select form-control" id="sequentialApprover2" name="sequentialApprover2" field-name="Approver 2" data-validation="required" data-validation-optional="true">
 	                       <option value="">Select Approver2</option>
 	                       <c:forEach var="report" items="${approverList}">
-			                    <option value="${report.id}" disabled="disabled"   >${report.firstName}&nbsp;${report.lastName}</option>
+			                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
+			           </select>
 		               </c:if>
 		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
+		               <select   class="chosen-select form-control" id="sequentialApprover2" name="sequentialApprover2" field-name="Approver 2" data-validation="required" data-validation-optional="true">
 	                       <option value="">Select Approver2</option>
 	                       <c:forEach var="report" items="${approverList}">
 			                    <option value="${report.id}"    >${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
+			               </select>
 		               </c:if>
-	                    </select>
+	                    
 	              </div>
               
               </div>
@@ -1353,13 +1354,13 @@ function getCities(){
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
-			var config = {
+			/* var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
 			  '.chosen-select-no-single' : {disable_search_threshold:10},
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
-			}
+			} */
 			
 		   $("#countryReq").chosen();
 	       $("#state").chosen();
@@ -1491,12 +1492,24 @@ function setTemplateValues(){
 		    		
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
+			    	$("#jobOtherType").val(json.otherJobType);
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#jobId").val(json.jobId);
 			    	$("#positions").val(json.positions);
 			    	
 			    	$("#minExp").val(json.minExp);
 			    	$("#maxExp").val(json.maxExp);
+			    	
+			    	if(null != json.jobType && json.jobType != "" && json.jobType != "undefined" && json.jobType == 'Other'){
+						  $( ".jobTypeDiv" ).show();
+						  $("#jobOtherType").attr("data-validation-optional", "true");
+						  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250"); 
+					}else{
+						  $( ".jobTypeDiv" ).hide();
+						  $("#jobOtherType").attr("data-validation-optional", "true");
+						  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
+						  $("#jobOtherType").val('');
+					}
 			    	
 			    	var country = '';
 					 var state = '';
@@ -1545,11 +1558,15 @@ function setTemplateValues(){
 			            $('#education').trigger("chosen:updated");
 					}
 					
-					 
+					
 			    	
 			    	$("#description").val(json.description);
 			    	$("#rate").val(json.rate);
+			    	
+			    	if(json.currencyCode != null && json.currencyCode != '' && json.currencyCode != 'undefined'){
 			    	$("#currencyCode").val(json.currencyCode);
+			    	}
+			    	
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#rateType").val(json.rateType);
 			    	$('.selectpicker').selectpicker('refresh');
@@ -1557,11 +1574,12 @@ function setTemplateValues(){
 			    	 $("#uploadFile").val(existedFile);
 			    	 $('#uploadFile').trigger("chosen:updated");
 			   
-			    	 $( ".jobTypeDiv" ).hide();
+			    	 //$( ".jobTypeDiv" ).hide();
 		    	}else{
 		    		
 		    		$("#jobTitle").val('');
 			    	$("#jobType").val('');
+			    	$("#jobOtherType").val('');
 			    	$("#jobId").val('');
 			    	$("#positions").val('');
 			    	$("#minExp").val('');
@@ -1582,6 +1600,8 @@ function setTemplateValues(){
 			     	$("#currencyCode").val('');
 			    	$("#rateType").val('');
 			    	$( ".jobTypeDiv" ).show();
+			    	$(".")
+			    	
 			    	existedFile = json.fileName;
 			    	 $("#fileName").val(existedFile);
 			    	 $('#fileName').trigger("chosen:updated");
@@ -2402,7 +2422,7 @@ function removeEditButton() {
 function getJobType(jobType){
 	var existingJobType = '${requirement.jobType}';
 	if(jobType.value == 'Other'){
-		 document.getElementById("jobTypeDiv").style.display="";
+		 document.getElementById("jobTypeDiv").style.display="block";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
 	}else{

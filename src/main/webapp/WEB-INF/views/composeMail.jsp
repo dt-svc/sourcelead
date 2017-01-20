@@ -4,13 +4,6 @@
 <link rel="stylesheet" href="resources/css/bootstrap-multiselect.css" type="text/css">
 <link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css" type="text/css">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <style>
@@ -287,13 +280,6 @@ function getUserList(teamType){
 		                    for (var i = 0; i < json.length; i++) { 
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
-		                    	 var localCheckedStatus = "";
-		                    	 $(".defaultCheckBox").each(function() { 
-		         							var localValue = this.value;
-		         							if(localValue == opt.id){
-		         								localCheckedStatus = "checked";
-		         							}  
-		                    	 });
 		                    	 result = result +'             <td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.email+'"  type="checkbox" name="emails[]" class="myCheckbox" ></td>';
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
