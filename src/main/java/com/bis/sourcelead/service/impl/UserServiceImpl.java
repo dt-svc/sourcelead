@@ -286,6 +286,9 @@ public class UserServiceImpl implements UserService {
 
 			sendEmail(user,loginUser,password,orgLocationsId);
 		}
+		/*
+		 * Saving/Update USER DB data as ElasticSearch Documents
+		 */
 		saveOrUpdateUserElkDocument(userRole,employee,loginUser.getUserCode());
 
 		 

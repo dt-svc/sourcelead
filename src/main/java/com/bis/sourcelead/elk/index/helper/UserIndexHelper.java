@@ -32,17 +32,19 @@ public class UserIndexHelper {
 			userIndex.setRate(employee.getRate());
 			userIndex.setRatePer(employee.getRatePer());
 			
-			if(userRole.getCreatedDate() != null){
+			if(null != userRole.getCreatedDate()){
 				userIndex.setCreatedDate(new Date(userRole.getCreatedDate().getTime()));
 			}
-			userIndex.setCreatedBy(loginUserCode);
-			if(userRole.getUpdatedDate() != null){
-				userIndex.setUpdatedDate(new Date(userRole.getUpdatedDate().getTime()));
+			/*if(null == userRole.getCreatedBy() || "".equalsIgnoreCase(userRole.getCreatedBy())){
+				userIndex.setCreatedBy(loginUserCode);
+			}*/
+			userIndex.setCreatedBy(userRole.getCreatedBy());
+			if(null != userRole.getUpdatedDate()){
+				userRole.setUpdatedDate(new Date(userRole.getUpdatedDate().getTime()));
 			}
 			
 			userIndex.setUpdatedBy(loginUserCode);
 		}
-		
 		
 		return userIndex;
 		

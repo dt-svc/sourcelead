@@ -335,11 +335,13 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				
 				//Rate
 				if(jsonObj.has("rate") && StringUtils.isNotEmpty(jsonObj.getString("rate"))){
-			    	String minRate= jsonObj.getString("rate").replaceAll("[^0-9\\.]+", "");
+			    	/*String minRate= jsonObj.getString("rate").replaceAll("[^0-9\\.]+", "");
 			    	try{
 			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("rate").gte(new Float(minRate)));
 			    	}
-			    	catch(NumberFormatException e){}
+			    	catch(NumberFormatException e){}*/
+			    	
+			    	boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("rate", jsonObj.getString("rate")));
 			    }
 				
 				//Rate Per
@@ -395,15 +397,15 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
 
-
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			
 			if(matcher.find()){
+				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
 				String mobileKeywd =matcher.group().replaceAll("[+91]", "");
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
 			}
-			/*if(StringUtils.isNumeric(keywd)){
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
-			}*/
 			
 			return matchQueryBuilderList; 
 	 }

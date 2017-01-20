@@ -104,8 +104,8 @@ window.onload = function () {
 	
 						  <div class="col-md-4">
 							  <label>Email<i class="fa fa-info-circle" title="Employers"></i></label>
-							  <div class="clearfix">
-								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Email" id="email" name="email">
+							  <div class="clearfix" id = "emailDiv">
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Email" id="email" name="email" data-validation="validate_Space validate_email" data-validation-optional="true">
                                   </select>
 							  </div>
 							  </div>
