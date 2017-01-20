@@ -137,6 +137,7 @@ public class Constants {
 	public static int CANDIDATE_SKILL_IN_ACTIVE= 0;
 	
 	public static String ACTIVE = "Active";
+	public static String INACTIVE = "In-Active";
 
 	/** projectMemberHistory constants**/
 	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
