@@ -768,16 +768,6 @@ public class VendorRestController {
 						boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
 				    }
 					
-					/* matchQueryBuilderList.add(QueryBuilders.matchQuery("tierAdvanced", keywd));
-						matchQueryBuilderList.add(QueryBuilders.matchQuery("createdByAdvanced", keywd));
-						matchQueryBuilderList.add(QueryBuilders.matchQuery("documentNameAdvanced", keywd));
-						matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-						matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-						matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-						matchQueryBuilderList.add(QueryBuilders.matchQuery("documentTypeAdvanced", keywd));
-						matchQueryBuilderList.add(QueryBuilders.matchQuery("submissionTemplateAdvanced", keywd));
-						
-					*/
 					
 					
 						
@@ -791,6 +781,16 @@ public class VendorRestController {
 						boolQueryBuilder.must(createdByBoolQueryBuilder);
 					}
 					
+
+					//tierAdvanced
+					ArrayList<String> tierAdvancedByArray = getSearchKeywordsFromChosenSelectField(jsonObj, "tierAdvanced");
+					if(tierAdvancedByArray != null && !tierAdvancedByArray.isEmpty()){
+						BoolQueryBuilder tierAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : tierAdvancedByArray){
+							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("responderLevel", keywd));
+						}
+						boolQueryBuilder.must(tierAdvancedBoolQueryBuilder);
+					}
 					
 					
 					List<ClientVendorIndex> clientVendorList = new ArrayList<ClientVendorIndex>();
@@ -839,12 +839,9 @@ public class VendorRestController {
 			    matchQueryBuilderList.add(QueryBuilders.matchQuery("orgName", keywd));
 			    matchQueryBuilderList.add(QueryBuilders.matchQuery("tierAdvanced", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("createdByAdvanced", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("documentNameAdvanced", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("documentTypeAdvanced", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("submissionTemplateAdvanced", keywd));
 				return matchQueryBuilderList; 
 		 }
 		 
@@ -853,13 +850,17 @@ public class VendorRestController {
 			   
 			    //Contact  Search 
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("orgName", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("phoneNumber", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("contactEmail", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocMobilePhone", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocEmail", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("ownerName", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("contactStatus", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocStatus", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", keywd));
 			    
+			    
+				
+				
+				
 				return matchQueryBuilderListForContacts; 
 		 }
 		 
@@ -945,7 +946,7 @@ public class VendorRestController {
 						 boolQueryBuilder.must(allBoolQueryBuilder);
 					}
 					
-					//vendorName
+					//contactName
 					ArrayList<String> vendorNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "contactNameAdvanced");
 					if(vendorNameArray != null && !vendorNameArray.isEmpty()){
 						BoolQueryBuilder vendorNameBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -954,6 +955,51 @@ public class VendorRestController {
 						}
 						boolQueryBuilder.must(vendorNameBoolQueryBuilder);
 					}
+					
+					
+					
+					//Spock Email
+					ArrayList<String> contactEmailNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "emailAdvanced");
+					if(contactEmailNameArray != null && !contactEmailNameArray.isEmpty()){
+						BoolQueryBuilder contactEmailBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : contactEmailNameArray){
+							contactEmailBoolQueryBuilder.should(QueryBuilders.matchQuery("spocEmail", keywd));
+						}
+						boolQueryBuilder.must(contactEmailBoolQueryBuilder);
+					}
+					
+					
+					//Spock PhoneNumber
+					ArrayList<String> phoneNumberNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "phoneNumberAdvanced");
+					if(phoneNumberNameArray != null && !phoneNumberNameArray.isEmpty()){
+						BoolQueryBuilder phoneNumberBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : phoneNumberNameArray){
+							phoneNumberBoolQueryBuilder.should(QueryBuilders.matchQuery("spocMobilePhone", keywd));
+						}
+						boolQueryBuilder.must(phoneNumberBoolQueryBuilder);
+					}
+					
+					//Spock ownerAdvanced
+					ArrayList<String> ownerAdvancedNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "ownerAdvanced");
+					if(ownerAdvancedNameArray != null && !ownerAdvancedNameArray.isEmpty()){
+						BoolQueryBuilder ownerAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : ownerAdvancedNameArray){
+							ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("spocMobilePhone", keywd));
+						}
+						boolQueryBuilder.must(ownerAdvancedBoolQueryBuilder);
+					}
+					
+					
+					//Spock Status
+					if(jsonObj.has("statusAdvanced")  && StringUtils.isNotEmpty(jsonObj.getString("statusAdvanced"))){
+						boolQueryBuilder.must(QueryBuilders.matchQuery("spocStatus", jsonObj.getString("statusAdvanced")));
+				    }
+					
+					//Invitation  Status
+					if(jsonObj.has("invitationAdvanced")  && StringUtils.isNotEmpty(jsonObj.getString("invitationAdvanced"))){
+						boolQueryBuilder.must(QueryBuilders.matchQuery("invitationStatus", jsonObj.getString("invitationAdvanced")));
+				    }
+					
 					
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 

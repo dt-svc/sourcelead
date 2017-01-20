@@ -142,7 +142,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				
 				orgSpoc.setUpdatedDate(CommonUtil.currentDate());
 				orgSpoc.setUpdatedBy(user.getUserCode());
-				orgSpocDao.addOrgSpoc(orgSpoc);
+				OrgSpoc orgs  =orgSpocDao.addOrgSpoc(orgSpoc);
+				
+				 //Elastic Search Document Saving
+				  ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgs);
+				  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgs.getId().toString());
+				
 				logger.debug("Vendor Contac is added successfully");
 				} 
 		}
