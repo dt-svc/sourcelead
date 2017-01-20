@@ -1,4 +1,5 @@
 package com.bis.sourcelead.rest;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -48,9 +50,11 @@ import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
+import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
  
@@ -103,21 +107,35 @@ public class NewTimesheetRestController {
 	@Autowired
 	ProjectApproverHierarchyService projectApproverHierarchyService;
 	
+	@Autowired
+	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
 	
 	
-	@RequestMapping(value = "/timesheetEntriesDivByProject", method = RequestMethod.POST ) 
-	public @ResponseBody String timesheetEntriesDivByProject(HttpServletRequest request,
-			@RequestParam(value="projectId", required=false) String projectId) throws Exception {
-			
-			StringBuilder projectDiv = timesheetEntriesDivByProjectId("1");
+	
+	@RequestMapping(value = "/timesheetEntriesDivByProjectMemberId", method = RequestMethod.POST ) 
+	public @ResponseBody String timesheetEntriesDivByProjectMemberId(HttpServletRequest request,
+			@RequestParam(value="projectMemberId", required=false) String projectMemberId) throws Exception {
+	    	StringBuilder projectDiv = new StringBuilder("");
+		    if(StringUtils.isNotEmpty(projectMemberId)){
+		    	 projectDiv = timesheetEntriesDivByProjectMemberId(projectMemberId);
+		    }
 		    return projectDiv.toString();
 	}
 	
 	@RequestMapping(value = "/timesheetDivByFrequency", method = RequestMethod.POST ) 
 	public @ResponseBody String timesheetDivByFrequency(HttpServletRequest request,
-			@RequestParam(value="frequency", required=false) String frequency ) throws Exception {
-			
-		StringBuilder frequencyBasedDiv = timesheetEntriesDivByFrequnecy("2017-01-09","2017-01-09");
+			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency ) throws Exception {
+		StringBuilder frequencyBasedDiv = new StringBuilder();
+		if(StringUtils.isNotEmpty(timesheetFrequency)){
+		 	 String[] frequency = timesheetFrequency.split("To");
+		 	 String weekStartDate = frequency[0].trim();
+		  	 String weekEndDate = frequency[1].trim();
+			 frequencyBasedDiv = timesheetEntriesDivByFrequnecy(weekStartDate,weekEndDate);
+		}
+		
 		return frequencyBasedDiv.toString();
 	}
 	
@@ -126,7 +144,7 @@ public class NewTimesheetRestController {
 			@RequestParam(value="startDate", required=false) String weekStartDate,
 			@RequestParam(value="endDate", required=false) String weekEndDate) throws Exception {
 			
-			StringBuilder tabDiv =  projectTabDataByDates("09-01-2017", "09-01-2017");
+			StringBuilder tabDiv =  projectTabDataByDates(weekStartDate, weekEndDate);
 		    return tabDiv.toString();
 	}
 	
@@ -136,6 +154,10 @@ public class NewTimesheetRestController {
 	public @ResponseBody String newTimesheetDummy(HttpServletRequest request,
 			@RequestParam(value="weekStartDate", required=false) String weekStartDate,
 			@RequestParam(value="weekEndDate", required=false) String weekEndDate) throws Exception {
+		
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLoc.getId(),loginUser.getId());
 		
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
 		timesheetEntriesDiv.append("");
@@ -149,20 +171,26 @@ public class NewTimesheetRestController {
 		timesheetEntriesDiv.append("				<div class='timesheetNewHead'>");
 		
 		timesheetEntriesDiv.append("					<div class='timeNewSe'>");
-		timesheetEntriesDiv.append("		                <select class='form-control chosen-select' onChange='timesheetEntriesDivByProject(1)'>");
-		timesheetEntriesDiv.append("		                  <option>Project 1</option>");
-		timesheetEntriesDiv.append("		                  <option>Project 2</option>");
-		timesheetEntriesDiv.append("		                  <option>Project 3</option>");
-		timesheetEntriesDiv.append("		                  <option>Project 4</option>");
-		timesheetEntriesDiv.append("		                  <option>Project 5</option>");
+		
+		timesheetEntriesDiv.append("		                <select id='projectMemberId' class='form-control chosen-select' onChange='timesheetEntriesDivByProjectMemberId()'>");
+		Long initialProjectMemberId = null;
+		if(projectMembersList != null && !projectMembersList.isEmpty()){
+			long count = 1;
+			for(ProjectMembers pm :projectMembersList){
+				if(count == 1)
+					initialProjectMemberId = pm.getId();
+				timesheetEntriesDiv.append("		                  <option value='"+pm.getId()+"'>"+pm.getProjects().getProjectName()+"</option>");
+			    count++;
+			}
+			
+		}
 		timesheetEntriesDiv.append("		                </select>");
 		timesheetEntriesDiv.append("		            </div>");
 		
-		
-		StringBuilder projectDiv = timesheetEntriesDivByProjectId("1");
-		timesheetEntriesDiv.append(projectDiv);				       
-		
-		
+		if(initialProjectMemberId != null){
+			 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(initialProjectMemberId.toString());
+			 timesheetEntriesDiv.append(projectDiv);		 
+		}
 		timesheetEntriesDiv.append("		    </div>");	
 		timesheetEntriesDiv.append("		</div>  ");	
 		timesheetEntriesDiv.append("		 </form> 	");	
@@ -170,38 +198,43 @@ public class NewTimesheetRestController {
 		return timesheetEntriesDiv.toString();
 	}
 	
-	public StringBuilder timesheetEntriesDivByProjectId(String projectId) throws Exception{
-		
-		
+	public StringBuilder timesheetEntriesDivByProjectMemberId(String projectMemberId) throws Exception{
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
+		if(StringUtils.isNotEmpty(projectMemberId)){
+			ProjectMembers projectMember = projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
+			if(projectMember != null){
+				Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember);
+				if(timesheetFrequencyMap != null && !timesheetFrequencyMap.isEmpty()){
+					
+				timesheetEntriesDiv.append("					<div id='timesheetEntriesDivByProjectMemberId'>");
+				timesheetEntriesDiv.append("					<div class='timeNewSe timeNewSe_a'>");  
+				timesheetEntriesDiv.append("		                <select id='timesheetFrequency' name='timesheetFrequency' class='form-control chosen-select' onChange='timesheetDivByFrequency()' >");
+				StringBuilder selectedStartDate = new StringBuilder("");
+				StringBuilder selectedEndDate =  new StringBuilder("");
+				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
+					    String key = entry.getKey();
+					    String value =entry.getValue();
+					    StringBuilder isSelected = new StringBuilder("");
+					    if(isCurrentDateBetweenDateRange(key, value)){
+					    	isSelected.append("selected='selected'");
+					    	selectedStartDate.append(key.replaceAll("/", "-"));
+					    	selectedEndDate.append(value.replaceAll("/", "-"));
+					    }
+					    timesheetEntriesDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+key.replaceAll("/", "-")+"To"+value.replaceAll("/", "-")+"'>");
+					    timesheetEntriesDiv.append(key).append(" To ").append(value);
+					    timesheetEntriesDiv.append("		                  </option>");
+				
+				}
+				timesheetEntriesDiv.append("		                </select>");
+				timesheetEntriesDiv.append("		            </div> ");
+				StringBuilder frequencyBasedDiv = timesheetEntriesDivByFrequnecy(selectedStartDate.toString(),selectedEndDate.toString());
+				timesheetEntriesDiv.append(frequencyBasedDiv);
+				
+				timesheetEntriesDiv.append("</div>  ");
+			 }
+		   }
+		}
 		
-		
-		timesheetEntriesDiv.append("					<div id='timesheetEntriesDivByProject'>");
-		
-		timesheetEntriesDiv.append("					<div class='timeNewSe'>");
-		timesheetEntriesDiv.append("		                <select class='form-control chosen-select'  onChange='timesheetDivByFrequency(1)' >");
-		timesheetEntriesDiv.append("		                  <option>January - 2017</option>");
-		timesheetEntriesDiv.append("		                  <option>February - 2017</option>");
-		timesheetEntriesDiv.append("		                  <option>March - 2017</option>");
-		timesheetEntriesDiv.append("		                  <option>April - 2017</option>");
-		timesheetEntriesDiv.append("		                  <option>May - 2017</option>");
-		timesheetEntriesDiv.append("		                  <option>June - 2017</option>");
-		timesheetEntriesDiv.append("		                  <option>July - 2017</option>");
-		timesheetEntriesDiv.append("		                  <option>August - 2017</option>");
-		timesheetEntriesDiv.append("		                  <option>September - 2017</option>");
-		timesheetEntriesDiv.append("		                  <option>October - 2017</option>");
-		timesheetEntriesDiv.append("		                  <option>November - 2017</option>");
-		timesheetEntriesDiv.append("		                  <option>December - 2017</option>");
-		timesheetEntriesDiv.append("		                </select>");
-		timesheetEntriesDiv.append("		            </div> ");
-		
-		       
-		/*timesheetEntriesDiv.append("				</div>  ");*/
-		
-		StringBuilder frequencyBasedDiv = timesheetEntriesDivByFrequnecy("2017-01-09","2017-01-09");
-		timesheetEntriesDiv.append(frequencyBasedDiv);
-		
-		timesheetEntriesDiv.append("</div>  ");
 		return timesheetEntriesDiv;
 		
 	}
@@ -219,39 +252,51 @@ public class NewTimesheetRestController {
 		timesheetEntriesDiv.append("					</div>");
 		timesheetEntriesDiv.append("					<div class='clearfix'></div>   ");
 		
-		
-		HashMap<String,String> tabFrequency = new HashMap<>();
-		tabFrequency.put("2-1", "8-1");
-		tabFrequency.put("9-1", "15-1");
-		tabFrequency.put("16-1", "22-1");
-		tabFrequency.put("23-1", "29-1");
-		tabFrequency.put("30-1", "31-1");
 		StringBuilder tabData = new StringBuilder();
-		
+		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(weekStartDate, weekEndDate);
 		
 		timesheetEntriesDiv.append("			<div class='timesheetNewTabs'> ");
 		timesheetEntriesDiv.append("			<div class='project_side_wrap_inn_tabs'> ");
 		timesheetEntriesDiv.append("			    <ul class='project-tabs-menu'> ");
-		Boolean firstTab = true;
+		StringBuilder currentStartDate = new StringBuilder("");
+		StringBuilder currentEndDate = new StringBuilder("");
+		int count = 1;
 		for (Map.Entry<String, String> entry : tabFrequency.entrySet()) {
-		    String key = entry.getKey();
-		    Object value = entry.getValue();
-		    if(weekStartDate != null && weekStartDate.equalsIgnoreCase(key)){  
-		    	   timesheetEntriesDiv.append("			        <li class='current'><a href='#tab-1' onClick='timesheetDivByTab()'>"+key+" To "+value+"</a></li> ");
-		    	   firstTab = false;
-		    }else{
-		    	  if( ( null == weekStartDate || weekStartDate.isEmpty() )  && firstTab ){
-		    		  timesheetEntriesDiv.append("			        <li class='current'><a href='#tab-1' onClick='timesheetDivByTab()'>"+key+" To "+value+"</a></li> ");
-		    		  firstTab = false;
-		    	  }else{
-		    		  timesheetEntriesDiv.append("			        <li><a href='#tab-1' onClick='timesheetDivByTab()'>"+key+" To "+value+"</a></li> ");
-		    	  }
-		    	   
+		     String key = entry.getKey();
+		     String value = entry.getValue();
+		     DateFormat format = Constants.DF_DMY;
+			 Date startDate = format.parse(key.replaceAll("/", "-"));
+			 Date endDate = format.parse(value.replaceAll("/", "-"));
+		    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
+		    StringBuilder isActive = new StringBuilder("");
+		    if(isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
+		    	if(isCurrentDateBetweenDateRange(key, value)){
+		    		   isActive.append("class='current'");
+		    		   currentStartDate.append(key);
+		    		   currentEndDate.append(value);
+		    	}
+		    	else{
+		    		isActive.delete(0, isActive.length());
+		    		isActive.append("");
+		    	}
+		    	timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#' onClick='timesheetDivByTab(\""+key+"\",\""+value+"\")'>"+shortormat.format(startDate)+" To "+shortormat.format(endDate)+"</a></li> ");
 		    }
+		    else{
+			    	if(count == 1){
+			    		   isActive.append("class='current'");
+		            	   currentStartDate.append(key);
+			    		   currentEndDate.append(value);
+		            }
+			    	else{
+			    		isActive.delete(0, isActive.length());
+			    		isActive.append("");
+			    	}
+		            timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='timesheetDivByTab(\""+key+"\",\""+value+"\")'>"+shortormat.format(startDate)+" To "+shortormat.format(endDate)+"</a></li> ");
+		            
+		    }
+		    count++;
 		}
-		weekStartDate = "2017-09-01";
-
-		tabData =	projectTabDataByDates(weekStartDate, weekEndDate);
+		tabData =	projectTabDataByDates(currentStartDate.toString(), currentEndDate.toString());
 		timesheetEntriesDiv.append("					<div class='export'> ");
 		timesheetEntriesDiv.append("						<p><i class='glyphicon glyphicon-export'></i>Export<i class='fa fa-caret-down'></i></p> ");
 		timesheetEntriesDiv.append("							<ul> ");
@@ -276,8 +321,26 @@ public class NewTimesheetRestController {
 		
 	}
 	
+	
+	boolean isCurrentDateBetweenDateRange(String weekStartDate,String weekEndDate) {
+		Boolean flag = false;
+		if(StringUtils.isNotEmpty(weekStartDate) && StringUtils.isNotEmpty(weekEndDate)){
+			Date currentDate = CommonUtil.currentDate();
+			 DateFormat format = Constants.DF_STD_DMY;
+			 Date startDate = null;
+			 Date endDate = null;
+			try {
+				startDate = format.parse(weekStartDate.replaceAll("-", "/"));
+				 endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				 flag =   currentDate.after(startDate) && currentDate.before(endDate);
+			} catch (ParseException e) {}
+		}
+		return flag;
+	}
+	
 	public StringBuilder projectTabDataByDates(String startDate ,String endDate) throws Exception{
 		
+		 
 		Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
 		Boolean isExportMyTimeSheet = commonUtil.hasRole("ROLE_EXPORT_MY_TIMESHEETS");
 		Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
@@ -294,7 +357,7 @@ public class NewTimesheetRestController {
 		tabDiv.append("			                	<tr>");
 		tabDiv.append("			                        <th>Tasks </th>");
 		
-		tabDiv.append("			                        <th>Mon<i>09-01-2017</i></th>");
+		tabDiv.append("			                        <th>Mon<i>").append(startDate).append("</i></th>");
 		String tuesDayDate =  getNextDate(startDate);
 		tabDiv.append("			                        <th>Tue<i>").append(tuesDayDate).append("</i></th>");
 		
@@ -310,7 +373,7 @@ public class NewTimesheetRestController {
 		String SaturdayDate =  getNextDate(FriDayDate);
 		tabDiv.append("			                        <th>Sat<i>").append(SaturdayDate).append("</i></th>");
 		
-		String SundayDate =  getNextDate(FriDayDate);
+		String SundayDate =  getNextDate(SaturdayDate);
 		tabDiv.append("			                        <th>Sun<i>").append(SundayDate).append("</i></th>");
 		
 		tabDiv.append("			                    </tr>");
@@ -1007,7 +1070,7 @@ public class NewTimesheetRestController {
 
 		
 		public static String getNextDate(String  curDate) throws ParseException {
-			  final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			  final DateFormat format =Constants.DF_DMY;
 			  final Date date = format.parse(curDate);
 			  final Calendar calendar = Calendar.getInstance();
 			  calendar.setTime(date);

@@ -15,6 +15,10 @@
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
 <script>
 // project side bar tabs
 $(document).ready(function() {
@@ -37,7 +41,7 @@ $(document).ready(function() {
 	        		    	    $("#timesheetEntriesDiv").empty();
 	        		    	  	$("#timesheetEntriesDiv").append(result);
 	        		    	  	maskme();
-	        		    	  	
+	        		    	  	prepareChosenScripts();
 	        		    	  	$("#tab-1").show()
 	        		    	    $(".project-tabs-menu a").click(function(event) {
 	        		    	        event.preventDefault();
@@ -56,23 +60,22 @@ $(document).ready(function() {
 
 
 <script>
-	function timesheetEntriesDivByProject(projectId){ 
+	function timesheetEntriesDivByProjectMemberId(){ 
 	         var sourceleadUrl ='${sourceleadUrl}';
-	         $("#timesheetEntriesDivByProject").empty();
-	         $("#timesheetEntriesDivByProject").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         var projectMemberId = $("#projectMemberId").val();
+	         $("#timesheetEntriesDivByProjectMemberId").empty();
+	         $("#timesheetEntriesDivByProjectMemberId").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
-   	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProject?${_csrf.parameterName}=${_csrf.token}",		
+   	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,		
    		          success :function(result) {
-   		        	  
-   		        	 $("#timesheetEntriesDivByProject").removeAttr("style");
-   		        	 $("#timesheetEntriesDivByProject").empty();
-   		        	 $("#timesheetEntriesDivByProject").append(result);
-   		        	 
+   		        	 $("#timesheetEntriesDivByProjectMemberId").removeAttr("style");
+   		        	 $("#timesheetEntriesDivByProjectMemberId").empty();
+   		        	 $("#timesheetEntriesDivByProjectMemberId").append(result);
    		        	 maskme();
-   		        	 
-		    	  	 $("#tab-1").show()
+   		             prepareChosenScripts();
+		    	  	 $("#tab-1").show();
  		    	     $(".project-tabs-menu a").click(function(event) {
  		    	        event.preventDefault();
  		    	        $(this).parent().addClass("current");
@@ -86,18 +89,16 @@ $(document).ready(function() {
    	         }); 
 	}
 </script>	
-
-
 <script>
-	function timesheetDivByFrequency(frequency){   
-				
+	function timesheetDivByFrequency(){   
 	         var sourceleadUrl ='${sourceleadUrl}';
+	         var timesheetFrequency = $("#timesheetFrequency").val();
 	         $("#timesheetDivByFrequency").empty();
 	         $("#timesheetDivByFrequency").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
-   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}",		
+   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency,		
    		          success :function(result) {
    		        	  		
    		        	      $("#timesheetDivByFrequency").removeAttr("style");
@@ -105,8 +106,8 @@ $(document).ready(function() {
 			    	  	  $("#timesheetDivByFrequency").append(result); 
 			    	  	  
 			    	  	  maskme();
-		    	  	   
-			    	  	 $("#tab-1").show()
+			    	  	 prepareChosenScripts();
+			    	  	 $("#tab-1").show();
 	 		    	     $(".project-tabs-menu a").click(function(event) {
 	 		    	        event.preventDefault();
 	 		    	        $(this).parent().addClass("current");
@@ -131,7 +132,7 @@ $(document).ready(function() {
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
-  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}",		
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,		
   		          success :function(result) {
   		    	       
   		        	   $("#timesheetDivByTab").removeAttr("style");
@@ -140,7 +141,7 @@ $(document).ready(function() {
 		    	  	   
 		    	  	   maskme();
 		    	  	   
-			    	   $("#tab-1").show()
+			    	   $("#tab-1").show();
 	 		    	   $(".project-tabs-menu a").click(function(event) {
 	 		    	        event.preventDefault();
 	 		    	        $(this).parent().addClass("current");
@@ -641,7 +642,7 @@ function addAttachment(){
         </section>
         
         <div id="timesheetEntriesDiv"> 
-        	<div id="timesheetEntriesDivByProject">
+        	<div id="timesheetEntriesDivByProjectMemberId">
         		 <div id="timesheetDivByFrequency">
         			 <div id="timesheetDivByTab">
         			 </div>
@@ -791,6 +792,28 @@ $('body').on('blur', '#timesheet_form', function() {
 	$("#timesheet_form").validateOnBlur(false, validationSettings);  
 });
 </script>
+
+<script type="text/javascript">
+         function prepareChosenScripts(){ 
+        	      var config = {
+        			  '.chosen-select'           : {},
+        			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+        			  '.chosen-select-no-single' : {disable_search_threshold:10},
+        			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        			  '.chosen-select-width'     : {width:"95%"}
+        			};
+        		   for (var selector in config) {
+        			  $(selector).chosen(config[selector]);
+        			};
+        			$('.chosen-select').each(function() {
+        			var $this = $(this);
+        			$this.next().css({'width': '100%'});
+        			})
+           };
+         
+            
+				
+</script> 
  
       
     

@@ -80,7 +80,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 								   int count = 1;
 								   for(int i=0;i<=monthdiff;i++){
 									   Date startDate = empMonthStartDate;
-									   Date endDate = CalendarUtil.getMonthEndDateByGivenDate(startDate, i).get("ENDDATE");
+									   Date endDate = CalendarUtil.getMonthEndDateByGivenDate(startDate, 0).get("ENDDATE");
 									   timesheetFrequencyList.put(format.format(startDate), format.format(endDate));
 									   empMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(startDate, 1).get("STARTDATE");
 								   }
@@ -349,8 +349,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 	public Map<String,String> getTabFrequencyListFromProjectInvoiceFrequency(String startDate,String endDate) throws Exception{
 		Map<String,String> timesheetFrequencyList = new LinkedHashMap<String,String>();
 		if(StringUtils.isNotEmpty(startDate) && StringUtils.isNotEmpty(endDate)){
-		 	    DateFormat format = Constants.DF_STD_DMY;
-		 	     DateFormat shortormat = Constants.SHORT_DF_STD_DM;
+		 	    DateFormat format = Constants.DF_DMY;
 		        try {
 		            Date stDate = format.parse(startDate);
 		            Date enDate = format.parse(endDate);
@@ -363,7 +362,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 					 Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 					 endCal.setLenient(false);
 					 endCal.setTime(enDate);
-					 Calendar empEndMonday = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON");
+					 Calendar empEndMonday = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "MON");
 						
 					  int totalWeeks = 0; 
 					  Calendar tsCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
@@ -383,7 +382,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 							else{
 								tsCal.setTime(tsStartDate);
 							}
-						    timesheetFrequencyList.put(shortormat.format(tsStartDate), shortormat.format(tsEndDate));
+						    timesheetFrequencyList.put(format.format(tsStartDate), format.format(tsEndDate));
 						    tsStartDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "MON").getTime();
 							tsEndDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "SUN").getTime();
 					  }
