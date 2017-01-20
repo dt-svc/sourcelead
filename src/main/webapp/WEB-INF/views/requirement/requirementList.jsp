@@ -1660,7 +1660,9 @@ $(".reminder").click(function(){
 
 <script type="text/javascript">
 function changeStatus(requirementId){
+	alert("hi");
 	var status = document.getElementById('changeStatusId' + requirementId).value;
+	alert(status);
 	/* $("#changeStatusId option[value=status]").remove(); */
 	 var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({

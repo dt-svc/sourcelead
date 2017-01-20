@@ -708,7 +708,7 @@ public class RequirementServiceImpl implements RequirementService {
 						mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 					}
 		 }		
-			       saveElkRequirement(requirement);
+			       saveElkRequirement(savedRequirement);
 		return savedRequirement;
 	}
 
@@ -720,6 +720,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public Requirement addRequirement(Requirement requirement) throws Exception {
+		saveElkRequirement(requirement);
 		return requirementDao.storeRequirement(requirement);
 	}
 
