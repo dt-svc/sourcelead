@@ -18,15 +18,16 @@ public class ClientVendorContactsIndexHelper {
 			clientVendorContactsIndex.setOrgLocationId(orgSpoc.getInitiatorLocationId().getId());
 			clientVendorContactsIndex.setOrgRelationId(orgSpoc.getOrgRelations().getId());
 			clientVendorContactsIndex.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
-			//clientVendorContactsIndex.setOwnerName(orgSpoc.geto);
-			clientVendorContactsIndex.setContactEmail(orgSpoc.getSpocUser().getEmail());
-			clientVendorContactsIndex.setPhoneNumber(orgSpoc.getSpocUser().getMobilePhone());
+			clientVendorContactsIndex.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+			clientVendorContactsIndex.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 			clientVendorContactsIndex.setInvitationStatus(orgSpoc.getInvitationStatus());
-			clientVendorContactsIndex.setContactStatus(orgSpoc.getSpocStatus());
-			
+			clientVendorContactsIndex.setSpocStatus(orgSpoc.getSpocStatus());
+			clientVendorContactsIndex.setSpocUserId(orgSpoc.getSpocUser().getId());
+			clientVendorContactsIndex.setOwnerUserId(orgSpoc.getOwnerUser().getId());
+			clientVendorContactsIndex.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
 			clientVendorContactsIndex.setSpocName(orgSpoc.getSpocUser().getFirstName());
 			clientVendorContactsIndex.setTempOwnerId(orgSpoc.getSpocUser().getId());
-			
+			clientVendorContactsIndex.setUserId(orgSpoc.getOwnerUser().getId());
 		
 		}
 		return clientVendorContactsIndex;

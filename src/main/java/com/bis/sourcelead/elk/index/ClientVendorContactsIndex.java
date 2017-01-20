@@ -11,15 +11,15 @@ public class ClientVendorContactsIndex implements Serializable {
 	
 	private String orgName;
 	
-	private String phoneNumber;
+	private String spocMobilePhone;
 	
-	private String contactEmail;
+	private String spocEmail;
 	
 	private ArrayList<String> ownerName;
 	
 	private String invitationStatus;
 	
-	private String contactStatus;
+	private String spocStatus;
 	
 	private Long orgRelationId;
 	
@@ -34,6 +34,8 @@ public class ClientVendorContactsIndex implements Serializable {
 	private Long tempOwnerId;
 	
 	private Long spocLocationId;
+	
+	private Long userId;
 	
 	
 	public Long getId() {
@@ -60,20 +62,20 @@ public class ClientVendorContactsIndex implements Serializable {
 		this.orgName = orgName;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
+	public String getSpocMobilePhone() {
+		return spocMobilePhone;
 	}
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public void setSpocMobilePhone(String spocMobilePhone) {
+		this.spocMobilePhone = spocMobilePhone;
 	}
 
-	public String getContactEmail() {
-		return contactEmail;
+	public String getSpocEmail() {
+		return spocEmail;
 	}
 
-	public void setContactEmail(String contactEmail) {
-		this.contactEmail = contactEmail;
+	public void setSpocEmail(String spocEmail) {
+		this.spocEmail = spocEmail;
 	}
 
 	public ArrayList<String> getOwnerName() {
@@ -92,12 +94,12 @@ public class ClientVendorContactsIndex implements Serializable {
 		this.invitationStatus = invitationStatus;
 	}
 
-	public String getContactStatus() {
-		return contactStatus;
+	public String getSpocStatus() {
+		return spocStatus;
 	}
 
-	public void setContactStatus(String contactStatus) {
-		this.contactStatus = contactStatus;
+	public void setSpocStatus(String spocStatus) {
+		this.spocStatus = spocStatus;
 	}
 
 	public Long getOrgRelationId() {
@@ -148,5 +150,12 @@ public class ClientVendorContactsIndex implements Serializable {
 		this.spocLocationId = spocLocationId;
 	}
 
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 
 }

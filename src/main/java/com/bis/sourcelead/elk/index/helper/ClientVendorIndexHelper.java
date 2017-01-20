@@ -33,6 +33,7 @@ public class ClientVendorIndexHelper {
 		if(null != org){
 			
 			clientVendorIndex.setOrgName(org.getOrgName());
+			clientVendorIndex.setWebsite(org.getWebSite());
 		}
 		if(null != submissionTemplate){
 			
