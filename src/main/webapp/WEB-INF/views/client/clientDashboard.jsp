@@ -104,7 +104,7 @@ overflow-x: auto;
 		                <div class="col-md-4">
 		                  <label>Client Name</label>
 		                  <div class="clearfix">
-		                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Client Name" id="orgNameAdvanced" name="orgNameAdvanced">
+		                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Client Name" id="orgNameAdvanced" name="orgAdvanced">
 		                    </select>
                   </div>
 		                </div>
@@ -165,30 +165,7 @@ overflow-x: auto;
 	               </div>
 	                
 	                <div class="clearfix">
-	                <div class="col-md-4">
-	                  <label>Document Name</label>
-	                  <div class="clearfix">
-	                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Document Name" id="documentNameAdvanced" name="documentNameAdvanced">
-                        </select>
-	                  </div>
-	                </div>
 	              
-	                <div class="col-md-4">
-	                  <label>Document Type</label>
-	                  <div class="clearfix">
-	                   <select class="chosen-select form-control input-sm" multiple data-placeholder="Document Type" id="documentTypeAdvanced" name="documentTypeAdvanced">
-                        </select>
-	                  </div>
-	                </div>
-	                
-	              
-	                <div class="col-md-4">
-	                  <label>Submission Template</label>
-	                  <div class="clearfix">
-	                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Submission Template" id="submissionTemplateAdvanced" name="submissionTemplateAdvanced">
-                        </select>
-	                  </div>
-	                </div>
 	                 </div>
 	                 
 	                 </div>
@@ -528,81 +505,6 @@ window.onload = function () {
 	        		
 		        }
 		    });
-		    
-		    
-		    
-		    // This is for DocumentName
-		    var selectdocumentNameAdvanced, chosendocumentNameAdvanced;
-		    selectdocumentNameAdvanced = $("#documentNameAdvanced");
-		    selectdocumentNameAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Document Name:' });
-		    chosendocumentNameAdvanced = selectdocumentNameAdvanced.data('chosen');
-		    chosendocumentNameAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectdocumentNameAdvanced.append(option);
-		            selectdocumentNameAdvanced.find(option).prop('selected', true);
-                    $("#documentNameAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#documentNameAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    
-		    
-		    
-		    // This is for DocumentType
-		    var selectdocumentTypeAdvanced, chosendocumentTypeAdvanced;
-		    selectdocumentTypeAdvanced = $("#documentTypeAdvanced");
-		    selectdocumentTypeAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Document Type:' });
-		    chosendocumentTypeAdvanced = selectdocumentTypeAdvanced.data('chosen');
-		    chosendocumentTypeAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectdocumentTypeAdvanced.append(option);
-		            selectdocumentTypeAdvanced.find(option).prop('selected', true);
-                    $("#documentTypeAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#documentTypeAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		 // This is for Submission Template Name
-		    var selectsubmissionTemplateAdvanced, chosensubmissionTemplateAdvanced;
-		    selectsubmissionTemplateAdvanced = $("#submissionTemplateAdvanced");
-		    selectsubmissionTemplateAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Submission Template Name:' });
-		    chosensubmissionTemplateAdvanced = selectsubmissionTemplateAdvanced.data('chosen');
-		    chosensubmissionTemplateAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectsubmissionTemplateAdvanced.append(option);
-		            selectsubmissionTemplateAdvanced.find(option).prop('selected', true);
-                    $("#submissionTemplateAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#submissionTemplateAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    
 		    
 		    
 		    
@@ -2153,8 +2055,7 @@ $('#selector').delay(2000).fadeOut('slow');
 		    var jsonData = encodeURIComponent(con);
 			var form = $('#clientlist_form')[0];
       		var formData = new FormData(form); 
-      		alert("raju"+con);
-      		
+      		var responderType = "Client";
       		
 			//It will escape all the special characters
 			$("#search_client").attr("disabled", "disabled");
@@ -2162,7 +2063,6 @@ $('#selector').delay(2000).fadeOut('slow');
 			
 			 var selectedList = document.getElementById('listOfVendors').value;
 			if(selectedList == "listbyVendor" ){
-				alert("david"+con);
 				
 				$.ajax({
 					type : "POST",
@@ -2172,7 +2072,7 @@ $('#selector').delay(2000).fadeOut('slow');
 	    	        processData: false,
 	    	        contentType:false,
 	        	    dataType : 'json',
-					url : sourceleadUrl+"/searchVendorThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					url : sourceleadUrl+"/searchVendorThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&json="+jsonData,
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");

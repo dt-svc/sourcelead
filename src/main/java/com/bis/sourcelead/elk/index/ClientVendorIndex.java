@@ -12,8 +12,6 @@ public class ClientVendorIndex implements Serializable {
 	
 	private Long orgRelationId;
 	
-	private String submissionTemplateName;
-	
     private Long responderLocationId;
 		
     private Long orgLocationId;
@@ -37,8 +35,9 @@ public class ClientVendorIndex implements Serializable {
 	private String status;
 	
 	private Long ownerId;
-
 	
+	private String createdBy;
+
 	public Long getId() {
 		return id;
 	}
@@ -94,16 +93,6 @@ public class ClientVendorIndex implements Serializable {
 	public void setResponderLevel(String responderLevel) {
 		this.responderLevel = responderLevel;
 	}
-
-
-	public String getSubmissionTemplateName() {
-		return submissionTemplateName;
-	}
-
-	public void setSubmissionTemplateName(String submissionTemplateName) {
-		this.submissionTemplateName = submissionTemplateName;
-	}
-
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -174,5 +163,14 @@ public class ClientVendorIndex implements Serializable {
 	public void setOrgLocationId(Long orgLocationId) {
 		this.orgLocationId = orgLocationId;
 	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
 
 }

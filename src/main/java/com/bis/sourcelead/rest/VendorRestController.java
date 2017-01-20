@@ -16,6 +16,7 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -672,7 +673,7 @@ public class VendorRestController {
 		   * @throws NullPointer
 		   */
 		 @RequestMapping(value = "/searchVendorThroughElasticSearch", method = RequestMethod.POST)
-		 public String searchVendorThroughElasticSearch(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+		 public String searchVendorThroughElasticSearch(@RequestParam(value = "responderType", required = false) String responderType, @RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request) throws Exception {
 
 			    MultipartFile multiFile = null;
 				Iterator<String> itrator = request.getFileNames();
@@ -687,7 +688,7 @@ public class VendorRestController {
 				 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 				 
 				 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
-				 boolQueryBuilder.must(QueryBuilders.matchQuery("responderType", "Vendor"));
+				 boolQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
 				 
 				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId());
 			   	 
@@ -750,6 +751,47 @@ public class VendorRestController {
 						}
 						boolQueryBuilder.must(vendorNameBoolQueryBuilder);
 					}
+					
+					
+
+					 //Country
+					if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
+						boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+				    }
+					
+					 //State
+					if(jsonObj.has("state") && StringUtils.isNotEmpty(jsonObj.getString("state"))){
+						boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
+				    }
+					//City
+					if(jsonObj.has("city")  && StringUtils.isNotEmpty(jsonObj.getString("city"))){
+						boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
+				    }
+					
+					/* matchQueryBuilderList.add(QueryBuilders.matchQuery("tierAdvanced", keywd));
+						matchQueryBuilderList.add(QueryBuilders.matchQuery("createdByAdvanced", keywd));
+						matchQueryBuilderList.add(QueryBuilders.matchQuery("documentNameAdvanced", keywd));
+						matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+						matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+						matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+						matchQueryBuilderList.add(QueryBuilders.matchQuery("documentTypeAdvanced", keywd));
+						matchQueryBuilderList.add(QueryBuilders.matchQuery("submissionTemplateAdvanced", keywd));
+						
+					*/
+					
+					
+						
+					//CreatedBy
+					ArrayList<String> createdByArray = getSearchKeywordsFromChosenSelectField(jsonObj, "createdByAdvanced");
+					if(createdByArray != null && !createdByArray.isEmpty()){
+						BoolQueryBuilder createdByBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : createdByArray){
+							createdByBoolQueryBuilder.should(QueryBuilders.matchQuery("createdBy", keywd));
+						}
+						boolQueryBuilder.must(createdByBoolQueryBuilder);
+					}
+					
+					
 					
 					List<ClientVendorIndex> clientVendorList = new ArrayList<ClientVendorIndex>();
 					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -901,6 +943,16 @@ public class VendorRestController {
 							}
 						}
 						 boolQueryBuilder.must(allBoolQueryBuilder);
+					}
+					
+					//vendorName
+					ArrayList<String> vendorNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "contactNameAdvanced");
+					if(vendorNameArray != null && !vendorNameArray.isEmpty()){
+						BoolQueryBuilder vendorNameBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : vendorNameArray){
+							vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("orgName", keywd));
+						}
+						boolQueryBuilder.must(vendorNameBoolQueryBuilder);
 					}
 					
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
