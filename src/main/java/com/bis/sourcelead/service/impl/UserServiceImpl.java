@@ -286,6 +286,8 @@ public class UserServiceImpl implements UserService {
 
 			sendEmail(user,loginUser,password,orgLocationsId);
 		}
+		saveOrUpdateUserElkDocument(userRole,employee,loginUser.getUserCode());
+
 		 
 	}
 	

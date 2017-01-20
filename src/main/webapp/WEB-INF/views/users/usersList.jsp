@@ -111,7 +111,7 @@ window.onload = function () {
 							  </div>
 						  <div class="col-md-4">
 							  <label>Phone Number<i class="fa fa-info-circle" title="Employers"></i></label>
-							  <div class="clearfix">
+							  <div class="clearfix" id = "mobilePhoneDiv">
 								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Phone Number" data-validation="validate_Space validate_phone" data-validation-optional="true" id="mobilePhone" name="mobilePhone">
                                   </select>
 							  </div>
@@ -328,10 +328,12 @@ function exportToPdf(){
 	function loadChosenScripts(){
 	    $('#search_user').removeAttr('disabled');
 	    $('#rate').val(''); 
-	    $('#rate').val(''); 
 	    $('#ratePer').val('');
+	    $('#mobilePhone').val('');
+
 	   
 	    $('#rateDiv').find('p.jquery_form_error_message').remove();
+	    $('#mobilePhoneDiv').find('p.jquery_form_error_message').remove();
 	    $('#ratePerDiv').find('p.jquery_form_error_message').remove();
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
@@ -632,6 +634,8 @@ var validationSettings = {
 		    var jsonData = encodeURIComponent(con);
 		    var form = $('#user_forms')[0];
       		var formData = new FormData(form);  
+			$("#search_user").attr("disabled", "disabled");
+
 			 $.ajax({
 						 type : "POST",
 		        	     data: formData,
