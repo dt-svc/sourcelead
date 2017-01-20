@@ -94,7 +94,7 @@ display: none;
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-success small">Candiates</label>
-          <div class="col-md-10">
+          <div class="col-md-10 positionRelative disable-choosen-dropdown">
             <select class="chosen-select" name="hotlistcandidates" data-validation="required" field-name="Candidates" multiple data-placeholder="&nbsp;" id="selectedCandidates">
             </select>
             <span class="select-multiple" data-target="#requirement" onclick="candidateListChange()" data-toggle="modal"><i class="fa fa-th-large" title="Select Candidates"></i></span> 
@@ -566,13 +566,6 @@ function getCandidates(candidatesListType){
             success :function(data) {
             	
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
 	                	   
                			    var result = '';
 	                	    result = result +'<div class="modal-body clearfix">';
@@ -655,7 +648,6 @@ function getCandidates(candidatesListType){
 	                 	 $("#candidatesList").empty(); 
 	                     $("#candidatesList").append(result); 
 	                     candidatePagenation(); 
-			    	} 
                  }else{
   	    	         
                  	var result ="";
