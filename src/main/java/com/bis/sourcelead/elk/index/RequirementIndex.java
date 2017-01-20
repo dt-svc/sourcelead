@@ -1,6 +1,11 @@
 package com.bis.sourcelead.elk.index;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+
+import com.itextpdf.text.ListItem;
 
 /**
  * 
@@ -15,13 +20,19 @@ public class RequirementIndex {
 	
 	private String jobTitle;
 	
-	private String rate;
+	private String currentRateCurrency;
+	
+	private String numberOfPositions;
+	
+	private String numberOfApplicants;
+	
+	private Float rate;
 	
 	private String rateType;
 	
-	private int minExperience;
+	private Integer minExperience;
 	
-	private int maxExperience;
+	private Integer maxExperience;
 	
 	private String requirementStatus;
 	
@@ -31,11 +42,11 @@ public class RequirementIndex {
 	
 	private String city;
 	
-	private List<String> education;
+	private String[] education;
 	
 	private String client;
 	
-	private List<String> skills;
+	private String[] skills;
 	
 	private String jobType;
 	
@@ -76,11 +87,11 @@ public class RequirementIndex {
 		this.jobTitle = jobTitle;
 	}
 
-	public String getRate() {
+	public Float getRate() {
 		return rate;
 	}
 
-	public void setRate(String rate) {
+	public void setRate(Float rate) {
 		this.rate = rate;
 	}
 	
@@ -92,19 +103,19 @@ public class RequirementIndex {
 		this.rateType = rateType;
 	}
 
-	public int getMinExperience() {
+	public Integer getMinExperience() {
 		return minExperience;
 	}
 
-	public void setMinExperience(int minExperience) {
+	public void setMinExperience(Integer minExperience) {
 		this.minExperience = minExperience;
 	}
 
-	public int getMaxExperience() {
+	public Integer getMaxExperience() {
 		return maxExperience;
 	}
 
-	public void setMaxExperience(int maxExperience) {
+	public void setMaxExperience(Integer maxExperience) {
 		this.maxExperience = maxExperience;
 	}
 
@@ -140,13 +151,7 @@ public class RequirementIndex {
 		this.city = city;
 	}
 
-	public List<String> getEducation() {
-		return education;
-	}
-
-	public void setEducation(List<String> education) {
-		this.education = education;
-	}
+	
 
 	public String getClient() {
 		return client;
@@ -156,14 +161,24 @@ public class RequirementIndex {
 		this.client = client;
 	}
 
-	public List<String> getSkills() {
+
+
+
+	public String[] getEducation() {
+		return education;
+	}
+
+	public void setEducation(String[] education) {
+		this.education = education;
+	}
+
+	public String[] getSkills() {
 		return skills;
 	}
 
-	public void setSkills(List<String> skills) {
+	public void setSkills(String[] skills) {
 		this.skills = skills;
 	}
-
 
 	public String getJobType() {
 		return jobType;
@@ -211,6 +226,30 @@ public class RequirementIndex {
 
 	public void setPriority(String priority) {
 		this.priority = priority;
+	}
+
+	public String getCurrentRateCurrency() {
+		return currentRateCurrency;
+	}
+
+	public void setCurrentRateCurrency(String currentRateCurrency) {
+		this.currentRateCurrency = currentRateCurrency;
+	}
+
+	public String getNumberOfPositions() {
+		return numberOfPositions;
+	}
+
+	public void setNumberOfPositions(String numberOfPositions) {
+		this.numberOfPositions = numberOfPositions;
+	}
+
+	public String getNumberOfApplicants() {
+		return numberOfApplicants;
+	}
+
+	public void setNumberOfApplicants(String numberOfApplicants) {
+		this.numberOfApplicants = numberOfApplicants;
 	}
 
 }

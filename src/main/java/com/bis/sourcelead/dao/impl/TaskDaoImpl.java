@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaskDao;
+import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.Tasks;
 import com.ibm.icu.text.SimpleDateFormat;
 
@@ -102,6 +103,17 @@ public class TaskDaoImpl implements TaskDao{
 		}
 	    
         return tasksList;
+	}
+
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Tasks> getTaskByScheduledTime(String currentTime) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from Tasks tasks left join fetch tasks.ownerOrglocationId orglocation left join fetch tasks.taskOwnerId user left join fetch tasks.assignedUserId assignUser where tasks.taskDate = :currentTime";
+		List<Tasks> tasksScheduledList = session.createQuery(query).setString("currentTime",currentTime).setCacheable(true).list();
+		return tasksScheduledList;
 	}
 
 
