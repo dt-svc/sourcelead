@@ -139,11 +139,11 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,submis
         	var json = JSON.parse(data);
         	
         	var result = "";
-     		result = result  +'	<div class="reqPopInn">';
+     		result = result  +'	<div class="reqPopInn reqHistTitle">';
      		result = result  +'		<div class="reqClose">';
      		result = result  +'			<span><i class="fa fa-angle-double-left"></i>Go Back</span><b class="fa fa-close"></b>';
      		result = result  +'		</div>';
-     		result = result  +'		<h3><a href="'+sourceleadUrl+'/requirementSummary?requirementId='+requirementId+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
+     		result = result  +'		<h3 title="'+positionType+'"><a href="'+sourceleadUrl+'/requirementSummary?requirementId='+requirementId+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
      		result = result  +'		<ul>';
      		   
      		    var report2 = json[0];
