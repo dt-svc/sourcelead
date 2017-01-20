@@ -543,6 +543,7 @@ public class RequirementListRestController {
 			 requirement.setUpdatedBy(loginUser.getUserCode());
 			 requirement.setUpdatedDate(commonUtil.currentDate());
 			 requirementService.addRequirement(requirement); 
+			 
 			 StringBuilder reqStatusChange = new StringBuilder();
 			 SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", reqStatusChange.append(" ").append(requirement.getJobTitle()).append(" Status changed ").append(requirement.getRequirementSubmissionPreviousStatus()).append(" to ").append(requirement.getRequirementSubmissionStatus()).append(" ").toString());
 
