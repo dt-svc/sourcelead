@@ -21,4 +21,6 @@ public interface UserMailBoxDao {
 	UserMailBox getUserPreviousMail(Long Id,Long userId,Long orgLocationId,String type) throws Exception;
 	
 	UserMailBox getUserNextMail(Long Id,Long userId,Long orgLocationId,String type) throws Exception;
+	
+	public Long getMailBoxCountByUserIdAndOrgLocationid(Long userId,Long orgLocationId,String type) throws Exception;
 }

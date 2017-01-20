@@ -6,15 +6,9 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <script src="resources/js/formvalidator.js"></script>
 
-<link href="resources/css/chosen.min.css" rel="stylesheet">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -22,7 +16,6 @@
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
-
 
 <%-- 
      @author : David Raju.
@@ -1431,7 +1424,7 @@ function requirementPipeline(requirementId){
         </div>
         <ul>
         <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
-		<li><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" onClick ="requirementListIndividualStatusCounts();"id="filter2ApprovePop"></i>
+		<li><b onClick ="requirementListIndividualStatusCounts();" id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></b>
 		            <div id="filter2ApprovedPop" class="approved_pop">
 		              <ul>
                 		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="NEW"  onclick="requirementList();"><label for="c6">New<span id="newRequirementCount"></span></label></li>
@@ -1453,8 +1446,8 @@ function requirementPipeline(requirementId){
           </sec:authorize>
           
           <li>
-          <a class="action" href="javascript:void(0)">Template
-          	<i onclick="getActions();" class="fa fa-caret-down"></i>
+          <a onclick="getActions();" class="action" href="javascript:void(0)">Template
+          	<i class="fa fa-caret-down"></i>
           </a>
           <div class="action-pop">
           <span>
@@ -1469,7 +1462,7 @@ function requirementPipeline(requirementId){
           </div>
           </li>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
-           <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop" onClick="mypop();"></i>
+           <li id="export-pop" ><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" onClick="mypop();"></i>
             <div class="export_pop">
               <ul>
                 <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
@@ -1518,7 +1511,7 @@ function requirementPipeline(requirementId){
             });
         </script> 
 <script type="text/javascript">
-			var config = {
+		/* 	var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
 			  '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -1532,7 +1525,7 @@ function requirementPipeline(requirementId){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 
-			});
+			}); */
 			$('#np').trigger("chosen:updated");
 			
 			
@@ -1660,7 +1653,9 @@ $(".reminder").click(function(){
 
 <script type="text/javascript">
 function changeStatus(requirementId){
+	alert("hi");
 	var status = document.getElementById('changeStatusId' + requirementId).value;
+	alert(status);
 	/* $("#changeStatusId option[value=status]").remove(); */
 	 var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
@@ -1808,7 +1803,7 @@ function getActions(){
 		}
 	</script> 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -1824,7 +1819,7 @@ function getActions(){
 				$this.next().css({'width': '100%'});
 
 });
- 		</script> 
+ 		</script>  -->
 <script>
 function searchRequirement(){
 	var validationSettings = {

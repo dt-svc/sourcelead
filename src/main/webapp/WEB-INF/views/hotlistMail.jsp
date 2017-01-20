@@ -5,12 +5,6 @@
 <link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css" type="text/css">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <style>
@@ -94,7 +88,7 @@ display: none;
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-success small">Candiates</label>
-          <div class="col-md-10">
+          <div class="col-md-10 positionRelative disable-choosen-dropdown">
             <select class="chosen-select" name="hotlistcandidates" data-validation="required" field-name="Candidates" multiple data-placeholder="&nbsp;" id="selectedCandidates">
             </select>
             <span class="select-multiple" data-target="#requirement" onclick="candidateListChange()" data-toggle="modal"><i class="fa fa-th-large" title="Select Candidates"></i></span> 
@@ -566,13 +560,6 @@ function getCandidates(candidatesListType){
             success :function(data) {
             	
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
 	                	   
                			    var result = '';
 	                	    result = result +'<div class="modal-body clearfix">';
@@ -627,7 +614,7 @@ function getCandidates(candidatesListType){
 		                    	
 		                    	 
 		                    	 result = result +'<tr>';
-		                    	 result = result +'<td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.id+','+name+'"  type="checkbox" name="candidatesIds[]" class="myCheckbox" >';
+		                    	 result = result +'<td>&nbsp;&nbsp;<input id="'+opt.candidateId+'" value="'+opt.candidateId+','+name+'"  type="checkbox" name="candidatesIds[]" class="myCheckbox" >';
 		                    	 result = result +'</td>';
 		                    	 result = result +'<td>'+name+'</td>';
 		                    	 result = result +'<td>'+opt.email+'</td>';
@@ -655,7 +642,6 @@ function getCandidates(candidatesListType){
 	                 	 $("#candidatesList").empty(); 
 	                     $("#candidatesList").append(result); 
 	                     candidatePagenation(); 
-			    	} 
                  }else{
   	    	         
                  	var result ="";

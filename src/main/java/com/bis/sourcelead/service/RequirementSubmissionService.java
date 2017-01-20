@@ -105,7 +105,7 @@ public interface RequirementSubmissionService {
 			OrgLocations orgLocations) throws Exception;
 	
 	public void applicantRejectMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
-			OrgLocations orgLocations, String rejectreason, StringBuilder tempHTML) throws Exception;
+			OrgLocations orgLocations, String rejectreason, StringBuilder tempHTML, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation) throws Exception;
 	
 
 	RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user, RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile,Org loginOrg,OrgLocations loginOrgLocation) throws Exception;
@@ -125,7 +125,7 @@ public interface RequirementSubmissionService {
 			RequirementRateSubmissionNegotiation neogtation, StringBuilder tempHTML) throws Exception;
 
 
-	void sendEmailtoClient(Org loginOrg, User users, User pastUser, Requirement requirement, Candidate candidate,
+	void sendEmailtoClient(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, Candidate candidate,
 			StringBuilder tempHTML, OrgLocations loginOrgLocation)throws Exception;
 
 
@@ -149,7 +149,7 @@ public interface RequirementSubmissionService {
 
 	void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation) throws Exception;
 
-	void sendEmailtoVendor(Org loginOrg, User users, User pastUser, Requirement requirement, Candidate candidate,
+	void sendEmailtoVendor(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, Candidate candidate,
 			StringBuilder tempHTML, OrgLocations orgLocations) throws Exception;
 
 	void userRejectRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations,
