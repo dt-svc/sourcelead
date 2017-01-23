@@ -127,7 +127,7 @@ public class NewTimesheetRestController {
 	
 	@RequestMapping(value = "/timesheetDivByFrequency", method = RequestMethod.POST ) 
 	public @ResponseBody String timesheetDivByFrequency(HttpServletRequest request,
-			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency ) throws Exception {
+			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency) throws Exception {
 		StringBuilder frequencyBasedDiv = new StringBuilder();
 		if(StringUtils.isNotEmpty(timesheetFrequency)){
 		 	 String[] frequency = timesheetFrequency.split("To");
@@ -261,42 +261,50 @@ public class NewTimesheetRestController {
 		StringBuilder currentStartDate = new StringBuilder("");
 		StringBuilder currentEndDate = new StringBuilder("");
 		int count = 1;
-		for (Map.Entry<String, String> entry : tabFrequency.entrySet()) {
-		     String key = entry.getKey();
-		     String value = entry.getValue();
-		     DateFormat format = Constants.DF_DMY;
-			 Date startDate = format.parse(key.replaceAll("/", "-"));
-			 Date endDate = format.parse(value.replaceAll("/", "-"));
-		    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
-		    StringBuilder isActive = new StringBuilder("");
-		    if(isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
-		    	if(isCurrentDateBetweenDateRange(key, value)){
-		    		   isActive.append("class='current'");
-		    		   currentStartDate.append(key);
-		    		   currentEndDate.append(value);
-		    	}
-		    	else{
-		    		isActive.delete(0, isActive.length());
-		    		isActive.append("");
-		    	}
-		    	timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#' onClick='timesheetDivByTab(\""+key+"\",\""+value+"\")'>"+shortormat.format(startDate)+" To "+shortormat.format(endDate)+"</a></li> ");
-		    }
-		    else{
-			    	if(count == 1){
+		if(tabFrequency != null && !tabFrequency.isEmpty()){
+			for (Map.Entry<String, String> entry : tabFrequency.entrySet()) {
+			     String key = entry.getKey();
+			     String value = entry.getValue();
+			     DateFormat format = Constants.DF_DMY;
+				 Date startDate = format.parse(key.replaceAll("/", "-"));
+				 Date endDate = format.parse(value.replaceAll("/", "-"));
+			    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
+			    StringBuilder isActive = new StringBuilder("");
+			    if(isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
+			    	if(isCurrentDateBetweenDateRange(key, value)){
 			    		   isActive.append("class='current'");
-		            	   currentStartDate.append(key);
+			    		   currentStartDate.append(key);
 			    		   currentEndDate.append(value);
-		            }
+			    	}
 			    	else{
 			    		isActive.delete(0, isActive.length());
 			    		isActive.append("");
 			    	}
-		            timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='timesheetDivByTab(\""+key+"\",\""+value+"\")'>"+shortormat.format(startDate)+" To "+shortormat.format(endDate)+"</a></li> ");
-		            
-		    }
-		    count++;
+			    	if(startDate.equals(endDate))
+			    	   timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#' onClick='timesheetDivByTab(\""+key+"\",\""+value+"\")'>"+shortormat.format(startDate)+"</a></li> ");
+			    	else
+			    	  timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#' onClick='timesheetDivByTab(\""+key+"\",\""+value+"\")'>"+shortormat.format(startDate)+" To "+shortormat.format(endDate)+"</a></li> ");	
+			    }
+			    else{
+				    	if(count == 1){
+				    		   isActive.append("class='current'");
+			            	   currentStartDate.append(key);
+				    		   currentEndDate.append(value);
+			            }
+				    	else{
+				    		isActive.delete(0, isActive.length());
+				    		isActive.append("");
+				    	}
+				    	if(startDate.equals(endDate))
+			              timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='timesheetDivByTab(\""+key+"\",\""+value+"\")'>"+shortormat.format(startDate)+"</a></li> ");
+				    	else    
+				    		 timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='timesheetDivByTab(\""+key+"\",\""+value+"\")'>"+shortormat.format(startDate)+" To "+shortormat.format(endDate)+"</a></li> ");
+			        
+			    }
+			    count++;
+			}
+			tabData =	projectTabDataByDates(currentStartDate.toString(), currentEndDate.toString());
 		}
-		tabData =	projectTabDataByDates(currentStartDate.toString(), currentEndDate.toString());
 		timesheetEntriesDiv.append("					<div class='export'> ");
 		timesheetEntriesDiv.append("						<p><i class='glyphicon glyphicon-export'></i>Export<i class='fa fa-caret-down'></i></p> ");
 		timesheetEntriesDiv.append("							<ul> ");
@@ -357,57 +365,78 @@ public class NewTimesheetRestController {
 		tabDiv.append("			                	<tr>");
 		tabDiv.append("			                        <th>Tasks </th>");
 		
-		tabDiv.append("			                        <th>Mon<i>").append(startDate).append("</i></th>");
-		String tuesDayDate =  getNextDate(startDate);
+		StringBuilder disbleCondition1 = new StringBuilder("");
+		StringBuilder disbleCondition2 = new StringBuilder("");
+		StringBuilder disbleCondition3 = new StringBuilder("");
+		StringBuilder disbleCondition4 = new StringBuilder("");
+		StringBuilder disbleCondition5 = new StringBuilder("");
+		StringBuilder disbleCondition6 = new StringBuilder("");
+		StringBuilder disbleCondition7 = new StringBuilder("");
+		
+		
+		 DateFormat format = Constants.DF_DMY;
+		int dayOfTheDate = CalendarUtil.getDayOfTheDate(format.parse(startDate));
+		String weekStartDate = startDate;
+		switch (dayOfTheDate) {
+	        case 1:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,6);
+	                 disbleCondition1.append("disabled");
+	                 disbleCondition2.append("disabled");
+	                 disbleCondition3.append("disabled");
+	                 disbleCondition4.append("disabled");
+	                 disbleCondition5.append("disabled");
+	                 disbleCondition6.append("disabled");
+	                 break;
+	        case 2:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,0);
+	                 break;
+	        case 3:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,1);
+	                 disbleCondition1.append("disabled");
+	             break;
+	        case 4:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,2);
+			         disbleCondition1.append("disabled");
+		             disbleCondition2.append("disabled");
+	            break;
+	        case 5: weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,3);
+			        disbleCondition1.append("disabled");
+		            disbleCondition2.append("disabled");
+		            disbleCondition3.append("disabled");
+	            break;
+	        case 6:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,4);
+			         disbleCondition1.append("disabled");
+		             disbleCondition2.append("disabled");
+		             disbleCondition3.append("disabled");
+		             disbleCondition4.append("disabled");
+	              break;
+	        case 7: weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,5);
+			        disbleCondition1.append("disabled");
+		            disbleCondition2.append("disabled");
+		            disbleCondition3.append("disabled");
+		            disbleCondition4.append("disabled");
+		            disbleCondition5.append("disabled");
+	             break;
+	        default:   weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,0);
+	                 break;
+       }
+		
+		tabDiv.append("			                        <th>Mon<i>").append(weekStartDate).append("</i></th>");
+		String tuesDayDate =  CalendarUtil.getNextDate(weekStartDate);
 		tabDiv.append("			                        <th>Tue<i>").append(tuesDayDate).append("</i></th>");
 		
-		String WednesDayDate =  getNextDate(tuesDayDate);
+		String WednesDayDate =  CalendarUtil.getNextDate(tuesDayDate);
 		tabDiv.append("			                        <th>Wed<i>").append(WednesDayDate).append("</i></th>");
 		
-		String ThursDayDate =  getNextDate(WednesDayDate);
+		String ThursDayDate =  CalendarUtil.getNextDate(WednesDayDate);
 		tabDiv.append("			                        <th>Thu<i>").append(ThursDayDate).append("</i></th>");
 		
-		String FriDayDate =  getNextDate(ThursDayDate);
+		String FriDayDate =  CalendarUtil.getNextDate(ThursDayDate);
 		tabDiv.append("			                        <th>Fri<i>").append(FriDayDate).append("</i></th>");
 		
-		String SaturdayDate =  getNextDate(FriDayDate);
+		String SaturdayDate =  CalendarUtil.getNextDate(FriDayDate);
 		tabDiv.append("			                        <th>Sat<i>").append(SaturdayDate).append("</i></th>");
 		
-		String SundayDate =  getNextDate(SaturdayDate);
+		String SundayDate =  CalendarUtil.getNextDate(SaturdayDate);
 		tabDiv.append("			                        <th>Sun<i>").append(SundayDate).append("</i></th>");
 		
 		tabDiv.append("			                    </tr>");
-		
-		
-		 
-		String disbleCondition1 = "";
-		if(false){
-			disbleCondition1 = "disabled";
-		}
-		String disbleCondition2 = "";
-		if(false){
-        	disbleCondition2 = "disabled";
-		}
-		String disbleCondition3 = "";
-		if(false){
-        	disbleCondition3 = "disabled";
-		}
-		String disbleCondition4 = "";
-		if(false){
-        	disbleCondition4 = "disabled";
-		} 
-		String disbleCondition5 = "";
-		if(false){
-        	disbleCondition5 = "disabled";
-		}
-		String disbleCondition6 = "";
-		if(false){
-        	disbleCondition6 = "disabled";
-		}
-		String disbleCondition7 = "";
-		if(false){
-        	disbleCondition7 = "disabled";
-		} 
 		
 		TimesheetSubmissions ts = timesheetSubmissionsService.getTimesheetSubmissions("1");
 		Collection<TimesheetEntries>  timesheetEntriesList =   timesheetEntriesDao.getAllTimesheetEntries();
@@ -1069,13 +1098,6 @@ public class NewTimesheetRestController {
 		}
 
 		
-		public static String getNextDate(String  curDate) throws ParseException {
-			  final DateFormat format =Constants.DF_DMY;
-			  final Date date = format.parse(curDate);
-			  final Calendar calendar = Calendar.getInstance();
-			  calendar.setTime(date);
-			  calendar.add(Calendar.DAY_OF_YEAR, 1);
-			  return format.format(calendar.getTime()); 
-		}
+		
  
 }

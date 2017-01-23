@@ -8,6 +8,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
+import org.joda.time.DateTime;
+import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
 
@@ -588,6 +592,43 @@ public  class CalendarUtil {
        }
 	return null;
     }
-	 
+    public static int getNumberOfWeeks(Date date1, Date date2){
+		DateTime dateTime1 = new DateTime(date1);
+		DateTime dateTime2 = new DateTime(date2);
+
+		int weeks = Weeks.weeksBetween(dateTime1, dateTime2).getWeeks();
+		return weeks;
+	}
+	
+	public static long getNumberOfDays(Date date1, Date date2){
+		    long diff = date2.getTime() - date1.getTime();
+		    long  numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+		    return numberofDays;
+		
+	}
+	public static int getDayOfTheDate(Date date){
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+        return dayOfWeek;
+	}
+	
+	public static String getNextDate(String  curDate) throws ParseException {
+		  final DateFormat format =Constants.DF_DMY;
+		  final Date date = format.parse(curDate);
+		  final Calendar calendar = Calendar.getInstance();
+		  calendar.setTime(date);
+		  calendar.add(Calendar.DAY_OF_YEAR, 1);
+		  return format.format(calendar.getTime()); 
+	}
+	
+	public static String getPreviousDateByDecrementor(String  curDate,int decrementor) throws ParseException {
+		  final DateFormat format =Constants.DF_DMY;
+		  final Date date = format.parse(curDate.replaceAll("/", "-"));
+		  final Calendar calendar = Calendar.getInstance();
+		  calendar.setTime(date);
+		  calendar.add(Calendar.DAY_OF_YEAR, -decrementor);
+		  return format.format(calendar.getTime()); 
+	}
 
 }
