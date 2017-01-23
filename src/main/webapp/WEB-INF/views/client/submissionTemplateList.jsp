@@ -282,7 +282,7 @@ function templatepagination(){
 
 <script type="text/javascript">
 function validateTemplateName(clientLocationId){
-	var templateName = document.getElementById("templateName").value; 
+	var templateName = document.getElementById("templateName").value.trim(); 
 	var templateId = $("#templateId").val();
 	if(templateId == 'undefined' || templateId == null){
 		templateId = '';
