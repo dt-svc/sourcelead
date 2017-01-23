@@ -27,15 +27,37 @@ public class ClientVendorContactsIndex implements Serializable {
 	
 	private Long spocUserId;
 	
+	private String  spocUserFirstName;
+	
+	private String  spocUserLastName;
+	
+	private String  spocUserEmail;
+	
+	private String  spocUserPhNo;
+	
 	private Long ownerUserId;
 	
+	private String  ownerUserFirstName;
+	
+	private String  ownerUserLastName;
+	
+	private String  ownerUserEmail;
+	
+	private String  ownerUserPhNo;
+	
 	private String  spocName;
+	
+	private String  ownerNames;
 	
 	private Long tempOwnerId;
 	
 	private Long spocLocationId;
 	
 	private Long userId;
+	
+	private String  initiatorOrgName;
+	
+	private String  responderOrgName;
 	
 	
 	public Long getId() {
@@ -156,6 +178,94 @@ public class ClientVendorContactsIndex implements Serializable {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public String getSpocUserFirstName() {
+		return spocUserFirstName;
+	}
+
+	public void setSpocUserFirstName(String spocUserFirstName) {
+		this.spocUserFirstName = spocUserFirstName;
+	}
+
+	public String getSpocUserLastName() {
+		return spocUserLastName;
+	}
+
+	public void setSpocUserLastName(String spocUserLastName) {
+		this.spocUserLastName = spocUserLastName;
+	}
+
+	public String getOwnerUserFirstName() {
+		return ownerUserFirstName;
+	}
+
+	public void setOwnerUserFirstName(String ownerUserFirstName) {
+		this.ownerUserFirstName = ownerUserFirstName;
+	}
+
+	public String getOwnerUserLastName() {
+		return ownerUserLastName;
+	}
+
+	public void setOwnerUserLastName(String ownerUserLastName) {
+		this.ownerUserLastName = ownerUserLastName;
+	}
+
+	public String getOwnerNames() {
+		return ownerNames;
+	}
+
+	public void setOwnerNames(String ownerNames) {
+		this.ownerNames = ownerNames;
+	}
+
+	public String getSpocUserEmail() {
+		return spocUserEmail;
+	}
+
+	public void setSpocUserEmail(String spocUserEmail) {
+		this.spocUserEmail = spocUserEmail;
+	}
+
+	public String getSpocUserPhNo() {
+		return spocUserPhNo;
+	}
+
+	public void setSpocUserPhNo(String spocUserPhNo) {
+		this.spocUserPhNo = spocUserPhNo;
+	}
+
+	public String getOwnerUserEmail() {
+		return ownerUserEmail;
+	}
+
+	public void setOwnerUserEmail(String ownerUserEmail) {
+		this.ownerUserEmail = ownerUserEmail;
+	}
+
+	public String getOwnerUserPhNo() {
+		return ownerUserPhNo;
+	}
+
+	public void setOwnerUserPhNo(String ownerUserPhNo) {
+		this.ownerUserPhNo = ownerUserPhNo;
+	}
+
+	public String getInitiatorOrgName() {
+		return initiatorOrgName;
+	}
+
+	public void setInitiatorOrgName(String initiatorOrgName) {
+		this.initiatorOrgName = initiatorOrgName;
+	}
+
+	public String getResponderOrgName() {
+		return responderOrgName;
+	}
+
+	public void setResponderOrgName(String responderOrgName) {
+		this.responderOrgName = responderOrgName;
 	}
 
 }
