@@ -6,7 +6,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
  <style type="text/css">
  .overflow-data {
@@ -321,7 +320,7 @@ function rejectedCount(requirementId){
 
 
   
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -337,7 +336,7 @@ function rejectedCount(requirementId){
 				$this.next().css({'width': '100%'});
 
 });
-</script> 
+</script>  -->
 
 <!-- Show success message after form submission script -->
 <script>
@@ -1355,19 +1354,7 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<th>Ph. No</th>';
 				           }
 				           result = result + '<th>Resume</th>';
-				           /* if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT'){
-				        	   result = result + '<th>Applied on</th>';
-					           result = result + '<th>Rate</th>';
-					           
-					         if(clientSubmissions == 'Y'){
-					           if(submissionType != 'REQUEST_SENT'){
-					           result = result + '<th>Sub. Rate</th>';
-					           }
-					         }else{
-					        	result = result + '<th>Sub. Rate</th>';
-					         }
-					           result = result + '<th>Source</th>';
-				            } */
+				           
 				            
 				            
 				            
@@ -1390,7 +1377,7 @@ function requirementPipeline(requirementId,submissionType){
 						   result = result + '<th>No.of Interviews</th>'; 
 				           }
 				           if(submissionType == 'SHORTLIST'){
-				        	   result = result + '<th>shortlisted By</th>'; 
+				        	   result = result + '<th>Shortlisted By</th>'; 
 				           }
 				           if(submissionType == 'OFFERMADE'){
 							   result = result + '<th>Offer Join Date</th>'; 
@@ -1625,11 +1612,11 @@ function requirementPipeline(requirementId,submissionType){
 						           if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT' || submissionType == 'OFFERMADE'){
 						        	   
 						        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED' && submissionType != 'OFFERMADE'){
-						        		   if(report.score != null && report.score != '' && report.score != 'undefined'){
-								        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
+						        		   if(report.candidateScore != null){
+						        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
 									           }
 									       else{
-									        	result = result + '         <td><div><span>--</span></div></td>';
+									    	   result = result + '         <td><div><span>--</span></div></td>';
 								    	     }
 								           
 								           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
@@ -1640,22 +1627,7 @@ function requirementPipeline(requirementId,submissionType){
 								    	     }
 						        	   }
 						        	   
-						        	  /*  if(submissionType != 'REJECTED'){
-						        	   if(report.score != null && report.score != '' && report.score != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-						        	   }
-							           if(submissionType != 'REJECTED'){
-							           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-							           } */
+						        	  
 							           
 							           if(submissionType == 'REJECTED'){
 							           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
@@ -1674,12 +1646,8 @@ function requirementPipeline(requirementId,submissionType){
 								           result = result + '</div></td>';
 							           }
 							           
-							           //result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 							          
 						           }
-						           /* result = result + '	    <td><div>';
-                                   result = result + '<i class="glyphicon glyphicon-trash" onClick="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";></i>';
-           	                       result = result +'</div></td>'; */
 						           result = result + '       </tr>';
 			   				}
 				           
@@ -1974,7 +1942,7 @@ function requirementRecommendations(requirementId){
 		    }
 		    
 		    if(report.candidateResume != null && report.candidateResume !='' && report.candidateResume !='undefined' ){
-		    result = result +'<td><div><span><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;&nbsp;'+report.candidateResume+'</a></span></div></td>';
+		    result = result +'<td><div><span><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;'+report.candidateResume+'</a></span></div></td>';
 			}else{
 				result = result +'<td><div><span>--</span></div></td>';
 			}
@@ -2756,5 +2724,4 @@ function cancel(){
 <jsp:include page="recommendCandidatesExperience.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesEducation.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesCertificates.jsp"></jsp:include>
-<jsp:include page="recommendCandidatesActivities.jsp"></jsp:include> 
 
