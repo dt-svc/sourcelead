@@ -131,7 +131,8 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	result = result + '</div>';   
 	result = result + '</form>';
-	result = result + '<div id="loading"></div>';
+	result = result + '<div id="interviewLoading"></div>';
+	result = result + '</div><div id="interviewPopUp">';
 	
 				
 	$("#addInterviewDiv").empty();
@@ -438,20 +439,28 @@ function cancelAddInterviewDiv(){
         var sourceleadUrl ='${sourceleadUrl}';
         var requirementId = '${requirementId}';
         
-        $("#add_interview").attr("disabled", "disabled");
- 		$("#add_interview" ).addClass('button').val('Processing..');
- 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-   	    $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
-	        success: function(result) {
-	        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
-	        		$(".side_mask").fadeOut(200);
-	        		$("body").css('overflow-y', 'auto');
-	        		var allApplicants = 'all';
-		    		requirementPipeline(requirementId,allApplicants); 
-	        },
-	    });   
+        var applicant = $("#1applicant").val();
+        
+        if(applicant.length <= 30){
+	        $("#add_interview").attr("disabled", "disabled");
+	 		$("#add_interview" ).addClass('button').val('Processing..');
+	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	   	    $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+		        success: function(result) {
+		        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
+		        		$(".side_mask").fadeOut(200);
+		        		$("body").css('overflow-y', 'auto');
+		        		var allApplicants = 'all';
+			    		requirementPipeline(requirementId,allApplicants); 
+		        },
+		    });    
+        }else{
+        	alertInterviewMessage("<b>Selected Applicants should not more than 30</b>");
+        }
+   	    
+   	    
         return true;
       }
       else{
@@ -463,6 +472,29 @@ function cancelAddInterviewDiv(){
     $('#addInterview_form').validateOnBlur(false, validationSettings); 
   
   </script>
+  
+  <script type="text/javascript">
+function alertInterviewMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelInterviewPopup();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelInterviewPopup();'></b>";
+	result = result +"	</div>";
+	$("#interviewPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancelInterviewPopup(){
+	$("#interviewPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
   
 <script type="text/javascript">
  function getShortListCandidates(rowId) {
