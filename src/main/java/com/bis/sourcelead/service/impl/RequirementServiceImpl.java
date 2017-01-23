@@ -11,9 +11,12 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -41,6 +44,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -60,6 +64,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -136,6 +141,9 @@ public class RequirementServiceImpl implements RequirementService {
 	 
 	 @Autowired
 	 private OrgRelationsService orgRelationsService;
+	 
+	 @Autowired
+	 LookUpDataService lookUpDataService;
 	 
 	 @Autowired
 	 private PdfUtil pdfUtil;
@@ -316,8 +324,19 @@ public class RequirementServiceImpl implements RequirementService {
 				
 				
 				skillId = skillId.replaceAll("\"", "");
-		  	   requirement.setSkills(skillId);
-			
+		  	    requirement.setSkills(skillId);
+		  	   
+		  	  String[] skillsInRequirement = skillId.split(",");
+			  	for(String skill : skillsInRequirement){
+			  		LookUpData lookUpData = lookUpDataService.getLookUpDataByNameAndCategory(skill, "Skills");
+			  		  if(null == lookUpData){
+			  			  LookUpData lookUpdata= new LookUpData();
+					  	  lookUpdata.setCategory("Skills");
+					  	  lookUpdata.setDescription(skill);
+					  	  lookUpdata.setName(skill);
+				  	      lookUpDataService.storeLookUpDataByCategory(lookUpdata);
+			  		  }
+			  	  }
 			}
 			
 			if(jsonObj.has("education")){
@@ -333,7 +352,18 @@ public class RequirementServiceImpl implements RequirementService {
 				educationId = educationId.replaceAll("\\[", "").replaceAll("\\]","");
 				educationId = educationId.replaceAll("\"", "");
 				
-		  	  requirement.setEducation(educationId);
+		  	    requirement.setEducation(educationId);
+			  	String[] educationsInRequirement = educationId.split(",");
+			  	for(String education : educationsInRequirement){
+			  		LookUpData lookUpData = lookUpDataService.getLookUpDataByNameAndCategory(education, "Educations");
+			  		  if(null == lookUpData){
+			  			  LookUpData lookUpdata= new LookUpData();
+					  	  lookUpdata.setCategory("Educations");
+					  	  lookUpdata.setDescription(education);
+					  	  lookUpdata.setName(education);
+				  	      lookUpDataService.storeLookUpDataByCategory(lookUpdata);
+			  		  }
+			  	  }
 			
 			 }
 			
@@ -2066,6 +2096,21 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					skillId = skillId.replaceAll("\"", "");
 					reqTemplate.setSkills(skillId);
+					
+					// The Below Code for Manually Entered Skill Stored In LookUpdata table And Compare
+					
+					String[] skillsInRequirement = skillId.split(",");
+				  	for(String skill : skillsInRequirement){
+				  		LookUpData lookUpData = lookUpDataService.getLookUpDataByNameAndCategory(skill, "Skills");
+				  		  if(null == lookUpData){
+				  			  LookUpData lookUpdata= new LookUpData();
+						  	  lookUpdata.setCategory("Skills");
+						  	  lookUpdata.setDescription(skill);
+						  	  lookUpdata.setName(skill);
+					  	      lookUpDataService.storeLookUpDataByCategory(lookUpdata);
+				  		  }
+				  	  }
+					
 				}else{
 					reqTemplate.setSkills(null);	
 				}
@@ -2084,6 +2129,21 @@ public class RequirementServiceImpl implements RequirementService {
 					educationId = educationId.replaceAll("\"", "");
 					
 					reqTemplate.setEducation(educationId);
+					
+					// The Below Code for Manually Entered Education Stored In LookUpdata table And Compare
+					String[] educationsInRequirement = educationId.split(",");
+				  	for(String education : educationsInRequirement){
+				  		LookUpData lookUpData = lookUpDataService.getLookUpDataByNameAndCategory(education, "Educations");
+				  		  if(null == lookUpData){
+				  			  LookUpData lookUpdata= new LookUpData();
+						  	  lookUpdata.setCategory("Educations");
+						  	  lookUpdata.setDescription(education);
+						  	  lookUpdata.setName(education);
+					  	      lookUpDataService.storeLookUpDataByCategory(lookUpdata);
+				  		  }
+				  	  }
+					
+					
 				 }else{
 					 reqTemplate.setEducation(null);
 				 }
