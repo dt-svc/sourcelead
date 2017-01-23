@@ -43,7 +43,7 @@ public class AddElkRequirement {
 	private TransportClient client;
 	public void addElkRequirement() throws IOException, SQLException {
 		ArrayList<RequirementIndex> requirementList = getElkRequirements();
-		if(requirementList != null && !requirementList.isEmpty()){
+		if(null != requirementList && !requirementList.isEmpty()){
 			for (RequirementIndex requirementIndex :requirementList) {
 				saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_INDEX,requirementIndex.getRequirementId().toString());
 			}
@@ -68,24 +68,24 @@ public class AddElkRequirement {
 			ResultSet rs = stmt.executeQuery(sql);
 			while(rs.next()){
 				RequirementIndex requirementIndex = new RequirementIndex();
-				if(rs.getString("ID")!=null && !"".equalsIgnoreCase(rs.getString("ID"))){
+				if(null != rs.getString("ID") && !"".equalsIgnoreCase(rs.getString("ID"))){
 					requirementIndex.setRequirementId(Long.parseLong(rs.getString("ID")));
 				}
-				if(rs.getString("ORG_LOCATION_ID")!=null && !"".equalsIgnoreCase(rs.getString("ORG_LOCATION_ID"))){
+				if(null != rs.getString("ORG_LOCATION_ID") && !"".equalsIgnoreCase(rs.getString("ORG_LOCATION_ID"))){
 					requirementIndex.setOrgLocationId(Long.parseLong(rs.getString("ORG_LOCATION_ID")));
 				}
 				requirementIndex.setJobTitle(rs.getString("JOB_TITLE"));
 				requirementIndex.setJobId(rs.getString("JOB_ID"));
 				requirementIndex.setCurrentRateCurrency(rs.getString("CURRENCY_CODE"));
 				requirementIndex.setNumberOfPositions(rs.getString("POSITIONS"));
-				if(rs.getString("RATE")!=null && !"".equalsIgnoreCase(rs.getString("RATE"))){
+				if(null != rs.getString("RATE") && !"".equalsIgnoreCase(rs.getString("RATE"))){
 					requirementIndex.setRate(Float.parseFloat(rs.getString("RATE")));
 				}
 				requirementIndex.setRateType(rs.getString("RATE_TYPE"));
-				if(rs.getString("MIN_EXP")!=null && !"".equalsIgnoreCase(rs.getString("MIN_EXP"))){
+				if(null != rs.getString("MIN_EXP") && !"".equalsIgnoreCase(rs.getString("MIN_EXP"))){
 					requirementIndex.setMinExperience(Integer.parseInt(rs.getString("MIN_EXP")));
 				}
-				if(rs.getString("MAX_EXP")!=null && !"".equalsIgnoreCase(rs.getString("MAX_EXP"))){
+				if(null != rs.getString("MAX_EXP") && !"".equalsIgnoreCase(rs.getString("MAX_EXP"))){
 					requirementIndex.setMaxExperience(Integer.parseInt(rs.getString("MAX_EXP")));
 				}
 				requirementIndex.setRequirementStatus(rs.getString("REQUIREMENT_SUBMISSION_STATUS"));
@@ -93,7 +93,7 @@ public class AddElkRequirement {
 				requirementIndex.setState(rs.getString("STATE"));
 				requirementIndex.setCity(rs.getString("CITY"));
 				String education = rs.getString("EDUCATION");
-				if(education !=null && !"".equalsIgnoreCase(education)){
+				if(null != education && !"".equalsIgnoreCase(education)){
 					requirementIndex.setEducation(education.split(","));
 				}
 				if(rs.getString("ORG_RELATION_ID") !=null && !"".equalsIgnoreCase(rs.getString("ORG_RELATION_ID"))){
@@ -129,7 +129,7 @@ public class AddElkRequirement {
 						if("Vendor".equalsIgnoreCase(type)){
 							String clientContactSql = "SELECT user.FIRST_NAME,user.EMAIL FROM sourcelead.ORG_SPOC spoc INNER JOIN USER user on spoc.SPOC_USER_ID=user.ID where spoc.RESPONDER_LOCATION_ID = ?;";
 							ResultSet clientNameRs = getClientContactName(rs.getString("RESPONDER_LOCATION_ID"),clientContactSql);
-							if(clientNameRs.getString("FIRST_NAME") !=null && clientNameRs.getString("FIRST_NAME") !=null){
+							if(null != clientNameRs.getString("FIRST_NAME") && null != clientNameRs.getString("FIRST_NAME")){
 							clientContactName = clientNameRs.getString("FIRST_NAME")+" "+clientNameRs.getString("FIRST_NAME");
 							}else{
 								clientContactName = clientNameRs.getString("FIRST_NAME");
@@ -142,7 +142,7 @@ public class AddElkRequirement {
 					requirementIndex.setClientContactEmail(clientContactEmail);
 				}
 				
-				if(rs.getString("FIRST_NAME") !=null && rs.getString("LAST_NAME") !=null){
+				if(null != rs.getString("FIRST_NAME") && null != rs.getString("LAST_NAME")){
 					requirementIndex.setManager(rs.getString("FIRST_NAME")+" "+rs.getString("LAST_NAME"));
 				}else{
 					requirementIndex.setManager(rs.getString("FIRST_NAME"));

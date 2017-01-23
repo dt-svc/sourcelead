@@ -6,6 +6,10 @@
 <link rel="stylesheet" href="resources/css/style.css" />
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
 <script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
@@ -28,7 +32,6 @@ function getAddApplicant(requirementId){
 	result = result + '<h3>Add Applicant</h3>';
 	result = result + '<div class="form-horizontal clearfix select-field">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
-	result = result + '<input type="hidden" id="candidateSkills" name="candidateSkills">';
 	
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
@@ -80,6 +83,19 @@ function getAddApplicant(requirementId){
                         
 	result = result + '</div>';
 	result = result + '<div class="row">';
+    result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" style="display: none;">';
+	result = result + '<label class="col-md-4">Skills</label>';
+	result = result + '<div class="col-md-8">';
+	result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
+	result = result + '<c:forEach var="skill" items="${skillsList}">';
+	result = result + '<option value="${skill.name}">${skill.name}</option>';
+	result = result + ' </c:forEach>';
+	result = result + '</select>';
+	result = result + '		 </div>';
+	result = result + '	 </div>';
+	result = result + '	 </div>';
+	
+	result = result + '<div class="row">';
 	result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
 	result = result + '<label class="col-md-4">Add Resume &nbsp;*</label>';
 	result = result + '		<div class="col-md-8">';
@@ -115,6 +131,24 @@ function getAddApplicant(requirementId){
 	$("#addApplicantDiv").empty();
 	$("#addApplicantDiv").append(result);
 	
+	   var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
+				for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+					var $this = $(this);
+					$this.next().css({'width': '100%'});
+					})
+			
+			
+	$("#candSkills").val('').trigger("chosen:updated");
+	
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
@@ -144,6 +178,9 @@ function getAddApplicant(requirementId){
 	
 }
 </script>
+
+
+
 
 <script type="text/javascript">
 function ApplicantPermit(){
@@ -218,6 +255,7 @@ function ApplicantPermit(){
 			 $('#uploadFile').attr("data-validation","required validatedoc "); 
 			 
 			 document.getElementById("newResumeDiv").style.display="none";
+			 document.getElementById("skillsDiv").style.display="";
 			 $('#newUploadFile').removeAttr('data-validation');
 			 $('#newUploadFile').attr("data-validation-optional","true"); 
 	     }else if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'New'){
@@ -226,6 +264,7 @@ function ApplicantPermit(){
 			 $('#uploadFile').attr("data-validation-optional","true"); 
 	    	 
 	    	 document.getElementById("newResumeDiv").style.display="";
+	    	 document.getElementById("skillsDiv").style.display="";
 			 $('#newUploadFile').removeAttr('data-validation-optional');
 			 $("#newUploadFile").attr("data-validation", "required validatedoc");
 			 
@@ -453,6 +492,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 				        $("#candidateResumesList").append(output);
 				        
 				        document.getElementById("newResumeDiv").style.display="none";
+				        document.getElementById("skillsDiv").style.display="none";
 				        $('#newUploadFile').removeAttr('data-validation');
 		        		$('#newUploadFile').attr("data-validation-optional","true"); 
 		        		
@@ -468,6 +508,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 		        		 document.getElementById("orConditionDiv").style.display="none";
 		        		
 		        		 document.getElementById("newResumeDiv").style.display="";
+		        		 document.getElementById("skillsDiv").style.display="";
 		        		 $('#newUploadFile').removeAttr('data-validation-optional');
 		        		 $("#newUploadFile").attr("data-validation", "required validatedoc");
 		        		 
@@ -771,9 +812,21 @@ function init(){
 			        	 $("input[name=EmailId]").val(json.email);
 			        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
 			        	 
-			        	 
-			        	var skills = json.skills;
-			        	$("#candidateSkills").val(skills);
+			        	 $("#candidateSkills").empty();
+			        	 var internalOutput = "";
+ 						 <c:forEach var="skill" items="${skillsList}">
+ 						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+ 	                     </c:forEach>
+ 						var skills = json.skills;
+ 						if(skills != null && skills != 'undefined' && skills != ''){
+ 							var str_array = skills.split(',');
+ 							for(var i = 0; i < str_array.length; i++) {
+ 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+ 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+ 							}
+ 						}
+ 						$("#candidateSkills").append(internalOutput);
+ 		        		$("#candidateSkills").trigger("chosen:updated");
   						
 			        	 
 						 validateCandidateEmail();
