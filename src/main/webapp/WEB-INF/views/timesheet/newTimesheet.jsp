@@ -93,13 +93,14 @@ $(document).ready(function() {
 	function timesheetDivByFrequency(){   
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var timesheetFrequency = $("#timesheetFrequency").val();
+	         var projectMemberId = $("#projectMemberId").val();
 	         $("#timesheetDivByFrequency").empty();
 	         $("#timesheetDivByFrequency").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
-   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency,		
+   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId,		
    		          success :function(result) {
    		        	  		
    		        	      $("#timesheetDivByFrequency").removeAttr("style");
@@ -126,14 +127,14 @@ $(document).ready(function() {
 	/* function timesheetDivByTab(startDate,endDate) */
 	function timesheetDivByTab(startDate,endDate){ 
 	         var sourceleadUrl ='${sourceleadUrl}';
-	         
+	         var projectMemberId = $("#projectMemberId").val();
 	         $("#timesheetDivByTab").empty();
 	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
-  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,		
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId,		
   		          success :function(result) {
   		    	       
   		        	   $("#timesheetDivByTab").removeAttr("style");
