@@ -460,7 +460,10 @@ public class CandidateListRestController {
 				List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
-				 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				
+				try {
+				
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 				    if(null != searchHits && searchHits.length >0){
 				    	ObjectMapper mapper = new ObjectMapper();
 				    	for (SearchHit hit : searchHits) {
@@ -474,7 +477,9 @@ public class CandidateListRestController {
 				    	}
 				    	
 				    }
-				
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				
 			 String resultJson;
 			 resultJson = commonUtil.toJSON(candidatesList);
