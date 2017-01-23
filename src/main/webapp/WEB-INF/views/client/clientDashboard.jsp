@@ -2043,8 +2043,8 @@ $('#selector').delay(2000).fadeOut('slow');
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd'
 			};
-		$("#clientlist_form").addClass('button').val('Search');
-		$("#clientlist_form").removeAttr("disabled");
+		$("#search_client").addClass('button').val('Search');
+		$("#search_client").removeAttr("disabled");
 		
 		 if ($('#clientlist_form').validate(false, validationSettings)){ 
 			
@@ -2056,6 +2056,7 @@ $('#selector').delay(2000).fadeOut('slow');
 			var form = $('#clientlist_form')[0];
       		var formData = new FormData(form); 
       		var responderType = "Client";
+      		
       		
 			//It will escape all the special characters
 			$("#search_client").attr("disabled", "disabled");
