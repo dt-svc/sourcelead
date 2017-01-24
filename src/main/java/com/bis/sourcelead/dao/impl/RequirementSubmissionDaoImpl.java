@@ -814,6 +814,22 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			return requirementSubmissionList;
 		}
 
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception {
+			
+			logger.debug("In ModulesDaoImpl class getSubmittedCandidateIdsByRequirementId method");
+			Session session = this.sessionFactory.getCurrentSession();
+			
+				 
+			String query = "select reqSub.candidate.id from RequirementSubmission reqSub where reqSub.requirement.id = :requirementId ";
+			List<Long> candidateIdsList =  session.createQuery(query.toString()).setLong("requirementId", requirementId)
+										.setCacheable(true).list();
+			
+			return candidateIdsList;
+			
+		}
+
 
   }
 
