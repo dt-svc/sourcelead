@@ -80,7 +80,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 								   int count = 1;
 								   for(int i=0;i<=monthdiff;i++){
 									   Date startDate = empMonthStartDate;
-									   Date endDate = CalendarUtil.getMonthEndDateByGivenDate(startDate, i).get("ENDDATE");
+									   Date endDate = CalendarUtil.getMonthEndDateByGivenDate(startDate, 0).get("ENDDATE");
 									   timesheetFrequencyList.put(format.format(startDate), format.format(endDate));
 									   empMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(startDate, 1).get("STARTDATE");
 								   }
@@ -349,8 +349,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 	public Map<String,String> getTabFrequencyListFromProjectInvoiceFrequency(String startDate,String endDate) throws Exception{
 		Map<String,String> timesheetFrequencyList = new LinkedHashMap<String,String>();
 		if(StringUtils.isNotEmpty(startDate) && StringUtils.isNotEmpty(endDate)){
-		 	    DateFormat format = Constants.DF_STD_DMY;
-		 	     DateFormat shortormat = Constants.SHORT_DF_STD_DM;
+		 	    DateFormat format = Constants.DF_DMY;
 		        try {
 		            Date stDate = format.parse(startDate);
 		            Date enDate = format.parse(endDate);
@@ -359,20 +358,24 @@ public  class TimesheetFrequencyGeneratorUtil {
 					 startCal.setLenient(false);
 					 startCal.setTime(stDate);
 					 Calendar empStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(startCal, "MON");
-					 
-					 Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-					 endCal.setLenient(false);
-					 endCal.setTime(enDate);
-					 Calendar empEndMonday = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON");
-						
-					  int totalWeeks = 0; 
+								
 					  Calendar tsCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 					  tsCal.setLenient(false);
+					  tsCal.setTime(stDate);
 					  
 					  Date tsStartDate = null;
 					  Date tsEndDate = null;
-						
-					  totalWeeks = (int)((empEndMonday.getTimeInMillis()-empStartMonday.getTimeInMillis())/(7l * 24l * 60l * 60l * 1000l));
+					  int dayOfWeek = CalendarUtil.getDayOfTheDate(stDate);
+					  if(dayOfWeek > 1){
+						  timesheetFrequencyList.put(format.format(stDate), format.format(CalendarUtil.getDateIncrementByincrement(tsCal, 8-dayOfWeek).getTime())); 
+						  tsEndDate = CalendarUtil.getDateIncrementByincrement(tsCal, (8-dayOfWeek)).getTime();
+						  tsStartDate = CalendarUtil.getDateIncrementByincrement(tsCal, (8-dayOfWeek)+1).getTime();
+					  }
+					  else if(dayOfWeek == 1){
+						  timesheetFrequencyList.put(format.format(stDate), format.format(stDate)); 
+						  tsStartDate = CalendarUtil.getDateIncrementByincrement(tsCal, 1).getTime();
+					  }
+					  int totalWeeks = CalendarUtil.getNumberOfWeeks(tsStartDate, enDate);
 					  for (int week = 0; week < totalWeeks; week++) {
 						  
 						    if(tsStartDate == null){
@@ -382,12 +385,25 @@ public  class TimesheetFrequencyGeneratorUtil {
 							}
 							else{
 								tsCal.setTime(tsStartDate);
+								tsEndDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "SUN").getTime();
 							}
-						    timesheetFrequencyList.put(shortormat.format(tsStartDate), shortormat.format(tsEndDate));
-						    tsStartDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "MON").getTime();
-							tsEndDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "SUN").getTime();
+						    timesheetFrequencyList.put(format.format(tsStartDate), format.format(tsEndDate));
+						    if(week != totalWeeks-1){
+						    	 tsStartDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "MON").getTime();
+								 tsEndDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "SUN").getTime();
+						    }
+						   
 					  }
-		           
+					  
+					  if(tsEndDate != null){
+						  Long numberOfDays = CalendarUtil.getNumberOfDays(tsEndDate,enDate);
+						  if(numberOfDays>1){
+							  timesheetFrequencyList.put(CalendarUtil.getPreviousDateByDecrementor(endDate, numberOfDays.intValue()-1), format.format(enDate)); 
+						  }
+						  else if(numberOfDays == 1){
+							  timesheetFrequencyList.put(format.format(enDate), format.format(enDate)); 
+						  }
+					  }
 
 		        } catch (ParseException e) {
 		            e.printStackTrace();
@@ -419,6 +435,8 @@ public  class TimesheetFrequencyGeneratorUtil {
 		
 		return biWeeklyStartMondayDate;
 	}
+	
+	
 	
 
 	private Date getBiweeklyStartMonDayDateByUsingProjectStartDateAndEmployeeStartDate(Projects projects,Date employeeStartDate) throws Exception{
@@ -465,5 +483,5 @@ public  class TimesheetFrequencyGeneratorUtil {
 		return biWeeklyEndSundayDate;
 	}
 	 
-
+	
 }

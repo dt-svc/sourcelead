@@ -15,25 +15,33 @@
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
 <script>
 // project side bar tabs
 $(document).ready(function() {
-	newTimesheetDummy();
+	timesheetEntriesDiv();
 });
 </script>  
 
 
 <script>
-	function newTimesheetDummy(){ 
+	function timesheetEntriesDiv(){ 
 	               var sourceleadUrl ='${sourceleadUrl}';
+	               $("#timesheetEntriesDiv").empty();
+	               $("#timesheetEntriesDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        	   $.ajax({
 		      	          type : "POST",
 		          	      dataType : 'json',
 	        	      	  url: sourceleadUrl+"/newTimesheetDummy?${_csrf.parameterName}=${_csrf.token}",		
 	        		      success :function(result) {
-	        		    	  	$("#timesheetDynamicDiv").append(result);
+	        		    	    $("#timesheetEntriesDiv").removeAttr("style");
+	        		    	    $("#timesheetEntriesDiv").empty();
+	        		    	  	$("#timesheetEntriesDiv").append(result);
 	        		    	  	maskme();
-	        		    	  	
+	        		    	  	prepareChosenScripts();
 	        		    	  	$("#tab-1").show()
 	        		    	    $(".project-tabs-menu a").click(function(event) {
 	        		    	        event.preventDefault();
@@ -42,12 +50,115 @@ $(document).ready(function() {
 	        		    	        var tab = $(this).attr("href");
 	        		    	        $(".project_tabs_inn").not(tab).css("display", "none");
 	        		    	        $(tab).fadeIn();
-	        		    	    });
+	        		    	    }); 
 	        		      }
 	        	      	  
 	        	    }); 
 	}
 </script>
+
+
+
+<script>
+	function timesheetEntriesDivByProjectMemberId(){ 
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         var projectMemberId = $("#projectMemberId").val();
+	         $("#timesheetEntriesDivByProjectMemberId").empty();
+	         $("#timesheetEntriesDivByProjectMemberId").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+     	          type : "POST",
+         	      dataType : 'json',
+   	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,		
+   		          success :function(result) {
+   		        	 $("#timesheetEntriesDivByProjectMemberId").removeAttr("style");
+   		        	 $("#timesheetEntriesDivByProjectMemberId").empty();
+   		        	 $("#timesheetEntriesDivByProjectMemberId").append(result);
+   		        	 maskme();
+   		             prepareChosenScripts();
+		    	  	 $("#tab-1").show();
+ 		    	     $(".project-tabs-menu a").click(function(event) {
+ 		    	        event.preventDefault();
+ 		    	        $(this).parent().addClass("current");
+ 		    	        $(this).parent().siblings().removeClass("current");
+ 		    	        var tab = $(this).attr("href");
+ 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+ 		    	        $(tab).fadeIn();
+ 		    	    }); 
+		    	  	 
+   		          }
+   	         }); 
+	}
+</script>	
+<script>
+	function timesheetDivByFrequency(){   
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         var timesheetFrequency = $("#timesheetFrequency").val();
+	         $("#timesheetDivByFrequency").empty();
+	         $("#timesheetDivByFrequency").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        
+	         $.ajax({
+     	          type : "POST",
+         	      dataType : 'json',
+   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency,		
+   		          success :function(result) {
+   		        	  		
+   		        	      $("#timesheetDivByFrequency").removeAttr("style");
+	   		    	      $("#timesheetDivByFrequency").empty();
+			    	  	  $("#timesheetDivByFrequency").append(result); 
+			    	  	  
+			    	  	  maskme();
+			    	  	 prepareChosenScripts();
+			    	  	 $("#tab-1").show();
+	 		    	     $(".project-tabs-menu a").click(function(event) {
+	 		    	        event.preventDefault();
+	 		    	        $(this).parent().addClass("current");
+	 		    	        $(this).parent().siblings().removeClass("current");
+	 		    	        var tab = $(this).attr("href");
+	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+	 		    	        $(tab).fadeIn();
+	 		    	    });
+   		          }
+   	         }); 
+	}
+</script> 
+
+<script>
+	/* function timesheetDivByTab(startDate,endDate) */
+	function timesheetDivByTab(startDate,endDate){ 
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         
+	         $("#timesheetDivByTab").empty();
+	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         
+	         $.ajax({
+    	          type : "POST",
+        	      dataType : 'json',
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,		
+  		          success :function(result) {
+  		    	       
+  		        	   $("#timesheetDivByTab").removeAttr("style");
+  		    	       $("#timesheetDivByTab").empty();
+		    	  	   $("#timesheetDivByTab").append(result);
+		    	  	   
+		    	  	   maskme();
+		    	  	   
+			    	   $("#tab-1").show();
+	 		    	   $(".project-tabs-menu a").click(function(event) {
+	 		    	        event.preventDefault();
+	 		    	        $(this).parent().addClass("current");
+	 		    	        $(this).parent().siblings().removeClass("current");
+	 		    	        var tab = $(this).attr("href");
+	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+	 		    	        $(tab).fadeIn();
+	 		    	   });
+		    	  	   
+  		          }
+  	         }); 
+	}
+</script>
+
+   
+
 
 
 <!-- this script is for add row functionality at Timesheet screen -->
@@ -531,7 +642,14 @@ function addAttachment(){
           <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
         </section>
         
-        <div id="timesheetDynamicDiv"></div>
+        <div id="timesheetEntriesDiv"> 
+        	<div id="timesheetEntriesDivByProjectMemberId">
+        		 <div id="timesheetDivByFrequency">
+        			 <div id="timesheetDivByTab">
+        			 </div>
+        		  </div>
+        	</div>
+        </div>
         
         <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
 				         <div id="divadttTd1" style="display:none;" >   
@@ -596,596 +714,107 @@ function addAttachment(){
 						  			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
 						  		</div>
 					    </div>
-    
-		<!-- Timesheet -->
-<!-- <form id="timesheet_form" name="timesheet_form">
-
- 
-<div class="timesheet_out">
-	<div class="timesheet_wrap">
-	<div class="data_loading"></div>
-       
-		<div class="timesheetNewHead">
-			<div class="timeNewSe">
-                <select class="form-control chosen-select">
-                  <option>Project 1</option>
-                  <option>Project 2</option>
-                  <option>Project 3</option>
-                  <option>Project 4</option>
-                  <option>Project 5</option>
-                </select>
-            </div>
-			<div class="timeNewSe">
-                <select class="form-control chosen-select">
-                  <option>January - 2017</option>
-                  <option>February - 2017</option>
-                  <option>March - 2017</option>
-                  <option>April - 2017</option>
-                  <option>May - 2017</option>
-                  <option>June - 2017</option>
-                  <option>July - 2017</option>
-                  <option>August - 2017</option>
-                  <option>September - 2017</option>
-                  <option>October - 2017</option>
-                  <option>November - 2017</option>
-                  <option>December - 2017</option>
-                </select>
-            </div> 
-			<div class="timeNewSe">
-				<b class="proj_active">Active</b><i class="glyphicon glyphicon-comment com_active" >
-					<div class="timeNewSeMess"><p>Rejected message here Rejected message here Rejected message here</p></div>
-				</i>
-			</div>
-			<div class="clearfix"></div>          
-		</div>  
-       
-<div class="timesheetNewTabs">
-<div class="project_side_wrap_inn_tabs">
-    <ul class="project-tabs-menu">
-        <li class="current"><a href="#tab-1">Week 1</a></li>
-        <li><a href="#tab-2">Week 2</a></li>
-        <li><a href="#tab-3">Week 3</a></li>
-        <li><a href="#tab-4">Week 4</a></li>
-        <li><a href="#tab-5">Week 5</a></li>
-		<div class="export">
-			<p><i class="glyphicon glyphicon-export"></i>Export<i class="fa fa-caret-down"></i></p>
-				<ul>
-                	<li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                    <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                    <li>Word<i class="fa fa-file-word-o"></i></li>
-				</ul>			
-		</div>
-        <div class="clearfix"></div>
-    </ul>
-    
-    <div class="project_tabs">
-        <div id="tab-1" class="project_tabs_inn">
- <div class="timesheet_tableNew">
-        	<table id="timesheet" cellpadding="0" cellspacing="0">
-                
-            	<tbody>
-                	<tr>
-                        <th> 
-                         <table id="1" cellpadding="0" cellspacing="0">
-                             <th>Tasks </th>
-                        <th>Mon<i>09-01-2017</i></th>
-                        <th>Tue<i>11-01-2017</i></th>
-                        <th>Wed<i>12-01-2017</i></th>
-                        <th>Thu<i>13-01-2017</i></th>
-                        <th>Fri<i>14-01-2017</i></th>
-                        <th>Sat<i>15-01-2017</i></th>
-                        <th>Sun<i>16-01-2017</i></th>
-                         </table>
-                        </th>                   
-                    </tr>
-                    
-                    <tr id="timesheetRow1">
-                         <td>
-                                 <input type="hidden" name="maxRowNumber1"  class="initiateTimesheetMax" id="maxRowNumber1"  value="1" />
-                                 <table id="table1" cellpadding="0" cellspacing="0">
-                                         <td>
-                                              <div> 
-                                                <select>
-                                                  <option value="volvo">Task1</option>
-                                                  <option value="saab">Task2</option>
-                                                  <option value="mercedes">Task3</option>
-                                                  <option value="audi">Task4</option>
-                                                </select>
-                                                <input type="button" value="" onClick="addTimeSheetRow('1')" class="addtaskfield"/>
-                                              </div>
-                                         </td> 
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />		
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment com_active"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment com_active"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
- 										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-     										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>              
-                                 </table>
-                       </td>   
-                        
-                    </tr>                                                        
-                </tbody>
-            </table>
-                        
-        </div>        	
-        </div>
-        
-        <div id="tab-2" class="project_tabs_inn">
- <div class="timesheet_tableNew">
-        	<table id="timesheet" cellpadding="0" cellspacing="0">
-                
-            	<tbody>
-                	<tr>
-                        <th> 
-                         <table id="1" cellpadding="0" cellspacing="0">
-                             <th>Tasks </th>
-                        <th>Mon<i>09-01-2017</i></th>
-                        <th>Tue<i>11-01-2017</i></th>
-                        <th>Wed<i>12-01-2017</i></th>
-                        <th>Thu<i>13-01-2017</i></th>
-                        <th>Fri<i>14-01-2017</i></th>
-                        <th>Sat<i>15-01-2017</i></th>
-                        <th>Sun<i>16-01-2017</i></th>
-                         </table>
-                        </th>                   
-                    </tr>
-                    
-                    <tr id="timesheetRow2">
-                         <td>
-                                 <input type="hidden" name="maxRowNumber1"  class="initiateTimesheetMax" id="maxRowNumber1"  value="1" />
-                                 <table id="table1" cellpadding="0" cellspacing="0">
-                                         <td>
-                                              <div> 
-                                                <select>
-                                                  <option value="volvo">Task1</option>
-                                                  <option value="saab">Task2</option>
-                                                  <option value="mercedes">Task3</option>
-                                                  <option value="audi">Task4</option>
-                                                </select>
-                                                <input type="button" value="" onClick="addTimeSheetRow('1')" class="addtaskfield"/>
-                                              </div>
-                                         </td> 
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />		
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment com_active"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment com_active"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
- 										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-     										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>              
-                                 </table>
-                       </td>   
-                        
-                    </tr>                                                        
-                </tbody>
-            </table>
-                        
-        </div>        	
-        </div> 
-                      
-        <div id="tab-3" class="project_tabs_inn">
- <div class="timesheet_tableNew">
-        	<table id="timesheet" cellpadding="0" cellspacing="0">
-                
-            	<tbody>
-                	<tr>
-                        <th> 
-                         <table id="1" cellpadding="0" cellspacing="0">
-                             <th>Tasks </th>
-                        <th>Mon<i>09-01-2017</i></th>
-                        <th>Tue<i>11-01-2017</i></th>
-                        <th>Wed<i>12-01-2017</i></th>
-                        <th>Thu<i>13-01-2017</i></th>
-                        <th>Fri<i>14-01-2017</i></th>
-                        <th>Sat<i>15-01-2017</i></th>
-                        <th>Sun<i>16-01-2017</i></th>
-                         </table>
-                        </th>                   
-                    </tr>
-                    
-                    <tr id="timesheetRow3">
-                         <td>
-                                 <input type="hidden" name="maxRowNumber1"  class="initiateTimesheetMax" id="maxRowNumber1"  value="1" />
-                                 <table id="table1" cellpadding="0" cellspacing="0">
-                                         <td>
-                                              <div> 
-                                                <select>
-                                                  <option value="volvo">Task1</option>
-                                                  <option value="saab">Task2</option>
-                                                  <option value="mercedes">Task3</option>
-                                                  <option value="audi">Task4</option>
-                                                </select>
-                                                <input type="button" value="" onClick="addTimeSheetRow('1')" class="addtaskfield"/>
-                                              </div>
-                                         </td> 
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />		
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment com_active"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment com_active"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
- 										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-     										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>              
-                                 </table>
-                       </td>   
-                        
-                    </tr>                                                        
-                </tbody>
-            </table>   
-        </div>        	
-        </div>             
-               
-        <div id="tab-4" class="project_tabs_inn">
- <div class="timesheet_tableNew">
-        	<table id="timesheet" cellpadding="0" cellspacing="0">
-                
-            	<tbody>
-                	<tr>
-                        <th> 
-                         <table id="1" cellpadding="0" cellspacing="0">
-                             <th>Tasks </th>
-                        <th>Mon<i>09-01-2017</i></th>
-                        <th>Tue<i>11-01-2017</i></th>
-                        <th>Wed<i>12-01-2017</i></th>
-                        <th>Thu<i>13-01-2017</i></th>
-                        <th>Fri<i>14-01-2017</i></th>
-                        <th>Sat<i>15-01-2017</i></th>
-                        <th>Sun<i>16-01-2017</i></th>
-                         </table>
-                        </th>                   
-                    </tr>
-                    
-                    <tr id="timesheetRow4">
-                         <td>
-                                 <input type="hidden" name="maxRowNumber1"  class="initiateTimesheetMax" id="maxRowNumber1"  value="1" />
-                                 <table id="table1" cellpadding="0" cellspacing="0">
-                                         <td>
-                                              <div> 
-                                                <select>
-                                                  <option value="volvo">Task1</option>
-                                                  <option value="saab">Task2</option>
-                                                  <option value="mercedes">Task3</option>
-                                                  <option value="audi">Task4</option>
-                                                </select>
-                                                <input type="button" value="" onClick="addTimeSheetRow('1')" class="addtaskfield"/>
-                                              </div>
-                                         </td> 
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />		
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment com_active"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment com_active"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
- 										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-     										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>              
-                                 </table>
-                       </td>   
-                        
-                    </tr>                                                        
-                </tbody>
-            </table>
-        </div>        	
-        </div> 
-        
-        <div id="tab-5" class="project_tabs_inn">
- <div class="timesheet_tableNew">
-        	<table id="timesheet" cellpadding="0" cellspacing="0">
-                
-            	<tbody>
-                	<tr>
-                        <th> 
-                         <table id="1" cellpadding="0" cellspacing="0">
-                             <th>Tasks </th>
-                        <th>Mon<i>09-01-2017</i></th>
-                        <th>Tue<i>11-01-2017</i></th>
-                        <th>Wed<i>12-01-2017</i></th>
-                        <th>Thu<i>13-01-2017</i></th>
-                        <th>Fri<i>14-01-2017</i></th>
-                        <th>Sat<i>15-01-2017</i></th>
-                        <th>Sun<i>16-01-2017</i></th>
-                         </table>
-                        </th>                   
-                    </tr>
-                    
-                    <tr id="timesheetRow5">
-                         <td>
-                                 <input type="hidden" name="maxRowNumber1"  class="initiateTimesheetMax" id="maxRowNumber1"  value="1" />
-                                 <table id="table1" cellpadding="0" cellspacing="0">
-                                         <td>
-                                              <div> 
-                                                <select>
-                                                  <option value="volvo">Task1</option>
-                                                  <option value="saab">Task2</option>
-                                                  <option value="mercedes">Task3</option>
-                                                  <option value="audi">Task4</option>
-                                                </select>
-                                                <input type="button" value="" onClick="addTimeSheetRow('1')" class="addtaskfield"/>
-                                              </div>
-                                         </td> 
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />		
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment com_active"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment com_active"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
- 										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-     										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>
-                  
-										<td> <div>
-                  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-                  </div> </td>              
-                                 </table>
-                       </td>   
-                        
-                    </tr>                                                        
-                </tbody>
-            </table>
-        </div>        	
-        </div>         
-        
-    </div>
-    
-    
-  <div id="divadttTd1" style="display:none;"  > <div id="projectName">Sourcelead </div></div>
-             <div id="divadttTd1" style="display:none;" > 
-                  <div> 
-                         <select>
-                          <option value="volvo">Task1</option>
-                          <option value="saab">Task2</option>
-                          <option value="mercedes">Task3</option>
-                          <option value="audi">Task4</option>
-                        </select>
-                        <input type="button" value="" onClick="addTimeSheetRow(REPLACEROWID)" class="addtaskfield removetaskfield"/>
-                  </div>
-                  
-             </div>
-             <div id="divadttTd2" style="display:none;">
-				  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-	     	</div>
-             <div id="divadttTd3" style="display:none;">
-				  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-             </div>
-             <div id="divadttTd4" style="display:none;">
-				  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-             </div>
-             <div id="divadttTd5" style="display:none;">
-				  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>           
-             </div>
-             <div id="divadttTd6" style="display:none;">
-				  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>  
-	    	 </div>
-             <div id="divadttTd7" style="display:none;">
-				  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>
-              </div>
-             <div id="divadttTd8" style="display:none;">
-				  <input type="text" id="REPLACEROWIDtimeSheetDay1Id" name="timeSheetDay1Id" class="inline_field" value="HH:MM" />	
-                  <div class="timesheet_comm"><i class="glyphicon glyphicon-comment"></i>
-                  <span id="teskcomment"><textarea></textarea></span></div>            
-	    	 </div>    
-
-    
-</div>	
-</div>       
-       
-        
-        
-    <div class="timesheet_bot">
-    	<div class="timesheet_week_comm">
-            <div class="commentFile">
-            	<span><input type="file" ><i class="fa fa-times"></i></span>
-                <span><input type="file" ><i class="fa fa-plus"></i></span>
-            </div>    
-            <div class="commentTime"><textarea placeholder="comments here..."></textarea></div>
-            <div class="clearfix"></div>
-        </div>
-   	<div class="timesheet_sub_other">
-        	Submit to others <a href="javascript:void(0)"><i class="fa fa-envelope"></i> Email</a>
-            <a href="javascript:void(0)"><i class="fa fa-users"></i> Users</a>
-        </div>
-    	<div class="clearfix"></div>
-        
-    	<div class="timesheet_button">
-        	<input type="button" value="Draft" class="time_btn time_dra" />
-            <input type="button" value="Submit" class="time_btn" />
-            <input type="button" value="Clear" class="time_btn time_cancel" />
-        </div>        
-        
-    </div>  
-    
-<div class="res_total_hours">
-	<i></i>
-	<p>Total hours</p>
-    <h2>45:30</h2>
-    <span>This Week</span>
-</div>          
-        
-    </div>
-    	
-	
-	
-</div>  
-
- </form> 		 -->
-		<!-- Timesheet -->
-		
-      </section>
-      <!-- Content Area Ends--> 
+</section>
+<!-- Content Area Ends--> 
 <div class="time_pop" id="timeSheetErrorMsg"></div>
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+                
+<!-- this script is for save Timesheet -->               
+<script type="text/javascript">
+function newSaveTimesheet(status,savingType){ 
+	 checkHours();
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	 }; 
+	 if ($('#timesheet_form').validate(false, validationSettings)){ 
+				 
+		  		
+               var frm = $('#timesheet_form').serializeFormJSON();
+               
+               var sourceleadUrl ='${sourceleadUrl}';
+               var startdate;
+           	   var navigation;
+               
+       		   var mydata = JSON.stringify(frm);
+       		   mydata = mydata.replace(/[{}]/g, "");
+       		   mydata = encodeURIComponent(mydata);
+       		
+       		   var form = $('#timesheet_form')[0];
+       		   var formData = new FormData(form); 
+       		   var submissionIds = $("#submissionId").val();
+       		   $("#dynamic").empty();
+       		   $("#dynamic").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+        	   $.ajax({
+	      	          type : "POST",
+	          	      data: formData,
+	          	      contentType : 'application/json; charset=utf-8',
+	          	      enctype: 'multipart/form-data',
+	      	          processData: false,
+	      	          contentType:false,
+	          	      dataType : 'json',
+        	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
+        		      success :function(result) {
+        		    	   dynamicTimesheet("left",result); 
+        		    	  /* dynamicTimesheet(); */
+        		      }
+        	      	  
+        	    }); 
+        	   return true;
+	 	}else{ 
+			return false;
+	 } 
+}
+
+$('body').on('blur', '#timesheet_form', function() {
+	$("#timesheet_form").showHelpOnFocus();
+	$("#timesheet_form").validateOnBlur(false, validationSettings);  
+});
+</script>
+
+<script type="text/javascript">
+         function prepareChosenScripts(){ 
+        	      var config = {
+        			  '.chosen-select'           : {},
+        			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+        			  '.chosen-select-no-single' : {disable_search_threshold:10},
+        			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        			  '.chosen-select-width'     : {width:"95%"}
+        			};
+        		   for (var selector in config) {
+        			  $(selector).chosen(config[selector]);
+        			};
+        			$('.chosen-select').each(function() {
+        			var $this = $(this);
+        			$this.next().css({'width': '100%'});
+        			})
+           };
+         
+            
+				
+</script> 
  
       
     
