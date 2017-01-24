@@ -127,13 +127,14 @@ public class NewTimesheetRestController {
 	
 	@RequestMapping(value = "/timesheetDivByFrequency", method = RequestMethod.POST ) 
 	public @ResponseBody String timesheetDivByFrequency(HttpServletRequest request,
-			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency) throws Exception {
+			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
+			@RequestParam(value="projectMemberId", required=false) Long projectMemberId) throws Exception {
 		StringBuilder frequencyBasedDiv = new StringBuilder();
 		if(StringUtils.isNotEmpty(timesheetFrequency)){
 		 	 String[] frequency = timesheetFrequency.split("To");
 		 	 String weekStartDate = frequency[0].trim();
 		  	 String weekEndDate = frequency[1].trim();
-			 frequencyBasedDiv = timesheetEntriesDivByFrequnecy(weekStartDate,weekEndDate);
+			 frequencyBasedDiv = timesheetEntriesDivByFrequnecy(weekStartDate,weekEndDate,projectMemberId);
 		}
 		
 		return frequencyBasedDiv.toString();
@@ -141,10 +142,16 @@ public class NewTimesheetRestController {
 	
 	@RequestMapping(value = "/timesheetDivByTab", method = RequestMethod.POST ) 
 	public @ResponseBody String timesheetDivByTab(HttpServletRequest request,
-			@RequestParam(value="startDate", required=false) String weekStartDate,
-			@RequestParam(value="endDate", required=false) String weekEndDate) throws Exception {
-			
-			StringBuilder tabDiv =  projectTabDataByDates(weekStartDate, weekEndDate);
+			@RequestParam(value="startDate", required=false) String startDate,
+			@RequestParam(value="endDate", required=false) String endDate,
+			@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency) throws Exception {
+		    StringBuilder tabDiv = new StringBuilder("");
+		     if(StringUtils.isNotEmpty(timesheetFrequency)){
+			 	 String[] frequency = timesheetFrequency.split("To");
+			  	 String weekEndDate = frequency[1].trim();
+				  tabDiv =  projectTabDataByDates(startDate, endDate,projectMemberId,weekEndDate);
+		    }
 		    return tabDiv.toString();
 	}
 	
@@ -227,7 +234,7 @@ public class NewTimesheetRestController {
 				}
 				timesheetEntriesDiv.append("		                </select>");
 				timesheetEntriesDiv.append("		            </div> ");
-				StringBuilder frequencyBasedDiv = timesheetEntriesDivByFrequnecy(selectedStartDate.toString(),selectedEndDate.toString());
+				StringBuilder frequencyBasedDiv = timesheetEntriesDivByFrequnecy(selectedStartDate.toString(),selectedEndDate.toString(),projectMember.getId());
 				timesheetEntriesDiv.append(frequencyBasedDiv);
 				
 				timesheetEntriesDiv.append("</div>  ");
@@ -239,7 +246,7 @@ public class NewTimesheetRestController {
 		
 	}
 	
-	public StringBuilder timesheetEntriesDivByFrequnecy(String weekStartDate,String weekEndDate) throws Exception{
+	public StringBuilder timesheetEntriesDivByFrequnecy(String weekStartDate,String weekEndDate,Long projectMemberId) throws Exception{
 		
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
 		
@@ -261,6 +268,7 @@ public class NewTimesheetRestController {
 		StringBuilder currentStartDate = new StringBuilder("");
 		StringBuilder currentEndDate = new StringBuilder("");
 		int count = 1;
+		String timesheetFrequencyEndDate = "";
 		if(tabFrequency != null && !tabFrequency.isEmpty()){
 			for (Map.Entry<String, String> entry : tabFrequency.entrySet()) {
 			     String key = entry.getKey();
@@ -302,8 +310,9 @@ public class NewTimesheetRestController {
 			        
 			    }
 			    count++;
+			    timesheetFrequencyEndDate = format.format(endDate);
 			}
-			tabData =	projectTabDataByDates(currentStartDate.toString(), currentEndDate.toString());
+			tabData =	projectTabDataByDates(currentStartDate.toString(), currentEndDate.toString(),projectMemberId,timesheetFrequencyEndDate);
 		}
 		timesheetEntriesDiv.append("					<div class='export'> ");
 		timesheetEntriesDiv.append("						<p><i class='glyphicon glyphicon-export'></i>Export<i class='fa fa-caret-down'></i></p> ");
@@ -346,9 +355,9 @@ public class NewTimesheetRestController {
 		return flag;
 	}
 	
-	public StringBuilder projectTabDataByDates(String startDate ,String endDate) throws Exception{
+	public StringBuilder projectTabDataByDates(String startDate ,String endDate,Long projectMemberId,String timesheetFrequencyEndDate) throws Exception{
 		
-		 
+		ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemberId);
 		Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
 		Boolean isExportMyTimeSheet = commonUtil.hasRole("ROLE_EXPORT_MY_TIMESHEETS");
 		Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
@@ -374,10 +383,12 @@ public class NewTimesheetRestController {
 		StringBuilder disbleCondition7 = new StringBuilder("");
 		
 		
-		 DateFormat format = Constants.DF_DMY;
-		int dayOfTheDate = CalendarUtil.getDayOfTheDate(format.parse(startDate));
+		DateFormat format = Constants.DF_DMY;
+		Date actualStartDate = format.parse(startDate.replaceAll("/", "-"));
+	    Date actualEndDate = format.parse(endDate.replaceAll("/", "-"));
+		int dayOfTheDateWithStartDate = CalendarUtil.getDayOfTheDate(format.parse(startDate));
 		String weekStartDate = startDate;
-		switch (dayOfTheDate) {
+		switch (dayOfTheDateWithStartDate) {
 	        case 1:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,6);
 	                 disbleCondition1.append("disabled");
 	                 disbleCondition2.append("disabled");
@@ -416,6 +427,37 @@ public class NewTimesheetRestController {
 	        default:   weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,0);
 	                 break;
        }
+		int dayOfTheDateWithEndDate = CalendarUtil.getDayOfTheDate(format.parse(endDate));
+		switch (dayOfTheDateWithEndDate) {
+			case 2:    disbleCondition2.append("disabled");
+	                   disbleCondition3.append("disabled");
+	                   disbleCondition4.append("disabled");
+	                   disbleCondition5.append("disabled");
+	                   disbleCondition6.append("disabled");
+	                   disbleCondition7.append("disabled");
+	                   break;
+	                   
+	        case 3:  disbleCondition3.append("disabled");
+			         disbleCondition4.append("disabled");
+			         disbleCondition5.append("disabled");
+			         disbleCondition6.append("disabled");
+			         disbleCondition7.append("disabled");
+			          break;
+	        case 4:  disbleCondition4.append("disabled");
+			         disbleCondition5.append("disabled");
+			         disbleCondition6.append("disabled");
+			         disbleCondition7.append("disabled");
+			         break;
+	        case 5:  disbleCondition5.append("disabled");
+		             disbleCondition6.append("disabled");
+		             disbleCondition7.append("disabled");
+	                 break;
+	        case 6:   disbleCondition6.append("disabled");
+		             disbleCondition7.append("disabled");
+	                 break;
+	        case 7:  disbleCondition7.append("disabled");
+	                 break;
+        }
 		
 		tabDiv.append("			                        <th>Mon<i>").append(weekStartDate).append("</i></th>");
 		String tuesDayDate =  CalendarUtil.getNextDate(weekStartDate);
@@ -437,289 +479,154 @@ public class NewTimesheetRestController {
 		tabDiv.append("			                        <th>Sun<i>").append(SundayDate).append("</i></th>");
 		
 		tabDiv.append("			                    </tr>");
-		
-		TimesheetSubmissions ts = timesheetSubmissionsService.getTimesheetSubmissions("1");
+        String approvalStatus = "NEW";
+		TimesheetSubmissions ts = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(actualStartDate, actualEndDate, projectMember.getId());
 		Collection<TimesheetEntries>  timesheetEntriesList =   timesheetEntriesDao.getAllTimesheetEntries();
-		if(timesheetEntriesList != null && !timesheetEntriesList.isEmpty()){
-					Integer maxCount = timesheetEntriesList.size();
-					Integer rowCount = 1;
-					tabDiv.append("<input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='"+maxCount+"' />");
-					for(TimesheetEntries timesheetEntries   : timesheetEntriesList){
-						           
-						          /*timesheet entries id*/
-								  tabDiv.append("<input type='hidden' name='"+rowCount+"timesheetEntriesId'   id='"+rowCount+"timesheetEntriesId'   value='"+timesheetEntries.getId()+"' />");
-								  tabDiv.append("       <tr id='timesheetRow"+maxCount+"'>");
-								  tabDiv.append("                 <td>");
-								  tabDiv.append("                      <div> ");
-					              /*if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
-					            	  if(timesheetEntries.getProjectTask() != null){
-					            		  tabDiv.append("<p>").append(timesheetEntries.getProjectTask().getTaskName()).append("</p>");
-					            	  }
-					              }
-					              else{*/
-								  /*Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());*/
-								  Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasks();
-								  tabDiv.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
-								  tabDiv.append("<option value=''>--select task--</option>");
-					              for(ProjectTasks pt   : ProjectTasksList){
-									    	       if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
-									    	    	   tabDiv.append("<option value='"+pt.getId()+"' selected>").append(pt.getTaskName()).append("</option>");
-									    	       }
-									    	       else{
-									    	    	   if(isFillMyTimeSheet){
-									    	    		   tabDiv.append("<option value='"+pt.getId()+"'>").append(pt.getTaskName()).append("</option>");
-									    	    	   }
-									    	       }
-									                
-									      }
-					              tabDiv.append(" </select>"); 
-							              if(isFillMyTimeSheet){
-								              if(rowCount == 1){
-								            	  tabDiv.append("<input type='button' value='' onClick='addTimeSheetRow(1)' class='addtaskfield'/>");
-								              }else{
-								            	  tabDiv.append("<input type='button' value=''  onClick='removeTimeSheetRow(\""+rowCount+"\",\""+ts.getId()+"\");'  class='addtaskfield removetaskfield'/>");
-								              }
-							              }   
-					              /*}*/
-					               
-								  tabDiv.append("                      </div>");
-					              tabDiv.append("                 </td> ");
-								  tabDiv.append("				<td> <div> ");   
-					              tabDiv.append(" <input type='text' "+disbleCondition1+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay1Id' name='"+rowCount+"timeSheetDay1Id' class='inline_field' value='"+timesheetEntries.getMonHours()+"'  placeholder='HH:MM' />	"); 
-					              tabDiv.append(" <div class='timesheet_comm'>"); 
-				            	  if(!isNullOrEmpty(timesheetEntries.getMoncomments())){
-				            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>");
-				            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"comment1Id' >").append(timesheetEntries.getMoncomments()).append("</textarea></span></div>");
-				            	  }else{
-				            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment1Id\");'></i>");
-				            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"comment1Id'  id='"+rowCount+"textArea1Id' ></textarea></span></div>");
-				            	  }
-				            	  tabDiv.append(" </div> </td>"); 
-					              
-				            	  tabDiv.append(" <td> <div>"); 
-				            	  tabDiv.append(" <input type='text' "+disbleCondition2+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay2Id' name='"+rowCount+"timeSheetDay2Id' class='inline_field' value='"+timesheetEntries.getTueHours()+"' placeholder='HH:MM' />	"); 
-				            	  tabDiv.append(" <div class='timesheet_comm'>");
-					              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
-					            	  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
-					            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"comment2Id'>").append(timesheetEntries.getTuecomments()).append("</textarea></span></div>");
-					              }else{
-					            	  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment2Id\");'></i>");
-					            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"comment2Id' id='"+rowCount+"textArea2Id'></textarea></span></div>");
-					              }
-					              tabDiv.append(" </div> </td>"); 
-					              
-					              tabDiv.append(" <td> <div>"); 
-					              tabDiv.append(" <input type='text' "+disbleCondition3+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay3Id' name='"+rowCount+"timeSheetDay3Id' class='inline_field' value='"+timesheetEntries.getWedHours()+"' placeholder='HH:MM' />	"); 
-					              tabDiv.append(" <div class='timesheet_comm'>"); 
-					              if(!isNullOrEmpty(timesheetEntries.getWedcomments())){
-					            	  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>");  
-					            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"comment3Id'>").append(timesheetEntries.getWedcomments()).append("</textarea></span></div>");
-					              }else{
-					            	  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment3Id\");'></i>");
-					            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"comment3Id' id='"+rowCount+"textArea3Id'></textarea></span></div>");
-					              }
-					              tabDiv.append(" </div> "); 
-					              tabDiv.append(" </td>"); 
-				
-					              tabDiv.append(" <td> <div>"); 
-					    		  tabDiv.append(" <input type='text' "+disbleCondition4+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay4Id' name='"+rowCount+"timeSheetDay4Id' class='inline_field' value='"+timesheetEntries.getThuHours()+"' placeholder='HH:MM' />"); 	
-					    		  tabDiv.append(" <div class='timesheet_comm'>"); 
-				            	  if(!isNullOrEmpty(timesheetEntries.getThucomments())){
-				            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>"); 
-				            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"comment4Id'>").append(timesheetEntries.getThucomments()).append("</textarea></span></div>");
-				            	  }
-					              else{
-					            	  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment4Id\");'></i>");
-					            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"comment4Id' id='"+rowCount+"textArea4Id'></textarea></span></div>");
-					              }
-				            	  tabDiv.append(" </div> </td>"); 
-					              
-				            	  tabDiv.append(" <td> <div>"); 
-				            	  tabDiv.append(" <input type='text'  "+disbleCondition5+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay5Id' name='"+rowCount+"timeSheetDay5Id' class='inline_field' value='"+timesheetEntries.getFriHours()+"' placeholder='HH:MM' />	"); 
-				            	  tabDiv.append(" <div class='timesheet_comm'>"); 
-				            	  if(!isNullOrEmpty(timesheetEntries.getFricomments())){
-				            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>");
-				            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"comment5Id'>").append(timesheetEntries.getFricomments()).append("</textarea></span></div>");
-				            	  }else{
-				            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>");
-				            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"comment5Id' id='"+rowCount+"textArea5Id'></textarea></span></div>");
-				            	  }
-				            	  tabDiv.append(" </div> </td>"); 
-					              
-				            	  tabDiv.append("<td> <div>"); 
-				            	  tabDiv.append(" <input type='text' "+disbleCondition6+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay6Id' name='"+rowCount+"timeSheetDay6Id' class='inline_field' value='"+timesheetEntries.getSatHours()+"'  placeholder='HH:MM' />	"); 
-				            	  tabDiv.append(" <div class='timesheet_comm'>"); 
-				            	  if(!isNullOrEmpty(timesheetEntries.getSatcomments())){
-				            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
-				            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"comment6Id'>").append(timesheetEntries.getSatcomments()).append("</textarea></span></div>");
-				            	  }else{
-				            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment6Id\");'></i>");
-					            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"comment6Id' id='"+rowCount+"textArea6Id'></textarea></span></div>");
-				            	  }
-				            	  tabDiv.append(" </div> </td>"); 
-					              
-				            	  tabDiv.append("						<td> <div>"); 
-				            	  tabDiv.append(" <input type='text' "+disbleCondition7+"  onblur='checkHours()' id='"+rowCount+"submission"+ts.getId()+"timeSheetDay7Id' name='"+rowCount+"submission"+ts.getId()+"timeSheetDay7Id' class='inline_field' placeholder='HH:MM' value='"+timesheetEntries.getSunHours()+"' />	"); 
-				            	  tabDiv.append(" <div class='timesheet_comm'>");
-				            	  if(!isNullOrEmpty(timesheetEntries.getSuncomments())){
-				            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>");
-				            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"comment7Id' >").append(timesheetEntries.getSuncomments()).append("</textarea></span></div>");
-				            	  }else{
-				            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"submission"+ts.getId()+"comment7Id\");'></i>");
-				            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"comment7Id' id='"+rowCount+"textArea7Id'></textarea></span></div>");
-				            	  }
-				            	  tabDiv.append(" </div> </td>"); 
-								                                         
-				            	  tabDiv.append(" </tr> ");      
-					              rowCount++;      
-					     }
-							/*tabDiv.append("</td> "); 
-							tabDiv.append("<td class='pname last_td'> <div>");*/
-						        /*if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
-						        	tabDiv.append("<b>").append(submissionStatus).append("</b>");
-						        }
-						        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
-						        	tabDiv.append("<b class='proj_draft'>").append(submissionStatus).append("</b>");
-						        }
-						        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-						        	tabDiv.append("<b class='proj_process'>").append(submissionStatus).append("</b>");
-						        	if(isSah == null && isModifyMyTimeSheet){
-						                String startDateStr = format.format(ts.getStartDate());
-						                tabDiv.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >Modify</b>");
-						        	}
-						        }
-						        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
-						        	tabDiv.append("<b class='proj_active'>").append(submissionStatus).append("</b>");
-						        }
-						        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
-						        	tabDiv.append("<b class='proj_closed'>").append(submissionStatus).append("</b>");
-						        	
-						        	SubmissionApproverHierarchy submissionApproverHierarchy =  submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
-						        	tabDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+submissionApproverHierarchy.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+submissionApproverHierarchy.getId()+"\");'>");
-						        	tabDiv.append(" <div class='app_error_mes' id='rejectedMessage"+submissionApproverHierarchy.getId()+"'>").append(submissionApproverHierarchy.getRejectedReason()).append("</div>");
-						        	tabDiv.append(" </i>");
-						        }*/
-						      /*  tabDiv.append("</div> </td>");*/
-			  }
-			  else{
-					
-					Integer maxCount = 0;
-					Integer rowCount = 1;
-					maxCount = maxCount+1;
-					tabDiv.append("<input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='"+maxCount+"' />");
-					
-					tabDiv.append("			                    <tr id='timesheetRow0'>");
-					tabDiv.append("			                                         <td>");
-					tabDiv.append("			                                              <div> ");
-					
-					Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId((long) 1);
-					tabDiv.append("                       <select id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' class='existedProjectTaskId' onChange='getProjectTasksOnChange()' >");
-					tabDiv.append("<option value=''>--select task--</option>");
-				    for(ProjectTasks pt   : ProjectTasksList){
-				    	tabDiv.append("<option value='"+pt.getId()+"'>").append(pt.getTaskName()).append("</option>");
-				    }
-				    tabDiv.append(" </select>"); 
-					/*tabDiv.append("			                                                <select>");
-					tabDiv.append("			                                                  <option value='volvo'>Task1</option>");
-					tabDiv.append("			                                                  <option value='saab'>Task2</option>");
-					tabDiv.append("			                                                  <option value='mercedes'>Task3</option>");
-					tabDiv.append("			                                                  <option value='audi'>Task4</option>");
-					tabDiv.append("			                                                </select>");*/
-					tabDiv.append("			                                                <input type='button' value='' onClick='addTimeSheetRow(1)' class='addtaskfield'/>");
-					tabDiv.append("			                                              </div>");
-					tabDiv.append("			                                         </td> ");
-					tabDiv.append("													<td> <div>");
-					tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay1Id' name='"+rowCount+"timeSheetDay1Id' class='inline_field' placeholder='HH:MM' />	");	
-					tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment1Id\");' ></i>");
-					/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
-					tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment1Id'><textarea name='"+rowCount+"comment1Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
-					tabDiv.append("			                  </div> </td>");
-					
-					tabDiv.append("													<td> <div>");
-					tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay2Id' name='"+rowCount+"timeSheetDay2Id' class='inline_field' placeholder='HH:MM' />	");
-					tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment2Id\");'  ></i>");
-					/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
-					tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment2Id'><textarea name='"+rowCount+"comment2Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
-					tabDiv.append("			                  </div> </td>");
-					
-					tabDiv.append("			 										<td> <div>");
-					tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay3Id' name='"+rowCount+"timeSheetDay3Id' class='inline_field' placeholder='HH:MM' />	");
-					tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment3Id\");' ></i>");
-					/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
-					tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment3Id'><textarea name='"+rowCount+"comment3Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
-					tabDiv.append("			                  </div> </td>");
-					
-					tabDiv.append("			     										<td> <div>");
-					tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay4Id' name='"+rowCount+"timeSheetDay4Id' class='inline_field' placeholder='HH:MM' />	");
-					tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment4Id\");' ></i>");
-					/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
-					tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment4Id'><textarea name='"+rowCount+"comment4Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
-					tabDiv.append("			                  </div> </td>");
-					
-					tabDiv.append("													<td> <div>");
-					tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay5Id' name='"+rowCount+"timeSheetDay5Id' class='inline_field' placeholder='HH:MM' />	");
-					tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>");
-					/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
-					tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment5Id'><textarea name='"+rowCount+"comment5Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
-					tabDiv.append("			                  </div> </td>");
-					
-					tabDiv.append("													<td> <div>");
-					tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay6Id' name='"+rowCount+"timeSheetDay6Id' class='inline_field' placeholder='HH:MM' />	");
-					tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment6Id\");'  ></i>");
-					/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
-					tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment6Id'><textarea name='"+rowCount+"comment6Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
-					tabDiv.append("			                  </div> </td>");
-					
-					tabDiv.append("													<td> <div>");
-					tabDiv.append("			                  <input type='text' onblur='checkHours()' id='"+rowCount+"timeSheetDay7Id' name='"+rowCount+"timeSheetDay7Id' class='inline_field' placeholder='HH:MM' />	");
-					tabDiv.append("			                  <div class='timesheet_comm'><i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment7Id\");' ></i>");
-					/*timesheetEntriesDiv.append("			                  <span id='teskcomment'><textarea></textarea></span></div>");*/
-					tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment7Id'><textarea name='"+rowCount+"comment7Id' id='"+rowCount+"textArea1Id'></textarea></span></div>");
-					tabDiv.append("			                  </div> </td>    ");     
-					
-					tabDiv.append("			                  </tr>");   
-					
-					
-					
-					
-					
-					tabDiv.append("	  <tr class='last_child'>"); 
-					tabDiv.append("    <td class='total_field'>Total</td>"); 
-					tabDiv.append("    <td> <div>"); 
-					tabDiv.append("    <input type='text' disabled id='rowTotal1Id' name='rowTotal1Id' class='inline_field' value='HH:MM' />"); 	
-					tabDiv.append("    </div> </td>"); 
-					tabDiv.append("    <td> <div>"); 
-					tabDiv.append("    <input type='text' disabled id='rowTotal2Id' name='rowTotal2Id' class='inline_field' value='HH:MM' />	"); 
-					tabDiv.append("    </div> </td>"); 
-					tabDiv.append("    <td> <div>"); 
-					tabDiv.append("    <input type='text' disabled id='rowTotal3Id' name='rowTotal3Id' class='inline_field' value='HH:MM' />	"); 
-					tabDiv.append("    </div> </td>"); 
-					tabDiv.append("    <td> <div>"); 
-					tabDiv.append("    <input type='text'disabled  id='rowTotal4Id' name='rowTotal4Id' class='inline_field' value='HH:MM' />	"); 
-					tabDiv.append("    </div> </td>"); 
-					tabDiv.append("    <td> <div>"); 
-					tabDiv.append("    <input type='text' disabled id='rowTotal5Id' name='rowTotal5Id' class='inline_field' value='HH:MM' />"); 	
-					tabDiv.append("    <td> <div>"); 
-					tabDiv.append("    <input type='text' disabled id='rowTotal6Id' name='rowTotal6Id' class='inline_field' value='HH:MM' />"); 	
-					tabDiv.append("    </div> </td>"); 
-					tabDiv.append("    <td> <div>"); 
-					tabDiv.append("    <input type='text' disabled id='rowTotal7Id' name='rowTotal7Id' class='inline_field' value='HH:MM' />	"); 
-					tabDiv.append("    </div> </td>"); 
-					tabDiv.append("      </tr> ");  
-				    }
-		tabDiv.append("			                </tbody>");
-		tabDiv.append("			            </table>");
-		tabDiv.append("</div>");        	
-		tabDiv.append("</div>");
-		tabDiv.append("</div>");
+		if(timesheetEntriesList != null && !timesheetEntriesList.isEmpty()){}
+		else{
+			Integer maxCount = 0;
+			Integer rowCount = 1;
+			maxCount = maxCount+1;
+			tabDiv.append("<input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='"+maxCount+"' />");
+			
+			tabDiv.append("			                    <tr id='timesheetRow0'>");
+			tabDiv.append("			                                         <td>");
+			tabDiv.append("			                                              <div> ");
+			
+            if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
+        	   tabDiv.append("<p>NO DATA</p>");
+            }
+			 else{
+            	  if((isFillMyTimeSheet )){
+            		  tabDiv.append("     <select  id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' class='existedProjectTaskId"+projectMember.getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"task1Id\",\""+projectMember.getProjects().getId()+"\")' >");
+	                      tabDiv.append("<option value=''>--select task--</option>");
+	                      Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(projectMember.getProjects().getId());
+	                      for(ProjectTasks pt   : ProjectTasksList){
+	                    	  tabDiv.append("<option value='"+pt.getId()+"'>").append(pt.getTaskName()).append("</option>");   
+					      }
+	                      tabDiv.append(" </select>"); 
+			              tabDiv.append("<input type='button' value=''  onClick='addTimeSheetRow(\""+rowCount+"\",\""+projectMember.getProjects().getId()+"\");'  class='addtaskfield'/>");
+	            	  }else{
+	            		  tabDiv.append("<p>NO DATA</p>");
+	            	  }
+				   }
+	             tabDiv.append("                      </div>");
+	             tabDiv.append("                 </td> ");
+	             tabDiv.append("				<td> <div> ");   
+	             tabDiv.append(" <input type='text'  "+disbleCondition1+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay1Id' name='"+rowCount+"timeSheetDay1Id' class='inline_field' value=''  placeholder='HH:MM' />	"); 
+		            tabDiv.append(" <div class='timesheet_comm'>");
+		          if(isNullOrEmpty(disbleCondition1.toString()))
+		        	  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment1Id\");'></i>"); 
+		          tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment1Id'><textarea name='"+rowCount+"comment1Id' id='"+rowCount+"textArea1Id'></textarea></span></div>"); 
+		          tabDiv.append(" </div> </td>"); 
+		          
+		          tabDiv.append(" <td> <div>"); 
+		          tabDiv.append(" <input type='text' "+disbleCondition2+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay2Id' name='"+rowCount+"timeSheetDay2Id' class='inline_field' value='' placeholder='HH:MM' />	"); 
+		          tabDiv.append(" <div class='timesheet_comm'>"); 
+		          if(isNullOrEmpty(disbleCondition2.toString()))
+		          tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment2Id\");'></i>"); 
+		          tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment2Id'><textarea name='"+rowCount+"comment2Id' id='"+rowCount+"textArea2Id'></textarea></span></div>"); 
+		          tabDiv.append(" </div> </td>"); 
+		          
+				  tabDiv.append(" <td> <div>");  
+		          tabDiv.append(" <input type='text' "+disbleCondition3+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay3Id' name='"+rowCount+"timeSheetDay3Id' class='inline_field' value='' placeholder='HH:MM' />	"); 
+		          tabDiv.append(" <div class='timesheet_comm'>"); 
+		          if(isNullOrEmpty(disbleCondition3.toString()))
+		          tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment3Id\");'></i>"); 
+		          tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment3Id'><textarea name='"+rowCount+"comment3Id' id='"+rowCount+"textArea3Id'></textarea></span></div>"); 
+		          tabDiv.append(" </div> "); 
+		          tabDiv.append(" </td>"); 
 		
+				  tabDiv.append(" <td> <div>"); 
+		          tabDiv.append(" <input type='text' "+disbleCondition4+" onblur='checkHours()' id='"+rowCount+"timeSheetDay4Id' name='"+rowCount+"timeSheetDay4Id' class='inline_field' value='' placeholder='HH:MM' />"); 	
+		          tabDiv.append(" <div class='timesheet_comm'>"); 
+		          if(isNullOrEmpty(disbleCondition4.toString()))
+		          tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment4Id\");'></i>"); 
+		          tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment4Id' ><textarea name='"+rowCount+"comment4Id' id='"+rowCount+"textArea4Id'></textarea></span></div>"); 
+		          tabDiv.append(" </div> </td>"); 
+		          
+		          tabDiv.append(" <td> <div>"); 
+		          tabDiv.append(" <input type='text' "+disbleCondition5+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay5Id' name='"+rowCount+"timeSheetDay5Id' class='inline_field' value='' placeholder='HH:MM' />	"); 
+		          tabDiv.append(" <div class='timesheet_comm'>"); 
+		          if(isNullOrEmpty(disbleCondition5.toString()))
+		          tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>"); 
+		          tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment5Id'><textarea name='"+rowCount+"comment5Id' id='"+rowCount+"textArea5Id'></textarea></span></div>"); 
+		          tabDiv.append(" </div> </td>"); 
+		          
+				  tabDiv.append("<td> <div>"); 
+		          tabDiv.append(" <input type='text' "+disbleCondition6+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay6Id' name='"+rowCount+"timeSheetDay6Id' class='inline_field' value=''  placeholder='HH:MM' />	"); 
+		          tabDiv.append(" <div class='timesheet_comm'>"); 
+		          if(isNullOrEmpty(disbleCondition6.toString()))
+		          tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment6Id\");'></i>"); 
+		          tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment6Id' ><textarea name='"+rowCount+"comment6Id' id='"+rowCount+"textArea6Id'></textarea></span></div>"); 
+		          tabDiv.append(" </div> </td>"); 
+		          
+				  tabDiv.append("						<td> <div>"); 
+		          tabDiv.append(" <input type='text' "+disbleCondition7+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay7Id' name='"+rowCount+"timeSheetDay7Id' class='inline_field' placeholder='HH:MM' value='' />	"); 
+		          tabDiv.append(" <div class='timesheet_comm'>"); 
+		          if(isNullOrEmpty(disbleCondition7.toString()))
+		          tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment7Id\");'></i>"); 
+		          tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment7Id' ><textarea name='"+rowCount+"comment7Id' id='"+rowCount+"textArea7Id'></textarea></span></div>"); 
+		          tabDiv.append(" </div> </td>"); 
+			 	  tabDiv.append("			                  </tr>");  
+					
+		          tabDiv.append("	  <tr class='last_child'>"); 
+		          tabDiv.append("    <td class='total_field'>Total</td>"); 
+		          tabDiv.append("    <td> <div>"); 
+		          tabDiv.append("    <input type='text' disabled id='rowTotal1Id' name='rowTotal1Id' class='inline_field' value='HH:MM' />"); 	
+		          tabDiv.append("    </div> </td>"); 
+		          tabDiv.append("    <td> <div>"); 
+		          tabDiv.append("    <input type='text' disabled id='rowTotal2Id' name='rowTotal2Id' class='inline_field' value='HH:MM' />	"); 
+		          tabDiv.append("    </div> </td>"); 
+		          tabDiv.append("    <td> <div>"); 
+		          tabDiv.append("    <input type='text' disabled id='rowTotal3Id' name='rowTotal3Id' class='inline_field' value='HH:MM' />	"); 
+		          tabDiv.append("    </div> </td>"); 
+		          tabDiv.append("    <td> <div>"); 
+		          tabDiv.append("    <input type='text'disabled  id='rowTotal4Id' name='rowTotal4Id' class='inline_field' value='HH:MM' />	"); 
+		          tabDiv.append("    </div> </td>"); 
+		          tabDiv.append("    <td> <div>"); 
+		          tabDiv.append("    <input type='text' disabled id='rowTotal5Id' name='rowTotal5Id' class='inline_field' value='HH:MM' />"); 	
+		          tabDiv.append("    <td> <div>"); 
+		          tabDiv.append("    <input type='text' disabled id='rowTotal6Id' name='rowTotal6Id' class='inline_field' value='HH:MM' />"); 	
+		          tabDiv.append("    </div> </td>"); 
+		          tabDiv.append("    <td> <div>"); 
+		          tabDiv.append("    <input type='text' disabled id='rowTotal7Id' name='rowTotal7Id' class='inline_field' value='HH:MM' />	"); 
+		          tabDiv.append("    </div> </td>"); 
+		          tabDiv.append("      </tr> ");  
+			    }
+				tabDiv.append("			                </tbody>");
+				tabDiv.append("			            </table>");
+				tabDiv.append("</div>");        	
+				tabDiv.append("</div>");
+				tabDiv.append("</div>");
 		
-		
-		//attachemtns and comments.
-	    StringBuilder attachmentDiv = attachmentsAndComments(startDate, endDate);
-	    tabDiv.append(attachmentDiv);
-		 
-		return tabDiv;
+			//attachemtns and comments.
+		    StringBuilder attachmentDiv = attachmentsAndComments(startDate, endDate);
+		    tabDiv.append(attachmentDiv);
+		    
+		    
+		    tabDiv.append("		    	<div class='clearfix'></div>");	
+		    tabDiv.append("		    	<div class='timesheet_button'>");	
+			tabDiv.append("		        	<input type='button' onClick='newSaveTimesheet(\"Draft\",\"user\");'  value='Save' class='time_btn time_dra' />");	
+			
+			if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
+				Date frequencyEndDate = format.parse(timesheetFrequencyEndDate.replaceAll("/", "-"));
+				if(frequencyEndDate.equals(actualEndDate))
+				tabDiv.append("		            <input type='button' value='Submit' class='time_btn' />");	
+			}
+			tabDiv.append("		            <input type='button' value='Clear' class='time_btn time_cancel' />");	
+			tabDiv.append("		        </div>   ");	     
+			tabDiv.append("		    </div>  ");	
+			tabDiv.append("		<div class='res_total_hour'>");	
+			tabDiv.append("			<i></i>");	
+			tabDiv.append("			<p>Total hours</p>");	
+			tabDiv.append("		    <h2> <input disabled type='text' id='grandTotal' name='grandTotal' class='inline_field' value='HH:MM' value='00:00' /> </h2>");	
+			tabDiv.append("		    <span>This Week</span>");	
+			tabDiv.append("		</div>   ");
+		    
+		    
+		    
+		    return tabDiv;
 	}
 	
 	public StringBuilder attachmentsAndComments(String weekStartDate ,String weekEndDate) throws Exception{
@@ -743,19 +650,6 @@ public class NewTimesheetRestController {
 		timesheetEntriesDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");	
 		timesheetEntriesDiv.append("		            <div class='clearfix'></div>");	
 		timesheetEntriesDiv.append("		        </div>");	
-		timesheetEntriesDiv.append("		    	<div class='clearfix'></div>");	
-		timesheetEntriesDiv.append("		    	<div class='timesheet_button'>");	
-		timesheetEntriesDiv.append("		        	<input type='button' onClick='newSaveTimesheet(\"Draft\",\"user\");'  value='Draft' class='time_btn time_dra' />");	
-		timesheetEntriesDiv.append("		            <input type='button' value='Submit' class='time_btn' />");	
-		timesheetEntriesDiv.append("		            <input type='button' value='Clear' class='time_btn time_cancel' />");	
-		timesheetEntriesDiv.append("		        </div>   ");	     
-		timesheetEntriesDiv.append("		    </div>  ");	
-		timesheetEntriesDiv.append("		<div class='res_total_hour'>");	
-		timesheetEntriesDiv.append("			<i></i>");	
-		timesheetEntriesDiv.append("			<p>Total hours</p>");	
-		timesheetEntriesDiv.append("		    <h2> <input disabled type='text' id='grandTotal' name='grandTotal' class='inline_field' value='HH:MM' value='00:00' /> </h2>");	
-		timesheetEntriesDiv.append("		    <span>This Week</span>");	
-		timesheetEntriesDiv.append("		</div>   ");
 		return timesheetEntriesDiv;
 	}
 	
