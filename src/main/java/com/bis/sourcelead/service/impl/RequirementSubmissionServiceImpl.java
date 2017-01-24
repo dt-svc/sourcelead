@@ -2585,6 +2585,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 	}
 
+	@Override
+	public List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception {
+		return requirementSubmissionDao.getSubmittedCandidateIdsByRequirementId(requirementId);
+	}
+
 
 }
 
