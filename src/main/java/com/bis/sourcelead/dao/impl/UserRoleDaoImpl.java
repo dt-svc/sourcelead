@@ -588,5 +588,14 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return userRoleList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.user user  where userRole.orgLocations.id IN (select responderLocationId from OrgRelations orl where orl.locationId.id =:orgLocationId) OR (userRole.orgLocations.id =:orgLocationId) ";
+		List<UserRole> usersList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		return usersList;
+	}
+
 	
 }

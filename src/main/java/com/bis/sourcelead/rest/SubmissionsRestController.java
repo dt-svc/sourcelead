@@ -253,7 +253,7 @@ public class SubmissionsRestController {
 				submissionTemplate = new SubmissionTemplate();
 			}
 
-			submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
+			submissionTemplate.setTemplateName(jsonObj.getString("templateName").trim());
 			submissionTemplate.setDescription(jsonObj.getString("description"));
 			submissionTemplate.setOrgLocationId(orgLocations);
 			submissionTemplate.setJsonString(jsonStringData);
