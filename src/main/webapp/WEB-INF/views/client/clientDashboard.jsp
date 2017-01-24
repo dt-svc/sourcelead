@@ -55,7 +55,7 @@ overflow-x: auto;
 		<div class="timesheet_out timesheet_background">
 			
 			<!-- Advanced Search -->
-  <div class="pull-left cand-advsrch">
+  <%-- <div class="pull-left cand-advsrch">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop()"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
             <form:form id="clientlist_form" name="clientlist_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -250,7 +250,7 @@ overflow-x: auto;
             </div>
           </div>
           </form:form>
-        </div>
+        </div> --%>
 		<!-- Advanced Search Ends -->
 		<div class="clearfix"></div>
 		<div class="clients_wrap vendor_wrap_shadownone" style="overflow-x: auto;">
