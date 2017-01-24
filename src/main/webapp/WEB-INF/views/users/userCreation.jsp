@@ -255,9 +255,11 @@
 
 <script type="text/javascript">
  function validateEmployeeId() {
-	 var EmployeeId = document.getElementById("EmployeeId").value; 
+	 var EmpId = document.getElementById("EmployeeId").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
+	 var con = document.getElementById("EmployeeId").value;
+	 var EmployeeId = encodeURIComponent(con);
 	 if(EmployeeId != null && EmployeeId != ""){
 		 $("#create_user").attr("disabled", "disabled");
         // $("#create_user" ).addClass('button').val('Processing..');
@@ -267,9 +269,9 @@
 		        success: function(data) {
 		        	if(data == true){
 		        		  $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
-						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmployeeId+" is Already Existed</span>");
+						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmpId+" is Already Existed</span>");
 						  document.getElementById("EmployeeId").setAttribute('record-exist','yes');
-						  document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmployeeId+' is Already Existed'); 
+						  document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmpId+' is Already Existed'); 
 		        	}
 		        	else{
 		        		 $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");
