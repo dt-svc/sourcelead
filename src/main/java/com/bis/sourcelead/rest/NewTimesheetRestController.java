@@ -505,7 +505,7 @@ public class NewTimesheetRestController {
 	                    	  tabDiv.append("<option value='"+pt.getId()+"'>").append(pt.getTaskName()).append("</option>");   
 					      }
 	                      tabDiv.append(" </select>"); 
-			              tabDiv.append("<input type='button' value=''  onClick='addTimeSheetRow(\""+rowCount+"\",\""+projectMember.getProjects().getId()+"\");'  class='addtaskfield'/>");
+			              tabDiv.append("<input type='button' value=''  onClick='addTimeSheetRow(\""+projectMember.getProjects().getId()+"\");'  class='addtaskfield'/>");
 	            	  }else{
 	            		  tabDiv.append("<p>NO DATA</p>");
 	            	  }
