@@ -220,7 +220,7 @@ function ApplicantPermit(){
 				        		if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
 				        			lastName = opt.lastName;
 				        		}
-				        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+lastName+"</option>";
+				        		output = output + "<option value='" +opt.candidateId+ "'>"+opt.firstName+" "+lastName+"</option>";
 						}
 			        	$("#candidateId").empty();
 				        $("#candidateId").append(output);

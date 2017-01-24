@@ -543,6 +543,7 @@ var validationSettings = {
 	     		    	 url: sourceleadUrl+"/createUesrBySourceleadAdmin?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
 	     		        success: function(data) {
 	     		        	if(data != null && data != '' && data == 'success'){
+	     		        		$("#userLoading").removeAttr("style");
 	     	   	        		getUserList();
 	     		        	}
 	     			        
@@ -616,7 +617,8 @@ function getUserList(){
 	                    	 var opt = json[i]; 
 	                    	 var mobilePhone = '';
 	                    	 
-	                    	 if(null != opt.mobilePhone && mobilePhone != '' && mobilePhone != 'undefined'){
+	                    	 
+	                    	 if(null != opt.mobilePhone){
 	                    		 mobilePhone = opt.mobilePhone;
 	                    	 }else{
 	                    		 mobilePhone = '------'
