@@ -45,10 +45,10 @@ min-height: 225px !important;
 padding: 0;
 min-height: 100px;
 }
-.side-bar .side-nav ul li span {
+/* .side-bar .side-nav ul li span {
 display: inline-block !important;
 float: none !important;
-}
+} */
 .custom-datatble table{
  margin-top: 20px !important;
  }
@@ -59,10 +59,10 @@ float: none !important;
  .dashboard-datepkr{
        position:relative;
 }
-.main-header span.logo i{
+/* .main-header span.logo i{
 position: relative;
 top:10px;
-}
+} */
 .ui-timepicker-wrapper {
 z-index: 999999;
 width: 11.5%;
@@ -329,7 +329,7 @@ function notificationStatusAsRead(){
   <!-- Add Task Div -->
 		 <div class="addTask"> <span class="icon-addTask" title="Add Task"> <i class="fa fa-gears"></i> </span>
 		    <div class="clearfix col-xs-12 col-md-12 addTask-widget">
-		    <i class="fa fa-close close-div" onclick="closePop();"></i>  
+		    <i class="fa fa-close close-div taskpop-close"></i>  
 		      <!-- Assign Task Widget tabs -->
 		      <div class="clearfix require_wrap_table dashboard-data" id="myTask">
 		        <div class="addtsk-btn"> <span class="btn btn-success btn-sm" onClick="showtaskdiv()"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Task</span> </div>
@@ -558,12 +558,7 @@ $('#closedTaskDatpicker').datepicker({
 $('#timepicker').timepicker({ 'timeFormat': 'h:i A' });
 </script>
 
-<script type="text/javascript">
-function closePop(){
-	 $(".addTask-widget").removeClass("addTask-widget-active");
-	$(".addtAsk_popmask").fadeOut();
-}
-</script>
+
 <script>
 //Collapse div
 $(document).ready(function() {
@@ -955,6 +950,18 @@ $(".nav-tabs").click(function(){
 	$("#myTaskDatpicker, #assignedTaskDatpicker, #closedTaskDatpicker").val('');
 });
 	
+</script>
+
+<script type="text/javascript">
+/* function closePop(){
+	alert('naaistam');
+	 $(".addTask-widget").removeClass("addTask-widget-active");
+	$(".addtAsk_popmask").fadeOut();
+} */
+$('.taskpop-close').click(function (){
+	$(".addTask-widget").removeClass("addTask-widget-active");
+	$(".addtAsk_popmask").fadeOut();
+});
 </script>
 
 <script>

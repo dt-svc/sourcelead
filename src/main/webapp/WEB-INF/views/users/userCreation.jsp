@@ -2,11 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
- <link href="resources/css/bootstrap-select.min.css" rel="stylesheet">
- <script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/formvalidator.js"></script>
-
-<script src="resources/js/chosen.jquery.min.js"></script> 
 
 <!-- <script src="resources/js/masklist.js" type="text/javascript"></script>
 <script src="resources/js/jquery.inputmask.js" type="text/javascript"></script> 
@@ -120,7 +116,7 @@
 				                    <span class="hidden">Rate</span>
 		                        </div>
 		                        <div class="col-md-6">
-				                     <select class="form-control select-bg" id="RatePer" name="ratePer" field-name="Rate Per">
+				                     <select class="form-control selectpicker" id="RatePer" name="ratePer" field-name="Rate Per">
 				                        <option value="">-Rate Per-</option>
 				                        <option>Hourly</option>
 				                        <option>Daily</option>

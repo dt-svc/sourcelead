@@ -250,7 +250,6 @@ function getRolesList(){
                 $("#rolesList").empty();  
                 $("#listLoading").removeAttr("style");
    	    	    $("#rolesList").append(result);
-   	    	    pagination();	
    		    }
 	 }); 
 	
@@ -260,7 +259,7 @@ function getRolesList(){
 
 
 
-<script>
+<!-- <script>
 function pagination(){  
     $('#rolesList').DataTable( { 
     	"scrollCollapse": false,
@@ -274,7 +273,7 @@ function pagination(){
 		
     } );
 }
-</script>
+</script> -->
 
 
 <script type="text/javascript">
