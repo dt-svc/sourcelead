@@ -1098,7 +1098,7 @@ function preparedClientContactListFromElk(data){
 		   		}else{
 		   			result = result +'<td><div>--</div></td>';
 		   		}
-		   		result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+		   		result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
 		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		
@@ -2056,6 +2056,8 @@ $('#selector').delay(2000).fadeOut('slow');
 		$("#search_client").addClass('button').val('Search');
 		$("#search_client").removeAttr("disabled");
 		
+		var responderType = "Client";
+		
 		 if ($('#clientlist_form').validate(false, validationSettings)){ 
 			
 			var sourceleadUrl = '${sourceleadUrl}';
@@ -2065,7 +2067,7 @@ $('#selector').delay(2000).fadeOut('slow');
 		    var jsonData = encodeURIComponent(con);
 			var form = $('#clientlist_form')[0];
       		var formData = new FormData(form); 
-      		var responderType = "Client";
+      		
       		
       		
 			//It will escape all the special characters
@@ -2102,7 +2104,7 @@ $('#selector').delay(2000).fadeOut('slow');
 	    	        processData: false,
 	    	        contentType:false,
 	        	    dataType : 'json',
-					url : sourceleadUrl+"/searchVendorContactsThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					url : sourceleadUrl+"/searchVendorContactsThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&json="+jsonData,
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
