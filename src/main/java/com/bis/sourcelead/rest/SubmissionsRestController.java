@@ -701,5 +701,37 @@ public class SubmissionsRestController {
 		resultJson = toJSON(requirement);
 		return resultJson;
 	}
+	
+	/**
+	 * author : Pavan Jampana
+	 * desc : This method is used to Reactivate the Rejected Applicant
+	 * from Requirement Pipeline List from any Stage.
+	 */
+
+	@RequestMapping(value = "/reActivateRejectedApplicant")
+	public @ResponseBody String reActivateApplicant(
+			@RequestParam(value = "submissionId", required = false) Long submissionId,HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+
+		// to update submission history
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REJECTED.getValue());
+		requirementSubmissionHistory.setToStage(requirementSubmission.getPreviousSubmissionStatus().getValue());
+
+		// to update Submission status
+		requirementSubmission.setSubmissionStatus(requirementSubmission.getPreviousSubmissionStatus());
+		requirementSubmission.setPreviousSubmissionStatus(null);
+		requirementSubmission.setUpdatedBy(user.getUserCode());
+		requirementSubmission.setUpdatedDate(new Date());
+		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
+				requirementSubmissionHistory);
+
+		return "success";
+	}
 
 }

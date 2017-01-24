@@ -333,6 +333,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
 
 		       result = result + '<div class="require_wrap_details">';
+		       result = result + '<div ><a href="javascript:void(0)" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
 		       result = result + '<div class="clearfix">';
 			   result = result + '</div> ';        
 				   
@@ -407,6 +408,32 @@ $(".new-tabs a").click(function(event) {
  $(".side_mask").fadeIn(200);
  $("body").css('overflow-y', 'hidden');
   
+}
+</script>
+
+<script type="text/javascript">
+function reActivateApplicant(submissionId,candidateId,requirementId){
+	var result = "";
+	var sourceleadUrl ='${sourceleadUrl}';
+	var message = confirm("You are choosing to ReActivate the Applicant");
+	alert("candidateId...."+candidateId);
+	alert(" submissionId "+submissionId);
+	alert(" requirementId "+requirementId);
+	if (message == true) {
+		alert("kfhsdkfh");
+		$.ajax({
+	        type : "POST",
+	         url: sourceleadUrl+"/reActivateRejectedApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+	         success :function(data) {
+	               if(data != null && data != 'undefined' && data != ""){
+	            	   alert("hiii entered")
+	            	   getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
+	                } 
+	                 },
+	              }); 
+		
+	}
+	
 }
 </script>
 
