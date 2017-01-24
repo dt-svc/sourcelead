@@ -239,6 +239,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		
 	}
 
+	@Override
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployeeByProjectMemberId(
+			Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId) {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
+	}
+
 	
 	
 	
