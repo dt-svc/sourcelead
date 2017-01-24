@@ -220,23 +220,31 @@ overflow-x: auto;
                   </div>
                 </div>
                 
-                 <div class="col-md-4">
-                  <label>Status</label>
-                  <div class="clearfix">
-                    <input type="text" class="form-control input-sm" placeholder="Status" id="statusAdvanced" name="statusAdvanced">
-                  </div>
-                </div>
-                
-              </div>
-              
-              <div class="clearfix">
+               	<div class="col-md-4">
+						<label>Status</label>
+								<div class="clearfix">
+										<select class="chosen-select form-control input-sm" multiple data-placeholder="Status" id="statusAdvanced" name="statusAdvanced">
+											<option value="Active">Active</option>
+											<option value="In-Active">In-Active</option>
+											<option value="New">New</option>
+											<option value="Negotiation">Negotiation</option>
+											<option value="Contracted">Contracted</option>
+									</select>
+						 </div>  
+              	</div>
+				</div>
+             
                 <div class="col-md-4">
                   <label>Invitation</label>
                   <div class="clearfix">
-                    <input type="text" class="form-control input-sm" placeholder="Invitation" id="invitationAdvanced" name="invitationAdvanced">
+                		 <select class="chosen-select form-control input-sm" multiple data-placeholder="Invitation" id="invitationAdvanced" name="invitationAdvanced">
+											<option value="Sent">Sent</option>
+											<option value="New">New</option>
+											<option value="Accepted">Accepted</option>
+											<option value="Rejected">Rejected</option>
+						</select>
                   </div>
                 </div>
-              </div>
             </div>  
               
             </div>
