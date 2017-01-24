@@ -179,7 +179,7 @@ public class NewTimesheetRestController {
 		
 		timesheetEntriesDiv.append("					<div class='timeNewSe'>");
 		
-		timesheetEntriesDiv.append("		                <select id='projectMemberId' class='form-control chosen-select' onChange='timesheetEntriesDivByProjectMemberId()'>");
+		timesheetEntriesDiv.append("		                <select id='projectMemberId' name='projectMemberId' class='form-control chosen-select' onChange='timesheetEntriesDivByProjectMemberId()'>");
 		Long initialProjectMemberId = null;
 		if(projectMembersList != null && !projectMembersList.isEmpty()){
 			long count = 1;
@@ -249,13 +249,37 @@ public class NewTimesheetRestController {
 	public StringBuilder timesheetEntriesDivByFrequnecy(String weekStartDate,String weekEndDate,Long projectMemberId) throws Exception{
 		
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
+		DateFormat format = Constants.DF_DMY;
+		Date frequencyStartDate = format.parse(weekStartDate.replaceAll("/", "-"));
+		Date frequencyEndDate = format.parse(weekEndDate.replaceAll("/", "-"));
+		 
+		SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
+		Submission_Status submissionStatus = sah.getSubmissionStatus();
+		String submissionStatusStr = submissionStatus.getValue();
 		
 		timesheetEntriesDiv.append("			<div id='timesheetDivByFrequency'> ");
 		
 		timesheetEntriesDiv.append("					<div class='timeNewSe'>");
-		timesheetEntriesDiv.append("						<b class='proj_active'>Active</b><i class='glyphicon glyphicon-comment com_active' >");
+		
+	    if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+	    	timesheetEntriesDiv.append("<b>").append(submissionStatus).append("</b>");
+        }
+        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
+        	timesheetEntriesDiv.append("<b class='proj_draft'>").append(submissionStatus).append("</b>");
+        }
+        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
+        	timesheetEntriesDiv.append("<b class='proj_process'>").append(submissionStatus).append("</b></div> </td>");
+        }
+        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
+        	timesheetEntriesDiv.append("<b class='proj_active'>").append(submissionStatus).append("</b></div> </td>");
+        }
+        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
+        	timesheetEntriesDiv.append("<b class='proj_closed'>").append(submissionStatus).append("</b></div> </td>");
+        }
+		
+/*		timesheetEntriesDiv.append("						<b class='proj_active'>Active</b><i class='glyphicon glyphicon-comment com_active' >");
 		timesheetEntriesDiv.append("							<div class='timeNewSeMess'><p>Rejected message here Rejected message here Rejected message here</p></div>");
-		timesheetEntriesDiv.append("						</i>");
+		timesheetEntriesDiv.append("						</i>");*/
 		timesheetEntriesDiv.append("					</div>");
 		timesheetEntriesDiv.append("					<div class='clearfix'></div>   ");
 		
@@ -273,7 +297,7 @@ public class NewTimesheetRestController {
 			for (Map.Entry<String, String> entry : tabFrequency.entrySet()) {
 			     String key = entry.getKey();
 			     String value = entry.getValue();
-			     DateFormat format = Constants.DF_DMY;
+			     
 				 Date startDate = format.parse(key.replaceAll("/", "-"));
 				 Date endDate = format.parse(value.replaceAll("/", "-"));
 			    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
@@ -369,6 +393,9 @@ public class NewTimesheetRestController {
 		tabDiv.append("<div class='project_tabs'>");
 		tabDiv.append("<div id='tab-1' class='project_tabs_inn'>");
 		tabDiv.append("<div class='timesheet_tableNew'>");
+		
+		
+		tabDiv.append("	<input type='hidden' name='tabStartDate' id='tabStartDate' value=\""+startDate+"\" /><input type='hidden' name='tabEndDate' id='tabEndDate' value=\""+endDate+"\" />");
 		tabDiv.append("			        	<table id='timesheet' cellpadding='0' cellspacing='0'>");
 		tabDiv.append("			            	<tbody>");
 		tabDiv.append("			                	<tr>");
@@ -481,8 +508,9 @@ public class NewTimesheetRestController {
 		tabDiv.append("			                    </tr>");
         String approvalStatus = "NEW";
 		TimesheetSubmissions ts = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(actualStartDate, actualEndDate, projectMember.getId());
-		Collection<TimesheetEntries>  timesheetEntriesList =   timesheetEntriesDao.getAllTimesheetEntries();
-		if(timesheetEntriesList != null && !timesheetEntriesList.isEmpty()){}
+		if(ts != null){
+			
+		}
 		else{
 			Integer maxCount = 0;
 			Integer rowCount = 1;
@@ -612,7 +640,7 @@ public class NewTimesheetRestController {
 			if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
 				Date frequencyEndDate = format.parse(timesheetFrequencyEndDate.replaceAll("/", "-"));
 				if(frequencyEndDate.equals(actualEndDate))
-				tabDiv.append("		            <input type='button' value='Submit' class='time_btn' />");	
+				tabDiv.append("		            <input type='button' onClick='newSaveTimesheet(\"Submitted\",\"user\");'  value='Submit' class='time_btn' />");	
 			}
 			tabDiv.append("		            <input type='button' value='Clear' class='time_btn time_cancel' />");	
 			tabDiv.append("		        </div>   ");	     
@@ -667,7 +695,8 @@ public class NewTimesheetRestController {
 			json = "{"+json+"}";
 			JSONObject jsonObj = new JSONObject(json);
 	    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-	    	
+	    	DateFormat format = Constants.DF_DMY;
+			
 			String result = "";
 			String resultJson = null;
 			
@@ -676,8 +705,23 @@ public class NewTimesheetRestController {
 				 submissionId = jsonObj.getString("submissionId");
 			}
 			
+			ProjectMembers projectMember = null;
+			if(jsonObj.getString("projectMemberId") != null && jsonObj.getString("projectMemberId") != "" && jsonObj.getString("projectMemberId") != "undefined"){
+				  projectMember = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
+			}
+			
+			Date startDate = null;
+			Date endDate = null;
+			if(jsonObj.getString("tabStartDate") != null && jsonObj.getString("tabStartDate") != "" && jsonObj.getString("tabStartDate") != "undefined"){
+	    	    startDate = format.parse(jsonObj.getString("tabStartDate"));
+	    	}
+			if(jsonObj.getString("tabEndDate") != null && jsonObj.getString("tabEndDate") != "" && jsonObj.getString("tabEndDate") != "undefined"){
+	    		 endDate = format.parse(jsonObj.getString("tabEndDate"));
+	    	}
 			 
-			 Date startDate = new Date();
+			
+			
+			
 			/* String localsubmissionId = null;
 		   	 try{
 		   		   JSONArray jsonArray = jsonObj.getJSONArray("submissionId");
@@ -695,284 +739,251 @@ public class NewTimesheetRestController {
 				for(String submissionId : submissionIds){*/
 					
 					  				/*submissionId = submissionId.replace("\"", "");*/
-					                Long total = 0l;
-					                TimesheetSubmissions timesheetSubmissions ;
-					                if(!isNullOrEmpty(submissionId)){
-					                	 timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
-					                }else{
-					                	 timesheetSubmissions = new TimesheetSubmissions();
-					                	 timesheetSubmissions.setStartDate(startDate);
-					                	 timesheetSubmissions.setEndDate(startDate);
-					                	 ProjectMembers pm = new ProjectMembers();
-					                	 pm.setId( (long) 1);
-					                	 timesheetSubmissions.setProjectMembers(pm);
-					                	 
-					                	 timesheetSubmissions.setCreatedDate(new Date());
-					                	 timesheetSubmissions.setCreatedBy("");
-					                	 timesheetSubmissions.setUpdatedDate(new Date());
-					                	 timesheetSubmissions.setUpdatedBy("");
-					                	 
-					                	 ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
-					                	 List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(1);
-					                	 HashSet<SubmissionApproverHierarchy> saHierarchyList = new HashSet<SubmissionApproverHierarchy>();
-					                        if(hierarchyList != null && !hierarchyList.isEmpty()){
-												for(ProjectApproverHierarchy hierarchy : hierarchyList){
-													SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
-													saHierarchy.setHeirarchyId(hierarchy);
-													saHierarchy.setSubmissionId(timesheetSubmissions);
-													saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue("new"));
-													saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
-													saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
-													saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
-													saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
-													saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
-													saHierarchyList.add(saHierarchy);
-												}
-												timesheetSubmissions.setApproverHierarchyList(saHierarchyList);
-											}
-											timesheetSubmissionsList.add(timesheetSubmissions);
-											timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
-											
-					                	 
-										}
-					              
-					               /* startDate = timesheetSubmissions.getStartDate();*/
-						    		
-					                /*SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionLowLevelApproverHierarchyForEmployee(timesheetSubmissions.getId());*/
-					                /*if(sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("draft"))  || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("new")) || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("rejected")) || (sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("submitted")) && "approver".equalsIgnoreCase(savingType)  ) ){*/
-					               /* submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);	
-						    		timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));*/
-									
-							    	timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
-							    	
-							    	//save  mutliple attachment in timesheet submissison attachment.
-							    	
-							    	String attcahmentMaxRowNumber = jsonObj.getString("attcahmentMaxRowNumber");
-									int attcahmentMaxRowNumberCount = Integer.parseInt(attcahmentMaxRowNumber);
-									int attachmentRowNum = 0;
-									
-							    	for (int a = 0; a < attcahmentMaxRowNumberCount; a++) {
-										   
-										   TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
-										   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-			                   		       final Map files = multiRequest.getFileMap();
-			                   		       
-			                   		       tsd.setTimesheetSubmissions(timesheetSubmissions);
-			                               MultipartFile  multiFile = (MultipartFile)files.get(a+"docFile");
-			                               if(multiFile != null && !multiFile.isEmpty()){
-				                               tsd.setDocFile(multiFile.getBytes());
-				                               tsd.setFileName(multiFile.getOriginalFilename());
-				                               
-				                               if(multiFile.getContentType()!=null){
-				                            	   tsd.setFileContentType(multiFile.getContentType());
-				                               }
-			                               }
-			                               
-			                               tsd.setStatus(Constants.CANDIDATE_ACTIVE);
-			                               tsd.setCreatedDate(commonUtil.currentDate());
-			                               tsd.setCreatedBy(loginUser.getUserCode());
-			                               tsd.setUpdatedDate(commonUtil.currentDate());
-			                               tsd.setUpdatedBy(loginUser.getUserCode());
-			                               
-										   timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
-							    	}
-									
-									String maxAdminTimeTypeRowNum = jsonObj.getString("maxRowNumber");
-									int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
-									int rowNum = 0;
-									
-									
-									for (int c = 1; c <= maxCount; c++) {
-									   if (jsonObj.has(c+"timeSheetDay1Id") ||
-										   jsonObj.has(c+"timeSheetDay2Id") ||
-										   jsonObj.has(c+"timeSheetDay3Id") ||
-										   jsonObj.has(c+"timeSheetDay4Id") ||
-									       jsonObj.has(c+"timeSheetDay5Id") ||
-										   jsonObj.has(c+"timeSheetDay6Id") ||
-										   jsonObj.has(c+"timeSheetDay7Id")){
-											
-											TimesheetEntries timesheetEntries = new TimesheetEntries();
-											
-											if ((jsonObj.has(c+"timesheetEntriesId"))){
-												String timesheetEntriesId = jsonObj.getString(c+"timesheetEntriesId");
-												if(!isNullOrEmpty(timesheetEntriesId)){
-													timesheetEntries.setId(Long.parseLong(timesheetEntriesId));
-												}	
-										    } 
-											
-											  
-											timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
-											timesheetEntries.setStartDate(commonUtil.currentDate());
-											timesheetEntries.setEndDate(commonUtil.currentDate());
-											timesheetEntries.setCreatedDate(commonUtil.currentDate());
-											timesheetEntries.setUpdatedDate(commonUtil.currentDate());
-											
-											ProjectTasks projectTasks = new ProjectTasks();
-
-										   if (jsonObj.has(c+"submission"+submissionId+"task1Id")){
-											   if(!isNullOrEmpty(jsonObj.getString(c+"submission"+submissionId+"task1Id"))){
-													  projectTasks.setId(Long.parseLong(jsonObj.getString(c+"submission"+submissionId+"task1Id")));
-													  timesheetEntries.setProjectTask(projectTasks);
-											   }
-											 }
-											//For Monday Hours
-											if (jsonObj.has(c+"timeSheetDay1Id")){
-												String monHours = jsonObj.getString(c+"timeSheetDay1Id");
-												if(!isNullOrEmpty(monHours)){
-													timesheetEntries.setMonHours(monHours);
-													total = getTotalHoursFormDayHours(monHours, total);
-												}else{
-													timesheetEntries.setMonHours("00:00");
-												}
-											}
-											//For Monday Comments
-											if (jsonObj.has(c+"comment1Id")){
-												timesheetEntries.setMoncomments(jsonObj.getString(c+"comment1Id"));
-											}
-											
-											//For Tuesday Hours
-											if (jsonObj.has(c+"timeSheetDay2Id")){
-												String tueHours = jsonObj.getString(c+"timeSheetDay2Id");
-												if(!isNullOrEmpty(tueHours)){
-													timesheetEntries.setTueHours(tueHours);
-													total = getTotalHoursFormDayHours(tueHours, total);
-												}else{
-													timesheetEntries.setTueHours("00:00");
-												}
-												
-											}
-											//For Tuesday Comments
-											if (jsonObj.has(c+"comment2Id")){
-												timesheetEntries.setTuecomments(jsonObj.getString(c+"comment2Id"));
-											}
-						                    
-											//For wednesday Hours
-											if (jsonObj.has(c+"timeSheetDay3Id")){
-												String wedHours = jsonObj.getString(c+"timeSheetDay3Id");
-												if(!isNullOrEmpty(wedHours)){
-													timesheetEntries.setWedHours(wedHours);
-													total = getTotalHoursFormDayHours(wedHours, total);
-													
-												}else{
-													timesheetEntries.setWedHours("00:00");
-												}
-											}
-											//For wednesday Comments
-											if (jsonObj.has(c+"comment3Id")){
-												timesheetEntries.setWedcomments(jsonObj.getString(c+"comment3Id"));
-											}
-											
-											//For thursday Hours
-											if (jsonObj.has(c+"timeSheetDay4Id")){
-
-												String thuHours = jsonObj.getString(c+"timeSheetDay4Id");
-												if(!isNullOrEmpty(thuHours)){
-													timesheetEntries.setThuHours(thuHours);
-													total = getTotalHoursFormDayHours(thuHours, total);
-													
-												}else{
-													timesheetEntries.setThuHours("00:00");
-												}
-											}
-											 
-											//For thursday Comments
-											if (jsonObj.has(c+"comment4Id")){
-												timesheetEntries.setThucomments(jsonObj.getString(c+"comment4Id"));
-											}
-											
-											
-											//For friday Hours
-											if (jsonObj.has(c+"timeSheetDay5Id")){
-												String friHours = jsonObj.getString(c+"timeSheetDay5Id");
-												if(!isNullOrEmpty(friHours)){
-													timesheetEntries.setFriHours(friHours);
-													total = getTotalHoursFormDayHours(friHours, total);
-												}else{
-													timesheetEntries.setFriHours("00:00");
-												}
-											}
-											 
-											//For friday Comments
-											if (jsonObj.has(c+"comment5Id")){
-												timesheetEntries.setFricomments(jsonObj.getString(c+"comment5Id"));
-											}
-											
-											
-											//For saturday Hours
-											if (jsonObj.has(c+"timeSheetDay6Id")){
-												String satHours = jsonObj.getString(c+"timeSheetDay6Id");
-												if(!isNullOrEmpty(satHours)){
-													timesheetEntries.setSatHours(satHours);
-													total = getTotalHoursFormDayHours(satHours, total);
-												}else{
-													timesheetEntries.setSatHours("00:00");
-												}
-											}
-											//For saturday Comments
-											if (jsonObj.has(c+"comment6Id")){
-												timesheetEntries.setSatcomments(jsonObj.getString(c+"comment6Id"));
-											}
-											
-											
-											//For sunday Hours
-											if (jsonObj.has(c+"timeSheetDay7Id")){
-												String sunHours = jsonObj.getString(c+"timeSheetDay7Id");
-												if(!isNullOrEmpty(sunHours)){
-													timesheetEntries.setSunHours(sunHours);
-													total = getTotalHoursFormDayHours(sunHours, total);
-													
-												}else{
-													timesheetEntries.setSunHours("00:00");
-												}
-											}
-											
-											//For sunday Comments
-											if (jsonObj.has(c+"comment7Id")){
-												timesheetEntries.setSuncomments(jsonObj.getString(c+"comment7Id"));
-											}
-											rowNum++;
-											timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
-											
-										}else{
-											if ((jsonObj.has(c+"timesheetEntriesId"))){
-												String timesheetEntriesId = jsonObj.getString(c+"timesheetEntriesId");
-												timesheetEntriesDao.deleteTimesheetEntries(timesheetEntriesId);
-											}
-										}
-									}
-									if(total != null){
-							            int actualHours = (int) (total / 60);
-							            int actualMinutes =   (int)(total % 60);
-							            String actualMinutesStr = ""+actualMinutes;
-							            String startWithZero = "";
-							            if(StringUtils.isNotEmpty(actualMinutesStr) && actualMinutesStr.length()==1)
-							            	startWithZero ="0";	
-							            	
-							            String actualTimeString =  actualHours+"."+startWithZero+actualMinutes;
-							            
-										timesheetSubmissions.setTotalHours(actualTimeString);
-										timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
-										
-										//send mail to assigned manager at time sheet submission
-										/*if(!actualTimeString.equalsIgnoreCase("0.0")){
-											if(!"Draft".equalsIgnoreCase(status)){
-												sendEmailToManagerAtTimesheetSubmissions(timesheetSubmissions,loginUser,loginOrgLocation,loginOrgCode);
-											}
-										}*/
-									}
-									
-				         /* }	*/
-				/*					
-				 }
-			} */
+            Long total = 0l;
+            TimesheetSubmissions timesheetSubmissions ;
+            if(!isNullOrEmpty(submissionId)){
+            	 timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
+            }else{
+            	 timesheetSubmissions = new TimesheetSubmissions();
+            	 timesheetSubmissions.setStartDate(startDate);
+            	 timesheetSubmissions.setEndDate(endDate);
+            	 timesheetSubmissions.setProjectMembers(projectMember);
+            	 timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE+"");
+            	 timesheetSubmissions.setCreatedDate(CommonUtil.currentDate());
+            	 timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
+            	 timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
+            	 timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
+            	 
+            	 ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
+            	 List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(1);
+            	 HashSet<SubmissionApproverHierarchy> saHierarchyList = new HashSet<SubmissionApproverHierarchy>();
+                    if(hierarchyList != null && !hierarchyList.isEmpty()){
+						for(ProjectApproverHierarchy hierarchy : hierarchyList){
+							SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
+							saHierarchy.setHeirarchyId(hierarchy);
+							saHierarchy.setSubmissionId(timesheetSubmissions);
+							saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
+							saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
+							saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
+							saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
+							saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
+							saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
+							saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
+							saHierarchyList.add(saHierarchy);
+						}
+						timesheetSubmissions.setApproverHierarchyList(saHierarchyList);
+					}
+					timesheetSubmissionsList.add(timesheetSubmissions);
+					timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
+					
+            	 
+				}
+	    	timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
 	    	
-			/*result =  "success";*/
-			/*resultJson = toJSON(startDateResult);*/
+	    	//save  mutliple attachment in timesheet submissison attachment.
+	    	String attcahmentMaxRowNumber = jsonObj.getString("attcahmentMaxRowNumber");
+			int attcahmentMaxRowNumberCount = Integer.parseInt(attcahmentMaxRowNumber);
+			int attachmentRowNum = 0;
+			
+	    	for (int a = 0; a < attcahmentMaxRowNumberCount; a++) {
+				   
+				   TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
+				   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+       		       final Map files = multiRequest.getFileMap();
+       		       
+       		       tsd.setTimesheetSubmissions(timesheetSubmissions);
+                   MultipartFile  multiFile = (MultipartFile)files.get(a+"docFile");
+                   if(multiFile != null && !multiFile.isEmpty()){
+                       tsd.setDocFile(multiFile.getBytes());
+                       tsd.setFileName(multiFile.getOriginalFilename());
+                       
+                       if(multiFile.getContentType()!=null){
+                    	   tsd.setFileContentType(multiFile.getContentType());
+                       }
+                   }
+                   
+                   tsd.setStatus(Constants.CANDIDATE_ACTIVE);
+                   tsd.setCreatedDate(CommonUtil.currentDate());
+                   tsd.setCreatedBy(loginUser.getUserCode());
+                   tsd.setUpdatedDate(CommonUtil.currentDate());
+                   tsd.setUpdatedBy(loginUser.getUserCode());
+				   timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
+	    	}
+			
+			String maxAdminTimeTypeRowNum = jsonObj.getString("maxRowNumber");
+			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+			int rowNum = 0;
+			for (int c = 1; c <= maxCount; c++) {
+			   if (jsonObj.has(c+"timeSheetDay1Id") ||
+				   jsonObj.has(c+"timeSheetDay2Id") ||
+				   jsonObj.has(c+"timeSheetDay3Id") ||
+				   jsonObj.has(c+"timeSheetDay4Id") ||
+			       jsonObj.has(c+"timeSheetDay5Id") ||
+				   jsonObj.has(c+"timeSheetDay6Id") ||
+				   jsonObj.has(c+"timeSheetDay7Id")){
+					
+					TimesheetEntries timesheetEntries = new TimesheetEntries();
+					
+					if ((jsonObj.has(c+"timesheetEntriesId"))){
+						String timesheetEntriesId = jsonObj.getString(c+"timesheetEntriesId");
+						if(!isNullOrEmpty(timesheetEntriesId)){
+							timesheetEntries.setId(Long.parseLong(timesheetEntriesId));
+						}	
+				    } 
+					timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
+					timesheetEntries.setStartDate(startDate);
+					timesheetEntries.setEndDate(startDate);
+					timesheetEntries.setCreatedDate(CommonUtil.currentDate());
+					timesheetEntries.setUpdatedDate(CommonUtil.currentDate());
+					ProjectTasks projectTasks = new ProjectTasks();
+				   if (jsonObj.has(c+"submission"+submissionId+"task1Id")){
+					   if(!isNullOrEmpty(jsonObj.getString(c+"submission"+submissionId+"task1Id"))){
+							  projectTasks.setId(Long.parseLong(jsonObj.getString(c+"submission"+submissionId+"task1Id")));
+							  timesheetEntries.setProjectTask(projectTasks);
+					   }
+					 }
+					//For Monday Hours
+					if (jsonObj.has(c+"timeSheetDay1Id")){
+						String monHours = jsonObj.getString(c+"timeSheetDay1Id");
+						if(!isNullOrEmpty(monHours)){
+							timesheetEntries.setMonHours(monHours);
+							total = getTotalHoursFormDayHours(monHours, total);
+						}else{
+							timesheetEntries.setMonHours("00:00");
+						}
+					}
+					//For Monday Comments
+					if (jsonObj.has(c+"comment1Id")){
+						timesheetEntries.setMoncomments(jsonObj.getString(c+"comment1Id"));
+					}
+					
+					//For Tuesday Hours
+					if (jsonObj.has(c+"timeSheetDay2Id")){
+						String tueHours = jsonObj.getString(c+"timeSheetDay2Id");
+						if(!isNullOrEmpty(tueHours)){
+							timesheetEntries.setTueHours(tueHours);
+							total = getTotalHoursFormDayHours(tueHours, total);
+						}else{
+							timesheetEntries.setTueHours("00:00");
+						}
+						
+					}
+					//For Tuesday Comments
+					if (jsonObj.has(c+"comment2Id")){
+						timesheetEntries.setTuecomments(jsonObj.getString(c+"comment2Id"));
+					}
+                    
+					//For wednesday Hours
+					if (jsonObj.has(c+"timeSheetDay3Id")){
+						String wedHours = jsonObj.getString(c+"timeSheetDay3Id");
+						if(!isNullOrEmpty(wedHours)){
+							timesheetEntries.setWedHours(wedHours);
+							total = getTotalHoursFormDayHours(wedHours, total);
+							
+						}else{
+							timesheetEntries.setWedHours("00:00");
+						}
+					}
+					//For wednesday Comments
+					if (jsonObj.has(c+"comment3Id")){
+						timesheetEntries.setWedcomments(jsonObj.getString(c+"comment3Id"));
+					}
+					
+					//For thursday Hours
+					if (jsonObj.has(c+"timeSheetDay4Id")){
+
+						String thuHours = jsonObj.getString(c+"timeSheetDay4Id");
+						if(!isNullOrEmpty(thuHours)){
+							timesheetEntries.setThuHours(thuHours);
+							total = getTotalHoursFormDayHours(thuHours, total);
+							
+						}else{
+							timesheetEntries.setThuHours("00:00");
+						}
+					}
+					 
+					//For thursday Comments
+					if (jsonObj.has(c+"comment4Id")){
+						timesheetEntries.setThucomments(jsonObj.getString(c+"comment4Id"));
+					}
+					
+					
+					//For friday Hours
+					if (jsonObj.has(c+"timeSheetDay5Id")){
+						String friHours = jsonObj.getString(c+"timeSheetDay5Id");
+						if(!isNullOrEmpty(friHours)){
+							timesheetEntries.setFriHours(friHours);
+							total = getTotalHoursFormDayHours(friHours, total);
+						}else{
+							timesheetEntries.setFriHours("00:00");
+						}
+					}
+					 
+					//For friday Comments
+					if (jsonObj.has(c+"comment5Id")){
+						timesheetEntries.setFricomments(jsonObj.getString(c+"comment5Id"));
+					}
+					
+					
+					//For saturday Hours
+					if (jsonObj.has(c+"timeSheetDay6Id")){
+						String satHours = jsonObj.getString(c+"timeSheetDay6Id");
+						if(!isNullOrEmpty(satHours)){
+							timesheetEntries.setSatHours(satHours);
+							total = getTotalHoursFormDayHours(satHours, total);
+						}else{
+							timesheetEntries.setSatHours("00:00");
+						}
+					}
+					//For saturday Comments
+					if (jsonObj.has(c+"comment6Id")){
+						timesheetEntries.setSatcomments(jsonObj.getString(c+"comment6Id"));
+					}
+					
+					
+					//For sunday Hours
+					if (jsonObj.has(c+"timeSheetDay7Id")){
+						String sunHours = jsonObj.getString(c+"timeSheetDay7Id");
+						if(!isNullOrEmpty(sunHours)){
+							timesheetEntries.setSunHours(sunHours);
+							total = getTotalHoursFormDayHours(sunHours, total);
+							
+						}else{
+							timesheetEntries.setSunHours("00:00");
+						}
+					}
+					
+					//For sunday Comments
+					if (jsonObj.has(c+"comment7Id")){
+						timesheetEntries.setSuncomments(jsonObj.getString(c+"comment7Id"));
+					}
+					rowNum++;
+					timesheetEntriesDao.addTimesheetEntries(timesheetEntries);
+					
+				}else{
+					if ((jsonObj.has(c+"timesheetEntriesId"))){
+						String timesheetEntriesId = jsonObj.getString(c+"timesheetEntriesId");
+						timesheetEntriesDao.deleteTimesheetEntries(timesheetEntriesId);
+					}
+				}
+			}
+			if(total != null){
+	            int actualHours = (int) (total / 60);
+	            int actualMinutes =   (int)(total % 60);
+	            String actualMinutesStr = ""+actualMinutes;
+	            String startWithZero = "";
+	            if(StringUtils.isNotEmpty(actualMinutesStr) && actualMinutesStr.length()==1)
+	            	startWithZero ="0";	
+	            	
+	            String actualTimeString =  actualHours+"."+startWithZero+actualMinutes;
+	            
+				timesheetSubmissions.setTotalHours(actualTimeString);
+				timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+			}
 			String pattern = "dd-MM-yyyy";
-	        SimpleDateFormat format = new SimpleDateFormat(pattern);
+	        format = new SimpleDateFormat(pattern);
 	        String startDateStr = format.format(startDate);
 			return startDateStr;
-			
 		}
 	
 		public static boolean isNullOrEmpty(String str) {

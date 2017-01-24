@@ -171,6 +171,65 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		return submissionApproverHierarchy;
 	}
 	
+	
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployeeByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId) {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(frequencyStartDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
+		
+		
+		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm where pm.id = :projectMemberId and ((submission.startDate = :sqlStartDate) OR (submission.startDate BETWEEN :sqlStartDate and :sqlEndDate))");
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("projectMemberId", projectMemberId).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).setCacheable(true).list();
+		//return submissionApproverHierarchyList;
+		
+		Boolean isRejected = false; 
+	    Boolean isAPPROVED = false; 
+	    Boolean isSUBMITTED = false; 
+	    Boolean isNEW = false;
+	    Boolean isDRAFT = false;
+	    SubmissionApproverHierarchy submissionApproverHierarchy = null;
+	    if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
+	    	for(SubmissionApproverHierarchy sah : submissionApproverHierarchyList){
+				
+				if( sah.getSubmissionStatus() == Submission_Status.REJECTED){
+					isRejected   = true;  
+					submissionApproverHierarchy = sah;
+				}
+				else if(!isRejected  && sah.getSubmissionStatus() == Submission_Status.NEW){
+					 isNEW   = true;  
+					 submissionApproverHierarchy = sah;
+				}
+				else if(!isRejected && !isNEW &&  sah.getSubmissionStatus() == Submission_Status.DRAFT){
+					 isDRAFT   = true;  
+					 submissionApproverHierarchy = sah;
+				}
+				else if(!isRejected && !isNEW && !isDRAFT && sah.getSubmissionStatus() == Submission_Status.SUBMITTED){
+					isSUBMITTED   = true;  
+					submissionApproverHierarchy = sah;
+				}
+				else if(!isRejected && !isNEW && !isDRAFT && !isSUBMITTED && sah.getSubmissionStatus() == Submission_Status.APPROVED ){
+					 isAPPROVED   = true;  
+					 submissionApproverHierarchy = sah;
+				}
+	      }
+	    }
+	    else{
+	    	 submissionApproverHierarchy = new SubmissionApproverHierarchy();
+	    	 submissionApproverHierarchy.setSubmissionStatus(Submission_Status.getNameByValue("new"));
+	    	 submissionApproverHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
+	    }
+		
+		// TODO Auto-generated method stub
+		return submissionApproverHierarchy;
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public SubmissionApproverHierarchy getSubmissionLowLevelApproverHierarchyForEmployee(Long submissionId) {
