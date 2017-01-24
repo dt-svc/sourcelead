@@ -187,7 +187,7 @@ public class InterviewFeedbackRestController {
 						submissionTemplate = new SubmissionTemplate();
 					}
 				   submissionTemplate.setTemplateType("Feedback");
-				   submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
+				   submissionTemplate.setTemplateName(jsonObj.getString("templateName").trim());
 				   submissionTemplate.setDescription(jsonObj.getString("description"));
 				   submissionTemplate.setOrgLocationId(orgLocations);
 				   submissionTemplate.setJsonString(jsonStringData);

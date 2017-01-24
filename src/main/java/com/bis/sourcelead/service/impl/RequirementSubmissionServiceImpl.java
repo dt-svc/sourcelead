@@ -2435,6 +2435,157 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		
 	}
 
+	@Override
+	public void clientOrVendorAcceptOrRejectRateNegotiation(Org loginOrg, User users, User pastUser,
+			RequirementSubmission requirementSubmission, Candidate candidate, StringBuilder tempHTML,
+			OrgLocations loginOrgLocation,String type, String status) throws Exception {
+
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+		
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(pastUser.getFirstName());
+		 emailMessage.setLastName(pastUser.getLastName());
+		 emailMessage.setToEmail(pastUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(users.getUserCode());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
+		 
+		 
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 if(Constants.CLIENT.equalsIgnoreCase(type)){
+			 if(null!= pastUser.getFirstName() && !"".equalsIgnoreCase(pastUser.getFirstName()) && null != pastUser.getLastName() && !"".equalsIgnoreCase(pastUser.getLastName())){
+				 StringBuilder pastUserBuild = new StringBuilder();
+				 globalVarsMap.put("vendorName", pastUserBuild.append(pastUser.getFirstName()).append(" ").append(pastUser.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("vendorName",pastUser.getFirstName());
+				 }
+			 
+			 if(null != users.getFirstName() && !"".equalsIgnoreCase(users.getFirstName()) && null != users.getLastName() && !"".equalsIgnoreCase(users.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("clientName", userBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("clientName",users.getFirstName());
+				 }
+			 
+			 if(null != requirementSubmission.getRequirement().getJobTitle() && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobTitle())){
+				 globalVarsMap.put("requirementName", requirementSubmission.getRequirement().getJobTitle());
+				 }else{
+					 globalVarsMap.put("requirementName","--");
+				 }
+			
+			 if(null != requirementSubmission.getFinalizedRate() && !"".equalsIgnoreCase(requirementSubmission.getFinalizedRate()) && null != requirementSubmission.getFinalizedRateType() && !"".equalsIgnoreCase(requirementSubmission.getFinalizedRateType())){
+				 StringBuilder sb = new StringBuilder();
+				 globalVarsMap.put("acceptedRate", sb.append(requirementSubmission.getFinalizedRate()).append(" / ").append(requirementSubmission.getFinalizedRateType()).toString());
+				 }else{
+					 globalVarsMap.put("acceptedRate","--");
+				 }
+			 
+			 if(null != requirementSubmissionTemplateFields.getFirstName() && null!= requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+				 StringBuilder candiBuild = new StringBuilder();
+				 globalVarsMap.put("applicantName", candiBuild.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("applicantName",requirementSubmissionTemplateFields.getFirstName());
+				 }
+			 if(null != loginOrg.getOrgName() && !"".equalsIgnoreCase(loginOrg.getOrgName())){
+				 globalVarsMap.put("clientOrg", loginOrg.getOrgName());
+				 }else{
+					 globalVarsMap.put("clientOrg","--");
+				 }
+		 }else if(Constants.VENDOR.equalsIgnoreCase(type)){
+			 
+			 if(null!= pastUser.getFirstName() && !"".equalsIgnoreCase(pastUser.getFirstName()) && null != pastUser.getLastName() && !"".equalsIgnoreCase(pastUser.getLastName())){
+				 StringBuilder pastUserBuild = new StringBuilder();
+				 globalVarsMap.put("clientName", pastUserBuild.append(pastUser.getFirstName()).append(" ").append(pastUser.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("clientName",pastUser.getFirstName());
+				 }
+			 
+			 if(null != users.getFirstName() && !"".equalsIgnoreCase(users.getFirstName()) && null != users.getLastName() && !"".equalsIgnoreCase(users.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("vendorName", userBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("vendorName",users.getFirstName());
+				 }
+			 
+			 if(null != requirementSubmission.getRequirement().getJobTitle() && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobTitle())){
+				 globalVarsMap.put("requirementName", requirementSubmission.getRequirement().getJobTitle());
+				 }else{
+					 globalVarsMap.put("requirementName","--");
+				 }
+			
+			 if(null != requirementSubmission.getFinalizedRate() && !"".equalsIgnoreCase(requirementSubmission.getFinalizedRate()) && null != requirementSubmission.getFinalizedRateType() && !"".equalsIgnoreCase(requirementSubmission.getFinalizedRateType())){
+				 StringBuilder sb = new StringBuilder();
+				 globalVarsMap.put("acceptedRate", sb.append(requirementSubmission.getFinalizedRate()).append(" / ").append(requirementSubmission.getFinalizedRateType()).toString());
+				 }else{
+					 globalVarsMap.put("acceptedRate","--");
+				 }
+			 
+			 if(null != requirementSubmissionTemplateFields.getFirstName() && null!= requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+				 StringBuilder candiBuild = new StringBuilder();
+				 globalVarsMap.put("applicantName", candiBuild.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("applicantName",requirementSubmissionTemplateFields.getFirstName());
+				 }
+			 if(null != loginOrg.getOrgName() && !"".equalsIgnoreCase(loginOrg.getOrgName())){
+				 globalVarsMap.put("loginOrg", loginOrg.getOrgName());
+				 }else{
+					 globalVarsMap.put("loginOrg","--");
+				 }
+		 }
+		 
+		 if(null != tempHTML){
+			 globalVarsMap.put("negotiationTable",tempHTML.toString());
+		 }
+		 
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 StringBuilder recipBuild = new StringBuilder();
+ 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = null;
+		 if(Constants.CLIENT.equalsIgnoreCase(type) && "Accepted".equalsIgnoreCase(status)){
+			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CLIENT_ACCEPT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
+		 }else if(Constants.VENDOR.equalsIgnoreCase(type) && "Accepted".equalsIgnoreCase(status)){
+			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_ACCEPT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
+		 }
+		 
+		 if(Constants.CLIENT.equalsIgnoreCase(type) && "Rejected".equalsIgnoreCase(status)){
+			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CLIENT_REJECT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
+		 }else if(Constants.VENDOR.equalsIgnoreCase(type) && "Rejected".equalsIgnoreCase(status)){
+			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_REJECT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
+		 }
+		 
+//		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_NEGOTIATE_REQUIREMENT,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		/*String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		notificationScenario.setBody(notificationbody);*/
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		  
+		 String actionLink="";
+		//calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+	}
+
+
 }
 
 
