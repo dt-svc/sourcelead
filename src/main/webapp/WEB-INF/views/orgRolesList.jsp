@@ -2,15 +2,8 @@
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<!-- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> -->
 
 <script type="text/javascript">
 window.onload = function () {
@@ -34,6 +27,7 @@ window.onload = function () {
 			
 			<div class="project_tabs_inn_head">
 			  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+			     <a href="<c:url value='/roleHierarchy'/>"><i class="fa fa-plus"></i>Add Hierarchy</a>
                  <a href="javascript:void(0)" class="addcon-pop"><i class="glyphicon glyphicon-plus"></i>Add Role</a>
               </sec:authorize>
               
@@ -256,7 +250,6 @@ function getRolesList(){
                 $("#rolesList").empty();  
                 $("#listLoading").removeAttr("style");
    	    	    $("#rolesList").append(result);
-   	    	    pagination();	
    		    }
 	 }); 
 	
@@ -266,7 +259,7 @@ function getRolesList(){
 
 
 
-<script>
+<!-- <script>
 function pagination(){  
     $('#rolesList').DataTable( { 
     	"scrollCollapse": false,
@@ -280,7 +273,7 @@ function pagination(){
 		
     } );
 }
-</script>
+</script> -->
 
 
 <script type="text/javascript">

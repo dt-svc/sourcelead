@@ -8,10 +8,6 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
-
  <style>
  
  .clsDatePicker {
@@ -92,7 +88,7 @@ overflow-x: auto;
 		<div class="project_wrap">
         <div class="timesheet_head">
         	<ul>
-				<li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
+				<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  ></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">
                     	<ul>
                     	  <c:forEach var="report" items="${add_client}">  
@@ -101,7 +97,7 @@ overflow-x: auto;
                         </ul>
                     </div>                	
                 </li>
-                <li><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+                <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
                 	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
                         	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>

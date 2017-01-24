@@ -1,11 +1,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  
- <div class="col-md-6 mb"  >
+ <div class="col-md-6"  >
         <div class="dashboard-widget">
           <h4 class="clearfix">Requirement Approvals &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-          <div class="clearfix require_wrap_table dashboard-data" style="margin-top: 55px;">
+          <div class="clearfix require_wrap_table dashboard-data" style="margin-top: 36px;">
             <ul class="nav nav-tabs">
               <li class="active" id="waitingTab"><a data-toggle="tab" onclick="requirementApproverList('SUBMITTED');">Waiting </a></li>
               <li id="approvedTab"><a data-toggle="tab" onclick="requirementApproverList('APPROVED');">Approved </a></li>
@@ -73,19 +73,19 @@ function requirementApproverList(statusType){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
-		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title="+opt.jobId+"-"+opt.jobTitle+">"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
+		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title = '"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
 		                     }else{
-		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title="+opt.jobTitle+">"+opt.jobTitle+"</span></a></div></td>";
+		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title = '"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 		                     }
 	                    	 
 		                     if(opt.rate!=null && opt.rate !='' && opt.rate !='undefined'){
-		                    	 result = result +"<td><div>"+opt.rate+"&nbsp;"+opt.currencyCode+"</div></td>";
+		                    	 result = result +"<td><div><span title = '"+opt.rate+"-"+opt.currencyCode+"'>"+opt.rate+"&nbsp;"+opt.currencyCode+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 	                    	  if(opt.minExp !=null && opt.minExp !='' && opt.minExp !='undefined'){
                                   
-		                     result = result +"<td><div>"+opt.minExp+"</div></td>";
+		                     result = result +"<td><div><span title='"+opt.minExp+"'>"+opt.minExp+"</span></div></td>";
                                   }else{
                              result = result +"<td><div>-----</div></td>";
                              }
@@ -99,9 +99,10 @@ function requirementApproverList(statusType){
 		                    	 result = result + '<a  href="javascript:void(0)"  onClick="rejectRequirementAlertMessage(\''+ REJECTED+ '\','+opt.id+');"  ><i class="fa fa-close text-danger"></i></a>';
    				           	 
 				             }else if((opt.requirementApproverHierarchyStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN')  || (opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null)){
-				            	 result = result +'<div  id="requirementStatus"  ><span title='+opt.approvedBy+'>'+opt.approvedBy+'</span></div>';
+				            	 result = result +'<div  id="requirementStatus"  ><span title ="'+opt.approvedBy+'">'+opt.approvedBy+'</span></div>';
     				         }else if( opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementApproverHierarchyStatus == 'REJECTED'  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
-    				        	 result = result +'<div  id="requirementStatus" ><span title='+opt.approvedBy+'>'+opt.approvedBy+'</span></div>';
+    				        	 result = result +'<div  id="requirementStatus" ><span title = "'+opt.approvedBy+'">'+opt.approvedBy+'</span></div>';
+
 		                     }else{
 		                    	 result = result +"<div>-----</div>";
 		                     }  
