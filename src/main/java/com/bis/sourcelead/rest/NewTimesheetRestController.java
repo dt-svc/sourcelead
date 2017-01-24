@@ -212,7 +212,7 @@ public class NewTimesheetRestController {
 				if(timesheetFrequencyMap != null && !timesheetFrequencyMap.isEmpty()){
 					
 				timesheetEntriesDiv.append("					<div id='timesheetEntriesDivByProjectMemberId'>");
-				timesheetEntriesDiv.append("					<div class='timeNewSe timeNewSe_a'>");  
+				timesheetEntriesDiv.append("					<div class='timeNewSe timeNewSe_a addicon'>");
 				timesheetEntriesDiv.append("		                <select id='timesheetFrequency' name='timesheetFrequency' class='form-control chosen-select' onChange='timesheetDivByFrequency()' >");
 				StringBuilder selectedStartDate = new StringBuilder("");
 				StringBuilder selectedEndDate =  new StringBuilder("");
@@ -773,7 +773,6 @@ public class NewTimesheetRestController {
 			tabDiv.append("			<i></i>");	
 			tabDiv.append("			<p>Total hours</p>");	
 			tabDiv.append("		    <h2> <input disabled type='text' id='grandTotal' name='grandTotal' class='inline_field' value='HH:MM' value='00:00' /> </h2>");	
-			tabDiv.append("		    <span>This Week</span>");	
 			tabDiv.append("		</div>   ");
 		    
 		    
