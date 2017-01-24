@@ -63,4 +63,8 @@ public interface ProjectMembersService {
     public List<ProjectMembers> getAllProjectsAssigendToUserByIdAndStatus(Long userId, String status) throws Exception;
     
     public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndEmpUserId(Long locationsId, Long empUserId);
+    
+    public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(String status,String startDate,String endDate,Long projectId);
+    
+   
 }
