@@ -59,6 +59,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -76,6 +77,7 @@ import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
@@ -167,6 +169,9 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Autowired
+	private RecommendedCustomizeScoreService recommendedCustomizeScoreService;
 	
 	/**
 	 * @author prasad k
@@ -652,6 +657,8 @@ public class RequirementServiceImpl implements RequirementService {
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		
+		//store recommended customizeScore
+		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.saveCustomizeScore(requirement);
 	
 			       if(!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)){
 				 		
@@ -710,6 +717,10 @@ public class RequirementServiceImpl implements RequirementService {
 					}
 		 }		
 			       saveElkRequirement(savedRequirement);
+			       
+			       
+			       
+			       
 		return savedRequirement;
 	}
 
