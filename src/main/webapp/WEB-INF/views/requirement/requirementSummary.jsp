@@ -1914,7 +1914,165 @@ function requirementRecommendations(requirementId){
     	    
     	    //--------------------------------
     	    result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
-		    result = result +'<div class="rec_head"></div>';
+		    result = result +'<div class="rec_head">';
+
+		    result = result +'		    	    <div class="pull-left cand-advsrch">																							';
+		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop()">Customize Score </a>            ';
+		    result = result +'		          <div class="cand-advsrch-popup customizescore-pop">                                                                               ';
+		    result = result +'		            <div class="row clearfix">                                                                                                      ';
+		    result = result +'		                <div class="clearfix mb10">                                                                                                 ';
+		    result = result +'		                <div class="col-md-9">                                                                                                      ';
+		    result = result +'		                    <select class="chosen-select" data-placeholder="Skills" multiple>                                                       ';
+		    result = result +'		                      <option disabled>Skills</option>                                                                                      ';
+		    result = result +'		                      <option>Skill1</option>                                                                                               ';
+		    result = result +'		                      <option>Skill2</option>                                                                                               ';
+		    result = result +'		                      <option>Skill3</option>                                                                                               ';
+		    result = result +'		                      <option>Skill1</option>                                                                                               ';
+		    result = result +'		                      <option>Skill2</option>                                                                                               ';
+		    result = result +'		                      <option>Skill3</option>                                                                                               ';
+		    result = result +'		                    </select>                                                                                                               ';
+		    result = result +'		                  </div>                                                                                                                    ';
+		    result = result +'		                   <div class="col-md-3">                                                                                                   ';
+		    result = result +'		                    <select class="chosen-select" data-placeholder="Skills">                                                                ';
+		    result = result +'		                      <option disabled>Skills</option>                                                                                      ';
+		    result = result +'		                      <option>10%</option>                                                                                                  ';
+		    result = result +'		                      <option>20%</option>                                                                                                  ';
+		    result = result +'		                      <option>30%</option>                                                                                                  ';
+		    result = result +'		                      <option>40%</option>                                                                                                  ';
+		    result = result +'		                      <option>50%</option>                                                                                                  ';
+		    result = result +'		                      <option>60%</option>                                                                                                  ';
+		    result = result +'		                      <option>70%</option>                                                                                                  ';
+		    result = result +'		                      <option>80%</option>                                                                                                  ';
+		    result = result +'		                      <option>90%</option>                                                                                                  ';
+		    result = result +'		                      <option>100%</option>                                                                                                 ';
+		    result = result +'		                    </select>                                                                                                               ';
+		    result = result +'		                  </div>                                                                                                                    ';
+		    result = result +'		                </div>                                                                                                                      ';
+		    result = result +'		                <div class="clearfix mb10">                                                                                                 ';
+		    result = result +'		                  <div class="col-md-9">                                                                                                    ';
+		    result = result +'		                    <input type="text" placeholder="Experience" class="form-control">                                                       ';
+		    result = result +'		                    </div>                                                                                                                  ';
+		    result = result +'		                    <div class="col-md-3">                                                                                                  ';
+		    result = result +'		                    <select class="chosen-select" data-placeholder="Experience">                                                            ';
+		    result = result +'		                      <option>10%</option>                                                                                                  ';
+		    result = result +'		                      <option>20%</option>                                                                                                  ';
+		    result = result +'		                      <option>30%</option>                                                                                                  ';
+		    result = result +'		                      <option>40%</option>                                                                                                  ';
+		    result = result +'		                      <option>50%</option>                                                                                                  ';
+		    result = result +'		                      <option>60%</option>                                                                                                  ';
+		    result = result +'		                      <option>70%</option>                                                                                                  ';
+		    result = result +'		                      <option>80%</option>                                                                                                  ';
+		    result = result +'		                      <option>90%</option>                                                                                                  ';
+		    result = result +'		                      <option>100%</option>                                                                                                 ';
+		    result = result +'		                    </select>                                                                                                               ';
+		    result = result +'		                  </div>                                                                                                                    ';
+		    result = result +'		                </div>                                                                                                                      ';
+		    result = result +'		           <div class="clearfix mb10">                                                                                                      ';
+		    result = result +'		                  <div class="col-md-9">                                                                                                    ';
+		    result = result +'		                    <input type="text" placeholder="Rate" class="form-control">                                                             ';
+		    result = result +'		                    </div>                                                                                                                  ';
+		    result = result +'		                    <div class="col-md-3">                                                                                                  ';
+		    result = result +'		                    <select class="chosen-select" data-placeholder="Rate">                                                                  ';
+		    result = result +'		                      <option>10%</option>                                                                                                  ';
+		    result = result +'		                      <option>20%</option>                                                                                                  ';
+		    result = result +'		                      <option>30%</option>                                                                                                  ';
+		    result = result +'		                      <option>40%</option>                                                                                                  ';
+		    result = result +'		                      <option>50%</option>                                                                                                  ';
+		    result = result +'		                      <option>60%</option>                                                                                                  ';
+		    result = result +'		                      <option>70%</option>                                                                                                  ';
+		    result = result +'		                      <option>80%</option>                                                                                                  ';
+		    result = result +'		                      <option>90%</option>                                                                                                  ';
+		    result = result +'		                      <option>100%</option>                                                                                                 ';
+		    result = result +'		                    </select>                                                                                                               ';
+		    result = result +'		                  </div>                                                                                                                    ';
+		    result = result +'		                </div>                                                                                                                      ';
+		    result = result +'				        <div class="clearfix mb10">                                                                                                 ';
+		    result = result +'		                  <div class="col-md-9">                                                                                                    ';
+		    result = result +'		                      <select class="chosen-select" data-placeholder="Notice" multiple>                                                     ';
+		    result = result +'		                      <option disabled>Notice</option>                                                                                      ';
+		    result = result +'		                      <option>Notice</option>                                                                                               ';
+		    result = result +'		                      <option>Notice</option>                                                                                               ';
+		    result = result +'		                      <option>Notice</option>                                                                                               ';
+		    result = result +'		                    </select>                                                                                                               ';
+		    result = result +'		                                                                                                                                            ';
+		    result = result +'		                    </div>                                                                                                                  ';
+		    result = result +'		                    <div class="col-md-3">                                                                                                  ';
+		    result = result +'		                    <select class="chosen-select" data-placeholder="Rate">                                                                  ';
+		    result = result +'		                      <option>10%</option>                                                                                                  ';
+		    result = result +'		                      <option>20%</option>                                                                                                  ';
+		    result = result +'		                      <option>30%</option>                                                                                                  ';
+		    result = result +'		                      <option>40%</option>                                                                                                  ';
+		    result = result +'		                      <option>50%</option>                                                                                                  ';
+		    result = result +'		                      <option>60%</option>                                                                                                  ';
+		    result = result +'		                      <option>70%</option>                                                                                                  ';
+		    result = result +'		                      <option>80%</option>                                                                                                  ';
+		    result = result +'		                      <option>90%</option>                                                                                                  ';
+		    result = result +'		                      <option>100%</option>                                                                                                 ';
+		    result = result +'		                    </select>                                                                                                               ';
+		    result = result +'		                  </div>                                                                                                                    ';
+		    result = result +'		                </div>                                                                                                                      ';
+		    result = result +'		                                                                                                                                            ';
+		    result = result +'		                                <div class="clearfix mb10">                                                                                 ';
+		    result = result +'		                  <div class="col-md-9">                                                                                                    ';
+		    result = result +'		                    <input type="text" placeholder="Keywords" class="form-control">                                                         ';
+		    result = result +'		                    </div>                                                                                                                  ';
+		    result = result +'		                    <div class="col-md-3">                                                                                                  ';
+		    result = result +'		                    <select class="chosen-select" data-placeholder="Experience">                                                            ';
+		    result = result +'		                      <option>10%</option>                                                                                                  ';
+		    result = result +'		                      <option>20%</option>                                                                                                  ';
+		    result = result +'		                      <option>30%</option>                                                                                                  ';
+		    result = result +'		                      <option>40%</option>                                                                                                  ';
+		    result = result +'		                      <option>50%</option>                                                                                                  ';
+		    result = result +'		                      <option>60%</option>                                                                                                  ';
+		    result = result +'		                      <option>70%</option>                                                                                                  ';
+		    result = result +'		                      <option>80%</option>                                                                                                  ';
+		    result = result +'		                      <option>90%</option>                                                                                                  ';
+		    result = result +'		                      <option>100%</option>                                                                                                 ';
+		    result = result +'		                    </select>                                                                                                               ';
+		    result = result +'		                  </div>                                                                                                                    ';
+		    result = result +'		                </div>                                                                                                                      ';
+		    result = result +'		                                                                                                                                            ';
+		    result = result +'		                                                                                                                                            ';
+		    result = result +'		                <div class="clearfix mb10">                                                                                                 ';
+		    result = result +'		                  <div class="col-md-3">                                                                                                    ';
+		    result = result +'		                    <select class="chosen-select" data-placeholder="Location">                                                              ';
+		    result = result +'		                      <option selected disabled>Location</option>                                                                           ';
+		    result = result +'		                        <option>10%</option>                                                                                                ';
+		    result = result +'		                      <option>20%</option>                                                                                                  ';
+		    result = result +'		                    </select>                                                                                                               ';
+		    result = result +'		                  </div>                                                                                                                    ';
+		    result = result +'		                  <div class="col-md-3">                                                                                                    ';
+		    result = result +'		                    <select class="chosen-select" data-placeholder="City">                                                                  ';
+		    result = result +'		                      <option selected disabled>City</option>                                                                               ';
+		    result = result +'		                        <option>10%</option>                                                                                                ';
+		    result = result +'		                      <option>20%</option>                                                                                                  ';
+		    result = result +'		                    </select>                                                                                                               ';
+		    result = result +'		                  </div>                                                                                                                    ';
+		    result = result +'		                    <div class="col-md-3">                                                                                                  ';
+		    result = result +'		                    <select class="chosen-select" data-placeholder="State">                                                                 ';
+		    result = result +'		                      <option selected disabled>State</option>                                                                              ';
+		    result = result +'		                        <option>10%</option>                                                                                                ';
+		    result = result +'		                      <option>20%</option>                                                                                                  ';
+		    result = result +'		                    </select>                                                                                                               ';
+		    result = result +'		                  </div>                  <div class="col-md-3">                                                                            ';
+		    result = result +'		                    <select class="chosen-select" data-placeholder="Location">                                                              ';
+		    result = result +'		                      <option>10%</option>                                                                                                  ';
+		    result = result +'		                      <option>20%</option>                                                                                                  ';
+		    result = result +'		                    </select>                                                                                                               ';
+		    result = result +'		                  </div>                                                                                                                    ';
+		    result = result +'		                </div>                                                                                                                      ';
+		    result = result +'		              </div>                                                                                                                        ';
+		    result = result +'		                                                                                                                                            ';
+		    result = result +'		            <div class="row form-footer mt10">                                                                                              ';
+		    result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Customize</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> </div>';
+		    result = result +'		            </div>';
+		    result = result +'		          </div>';
+		    result = result +'		        </div>';
+
+		    
+		    
+		    
+		    result = result +'</div>';
 		    result = result +'</div>';
 		    result = result +'<div class="project_tabs_inn_table  clients_wrap_table">';
 		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
@@ -1994,7 +2152,25 @@ function requirementRecommendations(requirementId){
 		    $("#tab-3").empty();
 		    $("#status-div").empty();
 		    $("#status-data").empty();
-			$("#tab-3").append(result); 
+			$("#tab-3").append(result);
+			
+			var config = {
+					  '.chosen-select'           : {},
+					  '.chosen-select-deselect'  : {allow_single_deselect:true},
+					  '.chosen-select-no-single' : {disable_search_threshold:10},
+					  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+					  '.chosen-select-width'     : {width:"95%"}
+					}
+					for (var selector in config) {
+					  $(selector).chosen(config[selector]);
+					}
+					$('.chosen-select').each(function() {
+						var $this = $(this);
+						$this.next().css({'width': '100%'});
+
+		});
+			
+			
 			recommendationpagination();
 			$("#tab-3").show();
 			$(".project-tabs-menu a").click(function(event) {
@@ -2704,7 +2880,18 @@ function exportPipelineToPdf(requirementId,submissionType){
       
 }
 
-</script> 
+</script>
+
+
+<script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+		}
+		function openPop(){
+			$("div.cand-advsrch-popup").toggle();
+		}
+	</script>  
 
 <script type="text/javascript">
 function cancel(){
