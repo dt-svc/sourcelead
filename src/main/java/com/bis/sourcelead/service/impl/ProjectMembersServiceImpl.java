@@ -600,6 +600,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndEmpUserId(locationsId, empUserId);
 	}
 
-	
+	@Override
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(
+			String status, String startDate, String endDate, Long projectId) {
+		 
+		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(status, startDate, endDate, projectId);
+		
+	}
 	
 }

@@ -443,7 +443,17 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
 			return projectsList;
 		}
-
+		
+		
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) {
+			logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Projects projects where projects.id IN (select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy where hierarchy.approverUserId.id = :userId)  and projects.orgLocationsId = :orgLocationsId";
+			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+			return projectsList;
+		}
 
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
