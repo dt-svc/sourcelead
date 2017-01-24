@@ -2,24 +2,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="resources/js/bootstrap-select.min.js"></script>
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script>
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
-
-
-
-
-
-
-
 
 <script>
 		$(document).ready(function() {
@@ -143,7 +127,7 @@ function loadRemiderDiv(){
 
 
 <div id="divOfferTd1" style="display: none; float: left;">
-       <select multiple class="chosen-select blminwidth-50" id="REPLACEROWIDapplicantId" data-placeholder="select Apllicants" name="REPLACEROWIDapplicantId" field-name="Applicant" data-validation="required" >
+       <select multiple class="blminwidth-50" id="REPLACEROWIDapplicantId" data-placeholder="select Apllicants" name="REPLACEROWIDapplicantId" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
@@ -568,7 +552,7 @@ function NotifyToApplicant(){
 </script>
 
 
-
+<!-- 
 <script type="text/javascript">
 $(function(){
 	       var config = {
@@ -586,7 +570,7 @@ $(function(){
 		  })
 });
 </script>
-
+ -->
 
 <script>
 function myOfferFunction(){

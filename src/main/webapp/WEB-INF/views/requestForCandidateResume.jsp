@@ -18,7 +18,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
  <script src="resources/js/formvalidator.js"></script>
- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+ <script src="resources/js/jquery.dataTables.min.js"></script>
 <script>
 		$(document).ready(function() { 
 			var UUID = '${UUID}';

@@ -6,7 +6,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
  <style type="text/css">
  .overflow-data {
@@ -321,7 +320,7 @@ function rejectedCount(requirementId){
 
 
   
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -337,7 +336,7 @@ function rejectedCount(requirementId){
 				$this.next().css({'width': '100%'});
 
 });
-</script> 
+</script>  -->
 
 <!-- Show success message after form submission script -->
 <script>
@@ -1364,7 +1363,7 @@ function requirementPipeline(requirementId,submissionType){
 				        	if(submissionType != 'SUBMIT_TO_CLIENT'){
 					           result = result + '<th>Rate</th>';
 				        	}  
-					         if(clientSubmissions == 'Y' && submissionType == 'SUBMIT_TO_CLIENT'){
+					         if(clientSubmissions == 'Y'){
 					           result = result + '<th>Sub. Rate</th>';
 					         }/* else{
 					        	result = result + '<th>Sub. Rate</th>';
@@ -1478,7 +1477,7 @@ function requirementPipeline(requirementId,submissionType){
 								           }
 						        	   }
 							          
-							    	   if(clientSubmissions == 'Y' && submissionType == 'SUBMIT_TO_CLIENT'){
+							    	   if(clientSubmissions == 'Y'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
@@ -2487,7 +2486,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + '<div class="clearfix row">';
 		                     result = result + '<form name="rate_form" id="rate_form" method="post">';
 		                     result = result + '  <div class="form-group col-md-6">';
-		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required">';
+		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required  validate_Space validate_float validate_length length1-10">';
 		                     /* result = result + '    <div class="clearfix mt10 pull-right">';
 		                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr">';
 		                     result = result + '      <input type="button" value="Cancel" class="btn btn-default btn-sm">';
@@ -2725,5 +2724,4 @@ function cancel(){
 <jsp:include page="recommendCandidatesExperience.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesEducation.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesCertificates.jsp"></jsp:include>
-<jsp:include page="recommendCandidatesActivities.jsp"></jsp:include> 
 
