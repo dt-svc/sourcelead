@@ -45,7 +45,7 @@ display: none;
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
-            <select class="chosen-select" data-validation="required"  field-name="To List" multiple data-placeholder="&nbsp;" id="emailsList" name="Toemails">
+            <select class="chosen-select form-control" data-validation="required"  field-name="To List" multiple data-placeholder="&nbsp;" id="emailsList" name="Toemails">
             </select>
             <span class="select-multiple" data-target="#multiplemail" onclick="listChange();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
@@ -891,6 +891,36 @@ function getCheckedCandidates(){
 		                 }
 		        	 }
 		           
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectone, chosenone;
+		    selectone = $("#emailsList");
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Email:' });
+		    chosenone = selectone.data('chosen');
+		    chosenone.search_field.on('keyup', function(e)
+		    {
+		    	var newEmail = this.value.replace(","," ");
+		        if ((e.which == 13 || e.which == 188) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
+		        {
+		        	var par = this.parent;
+		        	var  tagArray = newEmail.split(" ");
+		        	 if(tagArray.length == 1){
+		        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
+		        		 selectone.append(option);
+		        		 selectone.find(option).prop('selected', true);
+			        		$("#emailsList").trigger("chosen:updated");
+		        	 }else if(tagArray.length > 1){
+		        		 var emailArray = this.value.split(',')
+		        		 for (var i=0; i < emailArray.length; i++) {
+		        			 var option = $("<option>").val(emailArray[i].replace(",","")).text(emailArray[i].replace(",",""));
+		        			 selectone.append(option);
+		        			 selectone.find(option).prop('selected', true);
+		 	        		 $("#emailsList").trigger("chosen:updated");
+		                 }
+		        	 }
 	        		
 		        }
 		    });
