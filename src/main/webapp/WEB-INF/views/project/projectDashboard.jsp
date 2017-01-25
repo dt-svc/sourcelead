@@ -136,6 +136,88 @@ overflow-x: auto;
 			                     </select>
 				            </div>
 			              </div>
+			              </div>
+			              
+			              <div class="row">
+			              <div class="col-md-12">
+		                	<h4>Project Details:</h4>
+		              	  </div>
+		                <div class="col-md-4">
+		                  <label>Project ID</label>
+		                  <div class="clearfix">
+		                  <select class="chosen-select form-control input-sm" multiple data-placeholder="Project ID" id="projectIdAdvanced" name="projectIdAdvanced">
+                            </select>
+		                  </div>
+		                </div>
+					  
+		                <div class="col-md-4">
+		                  <label>Project Name</label>
+		                  <div class="clearfix">
+		                  <select class="chosen-select form-control input-sm" multiple data-placeholder="Project Name" id="projectNameAdvanced" name="projectNameAdvanced">
+                            </select>
+		                  </div>
+		                </div>
+					  
+		                <div class="col-md-4">
+		                  <label>Project Manager</label>
+		                  <div class="clearfix">
+		                  <input type="text" class="form-control input-sm" placeholder="Project manager" id="projectManagerAdvanced" name="projectManagerAdvanced">
+		                  </div>
+		                </div>
+					  
+		                <div class="col-md-4">
+							  <label>Invoice frequency</label>
+							  <div class="clearfix">
+								 <select class="chosen-select" id="invoiceFrequencyAdvanced" name="invoiceFrequencyAdvanced" data-placeholder="Invoice Frequency" multiple>
+						                 <option value="">Invoice frequency</option>
+										 <option value="Weekly">Weekly</option>
+										 <option value="Bi-weekly">Bi-weekly</option>
+										 <option value="Semi-Monthly">Semi-Monthly</option>
+										 <option value="Monthly">Monthly</option>
+				                </select>
+							  </div>
+						  </div>
+		                
+		                <div class="col-md-4">
+			                <label>Clients</label>
+			                <div class="clearfix">
+			                  <div class="clearfix">
+								  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Clients" id="clientsAdvanced" name="clientsAdvanced">
+				                     </select>
+							 </div>
+			                </div>
+			              </div>
+			              
+			              <div class="col-md-4">
+		                  <label>Status</label>
+		                  <div class="clearfix">
+		                  	<select class="chosen-select form-control input-sm" multiple data-placeholder="Status" id="statusAdvanced" name="statusAdvanced">
+		                     </select>
+		                  </div>
+		                </div>
+		                
+		                <div class="col-md-4">
+		                  <label>Project Start Date</label>
+		                  <div class="clearfix positionRelative">
+		                  	<input type="text" class="form-control input-sm" placeholder="Project Start-Date" id="projectStartDateAdvanced" name="projectStartDateAdvanced">
+		                  	<i class="fa fa-calendar icon-inner"></i>
+		                  </div>
+		                </div>
+		                
+		                <div class="col-md-4">
+		                  <label>Employee Name</label>
+		                  <div class="clearfix">
+		                  	<input type="text" class="form-control input-sm" placeholder="Employee Name" id="employeeNameAdvanced" name="employeeNameAdvanced">
+		                  </div>
+		                </div>
+		                
+		                <div class="col-md-4">
+		                  <label>Employee Email</label>
+		                  <div class="clearfix">
+		                  	<input type="text" class="form-control input-sm" placeholder="Employee Email" id="employeeEmailAdvanced" name="employeeEmailAdvanced">
+		                  </div>
+		                </div>
+		                
 					  </div>
 					  <div class="row form-footer mt">
 						  <div class="pull-right mr">
@@ -665,5 +747,16 @@ $(document).ready(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
+</script>
+<script>
+	$('#projectStartDateAdvanced').datepicker({
+		dateFormat : 'yy-mm-dd',
+	      changeMonth: true,
+	      changeYear: true,
+		onSelect : function(selected) {
+			var dt = new Date(selected);
+			dt.setDate(dt.getDate() + 1);
+		}
+	});
 </script> 
 </html>

@@ -5410,7 +5410,11 @@ width: 0;
 left:auto;
 right:-15px;
 }
-
+.icon-inner {
+	position: absolute;
+	right: 10px;
+	top: 8px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
