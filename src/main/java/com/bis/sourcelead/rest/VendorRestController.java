@@ -874,7 +874,7 @@ public class VendorRestController {
 			   
 			    //Contact  Search 
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("orgName", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocMobilePhone", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserPhNo", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocEmail", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("ownerName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocStatus", keywd));
@@ -945,7 +945,7 @@ public class VendorRestController {
 				 Integer maxResults = orgSpocService.getAllVendorContactsCountbyOrgLocationId(loginOrgLocation.getId());
 			   	
 				 
-				/* //Exclude Keyword
+				 //Exclude Keyword
 				 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 				 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
 				 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -995,8 +995,8 @@ public class VendorRestController {
 						 boolQueryBuilder.must(allBoolQueryBuilder);
 					}
 					
-					*/
-					/*//contactName
+					
+					//contactName
 					ArrayList<String> vendorNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "contactNameAdvanced");
 					if(vendorNameArray != null && !vendorNameArray.isEmpty()){
 						BoolQueryBuilder vendorNameBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -1024,7 +1024,7 @@ public class VendorRestController {
 					if(phoneNumberNameArray != null && !phoneNumberNameArray.isEmpty()){
 						BoolQueryBuilder phoneNumberBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : phoneNumberNameArray){
-							phoneNumberBoolQueryBuilder.should(QueryBuilders.matchQuery("spocMobilePhone", keywd));
+							phoneNumberBoolQueryBuilder.should(QueryBuilders.matchQuery("spocUserPhNo", keywd));
 						}
 						boolQueryBuilder.must(phoneNumberBoolQueryBuilder);
 					}
@@ -1053,12 +1053,6 @@ public class VendorRestController {
 						boolQueryBuilder.must(statusAdvancedBoolQueryBuilder);
 					}
 					
-					
-					
-					if(jsonObj.has("statusAdvanced")  && StringUtils.isNotEmpty(jsonObj.getString("statusAdvanced"))){
-						boolQueryBuilder.must(QueryBuilders.matchQuery("spocStatus", jsonObj.getString("statusAdvanced")));
-				    }
-					
 					//Invitation  Status
 					
 					ArrayList<String> invitationAdvancedArray = getSearchKeywordsFromChosenSelectField(jsonObj, "invitationAdvanced");
@@ -1068,13 +1062,8 @@ public class VendorRestController {
 							invitationAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("invitationStatus", keywd));
 						}
 						boolQueryBuilder.must(invitationAdvancedBoolQueryBuilder);
-					}*/
-					
-					/*if(jsonObj.has("invitationAdvanced")  && StringUtils.isNotEmpty(jsonObj.getString("invitationAdvanced"))){
-						boolQueryBuilder.must(QueryBuilders.matchQuery("invitationStatus", jsonObj.getString("invitationAdvanced")));
-				    }
-					*/
-					
+					}
+										
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 
 					List<ClientVendorContactsIndex> clientVendorContactsList = new ArrayList<ClientVendorContactsIndex>();
