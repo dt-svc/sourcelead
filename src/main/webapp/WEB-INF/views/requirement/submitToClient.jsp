@@ -5,14 +5,8 @@
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-
 <!-- newly added -->
 
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -21,20 +15,7 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
-
-
-<script src="resources/js/jquery-1.11.3.min.js"></script>
-  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
-  <script src="resources/js/bootstrap.min.js"></script> 
-  <script src="resources/js/masterHeaderAction.js"></script> 
-  <script src="resources/js/chosen.jquery.min.js"></script> 
+ <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
 
 <!-- newly added end -->
 
@@ -42,10 +23,8 @@
 function submitToClient(requirementId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var result = "";
-	//var status = "SHORTLIST";
-	/* result = result + '<div class="add_inter_head"> <span>Submissions</span><a href="javascript:void(0)" onclick="clientSubmissions('+requirementId+');" class="sub-btn1">Submit to client</a>'; */
 	'<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-	result = result + '<div class="add_inter_head"> <span>Submissions</span><a href="javascript:void(0)" onclick="addEmailtemplate('+requirementId+');" class="sub-btn1">Submit to client</a>';
+	result = result + '<div class="add_inter_head"> <span>Submissions</span> <span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="checkedSubmitToClientCount">0</b></span> <a href="javascript:void(0)" onclick="addEmailtemplate('+requirementId+');" class="sub-btn1">Submit to client</a>';
 	'</sec:authorize>';
 	result = result + ' <div class="clearfix"></div>';
 	result = result + ' </div>';
@@ -90,7 +69,7 @@ function submitToClient(requirementId){
 	   	        		}
 		    			
 	    			    result = result + '<tr>';
-	    			    result = result + '<td><input type="checkbox"  class="shortlistedChecks" value='+report.id+' name="shortlist[]" ></td>';
+	    			    result = result + '<td><input type="checkbox" onclick="getSubmitToClientCheckedCandidatesCount();"  class="shortlistedChecks" value='+report.id+' name="shortlist[]" ></td>';
 	    			    
 			            result = result + '<td><div><span>'+report.candidateName+'</span></div></td>';
 			           
@@ -234,8 +213,27 @@ function selectAllSubmitToClient(){
                 this.checked = false;      
             });         
         } 
+	
+	 var selectedShortlists = [];
+	 $("input[name='shortlist[]']:checked").each( function (i) {
+		 selectedShortlists[i] = $(this).val();
+	 });
+	 
+	 $("#checkedSubmitToClientCount").html(selectedShortlists.length);
 }
 </script> 
+
+
+<script>
+function getSubmitToClientCheckedCandidatesCount(){
+	 var selectedShortlists = [];
+	 $("input[name='shortlist[]']:checked").each( function (i) {
+		 selectedShortlists[i] = $(this).val();
+	 });
+	 
+	 $("#checkedSubmitToClientCount").html(selectedShortlists.length);
+}
+</script>
 
 
 <script>
@@ -251,20 +249,25 @@ function clientSubmissions(requirementId){
 	 });
 	 
 	 if(selectedShortlists.length > 0){
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		 $.ajax({ 
-		    	type: "POST",
-		    	url: sourceleadUrl+"/submitShortlistedToClient?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedShortlists+"&selectedShortlistsRate="+selectedShortlistsRate,
-		        success: function(result) {
-		        	$(".submitnew-wrap").removeClass("submitnew-wrap_active");
-		    		$(".side_mask").fadeOut(200);
-		    		$("body").css('overflow-y', 'auto');
-		    		var allApplicants = 'all';
-		    		requirementPipeline(requirementId,allApplicants); 
-		        },
-		 }); 
+		 if(selectedShortlists.length <= 30){
+			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			 $.ajax({ 
+			    	type: "POST",
+			    	url: sourceleadUrl+"/submitShortlistedToClient?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedShortlists+"&selectedShortlistsRate="+selectedShortlistsRate,
+			        success: function(result) {
+			        	$(".submitnew-wrap").removeClass("submitnew-wrap_active");
+			    		$(".side_mask").fadeOut(200);
+			    		$("body").css('overflow-y', 'auto');
+			    		var allApplicants = 'all';
+			    		requirementPipeline(requirementId,allApplicants); 
+			        },
+			 }); 
+		 }else{
+			 alertMessage("<b>Select candidate for Client Submission</b>");
+		 }
+		
 	 }else{
-		 alertMessage("<b>Select candidate for Client Submission</b>");
+		 alertMessage("<b>Selected Candidates should not more than 30</b>");
 	 }
 	
 }

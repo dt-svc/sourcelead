@@ -49,6 +49,7 @@ public class Constants {
 	public static final String CITY = "City";
 	public static final String LEVEL = "Tier";
 	public static final String VENDOR_NAME = "Vendor Name*";
+	public static final String JOB_OTHER = "Other";
 
 	public static final Integer RECORD_ACTIVE = 1;
 	public static final Integer RECORD_INACTIVE = 0;
@@ -136,6 +137,7 @@ public class Constants {
 	public static int CANDIDATE_SKILL_IN_ACTIVE= 0;
 	
 	public static String ACTIVE = "Active";
+	public static String INACTIVE = "In-Active";
 
 	/** projectMemberHistory constants**/
 	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
@@ -169,6 +171,10 @@ public class Constants {
 	public static String VENDOR_RATE_NEGOTIATION = "VendorRateNegotiation";
 	public static String USER_ACCEPT_RATE_NEGOTIATION = "UserAcceptRateNegotiation";
 	public static String USER_REJECT_RATE_NEGOTIATION = "UserRejectRateNegotiation";
+	public static String CLIENT_ACCEPT_RATE_NEGOTIATION = "ClientAcceptRateNegotiation";
+	public static String VENDOR_ACCEPT_RATE_NEGOTIATION = "VendorAcceptRateNegotiation";
+	public static String CLIENT_REJECT_RATE_NEGOTIATION = "ClientRejectRateNegotiation";
+	public static String VENDOR_REJECT_RATE_NEGOTIATION = "VendorRejectRateNegotiation";
 
 
 
@@ -351,6 +357,21 @@ public class Constants {
     public static String ELK_REQUIREMENT_TYPE = "requirement";
     
     public static String ELK_CANDIDATE_ID_PREFIX = "CND";
+    
+    public static String ELK_CLIENTVENDOR_INDEX = "clientvendor";
+    
+    public static String ELK_CLIENTVENDOR_TYPE = "clientvendors";
+    
+    public static String ELK_CAMPAIGN_INDEX = "campaigns";
+	
+    public static String ELK_CAMPAIGN_TYPE = "campaign";
+    
+    public static String ELK_CAMPAIGN_ID_PREFIX = "CAMPAIGN";
+    
+    public static String CANDIDATE = "Candidate";
+    
+    public static String CONSULTANT = "Consultant";
+    
     
     public static String MAIL_TRASH = "Trash";
     public static String MAIL_DELETE = "Deleted";

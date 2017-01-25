@@ -29,4 +29,8 @@ public interface TeamService {
 	
 	public List<Team> getUserAssignedTeamListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 	
+	public List<Long> getTeamIdsListByOrgLocationID(Long orgLocationId) throws Exception;
+	
+	public List<Long> getUserAssignedTeamIdsListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
 }

@@ -6,20 +6,6 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script
-	src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-
-<script src="resources/js/jquery-fun.js"></script>
-
-<script src="resources/js/chosen.jquery.min.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-
 
 <script>
  window.onload = function() { 
@@ -99,11 +85,21 @@
 				 result = result + '<div class="user_details_cta mt">';
 				 result = result + '<div class="clearfix">';
 				 if(json.jobTitle != null && json.jobTitle != "" && json.jobTitle != 'undefined'){
-					result = result + '<div class="project_details_cta">';
-					result = result + '<strong>Job Title :</strong><span class="fix">'+json.jobTitle+''+jobType+'</span><div class="clearfix"></div>';
+					result = result + '<div class="project_details_cta project_details_view">';
+					result = result + '<strong>Job Title :</strong><span class="fix">'+json.jobTitle+'</span><div class="clearfix"></div>';
 					result = result + ' </div>';
 				 }
 				 
+				    result = result + '<div class="project_details_cta project_details_view clearfix">';
+					result = result + '	<strong>Employment Type:</strong>';
+					 if(null != json.jobType && json.jobType !='' && json.jobType !='undefined'){
+                    	 if(json.jobType=='Other'){
+                    		 result = result +'<span class="fix">'+json.otherJobType+'</span>';
+                    	 }else{
+                    		 result = result +'<span class="fix">'+json.jobType+'</span>'
+                    	 }
+                     }					 
+					result = result + '</div>';
 				 
 						result = result + '<div class="project_details_cta clearfix">';
 						result = result + '	<strong>Min Experience :</strong>';
@@ -124,7 +120,7 @@
 
 				 
 				
-						result = result + '<div class="project_details_cta clearfix">';
+						result = result + '<div class="project_details_cta project_details_view clearfix">';
 						result = result + '	<strong>Skills :</strong>';
 						 if(json.skills != null && json.skills != "" && json.skills != 'undefined'){
 						result = result + '<span class="fix" title="'+json.skills+'">'+json.skills+'</span>';
@@ -133,7 +129,7 @@
 					
 				 
 				 
-						result = result + '<div class="project_details_cta clearfix">';
+						result = result + '<div class="project_details_cta project_details_view clearfix">';
 						result = result + '<strong>Education :</strong>';
 						if(json.education != null && json.education != "" && json.education != 'undefined'){
 						result = result + '<span class="fix" title="'+json.education+'">'+json.education+'</span>';
@@ -144,7 +140,7 @@
 				 
 						result = result + '<div class="project_details_cta clearfix">';
 				 
-						result = result + '<div class="project_details_cta clearfix">';
+						result = result + '<div class="project_details_cta project_details_view clearfix">';
 
 						result = result + '<strong>Description :</strong>';
 						if(json.description != null && json.description != "" && json.description != 'undefined'){

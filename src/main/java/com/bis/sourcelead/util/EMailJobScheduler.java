@@ -2,18 +2,17 @@ package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.time.DateUtils;
+import org.codehaus.plexus.util.dag.DAG;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -34,6 +35,8 @@ import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.CandidateHotListService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.JobSchedulerTestService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
@@ -106,6 +109,14 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	CandidateHotListService candidateHotListService;
+
+
 	
 	@Autowired
 	ProjectMembersService projectMembersService;
@@ -568,6 +579,31 @@ public class EMailJobScheduler {
 		}
 	}
 	
+	/**
+	 * @author David Raju
+	 * This Cron Method is to add  the Candidates which are consultants  to  HotList (i,e making  them favorite list ) When they are going to terminate  from  the Project within  the given noticePeriod 
+	 */
+	@Scheduled(cron = "0 0/1 * 1/1 * ? ")
+	public void runHotlistCandidatesDaily() throws Exception {
+		logger.info("******************  Daily HotList Candidates Started **********");
+			List<Org> orgList = orgService.getOrgs();
+			for (Org org : orgList) {
+				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
+				
+				// to bring the candidates who are going to terminate in a given time 
+				
+  			    List<Candidate>   candidatesListToBeAddedInHotList = candidateService.getAllCandidatesForHotListingWhoAreTerminating(orgLocations.getId(),30);
+                
+  			    if(null != candidatesListToBeAddedInHotList){
+  			    	 for(Candidate can :candidatesListToBeAddedInHotList){
+  			    		can.setIsFavourite(Constants.RECORD_ACTIVE);
+  			    		candidateService.addCandidate(can);
+  	                }
+  			    }
+  			      
+			}
+    }
+
 	@Scheduled(cron = "0 0/30 * 1/1 * ?")
 	@Async
 	public void scheduleUserMail() throws Exception {

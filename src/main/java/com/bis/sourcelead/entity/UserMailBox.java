@@ -82,7 +82,7 @@ public class UserMailBox implements Serializable{
 	private String nameFields;
 	
 	@Column(name = "PHONE_NO")
-	private String phno;;
+	private String phno;
 
 	@Column(name = "COMMENTS")
 	@Type(type="text")

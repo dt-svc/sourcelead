@@ -226,6 +226,7 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+		candidate.setIsFavourite(0);
 		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		
@@ -455,15 +456,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getHotListCandidatesListByOrgLocationID(orgLocationId, candidateType);
 	}
 
-	@Override
-	public List<Candidate> getAllActiveCandidatesForCampaignByLocation(Long orgLocationId,String type) throws Exception {
-		return candidateDao.getAllActiveCandidatesForCampaignByLocation(orgLocationId,type);
-	}
-
-	@Override
-	public List<Candidate> getAllCandidatesForCampaignByTeam(List<Team> teamId, String type) throws Exception {
-		return candidateDao.getAllCandidatesForCampaignByTeam(teamId, type);
-	}
 
 	@Override
 	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId) throws Exception {
@@ -471,7 +463,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	@Async
 	public void saveOrUpdateCandidateElkDocument(Candidate candidate) throws Exception{
 		 //Elastic Search Document Saving
 		CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
@@ -483,8 +474,36 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidatesCountByOrgLocationID(orgLocationId);
 	}
 
+
 	@Override
-	public List<Candidate> getAllHotlistCandidatesAndNotAssignedToTeamByLocation(Long orgLocationId) throws Exception {
-		return candidateDao.getAllHotlistCandidatesAndNotAssignedToTeamByLocation(orgLocationId);
+	public Integer getHotlistCandidatesCountByTeamIdAndOrgLocationId(Long teamId, Long orgLocationId) throws Exception {
+		return candidateDao.getHotlistCandidatesCountByTeamIdAndOrgLocationId(teamId, orgLocationId);
+	}
+
+	@Override
+	public List<Candidate> getHotListCandidatesByTeamAndOrgLocationId(Long teamId, Long orgLocationId)
+			throws Exception {
+		return candidateDao.getHotListCandidatesByTeamAndOrgLocationId(teamId, orgLocationId);
+	}
+
+	@Override
+	public Integer getAllActiveCandidatesCountForCampaignByLocation(Long orgLocationId, String type) throws Exception {
+		return candidateDao.getAllActiveCandidatesCountForCampaignByLocation(orgLocationId, type);
+	}
+
+	@Override
+	public Integer getAllHotlistCandidatesCountNotAssignedToTeamByLocation(Long orgLocationId) throws Exception {
+		return candidateDao.getAllHotlistCandidatesCountNotAssignedToTeamByLocation(orgLocationId);
+	}
+
+	@Override
+	public Integer getAllCandidatesCountForCampaignByTeam(List<Long> teamId, String type,Long orgLocationId) throws Exception {
+		return candidateDao.getAllCandidatesCountForCampaignByTeam(teamId, type,orgLocationId);
+	}
+
+	@Override
+	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer datRange)
+			throws Exception {
+		return candidateDao.getAllCandidatesForHotListingWhoAreTerminating(orgLocationId,datRange);
 	}
 }
