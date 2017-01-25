@@ -331,7 +331,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             		 onclick = 'onclick="getExpYears();"'
             		 options = '<option value="">Years</option>';
             		 months = '&nbsp;<select  style="width:160px !important; padding-right:5px;" id="monthExp" name="monthExp" field-name="Months">'+
-            		 '<option value="">Months</option>'+
+            		 '<option value="0">Months</option>'+
                      '<option value="1">1</option>'+
                      '<option value="2">2</option>'+
                      '<option value="3">3</option>'+
