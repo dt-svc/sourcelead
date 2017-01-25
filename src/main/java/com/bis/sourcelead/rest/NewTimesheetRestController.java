@@ -180,7 +180,7 @@ public class NewTimesheetRestController {
 		timesheetEntriesDiv.append("<form id='timesheet_form' name='timesheet_form' enctype='multipart/form-data' >");
 		
 		timesheetEntriesDiv.append("		<div class='timesheet_out'> ");
-		timesheetEntriesDiv.append("		<div class='timesheet_wrap'>");
+		timesheetEntriesDiv.append("		<div class='timesheet_wrap' id='timesheet_wrap'>");
 		timesheetEntriesDiv.append("		<div class='data_loading'></div>");
 		
 		timesheetEntriesDiv.append("				<div class='timesheetNewHead'>");
@@ -759,9 +759,8 @@ public class NewTimesheetRestController {
 			    }
 				tabDiv.append("			                </tbody>");
 				tabDiv.append("			            </table>");
-				tabDiv.append("</div>");        	
-				tabDiv.append("</div>");
-				tabDiv.append("</div>");
+				
+				
 		
 			//attachemtns and comments.
 
@@ -771,7 +770,21 @@ public class NewTimesheetRestController {
 			    StringBuilder attachmentDiv = attachmentsAndComments(startDate, endDate,ts);
 			    tabDiv.append(attachmentDiv);
 			    
-			    tabDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");	
+			    /*tabDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");*/	
+			   
+			    
+			    if(ts != null && ts.getWeekcomments() != null && !ts.getWeekcomments().isEmpty()){
+			    	tabDiv.append("<div class='commentTime'>");
+			    	tabDiv.append("<textarea  name='weekComment'  id='weekComment' readonly='readonly' placeholder='comments here...'>").append(ts.getWeekcomments()).append("</textarea>");
+			    	tabDiv.append("</div>");
+				}else{
+					tabDiv.append("<div class='commentTime'>");
+					tabDiv.append("<textarea   name='weekComment' id='weekComment'   placeholder='comments here...'></textarea>");
+					tabDiv.append("</div>");
+				}
+			    
+			    
+			    
 			    tabDiv.append("		            <div class='clearfix'></div>");	
 			    
 			    tabDiv.append("</div>");
@@ -779,6 +792,13 @@ public class NewTimesheetRestController {
 		    
 		    tabDiv.append("		    	<div class='clearfix'></div>");	
 		    tabDiv.append("		    	<div class='timesheet_button'>");	
+		    
+		    
+			
+		    tabDiv.append("	<div class='totalText'>");
+		    tabDiv.append("	<span>Total Hours : </span><input type='text' value='45/45' placeholder='HH/HH' readonly>");
+		    tabDiv.append("	</div>");
+		
 			tabDiv.append("		        	<input type='button' onClick='newSaveTimesheet(\"Draft\",\"user\");'  value='Save' class='time_btn time_dra' />");	
 			
 			if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
@@ -789,13 +809,19 @@ public class NewTimesheetRestController {
 			tabDiv.append("		            <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />");	
 			tabDiv.append("		        </div>   ");	     
 			tabDiv.append("		    </div>  ");	
+			
+			/*
 			tabDiv.append("		<div class='res_total_hour'>");	
 			tabDiv.append("			<i></i>");	
 			tabDiv.append("			<p>Total hours</p>");	
 			tabDiv.append("		    <h2> <input disabled type='text' id='grandTotal' name='grandTotal' class='inline_field' value='HH:MM' value='00:00' /> </h2>");	
 			tabDiv.append("		</div>   ");
+		    */
 		    
-		    
+			tabDiv.append("</div>");        	
+			tabDiv.append("</div>");
+			tabDiv.append("</div>");
+		
 		    
 		    return tabDiv;
 	}
@@ -915,6 +941,7 @@ public class NewTimesheetRestController {
             	 timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
             	 timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
             	 timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
+            	 timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
             	 
             	 ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
             	 List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(1);

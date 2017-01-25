@@ -652,6 +652,8 @@ function addAttachment(){
           <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
         </section>
         
+        <div class="loadTime" id="loadTime"></div>    
+        
         <div id="timesheetEntriesDiv"> 
         	<div id="timesheetEntriesDivByProjectMemberId">
         		 <div id="timesheetDivByFrequency">
@@ -775,7 +777,7 @@ function newSaveTimesheet(status,savingType){
        		   var form = $('#timesheet_form')[0];
        		   var formData = new FormData(form); 
        		   var submissionIds = $("#submissionId").val();
-       		   $("#timesheetEntriesDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+       		   $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
         	   $.ajax({
 	      	          type : "POST",
 	          	      data: formData,
@@ -786,7 +788,9 @@ function newSaveTimesheet(status,savingType){
 	          	      dataType : 'json',
         	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
-        		    	   dynamicTimesheet("left",result); 
+        		    	  $("#loadTime").removeAttr("style"); 
+        		    	 /*  $("#loadTime").removeAttr("style"); */
+        		    	  /*  dynamicTimesheet("left",result);  */
         		    	   /* timesheetEntriesDiv */
         		    	  /* dynamicTimesheet(); */
         		      }
