@@ -369,15 +369,12 @@ function removeTimeSheetRow(rowId) {
 
 <!-- this script is for clear timesheet -->
 <script>
-function clearTimesheet(){ 
+function clearTimesheet(){  alert("clear");
 	for (var i = 1; i < 8; i++){
-	 $('.NEW').each(function() {
-		 var p = this.id;
 		 for (var j = 1; j < 50; j++){
-			    $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val("00:00");
-			    $("#"+j+"submission"+p+"textArea"+i+"Id").val("");  
+			    $("#"+j+"timeSheetDay"+i+"Id").val("00:00");
+			    $("#"+j+"textArea"+i+"Id").val("");  
 		 }
-    	 });  
 	}
 	$("#weekComment").val('');
 }

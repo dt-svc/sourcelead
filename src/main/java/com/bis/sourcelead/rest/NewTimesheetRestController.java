@@ -520,7 +520,8 @@ public class NewTimesheetRestController {
 									  tabDiv.append("                 <td>");
 									  tabDiv.append("                      <div> ");
 									  
-									  Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasks();
+									  //Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasks();
+									  Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
 									  tabDiv.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
 									  tabDiv.append("<option value=''>--select task--</option>");
 						              for(ProjectTasks pt   : ProjectTasksList){
@@ -753,8 +754,17 @@ public class NewTimesheetRestController {
 				tabDiv.append("</div>");
 		
 			//attachemtns and comments.
-		    StringBuilder attachmentDiv = attachmentsAndComments(startDate, endDate,ts);
-		    tabDiv.append(attachmentDiv);
+
+				tabDiv.append("		    <div class='timesheet_bot'>");	
+				tabDiv.append("		    	<div class='timesheet_week_comm'>");
+				
+			    StringBuilder attachmentDiv = attachmentsAndComments(startDate, endDate,ts);
+			    tabDiv.append(attachmentDiv);
+			    
+			    tabDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");	
+			    tabDiv.append("		            <div class='clearfix'></div>");	
+			    
+			    tabDiv.append("</div>");
 		    
 		    
 		    tabDiv.append("		    	<div class='clearfix'></div>");	
@@ -766,7 +776,7 @@ public class NewTimesheetRestController {
 				if(frequencyEndDate.equals(actualEndDate))
 				tabDiv.append("		            <input type='button' onClick='newSaveTimesheet(\"Submitted\",\"user\");'  value='Submit' class='time_btn' />");	
 			}
-			tabDiv.append("		            <input type='button' value='Clear' class='time_btn time_cancel' />");	
+			tabDiv.append("		            <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />");	
 			tabDiv.append("		        </div>   ");	     
 			tabDiv.append("		    </div>  ");	
 			tabDiv.append("		<div class='res_total_hour'>");	
