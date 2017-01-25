@@ -8,6 +8,17 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
+
+
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
@@ -47,7 +58,7 @@ overflow-x: auto;
         </section>
 
         
-	   <div class="timesheet_out">
+	   <div class="timesheet_out timesheet_background">
 	   <%-- <c:if test="${empty projectsList}">
 			<div class="project_wrap">
         <div class="timesheet_head">
@@ -90,6 +101,56 @@ overflow-x: auto;
 		</c:if> --%>
 		<%-- <c:if test="${!empty projectsList}"> --%>
 		<div class="project_wrap">
+		
+		
+		<div class="pull-left cand-advsrche">
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+			  Advanced Search&nbsp;&nbsp;
+			  <i class="fa fa-search"></i>
+			  </a> 
+			    <div class="cand-advsrch-popup" >
+			  <form:form id="projectlist_form" name="projectlist_form"  enctype='multipart/form-data' >
+				
+					  <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
+					  <div class="row">
+						   <div class="col-md-4">
+			                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+				                 <div class="clearfix">
+								        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
+				                        </select>
+							    </div>
+			              </div>
+			              <div class="col-md-4">
+			                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+			                <div class="clearfix">
+			                  <div class="clearfix">
+								  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
+				                     </select>
+							 </div>
+			                </div>
+			              </div>
+			              <div class="col-md-4">
+			                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+			                <div class="clearfix">
+							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
+			                     </select>
+				            </div>
+			              </div>
+					  </div>
+					  <div class="row form-footer mt">
+						  <div class="pull-right mr">
+							 <!--  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
+							  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> -->
+							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
+                               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
+						  </div>
+					  </div>
+				  
+			  </form:form>
+			  </div>
+      </div>
+		
+		
         <div class="timesheet_head">
         	<ul>
 				<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  ></i>|
@@ -501,5 +562,108 @@ $(document).ready(function() {
 		
 });
 </script> 
-    
+<script>
+	// Close Advanced Search
+	function closePop(){
+		$("div.cand-advsrch-popup").hide();
+	}
+	function openPop(){
+	  $("div.cand-advsrch-popup").toggle();
+	  
+	}
+</script>
+<script type="text/javascript">	
+	function loadChosenScripts(){
+
+	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	    $("#allKeywords").val('').trigger("chosen:updated");
+	    $("#excludeKeyWord").val('').trigger("chosen:updated");
+	    
+	    $("#anyOfKeyword").empty();
+	    $("#allKeywords").empty();
+	    $("#excludeKeyWord").empty();
+	}
+</script>
+	
+<script type="text/javascript">
+    	   var config = {
+    				  '.chosen-select'           : {},
+    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+    				  '.chosen-select-no-single' : {disable_search_threshold:10},
+    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+    				  '.chosen-select-width'     : {width:"95%"}
+    	   }
+			//Adding Customized Any Of Keyword to the list 
+		    var select, chosen;
+		    select = $("#anyOfKeyword");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keyup', function(e)
+		    {
+		    	var anyKeyword = this.value.replace(",","");
+		        if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(anyKeyword).text(anyKeyword);
+		            select.append(option);
+		            select.find(option).prop('selected', true);
+                    $("#anyOfKeyword option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#anyOfKeyword").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		  //Adding Customized Any Of Keyword to the list
+		    var selectone, chosenone;
+		    selectone = $("#allKeywords");
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenone = selectone.data('chosen');
+		    chosenone.search_field.on('keyup', function(e1)
+		    {
+		    	var allKeyword = this.value.replace(",","");
+		        if ((e1.which == 13 || e1.which == 188) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(allKeyword).text(allKeyword);
+		            selectone.append(option);
+		            selectone.find(option).prop('selected', true);
+                    $("#allKeywords option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#allKeywords").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    var selecttwo, chosentwo;
+		    selecttwo = $("#excludeKeyWord");
+		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosentwo = selecttwo.data('chosen');
+		    chosentwo.search_field.on('keyup', function(e2)
+		    {
+		    	var excludeKeyword = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
+		            selecttwo.append(option);
+		            selecttwo.find(option).prop('selected', true);
+                    $("#excludeKeyWord option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#excludeKeyWord").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+				for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+</script> 
 </html>

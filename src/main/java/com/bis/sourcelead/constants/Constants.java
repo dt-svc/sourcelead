@@ -333,6 +333,10 @@ public class Constants {
     
     public static String CLIENT = "Client";
     
+    public static String ELK_PROJECT_INDEX = "projects";
+	
+    public static String ELK_PROJECT_TYPE = "project";
+    
     public static String ELK_CANDIDATE_INDEX = "candidates";
     		
     public static String ELK_CANDIDATE_TYPE = "candidate";
