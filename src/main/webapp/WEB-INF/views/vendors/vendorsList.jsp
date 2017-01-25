@@ -220,23 +220,31 @@ overflow-x: auto;
                   </div>
                 </div>
                 
-                 <div class="col-md-4">
-                  <label>Status</label>
-                  <div class="clearfix">
-                    <input type="text" class="form-control input-sm" placeholder="Status" id="statusAdvanced" name="statusAdvanced">
-                  </div>
-                </div>
-                
-              </div>
-              
-              <div class="clearfix">
+               	<div class="col-md-4">
+						<label>Status</label>
+								<div class="clearfix">
+										<select class="chosen-select form-control input-sm" multiple data-placeholder="Status" id="statusAdvanced" name="statusAdvanced">
+											<option value="Active">Active</option>
+											<option value="In-Active">In-Active</option>
+											<option value="New">New</option>
+											<option value="Negotiation">Negotiation</option>
+											<option value="Contracted">Contracted</option>
+									</select>
+						 </div>  
+              	</div>
+				</div>
+             
                 <div class="col-md-4">
                   <label>Invitation</label>
                   <div class="clearfix">
-                    <input type="text" class="form-control input-sm" placeholder="Invitation" id="invitationAdvanced" name="invitationAdvanced">
+                		 <select class="chosen-select form-control input-sm" multiple data-placeholder="Invitation" id="invitationAdvanced" name="invitationAdvanced">
+											<option value="Sent">Sent</option>
+											<option value="New">New</option>
+											<option value="Accepted">Accepted</option>
+											<option value="Rejected">Rejected</option>
+						</select>
                   </div>
                 </div>
-              </div>
             </div>  
               
             </div>
@@ -385,7 +393,7 @@ overflow-x: auto;
 			};
 		$("#search_vendor").addClass('button').val('Search');
 		$("#search_vendor").removeAttr("disabled");
-		
+		var responderType = "Vendor";
 		 if ($('#vendorList_form').validate(false, validationSettings)){ 
 			
 			var sourceleadUrl = '${sourceleadUrl}';
@@ -395,7 +403,7 @@ overflow-x: auto;
 		    var jsonData = encodeURIComponent(con);
 			var form = $('#vendorList_form')[0];
       		var formData = new FormData(form); 
-      		var responderType = "Vendor";
+      		
 			//It will escape all the special characters
 			$("#search_vendor").attr("disabled", "disabled");
 			$("#search_vendor").addClass('button').val('Processing..');
@@ -430,7 +438,7 @@ overflow-x: auto;
 	    	        processData: false,
 	    	        contentType:false,
 	        	    dataType : 'json',
-					url : sourceleadUrl+"/searchVendorContactsThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					url : sourceleadUrl+"/searchVendorContactsThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&json="+jsonData,
 					success : function(data) {
 						$("#search_vendor").addClass('button').val('Search');
 						$("#search_vendor").removeAttr("disabled");
@@ -1116,7 +1124,7 @@ function preparedVendorContactListFromElk(data){
 		   		}else{
 		   			result = result +'<td><div>--</div></td>';
 		   		}
-		   		result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+		   		result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
 		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		
