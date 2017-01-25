@@ -49,6 +49,10 @@ public class AddElkCandidate{
 		  logger.info("Candidates Successfully Added To Elk");
 	}
 	
+	 protected boolean isNullOrEmpty(String str) {
+			return (str == null || "".equals(str.trim()));
+		}
+	
 	private ArrayList<CandidateIndex> getElkCandidates(){
 		 DataSource dataSource = comboPooledDataSource();
 		ArrayList<CandidateIndex> candidateIndexsList = new ArrayList<CandidateIndex>();
@@ -73,6 +77,19 @@ public class AddElkCandidate{
 					candidateIndex.setAddress(rs.getString("ADDRESS"));
 					candidateIndex.setSummary(rs.getString("SUMMARY"));
 					candidateIndex.setCandidateType(rs.getString("CANDIDATE_TYPE"));
+					
+					if(!isNullOrEmpty(rs.getString("TEAM_ID"))){
+						candidateIndex.setTeamId(rs.getLong("TEAM_ID"));
+					}else{
+						candidateIndex.setTeamId(0L);
+					}
+					
+					if(!isNullOrEmpty(rs.getString("IS_FAVOURITE"))){
+					candidateIndex.setIsFavourite(rs.getInt("IS_FAVOURITE"));
+					}else{
+						candidateIndex.setIsFavourite(0);
+					}
+					
 					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_YEARS"))){
 						if(rs.getString("EXPERIENCE_YEARS").equalsIgnoreCase("25+")){
 							candidateIndex.setExperienceYears(26);

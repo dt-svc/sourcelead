@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -14,14 +15,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -45,6 +50,11 @@ public class RequirementListController {
 	@Autowired
 	 CommonUtil commonUtil;
 	
+	@Autowired
+	CountriesService countriesService;
+	
+	@Autowired
+	StatesService statesService;
 	
 	@RequestMapping(value = "/requirementList")
 	public ModelAndView requirementList(HttpServletRequest request) throws Exception {
@@ -64,6 +74,19 @@ public class RequirementListController {
 		 }
 	    model.addObject("add_clientList", orgClientList);
 	    model.addObject("loginOrgLocId", orgLocations.getId());
+	    
+	    List<Countries> countryList = countriesService.getAllCountries();
+		model.addObject("countryList", countryList);
+		
+		if(null != orgLocations && StringUtils.isNotEmpty(orgLocations.getCountry())){
+		
+			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(null != countries){
+			   model.addObject("loginCountryName", countries.getName());
+			}
+	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
+	        model.addObject("statesList", statesList);
+		}
 	    
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementList");

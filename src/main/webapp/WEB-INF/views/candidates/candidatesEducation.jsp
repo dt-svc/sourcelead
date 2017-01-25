@@ -1,8 +1,3 @@
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-
 <!-- these files for autocomplete with tagit -->
 
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -332,6 +327,8 @@ function addEducation(candidateId) {
 	
 	$('#startDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
@@ -341,6 +338,8 @@ function addEducation(candidateId) {
 	  
 	  $('#endDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	        onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);

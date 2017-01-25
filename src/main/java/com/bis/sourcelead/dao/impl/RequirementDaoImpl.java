@@ -395,14 +395,32 @@ public class RequirementDaoImpl implements RequirementDao {
 			    if(StringUtils.equalsIgnoreCase(statusType, "APPROVED")){
 			    	statusType = "OPEN";
 			    }
+			    if(StringUtils.equalsIgnoreCase(statusType, "SUBMITTED")){
+					
+				    subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  rah.requirementApproverStatus <> 'APPROVED' and  (requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus = '"+statusType+"' )) ";
+		            params.put("userId",userId);
+		            params.put("level",1);
+		        
+		            subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2 and  rah.requirementApproverStatus <> 'APPROVED'  and  (requirement.requirementSubmissionStatus <> 'DRAFT' AND requirement.requirementSubmissionStatus <> 'OPEN' ) and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED')) )";
+		            params.put("approverUserId",userId);
+		            params.put("level1",1);
+		            params.put("level2",2);
+		            
+			}
 				subQuery3 = " requirement.requirementSubmissionStatus <> 'DRAFT' and  requirement.requirementSubmissionStatus = '"+statusType+"' ";
 		}
 		
 		if(subQuery1 != null || subQuery2 != null ){
-			 finalQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")) ";
+			
+			StringBuilder sb =  new StringBuilder();
+			finalQuery = sb.append("where requirement.orgLocationId.id =:orgLocationId and ").append("( (").append(subQuery1).append(")").append("or").append("(").append(subQuery2).append(") )").toString();
+			
+			 //finalQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")) ";
 			 params.put("orgLocationId",orgLocationId);
 		}else{
-			 finalQuery = "where requirement.orgLocationId.id =:orgLocationId and  ("+subQuery3+") ";
+		  	 StringBuilder sb1 =  new StringBuilder();
+		  	finalQuery = sb1.append("where requirement.orgLocationId.id =:orgLocationId and ").append("(").append(subQuery3).append(")").toString();
+			 //finalQuery = "where requirement.orgLocationId.id =:orgLocationId and  ("+subQuery3+") ";
 			 params.put("orgLocationId",orgLocationId);
 		}
 		
@@ -719,6 +737,18 @@ public class RequirementDaoImpl implements RequirementDao {
 				}
 		 }
 		return flag;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getRequirementListByOrgLocationID(Long orgLocationId) {
+		logger.debug("..getCandidatesCount() Method Started..");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "select count(*) from Requirement requirement  where requirement.orgLocationId.id =:orgLocationId and requirement.status = '1'";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		logger.debug("..getCandidatesCount() Method Ended..");
+		return results.get(0);
 	}
 	
 }

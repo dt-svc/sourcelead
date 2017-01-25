@@ -341,6 +341,60 @@ public class ClientRestController {
 		if(orgSpocsList != null){
 			for(OrgSpoc orgSpoc : orgSpocsList){
 				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientContactCreateMsg");
+				
+				if((orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getId() != null && orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()) || (orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getId() != null && orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue())){
+					//if login user is spoc
+					if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getId() != null && orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()){
+						 StringBuilder spocNameSB = new StringBuilder();
+						 StringBuilder ownerNameSB = new StringBuilder();
+	    				 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+	    				 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+					}
+					//if login user is Owner
+					else if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getId() != null && orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
+						 StringBuilder spocNameSB1 = new StringBuilder();
+						    if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+								orgSpoc.setSpocName(spocNameSB1.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+							}else{
+								orgSpoc.setSpocName(spocNameSB1.append(orgSpoc.getSpocUser().getFirstName()).toString());
+							}
+						    StringBuilder ownerNameSB1 = new StringBuilder();
+							 orgSpoc.setOwnerName(ownerNameSB1.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+						}
+					 
+				}else{
+					if(orgSpoc.getInitiatorLocationId() != null && orgSpoc.getInitiatorLocationId().getId() != null && orgSpoc.getInitiatorLocationId().getId().longValue() == loginUser.getId().longValue() ){
+						 StringBuilder spocNameSB2 = new StringBuilder();
+						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+							orgSpoc.setSpocName(spocNameSB2.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+						}else{
+							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
+						}
+						StringBuilder ownerNameSB2 = new StringBuilder();
+						 orgSpoc.setOwnerName(ownerNameSB2.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+						 
+					 }
+					if(orgSpoc.getResponderLocationId() !=  null && orgSpoc.getResponderLocationId().getId() != null && orgSpoc.getResponderLocationId().getId().longValue() == loginUser.getId().longValue()){
+						StringBuilder spocNameSB3 = new StringBuilder();
+						StringBuilder ownerNameSB3 = new StringBuilder();
+					 orgSpoc.setSpocName(spocNameSB3.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+					 orgSpoc.setOwnerName(ownerNameSB3.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+					}
+				}
+				if(orgSpoc.getResponderLocationId() != null && orgSpoc.getResponderLocationId().getId() != null && orgSpoc.getResponderLocationId().getId().longValue() == loginUser.getId().longValue()){
+					if(orgSpoc.getInitiatorLocationId() != null){
+						 orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
+						 orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+					}
+				}
+				if(orgSpoc.getInitiatorLocationId() != null && orgSpoc.getInitiatorLocationId().getId() != null && orgSpoc.getInitiatorLocationId().getId().longValue() == loginUser.getId().longValue()){
+					if(orgSpoc.getResponderLocationId() != null){
+						 orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
+						 orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
+					}
+				}
+				
+				/*
 				if(msg != null && msg != ""){
 					orgSpoc.setMsg(msg);
 					SourceLeadSessionManager.removeSessionAttribute(request, "clientContactCreateMsg");
@@ -356,7 +410,7 @@ public class ClientRestController {
 					ownerLastName = orgSpoc.getOwnerUser().getLastName();
 				}
 				StringBuilder name = new StringBuilder();
-				orgSpoc.setOwnerName(name.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(ownerLastName).toString());
+				orgSpoc.setOwnerName(name.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(ownerLastName).toString());*/
 			}
 		}
 		return commonUtil.toJSON(orgSpocsList);
@@ -529,6 +583,7 @@ public class ClientRestController {
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Success !! Accepted the invitation.");
 	        	}else if(invitationStaus != null && "Rejected".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
+	        		orgSpoc.setSpocStatus(Constants.INACTIVE);
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Rejected the invitation.");
 	        	}
 	        	orgSpocService.addOrgSpoc(orgSpoc);

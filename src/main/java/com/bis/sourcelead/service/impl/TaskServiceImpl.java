@@ -1,19 +1,24 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
@@ -65,14 +70,17 @@ public class TaskServiceImpl implements TaskService{
 	public Tasks getTasksById(Long id) {
 		return taskDao.getTasksById(id);
 	}
-
+	
 	@Override
+	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId,String Status,String date) throws Exception {
+		return taskDao.tasksListByIdAndOrgLocationIdAssignedUserId(OrgLocationId,userId,Status,date);
+	}
+
 	public String saveTasks(JSONObject jsonObj) throws Exception {
-		String resultJson = null;
-	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-	 	String pattern = "dd-MM-yyyy";
+
+	 	String pattern = "dd-mm-yy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
        
@@ -133,18 +141,20 @@ public class TaskServiceImpl implements TaskService{
 		    	}
 		        task.setTaskStatus(Constants.TASK_STATUS_OPEN);
 		        task.setCreatedDate(commonUtil.currentDate());
-     	        Tasks tasks = taskDao.saveTasks(task);
-     	        //mail logic for users
-     	        if(null != task.getAlertType() && !"".equalsIgnoreCase(task.getAlertType())){
-     	        	MailToUserTask(user,ownerUser,tasks,loginOrgLocation);
-     	        }
+     	        taskDao.saveTasks(task);
+				 //mail logic for users
+     	        /*if(null != task.getAlertType() && !"".equalsIgnoreCase(task.getAlertType())){
+     	        	mailToUserTask(user,ownerUser,task,loginOrgLocation);
+     	        }*/
 			}
         }
         
-		return "sucess";
+		return "success";
 	}
+
 	
-	/**
+
+ /**
 	 * @author shivayogi
 	 * @param loginUser
 	 * @param assignedUser
@@ -152,15 +162,16 @@ public class TaskServiceImpl implements TaskService{
 	 * @param orgLocations
 	 * @throws Exception
 	 */
-	public void MailToUserTask( User loginUser,User assignedUser,Tasks tasks,OrgLocations orgLocations) throws Exception{
+	@Override
+	public void mailToUserTask(Tasks tasks) throws Exception{
 			EmailMessage emailMessage = new EmailMessage();
-			 emailMessage.setFirstName(loginUser.getFirstName());
-			 emailMessage.setLastName(loginUser.getLastName());
-			 emailMessage.setToEmail(assignedUser.getEmail());
+			 emailMessage.setFirstName(tasks.getTaskOwnerId().getFirstName());
+			 emailMessage.setLastName(tasks.getTaskOwnerId().getLastName());
+			 emailMessage.setToEmail(tasks.getAssignedUserId().getEmail());
 			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 emailMessage.setCreatedBy(tasks.getTaskOwnerId().getUserCode());
 			 StringBuilder msgBuild = new StringBuilder();
-			 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 emailMessage.setFromName(msgBuild.append(tasks.getTaskOwnerId().getFirstName()).append(" ").append(tasks.getTaskOwnerId().getLastName()).toString());
 			 
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -192,17 +203,17 @@ public class TaskServiceImpl implements TaskService{
 			 }else{
 			 globalVarsMap.put("description","--"); 
 			 }
-			 if(loginUser.getFirstName() != null && loginUser.getLastName()!= null  && !"".equalsIgnoreCase( loginUser.getFirstName()) && !"".equalsIgnoreCase( loginUser.getLastName())){
+			 if(tasks.getTaskOwnerId().getFirstName() != null && tasks.getTaskOwnerId().getLastName()!= null  && !"".equalsIgnoreCase( tasks.getTaskOwnerId().getFirstName()) && !"".equalsIgnoreCase( tasks.getTaskOwnerId().getLastName())){
 				 StringBuilder userBuild = new StringBuilder();
-				 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+				 globalVarsMap.put("LoginUser",userBuild.append(tasks.getTaskOwnerId().getFirstName()).append(" ").append(tasks.getTaskOwnerId().getLastName()).toString());
 			 }else{
-			 globalVarsMap.put("LoginUser",loginUser.getFirstName()); 
+			 globalVarsMap.put("LoginUser",tasks.getTaskOwnerId().getFirstName()); 
 			 }
-			 if(assignedUser.getFirstName() != null && assignedUser.getLastName()!= null  && !"".equalsIgnoreCase( assignedUser.getFirstName()) && !"".equalsIgnoreCase( assignedUser.getLastName())){
+			 if (tasks.getAssignedUserId().getFirstName() != null && tasks.getAssignedUserId().getLastName()!= null  && !"".equalsIgnoreCase( tasks.getAssignedUserId().getFirstName()) && !"".equalsIgnoreCase( tasks.getAssignedUserId().getLastName())){
 				 StringBuilder userBuild = new StringBuilder();
-				 globalVarsMap.put("assignedUser",userBuild.append(assignedUser.getFirstName()).append(" ").append(assignedUser.getLastName()).toString());
+				 globalVarsMap.put("assignedUser",userBuild.append(tasks.getAssignedUserId().getFirstName()).append(" ").append(tasks.getAssignedUserId().getLastName()).toString());
 			 }else{
-			 globalVarsMap.put("assignedUser",assignedUser.getFirstName()); 
+			 globalVarsMap.put("assignedUser",tasks.getAssignedUserId().getFirstName()); 
 			 }
 			 
 			 
@@ -234,20 +245,28 @@ public class TaskServiceImpl implements TaskService{
 			 
 			 //calling the Email 
 			 if(tasks.getAlertType().equalsIgnoreCase("Email") && null !=tasks.getAlertType()){
-				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+				 emailScenerioUtil.sendEmail(emailMessage,tasks.getOwnerOrglocationId().getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 			 }
 			 //calling the Notification 
 			 if(tasks.getAlertType().equalsIgnoreCase("Notification") && null !=tasks.getAlertType()){
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, loginUser,assignedUser, orgLocations, notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, tasks.getTaskOwnerId(),tasks.getAssignedUserId(), tasks.getOwnerOrglocationId(), notificationScenario);
 			 }
 			 //calling the Email  and notification 
 			 if(tasks.getAlertType().equalsIgnoreCase("Email,Notification") && null !=tasks.getAlertType()){
-				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+				 emailScenerioUtil.sendEmail(emailMessage,tasks.getOwnerOrglocationId().getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, loginUser,assignedUser, orgLocations, notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, tasks.getTaskOwnerId(),tasks.getAssignedUserId(),tasks.getOwnerOrglocationId(), notificationScenario);
 			 }
 
 	}
 
+@Override
+public List<Tasks> getTaskByScheduledTime(String currentTime) throws Exception {
+	return taskDao.getTaskByScheduledTime(currentTime);
 }
+}
+	
+
+
+

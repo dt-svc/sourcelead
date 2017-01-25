@@ -49,6 +49,7 @@ public class Constants {
 	public static final String CITY = "City";
 	public static final String LEVEL = "Tier";
 	public static final String VENDOR_NAME = "Vendor Name*";
+	public static final String JOB_OTHER = "Other";
 
 	public static final Integer RECORD_ACTIVE = 1;
 	public static final Integer RECORD_INACTIVE = 0;
@@ -107,6 +108,15 @@ public class Constants {
 	public static String MAIL_BOX_SENT = "Sent";
 	public static String MAIL_BOX_INBOX = "Inbox";
 	
+
+	public static String TASK_STATUS_OPEN = "Open";
+	public static String TASK_STATUS_CLOSE = "Closed";
+	public static String TASK_STATUS_MYTASK = "myTask";
+	public static String TASK_STATUS_ASSIGNTASK = "assignedTasks";
+	public static String TASK_STATUS_CLOSEDTASK = "closedTasks";
+
+	public static String TASK_MECHANISM_EMAIL ="Task Mechanism";
+    public static String TASK_MECHANISM_NOTIFICATION="Task Mechanism";
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
@@ -127,6 +137,7 @@ public class Constants {
 	public static int CANDIDATE_SKILL_IN_ACTIVE= 0;
 	
 	public static String ACTIVE = "Active";
+	public static String INACTIVE = "In-Active";
 
 	/** projectMemberHistory constants**/
 	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
@@ -342,6 +353,21 @@ public class Constants {
     public static String ELK_REQUIREMENT_TYPE = "requirement";
     
     public static String ELK_CANDIDATE_ID_PREFIX = "CND";
+    
+    public static String ELK_CLIENTVENDOR_INDEX = "clientvendor";
+    
+    public static String ELK_CLIENTVENDOR_TYPE = "clientvendors";
+    
+    public static String ELK_CAMPAIGN_INDEX = "campaigns";
+	
+    public static String ELK_CAMPAIGN_TYPE = "campaign";
+    
+    public static String ELK_CAMPAIGN_ID_PREFIX = "CAMPAIGN";
+    
+    public static String CANDIDATE = "Candidate";
+    
+    public static String CONSULTANT = "Consultant";
+    
     
     public static String MAIL_TRASH = "Trash";
     public static String MAIL_DELETE = "Deleted";
