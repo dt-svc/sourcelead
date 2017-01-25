@@ -874,7 +874,7 @@ public class ClientRestController {
 					submissionTemplate = new SubmissionTemplate();
 				}
 			   
-			   submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
+			   submissionTemplate.setTemplateName(jsonObj.getString("templateName").trim());
 			   submissionTemplate.setDescription(jsonObj.getString("description"));
 			   OrgLocations clientOrgLocation = orgLocationService.getOrgLocations(clientLocationId);
 			   submissionTemplate.setClientLocationId(clientOrgLocation);
