@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -26,11 +27,8 @@ import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
-import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -112,9 +110,10 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
 	    		  emails = emails.replaceAll("\"", "");
 		  	      String[] toEmails = emails.split(",");
-		    	  for (String toEmail : toEmails) {
+		  	       recipantsList.addAll(Arrays.asList(toEmails)) ;
+		    	 /* for (String toEmail : toEmails) {
 		    		  recipantsList.add(toEmail);
-		    	  } 
+		    	  } */
 	    	  }
 	    	 
 		}
@@ -133,15 +132,18 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 				 othmails = othmails.replaceAll("\\[", "").replaceAll("\\]","");
 				 othmails = othmails.replaceAll("\"", "");
 		  	      String[] otherEmails = othmails.split(",");
-		    	  for (String otherEmail : otherEmails) {
+		  	       recipantsList.addAll(Arrays.asList(otherEmails)) ;
+		    	  /*for (String otherEmail : otherEmails) {
 		    		  recipantsList.add(otherEmail);
-		    	  }
+		    	  }*/
 			 }
 		}
 		
 		for(String email : recipantsList){
+			 if(StringUtils.isEmpty(email.trim()))
+				 continue;
 			 EmailRecipient emailRecipient = new EmailRecipient();
-			 emailRecipient.setEmail(email);
+			 emailRecipient.setEmail(email.trim());
 			 emailRecipientList.add(emailRecipient);
 		}
 		
