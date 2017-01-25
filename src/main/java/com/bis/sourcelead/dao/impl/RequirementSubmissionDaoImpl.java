@@ -179,7 +179,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		if (isadmin || requirement.getManagerUserId().getId().longValue() == user.getId().longValue() ) {
 			String query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left "
 					+ "join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes  "
-					+ "where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId ORDER BY reqSub.id DESC ";
+					+ "where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId ORDER BY reqSub.candidateScore DESC ";
 			 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
 		}
 		//to get applicates list of the team lead and team submissions
@@ -707,7 +707,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch "
 					+ "reqSub.candidate left join fetch reqSub.sourceSubmission "
 					+ "left join fetch reqSub.candidateResumes where (reqSub.orgLocations.id =:loginOrgLocation or "
-					+ "reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId "+subQuery+" ";
+					+ "reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId "+subQuery+" ORDER BY reqSub.candidateScore DESC ";
 		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).setCacheable(true).list();
 		}
 		
@@ -812,6 +812,22 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
 			}
 			return requirementSubmissionList;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception {
+			
+			logger.debug("In ModulesDaoImpl class getSubmittedCandidateIdsByRequirementId method");
+			Session session = this.sessionFactory.getCurrentSession();
+			
+				 
+			String query = "select reqSub.candidate.id from RequirementSubmission reqSub where reqSub.requirement.id = :requirementId ";
+			List<Long> candidateIdsList =  session.createQuery(query.toString()).setLong("requirementId", requirementId)
+										.setCacheable(true).list();
+			
+			return candidateIdsList;
+			
 		}
 
 

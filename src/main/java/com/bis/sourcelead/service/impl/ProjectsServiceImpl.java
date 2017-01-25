@@ -264,8 +264,8 @@ public class ProjectsServiceImpl implements ProjectsService{
         SimpleDateFormat format = new SimpleDateFormat(pattern);
 	 	
     	Projects projects = new Projects();
-    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
-    	projects.setProjectName(jsonObj.getString("ProjectName"));
+    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber").trim());
+    	projects.setProjectName(jsonObj.getString("ProjectName").trim());
     	
     	if((jsonObj.has("ProjectDescription"))){
     	projects.setDescription(jsonObj.getString("ProjectDescription"));

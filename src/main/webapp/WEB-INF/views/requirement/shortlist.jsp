@@ -4,8 +4,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
 <script>
 function candidateShortList(requirementId){
@@ -13,7 +11,7 @@ function candidateShortList(requirementId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var result = "";
 	var status = "SUBMISSION";
-	result = result + '<div class="add_inter_head"> <span>Shortlist</span><a href="javascript:void(0)" onclick="shortlist('+requirementId+');" class="sub-btn1">Shortlist</a>';
+	result = result + '<div class="add_inter_head"> <span>Shortlist</span> <span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="checkedshortlistedCount">0</b></span><a href="javascript:void(0)" onclick="shortlist('+requirementId+');" class="sub-btn1">Shortlist</a>';
 	result = result + ' <div class="clearfix"></div>';
 	result = result + ' </div>';
 	
@@ -54,7 +52,7 @@ function candidateShortList(requirementId){
 	   	        		}
 		    			
 	    			    result = result + '<tr>';
-	    			    result = result + '<td><input type="checkbox"  class="submissionsChecks" value='+report.id+' name="submissionList[]" ></td>';
+	    			    result = result + '<td><input type="checkbox"  class="submissionsChecks" value='+report.id+' onclick="getCheckedCandidatesCount();"  name="submissionList[]" ></td>';
 	    			    
 			            result = result + '<td><div><span>'+report.candidateName+'</span></div></td>';
 			           
@@ -178,8 +176,29 @@ function selectAllShortlisted(){
                 this.checked = false;      
             });         
         } 
+	
+	 var selectedsubmissionslists = [];
+	 $("input[name='submissionList[]']:checked").each( function (i) {
+		 selectedsubmissionslists[i] = $(this).val();
+	});
+	 
+	$("#checkedshortlistedCount").html(selectedsubmissionslists.length);
+	 
 }
 </script> 
+
+
+<script>
+function getCheckedCandidatesCount(){
+	 var selectedsubmissionslists = [];
+	 $("input[name='submissionList[]']:checked").each( function (i) {
+		 selectedsubmissionslists[i] = $(this).val();
+	});
+	 
+	$("#checkedshortlistedCount").html(selectedsubmissionslists.length);
+	 
+}
+</script>
 
 
 <script>
@@ -190,19 +209,26 @@ function shortlist(requirementId){
 		 selectedsubmissionslists[i] = $(this).val();
 	});
 	 
-	  if(selectedsubmissionslists.length > 0){
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		 $.ajax({ 
-		    	type: "POST",
-		    	url: sourceleadUrl+"/candidateShortList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedsubmissionslists,
-		        success: function(result) {
-		        	$(".shortlist-wrap").removeClass("shortlist-wrap_active");
-	        		$(".side_mask").fadeOut(200);
-	        		$("body").css('overflow-y', 'auto');
-	        		var allApplicants = 'all';
-		    		requirementPipeline(requirementId,allApplicants); 
-		        },
-		 }); 
+	  if(selectedsubmissionslists.length > 1){
+		  
+		  if(selectedsubmissionslists.length <= 30){
+				 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+				 $.ajax({ 
+				    	type: "POST",
+				    	url: sourceleadUrl+"/candidateShortList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedsubmissionslists,
+				        success: function(result) {
+				        	$(".shortlist-wrap").removeClass("shortlist-wrap_active");
+			        		$(".side_mask").fadeOut(200);
+			        		$("body").css('overflow-y', 'auto');
+			        		var allApplicants = 'all';
+				    		requirementPipeline(requirementId,allApplicants); 
+				        },
+				 });  
+		  }else{
+			  alertMessage("<b>Selected Candidates should not more than 30</b>");
+		  }
+		  
+	
 	 }else{
 		 alertMessage("<b>Select Candidate for Shortlist</b>");
 	 } 

@@ -4,13 +4,18 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <script src="resources/js/formvalidator.js"></script>
 
 
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
 
 <%-- 
      @author : David Raju.
@@ -23,7 +28,7 @@
 $(document).ready(function() {
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
-		$(".export_pop, .action-pop").slideUp(200);
+		$(".export_pop, .action-pop, #exportPop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
@@ -165,220 +170,7 @@ function requirementList(){
            url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               	
-			    	     $("#requirementList").removeAttr("style");
-	                	 $("#requirementList").empty();
-	                	 var result = "";
-	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>ID-Title</th>"; 
-	                     result = result +"    <th>Client</th>"; 
-	                     result = result +"    <th>Employment type</th>"; 
-	                     result = result +"    <th>Location</th>"; 
-	                     result = result +"    <th>No.of<br> Positions</th>"; 
-	                     result = result +"    <th>Applicants</th>"; 
-	                     result = result +"    <th>Owner</th>"; 
-	                     result = result +"    <th>Status</th>"; 
-	                     result = result +"    <th>Release</th>"; 
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
-	                     for (var i = 0; i < 1; i++) {
-	                            var val= json[i];
-	                            var opt = "";
-	                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-	                                            opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
-	                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-	                                            opt  = opt + '</div>';
-	                                            }
-	                                    $("#msgDiv").empty();
-	                                    $("#msgDiv").append(opt);
-	                            }
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i]; 
-	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
-	                    	 if(opt.jobId != '' && opt.jobId != null){
-	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-		                     	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-		                     '</sec:authorize>';
-		                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-		                     	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></div></td>";
-		                     '</sec:authorize>';
-	                    	 }else{
-	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-			                     	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-			                     '</sec:authorize>';
-			                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-			                     	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
-			                     '</sec:authorize>';
-	                    	 }
-		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div title="+opt.clientName+"><span>"+opt.clientName+"</span></div></td>";
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
-		                    	 if(opt.jobType=='Other'){
-		                    		 if(opt.otherJobType != null && opt.otherJobType != '' && opt.otherJobType != 'undefined'){
-		                    		 result = result +"<td><div>"+opt.otherJobType+"</div></td>";
-		                    		 }else{
-		                    			 result = result +"<td><div>----</div></td>"; 
-		                    		 }
-		                    		 
-		                    	 }else{
-		                    		 result = result +"<td><div>"+opt.jobType+"</div></td>";
-		                    	 }
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-		                    
-		                     if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-			                     result = result +"<td><div><span title='"+opt.country+', '+opt.state+', '+opt.city+"'>"+opt.country+', '+opt.state+', '+opt.city+"</span></div></td>";
-		                     }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
-			                     result = result +"<td><div><span title='"+opt.country+', '+opt.state+"'>"+opt.country+', '+opt.state+"</span></div></td>";
-
-		                     }else{
-			                     result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
-		                     }
-		                     if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
-		                    	 result = result +"<td><div>"+opt.positions+"</div></td>";
-		                     }else{
-		                    	 result = result +"<td><div>----</div></td>";
-		                     }
-		                     if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){
-		                    	 result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div>"+opt.totalApplicantsForRequirement+"</div></a></td>";
-		                     }else{
-		                    	 result = result +"<td><div>0</div></td>";
-		                     }
-		                     if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-		                    	 result = result +"<td><div><span title="+opt.manager+">"+opt.manager+"</span></div></td>";
-		                     }else{
-		                    	 result = result +"<td><div>----</div></td>";
-		                     }
-		                     if(opt.isLoginUserAsTeamMember !=null && opt.isLoginUserAsTeamMember !='' && opt.isLoginUserAsTeamMember !='undefined'  && opt.isLoginUserAsTeamMember == 'true'){
-		                    	 result = result +"<td>"+opt.requirementSubmissionStatus+"</td>";
-		                     }
-		                     else{
-		                        result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");' id='changeStatusId"+opt.id+"'>";
-		                        if(opt.requirementSubmissionStatus == "DRAFT"){
-									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-						
-									result = result +"<option value='ONHOLD'>ONHOLD</option>";
-									'</sec:authorize>';
-									'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-										result = result +"<option value='CANCEL'>CANCEL</option>";
-									'</sec:authorize>';
-								}
-								else if(opt.requirementSubmissionStatus == "CANCEL"){
-									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-
-								}else if(opt.requirementSubmissionStatus == "OPEN"){
-									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-										result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-									'</sec:authorize>';
-									'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-										result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-									'</sec:authorize>';
-									'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-										result = result +"<option value='ONHOLD'>ONHOLD</option>";
-									'</sec:authorize>';
-									'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-										result = result +"<option value='CANCEL'>CANCEL</option>";
-									'</sec:authorize>';
-								}
-								else if(opt.requirementSubmissionStatus == "NEW"){
-									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									result = result +"<option value='OPEN'>OPEN</option>";
-									'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-										result = result +"<option value='ONHOLD'>ONHOLD</option>";
-									'</sec:authorize>';
-									'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-										result = result +"<option value='CANCEL'>CANCEL</option>";
-									'</sec:authorize>';
-								}else if(opt.requirementSubmissionStatus == "APPROVED"){
-									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									
-								}
-								else if(opt.requirementSubmissionStatus == "REJECTED"){
-									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									
-								}
-								
-								else if(opt.requirementSubmissionStatus == "SUBMITTED"){
-									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-										result = result +"<option value='ONHOLD'>ONHOLD</option>";
-									'</sec:authorize>';
-									'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-										result = result +"<option value='CANCEL'>CANCEL</option>";
-									'</sec:authorize>';
-									
-								}else if(opt.requirementSubmissionStatus == "ONHOLD"){
-									
-									if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
-										result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-										result = result +"<option value='OPEN'>OPEN</option>";
-										'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-											result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-										'</sec:authorize>';
-										'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-											result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-										'</sec:authorize>';
-										'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-											result = result +"<option value='CANCEL'>CANCEL</option>";
-										'</sec:authorize>';
-									}
-									if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
-										result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-										result = result +"<option value='DRAFT'>DRAFT</option>";
-										'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-											result = result +"<option value='CANCEL'>CANCEL</option>";
-										'</sec:authorize>';
-									}
-									if(opt.requirementSubmissionPreviousStatus == "SUBMITTED"){
-										result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-										result = result +"<option value='SUBMITTED'>SUBMITTED</option>";
-										'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-											result = result +"<option value='CANCEL'>CANCEL</option>";
-										'</sec:authorize>';
-									}
-									 
-								}else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
-									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									result = result +"<option value='OPEN'>OPEN</option>";
-									
-								}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
-									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									
-								}
-
-								result = result +" </select>";	
-			                    result = result +" </td>";
-		                     }
-		                     
-		                     if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
-		                    	 '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-		                    	 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
-		                    	 '</sec:authorize>';
-		                    	 '<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-		                    	 	result = result +"<td><div><i class='fa fa-bullhorn'></i></div></td>";
-		                    	 '</sec:authorize>';
-		                     }else{
-			                     result = result +"<td><div>--</div></td>";
-		                     }
-		                     result = result +"</tr>";
-		                     result = result +"</tr>";
-	                     }
-	                     result = result +" </tbody>";
-	                     result = result +"</table>"; 
-	                     $("#noReq").val('');
-	                     $("#requirementList").append(result); 
-	                     pagination(); 
-	                     msgFadein1(); 
+					prepareRequirementData(data);
                  }else{
                 	 $("#requirementList").empty();
                 	 $("#requirementList").removeAttr("style");
@@ -406,6 +198,220 @@ function requirementList(){
      1.usage     : used in candidateList() function.
 --%>
 
+<script>
+function prepareRequirementData(data){
+	var orgATS = '${SourceLeadWeb_ats}';
+	var orgVMS = '${SourceLeadWeb_vms}';
+	 $("#requirementList").removeAttr("style");
+	 $("#requirementList").empty();
+	var result = "";
+	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
+    result = result +"<thead>"; 
+    result = result +"  <tr>"; 
+    result = result +"    <th>ID-Title</th>"; 
+    result = result +"    <th>Client</th>"; 
+    result = result +"    <th>Employment type</th>"; 
+    result = result +"    <th>Location</th>"; 
+    result = result +"    <th>No.of<br> Positions</th>"; 
+    result = result +"    <th>Applicants</th>"; 
+    result = result +"    <th>Owner</th>"; 
+    result = result +"    <th>Status</th>"; 
+    result = result +"    <th>Release</th>"; 
+    result = result +"  </tr>"; 
+    result = result +"</thead>";
+    result = result +"<tbody>"; 
+    var json = JSON.parse(data);
+    for (var i = 0; i < 1; i++) {
+           var val= json[i];
+           var opt = "";
+                   if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+                           opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
+                           opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+                           opt  = opt + '</div>';
+                           }
+                   $("#msgDiv").empty();
+                   $("#msgDiv").append(opt);
+           }
+    for (var i = 0; i < json.length; i++) { 
+   	 var opt = json[i]; 
+   	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
+   	 if(opt.jobId != '' && opt.jobId != null){
+   	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+        	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+        '</sec:authorize>';
+        '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+        	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></div></td>";
+        '</sec:authorize>';
+   	 }else{
+   		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+            	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+            '</sec:authorize>';
+            '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+            	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+            '</sec:authorize>';
+   	 }
+        if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
+       	 result = result +"<td><div title="+opt.clientName+"><span>"+opt.clientName+"</span></div></td>";
+        }else{
+       	 result = result +"<td><div>-----</div></td>";
+        }
+        if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
+       	 if(opt.jobType=='Other'){
+       		 result = result +"<td><div>"+opt.otherJobType+"</div></td>";
+       	 }else{
+       		 result = result +"<td><div>"+opt.jobType+"</div></td>";
+       	 }
+        }else{
+       	 result = result +"<td><div>-----</div></td>";
+        }
+       
+        if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
+            result = result +"<td><div><span title='"+opt.country+', '+opt.state+', '+opt.city+"'>"+opt.country+', '+opt.state+', '+opt.city+"</span></div></td>";
+        }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
+            result = result +"<td><div><span title='"+opt.country+', '+opt.state+"'>"+opt.country+', '+opt.state+"</span></div></td>";
+
+        }else{
+            result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
+        }
+        if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
+       	 result = result +"<td><div>"+opt.positions+"</div></td>";
+        }else{
+       	 result = result +"<td><div>----</div></td>";
+        }
+        if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){
+       	 result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div>"+opt.totalApplicantsForRequirement+"</div></a></td>";
+        }else{
+       	 result = result +"<td><div>0</div></td>";
+        }
+        if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
+       	 result = result +"<td><div><span title="+opt.manager+">"+opt.manager+"</span></div></td>";
+        }else{
+       	 result = result +"<td><div>----</div></td>";
+        }
+        if(opt.isLoginUserAsTeamMember !=null && opt.isLoginUserAsTeamMember !='' && opt.isLoginUserAsTeamMember !='undefined'  && opt.isLoginUserAsTeamMember == 'true'){
+       	 result = result +"<td>"+opt.requirementSubmissionStatus+"</td>";
+        }
+        else{
+           result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");' id='changeStatusId"+opt.id+"'>";
+           if(opt.requirementSubmissionStatus == "DRAFT"){
+				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+	
+				result = result +"<option value='ONHOLD'>ONHOLD</option>";
+				'</sec:authorize>';
+				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+					result = result +"<option value='CANCEL'>CANCEL</option>";
+				'</sec:authorize>';
+			}
+			else if(opt.requirementSubmissionStatus == "CANCEL"){
+				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+
+			}else if(opt.requirementSubmissionStatus == "OPEN"){
+				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+					result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+				'</sec:authorize>';
+				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
+					result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+				'</sec:authorize>';
+				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+					result = result +"<option value='ONHOLD'>ONHOLD</option>";
+				'</sec:authorize>';
+				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+					result = result +"<option value='CANCEL'>CANCEL</option>";
+				'</sec:authorize>';
+			}
+			else if(opt.requirementSubmissionStatus == "NEW"){
+				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option value='OPEN'>OPEN</option>";
+				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+					result = result +"<option value='ONHOLD'>ONHOLD</option>";
+				'</sec:authorize>';
+				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+					result = result +"<option value='CANCEL'>CANCEL</option>";
+				'</sec:authorize>';
+			}else if(opt.requirementSubmissionStatus == "APPROVED"){
+				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+				
+			}
+			else if(opt.requirementSubmissionStatus == "REJECTED"){
+				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+				
+			}
+			
+			else if(opt.requirementSubmissionStatus == "SUBMITTED"){
+				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+					result = result +"<option value='ONHOLD'>ONHOLD</option>";
+				'</sec:authorize>';
+				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+					result = result +"<option value='CANCEL'>CANCEL</option>";
+				'</sec:authorize>';
+				
+			}else if(opt.requirementSubmissionStatus == "ONHOLD"){
+				
+				if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
+					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+					result = result +"<option value='OPEN'>OPEN</option>";
+					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+						result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+					'</sec:authorize>';
+					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
+						result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+					'</sec:authorize>';
+					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+						result = result +"<option value='CANCEL'>CANCEL</option>";
+					'</sec:authorize>';
+				}
+				if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
+					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+					result = result +"<option value='DRAFT'>DRAFT</option>";
+					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+						result = result +"<option value='CANCEL'>CANCEL</option>";
+					'</sec:authorize>';
+				}
+				if(opt.requirementSubmissionPreviousStatus == "SUBMITTED"){
+					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+					result = result +"<option value='SUBMITTED'>SUBMITTED</option>";
+					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+						result = result +"<option value='CANCEL'>CANCEL</option>";
+					'</sec:authorize>';
+				}
+				 
+			}else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
+				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option value='OPEN'>OPEN</option>";
+				
+			}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
+				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+				
+			}
+
+			result = result +" </select>";	
+           result = result +" </td>";
+        }
+        if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
+       	 '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+       	 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+       	 '</sec:authorize>';
+       	 '<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+       	 	result = result +"<td><div><i class='fa fa-bullhorn'></i></div></td>";
+       	 '</sec:authorize>';
+        }else{
+            result = result +"<td><div>--</div></td>";
+        }
+        result = result +"</tr>";
+        result = result +"</tr>";
+       
+    }
+    result = result +" </tbody>";
+    result = result +"</table>"; 
+    $("#noReq").val('');
+    $("#requirementList").append(result); 
+    pagination(); 
+    msgFadein1(); 
+}
+</script>
 <script>
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
@@ -783,7 +789,7 @@ function requirementPipeline(requirementId){
 				            result = result +'    <li class="li-vendor">';
 				            result = result +'      <input type="text" class="vendorfild" placeholder="Search">';
 				            result = result +'      <i class="fa fa-search"></i></li>';
-				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
+				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play"></i>';
 				            result = result +'      <div class="export_pop">';
 				            result = result +'        <ul>';
 				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
@@ -1173,6 +1179,246 @@ function requirementPipeline(requirementId){
   <div class="timesheet_out">
     <div class="vendor_wrap">
       <div class="timesheet_head">
+       <div class="pull-left cand-advsrch">
+            <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+          <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
+          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+            <div class="row">
+              <div class="col-md-4">
+                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+                
+                <div class="clearfix">
+				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyKeyWord" name="anyKeyWord"></select>
+					<!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> -->
+				 </div>
+              </div>
+              <div class="col-md-4">
+                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+                <div class="clearfix">
+				 <select class="chosen-select form-control input-sm" multiple data-placeholder="All KeyWord" id="allReqKeyWord" name="allKeyWord"></select>
+					<!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> -->
+				 </div>
+                
+              </div>
+              <div class="col-md-4">
+                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+                <div class="clearfix">
+				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude KeyWord" id="excludeReqKeyWord" name="excludeKeyWord"></select>
+					<!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> -->
+				 </div>
+                
+                
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h4>Details:</h4>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Requirement Title</label>
+                  <div class="clearfix">
+                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Requirement Title">
+                  </div>
+                </div>
+               <div class="form-group">
+            <label class="col-md-3">Pay Rate/Salary${SourceLeadWeb_currencyCode}</label>
+            <div class="col-md-6">
+             <div class="input-group">
+                <div class="input-group-btn selp-custom-min">
+                  
+                  <select class="selectpicker" id="currencyCode" name="currencyCode" >
+               
+                <c:if test="${empty requirement.id}">
+	                 <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
+                 
+                 <c:if test="${! empty requirement.id}">
+	                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${requirement.currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+                 </c:if>
+                </select>
+                </div>
+                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
+                <div class="input-group-btn selp-custom-min">
+                  <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
+                    <option value="">Rate Per</option>
+                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Experience</label>
+                  <div class="clearfix row">
+                    <div class="col-md-6">
+                      <select class="chosen-select" id="minExp" name="minExp"  data-placeholder="Min Years">
+                       <option value="" selected>Min Years</option>
+                        <option>1 years</option>
+                        <option>2 years</option>
+                        <option>3 years</option>
+                        <option>4 years</option>
+                        <option>5 years</option>
+                        <option>6 years</option>
+                        <option>7 years</option>
+                        <option>8 years</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <select class="chosen-select" id="maxExp" name="maxExp" data-placeholder="Max Years">
+                         <option value="" selected>Max Years</option>
+                         <option>1 years</option>
+                        <option>2 years</option>
+                        <option>3 years</option>
+                        <option>4 years</option>
+                        <option>5 years</option>
+                        <option>6 years</option>
+                        <option>7 years</option>
+                        <option>8 years</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>Requirement status </label>
+                  <div class="clearfix">
+                    <select id="requirementStatu" name="requirementStatu" class="chosen-select" data-placeholder="Requirement status " multiple>
+                      <option>New</option> 
+                      <option>Draft</option>
+                      <option>Submitted</option>
+                      <option>Open</option>
+                      <option>cancel</option>
+                      <option>On Hold</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>Updated On</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Updated On">
+                      <option>All</option>
+                      <option>1 Day Ago</option>
+                      <option>3 Days Ago</option>
+                      <option>1 Week Ago</option>
+                      <option>2 Weeks Ago</option>
+                      <option>1 Month Ago</option>
+                      <option>3 Months Ago</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix">
+						   <div class="col-md-4">
+							  <label>Country</label>
+							  <div class="clearfix adv-srh-chosen">
+								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
+								     <c:forEach var="cntry" items="${countryList}">
+							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+						                </c:forEach>
+				                 </select>
+							  </div>
+						  </div>
+						  
+						  <div class="col-md-4"> 
+							  <label>State</label>
+							  <div class="clearfix adv-srh-chosen">
+								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
+								        <option value="">---select state---</option>
+								        <c:forEach var="state" items="${statesList}">
+							                     <option value="${state.stateName}">${state.stateName}</option>
+						                </c:forEach>
+                                 </select>
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>City</label>
+							  <div class="clearfix adv-srh-chosen">
+								  <select  class="chosen-select" name="city" id="city" field-name="City"  >
+								      <option value="">---select city---</option>
+                                  </select>
+							  </div>
+						  </div>
+						  </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Education</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" id="education" name="education" data-placeholder="Education" multiple>
+                      <c:forEach var="edu" items="${educationsList}">
+                		  <c:if test="${fn:contains(requirement.reqEducationListString, edu.name)}">
+                		  	 <option  selected value="${edu.name}">${edu.name}</option>
+                		  </c:if>
+                		  <c:if test="${!fn:contains(requirement.reqEducationListString, edu.name)}">
+                		  	 <option  value="${edu.name}">${edu.name}</option>
+                		  </c:if>
+                </c:forEach>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label>Client<i class="fa fa-info-circle" title="CLient"></i></label>
+                  <div class="clearfix">
+                    <select class="chosen-select" id="client" name="client" data-placeholder="Client" multiple>
+                      <c:forEach var="report" items="${add_clientList}">
+							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
+			                    	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
+			                    </c:if>  
+			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
+			                  	 	<option value="${report.id},${report.locationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+			                    </c:if>
+							</c:forEach>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-12">
+                  <label>Skills</label>
+                  <div class="clearfix">
+                    <select class="chosen-select"  id="skills" name="skills" multiple data-placeholder="Select Skills">
+                      <c:forEach var="skill" items="${skillsList}">
+             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill.name)}">
+	                		  	 <option  selected value="${skill.name}">${skill.name}</option>
+	                		 </c:if>
+	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill.name)}">
+	                		  	 <option  value="${skill.name}">${skill.name}</option>
+	                		 </c:if>
+                    </c:forEach>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row form-footer">
+              <div class="pull-right mr"> 
+              <!-- <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a> 
+              <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a>  -->
+               <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement();" class="btn btn-sm btn-primary"/>
+               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/></div>
+            </div>
+          </div>
+          </form:form>
+          
+        </div>
         <ul>
         <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
 		<li><b onClick ="requirementListIndividualStatusCounts();" id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></b>
@@ -1188,6 +1434,7 @@ function requirementPipeline(requirementId){
 		            </div>
           </li>
           </sec:authorize>
+          
           <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
           	<li> <a href="<c:url value='/requirement'/>"><i class="fa fa-plus"></i>Add Requirement</a></li>
           </sec:authorize>
@@ -1212,11 +1459,11 @@ function requirementPipeline(requirementId){
           </div>
           </li>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
-           <li id="export-pop" ><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" onClick="mypop();"></i>
-            <div class="export_pop">
+           <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="mypop"></i>
+            <div id="exportPop">
               <ul>
-                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
-                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
+                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
               </ul>
             </div>
           </li>
@@ -1261,7 +1508,7 @@ function requirementPipeline(requirementId){
             });
         </script> 
 <script type="text/javascript">
-			var config = {
+		/* 	var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
 			  '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -1275,7 +1522,10 @@ function requirementPipeline(requirementId){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 
-});
+			}); */
+			$('#np').trigger("chosen:updated");
+			
+			
  		</script> 
 <script>
 $('#selector').delay(2000).fadeOut('slow');
@@ -1422,28 +1672,33 @@ function changeStatus(requirementId){
                 });
             });
         </script>
-<div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
+<!-- <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
   <ul class="list-unstyled">
     <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
     <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
     <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
   </ul>
-</div>
+</div> -->
 </body>
 </html>
 
 
 <script>
-    $("#export-pop").click(function(){
-		$(".export_pop").slideToggle(200);
-		$(" #filter2ApprovedPop, .action-pop").slideUp(200);
-	});
-    $("html").click(function() {
-        $(".export_pop").slideUp(200);
-    });
-    $(".export_pop, #export-pop").click(function(e) {
-        e.stopPropagation();
-    });	
+/*     function mypop(){
+		$("#exportPop").toggle();
+		$(".export_pop, #filter2ApprovedPop").slideUp();
+    }
+ */
+$('#mypop').click(function(){
+		$("#exportPop").toggle();
+		$(".export_pop, #filter2ApprovedPop, .action-pop").slideUp();
+ });
+ $("html").click(function(){
+	$("#exportPop").hide(200);
+ });
+ $("#exportPop, #mypop").click(function(e) {  
+     e.stopPropagation();
+ });
 </script>
 
 <script>
@@ -1527,7 +1782,7 @@ function cancel(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
-	$(".export_pop, #filter2ApprovedPop").slideUp(200);
+	$(".export_pop, #filter2ApprovedPop, #exportPop").slideUp(200);
 	
 	$("html").click(function(){
 		$(".action-pop").slideUp(200);
@@ -1537,4 +1792,290 @@ function getActions(){
  	});	
 }
 </script>
+
+<script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+		}
+		function openPop(){
+			$("div.cand-advsrch-popup").toggle();
+		}
+	</script> 
+
+<!-- <script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+
+});
+ 		</script>  -->
+<script>
+function searchRequirement(){
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	        borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+ if ($('#requirement_form').validate(false, validationSettings)){  
+			var sourceleadUrl = '${sourceleadUrl}';
+			var frm = $('#requirement_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, ""); 
+		    var jsonData = encodeURIComponent(con);
+			var form = $('#requirement_form')[0];
+   		   var formData = new FormData(form); 
+			//It will escape all the special characters
+			$("#search_requiremet").attr("disabled", "disabled");
+			$("#search_requiremet").addClass('button').val('Processing..');
+
+			$.ajax({
+						type : "GET",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/searchRequiremet?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						success : function(data) {
+							$("#search_requiremet").addClass('button').val('Search');
+							$("#search_requiremet").removeAttr("disabled");
+							closePop();
+							if(data != null && data != 'undefined' && data != "" && data != '[]'){
+			                	 prepareRequirementData(data);
+		                 }else{
+		                	 $("#requirementList").empty();
+		                	 $("#requirementList").removeAttr("style");
+		                	 $("#requirementEmptyListMessage").val("noRequirement");
+		  	    	         var result ="";
+				    	    
+							 result = result+"			<div class='blank-pages'>";
+							 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+							 result = result+"			        <p>No Requirement Found</p>";
+							 result = result+"			 </div>";
+							/*  noRequirements();
+							$("#noReq").val("noreq"); */
+							$("#requirementList").empty();
+						    $("#requirementList").append(result); 
+		                }
+						},
+					}); 
+			return true;
+		}else{ 
+				return false;
+		 }
+	} 
+$('body').on('blur', '#requirement_form', function() {
+	$("#requirement_form").showHelpOnFocus();
+	$("#requirement_form").validateOnBlur(false, validationSettings);
+});
+</script>
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+
+
+<script type="text/javascript">
+    	   var config = {
+    				  '.chosen-select'           : {},
+    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+    				  '.chosen-select-no-single' : {disable_search_threshold:10},
+    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+    				  '.chosen-select-width'     : {width:"95%"}
+    	   }
+			//Adding Customized Any Of Keyword to the list 
+		    var select, chosen;
+		    select = $("#anyKeyWord");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keyup', function(e)
+		    {
+		    	var anyofKeyword = this.value.replace(",","");
+		        if ((e.which == 13 || e.which == 188) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
+		            select.append(option);
+		            select.find(option).prop('selected', true);
+                    $("#anyKeyWord option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#anyKeyWord").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    var selectone, chosenone;
+		    selectone = $("#allReqKeyWord");
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenone = selectone.data('chosen');
+		    chosenone.search_field.on('keyup', function(e1)
+		    {
+		    	var allofKeyWord = this.value.replace(",","");
+		        if ((e1.which == 13 || e1.which == 188) && (allofKeyWord != null  && allofKeyWord != '' && allofKeyWord != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(allofKeyWord).text(allofKeyWord);
+		            selectone.append(option);
+		            selectone.find(option).prop('selected', true);
+                    $("#allReqKeyWord option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#allReqKeyWord").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selecttwo, chosentwo;
+		    selecttwo = $("#excludeReqKeyWord");
+		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosentwo = selecttwo.data('chosen');
+		    chosentwo.search_field.on('keyup', function(e2)
+		    {
+		    	var excludeKeyWord = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyWord != null  && excludeKeyWord != '' && excludeKeyWord != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(excludeKeyWord).text(excludeKeyWord);
+		            selecttwo.append(option);
+		            selecttwo.find(option).prop('selected', true);
+                    $("#excludeReqKeyWord option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#excludeReqKeyWord").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		      $("#country").on('change', function (e) {
+		    	   getStates();
+		       });
+		       $("#state").on('change', function (e) {
+		    	   getCities();
+		       });
+				for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+</script> 
+
+<script>
+function loadChosenRequirementScripts(){
+	 $('#country').val('${loginCountryName}'); 
+     $('#state').val(''); 
+     $('#city').val('');
+	
+	 $("#anyKeyWord").val('').trigger("chosen:updated");
+	 $("#allReqKeyWord").val('').trigger("chosen:updated");
+	 $("#excludeReqKeyWord").val('').trigger("chosen:updated");
+	 
+	 $("#anyKeyWord").empty();
+	 $("#allReqKeyWord").empty();
+	 $("#excludeReqKeyWord").empty();
+}
+</script>
+
+<script>
+function getStates(){
+	var countryName = $("#country").val();
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').empty();
+	        	$('#state').append('<option value="">---select state---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#state').trigger("chosen:updated");
+	            
+	            $('#city').empty();
+	            $('#city').append('<option value="">---select city---</option>');
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#state').empty();
+    	$('#state').append('<option value="">---select state---</option>');
+    	$('#state').trigger("chosen:updated");
+    	$('#city').empty();
+    	$('#city').append('<option value="">---select city---</option>');
+        $('#city').trigger("chosen:updated");
+	}
+}
+</script> 
+
+
+<script>
+function getCities(){
+	var countryName = $("#country").val();
+	var stateName = $("#state").val();
+	
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#city').empty();
+	        	$('#city').append('<option value="">---select city---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#city').empty();
+    	$('#city').append('<option value="">---select city---</option>');
+    	$('#city').trigger("chosen:updated");
+	}
+}
+</script>
+
+
+<!-- Country,State,City Script Ends Here -->	
+
+
 <jsp:include page="../masterFooter.jsp" />

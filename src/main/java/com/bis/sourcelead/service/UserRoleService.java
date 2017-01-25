@@ -101,4 +101,6 @@ public interface UserRoleService {
 	 
 	 UserRole getChangeRolePermissions(List<Long> userRoletabIds,Long userId,Long orgLocationId) throws Exception;
 	
+	 List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId);
+	 
 }

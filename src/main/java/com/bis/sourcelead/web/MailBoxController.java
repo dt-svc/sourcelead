@@ -199,17 +199,23 @@ public class MailBoxController {
 		
 	     maxResults = userMailBoxService.getMailBoxCountByUserIdAndOrgLocationid(user.getId(), orgLocations.getId(), type);
 	   
-	    SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CAMPAIGN_INDEX, Constants.ELK_CAMPAIGN_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-	    if(null != searchHits && searchHits.length >0){
-	    	ObjectMapper mapper = new ObjectMapper();
-	    	for (SearchHit hit : searchHits) {
-	    		String json = hit.getSourceAsString();
-	    		mapper.setDateFormat(df);
-	    	    CampaignIndex campaignIndex = mapper.readValue(json, CampaignIndex.class);
-	    		mailBoxList.add(campaignIndex);
-	    	}
-	    	
-	    }
+	    try {
+	    	 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CAMPAIGN_INDEX, Constants.ELK_CAMPAIGN_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+	 	     if(null != searchHits && searchHits.length >0){
+	 	    	ObjectMapper mapper = new ObjectMapper();
+	 	    	for (SearchHit hit : searchHits) {
+	 	    		String json = hit.getSourceAsString();
+	 	    		mapper.setDateFormat(df);
+	 	    	    CampaignIndex campaignIndex = mapper.readValue(json, CampaignIndex.class);
+	 	    		mailBoxList.add(campaignIndex);
+	 	    	}
+	 	    }
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	     
+	   
 	    
 	    if(mailBoxList != null){
 			calculateDays(mailBoxList);

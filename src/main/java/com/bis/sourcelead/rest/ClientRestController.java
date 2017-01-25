@@ -599,6 +599,7 @@ public class ClientRestController {
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Success !! Accepted the invitation.");
 	        	}else if(invitationStaus != null && "Rejected".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
+	        		orgSpoc.setSpocStatus(Constants.INACTIVE);
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Rejected the invitation.");
 	        	}
 	        	orgSpocService.addOrgSpoc(orgSpoc);
@@ -889,7 +890,7 @@ public class ClientRestController {
 					submissionTemplate = new SubmissionTemplate();
 				}
 			   
-			   submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
+			   submissionTemplate.setTemplateName(jsonObj.getString("templateName").trim());
 			   submissionTemplate.setDescription(jsonObj.getString("description"));
 			   OrgLocations clientOrgLocation = orgLocationService.getOrgLocations(clientLocationId);
 			   submissionTemplate.setClientLocationId(clientOrgLocation);
