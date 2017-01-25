@@ -733,30 +733,32 @@ public class NewTimesheetRestController {
 		          tabDiv.append(" </div> </td>"); 
 			 	  tabDiv.append("			                  </tr>");  
 					
-		          tabDiv.append("	  <tr class='last_child'>"); 
-		          tabDiv.append("    <td class='total_field'>Total</td>"); 
-		          tabDiv.append("    <td> <div>"); 
-		          tabDiv.append("    <input type='text' disabled id='rowTotal1Id' name='rowTotal1Id' class='inline_field' value='HH:MM' />"); 	
-		          tabDiv.append("    </div> </td>"); 
-		          tabDiv.append("    <td> <div>"); 
-		          tabDiv.append("    <input type='text' disabled id='rowTotal2Id' name='rowTotal2Id' class='inline_field' value='HH:MM' />	"); 
-		          tabDiv.append("    </div> </td>"); 
-		          tabDiv.append("    <td> <div>"); 
-		          tabDiv.append("    <input type='text' disabled id='rowTotal3Id' name='rowTotal3Id' class='inline_field' value='HH:MM' />	"); 
-		          tabDiv.append("    </div> </td>"); 
-		          tabDiv.append("    <td> <div>"); 
-		          tabDiv.append("    <input type='text'disabled  id='rowTotal4Id' name='rowTotal4Id' class='inline_field' value='HH:MM' />	"); 
-		          tabDiv.append("    </div> </td>"); 
-		          tabDiv.append("    <td> <div>"); 
-		          tabDiv.append("    <input type='text' disabled id='rowTotal5Id' name='rowTotal5Id' class='inline_field' value='HH:MM' />"); 	
-		          tabDiv.append("    <td> <div>"); 
-		          tabDiv.append("    <input type='text' disabled id='rowTotal6Id' name='rowTotal6Id' class='inline_field' value='HH:MM' />"); 	
-		          tabDiv.append("    </div> </td>"); 
-		          tabDiv.append("    <td> <div>"); 
-		          tabDiv.append("    <input type='text' disabled id='rowTotal7Id' name='rowTotal7Id' class='inline_field' value='HH:MM' />	"); 
-		          tabDiv.append("    </div> </td>"); 
-		          tabDiv.append("      </tr> ");  
 			    }
+		
+				tabDiv.append("	  <tr class='last_child'>"); 
+		        tabDiv.append("    <td class='total_field'>Total</td>"); 
+		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <input type='text' disabled id='rowTotal1Id' name='rowTotal1Id' class='inline_field' value='HH:MM' placeholder='00:00' />"); 	
+		        tabDiv.append("    </div> </td>"); 
+		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <input type='text' disabled id='rowTotal2Id' name='rowTotal2Id' class='inline_field' value='HH:MM' placeholder='00:00' />	"); 
+		        tabDiv.append("    </div> </td>"); 
+		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <input type='text' disabled id='rowTotal3Id' name='rowTotal3Id' class='inline_field' value='HH:MM' placeholder='00:00' />	"); 
+		        tabDiv.append("    </div> </td>"); 
+		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <input type='text'disabled  id='rowTotal4Id' name='rowTotal4Id' class='inline_field' value='HH:MM' placeholder='00:00' />	"); 
+		        tabDiv.append("    </div> </td>"); 
+		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <input type='text' disabled id='rowTotal5Id' name='rowTotal5Id' class='inline_field' value='HH:MM' placeholder='00:00' />"); 	
+		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <input type='text' disabled id='rowTotal6Id' name='rowTotal6Id' class='inline_field' value='HH:MM' placeholder='00:00' />"); 	
+		        tabDiv.append("    </div> </td>"); 
+		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <input type='text' disabled id='rowTotal7Id' name='rowTotal7Id' class='inline_field' value='HH:MM' placeholder='00:00' />	"); 
+		        tabDiv.append("    </div> </td>"); 
+		        tabDiv.append("      </tr> ");  
+		        
 				tabDiv.append("			                </tbody>");
 				tabDiv.append("			            </table>");
 				
@@ -907,67 +909,45 @@ public class NewTimesheetRestController {
 	    		 endDate = format.parse(jsonObj.getString("tabEndDate"));
 	    	}
 			 
-			
-			
-			
-			/* String localsubmissionId = null;
-		   	 try{
-		   		   JSONArray jsonArray = jsonObj.getJSONArray("submissionId");
-		   		localsubmissionId = jsonArray.toString();
-		   	  }
-		   	  catch(JSONException e){
-		   		localsubmissionId= jsonObj.getString("submissionId");
-		   	  }
-			
-		    localsubmissionId = localsubmissionId.replaceAll("\\[", "").replaceAll("\\]","");
-		    String[] submissionIds = localsubmissionId.split(",");
-		    Date startDate = new Date() ;*/
-	    	
-			/*if(submissionIds != null && submissionIds.length>0){ 
-				for(String submissionId : submissionIds){*/
-					
-					  				/*submissionId = submissionId.replace("\"", "");*/
             Long total = 0l;
             TimesheetSubmissions timesheetSubmissions ;
             if(!isNullOrEmpty(submissionId)){
             	 timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
             }else{
             	 timesheetSubmissions = new TimesheetSubmissions();
-            	 timesheetSubmissions.setStartDate(startDate);
-            	 timesheetSubmissions.setEndDate(endDate);
-            	 timesheetSubmissions.setProjectMembers(projectMember);
-            	 timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE+"");
-            	 timesheetSubmissions.setCreatedDate(CommonUtil.currentDate());
-            	 timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
-            	 timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
-            	 timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
-            	 timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
-            	 
-            	 ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
-            	 List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(1);
-            	 HashSet<SubmissionApproverHierarchy> saHierarchyList = new HashSet<SubmissionApproverHierarchy>();
-                    if(hierarchyList != null && !hierarchyList.isEmpty()){
-						for(ProjectApproverHierarchy hierarchy : hierarchyList){
-							SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
-							saHierarchy.setHeirarchyId(hierarchy);
-							saHierarchy.setSubmissionId(timesheetSubmissions);
-							saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
-							saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
-							saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
-							saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
-							saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
-							saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
-							saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
-							saHierarchyList.add(saHierarchy);
-						}
-						timesheetSubmissions.setApproverHierarchyList(saHierarchyList);
+            }
+	    	timesheetSubmissions.setStartDate(startDate);
+	    	timesheetSubmissions.setEndDate(endDate);
+	    	timesheetSubmissions.setProjectMembers(projectMember);
+	    	timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE+"");
+	    	timesheetSubmissions.setCreatedDate(CommonUtil.currentDate());
+	    	timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
+	    	timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
+	    	timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
+	    	timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+	    	
+	    	ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
+	    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(1);
+	    	HashSet<SubmissionApproverHierarchy> saHierarchyList = new HashSet<SubmissionApproverHierarchy>();
+	        if(hierarchyList != null && !hierarchyList.isEmpty()){
+					for(ProjectApproverHierarchy hierarchy : hierarchyList){
+						SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
+						saHierarchy.setHeirarchyId(hierarchy);
+						saHierarchy.setSubmissionId(timesheetSubmissions);
+						saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
+						saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
+						saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
+						saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
+						saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
+						saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
+						saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
+						saHierarchyList.add(saHierarchy);
 					}
-					timesheetSubmissionsList.add(timesheetSubmissions);
-					timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
-					
-            	 
-				}
-	    	timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+					timesheetSubmissions.setApproverHierarchyList(saHierarchyList);
+			}
+			timesheetSubmissionsList.add(timesheetSubmissions);
+			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
+			/*timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);*/
 	    	
 	    	//save  mutliple attachment in timesheet submissison attachment.
 	    	String attcahmentMaxRowNumber = jsonObj.getString("attcahmentMaxRowNumber");
