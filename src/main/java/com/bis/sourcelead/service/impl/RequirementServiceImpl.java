@@ -11,12 +11,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -325,18 +322,7 @@ public class RequirementServiceImpl implements RequirementService {
 				
 				skillId = skillId.replaceAll("\"", "");
 		  	    requirement.setSkills(skillId);
-		  	   
-		  	  String[] skillsInRequirement = skillId.split(",");
-			  	for(String skill : skillsInRequirement){
-			  		LookUpData lookUpData = lookUpDataService.getLookUpDataByNameAndCategory(skill, "Skills");
-			  		  if(null == lookUpData){
-			  			  LookUpData lookUpdata= new LookUpData();
-					  	  lookUpdata.setCategory("Skills");
-					  	  lookUpdata.setDescription(skill);
-					  	  lookUpdata.setName(skill);
-				  	      lookUpDataService.storeLookUpDataByCategory(lookUpdata);
-			  		  }
-			  	  }
+		  	 
 			}
 			
 			if(jsonObj.has("education")){
@@ -353,17 +339,6 @@ public class RequirementServiceImpl implements RequirementService {
 				educationId = educationId.replaceAll("\"", "");
 				
 		  	    requirement.setEducation(educationId);
-			  	String[] educationsInRequirement = educationId.split(",");
-			  	for(String education : educationsInRequirement){
-			  		LookUpData lookUpData = lookUpDataService.getLookUpDataByNameAndCategory(education, "Educations");
-			  		  if(null == lookUpData){
-			  			  LookUpData lookUpdata= new LookUpData();
-					  	  lookUpdata.setCategory("Educations");
-					  	  lookUpdata.setDescription(education);
-					  	  lookUpdata.setName(education);
-				  	      lookUpDataService.storeLookUpDataByCategory(lookUpdata);
-			  		  }
-			  	  }
 			
 			 }
 			
@@ -2097,20 +2072,6 @@ public class RequirementServiceImpl implements RequirementService {
 					skillId = skillId.replaceAll("\"", "");
 					reqTemplate.setSkills(skillId);
 					
-					// The Below Code for Manually Entered Skill Stored In LookUpdata table And Compare
-					
-					String[] skillsInRequirement = skillId.split(",");
-				  	for(String skill : skillsInRequirement){
-				  		LookUpData lookUpData = lookUpDataService.getLookUpDataByNameAndCategory(skill, "Skills");
-				  		  if(null == lookUpData){
-				  			  LookUpData lookUpdata= new LookUpData();
-						  	  lookUpdata.setCategory("Skills");
-						  	  lookUpdata.setDescription(skill);
-						  	  lookUpdata.setName(skill);
-					  	      lookUpDataService.storeLookUpDataByCategory(lookUpdata);
-				  		  }
-				  	  }
-					
 				}else{
 					reqTemplate.setSkills(null);	
 				}
@@ -2129,20 +2090,6 @@ public class RequirementServiceImpl implements RequirementService {
 					educationId = educationId.replaceAll("\"", "");
 					
 					reqTemplate.setEducation(educationId);
-					
-					// The Below Code for Manually Entered Education Stored In LookUpdata table And Compare
-					String[] educationsInRequirement = educationId.split(",");
-				  	for(String education : educationsInRequirement){
-				  		LookUpData lookUpData = lookUpDataService.getLookUpDataByNameAndCategory(education, "Educations");
-				  		  if(null == lookUpData){
-				  			  LookUpData lookUpdata= new LookUpData();
-						  	  lookUpdata.setCategory("Educations");
-						  	  lookUpdata.setDescription(education);
-						  	  lookUpdata.setName(education);
-					  	      lookUpDataService.storeLookUpDataByCategory(lookUpdata);
-				  		  }
-				  	  }
-					
 					
 				 }else{
 					 reqTemplate.setEducation(null);
@@ -2201,6 +2148,16 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception {
 		return requirementDao.validateJobid(id,orgLocationsId);
+	}
+
+	@Override
+	public List<String> getAllRequirementSkillsByRequirementI(String requirementId) throws Exception {
+		return requirementDao.getAllRequirementSkillsByRequirementI(requirementId);
+	}
+	
+	public List<String> getAllSkillsBySkillCategory() throws Exception{
+		return lookUpDataService.getAllSkillsBySkillCategory();
+		
 	}
 
 }

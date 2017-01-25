@@ -12,10 +12,4 @@ public interface LookUpDataService {
 	
 	public List<LookUpData> getSkillsBySkillsName(List<String> skillNames) throws Exception;
 
-	public LookUpData storeLookUpDataByCategory(LookUpData lookUpDataCategory) throws Exception;
-	
-	
-	LookUpData getLookUpDataByNameAndCategory(String name, String category) throws Exception;
-	
-
 }

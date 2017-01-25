@@ -40,18 +40,5 @@ public class LookUpDataServiceImpl implements LookUpDataService {
 	public List<LookUpData> getSkillsBySkillsName(List<String> skillNames) throws Exception {
 		return lookUpDataDao.getSkillsBySkillsName(skillNames);
 	}
-
-	@Override
-	public LookUpData storeLookUpDataByCategory(LookUpData lookUpDataCategory) throws Exception {
-		return lookUpDataDao.storeLookUpDataByCategory(lookUpDataCategory);
-	}
-
-	@Override
-	public LookUpData getLookUpDataByNameAndCategory(String name, String category) throws Exception {
-		return lookUpDataDao.getLookUpDataByNameAndCategory(name, category);
-	}
-
-	
-	
 	
 }
