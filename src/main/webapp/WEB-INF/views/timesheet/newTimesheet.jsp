@@ -369,7 +369,7 @@ function removeTimeSheetRow(rowId) {
 
 <!-- this script is for clear timesheet -->
 <script>
-function clearTimesheet(){  alert("clear");
+function clearTimesheet(){ 
 	for (var i = 1; i < 8; i++){
 		 for (var j = 1; j < 50; j++){
 			    $("#"+j+"timeSheetDay"+i+"Id").val("00:00");
@@ -775,8 +775,7 @@ function newSaveTimesheet(status,savingType){
        		   var form = $('#timesheet_form')[0];
        		   var formData = new FormData(form); 
        		   var submissionIds = $("#submissionId").val();
-       		   $("#dynamic").empty();
-       		   $("#dynamic").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+       		   $("#timesheetEntriesDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
         	   $.ajax({
 	      	          type : "POST",
 	          	      data: formData,
@@ -788,6 +787,7 @@ function newSaveTimesheet(status,savingType){
         	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
         		    	   dynamicTimesheet("left",result); 
+        		    	   /* timesheetEntriesDiv */
         		    	  /* dynamicTimesheet(); */
         		      }
         	      	  
@@ -803,6 +803,26 @@ $('body').on('blur', '#timesheet_form', function() {
 	$("#timesheet_form").validateOnBlur(false, validationSettings);  
 });
 </script>
+
+
+<!-- this script is for delete document -->
+<script type="text/javascript">
+function deleteSubmissionDocument(submissionDocumentId){  
+    var sourceleadUrl ='${sourceleadUrl}';
+    /*  var startdate; */
+	var navigation;
+    $.ajax({
+          type : "POST",
+      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
+	      success :function(result) {
+	    	  $("#"+submissionDocumentId+"document").remove();
+	      }
+      	  
+    }); 
+	   
+}
+</script>
+
 
 <script type="text/javascript">
          function prepareChosenScripts(){ 

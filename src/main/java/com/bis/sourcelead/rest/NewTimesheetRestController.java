@@ -1,4 +1,8 @@
 package com.bis.sourcelead.rest;
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,9 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -59,6 +67,8 @@ import com.google.gson.GsonBuilder;
 
 @RestController 
 public class NewTimesheetRestController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(NewTimesheetRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -796,13 +806,13 @@ public class NewTimesheetRestController {
 			
 			StringBuilder documentBuffer = new StringBuilder();	
 			documentBuffer.append("<input type='hidden' name='attcahmentMaxRowNumber'  id='attcahmentMaxRowNumber' value='1' />");
+			documentBuffer.append("<div class='timesheetDocs'>"); 
 			if(ts != null){
 				List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
-				documentBuffer.append("<div class='timesheetDocs'>"); 
 				if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
 						for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
 							if(!isNullOrEmpty(tsd.getFileName())){
-									documentBuffer.append("<strong>");
+									documentBuffer.append("<strong id='"+tsd.getId()+"document'>");
 									documentBuffer.append(" <a class='downicon' href=\'").append(sourceleadUrl).append("/downloadDocument?submissionDocumentId=").append(tsd.getId()).append("\'>");
 									documentBuffer.append("<i class='glyphicon glyphicon-save'></i>");
 									documentBuffer.append(" <input type='button' value='"+tsd.getFileName()+"'>");
@@ -810,7 +820,7 @@ public class NewTimesheetRestController {
 									
 									/*if( (!isFillMyTimeSheet ) ||  ( !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))  ) ){
 									}else{*/
-										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+startDate+"\");' >");
+										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\");' >");
 									/*}*/
 									documentBuffer.append("</strong>");
 							} 
@@ -1154,7 +1164,51 @@ public class NewTimesheetRestController {
 			return total;
 		}
 
+		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
+		@RequestMapping(value = "/downloadDocument", method = RequestMethod.GET)
+	    public void downloadDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId ,HttpServletResponse response) throws Exception {
+			
+			
+				TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);	
+			    //TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());
+			    
+			    response.setContentType("application/octet-stream");
+			    StringBuilder fileName = new StringBuilder();
+		        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(timesheetSubmissionsDocuments.getFileName()).append("\"").toString());
+				InputStream inputStream = new ByteArrayInputStream(timesheetSubmissionsDocuments.getDocFile());
+				try {
+					OutputStream outStream = response.getOutputStream();
+
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					inputStream.close();
+					outStream.close();
+
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				} 
+
+		}  
 		
+		
+		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
+		@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)
+	    public String deleteSubmissionDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId ,HttpServletResponse response) throws Exception {
+	        
+	            /*TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());*/
+				TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);
+	            timesheetSubmissionsDocuments.setDocFile(null);
+	            timesheetSubmissionsDocuments.setFileContentType(null);
+	            timesheetSubmissionsDocuments.setFileName(null);
+	            timesheetSubmissionsDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+	            timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
+	            return "success";
+	    }
 		
  
 }
