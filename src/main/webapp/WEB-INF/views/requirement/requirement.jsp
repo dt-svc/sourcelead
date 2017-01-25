@@ -1478,14 +1478,36 @@ function getTemplateVal(){
 }
 
 </script>
-
-
+<script>
+function getRequirementAndLookUpSkills(requirementid){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+   	type: "POST",
+    url: sourceleadUrl+"/getRequirementAndLookUpSkills?${_csrf.parameterName}=${_csrf.token}&requirementid="+requirementid, 	   
+	    success: function(data) {
+	    	if(data != null && data != 'undefined' && data !='' ){ 
+	    		var json = JSON.parse(data);
+	    		var output = "";
+	    		for (var i = 0; i < json.length; i++) { 
+               	    var skill = json[i];
+	        		output = output + "<option value='" +skill+ "'>"+skill+"</option>";
+	    		}
+	            $("#skills").empty();
+	            $("#skills").append(output);
+	            $('#skills').trigger("chosen:updated");
+	            
+	    	} 
+	    }
+	});
+}
+</script>
 <script>
 function setTemplateValues(){
  var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = document.getElementById('template').value;
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
 		
+		getRequirementAndLookUpSkills(requirementId);
 	
 	$.ajax({
 	   	type: "POST",
@@ -1555,7 +1577,6 @@ function setTemplateValues(){
 					$('#rate').val('');
 					$('#education').val('').trigger('chosen:updated');
 					$('#skills').val('').trigger('chosen:updated');
-					
 					if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
 						var skills = [];
 			            skills = json.skills.split(",");
@@ -1569,8 +1590,6 @@ function setTemplateValues(){
 			            $("#education").val(educations);
 			            $('#education').trigger("chosen:updated");
 					}
-					
-					
 			    	
 			    	$("#description").val(json.description);
 			    	$("#rate").val(json.rate);

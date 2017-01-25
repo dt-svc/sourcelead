@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
@@ -95,5 +94,7 @@ public interface RequirementService {
 	public Requirement getRequirementByRequirementIdOrgLocationsId(String id,Long requirementId, Long orgLocationsId) throws Exception;
 	
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
+	
+	List<String> getAllRequirementSkillsByRequirementI(String requirementId) throws Exception;
 
 }

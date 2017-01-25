@@ -79,8 +79,8 @@ text-align:left;
 </style>
 <script>
 function editCandidate(candidateId){
-	$("#profileEditPopup").show();
-	 var loginCountryName = '${loginCountryName}';
+	  $("#profileEditPopup").show();
+	  var loginCountryName = '${loginCountryName}';
 	  var sourceleadUrl ='${sourceleadUrl}';
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -458,7 +458,7 @@ function getAllCandidateCountries(){
         error: function(e){
         }
     });
-	}, 150);
+	}, 75);
 } 
 </script>
  
@@ -907,11 +907,12 @@ function candidateProfile(candidateId){
 <script>  
  function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
+	 var jsonData = encodeURIComponent(skillName);
 	 if(skillName != null && skillName != '' && skillName !='undefined'){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({  
 	          type : "POST",
-	          url: sourceleadUrl+"/saveSkilsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+skillName,        
+	          url: sourceleadUrl+"/saveSkilsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
 	          success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            	   candidateSkillsList(candidateId);
@@ -1028,7 +1029,7 @@ function candidateSkillsList(candidateId){
                 		 result = result + '        <tbody>';
 	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) {  
-	                    	 var opt = json[i];   
+	                    	 var opt = json[i]; 
 	                    	    result = result + '<tr>';
 		                		result = result + '<td><p class="form-control-static">'+opt.name+'</p></td>';
 		                		

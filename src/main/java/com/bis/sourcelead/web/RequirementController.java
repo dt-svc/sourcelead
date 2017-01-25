@@ -10,7 +10,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -69,6 +68,9 @@ public class RequirementController {
 	
 	@Autowired
 	LookUpDataService lookUpDataService;
+	
+	/*@Autowired
+	RequirementDao requirementDao;*/
 	
 	@Autowired
 	RequirementService requirementService;
@@ -214,6 +216,18 @@ public class RequirementController {
 	        
 		}*/
         
+		
+		if(requirement != null && requirement.getId() != null){
+			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId().toString());		  	
+		  	List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+		  	List<String> totskils = ListUtils.sum(skillsList,allReqSkills);
+		  	model.addObject("skillsList", totskils);
+		}else{
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);
+		}
+		 
+		
         List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
 		
@@ -224,8 +238,7 @@ public class RequirementController {
 		List<User> allusersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		model.addObject("all_users_List", allusersList);
 		
-		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-		model.addObject("skillsList", skillsList);
+		
 		
 		List<Requirement> jobsTemplateList = requirementService.getJobTitleByJobTemplateStatusAndOrgLocationId(orgLocations.getId());
 		model.addObject("jobsTemplateList", jobsTemplateList);	
