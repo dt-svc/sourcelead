@@ -463,10 +463,6 @@ public class CandidateDaoImpl implements CandidateDao {
 	return candidateList;
 	}
 
-	@Override
-	public List<Candidate> getAllHotlistCandidatesAndNotAssignedToTeamByLocation(Long orgLocationId) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 	
 }

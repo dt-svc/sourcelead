@@ -158,7 +158,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e1.printStackTrace();
 		}
 		org.setUser(user);
-		org.setCreatedBy(user.getUserCode());
 		
 		try {
 			orgService.updateOrg(org);
@@ -241,7 +240,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		orgModules = orgModules.substring(0, orgModules.length()-1);
 		org.setModulesId(orgModules);
-		
+		org.setCreatedBy("sladmin");
 		
 		org.setCreatedDate(new Date());
 		return org;
@@ -689,6 +688,17 @@ public class RegistrationServiceImpl implements RegistrationService{
 		employees.setUpdatedBy(user.getUserCode());
 		employees.setUpdatedDate(new Date());
 		employeesService.addEmployee(employees);
+		
+		if(null == orgLocations.getUser()){
+			if(roles.getRoleName().equalsIgnoreCase("ROLE_ADMIN")){
+				orgLocations.setUser(orgUser);
+				orgLocationService.updateOrgLocations(orgLocations);
+				Org org = orgLocations.getOrg();
+				org.setUser(orgUser);
+				orgService.addOrganization(org);
+			}	
+		}
+		
 		
 		sendEmail(orgUser,user,password,orgLocations.getId());
 		

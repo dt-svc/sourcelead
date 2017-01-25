@@ -4,20 +4,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-
+<script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/jquery-fun.js"></script> 
-
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
- 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -322,8 +310,8 @@ $(document).ready(function () {
           <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onkeyup="validateJobId();" value="">
-               <input type="hidden" name="requirementId" id="requirementId" value="${requirement.id}"/>
+			 <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}" field-name="JobId" data-validation="validate_Space validate_Alphanumeric validate_length length2-100" data-validation-optional="true" onkeyup="validateJobId();" value=""> 
+				<input type="hidden" name="requirementId" id="requirementId" value="${requirement.id}"/>
             </div>
           </div>
            
@@ -1049,8 +1037,8 @@ $(document).ready(function () {
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		validateJobId();
 		checkTemplateforDouplicate();
+		validateJobId();
 		$('#addClient').empty();
 		$('#addContact').empty();
 		$('#addTeam').empty();
@@ -1366,13 +1354,13 @@ function getCities(){
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
-			var config = {
+			/* var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
 			  '.chosen-select-no-single' : {disable_search_threshold:10},
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
-			}
+			} */
 			
 		   $("#countryReq").chosen();
 	       $("#state").chosen();
@@ -2305,13 +2293,14 @@ function getLevel2Approvers(currentApproverId){
  function validateJobId(jobId) {
 	 
 	 var requirementid = document.getElementById("requirementId").value;
-	 if(requirementid != null && requirementid != '' && requirementid != 'undefined' ){
+	/*  if(requirementid != null && requirementid != '' && requirementid != 'undefined' ){ */
 		 if(jobId == null || jobId == "" || jobId == "undefined"){
 			 jobId = document.getElementById("jobId").value; 
 		 }
+		 var specialCharacter = jobId.match(/^[A-Za-z0-9][A-Z a-z 0-9]*$/);
 		 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
 		 var sourceleadUrl ='${sourceleadUrl}';
-		 if(jobId != null && jobId != ""){
+		 if(jobId != null && jobId != "" && specialCharacter != null){
 			 $("#draft").attr("disabled", "disabled");
 			 $("#save").attr("disabled", "disabled");
 			 $("#submitForApproval").attr("disabled", "disabled");
@@ -2334,13 +2323,12 @@ function getLevel2Approvers(currentApproverId){
 			        },
 			    });
 		 }
-	 }else{
-		 if(jobId == null || jobId == "" || jobId == "undefined"){
-			 jobId = document.getElementById("jobId").value; 
-		 }
+	 /* } *//* else{
+		jobId = document.getElementById("jobId").value; 
+	     var	specialCharacter = jobId.match(/^[A-Za-z0-9][A-Z a-z 0-9]*$/); 
 		 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
 		 var sourceleadUrl ='${sourceleadUrl}';
-		 if(jobId != null && jobId != ""){
+		 if(jobId != null && jobId != "" && specialCharacter != null){
 			 $("#draft").attr("disabled", "disabled");
 			 $("#save").attr("disabled", "disabled");
 			 $("#submitForApproval").attr("disabled", "disabled");
@@ -2363,7 +2351,7 @@ function getLevel2Approvers(currentApproverId){
 			        },
 			    });
 		 }
-	 }
+	 } */
 	
  }
  </script>     

@@ -106,7 +106,7 @@ window.onload = function () {
 	 				var mobilePhone = "";
 	 			    var email = "";
 	 				
-	 			    if(org.mobilePhone != null && org.mobilePhone != ''){
+		    	    if(org.mobilePhone != null && org.mobilePhone != ''){
 	 			    	mobilePhone = org.mobilePhone;
 	 			    }else{
 	 			    	mobilePhone = "&nbsp;No Data"

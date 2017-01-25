@@ -666,7 +666,10 @@ public class RequirementRestController {
 	    public @ResponseBody Boolean validateJobId(@RequestParam(value="jobId", required=false) String jobId,
 	    		@RequestParam(value="requirementid", required=false) Long requirementid,HttpServletRequest request) throws Exception {
 		       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		       	Requirement requirement  = requirementService.getRequirementByRequirementIdOrgLocationsId(jobId, requirementid, orgLocation.getId());
+		       Requirement requirement = null;
+		       if(null != requirementid){
+		    	   requirement  = requirementService.getRequirementByRequirementIdOrgLocationsId(jobId, requirementid, orgLocation.getId());
+		       }
 		        Boolean flag = false;
 			    if(requirement == null){
 			    	flag = requirementService.validateJobid(jobId, orgLocation.getId());
