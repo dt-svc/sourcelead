@@ -1,6 +1,7 @@
 package com.bis.sourcelead.elk.index;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class ProjectsIndex implements Serializable{
@@ -28,6 +29,10 @@ public class ProjectsIndex implements Serializable{
 	private String projectStatus;
 	
 	private Long orgRelationId;
+	
+	private String clientName;
+	
+	private ArrayList<String> projectMembers;
 	
     private String status;
 
@@ -126,6 +131,22 @@ public class ProjectsIndex implements Serializable{
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+
+	public ArrayList<String> getProjectMembers() {
+		return projectMembers;
+	}
+
+	public void setProjectMembers(ArrayList<String> projectMembers) {
+		this.projectMembers = projectMembers;
 	}
     
 }

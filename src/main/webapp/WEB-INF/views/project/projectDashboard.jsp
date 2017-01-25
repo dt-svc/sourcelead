@@ -169,7 +169,6 @@ overflow-x: auto;
 							  <label>Invoice frequency</label>
 							  <div class="clearfix">
 								 <select class="chosen-select" id="invoiceFrequencyAdvanced" name="invoiceFrequencyAdvanced" data-placeholder="Invoice Frequency" multiple>
-						                 <option value="">Invoice frequency</option>
 										 <option value="Weekly">Weekly</option>
 										 <option value="Bi-weekly">Bi-weekly</option>
 										 <option value="Semi-Monthly">Semi-Monthly</option>
@@ -794,7 +793,7 @@ $(document).ready(function() {
 							$("#search_project").addClass('button').val('Search');
 							$("#search_project").removeAttr("disabled");
 							closePop();
-							prepareCandidateList(data);
+							prepareProjectsList(data);
 						},
 					}); 
 			return true;
@@ -807,5 +806,113 @@ $(document).ready(function() {
 		$("#projectlist_form").showHelpOnFocus();
 		$("#projectlist_form").validateOnBlur(false, validationSettings);
 	});
+</script>
+
+<script>
+  function prepareProjectsList(data){
+	  if(data != null && data != 'undefined' && data != "" && data != '[]'){
+		    	var json = JSON.parse(data);
+	        	var result = "";
+		    	result = result +'<thead>';
+		    	result = result +'	<tr>';
+		    	result = result +'	<th>Id</th>';
+		    	result = result +'    <th>Name</th>'; 
+		    	result = result +'     <th>Manager</th>';
+		    	result = result +'     <th>Invoice Frequency</th>';
+		    	result = result +'     <th>Date</th>';
+		    	result = result +'      <th>Client</th>';
+		    	result = result +'       <th>Status</th>';
+		    	result = result +'    </tr>';
+		    	result = result +'</thead>	';
+		    	result = result +'<tbody>';
+		    	for (var i=0; i<json.length; i++)
+				{   
+		    		var report = json[i];
+		    		var projectSequeneNumber;
+		    		if(report.projectSequeneNumber != null && report.projectSequeneNumber != '' && report.projectSequeneNumber !='undefined'){
+		    				projectSequeneNumber = report.projectSequeneNumber;
+		    		}else{
+		    			projectSequeneNumber = "---";
+		    		}
+		    		result = result +'<tr>';
+		    		result = result +'<td data-title="Id"><div><span title='+projectSequeneNumber+'>'+projectSequeneNumber+'</span></div></td>';
+	
+		    		
+		    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
+		    			result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\');"><span title="'+report.projectName+'">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    		'</sec:authorize>';
+		    		
+		    		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
+	    		  		result = result +'<td data-title="Name"><div class="proj_show"><span title="'+report.projectName+'">'+report.projectName+'</span></div></td>';
+	    			'</sec:authorize>';
+	
+		    		result = result +'<td data-title="Manager">';
+		    		result = result +'<div><span title='+report.level1ManagerName+'>';
+		    		if(report.level1ManagerName !=null && report.level1ManagerName !='' && report.level1ManagerName !='undefined'){
+		    			result = result +report.level1ManagerName;
+		    		}
+		    		if(report.level1ManagerName !=null && report.level1ManagerName !='' && report.level1ManagerName !='undefined' && report.level2ManagerName!=null && report.level2ManagerName!='' && report.level2ManagerName !='undefined'){
+		    			result = result + " , ";
+		    		}
+		    		if(report.level2ManagerName!=null && report.level2ManagerName!='' && report.level2ManagerName !='undefined'){
+		    			result = result +report.level2ManagerName;
+		    		}
+		    		result = result +'</span></div>';
+		    		result = result +'</td>';
+		    		
+		    		result = result +'<td data-title="Invoice Frequency">';
+		    		result = result +'<div><span title="'+report.invoiceFrequency+'">';
+		    		if(report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
+		    			result = result +report.invoiceFrequency;
+		    		}
+		    		
+		    		result = result +'</span></div>';
+		    		result = result +'</td>';
+		    		
+		    		result = result +'<td data-title="Date"><div><span title="'+report.startDate+'">'+report.startDate+'</span>';
+		    		if(report.endDate != null && report.endDate != '' && report.endDate != 'undefined'){
+	   		    		result = result +'- <span title="'+report.endDate+'">'+report.endDate+'</span> </div></td>';
+		    		}
+		    		if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
+		    			result = result +'<td data-title="Client"><div><span title="'+report.clientName+'">'+report.clientName+'</span></div></td>';  
+		    		}else{
+		    			result = result +'<td data-title="Client"><div>---</div></td>';  
+		    		}
+		    		result = result +'<td data-title="Status"><div>';
+		    		if(report.projectStatus == 'STARTED'){
+	   			  result = result +'<b>'+report.projectStatus+'</b>';
+	   			}
+		    		if(report.projectStatus == 'INPROGRESS'){
+	   			  result = result +'<b class="proj_process">'+report.projectStatus+'</b>';
+	   			}
+		    		if(report.projectStatus == 'COMPLETED'){
+	   			  result = result +'<b class="proj_active">'+report.projectStatus+'</b>';
+	   			}
+		    		if(report.projectStatus == 'ONHOLD'){
+	   			  result = result +'<b class="proj_deactivate">'+report.projectStatus+'</b>';
+	   			}
+		    		
+		    		result = result +'</div></td>';
+		    		
+	                result = result +'</tr>';
+				}
+	            result = result +'  </tbody>';
+	            result = result +' </table>';
+	            result = result +'</div>';
+	            $("#example").empty();  
+	    	    $("#example").append(result);
+	    	    pagination();
+	  }else{
+     	 $("#candidateList").removeAttr("style");
+	         var result ="";
+			 result = result+"			<div class='blank-pages'>";
+			 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+			 result = result+"			        <p>No Candidates Found</p>";
+			 result = result+"			 </div>";
+			$("#noCandidates").val("nocandidate");
+			$("#candidateList").empty();
+		    $("#candidateList").append(result); 
+      }
+  }
 </script>
 </html>
