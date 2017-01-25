@@ -266,6 +266,11 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 var novalidation = '';
             	 var datavalidation2 = '';
             	 var onBlurEvent = '';
+            	 var style = '';
+            	 var months = '';
+            	 var onclick='';
+            	 var ratePer = '';
+            	 var options = '';
             	 
         		 if(required == 1){
         			 if(label == 'Email Id'){
@@ -319,6 +324,73 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 else{
             		 var uniqueID = Math.floor(Math.random()*999999)+1;
             	 }
+            	 
+            	 if(label == 'Work Experience'){
+            		 
+            		 style = 'style="width:160px !important; padding-right:5px;"';
+            		 onclick = 'onclick="getExpYears();"'
+            		 options = '<option value="">Years</option>';
+            		 months = '&nbsp;<select  style="width:160px !important; padding-right:5px;" id="monthExp" name="monthExp" field-name="Months">'+
+            		 '<option value="">Months</option>'+
+                     '<option value="1">1</option>'+
+                     '<option value="2">2</option>'+
+                     '<option value="3">3</option>'+
+                     '<option value="4">4</option>'+
+                     '<option value="5">5</option>'+
+                     '<option value="6">6</option>'+
+                     '<option value="7">7</option>'+
+                     '<option value="8">8</option>'+
+                     '<option value="9">9</option>'+
+                     '<option value="10">10</option>'+
+                     '<option value="11">11</option>'+
+                     '</select>';
+            	 }
+            	 
+            	 if(label == "Current CTC"){
+            		 
+            		 var datavalidation = '';
+            		 if(required == 1){
+            			 datavalidation = 'data-validation="required"'
+            		 }else{
+            			 datavalidation = 'data-validation-optional="true"'
+            		 }
+            		 
+            		 style = 'style="width:160px !important; padding-right:5px;"'; 
+            		 
+            		 ratePer = '&nbsp;<select '+datavalidation+' style="width:160px !important; padding-right:5px;" id="currentCTCRatePer" name="currentCTCRatePer" field-name="Rate Per">'+
+            		 '<option value="">Rate Per</option>'+
+            		 '<option value="Yearly">Yearly</option>'+
+            		 '<option value="Monthly">Monthly</option>'+
+            		 '<option value="Semi-Monthly">Semi-Monthly</option>'+
+            		 '<option value="Bi-Monthly">Bi-Monthly</option>'+
+                     '<option value="Weekly">Weekly</option>'+
+                     '<option value="Bi-weekly">Bi-weekly</option>'+
+                     '<option value="Hourly">Hourly</option>'+
+                     '</select>';
+            	 }
+            	 
+            	 if(label == "Expected CTC"){
+            		 style = 'style="width:160px !important; padding-right:5px;"'; 
+            		 
+            		 var datavalidation = '';
+            		 if(required == 1){
+            			 datavalidation = 'data-validation="required"'
+            		 }else{
+            			 datavalidation = 'data-validation-optional="true"'
+            		 }
+            		 
+            		 ratePer = '&nbsp;<select '+datavalidation+'   style="width:160px !important; padding-right:5px;" id="expectedCTCRatePer" name="expectedCTCRatePer" field-name="Rate Per">'+
+            		 '<option value="">Rate Per</option>'+
+            		 '<option value="Yearly">Yearly</option>'+
+            		 '<option value="Monthly">Monthly</option>'+
+            		 '<option value="Semi-Monthly">Semi-Monthly</option>'+
+            		 '<option value="Bi-Monthly">Bi-Monthly</option>'+
+                     '<option value="Weekly">Weekly</option>'+
+                     '<option value="Bi-weekly">Bi-weekly</option>'+
+                     '<option value="Hourly">Hourly</option>'+
+                     '</select>';
+            	 }
+            	 
                 
 
                  switch (fieldType) {
@@ -327,7 +399,8 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+onBlurEvent+' '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+style+' '+onBlurEvent+' '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                              ratePer+
                              '</div>';
 
                      case 'textarea':
@@ -341,7 +414,8 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
                              '<label for="select-' + uniqueID + '"></label>' +
-                             '<select id="select-' + uniqueID + '" '+datavalidation2+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' class="choices choices-select"></select>' +
+                             '<select  '+style+' '+onclick+' id="select-' + uniqueID + '" '+datavalidation2+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' class="choices choices-select">'+options+'</select>' +
+                               months+
                              '</div>';
 
                      case 'radio':
