@@ -141,7 +141,7 @@ overflow-x: auto;
 						  <div class="pull-right mr">
 							 <!--  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
 							  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> -->
-							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
+							   <input type="button" value="Search" id="search_project" onclick="searchProject();" class="btn btn-sm btn-primary"/>
                                <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
 						  </div>
 					  </div>
@@ -666,4 +666,53 @@ $(document).ready(function() {
 				$this.next().css({'width': '100%'});
 				})
 </script> 
+<script type="text/javascript">
+	function searchProject() {
+		var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd'
+			};
+		
+		 if ($('#projectlist_form').validate(false, validationSettings)){ 
+			
+			var sourceleadUrl = '${sourceleadUrl}';
+			var frm = $('#projectlist_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, ""); 
+		    var jsonData = encodeURIComponent(con);
+			var form = $('#projectlist_form')[0];
+      		var formData = new FormData(form); 
+			//It will escape all the special characters
+			$("#search_project").attr("disabled", "disabled");
+			$("#search_project").addClass('button').val('Processing..');
+
+			$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/searchProject?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						success : function(data) {
+							$("#search_project").addClass('button').val('Search');
+							$("#search_project").removeAttr("disabled");
+							closePop();
+							prepareCandidateList(data);
+						},
+					}); 
+			return true;
+		 }else{ 
+				return false;
+		 } 
+	} 
+	
+	$('body').on('blur', '#projectlist_form', function() {
+		$("#projectlist_form").showHelpOnFocus();
+		$("#projectlist_form").validateOnBlur(false, validationSettings);
+	});
+</script>
 </html>
