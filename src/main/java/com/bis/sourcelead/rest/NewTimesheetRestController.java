@@ -3,10 +3,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -214,7 +212,7 @@ public class NewTimesheetRestController {
 				if(timesheetFrequencyMap != null && !timesheetFrequencyMap.isEmpty()){
 					
 				timesheetEntriesDiv.append("					<div id='timesheetEntriesDivByProjectMemberId'>");
-				timesheetEntriesDiv.append("					<div class='timeNewSe timeNewSe_a'>");  
+				timesheetEntriesDiv.append("					<div class='timeNewSe timeNewSe_a addicon'>");
 				timesheetEntriesDiv.append("		                <select id='timesheetFrequency' name='timesheetFrequency' class='form-control chosen-select' onChange='timesheetDivByFrequency()' >");
 				StringBuilder selectedStartDate = new StringBuilder("");
 				StringBuilder selectedEndDate =  new StringBuilder("");
@@ -510,6 +508,7 @@ public class NewTimesheetRestController {
 		TimesheetSubmissions ts = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(actualStartDate, actualEndDate, projectMember.getId());
 		if(ts != null){
 			Collection<TimesheetEntries>  timesheetEntriesList =   timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(ts.getId());
+			tabDiv.append("<input type='hidden' name='submissionId'  class='initiateTimesheetMax' id='submissionId'  value='"+ts.getId()+"' />");
 			if(timesheetEntriesList != null && !timesheetEntriesList.isEmpty()){
 						Integer maxCount = timesheetEntriesList.size();
 						Integer rowCount = 1;
@@ -521,7 +520,8 @@ public class NewTimesheetRestController {
 									  tabDiv.append("                 <td>");
 									  tabDiv.append("                      <div> ");
 									  
-									  Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasks();
+									  //Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasks();
+									  Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
 									  tabDiv.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
 									  tabDiv.append("<option value=''>--select task--</option>");
 						              for(ProjectTasks pt   : ProjectTasksList){
@@ -754,8 +754,17 @@ public class NewTimesheetRestController {
 				tabDiv.append("</div>");
 		
 			//attachemtns and comments.
-		    StringBuilder attachmentDiv = attachmentsAndComments(startDate, endDate);
-		    tabDiv.append(attachmentDiv);
+
+				tabDiv.append("		    <div class='timesheet_bot'>");	
+				tabDiv.append("		    	<div class='timesheet_week_comm'>");
+				
+			    StringBuilder attachmentDiv = attachmentsAndComments(startDate, endDate,ts);
+			    tabDiv.append(attachmentDiv);
+			    
+			    tabDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");	
+			    tabDiv.append("		            <div class='clearfix'></div>");	
+			    
+			    tabDiv.append("</div>");
 		    
 		    
 		    tabDiv.append("		    	<div class='clearfix'></div>");	
@@ -767,14 +776,13 @@ public class NewTimesheetRestController {
 				if(frequencyEndDate.equals(actualEndDate))
 				tabDiv.append("		            <input type='button' onClick='newSaveTimesheet(\"Submitted\",\"user\");'  value='Submit' class='time_btn' />");	
 			}
-			tabDiv.append("		            <input type='button' value='Clear' class='time_btn time_cancel' />");	
+			tabDiv.append("		            <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />");	
 			tabDiv.append("		        </div>   ");	     
 			tabDiv.append("		    </div>  ");	
 			tabDiv.append("		<div class='res_total_hour'>");	
 			tabDiv.append("			<i></i>");	
 			tabDiv.append("			<p>Total hours</p>");	
 			tabDiv.append("		    <h2> <input disabled type='text' id='grandTotal' name='grandTotal' class='inline_field' value='HH:MM' value='00:00' /> </h2>");	
-			tabDiv.append("		    <span>This Week</span>");	
 			tabDiv.append("		</div>   ");
 		    
 		    
@@ -782,28 +790,47 @@ public class NewTimesheetRestController {
 		    return tabDiv;
 	}
 	
-	public StringBuilder attachmentsAndComments(String weekStartDate ,String weekEndDate) throws Exception{
-		
-		StringBuilder timesheetEntriesDiv = new StringBuilder();	
-		timesheetEntriesDiv.append("<input type='hidden' name='attcahmentMaxRowNumber'  id='attcahmentMaxRowNumber' value='1' />");
-		timesheetEntriesDiv.append("		    <div class='timesheet_bot'>");	
-		timesheetEntriesDiv.append("		    	<div class='timesheet_week_comm'>");	
-		
-		timesheetEntriesDiv.append("<div class='commentFile'>"); 
-		timesheetEntriesDiv.append("<span>"); 
-		timesheetEntriesDiv.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
-		timesheetEntriesDiv.append("<tr id='divAttachmentTsRow0'>");
-		timesheetEntriesDiv.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");           
-		timesheetEntriesDiv.append("</tr>");
-		timesheetEntriesDiv.append("</table>");
-		timesheetEntriesDiv.append("</span>");
-		timesheetEntriesDiv.append("</div>");
-		
-		
-		timesheetEntriesDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");	
-		timesheetEntriesDiv.append("		            <div class='clearfix'></div>");	
-		timesheetEntriesDiv.append("		        </div>");	
-		return timesheetEntriesDiv;
+	public StringBuilder attachmentsAndComments(String startDate ,String endDate,TimesheetSubmissions ts) throws Exception{
+			
+			StringBuilder timesheetEntriesDiv = new StringBuilder();	
+			
+			StringBuilder documentBuffer = new StringBuilder();	
+			documentBuffer.append("<input type='hidden' name='attcahmentMaxRowNumber'  id='attcahmentMaxRowNumber' value='1' />");
+			if(ts != null){
+				List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
+				documentBuffer.append("<div class='timesheetDocs'>"); 
+				if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
+						for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
+							if(!isNullOrEmpty(tsd.getFileName())){
+									documentBuffer.append("<strong>");
+									documentBuffer.append(" <a class='downicon' href=\'").append(sourceleadUrl).append("/downloadDocument?submissionDocumentId=").append(tsd.getId()).append("\'>");
+									documentBuffer.append("<i class='glyphicon glyphicon-save'></i>");
+									documentBuffer.append(" <input type='button' value='"+tsd.getFileName()+"'>");
+									documentBuffer.append("</a>");
+									
+									/*if( (!isFillMyTimeSheet ) ||  ( !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))  ) ){
+									}else{*/
+										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+startDate+"\");' >");
+									/*}*/
+									documentBuffer.append("</strong>");
+							} 
+						}
+					} 
+			}
+			/*if( (!isFillMyTimeSheet ) || ( !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))  ) ){
+			}else{*/
+            	documentBuffer.append("<div class='commentFile'>"); 
+				documentBuffer.append("<span>"); 
+				documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
+						documentBuffer.append("<tr id='divAttachmentTsRow0'>");
+						documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");           
+						documentBuffer.append("</tr>");
+				documentBuffer.append("</table>");
+				documentBuffer.append("</span>");
+				documentBuffer.append("</div>");
+			/*}*/
+		documentBuffer.append("</div>"); 
+		return documentBuffer;
 	}
 	
 		
