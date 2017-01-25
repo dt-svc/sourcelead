@@ -105,9 +105,12 @@ overflow-x: auto;
 		                <div class="col-md-4">
 		                  <label>Client Name</label>
 		                  <div class="clearfix">
-		                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Client Name" id="orgNameAdvanced" name="orgAdvanced">
+		                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Client Name" id="orgNameAdvanced" name="orgNameAdvanced">
+		                    	<c:forEach var="client" items="${clientsList}">
+                            	    <option value="${client.clientName}">${client.clientName}</option>
+                         		</c:forEach>
 		                    </select>
-                  </div>
+                	  </div>
 		                </div>
 		                
 		              </div>
@@ -118,28 +121,33 @@ overflow-x: auto;
 		                <div class="col-md-4">
 		                  <label>Country</label>
 		                  <div class="clearfix">
-		                    <select class="chosen-select" name="country" id="countrySearch" field-name="Country"  >
+		                    <select class="chosen-select" name="country" id="country" field-name="Country"  >
 						     <c:forEach var="cntry" items="${countryList}">
 					                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
 				             </c:forEach>
 				           </select>
 		                  </div>
 		                </div>
-		                <div class="col-md-4">
-		                  <label>State</label>
-		                  <div class="clearfix">
-		                    <select  class="chosen-select" name="state" id="stateSearch" field-name="State">
-                           </select>
-		                  </div>
-		                </div>
-		                <div class="col-md-4">
-		                  <label>City</label>
-		                  <div class="clearfix">
-		                    <select  class="chosen-select" name="city" id="citySearch" field-name="City">
-                            </select>
-		                  </div>
-		                </div>
-		              </div>
+		                 <div class="col-md-4"> 
+							  <label>State</label>
+							  <div class="clearfix">
+								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
+								        <option value="">---select state---</option>
+								        <c:forEach var="state" items="${statesList}">
+							                     <option value="${state.stateName}">${state.stateName}</option>
+						                </c:forEach>
+                                 </select>
+							 </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>City</label>
+							  <div class="clearfix">
+								  <select  class="chosen-select" name="city" id="city" field-name="City"  >
+								      <option value="">---select city---</option>
+                                  </select>
+							  </div>
+						  </div>
+            		  </div>
 		              <div class="clearfix">
 		                <div class="col-md-4">
 		                  <label>Tier</label>
@@ -215,6 +223,9 @@ overflow-x: auto;
 		                  <label>Client</label>
 		                  <div class="clearfix">
 		                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Client" id="orgAdvanced" name="orgAdvanced">
+                             	<c:forEach var="client" items="${clientsList}">
+                            	    <option value="${client.clientName}">${client.clientName}</option>
+                         		</c:forEach>
                              </select>
 		                  </div>
 		                </div>

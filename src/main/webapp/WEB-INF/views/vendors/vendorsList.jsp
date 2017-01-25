@@ -121,20 +121,25 @@ overflow-x: auto;
 				     </select>
                   </div>
                 </div>
-                <div class="col-md-4">
-                  <label>State</label>
-                  <div class="clearfix">
-					<select  class="chosen-select" name="state" id="state" field-name="State"  >
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <label>City</label>
-                  <div class="clearfix">
-                     <select  class="chosen-select" name="city" id="city" field-name="City"  >
-                     </select>
-                  </div>
-                </div>
+             <div class="col-md-4"> 
+							  <label>State</label>
+							  <div class="clearfix">
+								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
+								        <option value="">---select state---</option>
+								        <c:forEach var="state" items="${statesList}">
+							                     <option value="${state.stateName}">${state.stateName}</option>
+						                </c:forEach>
+                                 </select>
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>City</label>
+							  <div class="clearfix">
+								  <select  class="chosen-select" name="city" id="city" field-name="City"  >
+								      <option value="">---select city---</option>
+                                  </select>
+							  </div>
+						  </div>
               </div>
               <div class="clearfix">
                 <div class="col-md-4">
@@ -215,7 +220,7 @@ overflow-x: auto;
                   <div class="clearfix">
                      <select class="chosen-select form-control input-sm" multiple data-placeholder="Vendor" id="orgAdvanced" name="orgAdvanced">
                         <c:forEach var="vendor" items="${vendor_list}">
-                                <option value="${vendor.id}">${vendor.clientName}</option>
+                                <option value="${vendor.clientName}">${vendor.clientName}</option>
                          </c:forEach>
                     </select>
                   </div>
