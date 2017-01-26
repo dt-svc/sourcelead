@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -14,6 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -22,9 +25,17 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,6 +45,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
+import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.index.helper.RequirementHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
@@ -41,6 +55,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -60,6 +75,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -71,7 +87,10 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.PdfUtil;import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * 
@@ -82,7 +101,8 @@ import com.bis.sourcelead.util.PdfUtil;
 
 @Service
 public class RequirementServiceImpl implements RequirementService {
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(RequirementServiceImpl.class);
 
 	@Autowired
 	RequirementDao requirementDao;
@@ -125,6 +145,7 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	
 	
+	
 	 @Autowired
 	 private  RequirementSubmissionService requirementSubmissionService;
 	 
@@ -138,7 +159,16 @@ public class RequirementServiceImpl implements RequirementService {
 	 private OrgRelationsService orgRelationsService;
 	 
 	 @Autowired
+	 LookUpDataService lookUpDataService;
+	 
+	 @Autowired
 	 private PdfUtil pdfUtil;
+	 
+	 @Autowired
+	 private RequirementHelper requirementHelper;
+	 
+	 @Autowired
+	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -316,8 +346,8 @@ public class RequirementServiceImpl implements RequirementService {
 				
 				
 				skillId = skillId.replaceAll("\"", "");
-		  	   requirement.setSkills(skillId);
-			
+		  	    requirement.setSkills(skillId);
+		  	 
 			}
 			
 			if(jsonObj.has("education")){
@@ -333,7 +363,7 @@ public class RequirementServiceImpl implements RequirementService {
 				educationId = educationId.replaceAll("\\[", "").replaceAll("\\]","");
 				educationId = educationId.replaceAll("\"", "");
 				
-		  	  requirement.setEducation(educationId);
+		  	    requirement.setEducation(educationId);
 			
 			 }
 			
@@ -683,13 +713,20 @@ public class RequirementServiceImpl implements RequirementService {
 					if(savedRequirement.getManagerUserId() != null && !user.getId().equals(savedRequirement.getManagerUserId().getId())){
 						mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 					}
-		 }			
-		
+		 }		
+			       saveElkRequirement(savedRequirement);
 		return savedRequirement;
+	}
+
+	private void saveElkRequirement(Requirement requirement) throws Exception {
+		 
+		RequirementIndex requirementIndex = requirementHelper.populateRequirementIndex(requirement);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirement.getId().toString());
 	}
 
 	@Override
 	public Requirement addRequirement(Requirement requirement) throws Exception {
+		saveElkRequirement(requirement);
 		return requirementDao.storeRequirement(requirement);
 	}
 
@@ -1459,22 +1496,33 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			globalVarsMap.put("loginUserName", "--");
 		}
-		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
-				&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName()))  {
-			StringBuilder userBuild = new StringBuilder();
+		StringBuilder userBuild = new StringBuilder();
+		if (loginUser.getFirstName() != null && loginUser.getLastName() != null	&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName()))  {
 			globalVarsMap.put("approverName", userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		} else {
-			globalVarsMap.put("approverName", "--");
+		} else if(loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getFirstName())) {
+			globalVarsMap.put("approverName", userBuild.append(loginUser.getFirstName()).toString());
+		}else{
+			globalVarsMap.put("approverName","--");
 		}
-		if (loginUser.getUserType() != null && !"".equalsIgnoreCase(loginUser.getUserType())) {
-			globalVarsMap.put("role", loginUser.getUserType());
-		} else {
+		
+		
+		UserRole userRole = userRoleService.getUserRoleByUserId(loginUser.getId());
+		if(null != userRole.getRoles()){
+		if (userRole.getRoles().getDisplayName() != null && !"".equalsIgnoreCase(userRole.getRoles().getDisplayName())) {
+			globalVarsMap.put("role", userRole.getRoles().getDisplayName());
+		} }else {
 			globalVarsMap.put("role", "--");
 		}
-		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
-			globalVarsMap.put("requirementId-Name",requirement.getJobId()+"-"+requirement.getJobTitle());
-		} else {
-			globalVarsMap.put("requirementId-Name", "--");
+		
+		StringBuilder appendString = new StringBuilder();
+		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId()) && (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()))) {
+			globalVarsMap.put("requirementId-Name",appendString.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
+		} else if(requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())) {
+			globalVarsMap.put("requirementId-Name", requirement.getJobTitle());
+		}else if(requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())){
+			globalVarsMap.put("requirementId-Name", requirement.getJobId());
+		}else{
+			globalVarsMap.put("requirementId-Name", requirement.getJobId());
 		}
 		if (loginUser.getUserName() != null && !"".equalsIgnoreCase(loginUser.getUserName()) ) {
 			globalVarsMap.put("jobInitiatorName", initiatorUser.getFirstName());
@@ -2066,6 +2114,7 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					skillId = skillId.replaceAll("\"", "");
 					reqTemplate.setSkills(skillId);
+					
 				}else{
 					reqTemplate.setSkills(null);	
 				}
@@ -2084,6 +2133,7 @@ public class RequirementServiceImpl implements RequirementService {
 					educationId = educationId.replaceAll("\"", "");
 					
 					reqTemplate.setEducation(educationId);
+					
 				 }else{
 					 reqTemplate.setEducation(null);
 				 }
@@ -2143,5 +2193,271 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.validateJobid(id,orgLocationsId);
 	}
 
+	@Override
+	public List<String> getAllRequirementSkillsByRequirementI(String requirementId) throws Exception {
+		return requirementDao.getAllRequirementSkillsByRequirementI(requirementId);
+	}
+	
+	@Override
+	public List<String> getAllSkillsBySkillCategory() throws Exception{
+		return lookUpDataService.getAllSkillsBySkillCategory();
+		
+	}
+
+	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj,Org org) throws Exception {
+		
+		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		 
+		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+		 
+		 Long maxResults = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
+	   	 //Exclude Keyword
+		 if(jsonObj.has("excludeKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("excludeKeyWord"))){
+			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+			 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+				 for(String keywd : excludeKeyWordArray){
+					 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+							excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+						}
+						excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+					}
+				}
+				 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+			  } 
+		 }
+			
+			//Any Keyword
+		 if(jsonObj.has("anyKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("anyKeyWord"))){
+			 ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyKeyWord");
+				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : anyKeyWordArray){
+						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(anyBoolQueryBuilder);
+				} 
+		 }
+		
+		//All Keywords
+		 if(jsonObj.has("allKeyWords") && !"".equalsIgnoreCase(jsonObj.getString("allKeyWords"))){
+				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeyWords");
+				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(allBoolQueryBuilder);
+				}
+		 }
+			
+			
+			//Requirement Title
+			if(jsonObj.has("jobTitle") && !"".equalsIgnoreCase(jsonObj.getString("jobTitle"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", jsonObj.getString("jobTitle")));
+		    }
+		 //Country
+			if(jsonObj.has("country") && !"".equalsIgnoreCase(jsonObj.getString("country"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+		    }
+			 //State
+			if(jsonObj.has("state") && !"".equalsIgnoreCase(jsonObj.getString("state"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
+		    }
+			//City
+			if(jsonObj.has("city")  && !"".equalsIgnoreCase(jsonObj.getString("city"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
+		    }
+			
+			// currency
+		    if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("currentRateCurrency", jsonObj.getString("currencyCode")));
+		    }
+		    
+		     //rate
+		    if(jsonObj.has("rate") && !"".equalsIgnoreCase(jsonObj.getString("rate"))){
+		    	String rate= jsonObj.getString("rate").replaceAll("[^0-9\\.]+", "");
+		    	try{
+		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("rate").gte(new Float(rate)));
+		    	}
+		    	catch(NumberFormatException e){}
+		    }
+			
+			
+		   //Rate Type
+			if(jsonObj.has("rateType") && !"".equalsIgnoreCase(jsonObj.getString("rateType"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
+		    }
+			
+			
+			//minExpYears && maxExpYears
+		    if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp")) && jsonObj.has("maxExp")  && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
+		    	String minYears= jsonObj.getString("minExp").replaceAll("[^0-9\\.]+", "");
+		    	String maxYears= jsonObj.getString("maxExp").replaceAll("[^0-9\\.]+", "");
+		    	try{
+		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(new Integer(minYears)).lte(new Integer(maxYears)));
+		    	}
+		    	catch(NumberFormatException e){}
+		    }
+			//minExpYears
+		    else if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp"))){
+		    	String minYears= jsonObj.getString("minExp").replaceAll("[^0-9\\.]+", "");
+		    	try{
+		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(new Integer(minYears)));
+		    	}
+		    	catch(NumberFormatException e){}
+		    }
+		    //maxExpYears
+		    else if(jsonObj.has("maxExp") && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
+           	String maxYears= jsonObj.getString("maxExp").replaceAll("[^0-9\\.]+", "");
+           	try{
+		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").lte(new Integer(maxYears)));
+		    	}
+		    	catch(NumberFormatException e){}
+		    }
+			
+		    //requirementStatu
+			if(jsonObj.has("requirementStatus") && !"".equalsIgnoreCase(jsonObj.getString("requirementStatus"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", jsonObj.getString("requirementStatus")));
+		    }
+		    
+			//Educations
+			if(jsonObj.has("education") && !"".equalsIgnoreCase(jsonObj.getString("education"))){
+				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
+				if(educationArray != null && !educationArray.isEmpty()){
+					BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
+					for(String keywd : educationArray){
+						edunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("education", keywd));
+					}
+					boolQueryBuilder.must(edunBoolQueryBuilder);
+				} 
+			}
+			
+			//client
+			if(jsonObj.has("client") && !"".equalsIgnoreCase(jsonObj.getString("client"))){
+				ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "client");
+				if(employerArray != null && !employerArray.isEmpty()){
+					BoolQueryBuilder employerBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : employerArray){
+						employerBoolQueryBuilder.should(QueryBuilders.matchQuery("client", keywd));
+					}
+					boolQueryBuilder.must(employerBoolQueryBuilder);
+				}
+			}
+			//Requirement Skills
+			if(jsonObj.has("skills") && !"".equalsIgnoreCase(jsonObj.getString("skills"))){
+				ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "skills");
+				if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
+					BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : candidateSkillsArray){
+						skillBoolQueryBuilder.should(QueryBuilders.matchQuery("skills", keywd));
+					}
+					boolQueryBuilder.must(skillBoolQueryBuilder);
+				} 	
+			}
+			
+			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+			List<Requirement>   reqList = new ArrayList<>();
+			if(searchHits != null && searchHits.length >0){
+				for (SearchHit hit : searchHits) {
+					String sourceAsString = hit.getSourceAsString();
+					ObjectMapper mapper = new ObjectMapper();
+					if (sourceAsString != null) {
+						Requirement requirement = new Requirement();
+		            	RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
+		            	requirement.setId(requirementIndex.getRequirementId());
+		            	requirement.setJobId(requirementIndex.getJobId());
+		            	requirement.setJobTitle(requirementIndex.getJobTitle());
+		            	requirement.setClientName(requirementIndex.getClientContactName());
+		            	requirement.setCountry(requirementIndex.getCountry());
+		            	requirement.setState(requirementIndex.getState());
+		            	requirement.setCity(requirementIndex.getCity());
+		            	requirement.setPositions(requirementIndex.getNumberOfPositions());
+		            	requirement.setNoOfApplicants(requirementIndex.getNumberOfApplicants());
+		            	requirement.setManager(requirementIndex.getManager());
+		            	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+			            	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
+		            	}
+		            	reqList.add(requirement);
+		            }
+				}
+			}
+		return reqList;
+		
+	}
+	 private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
+		 ArrayList<String> keyWordList = null;
+		 if(jsonObj.has(param)){
+			 String searchKeywordString = null;
+			 try{
+	   		   JSONArray jsonArray = jsonObj.getJSONArray(param);
+	   		   searchKeywordString = jsonArray.toString();
+		   	  }
+		   	  catch(JSONException e){
+		   		  searchKeywordString= jsonObj.getString(param);
+		   	  }
+			 
+		     searchKeywordString = searchKeywordString.replaceAll("\\[", "").replaceAll("\\]","");
+		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+		 }
+		 else{
+			 keyWordList = new ArrayList<String>();
+		 }
+         return keyWordList;
+     }
+	 
+	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+		   
+		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		  /*  matchQueryBuilderList.add(QueryBuilders.matchQuery("rate", keywd));requirementId numberOfPositions
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rateType", keywd));*/
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactEmail", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("numberOfPositions", keywd));
+			
+			
+			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			if(matcher.find()){
+				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+			}
+//			if(StringUtils.isNumeric(keywd)){
+//				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
+//				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRate", keywd));
+//			}
+				
+			return matchQueryBuilderList; 
+	 }
 }
 

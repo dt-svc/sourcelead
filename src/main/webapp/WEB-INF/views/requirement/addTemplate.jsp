@@ -5,19 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script
-	src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-
-<script src="resources/js/jquery-fun.js"></script>
-
-<script src="resources/js/chosen.jquery.min.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<script src="resources/js/formvalidator.js"></script>
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -34,11 +22,17 @@ bottom:-14px;
 </style>
 
 
+<script>
+	$(document).ready(function() {
+		document.getElementById("requirementtemplate_form").reset();
+	});
+</script>
+
 <!-- Content Area -->
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Template Details</h2>
+			<h2>Requirement Template</h2>
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
@@ -70,7 +64,45 @@ bottom:-14px;
 							</div>
 						</div>
 	
-	
+	                       
+	                       <div class="form-group">
+							<label class="col-md-3">Education</label>
+							<div class="col-md-9">
+								<select multiple class="chosen-select form-control"
+									name="education" id="education"
+									data-validation="validate_Space"
+									data-validation-optional="true">
+									<c:forEach var="edu" items="${educationsList}">
+										<c:if
+											test="${fn:contains(requirement.reqEducationListString, edu.name)}">
+											<option selected value="${edu.name}">${edu.name}</option>
+										</c:if>
+										<c:if
+											test="${!fn:contains(requirement.reqEducationListString, edu.name)}">
+											<option value="${edu.name}">${edu.name}</option>
+										</c:if>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
+
+                           <div class="form-group">
+							<label class="col-md-3">Skills</label>
+							<div class="col-md-9">
+								<select multiple class="chosen-select form-control"
+									name="skills" id="skills" data-validation-optional="true">
+									<c:forEach var="skill" items="${skillsList}">
+										<c:if test="${fn:contains(requirement.reqSkillsListString, skill.name)}">
+											<option selected value="${skill.name}">${skill.name}</option>
+										</c:if>
+										<c:if test="${!fn:contains(requirement.reqSkillsListString, skill.name)}">
+											<option value="${skill.name}">${skill.name}</option>
+										</c:if>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
+	                       
 							<div class="form-group">
 								<label class="col-md-3">Employment Type</label>
 									<div class="col-md-9">
@@ -94,26 +126,8 @@ bottom:-14px;
 								</div>
 						</div>
 					
-					<div class="form-group">
-							<label class="col-md-3">Education</label>
-							<div class="col-md-9">
-								<select multiple class="chosen-select form-control"
-									name="education" id="education"
-									data-validation="validate_Space"
-									data-validation-optional="true">
-									<c:forEach var="edu" items="${educationsList}">
-										<c:if
-											test="${fn:contains(requirement.reqEducationListString, edu.name)}">
-											<option selected value="${edu.name}">${edu.name}</option>
-										</c:if>
-										<c:if
-											test="${!fn:contains(requirement.reqEducationListString, edu.name)}">
-											<option value="${edu.name}">${edu.name}</option>
-										</c:if>
-									</c:forEach>
-								</select>
-							</div>
-						</div>
+					
+
 
 						<div class="form-group">
 							<label class="col-md-3">Experience</label>
@@ -123,7 +137,7 @@ bottom:-14px;
 										<input type="text" class="form-control" placeholder="minExp"
 											id="minExp" name="minExp" value="${requirement.minExp}"
 											field-name="MinExp"
-											data-validation="validate_Space validate_length length1-5 validate_float"
+											data-validation="validate_Space validate_float validate_length length1-5"
 											data-validation-optional="true" onblur="minMaxExperience();"
 											value="">
 									</div>
@@ -131,7 +145,7 @@ bottom:-14px;
 										<input type="text" class="form-control" id="maxExp"
 											name="maxExp" placeholder="maxExp"
 											value="${requirement.maxExp}" field-name="MaxExp"
-											data-validation="validate_Space validate_length length1-5 validate_float"
+											data-validation="validate_Space validate_float validate_length length1-5"
 											data-validation-optional="true" onblur="minMaxExperience();"
 											value="">
 									</div>
@@ -143,22 +157,7 @@ bottom:-14px;
 							</div>
 						</div>
 
-						<div class="form-group">
-							<label class="col-md-3">Skills</label>
-							<div class="col-md-9">
-								<select multiple class="chosen-select form-control"
-									name="skills" id="skills" data-validation-optional="true">
-									<c:forEach var="skill" items="${skillsList}">
-										<c:if test="${fn:contains(requirement.reqSkillsListString, skill.name)}">
-											<option selected value="${skill.name}">${skill.name}</option>
-										</c:if>
-										<c:if test="${!fn:contains(requirement.reqSkillsListString, skill.name)}">
-											<option value="${skill.name}">${skill.name}</option>
-										</c:if>
-									</c:forEach>
-								</select>
-							</div>
-						</div>
+						
 
 						<div class="form-group">
 							<label class="col-md-3">Description</label>
@@ -196,16 +195,19 @@ bottom:-14px;
 
 </section>
 
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
 
+        
+</script> 
 <script type="text/javascript">
 	function storeRequiremetTemplate() {
 		
-		var validationSettings = {
-				errorMessagePosition : 'element',
-				borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd'
-			};
 		
 		 if ($('#requirementtemplate_form').validate(false, validationSettings)){ 
 			

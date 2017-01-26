@@ -16,10 +16,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -737,6 +737,27 @@ public class RequirementDaoImpl implements RequirementDao {
 				}
 		 }
 		return flag;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<String> getAllRequirementSkillsByRequirementI(String requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select req.skills from Requirement req where req.id =:requirementId";
+	    List<String> skillNames = session.createQuery(query).setString( "requirementId", requirementId).setCacheable(true).list();
+        return skillNames;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getRequirementListByOrgLocationID(Long orgLocationId) {
+		logger.debug("..getCandidatesCount() Method Started..");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "select count(*) from Requirement requirement  where requirement.orgLocationId.id =:orgLocationId and requirement.status = '1'";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		logger.debug("..getCandidatesCount() Method Ended..");
+		return results.get(0);
 	}
 	
 }

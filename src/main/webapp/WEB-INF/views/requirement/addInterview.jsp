@@ -2,20 +2,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="resources/js/bootstrap-select.min.js"></script>
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
- 
-
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css">
-<script src="resources/js/jquery.timepicker.js"></script> 
-
-
 <!--  No auto completes are used in addInterview -->
 
 <!-- these files for autocomplete with tagit -->
@@ -143,7 +131,8 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	result = result + '</div>';   
 	result = result + '</form>';
-	result = result + '<div id="loading"></div>';
+	result = result + '<div id="interviewLoading"></div>';
+	result = result + '</div><div id="interviewPopUp">';
 	
 				
 	$("#addInterviewDiv").empty();
@@ -226,7 +215,7 @@ function checkEmails(){
 
 
 <div id="divTaskTd1" style="display: none; float: left;">
-       <select multiple data-placeholder="select applicants" class="chosen-select blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
+       <select multiple data-placeholder="select applicants" class="blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
@@ -255,7 +244,7 @@ function checkEmails(){
 </div> 
 
 <div id="divTaskTd6" style="display: none; float: left;">
-		  <select multiple data-placeholder="select interviewer" class="chosen-select" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
+		  <select multiple data-placeholder="select interviewer" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
 			
 	  </select>
 </div> 
@@ -295,6 +284,8 @@ function checkEmails(){
 		cell2.innerHTML = "<div class='positionRelative date'><input class='form-control input-sm Datepicker' placeholder='Select Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date' ></div>";
 		//$(".Datepicker").datepicker();
 		$(".Datepicker").datepicker({
+			 changeMonth: true,
+			 changeYear: true, 
 		      minDate: 0  
 		});
 		
@@ -448,20 +439,28 @@ function cancelAddInterviewDiv(){
         var sourceleadUrl ='${sourceleadUrl}';
         var requirementId = '${requirementId}';
         
-        $("#add_interview").attr("disabled", "disabled");
- 		$("#add_interview" ).addClass('button').val('Processing..');
- 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-   	    $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
-	        success: function(result) {
-	        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
-	        		$(".side_mask").fadeOut(200);
-	        		$("body").css('overflow-y', 'auto');
-	        		var allApplicants = 'all';
-		    		requirementPipeline(requirementId,allApplicants); 
-	        },
-	    });   
+        var applicant = $("#1applicant").val();
+        
+        if(applicant.length <= 30){
+	        $("#add_interview").attr("disabled", "disabled");
+	 		$("#add_interview" ).addClass('button').val('Processing..');
+	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	   	    $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+		        success: function(result) {
+		        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
+		        		$(".side_mask").fadeOut(200);
+		        		$("body").css('overflow-y', 'auto');
+		        		var allApplicants = 'all';
+			    		requirementPipeline(requirementId,allApplicants); 
+		        },
+		    });    
+        }else{
+        	alertInterviewMessage("<b>Selected Applicants should not more than 30</b>");
+        }
+   	    
+   	    
         return true;
       }
       else{
@@ -473,6 +472,29 @@ function cancelAddInterviewDiv(){
     $('#addInterview_form').validateOnBlur(false, validationSettings); 
   
   </script>
+  
+  <script type="text/javascript">
+function alertInterviewMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelInterviewPopup();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelInterviewPopup();'></b>";
+	result = result +"	</div>";
+	$("#interviewPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancelInterviewPopup(){
+	$("#interviewPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
   
 <script type="text/javascript">
  function getShortListCandidates(rowId) {

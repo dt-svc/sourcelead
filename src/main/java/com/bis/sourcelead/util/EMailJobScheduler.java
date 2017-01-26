@@ -9,10 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.time.DateUtils;
-import org.codehaus.plexus.util.dag.DAG;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +17,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -30,6 +29,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -44,6 +44,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -112,11 +113,23 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	CandidateHotListService candidateHotListService;
+	
+	@Autowired
+	SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
+	
+	@Autowired
+	CandidateIndexHelper candidateIndexHelper;
 
+	
+	
+	
 
 	
 	@Autowired
 	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	TaskService taskService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
 	
@@ -591,10 +604,42 @@ public class EMailJobScheduler {
   			    if(null != candidatesListToBeAddedInHotList){
   			    	 for(Candidate can :candidatesListToBeAddedInHotList){
   			    		can.setIsFavourite(Constants.RECORD_ACTIVE);
-  			    		candidateService.addCandidate(can);
+  			    		Candidate candi = candidateService.addCandidate(can);
+	  			  		
+		  			  	CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candi);
+		  			  	sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candi.getId().toString());
+  				
+  				
   	                }
   			    }
   			      
 			}
     }
+
+	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	@Async
+	public void scheduleUserMail() throws Exception {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		int addMinuteTime = 30;
+		Date targetTime = new Date(); // now
+		Date date = new Date();
+		targetTime = DateUtils.addMinutes(targetTime, addMinuteTime);
+		String currentTime = dateFormat.format(date);
+		DateFormat dateFormat1 = new SimpleDateFormat("HH:mm");
+		String time = dateFormat1.format(date);
+		final Date dateObj = dateFormat1.parse(time);
+		String taskTime = new SimpleDateFormat("KK:mm a").format(dateObj);
+		List<Tasks> taskDetails = taskService.getTaskByScheduledTime(currentTime);
+		for (Tasks task : taskDetails) {
+
+			if (taskTime.equals(task.getTaskTime())) {
+				if (taskTime.equalsIgnoreCase(task.getTaskTime())) {
+				taskService.mailToUserTask(task);
+			}
+		  }
+		}
+
+	}
+	
+	
 }

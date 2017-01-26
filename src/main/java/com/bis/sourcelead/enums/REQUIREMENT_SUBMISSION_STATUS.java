@@ -1,7 +1,7 @@
 package com.bis.sourcelead.enums;
 
 public enum REQUIREMENT_SUBMISSION_STATUS {
-
+	
 	
 	NEW("new"),
 	DRAFT("draft"),
