@@ -93,13 +93,14 @@ $(document).ready(function() {
 	function timesheetDivByFrequency(){   
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var timesheetFrequency = $("#timesheetFrequency").val();
+	         var projectMemberId = $("#projectMemberId").val();
 	         $("#timesheetDivByFrequency").empty();
 	         $("#timesheetDivByFrequency").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
-   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency,		
+   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId,		
    		          success :function(result) {
    		        	  		
    		        	      $("#timesheetDivByFrequency").removeAttr("style");
@@ -126,14 +127,14 @@ $(document).ready(function() {
 	/* function timesheetDivByTab(startDate,endDate) */
 	function timesheetDivByTab(startDate,endDate){ 
 	         var sourceleadUrl ='${sourceleadUrl}';
-	         
+	         var projectMemberId = $("#projectMemberId").val();
+	         var timesheetFrequency = $("#timesheetFrequency").val();
 	         $("#timesheetDivByTab").empty();
 	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	         
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
-  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,		
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency,		
   		          success :function(result) {
   		    	       
   		        	   $("#timesheetDivByTab").removeAttr("style");
@@ -183,7 +184,7 @@ function addTimeSheetRow(projectId) {
 			cell0.innerHTML = divadttTd0Str;
 			
 		    var cell1 = row.insertCell(1);
-			/* var isCell1Disabled = $("#1submission"+submissionId+"timeSheetDay1Id").prop('disabled');
+			var isCell1Disabled = $("#1timeSheetDay1Id").prop('disabled');
 			if(isCell1Disabled){
 				$("#divadttTd2 :input").attr('disabled','disabled');
 				$('.timesheet_comm','#divadttTd2').find('i').attr('class','glyphicon');
@@ -192,7 +193,7 @@ function addTimeSheetRow(projectId) {
 			else{
 				$("#divadttTd2 :input").removeAttr('disabled');
 				$('.timesheet_comm','#divadttTd2').find('i').attr('class','glyphicon glyphicon-comment');
-			} */
+			} 
 			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
 			divadttTd1Str = divadttTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
             divadttTd1Str = divadttTd1Str.replace(/projectId/g, (projectId));
@@ -200,7 +201,7 @@ function addTimeSheetRow(projectId) {
 			
 			
 			var cell2 = row.insertCell(2);
-			/* var isCell2Disabled = $("#1submission"+submissionId+"timeSheetDay2Id").prop('disabled');
+			var isCell2Disabled = $("#1timeSheetDay2Id").prop('disabled');
 			if(isCell2Disabled){
 				$("#divadttTd3 :input").attr('disabled','disabled');
 				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon');
@@ -208,7 +209,7 @@ function addTimeSheetRow(projectId) {
 			else{
 				$("#divadttTd3 :input").removeAttr('disabled');
 				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon glyphicon-comment');
-			} */
+			} 
 			var divadttTd2Str = document.getElementById("divadttTd3").innerHTML;
 			divadttTd2Str = divadttTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd2Str = divadttTd2Str.replace(/projectId/g, (projectId));
@@ -216,7 +217,7 @@ function addTimeSheetRow(projectId) {
 			
 			
 			var cell3 = row.insertCell(3);
-			/* var isCell3Disabled = $("#1submission"+submissionId+"timeSheetDay3Id").prop('disabled');
+			var isCell3Disabled = $("#1timeSheetDay3Id").prop('disabled');
 			if(isCell3Disabled){
 				$("#divadttTd4 :input").attr('disabled','disabled');
 				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon');
@@ -224,7 +225,7 @@ function addTimeSheetRow(projectId) {
 			else{
 				$("#divadttTd4 :input").removeAttr('disabled');
 				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon glyphicon-comment');
-			} */
+			} 
 			var divadttTd3Str = document.getElementById("divadttTd4").innerHTML;
 			divadttTd3Str = divadttTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd3Str = divadttTd3Str.replace(/projectId/g, (projectId));
@@ -232,36 +233,36 @@ function addTimeSheetRow(projectId) {
 			
 			
 			var cell4= row.insertCell(4);
-			/* var isCell4Disabled = $("#1submission"+submissionId+"timeSheetDay4Id").prop('disabled');
+			 var isCell4Disabled = $("#1timeSheetDay4Id").prop('disabled');
 			if(isCell4Disabled){
 				$("#divadttTd5 :input").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon');
 			}else{
 				$("#divadttTd5 :input").removeAttr('disabled');
 				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon glyphicon-comment');
-			} */
+			} 
 			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
 			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd4Str = divadttTd4Str.replace(/projectId/g, (projectId)); 
 			cell4.innerHTML = divadttTd4Str;
 			
 			var cell5 = row.insertCell(5);
-			/* var isCell5Disabled = $("#1submission"+submissionId+"timeSheetDay5Id").prop('disabled'); */
-			/* if(isCell5Disabled){
+			var isCell5Disabled = $("#1timeSheetDay5Id").prop('disabled'); 
+			 if(isCell5Disabled){
 				$("#divadttTd6 :input").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon');
 			}
 			else{
 				$("#divadttTd6 :input").removeAttr('disabled');
 				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon glyphicon-comment');
-			}*/
+			}
 			var divadttTd5Str = document.getElementById("divadttTd6").innerHTML; 
 			divadttTd5Str = divadttTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd5Str = divadttTd5Str.replace(/projectId/g, (projectId)); 
 			cell5.innerHTML = divadttTd5Str;
 			
 			var cell6 = row.insertCell(6);
-			/* var isCell6Disabled = $("#1submission"+submissionId+"timeSheetDay6Id").prop('disabled');
+			var isCell6Disabled = $("#1timeSheetDay6Id").prop('disabled');
 			if(isCell6Disabled){
 				$("#divadttTd7 :input").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon');
@@ -269,21 +270,21 @@ function addTimeSheetRow(projectId) {
 			else{
 				$("#divadttTd7 :input").removeAttr('disabled');
 				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon glyphicon-comment');
-			} */
+			} 
 			var divadttTd6Str = document.getElementById("divadttTd7").innerHTML;
 			divadttTd6Str = divadttTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd6Str = divadttTd6Str.replace(/projectId/g, (projectId));
 			cell6.innerHTML = divadttTd6Str;
 			
 			var cell7 = row.insertCell(7);
-			/* var isCell7Disabled = $("#1submission"+submissionId+"timeSheetDay7Id").prop('disabled');
+		    var isCell7Disabled = $("#1timeSheetDay7Id").prop('disabled');
 			if(isCell7Disabled){
 				$("#divadttTd8 :input").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon');
 			}else{
 				$("#divadttTd8 :input").removeAttr('disabled');
 				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon glyphicon-comment');
-			} */
+			} 
 			var divadttTd7Str = document.getElementById("divadttTd8").innerHTML;
 			divadttTd7Str = divadttTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd7Str = divadttTd7Str.replace(/projectId/g, (projectId));
@@ -291,44 +292,56 @@ function addTimeSheetRow(projectId) {
 			
 		    maskme();
 		    
-		    getProjectTasks(maxRowNum,projectId); 
+			var projectTaskId = maxRowNum+"task1Id"; 
 			
-		  /*   
-			var projectTaskId = maxRowNum+"submission"+submissionId+"task1Id"; */
-			
-			/* getProjectTasks(projectTaskId,projectId);  */ 
-		  
+			getProjectTasks(projectTaskId,projectId); 
 			
 		}	
-	 
         
-       /*  function disableInput(divId){
+        function disableInput(divId){
         	$("#"+divId+" :input").attr("disabled", "disabled");
-        } */
-        
-       //get project tasks 
-	   function getProjectTasks(maxRowNum,projectId){ 
+        } 
+       
+	   //get project tasks 
+	   function getProjectTasks(projectTaskId,projectId){
 		   var sourceleadUrl ='${sourceleadUrl}';
-		   $("#"+projectId).empty();
+		   $("#"+projectTaskId).empty();
+		   
+		   var avilableProjectTaskIds = [];
+		   $('.existedProjectTaskId'+projectId).each(function() {
+				 var localId = this.value;
+				 avilableProjectTaskIds.push(localId);
+		   }); 
+			 
 		   $.ajax({
    	          type : "POST",
- 	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds=null",		
+ 	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
  		      success :function(data) {
- 		    	   			var json = JSON.parse(data);
-	 			   		   	$("#"+maxRowNum+"taskId").empty();
-	 			   		   	var result = "";
-	 			   		    result = result + "<option value=''>--select option--</option>";
+ 		    	    var json = JSON.parse(data);
+ 		    	    $('.existedProjectTaskId'+projectId).each(function() {
+ 			   			 var localId = this.id;
+ 			   			 var localValue = this.value;
+	 			   		    var result = ""; 
+	 			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){ 
+	 			   			    $('option', this).not(':eq(0), :selected').remove();
+	 			   		    }else{ 
+	 			   		    	 $("#"+localId).empty();
+	 			   		   		 result = result + "<option value=''>--select option--</option>";
+	 			   		    }
 	  		    	    	for (var i=0; i<json.length; i++)
 	  					 	{
 	  			        		var opt = json[i];
 	  			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
 	  						}
- 				    	 	$("#"+maxRowNum+"taskId").append(result);
+ 				    	 	$("#"+localId).append(result);
+ 			   	   }); 
+ 		    	   
  		      }
  	      	  
  	       }); 
 		   
-	   } 
+	   }
+
 
 	 
 </script>

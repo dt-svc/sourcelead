@@ -220,7 +220,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
          sb1.append("<th>Thu<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"THU").getTime())).append("</i></th>"); 
          sb1.append("<th>Fri<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"FRI").getTime())).append("</i></th>"); 
          sb1.append("<th>Sat<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SAT").getTime())).append("</i></th>"); 
-         sb1.append("<th>Sun<i>").append(endDateBuilder).append("</i></th>"); 
+         sb1.append("<th>Sun<i>").append(endDateBuilder).append("</i></th>");
+         
+         
+         
          timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId());
          currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
          currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
