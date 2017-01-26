@@ -14,6 +14,7 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> 
 <!-- end files for autocomplete with tagit -->
 
+
 <jsp:include page="requirementDetails.jsp"></jsp:include>
 <jsp:include page="requirementClientDetails.jsp"></jsp:include>
 <jsp:include page="requirementInternalDetails.jsp"></jsp:include>
@@ -2376,7 +2377,7 @@ function minMaxExperience(){
     var maxExp = ($('#maxExp').val());
     var minExp = ($('#minExp').val());
     
-    if (parseFloat(maxExp) < parseFloat(minExp)){
+    if (parseFloat(maxExp) <= parseFloat(minExp)){
         $('#expId').find('p.jquery_form_error_message').remove(); 
 		$('input#expValidation').attr('class','error signin_fild');
 		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
