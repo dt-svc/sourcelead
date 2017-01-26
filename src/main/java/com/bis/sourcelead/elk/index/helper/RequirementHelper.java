@@ -1,5 +1,7 @@
 package com.bis.sourcelead.elk.index.helper;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -63,8 +65,11 @@ public class RequirementHelper {
 			requirementIndex.setReqCreatedBy(requirement.getCreatedBy());
 			requirementIndex.setReqUpdatedBy(requirement.getUpdatedBy());
 			requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
-//			requirementIndex.setReqCreatedDate(requirement.getCreatedDate());
-//			requirementIndex.setReqUpdatedDate(requirement.getUpdatedDate());
+			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			 String reqcreatedDate = dateFormat.format(requirement.getCreatedDate());
+			requirementIndex.setReqCreatedDate(reqcreatedDate);
+			 String reqUpDatedDate = dateFormat.format(requirement.getCreatedDate());
+			requirementIndex.setReqUpdatedDate(reqUpDatedDate);
 			
 			
 			

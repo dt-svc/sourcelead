@@ -63,11 +63,11 @@ public class RequirementIndex {
 	
 	private String priority; 
 
-	//private Date reqCreatedDate;
+   private String reqCreatedDate;
 
 	private String reqCreatedBy;
 
-	//private Date reqUpdatedDate;
+	private String reqUpdatedDate;
 
 	private String reqUpdatedBy;
 	
@@ -344,4 +344,22 @@ public class RequirementIndex {
 		this.numberOfApplicants = numberOfApplicants;
 	}
 
+	public String getReqCreatedDate() {
+		return reqCreatedDate;
+	}
+
+	public void setReqCreatedDate(String reqCreatedDate) {
+		this.reqCreatedDate = reqCreatedDate;
+	}
+
+	public String getReqUpdatedDate() {
+		return reqUpdatedDate;
+	}
+
+	public void setReqUpdatedDate(String reqUpdatedDate) {
+		this.reqUpdatedDate = reqUpdatedDate;
+	}
+
+	
+	
 }
