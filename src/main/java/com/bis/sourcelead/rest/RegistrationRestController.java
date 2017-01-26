@@ -103,9 +103,9 @@ public class RegistrationRestController {
 					regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
 					UserRole userRole = userRoleService.getUserByUserId(regOrg.getUser().getId());
 					regOrg.setUserState(userRole.getUserState());
-					OrgLocations orglocations = orgLocationService.getOrgLocationByOrgId(regOrg.getId());
-					regOrg.setLocation(orglocations.getCountry());
 				}
+				OrgLocations orglocations = orgLocationService.getOrgLocationByOrgId(regOrg.getId());
+				regOrg.setLocation(orglocations.getCountry());
 				
 				regOrgsList.add(regOrg);
 			}
