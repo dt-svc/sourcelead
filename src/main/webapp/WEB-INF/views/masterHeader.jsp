@@ -8,6 +8,7 @@
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
@@ -146,13 +147,31 @@ width: 11.5%;
           <div class="dropdown hidden">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"> <i class="fa fa-list-ul"></i> <span class="caret"></span></button>
             <ul class="dropdown-menu">
-              <li><a href="javascript:void(0)">Candiate</a></li>
+              <li><a href="javascript:void(0)">Candidate</a></li>
               <li><a href="javascript:void(0)">Professional</a></li>
             </ul>
           </div>
-          <div class="search-area-txt"> <i class="fa fa-search"></i>
-            <input type="text" placeholder="Search ..." class="form-control">
-          </div>
+           <div class="search-area">
+			<form:form id="search_form" name="search_form"  enctype='multipart/form-data' >
+			<div class="search-area-txt">
+			<div class="select-field pull-left srch-select">
+			<select id="searchType" name="searchType">
+			<option value="All">All</option>
+			<option value="Users">Users</option>
+			<option value="Requirement">Requirement</option>
+			<option value="Candidate">Candidate</option>
+			<option value="Clients">Clients</option>
+			<option value="Vendors">Vendors</option>
+			<option value="Projects">Projects</option>
+			</select>
+			</div>
+			<div class="pull-left universalSrch">
+			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search"/>
+			 <button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="universalSearch();" ><i class="fa fa-search"></i></button>
+			</div>
+			</div>
+			</form:form>
+			</div> 
         </div>
         <!-- login User details -->
         <div class="login-user">
@@ -899,7 +918,24 @@ function updateAssignTaskStatus(taskId){
    });
 }
 </script>
-
+<script>
+function universalSearch(){
+	alert("hii000");
+	var sourceleadUrl = '${sourceleadUrl}';
+	var frm = $('#search_form').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, "");
+		  //It will escape all the special characters
+    var jsonData = encodeURIComponent(con);
+		  alert("rrsss"+jsonData);
+	 $.ajax({
+	   	type: "GET",
+	    url: sourceleadUrl+"/universalSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,	    	   
+	    success: function(data) {
+	    }
+   }); 
+}
+</script>
 
 
 <script>
