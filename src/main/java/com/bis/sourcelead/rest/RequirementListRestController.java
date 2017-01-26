@@ -1236,5 +1236,28 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		return resultJson;
 	    
 	    
-}
+        }
+        
+        /**
+		 * Search Requirement
+		 * @param json
+		 * @param request
+		 * @param response
+		 * @return
+		 * @throws Exception
+		 */
+        @RequestMapping(value = "/universalSearch",method = RequestMethod.GET)
+		public @ResponseBody  String universalSearch(@RequestParam(value = "json", required = false) String json,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			String resultJson = "";
+			String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);
+			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			List<Requirement> searchRequirementList = requirementService.univesalSearchRequirement(orgLocation, jsonObj,org,userRole,user);
+			resultJson = commonUtil.toJSON(searchRequirementList);
+			return resultJson;
+        }
+        
 }
