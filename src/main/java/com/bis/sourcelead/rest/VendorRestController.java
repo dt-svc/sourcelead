@@ -38,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -47,6 +48,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -86,6 +88,11 @@ public class VendorRestController {
 	
 	@Autowired
 	private ClientVendorExport clientVendorExport;
+	
+
+	@Autowired
+	private UserRoleDao userRoleDao;
+	
 	
 
 	@Autowired
@@ -716,7 +723,7 @@ public class VendorRestController {
 				 
 				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId());
 			   	 
-				 //Exclude Keyword
+				/* //Exclude Keyword
 				 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 				 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
 				 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -764,7 +771,7 @@ public class VendorRestController {
 							}
 						}
 						 boolQueryBuilder.must(allBoolQueryBuilder);
-					}
+					}*/
 					
 					/*//vendorName
 					ArrayList<String> vendorNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "orgNameAdvanced");
@@ -910,9 +917,13 @@ public class VendorRestController {
 				String jsonc = "{" + json + "}";
 				JSONObject jsonObj = new JSONObject(jsonc);
 				
+
+				
 				 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
 
+			     Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUser.getId(),loginOrgLocation.getId());
+					
 				 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 				 
 				// boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
@@ -939,13 +950,49 @@ public class VendorRestController {
 				 combinedQueryBuilder.should(responderQueryBuilder);
 				 
 				 boolQueryBuilder.must(combinedQueryBuilder);
-
+				 
+				 //  this condition is if Login user is Owner or SpocUserId
+				 if(!isadmin){
+									 
+							 BoolQueryBuilder ownerLoginQueryBuilder = QueryBuilders.boolQuery();
+							 BoolQueryBuilder spockQueryBuilder = QueryBuilders.boolQuery();
+							 BoolQueryBuilder combinationQueryBuilder = QueryBuilders.boolQuery();
+							 
+							 ownerLoginQueryBuilder.must(QueryBuilders.matchQuery("ownerUserId", loginUser.getId()));
+							 spockQueryBuilder.must(QueryBuilders.matchQuery("spocUserId", loginUser.getId()));
+							 
+							 combinationQueryBuilder.should(ownerLoginQueryBuilder);
+							 combinationQueryBuilder.should(spockQueryBuilder);
+							 boolQueryBuilder.must(combinationQueryBuilder);
+				}
 				 
 				 // to   get the number of contacts 
-				 Integer maxResults = orgSpocService.getAllVendorContactsCountbyOrgLocationId(loginOrgLocation.getId());
+				 Integer maxResults = orgSpocService.getAllVendorContactsCountbyOrgLocationId(loginOrgLocation.getId(),responderType,loginUser.getId());
 			   	
+				/*//Spock PhoneNumber
+					ArrayList<String> phoneNumberNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "phoneNumberAdvanced");
+					if(phoneNumberNameArray != null && !phoneNumberNameArray.isEmpty()){
+						BoolQueryBuilder phoneNumberBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : phoneNumberNameArray){
+							phoneNumberBoolQueryBuilder.should(QueryBuilders.matchQuery("spocUserPhNo", keywd));
+						}
+						boolQueryBuilder.must(phoneNumberBoolQueryBuilder);
+					}
 				 
-				 //Exclude Keyword
+					
+					//Spock Email
+					ArrayList<String> contactEmailNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "emailAdvanced");
+					if(contactEmailNameArray != null && !contactEmailNameArray.isEmpty()){
+						BoolQueryBuilder contactEmailBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : contactEmailNameArray){
+							contactEmailBoolQueryBuilder.should(QueryBuilders.matchQuery("spocUserEmail", keywd));
+							contactEmailBoolQueryBuilder.should(QueryBuilders.matchQuery("ownerUserEmail", keywd));
+						}
+						boolQueryBuilder.must(contactEmailBoolQueryBuilder);
+					}*/
+					
+					
+				/* //Exclude Keyword
 				 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 				 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
 				 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -1062,7 +1109,7 @@ public class VendorRestController {
 							invitationAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("invitationStatus", keywd));
 						}
 						boolQueryBuilder.must(invitationAdvancedBoolQueryBuilder);
-					}
+					}*/
 										
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 
