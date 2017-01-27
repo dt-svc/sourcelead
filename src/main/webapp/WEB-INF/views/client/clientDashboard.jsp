@@ -121,7 +121,7 @@ overflow-x: auto;
 		                <div class="col-md-4">
 		                  <label>Country</label>
 		                  <div class="clearfix">
-		                    <select class="chosen-select" name="country" id="country" field-name="Country"  >
+		                    <select class="chosen-select" name="country" id="countrySearch" field-name="Country"  >
 						     <c:forEach var="cntry" items="${countryList}">
 					                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
 				             </c:forEach>
@@ -131,7 +131,7 @@ overflow-x: auto;
 		                 <div class="col-md-4"> 
 							  <label>State</label>
 							  <div class="clearfix">
-								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
+								  <select  class="chosen-select" name="state" id="stateSearch" field-name="State"  >
 								        <option value="">---select state---</option>
 								        <c:forEach var="state" items="${statesList}">
 							                     <option value="${state.stateName}">${state.stateName}</option>
@@ -142,7 +142,7 @@ overflow-x: auto;
 						  <div class="col-md-4">
 							  <label>City</label>
 							  <div class="clearfix">
-								  <select  class="chosen-select" name="city" id="city" field-name="City"  >
+								  <select  class="chosen-select" name="city" id="citySearch" field-name="City"  >
 								      <option value="">---select city---</option>
                                   </select>
 							  </div>
@@ -396,7 +396,8 @@ overflow-x: auto;
 
 <script type="text/javascript">
 window.onload = function () {
-	getVendorContactLists();
+	/* getVendorContactLists(); */
+	getVendorContactListsELK();
 	 listChange("listbyContact");
 	document.getElementById('listOfVendors').value = 'listbyContact';
  };
@@ -814,6 +815,32 @@ function getClientDetails(){
 		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
    		    	preparedClientDetails(data);
+   		    }
+	 }); 
+	
+	
+}	
+</script>
+
+<script>
+function getClientDetailsELK(){
+	closePop();
+	var values = [];
+	$('input:checkbox[name=clinetLevel]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginOrgLocId = '${loginOrgLocId}';
+	var responderType = "Client";
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getVendorFilterListsElK?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&values="+values, 	   
+   		    success: function(data) {
+   		    	/* preparedClientDetails(data); */
+   		    	
+   		    	preparedClientListFromElk(data);
    		    }
 	 }); 
 	
@@ -1254,7 +1281,7 @@ function preparedClientListFromElk(data){
 		   			result = result +'<td><div>--</div></td>';
 		   		}
 				
-		   	result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.responderLevel+'">'+report.responderLevel+'</span>';
+		   	result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
 				result = result +' <td><div>====</div></td>';
 				result = result +'<td><div>=====</div></td>';
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
@@ -1299,6 +1326,46 @@ function getVendorContactLists(){
 		    url: sourceleadUrl+"/getClientContactLists?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
    		    	preparedClientContacts(data);
+   		    }
+	 });
+	
+	
+}	
+</script> 
+
+
+<script>
+function getVendorContactListsELK(){
+	closePop();
+	var clientIds = [];
+	$('input:checkbox[name=clientNameById]:checked').each(function() 
+    {
+		clientIds.push($(this).val());
+    });
+	var status = [];
+	$('input:checkbox[name=clientStatus]:checked').each(function() 
+    {
+		status.push($(this).val());
+    });
+	
+	var invitationStatus = [];
+	$('input:checkbox[name=clientInvitationStatus]:checked').each(function() 
+    {
+		invitationStatus.push($(this).val());
+    });
+	
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginOrgLocId = '${loginOrgLocId}';
+	var responderType = "Client";
+
+	
+	  $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getVendorContactListsELK?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
+   		    success: function(data) {
+   		    	/* preparedClientContacts(data); */
+   		    	preparedClientContactListFromElk(data);
    		    }
 	 });
 	
@@ -1424,7 +1491,8 @@ function listChange(sel){
 		 document.getElementById("vendorContactList_info").style.display="none";
 		 document.getElementById("vendorContactList_filter").style.display="none";
 		 
-		 getClientDetails();
+		/*  getClientDetails(); */
+		 getClientDetailsELK();
 	 }
 	 if(sel.value=="listbyContact"){
 		 document.getElementById("vendorContactList").style.display="block";
@@ -1443,7 +1511,8 @@ function listChange(sel){
 		 document.getElementById("ContactImports").style.display="block";
 		'</sec:authorize> ';	 
 		 
-		 getVendorContactLists();
+		/*  getVendorContactLists(); */
+		 getVendorContactListsELK();
 	 }
 	 
 }

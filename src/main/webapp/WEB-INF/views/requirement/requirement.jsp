@@ -4,8 +4,9 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
+
+
+
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -13,10 +14,10 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> 
 <!-- end files for autocomplete with tagit -->
 
+
 <jsp:include page="requirementDetails.jsp"></jsp:include>
 <jsp:include page="requirementClientDetails.jsp"></jsp:include>
 <jsp:include page="requirementInternalDetails.jsp"></jsp:include>
-<%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core' %>
 
 
 <style type="text/css">
@@ -384,7 +385,7 @@ $(document).ready(function () {
           </div>
           
           <div class="form-group">
-            <label class="col-md-3">Pay Rate/Salary${SourceLeadWeb_currencyCode}</label>
+            <label class="col-md-3">Pay Rate/Salary</label>
             <div class="col-md-9">
              <div class="input-group">
                 <div class="input-group-btn selp-custom-min">
@@ -409,10 +410,6 @@ $(document).ready(function () {
 	                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  </c:if>
                 </select>
-                
-                
-               
-                
                 </div>
                 <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
@@ -1571,6 +1568,7 @@ function setTemplateValues(){
 			            $("#skills").val(skills);
 			            $('#skills').trigger("chosen:updated");
 					}
+
 					
 					if(json.education != null && json.education != '' && json.education != 'undefined'){
 			            var educations = [];
@@ -2379,7 +2377,7 @@ function minMaxExperience(){
     var maxExp = ($('#maxExp').val());
     var minExp = ($('#minExp').val());
     
-    if (parseFloat(maxExp) < parseFloat(minExp)){
+    if (parseFloat(maxExp) <= parseFloat(minExp)){
         $('#expId').find('p.jquery_form_error_message').remove(); 
 		$('input#expValidation').attr('class','error signin_fild');
 		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");

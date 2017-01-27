@@ -2204,6 +2204,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getAllRequirementSkillsByRequirementI(requirementId);
 	}
 	
+
 /*	@Override
 	public List<String> getAllSkillsBySkillCategory() throws Exception{
 		return lookUpDataService.getAllSkillsBySkillCategory();
