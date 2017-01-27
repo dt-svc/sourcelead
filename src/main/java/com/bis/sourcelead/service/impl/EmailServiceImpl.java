@@ -92,7 +92,7 @@ public class EmailServiceImpl implements EmailService {
 		    	  catch(JSONException e){
 		    		  emails= jsonObj.getString("Toemails");
 		    	  }
-		    	 if(emails != null){
+		    	 if(null != emails){
 		    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
 		    		  emails = emails.replaceAll("\"", "");
 		    	  }

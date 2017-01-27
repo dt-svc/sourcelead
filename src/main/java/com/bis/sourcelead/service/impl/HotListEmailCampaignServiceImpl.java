@@ -109,7 +109,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	    	  catch(JSONException e){
 	    		  emails= jsonObj.getString("Toemails");
 	    	  }
-	    	  if(emails != null){
+	    	  if(null != emails){
 	    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
 	    		  emails = emails.replaceAll("\"", "");
 	    	  }
@@ -125,7 +125,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	    	  catch(JSONException e){
 	    		  otherEmails= jsonObj.getString("otherEmails");
 	    	  }
-			 if(otherEmails != null){
+			 if(null != otherEmails){
 				 otherEmails = otherEmails.replaceAll("\\[", "").replaceAll("\\]","");
 				 otherEmails = otherEmails.replaceAll("\"", "");
 			 }
@@ -146,7 +146,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		    	  catch(JSONException e){
 		    		  candidates= jsonObj.getString("hotlistcandidates");
 		    	  }
-				 if(candidates != null){
+				 if(null != candidates){
 					 candidates = candidates.replaceAll("\\[", "").replaceAll("\\]","");
 					 candidates = candidates.replaceAll("\"", "");
 			  	      hotlistedCandidates = candidates.split(",");
@@ -209,7 +209,7 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[
 	
 	UserMailBox userMailBox = new UserMailBox();
 	
-	if(iAdressArray != null && iAdressArray.length >0){
+	if(null != iAdressArray && iAdressArray.length >0){
 		StringBuilder recipients = new StringBuilder("");
 		int count = 1;
 		for(InternetAddress address :iAdressArray){
