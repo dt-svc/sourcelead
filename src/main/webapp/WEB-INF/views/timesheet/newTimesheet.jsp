@@ -41,6 +41,7 @@ $(document).ready(function() {
 	        		    	    $("#timesheetEntriesDiv").empty();
 	        		    	  	$("#timesheetEntriesDiv").append(result);
 	        		    	  	maskme();
+	        		    	  	$("html").trigger('click');
 	        		    	  	prepareChosenScripts();
 	        		    	  	$("#tab-1").show()
 	        		    	    $(".project-tabs-menu a").click(function(event) {
@@ -125,7 +126,7 @@ $(document).ready(function() {
 
 <script>
 	/* function timesheetDivByTab(startDate,endDate) */
-	function timesheetDivByTab(startDate,endDate){ 
+	function timesheetDivByTab(startDate,endDate,approvalStatus){ 
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
 	         var timesheetFrequency = $("#timesheetFrequency").val();
@@ -134,7 +135,7 @@ $(document).ready(function() {
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
-  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency,		
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus,		
   		          success :function(result) {
   		    	       
   		        	   $("#timesheetDivByTab").removeAttr("style");
@@ -666,7 +667,7 @@ function addAttachment(){
         <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
 				         <div id="divadttTd1" style="display:none;" >   
 				             <div> 
-				              <select id="REPLACEROWIDtaskId" name="REPLACEROWIDtaskId" class="existedProjectTaskIdprojectId" onchange="getProjectTasksOnChange('REPLACEROWIDsubmissionsubmissionIdtask1Id','projectId')">  
+				              <select id="REPLACEROWIDtaskId" name="REPLACEROWIDtaskId" class="existedProjectTaskIdprojectId" onchange="getProjectTasksOnChange('REPLACEROWIDtask1Id','projectId')">  
 				                          <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 				                              	<option value="${task.id}">${task.taskName}</option>
 				                           </c:forEach> --%>
