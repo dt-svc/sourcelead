@@ -11,6 +11,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css" type="text/css" >
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
@@ -152,7 +153,8 @@ width: 11.5%;
             </ul>
           </div>
            <div class="search-area">
-			<form:form id="search_form" name="search_form"  enctype='multipart/form-data' >
+           <form:form name ="search_form" id="search_form">
+           
 			<div class="search-area-txt">
 			<div class="select-field pull-left srch-select">
 			<select id="searchType" name="searchType">
@@ -920,20 +922,19 @@ function updateAssignTaskStatus(taskId){
 </script>
 <script>
 function universalSearch(){
-	alert("hii000");
-	var sourceleadUrl = '${sourceleadUrl}';
+ 	var sourceleadUrl = '${sourceleadUrl}';
 	var frm = $('#search_form').serializeFormJSON();
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
 		  //It will escape all the special characters
     var jsonData = encodeURIComponent(con);
 		  alert("rrsss"+jsonData);
-	 $.ajax({
+	  $.ajax({
 	   	type: "GET",
 	    url: sourceleadUrl+"/universalSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,	    	   
 	    success: function(data) {
 	    }
-   }); 
+   });  
 }
 </script>
 
