@@ -83,7 +83,7 @@ public class AddClientVendorELK {
 			       saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,clientVendorIndex.getId().toString());
 			}
 		}
-		  logger.info("Campaigns Successfully Added To Elk");
+		  logger.info("ORG_RELATIONS Successfully Added To Elk");
 	}
 	
 	private ArrayList<ClientVendorIndex> getElkCampaigns() throws Exception{
@@ -100,6 +100,11 @@ public class AddClientVendorELK {
 			    	
 			    	ClientVendorIndex campaignIndex = new ClientVendorIndex();
 
+			    	
+			    	campaignIndex.setId(rs.getLong("ID"));
+			    	campaignIndex.setInitiatorLevel(rs.getString("INITIATOR_LEVEL"));
+			    	campaignIndex.setResponderLevel(rs.getString("RESPONDER_LEVEL"));
+			    	
 			    	OrgRelations relation = orgRelationsService.getOrRelationsById(rs.getLong("ID"));
 			    	
 			    	OrgLocations clientOrgLocations =  orgLocationService.getOrgLocationByOrgId(relation.getResponderLocationId().getId());

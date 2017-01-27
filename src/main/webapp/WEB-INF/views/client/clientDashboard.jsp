@@ -1123,7 +1123,7 @@ function preparedClientContactListFromElk(data){
 		   		
 		   		
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
-		   				result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		   				result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
 		   		'</sec:authorize>';
 		   		
 		   		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
@@ -1249,7 +1249,7 @@ function preparedClientListFromElk(data){
 		   		result = result +'<tr>';
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 		   			result = result +'<td>';
-		   			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+		   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
 		   			result = result +'</div>';
 		   			result = result +'</td>';
 		   		'</sec:authorize>';
