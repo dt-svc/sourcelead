@@ -29,14 +29,17 @@
 <jsp:include page="masterJs.jsp" />
 </head>
 
-<script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/jquery-1.11.1.min.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script>
 <script src="resources/js/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/jquery.dataTables.min.js"></script> 
+<script src="resources/js/jquery-fun.js"></script>
+<script src="resources/js/bootstrap-select.min.js"></script>
+<script src="resources/js/jquery.dataTables.min.js"></script>
 <script src="resources/js/jquery.timepicker.js"></script>
 <script src="resources/js/formvalidator.js"></script>
+
+
+
 <style>
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;
@@ -964,7 +967,7 @@ $('.taskpop-close').click(function (){
 });
 </script>
 
-<script>
+<!-- <script>
 //scroll top top fix Header
 jQuery(window).scroll(function(){
 var top = jQuery(window).scrollTop();
@@ -973,5 +976,15 @@ jQuery('.main-header').addClass('navbar-fixed-top');
 } else {
 jQuery('.main-header').removeClass('navbar-fixed-top');}
 });
+</script> -->
+<script>
+jQuery(window).scroll(function () {
+if( jQuery(window).scrollTop() > jQuery('.main-header').offset().top + 50 && !(jQuery('.main-header').hasClass('navbar-fixed-top'))){
+jQuery('.main-header').addClass('navbar-fixed-top').animate({"top":"0%"}, 500);
+} else if (jQuery(window).scrollTop() <= 10){
+jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-13%"});
+}
+});
 </script>
+
 <!-- Task related code Ends -->

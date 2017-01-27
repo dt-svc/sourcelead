@@ -1,13 +1,20 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RecommendedCustomizeScoreDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
@@ -29,19 +36,54 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 	@Autowired
 	 private CommonUtil commonUtil;
 	
+	@Override
+	public RecommendedCustomizeScore getRecommendedCustomizeScoreByRequirementIdAndOrgLocationId(Long requirementId, Long orgLocationId) throws Exception {
+		return recommendedCustomizeScoreDao.getRecommendedCustomizeScoreByRequirementIdAndOrgLocationId(requirementId,orgLocationId);
+	}
+	
+	@Override
+	public RecommendedCustomizeScore updateCustomizeScore(RecommendedCustomizeScore recommendedCustomizeScore) throws Exception {
+		return recommendedCustomizeScoreDao.saveCustomizeScore(recommendedCustomizeScore);
+	}
+	
+	@Override
+	public RecommendedCustomizeScore getRecommendedCustomizeScoreByRequirementId(Long requirementId)throws Exception {
+		return recommendedCustomizeScoreDao.getRecommendedCustomizeScoreByRequirementId(requirementId);
+	}
 
+
+	
+	
 	@Override
 	public RecommendedCustomizeScore saveCustomizeScore(Requirement requirement) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		RecommendedCustomizeScore res = new RecommendedCustomizeScore();
-		res.setReqirementId(requirement);
-		res.setCustomizeSkills(requirement.getSkills());
+		if(null != requirement){
+			res.setReqirementId(requirement);	
+		}
+		if(null != orgLocations){
+			res.setOrgLocationId(orgLocations);	
+		}
+		if(null != requirement.getSkills()){
+			res.setCustomizeSkills(requirement.getSkills());	
+		}
 		if("" != requirement.getRate() && null != requirement.getRate()){
 			res.setCustomizeRate(requirement.getRate());
 		}
 		if("" != requirement.getMinExp() && null != requirement.getMinExp()){
 			res.setCustomizeMinExperience(requirement.getMinExp());	
 		}
+		if("" != null && null != requirement.getRateType()){
+			res.setCustomizeRatetype(requirement.getRateType());	
+		}
+		
+		res.setCustomizeSkillScore(Constants.CUSTOMIZE_SKILLS);
+		res.setCustomizeRateScore(Constants.CUSTOMIZE_RATE);
+		res.setCustomizeExperienceScore(Constants.CUSTOMIZE_EXPERIENCE);
+		res.setCustomizeLocationScore(Constants.CUSTOMIZE_LOCATION);
+		res.setCustomizeNoticeperiodScore(Constants.CUSTOMIZE_NOTICE_PERIOD);
+		res.setCustomizeKeywordsScore(Constants.CUSTOMIZE_KEYWORDS);
 		if("" != requirement.getMaxExp() && null != requirement.getMaxExp()){
 			res.setCustomizeMaxExperience(requirement.getMaxExp());	
 		}
@@ -61,10 +103,8 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 		
 		return recommendedCustomizeScoreDao.saveCustomizeScore(res);
 	}
-	
-	
-	
 
+	
 }
 	
 

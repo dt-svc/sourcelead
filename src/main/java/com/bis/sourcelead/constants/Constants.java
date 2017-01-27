@@ -401,9 +401,27 @@ public class Constants {
     public static String DUPLICATE_APPLICANTS = "DUPLICATE_APPLICANTS";
 
 
-    
-    
-    
-     
+   public static String CUSTOMIZE_SKILLS = "20";
+   public static String CUSTOMIZE_EXPERIENCE = "20";
+   public static String CUSTOMIZE_LOCATION = "10";
+   public static String CUSTOMIZE_NOTICE_PERIOD = "10";
+   public static String CUSTOMIZE_KEYWORDS  = "20";
+   public static String CUSTOMIZE_RATE = "20";
+   
+   public static String NOTICE_PERIOD_15DAYS = "15 Days";
+   public static String NOTICE_PERIOD_1MONTH = "1 Month";
+   public static String NOTICE_PERIOD_2MONTH = "2 Month";
+   public static String NOTICE_PERIOD_3MONTH = "3 Month";
+   public static String NOTICE_PERIOD_IMMEDIATELY = "Immediately available";
+   
+   public static String RATE_TYPE_HOURLY = "Hourly";
+   public static String RATE_TYPE_WEEKLY = "Weekly";
+   public static String RATE_TYPE_BI_WEEKLY = "Bi-weekly";
+   public static String RATE_TYPE_SEMI_MONTHLY = "Semi-Monthly";
+   public static String RATE_TYPE_MONTHLY = "Monthly";
+   public static String RATE_TYPE_BI_MONTHLY = "Bi-Monthly";
+   
+   
+   
    
 }
