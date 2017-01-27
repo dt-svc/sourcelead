@@ -396,7 +396,8 @@ overflow-x: auto;
 
 <script type="text/javascript">
 window.onload = function () {
-	getVendorContactLists();
+	/* getVendorContactLists(); */
+	getVendorContactListsELK();
 	 listChange("listbyContact");
 	document.getElementById('listOfVendors').value = 'listbyContact';
  };
@@ -814,6 +815,32 @@ function getClientDetails(){
 		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
    		    	preparedClientDetails(data);
+   		    }
+	 }); 
+	
+	
+}	
+</script>
+
+<script>
+function getClientDetailsELK(){
+	closePop();
+	var values = [];
+	$('input:checkbox[name=clinetLevel]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginOrgLocId = '${loginOrgLocId}';
+	var responderType = "Client";
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getVendorFilterListsElK?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&values="+values, 	   
+   		    success: function(data) {
+   		    	/* preparedClientDetails(data); */
+   		    	
+   		    	preparedClientListFromElk(data);
    		    }
 	 }); 
 	
@@ -1306,6 +1333,46 @@ function getVendorContactLists(){
 }	
 </script> 
 
+
+<script>
+function getVendorContactListsELK(){
+	closePop();
+	var clientIds = [];
+	$('input:checkbox[name=clientNameById]:checked').each(function() 
+    {
+		clientIds.push($(this).val());
+    });
+	var status = [];
+	$('input:checkbox[name=clientStatus]:checked').each(function() 
+    {
+		status.push($(this).val());
+    });
+	
+	var invitationStatus = [];
+	$('input:checkbox[name=clientInvitationStatus]:checked').each(function() 
+    {
+		invitationStatus.push($(this).val());
+    });
+	
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginOrgLocId = '${loginOrgLocId}';
+	var responderType = "Client";
+
+	
+	  $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getVendorContactListsELK?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
+   		    success: function(data) {
+   		    	/* preparedClientContacts(data); */
+   		    	preparedClientContactListFromElk(data);
+   		    }
+	 });
+	
+	
+}	
+</script> 
+
 <!-- This script is for resending the invitation mail -->
 <script type="text/javascript"><%-- <jsp:include page="submissionTemplate.jsp" />	 --%>
 function resendClientSpocInvitation(spocUserId,orgSpocId,orgRelationId){
@@ -1424,7 +1491,8 @@ function listChange(sel){
 		 document.getElementById("vendorContactList_info").style.display="none";
 		 document.getElementById("vendorContactList_filter").style.display="none";
 		 
-		 getClientDetails();
+		/*  getClientDetails(); */
+		 getClientDetailsELK();
 	 }
 	 if(sel.value=="listbyContact"){
 		 document.getElementById("vendorContactList").style.display="block";
@@ -1443,7 +1511,8 @@ function listChange(sel){
 		 document.getElementById("ContactImports").style.display="block";
 		'</sec:authorize> ';	 
 		 
-		 getVendorContactLists();
+		/*  getVendorContactLists(); */
+		 getVendorContactListsELK();
 	 }
 	 
 }
