@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +38,8 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserSignatureService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+
+import bsh.StringUtil;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -98,14 +102,17 @@ public class EmailServiceImpl implements EmailService {
 		    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
 		    		  emails = emails.replaceAll("\"", "");
 			  	      String[] toEmails = emails.split(",");
-			    	  for (String toEmail : toEmails) {
+			  	      recipantsList.addAll(Arrays.asList(toEmails));
+			    	 /* for (String toEmail : toEmails) {
 			    		  recipantsList.add(toEmail);
-			    	  } 
+			    	  } */
 		    	  }
 		    	  
 		    	  for(String email : recipantsList){
+		    		    if(StringUtils.isEmpty(email.trim()))
+		    		    	continue;
 						EmailRecipient emailRecipient = new EmailRecipient();
-						emailRecipient.setEmail(email);
+						emailRecipient.setEmail(email.trim());
 						emailRecipientList.add(emailRecipient);
 					}
 		    	 

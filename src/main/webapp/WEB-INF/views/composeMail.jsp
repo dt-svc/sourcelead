@@ -50,7 +50,7 @@ display: none;
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
-            <select class="chosen-select form-control" data-validation="required"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) To Add New Email" id="emailsList" name="Toemails">
+            <select class="chosen-select form-control" data-validation-optional="true"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) To Add New Email" id="emailsList" name="Toemails">
             </select>
             <span class="select-multiple" data-target="#multiplemail" onclick="getUserList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
