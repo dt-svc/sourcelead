@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -325,10 +327,14 @@ public class TimesheetRestController {
 			    		isActive.delete(0, isActive.length());
 			    		isActive.append("");
 			    	}
-			    	if(startDate.equals(endDate))
+			    	if(startDate.equals(endDate)){
+			    	   timesheetEntriesDiv.append("<input type='hidden' name='tabDates'  id='tabDates' value='"+key+"To"+value+"' >");
 			    	   timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='newSaveTimesheet(\"Draft\",\"user\");timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\");'>"+shortormat.format(startDate)+"</a></li> ");
-			    	else
+			    	}
+			    	else{
+			    	  timesheetEntriesDiv.append("<input type='hidden' name='tabDates'  id='tabDates' value='"+key+"To"+value+"' >");	
 			    	  timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#' onClick='newSaveTimesheet(\"Draft\",\"user\");timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\")'>"+shortormat.format(startDate)+" To "+shortormat.format(endDate)+"</a></li> ");	
+			    	}
 			    }
 			    else{
 				    	if(count == 1){
@@ -340,11 +346,13 @@ public class TimesheetRestController {
 				    		isActive.delete(0, isActive.length());
 				    		isActive.append("");
 				    	}
-				    	if(startDate.equals(endDate))
-			              timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='newSaveTimesheet(\"Draft\",\"user\");timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\")'>"+shortormat.format(startDate)+"</a></li> ");
-				    	else    
+				    	if(startDate.equals(endDate)){
+				    		timesheetEntriesDiv.append("<input type='hidden' name='tabDates'  id='tabDates' value='"+key+"To"+value+"' >");
+				    		timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='newSaveTimesheet(\"Draft\",\"user\");timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\")'>"+shortormat.format(startDate)+"</a></li> ");
+				    	}else { 
+				    		 timesheetEntriesDiv.append("<input type='hidden' name='tabDates'  id='tabDates' value='"+key+"To"+value+"' >");
 				    		 timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='newSaveTimesheet(\"Draft\",\"user\");timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\")'>"+shortormat.format(startDate)+" To "+shortormat.format(endDate)+"</a></li> ");
-			        
+				    	}
 			    }
 			    count++;
 			    timesheetFrequencyEndDate = format.format(endDate);
@@ -845,14 +853,17 @@ public class TimesheetRestController {
 		    tabDiv.append("	<span>Total Hours : </span><input type='text' id='grandTotal' value='00:00' placeholder='HH/HH' readonly>");
 		    tabDiv.append("	</div>");
 		
-			tabDiv.append("		        	<input type='button' onClick='newSaveTimesheet(\"Draft\",\"user\");'  value='Save' class='time_btn time_dra' />");	
+		    if(!isNullOrEmpty(approvalStatus)  && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue()) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
+				tabDiv.append("		        	<input type='button' onClick='newSaveTimesheet(\"Draft\",\"user\");'  value='Save' class='time_btn time_dra' />");	
+				
+				if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
+					Date frequencyEndDate = format.parse(timesheetFrequencyEndDate.replaceAll("/", "-"));
+					if(frequencyEndDate.equals(actualEndDate))
+					tabDiv.append("		            <input type='button' onClick='newSaveTimesheet(\"Submitted\",\"user\");'  value='Submit' class='time_btn' />");	
+				}
+				tabDiv.append("		            <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />");	
+		    }	
 			
-			if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
-				Date frequencyEndDate = format.parse(timesheetFrequencyEndDate.replaceAll("/", "-"));
-				if(frequencyEndDate.equals(actualEndDate))
-				tabDiv.append("		            <input type='button' onClick='newSaveTimesheet(\"Submitted\",\"user\");'  value='Submit' class='time_btn' />");	
-			}
-			tabDiv.append("		            <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />");	
 			tabDiv.append("		        </div>   ");	     
 			tabDiv.append("		    </div>  ");	
 			
@@ -919,8 +930,8 @@ public class TimesheetRestController {
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/newSaveTimesheet", method = RequestMethod.POST)
 	public @ResponseBody String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
-			
 			MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status,String savingType) throws Exception {
+			
 			
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -930,7 +941,14 @@ public class TimesheetRestController {
 			JSONObject jsonObj = new JSONObject(json);
 	    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 	    	DateFormat format = Constants.DF_DMY;
+				
+	    	ProjectMembers projectMember = null;
+			if(jsonObj.getString("projectMemberId") != null && jsonObj.getString("projectMemberId") != "" && jsonObj.getString("projectMemberId") != "undefined"){
+				  projectMember = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
+			}
 			
+	    	if(status != null && status.equalsIgnoreCase("Draft")){
+				
 			String result = "";
 			String resultJson = null;
 			
@@ -939,10 +957,7 @@ public class TimesheetRestController {
 				 submissionId = jsonObj.getString("submissionId");
 			}
 			
-			ProjectMembers projectMember = null;
-			if(jsonObj.getString("projectMemberId") != null && jsonObj.getString("projectMemberId") != "" && jsonObj.getString("projectMemberId") != "undefined"){
-				  projectMember = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
-			}
+			
 			
 			Date startDate = null;
 			Date endDate = null;
@@ -1199,6 +1214,37 @@ public class TimesheetRestController {
 	        format = new SimpleDateFormat(pattern);
 	        String startDateStr = format.format(startDate);
 			return startDateStr;
+	    	}
+			if(status != null &&  status.equalsIgnoreCase("Submitted")){
+				if (jsonObj.has("tabDates")){
+				  String tabDates = null;
+			   	  try{
+			   		   JSONArray jsonArray = jsonObj.getJSONArray("tabDates");
+			   		   tabDates = jsonArray.toString();
+			   	  }
+			   	  catch(JSONException e){
+			   		  tabDates= jsonObj.getString("tabDates");
+			   	  }
+			   	  tabDates = tabDates.replaceAll("\\[", "").replaceAll("\\]","");
+			   	  String[] tabDatesArray = tabDates.split(",");
+			   	  
+			   	if(tabDatesArray != null && tabDatesArray.length>0){ 
+					for(String tabDate : tabDatesArray){
+						tabDate = tabDate.replace("\"", "");
+						String[] words = tabDate.split("To");	
+						Date actualStartDate = format.parse(words[0].replaceAll("/", "-"));
+						Date actualEndDate = format.parse(words[1].replaceAll("/", "-"));
+						SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(actualStartDate, actualEndDate, projectMember.getId());
+						sah.setSubmissionStatus(Submission_Status.SUBMITTED);
+						sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
+						submissionApproverHierarchyService.addSubmissionApproverHierarchy(sah);
+					}
+			   	}	
+						  				
+			   	  return "";
+				}
+			}
+			return "";
 		}
 	
 		public static boolean isNullOrEmpty(String str) {
