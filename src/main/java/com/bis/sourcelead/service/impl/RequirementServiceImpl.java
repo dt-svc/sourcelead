@@ -2434,6 +2434,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 Requirement requirement = new Requirement();
 		requirement.setId(requirementIndex.getRequirementId());
      	requirement.setJobId(requirementIndex.getJobId());
+     	requirement.setJobType(requirementIndex.getJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
      	requirement.setClientName(requirementIndex.getClientContactName());
      	requirement.setCountry(requirementIndex.getCountry());

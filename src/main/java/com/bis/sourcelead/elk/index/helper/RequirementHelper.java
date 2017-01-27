@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.UserService;
 
 @Component
 public class RequirementHelper {
@@ -30,6 +31,9 @@ public class RequirementHelper {
 
 	@Autowired
 	private RequirementService requirementService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	private RequirementApproverHierarchyService requirementApproverHierarchyService;
@@ -47,10 +51,10 @@ public class RequirementHelper {
 			requirementIndex.setRequirementId(requirement.getId());
 			requirementIndex.setOrgLocationId(requirement.getOrgLocationId().getId());
 			requirementIndex.setJobTitle(requirement.getJobTitle());
+			requirementIndex.setJobType(requirement.getJobType());
 			if (requirement.getRate() !=null && !"".equalsIgnoreCase(requirement.getRate())) {
 				requirementIndex.setRate(Float.parseFloat(requirement.getRate()));
 			}
-
 			requirementIndex.setRateType(requirement.getRateType());
 			if (requirement.getMinExp() !=null && !"".equalsIgnoreCase(requirement.getMinExp())) {
 				requirementIndex.setMaxExperience(Integer.parseInt(requirement.getMinExp()));
@@ -70,8 +74,14 @@ public class RequirementHelper {
 			requirementIndex.setReqCreatedDate(reqcreatedDate);
 			 String reqUpDatedDate = dateFormat.format(requirement.getCreatedDate());
 			requirementIndex.setReqUpdatedDate(reqUpDatedDate);
-			
-			
+			Long userId = requirement.getManagerUserId().getId();
+			User ownerUser = userService.getUserById(userId);
+			StringBuilder sbilder = new StringBuilder();
+			if(ownerUser != null && ownerUser.getFirstName() != null && ownerUser.getLastName()!= null ){
+			requirementIndex.setManager(sbilder.append((ownerUser.getFirstName())).append(ownerUser.getLastName()).toString());
+			}else{
+			requirementIndex.setManager(sbilder.append((ownerUser.getFirstName())).toString());
+			}
 			
 			
 			
@@ -168,11 +178,9 @@ public class RequirementHelper {
 				String[] skills = requirement.getSkills().split(",");
 				requirementIndex.setSkills(skills);
 			}
-			requirementIndex.setJobType(requirement.getJobType());
 			requirementIndex.setJobId(requirement.getJobId());
 			// requirementIndex.setClientContactName(requirement.getClientContactName());
 			// requirementIndex.setClientContactEmail(requirement.getClientContactName());
-			requirementIndex.setManager(requirement.getManager());
 			requirementIndex.setPriority(requirement.getPriority());
 			requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());
 			requirementIndex.setNumberOfPositions(requirement.getPositions());
