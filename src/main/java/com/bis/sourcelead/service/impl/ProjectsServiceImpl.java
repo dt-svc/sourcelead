@@ -1778,5 +1778,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, projectApproverHierarchy, projectMembers);
 				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
 			}
+			
+			@Override
+			public Integer getProjectCountByOrgLocationId(Long orgLocationId)
+					throws Exception {
+				return projectsDao.getProjectCountByOrgLocationId(orgLocationId);
+			}
 
 }

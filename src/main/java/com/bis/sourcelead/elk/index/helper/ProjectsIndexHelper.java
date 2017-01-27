@@ -44,10 +44,18 @@ public class ProjectsIndexHelper {
 			if(projectApproverHierarchyList.size()>0){
 				for(ProjectApproverHierarchy projectApproverHierarchy : projectApproverHierarchyList){
 					if(projectApproverHierarchy.getLevel() == 1){
-						projectsIndex.setLevel1ManagerName(projectApproverHierarchy.getApproverUserId().getFirstName());
+						if(null != projectApproverHierarchy.getApproverUserId() && !isNullOrEmpty(projectApproverHierarchy.getApproverUserId().getLastName())){
+							projectsIndex.setLevel1ManagerName(projectApproverHierarchy.getApproverUserId().getFirstName()+" "+projectApproverHierarchy.getApproverUserId().getLastName());
+						}else{
+							projectsIndex.setLevel1ManagerName(projectApproverHierarchy.getApproverUserId().getFirstName());
+						}
 					}
 					if(projectApproverHierarchy.getLevel() == 2){
-						projectsIndex.setLevel2ManagerName(projectApproverHierarchy.getApproverUserId().getFirstName());
+						if(null != projectApproverHierarchy.getApproverUserId() && !isNullOrEmpty(projectApproverHierarchy.getApproverUserId().getLastName())){
+							projectsIndex.setLevel2ManagerName(projectApproverHierarchy.getApproverUserId().getFirstName()+" "+projectApproverHierarchy.getApproverUserId().getLastName());
+						}else{
+							projectsIndex.setLevel2ManagerName(projectApproverHierarchy.getApproverUserId().getFirstName());
+						}
 					}
 				}
 			}
@@ -56,8 +64,14 @@ public class ProjectsIndexHelper {
 				ArrayList<String> projectMembers = new ArrayList<>();
 				ArrayList<String> projectMemberEmail = new ArrayList<>();
 				for(ProjectMembers member : projectMembersList){
-					projectMembers.add(member.getEmployee().getUser().getFirstName());
-					projectMemberEmail.add(member.getEmployee().getUser().getEmail());
+					if(null != member.getEmployee() && null != member.getEmployee().getUser()){
+						if(!isNullOrEmpty(member.getEmployee().getUser().getLastName())){
+							projectMembers.add(member.getEmployee().getUser().getFirstName()+" "+member.getEmployee().getUser().getLastName());
+						}else{
+							projectMembers.add(member.getEmployee().getUser().getFirstName());
+						}
+						projectMemberEmail.add(member.getEmployee().getUser().getEmail());
+					}
 				}
 				if(null != projectMembers && !projectMembers.isEmpty()){
 					projectsIndex.setProjectMembers(projectMembers);

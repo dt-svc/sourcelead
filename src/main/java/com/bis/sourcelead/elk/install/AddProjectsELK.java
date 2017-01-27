@@ -57,31 +57,124 @@ public class AddProjectsELK {
 		 DataSource dataSource = comboPooledDataSource();
 		ArrayList<ProjectsIndex> projectsIndexsList = new ArrayList<ProjectsIndex>();
 		 try {
-				String sql = "SELECT * FROM sourcelead.PROJECTS mailbox";
+				String sql = "SELECT * FROM sourcelead.PROJECTS projects";
 				Connection conn = dataSource.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);
 			    while(rs.next()){
 			    	ProjectsIndex projectsIndex = new ProjectsIndex();
 			    	
-			    	projectsIndex = new ProjectsIndex();
-					projectsIndex.setId(rs.getLong("ID"));
-					projectsIndex.setProjectSequeneNumber(rs.getString("PROJECT_SEQUENCE_NUMBER"));
+			    	if(!isNullOrEmpty(rs.getString("ID"))){
+			    		projectsIndex.setId(rs.getLong("ID"));
+					}
+			    	if(!isNullOrEmpty(rs.getString("PROJECT_SEQUENCE_NUMBER"))){
+			    		projectsIndex.setProjectSequeneNumber(rs.getString("PROJECT_SEQUENCE_NUMBER"));
+					}
 					projectsIndex.setProjectName(rs.getString("PROJECT_NAME"));
-					projectsIndex.setStartDate(rs.getString("START_DATE"));
-					projectsIndex.setEndDate(rs.getString("END_DATE"));
-					projectsIndex.setInvoiceFrequency(rs.getString("INVOICE_FREQUENCY"));
-					projectsIndex.setProjectStatus(rs.getString("PROJECT_STATUS"));
+					projectsIndex.setStartDate(Constants.DF_DMY.format(rs.getString("START_DATE")));
+					if(!isNullOrEmpty(rs.getString("END_DATE"))){
+						projectsIndex.setEndDate(Constants.DF_DMY.format(rs.getString("END_DATE")));
+					}
+					if(!isNullOrEmpty(rs.getString("INVOICE_FREQUENCY"))){
+						projectsIndex.setInvoiceFrequency(rs.getString("INVOICE_FREQUENCY"));
+					}
+					if(!isNullOrEmpty(rs.getString("PROJECT_STATUS"))){
+						projectsIndex.setProjectStatus(rs.getString("PROJECT_STATUS"));
+					}
 					
+					Long projectId = rs.getLong("ID");
+		    	    if(projectId != null && projectId != 0){
+		    	    		String sqlManager = "SELECT * FROM sourcelead.PROJECT_APPROVER_HIERARCHY projectsApprovers where projectsApprovers.PROJECT_ID = '"+ projectId+"' ";
+		    	    		Statement stmtManager = conn.createStatement();
+		    	    		ResultSet rsManager = stmtManager.executeQuery(sqlManager);
+							if(rsManager != null){
+								while(rsManager.next()){
+									if(rsManager.getInt("LEVEL") == 1){
+										Long rsManagerUserId = rsManager.getLong("APPROVER_USER_ID");
+										String sqlManagerUser = "SELECT * FROM sourcelead.USER user where user.ID = '"+ rsManagerUserId+"' ";
+					    	    		Statement stmtManagerUser = conn.createStatement();
+					    	    		ResultSet rsManagerUser = stmtManagerUser.executeQuery(sqlManagerUser);
+										if(!isNullOrEmpty(rsManagerUser.getString("LAST_NAME"))){
+											projectsIndex.setLevel1ManagerName(rsManagerUser.getString("FIRST_NAME")+ " " +rsManagerUser.getString("LAST_NAME"));
+										}else{
+											projectsIndex.setLevel1ManagerName(rsManagerUser.getString("FIRST_NAME"));
+										}
+									}
+									if(rsManager.getInt("LEVEL") == 2){
+										Long rsManagerUserId = rsManager.getLong("APPROVER_USER_ID");
+										String sqlManagerUser = "SELECT * FROM sourcelead.USER user where user.ID = '"+ rsManagerUserId+"' ";
+					    	    		Statement stmtManagerUser = conn.createStatement();
+					    	    		ResultSet rsManagerUser = stmtManagerUser.executeQuery(sqlManagerUser);
+										if(!isNullOrEmpty(rsManagerUser.getString("LAST_NAME"))){
+											projectsIndex.setLevel2ManagerName(rsManagerUser.getString("FIRST_NAME")+ " " +rsManagerUser.getString("LAST_NAME"));
+										}else{
+											projectsIndex.setLevel2ManagerName(rsManagerUser.getString("FIRST_NAME"));
+										}
+									}
+							    }
+		    	            }
+							
+							String sqlprojectMembers = "SELECT * FROM sourcelead.PROJECT_MEMBERS projectMembers where projectMembers.PROJECT_ID = '"+ projectId+"' ";
+		    	    		Statement stmtprojectMembers = conn.createStatement();
+		    	    		ResultSet rsprojectMembers = stmtprojectMembers.executeQuery(sqlprojectMembers);
+							if(rsprojectMembers != null){
+								ArrayList<String> memberName = new ArrayList<>();
+								ArrayList<String> memberEmail = new ArrayList<>();
+								while(rsprojectMembers.next()){
+									Long rsMemberEmpId = rsManager.getLong("EMPLOYEE_ID");
+									String sqlMemberEmp = "SELECT * FROM sourcelead.EMPLOYEE emp where emp.ID = '"+ rsMemberEmpId+"' ";
+				    	    		Statement stmtMemberEmp = conn.createStatement();
+				    	    		ResultSet rsMemberEmp = stmtMemberEmp.executeQuery(sqlMemberEmp);
+				    	    		
+				    	    		Long rsMemberUserId = rsMemberEmp.getLong("USER_ID");
+									String sqlMemberUser = "SELECT * FROM sourcelead.USER user where user.ID = '"+ rsMemberUserId+"' ";
+				    	    		Statement stmtMemberUser = conn.createStatement();
+				    	    		ResultSet rsMemberUser = stmtMemberUser.executeQuery(sqlMemberUser);
+				    	    		
+									if(!isNullOrEmpty(rsMemberUser.getString("LAST_NAME"))){
+										memberName.add(rsMemberUser.getString("FIRST_NAME")+ " " +rsMemberUser.getString("LAST_NAME"));
+									}else{
+										memberName.add(rsMemberUser.getString("FIRST_NAME"));
+									}
+									memberEmail.add(rsMemberUser.getString("EMAIL"));
+							    }
+								if(null != memberName && !memberName.isEmpty()){
+							    	projectsIndex.setProjectMembers(memberName);
+								}
+								if(null != memberEmail && !memberEmail.isEmpty()){
+							    	projectsIndex.setProjectMemberEmail(memberEmail);
+								}
+		    	           }
+							
+							Long clientOrgRelationId = rs.getLong("ORG_RELATION_ID");
+							String sqlClient = "SELECT * FROM sourcelead.ORG_RELATIONS orgRelations where orgRelations.ID = '"+ clientOrgRelationId+"' ";
+		    	    		Statement stmtClient = conn.createStatement();
+		    	    		ResultSet rsClient = stmtClient.executeQuery(sqlClient);
+							if(rsClient != null){
+								Long rsClientLocationId = null;
+								if(rsClient.getLong("LOCATION_ID") == rs.getLong("ORG_LOCATIONS_ID")){
+									rsClientLocationId = rsClient.getLong("RESPONDER_LOCATION_ID");
+								}else{
+									rsClientLocationId = rsClient.getLong("LOCATION_ID");
+								}
+								
+								String sqlClientLocation = "SELECT * FROM sourcelead.ORG_LOCATIONS orgLocations where orgLocations.ID = '"+ rsClientLocationId+"' ";
+			    	    		Statement stmtClientLocation = conn.createStatement();
+			    	    		ResultSet rsClientLocation = stmtClientLocation.executeQuery(sqlClientLocation);
+			    	    		
+			    	    		if(rsClientLocation != null){
+			    	    			Long rsClientOrgId = rsClientLocation.getLong("ORG_ID");
+				    	    		String sqlClientOrg = "SELECT * FROM sourcelead.ORG org where org.ID = '"+ rsClientOrgId+"' ";
+				    	    		Statement stmtClientOrg = conn.createStatement();
+				    	    		ResultSet rsClientOrg = stmtClientOrg.executeQuery(sqlClientOrg);
+				    	    		if(rsClientOrg != null){
+				    	    			projectsIndex.setClientName(rsClientOrg.getString("ORG_NAME"));
+				    	    		}
+			    	    		}
+			    	    		
+		    	            }
+		    	    }
 					
-					/*if(!isNullOrEmpty(rs.getString("CANDIDATE_ID"))){
-						projectsIndex.setCandidateId(rs.getString("CANDIDATE_ID"));
-					}*/
-					
-					
-					
-					
-			    	
 					projectsIndexsList.add(projectsIndex);
 			    }
 			   conn.close();

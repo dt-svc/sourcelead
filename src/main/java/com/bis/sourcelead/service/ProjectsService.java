@@ -93,4 +93,6 @@ public interface ProjectsService {
 		
 		void saveOrUpdateProjectElkDocument(Projects projects) throws Exception;
 		
+		Integer getProjectCountByOrgLocationId(Long orgLocationId)throws Exception;
+		
 }
