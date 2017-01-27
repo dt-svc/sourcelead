@@ -54,14 +54,18 @@ public class ProjectsIndexHelper {
 			
 			if(projectMembersList.size()>0){
 				ArrayList<String> projectMembers = new ArrayList<>();
+				ArrayList<String> projectMemberEmail = new ArrayList<>();
 				for(ProjectMembers member : projectMembersList){
 					projectMembers.add(member.getEmployee().getUser().getFirstName());
+					projectMemberEmail.add(member.getEmployee().getUser().getEmail());
 				}
 				if(null != projectMembers && !projectMembers.isEmpty()){
 					projectsIndex.setProjectMembers(projectMembers);
 				}
+				if(null != projectMemberEmail && !projectMemberEmail.isEmpty()){
+					projectsIndex.setProjectMemberEmail(projectMemberEmail);
+				}
 			}
-			
 		}
 		return projectsIndex;
 		

@@ -34,6 +34,8 @@ public class ProjectsIndex implements Serializable{
 	
 	private ArrayList<String> projectMembers;
 	
+	private ArrayList<String> projectMemberEmail;
+	
     private String status;
 
     
@@ -147,6 +149,14 @@ public class ProjectsIndex implements Serializable{
 
 	public void setProjectMembers(ArrayList<String> projectMembers) {
 		this.projectMembers = projectMembers;
+	}
+
+	public ArrayList<String> getProjectMemberEmail() {
+		return projectMemberEmail;
+	}
+
+	public void setProjectMemberEmail(ArrayList<String> projectMemberEmail) {
+		this.projectMemberEmail = projectMemberEmail;
 	}
     
 }

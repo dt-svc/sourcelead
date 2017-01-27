@@ -102,7 +102,6 @@ overflow-x: auto;
 		<%-- <c:if test="${!empty projectsList}"> --%>
 		<div class="project_wrap">
 		
-		
 		<div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
@@ -220,8 +219,6 @@ overflow-x: auto;
 					  </div>
 					  <div class="row form-footer mt">
 						  <div class="pull-right mr">
-							 <!--  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
-							  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> -->
 							   <input type="button" value="Search" id="search_project" onclick="searchProject();" class="btn btn-sm btn-primary"/>
                                <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
 						  </div>
