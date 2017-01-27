@@ -102,7 +102,7 @@ public interface RequirementService {
 
 	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org, String userRole, User user)throws Exception;
 
-	public List<Requirement> univesalSearchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org,
+	public List<Object> univesalSearchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org,
 			String userRole, User user) throws JSONException, Exception;
 
 }

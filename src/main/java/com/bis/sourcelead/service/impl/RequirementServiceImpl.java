@@ -7,14 +7,17 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,6 +47,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.RequirementHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -72,6 +77,7 @@ import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -87,6 +93,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * 
@@ -108,6 +115,9 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private SubmissionTemplateDao submissionTemplateDao;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	@Autowired
 	private RequirementAssignToService requirementAssignToService;
@@ -2498,12 +2508,13 @@ public class RequirementServiceImpl implements RequirementService {
 	 }
 
 	@Override
-	public List<Requirement> univesalSearchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org,
+	public List<Object> univesalSearchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org,
 			String userRole, User user) throws JSONException, Exception {
-		List<Requirement>   searchList = new ArrayList<>();
+		List<Object>   searchList = new ArrayList<>();
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
-		if(jsonObj.has("searchKey") && !"".equalsIgnoreCase(jsonObj.getString("searchKey"))&&"Requirement".equalsIgnoreCase(jsonObj.getString("searchKey")))
+		
+		if(jsonObj.has("searchType") && !"".equalsIgnoreCase(jsonObj.getString("searchType"))&&"Requirement".equalsIgnoreCase(jsonObj.getString("searchType")))
 		{
 			 Long maxResults = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
 			//Any Keyword
@@ -2572,26 +2583,273 @@ public class RequirementServiceImpl implements RequirementService {
 				
 			return searchList;
 		}
-		if(jsonObj.has("searchKey") && !"".equalsIgnoreCase(jsonObj.getString("searchKey"))&&"Users".equalsIgnoreCase(jsonObj.getString("searchKey")))
+		if(jsonObj.has("searchType") && !"".equalsIgnoreCase(jsonObj.getString("searchType"))&&"Users".equalsIgnoreCase(jsonObj.getString("searchType")))
 		{
 			// ELK list for the user
 			return searchList;
 		}
 		
-		if(jsonObj.has("searchKey") && !"".equalsIgnoreCase(jsonObj.getString("searchKey"))&&("Clients".equalsIgnoreCase(jsonObj.getString("searchKey"))||"Vendors".equalsIgnoreCase(jsonObj.getString("searchKey"))))
+		if(jsonObj.has("searchType") && !"".equalsIgnoreCase(jsonObj.getString("searchType"))&&("Clients".equalsIgnoreCase(jsonObj.getString("searchType"))||"Vendors".equalsIgnoreCase(jsonObj.getString("searchType"))))
 		{
-			// ELK list for the user
+			// ELK list for the Clients and Vendors
+			 OrgLocations loginOrgLocation = orgLocation;
+			 String responderType;
+			 if("Vendor".equalsIgnoreCase(jsonObj.getString("searchType"))){
+				 responderType = "Client";
+			 }else{
+				 responderType = "Vendor"; 
+			 }
+			 
+			 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
+			 
+			 BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
+			 initiatorQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+			 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorType", responderType));
+			 
+			 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
+			 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", loginOrgLocation.getId()));
+			 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
+			 
+			 combinedQueryBuilder.should(initiatorQueryBuilder);
+			 combinedQueryBuilder.should(responderQueryBuilder);
+			 
+			 boolQueryBuilder.must(combinedQueryBuilder);
+			 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId());
+				
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				if(searchHits != null && searchHits.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHits) {
+						String json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						ClientVendorIndex clientVendorIndex = mapper.readValue(json, ClientVendorIndex.class);
+						searchList.add(clientVendorIndex);
+					}
+				}
+			
 			return searchList;
 		}
 	
-		if(jsonObj.has("searchKey") && !"".equalsIgnoreCase(jsonObj.getString("searchKey"))&&"Projects".equalsIgnoreCase(jsonObj.getString("searchKey")))
+		if(jsonObj.has("searchType") && !"".equalsIgnoreCase(jsonObj.getString("searchType"))&&"Projects".equalsIgnoreCase(jsonObj.getString("searchType")))
 		{
 			// ELK list for the user
 			return searchList;
 		}
-		if(jsonObj.has("searchKey") && !"".equalsIgnoreCase(jsonObj.getString("searchKey"))&&"Candidate".equalsIgnoreCase(jsonObj.getString("searchKey")))
+		if(jsonObj.has("searchType") && !"".equalsIgnoreCase(jsonObj.getString("searchType"))&&"Candidate".equalsIgnoreCase(jsonObj.getString("searchType")))
 		{
-			// ELK list for the user
+			// ELK list for the Candidate
+			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId());
+		   	 //Exclude Keyword
+			 
+				//All Keywords
+				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "searchKey");
+				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(allBoolQueryBuilder);
+				}
+				//Designation
+				ArrayList<String> designationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "designation");
+				if(designationArray != null && !designationArray.isEmpty()){
+					BoolQueryBuilder designationBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : designationArray){
+						designationBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("designation", "*"+keywd+"*"));
+					}
+					boolQueryBuilder.must(designationBoolQueryBuilder);
+				}
+				
+				//Notice_Period
+				ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(jsonObj, "noticePeriod");
+				if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
+					BoolQueryBuilder noticePeriodBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : noticePeriodArray){
+						noticePeriodBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePriod", keywd));
+					}
+					boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
+				}
+			
+				 //Country
+				if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+			    }
+				 //State
+				if(jsonObj.has("state") && StringUtils.isNotEmpty(jsonObj.getString("state"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
+			    }
+				//City
+				if(jsonObj.has("city")  && StringUtils.isNotEmpty(jsonObj.getString("city"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
+			    }
+				//minExpYears && maxExpYears
+			    if(StringUtils.isNotEmpty(jsonObj.getString("minExpYears")) && StringUtils.isNotEmpty(jsonObj.getString("maxExpYears"))){
+			    	String minYears= jsonObj.getString("minExpYears").replaceAll("[^0-9\\.]+", "");
+			    	String maxYears= jsonObj.getString("maxExpYears").replaceAll("[^0-9\\.]+", "");
+			    	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("experienceYears").gte(new Integer(minYears)).lte(new Integer(maxYears)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
+				//minExpYears
+			    else if(jsonObj.has("minExpYears") && StringUtils.isNotEmpty(jsonObj.getString("minExpYears"))){
+			    	String minYears= jsonObj.getString("minExpYears").replaceAll("[^0-9\\.]+", "");
+			    	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("experienceYears").gte(new Integer(minYears)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
+			    //maxExpYears
+			    else if(jsonObj.has("maxExpYears") && StringUtils.isNotEmpty(jsonObj.getString("maxExpYears"))){
+                	String maxYears= jsonObj.getString("maxExpYears").replaceAll("[^0-9\\.]+", "");
+                	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("experienceYears").lte(new Integer(maxYears)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
+				 //Currency
+			    if(jsonObj.has("currency") && StringUtils.isNotEmpty(jsonObj.getString("currency"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("expectedRateCurrencey", jsonObj.getString("currency")));
+			    }
+			    
+			     //minRate && //axRate
+			    if(jsonObj.has("minRate") && StringUtils.isNotEmpty(jsonObj.getString("minRate")) 
+			    		&& jsonObj.has("maxRate") && StringUtils.isNotEmpty(jsonObj.getString("maxRate"))){
+			    	String minRate= jsonObj.getString("minRate").replaceAll("[^0-9\\.]+", "");
+			    	String maxRate= jsonObj.getString("maxRate").replaceAll("[^0-9\\.]+", "");
+			    	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("expectedRate").gte(new Float(minRate)).lte(new Float(maxRate)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
+				//minRate
+			    else if(jsonObj.has("minRate") && StringUtils.isNotEmpty(jsonObj.getString("minRate"))){
+			    	String minRate= jsonObj.getString("minRate").replaceAll("[^0-9\\.]+", "");
+			    	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("expectedRate").gte(new Float(minRate)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
+			    //maxRate
+			    else if(jsonObj.has("maxRate") && StringUtils.isNotEmpty(jsonObj.getString("maxRate"))){
+                	String maxRate= jsonObj.getString("maxRate").replaceAll("[^0-9\\.]+", "");
+                	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("expectedRate").lte(new Float(maxRate)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
+				
+			   //Rate Type
+				if(jsonObj.has("rateType") && StringUtils.isNotEmpty(jsonObj.getString("rateType"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
+			    }
+				
+				//updatedOn
+				if(jsonObj.has("updatedOn") && StringUtils.isNotEmpty(jsonObj.getString("updatedOn"))){
+					try{
+						 Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+					     c.setTime(new Date());
+					     Integer dateRange = Integer.parseInt(jsonObj.getString("updatedOn"));
+				         c.add(Calendar.DATE, -dateRange);
+				         Date utilDate = c.getTime();
+				 	     boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(utilDate));
+					}
+			    	catch(NumberFormatException e){}
+			    }
+				
+				//Educations
+				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
+				if(educationArray != null && !educationArray.isEmpty()){
+					BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
+					for(String keywd : educationArray){
+						edunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("education", keywd));
+					}
+					boolQueryBuilder.must(edunBoolQueryBuilder);
+				} 
+				
+				//Exclude Educations
+				ArrayList<String> excludeEducationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeEducation");
+				if(excludeEducationArray != null && !excludeEducationArray.isEmpty()){
+					BoolQueryBuilder excludeEdunBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : excludeEducationArray){
+						excludeEdunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("education", keywd));
+					}
+					boolQueryBuilder.mustNot(excludeEdunBoolQueryBuilder);
+				} 
+				//Certifications
+				ArrayList<String> certificationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "certification");
+				if(certificationArray != null && !certificationArray.isEmpty()){
+					BoolQueryBuilder certificationBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : certificationArray){
+						certificationBoolQueryBuilder.should(QueryBuilders.matchQuery("certifications", keywd));
+					}
+					boolQueryBuilder.must(certificationBoolQueryBuilder);
+				}
+				
+				//Exclude Employers
+				ArrayList<String> excludeEmployerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeEmployers");
+				if(excludeEmployerArray != null && !excludeEmployerArray.isEmpty()){
+					BoolQueryBuilder excldEmployerBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : excludeEmployerArray){
+						excldEmployerBoolQueryBuilder.should(QueryBuilders.matchQuery("employer", keywd));
+					}
+					boolQueryBuilder.mustNot(excldEmployerBoolQueryBuilder);
+				} 
+				
+				//Employers
+				ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employers");
+				if(employerArray != null && !employerArray.isEmpty()){
+					BoolQueryBuilder employerBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : employerArray){
+						employerBoolQueryBuilder.should(QueryBuilders.matchQuery("employer", keywd));
+					}
+					boolQueryBuilder.must(employerBoolQueryBuilder);
+				}
+				 
+				//applicant type
+				if(jsonObj.has("applicantType") && StringUtils.isNotEmpty(jsonObj.getString("applicantType"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", jsonObj.getString("applicantType")));
+			    }
+				
+				
+				//CandidateSkills
+				ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "candidateSkills");
+				if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
+					BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : candidateSkillsArray){
+						skillBoolQueryBuilder.should(QueryBuilders.matchQuery("skills", keywd));
+					}
+					boolQueryBuilder.must(skillBoolQueryBuilder);
+				} 
+				
+				
+				List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				    if(null != searchHits && searchHits.length >0){
+				    	ObjectMapper mapper = new ObjectMapper();
+				    	for (SearchHit hit : searchHits) {
+				    		String json = hit.getSourceAsString();
+				    		mapper.setDateFormat(df);
+				    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+				    	    if(candidateIndex.getUpdatedDate() != null){
+				    	    	candidateIndex.setCandidateUpdateDateToString(Constants.DF_YMD.format(candidateIndex.getUpdatedDate()));
+				   			}
+				    	    searchList.add(candidateIndex);
+				    	}
+				    	
+				    }
 			return searchList;
 		}
 		return searchList;

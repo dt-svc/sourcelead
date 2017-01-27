@@ -1255,7 +1255,7 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-			List<Requirement> searchRequirementList = requirementService.univesalSearchRequirement(orgLocation, jsonObj,org,userRole,user);
+			List<Object> searchRequirementList = requirementService.univesalSearchRequirement(orgLocation, jsonObj,org,userRole,user);
 			resultJson = commonUtil.toJSON(searchRequirementList);
 			return resultJson;
         }
