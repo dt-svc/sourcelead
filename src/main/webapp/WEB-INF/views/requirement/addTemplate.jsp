@@ -363,7 +363,7 @@ function minMaxExperience(){
     var maxExp = ($('#maxExp').val());
     var minExp = ($('#minExp').val());
     
-    if (parseFloat(maxExp) < parseFloat(minExp)){
+    if (parseFloat(maxExp) <= parseFloat(minExp)){
         $('#expId').find('p.jquery_form_error_message').remove(); 
 		$('input#expValidation').attr('class','error signin_fild');
 		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
