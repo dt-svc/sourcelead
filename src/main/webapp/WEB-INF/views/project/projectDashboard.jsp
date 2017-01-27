@@ -11,13 +11,15 @@
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/chosen.jquery.min.js"></script> 
 
+<script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
-
 
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
@@ -141,6 +143,7 @@ overflow-x: auto;
 			              <div class="col-md-12">
 		                	<h4>Project Details:</h4>
 		              	  </div>
+		              	<div class="clearfix">
 		                <div class="col-md-4">
 		                  <label>Project ID</label>
 		                  <div class="clearfix">
@@ -178,19 +181,24 @@ overflow-x: auto;
 		                
 		                <div class="col-md-4">
 			                <label>Clients</label>
-			                <div class="clearfix">
 			                  <div class="clearfix">
-								  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Clients" id="clientsAdvanced" name="clientsAdvanced">
-				                     </select>
+									 <select class="chosen-select form-control input-sm" multiple data-placeholder="Clients" id="clientsAdvanced" name="clientsAdvanced">
+                                       <c:forEach var="report" items="${add_client}">
+							                     <option value="${report.clientName}">${report.clientName}</option>
+						                </c:forEach>
+                                    </select>
 							 </div>
-			                </div>
-			              </div>
+			            </div>
 			              
-			              <div class="col-md-4">
+			            <div class="col-md-4">
 		                  <label>Status</label>
 		                  <div class="clearfix">
-		                  	<select class="chosen-select form-control input-sm" multiple data-placeholder="Status" id="statusAdvanced" name="statusAdvanced">
-		                     </select>
+		                     <select class="chosen-select" id="statusAdvanced" name="statusAdvanced" data-placeholder="Status" multiple>
+										 <option value="Started">Started</option>
+										 <option value="In-Progress">In-Progress</option>
+										 <option value="Completed">Completed</option>
+										 <option value="On-Hold">On-Hold</option>
+				             </select>
 		                  </div>
 		                </div>
 		                
@@ -215,7 +223,7 @@ overflow-x: auto;
 		                  	<input type="text" class="form-control input-sm" placeholder="Employee Email" id="employeeEmailAdvanced" name="employeeEmailAdvanced">
 		                  </div>
 		                </div>
-		                
+		                </div>
 					  </div>
 					  <div class="row form-footer mt">
 						  <div class="pull-right mr">
