@@ -1,6 +1,7 @@
 package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -505,7 +506,16 @@ public  class CalendarUtil {
   		dateList.put("ENDDATE", calendar.getTime());
   	    return dateList;
   	}
-      
+    
+    public static String getMonthAndYearPatternDateByMonthPreference(Date date,Integer monthPreference){
+  		Calendar calendar = Calendar.getInstance();   
+  		calendar.setTime(date);
+  		calendar.add(Calendar.MONTH, monthPreference);
+  	    DateFormat format = Constants.MY;
+  		String dateStr = format.format(calendar.getTime());
+		return dateStr;
+  	}
+    
     public static HashMap<String,Date> getMonthStartDateByGivenDate(Date date,Integer monthPreference){
   		HashMap<String,Date> dateList = new HashMap<String,Date>();
   		Calendar calendar = Calendar.getInstance();   

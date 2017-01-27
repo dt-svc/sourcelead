@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +25,21 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 	@Autowired
 	CommonUtil commonUtil;
 	
-	
+	public LinkedHashSet<String> getMonthsListFromCurrentDate(int previousMonths,int priorMonths) throws Exception{
+		LinkedHashSet<String> MonthsList = new LinkedHashSet<String>();
+		
+		for(int i =previousMonths;i>0;i--){
+			String date = CalendarUtil.getMonthAndYearPatternDateByMonthPreference(CommonUtil.currentDate(),-i);
+			MonthsList.add(date);
+		}
+		String currentDate = CalendarUtil.getMonthAndYearPatternDateByMonthPreference(CommonUtil.currentDate(),0);
+		MonthsList.add(currentDate);
+		for(int i =1;i<=priorMonths;i++){
+			String date = CalendarUtil.getMonthAndYearPatternDateByMonthPreference(CommonUtil.currentDate(),i);
+			MonthsList.add(date);
+		}
+		return MonthsList;
+	}
 	public Map<String,String> getTimesheetFrequencyListFromProjectInvoiceFrequency(Projects project) throws Exception{
 		Map<String,String> timesheetFrequencyList = new LinkedHashMap<String,String>();
 		if(project != null){

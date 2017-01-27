@@ -3,6 +3,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
@@ -104,27 +106,39 @@ public class NewTimesheetApprovalRestController {
 		timesheetApprovalDiv.append("		<div class='timesheet_out'> ");
 		timesheetApprovalDiv.append("		<div class='timesheet_appr_wrap'>");
 		    timesheetApprovalDiv.append("			<div class='timesheetNewHead'>");
-		
-			timesheetApprovalDiv.append("				<div class='timeNewSe'>");
-			
-			Collection<Projects> ProjectsList = projectsService.getProjectsByOrgLocationsIdAndApproverUserId(orgLocations.getId(), user.getId());
-				timesheetApprovalDiv.append("	  <select class='form-control chosen-select' onChange='timesheetApprovalDivByProject();'>");
-				
-				Long initialProjectId = null;
-				if(ProjectsList != null && !ProjectsList.isEmpty()){
-					long count = 1;
-					for(Projects project : ProjectsList){
-						if(count == 1)
-							initialProjectId = project.getId();
-						    timesheetApprovalDiv.append("	                  <option>").append(project.getProjectName()).append("</option>");
-					}
-				}	
-				timesheetApprovalDiv.append("	    </select>");
-				timesheetApprovalDiv.append("	            </div>");
-			timesheetApprovalDiv.append("				<div id='timesheetApprovalDivByProject'>");
-				StringBuilder frequencyDiv = timesheetApprovalDivByProject(initialProjectId.toString());
-				timesheetApprovalDiv.append(frequencyDiv);
-			timesheetApprovalDiv.append("	</div>");
+						      
+		                      timesheetApprovalDiv.append("				<div class='timeNewSe addicon'>");
+						       LinkedHashSet<String> datesList = timesheetApprovalFrequencyGeneratorUtil.getMonthsListFromCurrentDate(3, 3);
+											       timesheetApprovalDiv.append("		                <select id='frequencyMonth' name='frequencyMonth' class='form-control chosen-select'   >");
+													String selectedDate = null;
+													for (String dateStr : datesList) {
+														    StringBuilder isSelected = new StringBuilder("");
+														    String currentDate = CalendarUtil.getMonthAndYearPatternDateByMonthPreference(CommonUtil.currentDate(),0);
+														    if(currentDate.equalsIgnoreCase(dateStr)){
+														    	isSelected.append("selected='selected'");
+														    	selectedDate = dateStr;
+														    }
+														    timesheetApprovalDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+dateStr+"'>");
+														    timesheetApprovalDiv.append(dateStr);
+														    timesheetApprovalDiv.append("		                  </option>");
+													}
+													timesheetApprovalDiv.append("		                </select>");
+					             timesheetApprovalDiv.append("	            </div>");
+						        
+					             timesheetApprovalDiv.append(" <div id='timesheetFrequencyDiv' class='timeNewSe'>");
+								        timesheetApprovalDiv.append(" <select class='form-control chosen-select'>");
+								             timesheetApprovalDiv.append(" <option value=''>Select Frequency</option>");
+								             timesheetApprovalDiv.append(" <option value='all'>All</option>");
+										     timesheetApprovalDiv.append(" <option value='Monthly'>Monthly</option>");
+										     timesheetApprovalDiv.append(" <option value='Semi-monthly'>Semi-monthly</option>");
+						   				     timesheetApprovalDiv.append(" <option value='Bi-weekly'>Bi-weekly</option>");
+						   				     timesheetApprovalDiv.append(" <option value='Weekly'>Weekly</option>");
+				   				        timesheetApprovalDiv.append(" </select>");
+		                        timesheetApprovalDiv.append("	</div>");
+							     
+		                        
+		                          StringBuilder frequencyDiv = timesheetApprovalDivByProject("1");
+							      timesheetApprovalDiv.append(frequencyDiv);
 		
 		timesheetApprovalDiv.append("	</div>");
 		timesheetApprovalDiv.append("	</div>");
@@ -144,15 +158,13 @@ public class NewTimesheetApprovalRestController {
 	public @ResponseBody String timesheetApprovalDivByFrequency(HttpServletRequest request,
 			@RequestParam(value="frequency", required=false) String frequency ) throws Exception {
 			
-		StringBuilder frequencyBasedDiv =  timesheetApprovalDivByFrequnecy("28/11/2016", "28/11/2016","1");
+		StringBuilder frequencyBasedDiv =  timesheetApprovalDivForStages();
 		return frequencyBasedDiv.toString();
 	}
 	
 	@RequestMapping(value = "/timesheetApprovalDivByStatus", method = RequestMethod.POST ) 
 	public @ResponseBody String timesheetApprovalDivByStatus(HttpServletRequest request,
 		   @RequestParam(value="status", required=false) String status) throws Exception {
-			 
-			
 			StringBuilder tabDiv = timesheetApprovalDivByStatus("new","28/11/2016", "28/11/2016","1");
 		    return tabDiv.toString();
 	}
@@ -167,57 +179,24 @@ public class NewTimesheetApprovalRestController {
 				if(timesheetFrequencyMap != null && !timesheetFrequencyMap.isEmpty()){
 					
 				timesheetApprovalDiv.append("					<div class='timeNewSe timeNewSe_a'>");    
-				timesheetApprovalDiv.append("		                <select id='timesheetFrequency' name='timesheetFrequency' class='form-control chosen-select'  onChange='timesheetApprovalDivByFrequency();' >");
-				StringBuilder selectedStartDate = new StringBuilder("");
-				StringBuilder selectedEndDate =  new StringBuilder("");
-				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
-					    String key = entry.getKey();
-					    String value =entry.getValue();
-					    StringBuilder isSelected = new StringBuilder("");
-					    if(isCurrentDateBetweenDateRange(key, value)){
-					    	isSelected.append("selected='selected'");
-					    	selectedStartDate.append(key.replaceAll("/", "-"));
-					    	selectedEndDate.append(value.replaceAll("/", "-"));
-					    }
-					    timesheetApprovalDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+key.replaceAll("/", "-")+"To"+value.replaceAll("/", "-")+"'>");
-					    timesheetApprovalDiv.append(key).append(" To ").append(value);
-					    timesheetApprovalDiv.append("		                  </option>");
-				
-				}
-				timesheetApprovalDiv.append("		                </select>");
+							timesheetApprovalDiv.append("<select class='form-control chosen-select'>");
+									timesheetApprovalDiv.append("  <option>Select Client</option>");
+									timesheetApprovalDiv.append("<option>Client 1</option>");
+									timesheetApprovalDiv.append("<option>Client 2</option>");
+									timesheetApprovalDiv.append("<option>Client 3</option>");
+									timesheetApprovalDiv.append("<option>Client 4</option>");
+							timesheetApprovalDiv.append("</select>");
 				timesheetApprovalDiv.append("		            </div> ");
-				StringBuilder frequencyBasedDiv = timesheetApprovalDivByFrequnecy(selectedStartDate.toString(),selectedEndDate.toString(),projectId);
+				StringBuilder frequencyBasedDiv = timesheetApprovalDivForStages();
 				timesheetApprovalDiv.append(frequencyBasedDiv);
 				
 			 }
 		   }
-		}
-		
-			/*	timesheetApprovalDiv.append("				<div class='timeNewSe timeNewSe_a'>");
-				timesheetApprovalDiv.append("	                <select class='form-control chosen-select' onChange='timesheetApprovalDivByFrequency();'>");
-				timesheetApprovalDiv.append("	                  <option>Select Week Frequency</option>");
-				timesheetApprovalDiv.append("	                  <option>28/11/2016 to 04/12/2016</option>");
-				timesheetApprovalDiv.append("	                  <option>05/12/2016 to 11/12/2016</option>");
-				timesheetApprovalDiv.append("	                  <option>12/12/2016 to 18/12/2016</option>");
-				timesheetApprovalDiv.append("	                  <option>19/12/2016 to 25/12/2016</option>");
-				timesheetApprovalDiv.append("	                  <option>26/12/2016 to 01/01/2017</option>");
-				timesheetApprovalDiv.append("	                  <option>02/01/2017 to 08/01/2017</option>");
-				timesheetApprovalDiv.append("	                  <option>09/01/2017 to 15/01/2017</option>");
-				timesheetApprovalDiv.append("	                  <option>16/12/2017 to 22/12/2017</option>");
-				timesheetApprovalDiv.append("	                  <option>23/12/2016 to 29/12/2017</option>");
-				timesheetApprovalDiv.append("	                  </select>");
-				timesheetApprovalDiv.append("	            </div>");
-		 
-				timesheetApprovalDiv.append("				<div id='timesheetApprovalDivByFrequency'>");
-				StringBuilder statusBasedDiv = timesheetApprovalDivByFrequnecy("28/11/2016", "28/11/2016");
-				timesheetApprovalDiv.append(statusBasedDiv);
-				timesheetApprovalDiv.append("			</div>	");*/
-		
-		return timesheetApprovalDiv;
-		
+		 }
+		 return timesheetApprovalDiv;
 	}
 	
-	public StringBuilder timesheetApprovalDivByFrequnecy(String startDate,String endDate,String projectId) throws Exception{
+	public StringBuilder timesheetApprovalDivForStages() throws Exception{
 		
 		StringBuilder timesheetApprovalDiv = new StringBuilder();
 		
@@ -229,11 +208,11 @@ public class NewTimesheetApprovalRestController {
 				timesheetApprovalDiv.append("	                  <option>Rejected</option>");
 				timesheetApprovalDiv.append("	                </select>");
 				timesheetApprovalDiv.append("	            </div>   ");  
+				timesheetApprovalDiv.append("	           <div class='clearfix'></div>   ");  
+				timesheetApprovalDiv.append("	            </div>   ");  
 				
-				timesheetApprovalDiv.append("				<div id='timesheetApprovalDivByStatus'>");
-					StringBuilder statusDiv = timesheetApprovalDivByStatus("ALL",startDate,endDate,projectId);
+					StringBuilder statusDiv = timesheetApprovalDivByStatus("ALL","","","");
 					timesheetApprovalDiv.append(statusDiv);
-				timesheetApprovalDiv.append("	</div>");	
 				
 		return timesheetApprovalDiv;
 		
@@ -243,7 +222,7 @@ public class NewTimesheetApprovalRestController {
 		
 		StringBuilder timesheetApprovalDiv = new StringBuilder();
 			
-				Collection<ProjectMembers>  projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(status, startDate, endDate, Long.parseLong(projectId));
+				Collection<ProjectMembers>  projectMembersList =  projectMembersService.getAllProjectMembers();
 				timesheetApprovalDiv.append("			<div class='timesheet_appr_table'>");
 				timesheetApprovalDiv.append("	    	<table>");
 				timesheetApprovalDiv.append("	        	<tbody>");

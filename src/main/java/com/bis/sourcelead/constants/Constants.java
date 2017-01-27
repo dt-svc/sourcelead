@@ -64,6 +64,8 @@ public class Constants {
 	public static DateFormat DF_YMD = new SimpleDateFormat("yyyy-MM-dd");
 	public static DateFormat DF_STD_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
 	
+	public static transient DateFormat MY = new SimpleDateFormat("MMMM-yyyy");
+	
 	public static DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
 	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd/MM");

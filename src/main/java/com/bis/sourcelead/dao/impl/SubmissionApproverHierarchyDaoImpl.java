@@ -270,7 +270,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Transactional(rollbackFor = { Exception.class })
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForEmployeeIdAndStartDate(Long empId,
 			Long approverUserId, Long submissionId) {
-		// TODO Auto-generated method stub
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and sah.submissionId.id = :submissionId and "
 				   /*
