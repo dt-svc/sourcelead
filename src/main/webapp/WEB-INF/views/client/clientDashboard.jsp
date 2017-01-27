@@ -121,7 +121,7 @@ overflow-x: auto;
 		                <div class="col-md-4">
 		                  <label>Country</label>
 		                  <div class="clearfix">
-		                    <select class="chosen-select" name="country" id="country" field-name="Country"  >
+		                    <select class="chosen-select" name="country" id="countrySearch" field-name="Country"  >
 						     <c:forEach var="cntry" items="${countryList}">
 					                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
 				             </c:forEach>
@@ -131,7 +131,7 @@ overflow-x: auto;
 		                 <div class="col-md-4"> 
 							  <label>State</label>
 							  <div class="clearfix">
-								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
+								  <select  class="chosen-select" name="state" id="stateSearch" field-name="State"  >
 								        <option value="">---select state---</option>
 								        <c:forEach var="state" items="${statesList}">
 							                     <option value="${state.stateName}">${state.stateName}</option>
@@ -142,7 +142,7 @@ overflow-x: auto;
 						  <div class="col-md-4">
 							  <label>City</label>
 							  <div class="clearfix">
-								  <select  class="chosen-select" name="city" id="city" field-name="City"  >
+								  <select  class="chosen-select" name="city" id="citySearch" field-name="City"  >
 								      <option value="">---select city---</option>
                                   </select>
 							  </div>
@@ -1281,7 +1281,7 @@ function preparedClientListFromElk(data){
 		   			result = result +'<td><div>--</div></td>';
 		   		}
 				
-		   	result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.responderLevel+'">'+report.responderLevel+'</span>';
+		   	result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
 				result = result +' <td><div>====</div></td>';
 				result = result +'<td><div>=====</div></td>';
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
