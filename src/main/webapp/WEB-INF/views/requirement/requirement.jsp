@@ -659,7 +659,7 @@ $(document).ready(function () {
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Bill Rate / Salary</label>
+                <label class="col-md-3">Bill Rate / Salary ${currencyCode};</label>
               <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
@@ -697,12 +697,12 @@ $(document).ready(function () {
 	             <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
 		         
 		          <c:if test="${empty requirement.id}">
-	                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-	                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-	                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-	                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
-	                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-	                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+	                <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
                  </c:if>
                  
                  <c:if test="${! empty requirement.id}">
