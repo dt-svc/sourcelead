@@ -1303,7 +1303,7 @@ function requirementPipeline(requirementId){
                 <div class="col-md-4">
                   <label>Requirement status </label>
                   <div class="clearfix">
-                    <select id="requirementStatu" name="requirementStatu" class="chosen-select" data-placeholder="Requirement status " multiple>
+                    <select id="requirementStatu" name="requirementStatus" class="chosen-select" data-placeholder="Requirement status " multiple>
                       <option>New</option> 
                       <option>Draft</option>
                       <option>Submitted</option>
@@ -1383,10 +1383,10 @@ function requirementPipeline(requirementId){
                     <select class="chosen-select" id="client" name="client" data-placeholder="Client" multiple>
                       <c:forEach var="report" items="${add_clientList}">
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
-			                    	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
+			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
 			                    </c:if>  
 			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<option value="${report.id},${report.locationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+			                  	 	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 			                    </c:if>
 							</c:forEach>
                     </select>

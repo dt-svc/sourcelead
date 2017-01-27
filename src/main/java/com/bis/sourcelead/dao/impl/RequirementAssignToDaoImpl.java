@@ -171,6 +171,23 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		return session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 
-    
-  }
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional(rollbackFor = { Exception.class })	
+	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignedUserId(Long requirementId,Long assignedUserId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementAssignTo  rato   where rato.requirementId.id = :requirementId and rato.assignUserId.id = :assignedUserId ";
+		List<RequirementAssignTo> requirementAssignToList =  session.createQuery(query.toString())
+																	.setLong("assignedUserId", assignedUserId)
+																	.setLong("requirementId", requirementId)
+																	.setCacheable(true)
+																	.list();
+		RequirementAssignTo requirementAssignTo = null;
+		if (requirementAssignToList != null && requirementAssignToList.size() > 0) {
+			requirementAssignTo = (RequirementAssignTo) requirementAssignToList.iterator().next();
+		}
+		return requirementAssignTo;
+	}
+}
 

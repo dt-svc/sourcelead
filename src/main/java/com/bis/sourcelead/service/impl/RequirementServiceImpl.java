@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -25,11 +26,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.index.search.MultiMatchQuery.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,6 +63,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -76,6 +81,7 @@ import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
@@ -85,10 +91,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.PdfUtil;import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.bis.sourcelead.util.PdfUtil;
 
 /**
  * 
@@ -167,6 +170,9 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Autowired
+	private RecommendedCustomizeScoreService recommendedCustomizeScoreService;
 	
 	/**
 	 * @author prasad k
@@ -599,13 +605,13 @@ public class RequirementServiceImpl implements RequirementService {
 			} 
 			
 			
-			if(requirement.getId() != null){
+			/*if(requirement.getId() != null){
 				requirementAssignToService.deleteRequirementAssignToByRequirementId(requirement.getId());
-			}
+			}*/
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
-						Long teamId = 0L;
+				        Long teamId = 0L;
 						Team team = null;
 						if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
 							String assignedTeamId = jsonObj.getString("assignedTeamId");
@@ -627,19 +633,25 @@ public class RequirementServiceImpl implements RequirementService {
 						if(StringUtils.isNotEmpty(assignedToMaxCount)){
 						int MaxCount = Integer.parseInt(assignedToMaxCount);
 							for (int c = 1; c < MaxCount; c++) {
-								RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+								RequirementAssignTo  requirementAssignTo = null;
+								User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+								if(requirement.getId() !=null){
+									 requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(), assUser.getId());
+									if(requirementAssignTo == null){
+										requirementAssignTo = new RequirementAssignTo();
+										requirementAssignTo.setTeamId(team);
+									}
+								}else{
+									requirementAssignTo = new RequirementAssignTo();
+									requirementAssignTo.setTeamId(team);
+								}
+								
 								
 		//						User assUser = new User();
 		//						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
-								User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
 								requirementAssignTo.setAssignUserId(assUser);
 								
 								requirementAssignTo.setRequirementId(requirement);
-								
-								
-								requirementAssignTo.setTeamId(team);
-								
-								
 								UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
 								requirementAssignTo.setRoleId(userRole.getRoles());
 								requirementAssignToList.add(requirementAssignTo);
@@ -652,6 +664,8 @@ public class RequirementServiceImpl implements RequirementService {
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		
+		//store recommended customizeScore
+		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.saveCustomizeScore(requirement);
 	
 			       if(!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)){
 				 		
@@ -709,19 +723,21 @@ public class RequirementServiceImpl implements RequirementService {
 						mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 					}
 		 }		
-			       saveElkRequirement(savedRequirement);
+
+			       saveElkRequirement(savedRequirement,jsonObj);
+			    
 		return savedRequirement;
 	}
 
-	private void saveElkRequirement(Requirement requirement) throws Exception {
+	private void saveElkRequirement(Requirement requirement, JSONObject jsonObj) throws Exception {
 		 
-		RequirementIndex requirementIndex = requirementHelper.populateRequirementIndex(requirement);
+		RequirementIndex requirementIndex = requirementHelper.populateRequirementIndex(requirement,jsonObj);
 		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirement.getId().toString());
 	}
 
 	@Override
 	public Requirement addRequirement(Requirement requirement) throws Exception {
-		saveElkRequirement(requirement);
+		saveElkRequirement(requirement,new JSONObject());
 		return requirementDao.storeRequirement(requirement);
 	}
 
@@ -2187,7 +2203,7 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj,Org org) throws Exception {
+	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj,Org org,String userRole,User user) throws Exception {
 		
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		 
@@ -2233,8 +2249,8 @@ public class RequirementServiceImpl implements RequirementService {
 		 }
 		
 		//All Keywords
-		 if(jsonObj.has("allKeyWords") && !"".equalsIgnoreCase(jsonObj.getString("allKeyWords"))){
-				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeyWords");
+		 if(jsonObj.has("allKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("allKeyWord"))){
+				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeyWord");
 				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : allKeyWordArray){
@@ -2253,8 +2269,8 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			
 			//Requirement Title
-			if(jsonObj.has("jobTitle") && !"".equalsIgnoreCase(jsonObj.getString("jobTitle"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", jsonObj.getString("jobTitle")));
+			if(jsonObj.has("requirementTitle") && !"".equalsIgnoreCase(jsonObj.getString("requirementTitle"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", jsonObj.getString("requirementTitle")));
 		    }
 		 //Country
 			if(jsonObj.has("country") && !"".equalsIgnoreCase(jsonObj.getString("country"))){
@@ -2320,7 +2336,15 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("requirementStatus") && !"".equalsIgnoreCase(jsonObj.getString("requirementStatus"))){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", jsonObj.getString("requirementStatus")));
 		    }
-		    
+			
+			if(jsonObj.has("updatedOn") && !"".equalsIgnoreCase(jsonObj.getString("updatedOn"))){
+				String updatedOn =  jsonObj.getString("updatedOn");
+				String upOn = UpdateOnToDate(updatedOn);
+				if(!Constants.ALL_RECORDS.equalsIgnoreCase(upOn)){
+				 RangeQueryBuilder qb = QueryBuilders.rangeQuery("reqCreatedDate").gte(upOn);
+				boolQueryBuilder.must(qb);
+				}
+			}
 			//Educations
 			if(jsonObj.has("education") && !"".equalsIgnoreCase(jsonObj.getString("education"))){
 				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
@@ -2363,29 +2387,68 @@ public class RequirementServiceImpl implements RequirementService {
 					String sourceAsString = hit.getSourceAsString();
 					ObjectMapper mapper = new ObjectMapper();
 					if (sourceAsString != null) {
-						Requirement requirement = new Requirement();
-		            	RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
-		            	requirement.setId(requirementIndex.getRequirementId());
-		            	requirement.setJobId(requirementIndex.getJobId());
-		            	requirement.setJobTitle(requirementIndex.getJobTitle());
-		            	requirement.setClientName(requirementIndex.getClientContactName());
-		            	requirement.setCountry(requirementIndex.getCountry());
-		            	requirement.setState(requirementIndex.getState());
-		            	requirement.setCity(requirementIndex.getCity());
-		            	requirement.setPositions(requirementIndex.getNumberOfPositions());
-		            	requirement.setNoOfApplicants(requirementIndex.getNumberOfApplicants());
-		            	requirement.setManager(requirementIndex.getManager());
-		            	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
+						Requirement requirement = null;
+						RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
+		            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
+		            		requirement = getData(requirementIndex);
 		            	}
+		            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
+		            	{
+		            		requirement = getData(requirementIndex);
+		            	}
+		            	
+		            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
+		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			)){
+		            		requirement = getData(requirementIndex);
+		            	}
+		            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
+		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
+		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			)){
+		            		requirement = getData(requirementIndex);
+		            	}
+		            	
+		            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+		            		requirement = getData(requirementIndex);
+		            	}
+		            	
+		            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+		            		requirement = getData(requirementIndex);
+		            	}
+		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+		            		requirement = getData(requirementIndex);
+		            	}
+		            	
 		            	reqList.add(requirement);
 		            }
 				}
 			}
+			
 		return reqList;
 		
 	}
-	 private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
+	 private Requirement getData(RequirementIndex requirementIndex) {
+		 Requirement requirement = new Requirement();
+		requirement.setId(requirementIndex.getRequirementId());
+     	requirement.setJobId(requirementIndex.getJobId());
+     	requirement.setJobTitle(requirementIndex.getJobTitle());
+     	requirement.setClientName(requirementIndex.getClientContactName());
+     	requirement.setCountry(requirementIndex.getCountry());
+     	requirement.setState(requirementIndex.getState());
+     	requirement.setCity(requirementIndex.getCity());
+     	requirement.setPositions(requirementIndex.getNumberOfPositions());
+     	requirement.setNoOfApplicants(requirementIndex.getNumberOfApplicants());
+     	requirement.setManager(requirementIndex.getManager());
+     	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+         	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
+     	}	
+     	return requirement;
+	}
+
+	private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
 		 ArrayList<String> keyWordList = null;
 		 if(jsonObj.has(param)){
 			 String searchKeywordString = null;
@@ -2442,5 +2505,30 @@ public class RequirementServiceImpl implements RequirementService {
 				
 			return matchQueryBuilderList; 
 	 }
-}
-
+	 public String UpdateOnToDate(String updatedOn){
+		
+		 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	     Calendar cal = Calendar.getInstance();
+	     if((Constants.ONE_DAY_AGO).equalsIgnoreCase(updatedOn)){
+	        cal.add(Calendar.DATE, -1);    
+	        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.THREE_DAY_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -3);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.ONE_WEEK_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -7);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.TWO_WEEK_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -14);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.ONE_MONTH_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -30);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.THREE_MONTH_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -90);    
+		        return  dateFormat.format(cal.getTime());
+		 }else{
+			 return updatedOn;
+		 }
+	 }
+ }
