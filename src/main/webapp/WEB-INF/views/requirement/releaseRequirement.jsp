@@ -37,21 +37,21 @@
                     <input type="text" class="vendorfild">
                     <i class="fa fa-search"></i>|</li>
                   <li id="vendorStatus"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
-                    <div class="export_pop">
+                    <div class="approved_pop">
                       <ul>
-                        <li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Tier-1" onclick="getVendorLists();"><label>Teir 1</label></li>
-						<li><input id="c6" type="checkbox"  name="vendorStatus"  value ="Tier-2" onclick="getVendorLists();"><label>Teir 2</label></li>
-						<li><input id="c7" type="checkbox"  name="vendorStatus"  value ="Tier-3" onclick="getVendorLists();"><label>Teir 3</label></li>
-						<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Tier-4" onclick="getVendorLists();"><label>Teir 4</label></li>
-              			<li><input id="c9" type="checkbox"  name="vendorStatus"  value ="Tier-5" onclick="getVendorLists();"><label>Teir 5</label></li>
+                        <li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Tier-1" onclick="getVendorLists();"><label>&nbsp;&nbsp; Tier 1</label></li>
+						<li><input id="c6" type="checkbox"  name="vendorStatus"  value ="Tier-2" onclick="getVendorLists();"><label>&nbsp;&nbsp; Tier 2</label></li>
+						<li><input id="c7" type="checkbox"  name="vendorStatus"  value ="Tier-3" onclick="getVendorLists();"><label>&nbsp;&nbsp; Tier 3</label></li>
+						<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Tier-4" onclick="getVendorLists();"><label>&nbsp;&nbsp; Tier 4</label></li>
+              			<li><input id="c9" type="checkbox"  name="vendorStatus"  value ="Tier-5" onclick="getVendorLists();"><label>&nbsp;&nbsp; Tier 5</label></li>
                        </ul>
                     </div>
                   </li>
                   <li id="vendorSelected" style="display:none"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="export-popp"></i>
-                    <div class="export_pop">
+                    <div class="approved_pop">
                       <ul>
                       	  <c:forEach var="report" items="${vendor_list}">  
-	                      	<li><input id="vendorName${report.id}" name="vendorSelected" value ="${report.id}" onclick="getContactsLists();" type="checkbox"><label>${report.clientName}</label></li>
+	                      	<li><input id="vendorName${report.id}" name="vendorSelected" value ="${report.id}" onclick="getContactsLists();" type="checkbox"><label title="${report.clientName}">&nbsp;&nbsp; ${report.clientName}</label></li>
 						  </c:forEach>
                       </ul>
                     </div>
@@ -280,16 +280,16 @@ function getContactsLists(){
 				   	        			result = result +'  <td><input name="contactscheckbox" type="checkbox" id="'+report.id+'"/></td>';
 				   	        		}
 					        			result = result +'<td>';
-					        			result = result +'<div><span>'+report.spocName+'</span></div>';
+					        			result = result +'<div title="'+report.spocName+'"><span>'+report.spocName+'</span></div>';
 					        			result = result +'</td>';
 					        			result = result +'<td>';
-					        			result = result +'<div><span>'+report.spocEmail+'</span></div>';
+					        			result = result +'<div title="'+report.spocEmail+'"><span>'+report.spocEmail+'</span></div>';
 					        			result = result +'</td>';
 					        			result = result +'<td>';
-					        			result = result +'<div><span>'+report.spocMobilePhone+'</span></div>';
+					        			result = result +'<div title="'+report.spocMobilePhone+'"><span>'+report.spocMobilePhone+'</span></div>';
 					        			result = result +'</td>';
 					        			result = result +'<td>';
-					        			result = result +'<div><span>'+report.orgName+'</span></div>';
+					        			result = result +'<div title=""><span>'+report.orgName+'</span></div>';
 					        			result = result +'</td>';
 					        			result = result +'<td>';
 					        		if(report.releasedRequirement =="true"){
@@ -583,17 +583,17 @@ $('input:checkbox:not(#checkbox1)').click(function() {
 
 $(document).ready(function() {
     $("#export-pop").click(function(){
-		//$(".export_pop").slideToggle(200);
-	    $(this).next(".export_pop").slideToggle(200);
+		//$(".approved_pop").toggle();
+	    $(this).next(".approved_pop").slideToggle(200);
 	});
     $("#export-popp").click(function(){
-		//$(".export_pop").slideToggle(200);
-    	 $(this).next(".export_pop").slideToggle(200);
+		//$(".approved_pop").slideToggle(200);
+    	 $(this).next(".approved_pop").slideToggle(200);
 	});
     $("html").click(function() {
-        $(".export_pop").slideUp(200);
+        $(".approved_pop").slideUp(200);
     });
-    $(".export_pop, #export-pop, #export-popp").click(function(e) {
+    $(".approved_pop, #export-pop, #export-popp").click(function(e) {
         e.stopPropagation();
     });	
 });	

@@ -310,8 +310,8 @@ $(document).ready(function () {
           <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onkeyup="validateJobId();" value="">
-               <input type="hidden" name="requirementId" id="requirementId" value="${requirement.id}"/>
+			 <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}" field-name="JobId" data-validation="validate_Space validate_Alphanumeric validate_length length2-100" data-validation-optional="true" onkeyup="validateJobId();" value=""> 
+				<input type="hidden" name="requirementId" id="requirementId" value="${requirement.id}"/>
             </div>
           </div>
            
@@ -1037,8 +1037,8 @@ $(document).ready(function () {
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		validateJobId();
 		checkTemplateforDouplicate();
+		validateJobId();
 		$('#addClient').empty();
 		$('#addContact').empty();
 		$('#addTeam').empty();
@@ -1466,14 +1466,36 @@ function getTemplateVal(){
 }
 
 </script>
-
-
+<script>
+function getRequirementAndLookUpSkills(requirementid){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+   	type: "POST",
+    url: sourceleadUrl+"/getRequirementAndLookUpSkills?${_csrf.parameterName}=${_csrf.token}&requirementid="+requirementid, 	   
+	    success: function(data) {
+	    	if(data != null && data != 'undefined' && data !='' ){ 
+	    		var json = JSON.parse(data);
+	    		var output = "";
+	    		for (var i = 0; i < json.length; i++) { 
+               	    var skill = json[i];
+	        		output = output + "<option value='" +skill+ "'>"+skill+"</option>";
+	    		}
+	            $("#skills").empty();
+	            $("#skills").append(output);
+	            $('#skills').trigger("chosen:updated");
+	            
+	    	} 
+	    }
+	});
+}
+</script>
 <script>
 function setTemplateValues(){
  var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = document.getElementById('template').value;
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
 		
+		getRequirementAndLookUpSkills(requirementId);
 	
 	$.ajax({
 	   	type: "POST",
@@ -1543,7 +1565,6 @@ function setTemplateValues(){
 					$('#rate').val('');
 					$('#education').val('').trigger('chosen:updated');
 					$('#skills').val('').trigger('chosen:updated');
-					
 					if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
 						var skills = [];
 			            skills = json.skills.split(",");
@@ -1557,8 +1578,6 @@ function setTemplateValues(){
 			            $("#education").val(educations);
 			            $('#education').trigger("chosen:updated");
 					}
-					
-					
 			    	
 			    	$("#description").val(json.description);
 			    	$("#rate").val(json.rate);
@@ -2274,13 +2293,14 @@ function getLevel2Approvers(currentApproverId){
  function validateJobId(jobId) {
 	 
 	 var requirementid = document.getElementById("requirementId").value;
-	 if(requirementid != null && requirementid != '' && requirementid != 'undefined' ){
+	/*  if(requirementid != null && requirementid != '' && requirementid != 'undefined' ){ */
 		 if(jobId == null || jobId == "" || jobId == "undefined"){
 			 jobId = document.getElementById("jobId").value; 
 		 }
+		 var specialCharacter = jobId.match(/^[A-Za-z0-9][A-Z a-z 0-9]*$/);
 		 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
 		 var sourceleadUrl ='${sourceleadUrl}';
-		 if(jobId != null && jobId != ""){
+		 if(jobId != null && jobId != "" && specialCharacter != null){
 			 $("#draft").attr("disabled", "disabled");
 			 $("#save").attr("disabled", "disabled");
 			 $("#submitForApproval").attr("disabled", "disabled");
@@ -2303,13 +2323,12 @@ function getLevel2Approvers(currentApproverId){
 			        },
 			    });
 		 }
-	 }else{
-		 if(jobId == null || jobId == "" || jobId == "undefined"){
-			 jobId = document.getElementById("jobId").value; 
-		 }
+	 /* } *//* else{
+		jobId = document.getElementById("jobId").value; 
+	     var	specialCharacter = jobId.match(/^[A-Za-z0-9][A-Z a-z 0-9]*$/); 
 		 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
 		 var sourceleadUrl ='${sourceleadUrl}';
-		 if(jobId != null && jobId != ""){
+		 if(jobId != null && jobId != "" && specialCharacter != null){
 			 $("#draft").attr("disabled", "disabled");
 			 $("#save").attr("disabled", "disabled");
 			 $("#submitForApproval").attr("disabled", "disabled");
@@ -2332,7 +2351,7 @@ function getLevel2Approvers(currentApproverId){
 			        },
 			    });
 		 }
-	 }
+	 } */
 	
  }
  </script>     

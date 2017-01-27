@@ -171,6 +171,10 @@ public class Constants {
 	public static String VENDOR_RATE_NEGOTIATION = "VendorRateNegotiation";
 	public static String USER_ACCEPT_RATE_NEGOTIATION = "UserAcceptRateNegotiation";
 	public static String USER_REJECT_RATE_NEGOTIATION = "UserRejectRateNegotiation";
+	public static String CLIENT_ACCEPT_RATE_NEGOTIATION = "ClientAcceptRateNegotiation";
+	public static String VENDOR_ACCEPT_RATE_NEGOTIATION = "VendorAcceptRateNegotiation";
+	public static String CLIENT_REJECT_RATE_NEGOTIATION = "ClientRejectRateNegotiation";
+	public static String VENDOR_REJECT_RATE_NEGOTIATION = "VendorRejectRateNegotiation";
 
 
 
@@ -355,8 +359,13 @@ public class Constants {
     public static String ELK_CANDIDATE_ID_PREFIX = "CND";
     
     public static String ELK_CLIENTVENDOR_INDEX = "clientvendor";
-    
+        
     public static String ELK_CLIENTVENDOR_TYPE = "clientvendors";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_INDEX = "clientvendorcontacts";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_TYPE = "clientvendorcontacts";
+
     
     public static String ELK_CAMPAIGN_INDEX = "campaigns";
 	

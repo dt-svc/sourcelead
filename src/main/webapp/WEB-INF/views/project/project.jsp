@@ -23,7 +23,7 @@
 
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
-		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value;
+		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value.trim();
 		 //space value  consider this condition 
 		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -68,7 +68,7 @@
 						<div class="form-group" id="ProjectIdDiv">
 							<label class="col-lg-3">Project Id</label>
 							<div class="col-lg-9">
-								<input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_Space validate_length length2-50"
+								<input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_Space validate_Alphanumeric validate_length length2-50"
 									data-validation-optional="true" class="form-control" onblur="validateProjectSequeneNumber();">
 							</div>
 						</div>
@@ -578,6 +578,7 @@ function flushProjectTasks(){
 
 <script type="text/javascript">
 	function saveProject() {
+		validateProjectSequeneNumber();
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',

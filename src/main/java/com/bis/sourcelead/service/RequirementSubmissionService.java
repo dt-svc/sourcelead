@@ -155,4 +155,10 @@ public interface RequirementSubmissionService {
 	void userRejectRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations,
 			RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, String rejectreason, StringBuilder tempHTML) throws Exception;
 
+	void clientOrVendorAcceptOrRejectRateNegotiation(Org loginOrg, User users, User pastUser,
+			RequirementSubmission requirementSubmission, Candidate candidate, StringBuilder tempHTML,
+			OrgLocations loginOrgLocation,String type, String status) throws Exception;
+	
+	List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception;
+
 }

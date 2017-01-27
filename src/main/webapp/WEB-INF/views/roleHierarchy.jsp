@@ -2,12 +2,10 @@
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<script src="resources/js/bootstrap.min.js"></script>
 
 <section class="content-wraper">
     <section class="content-header clearfix">
@@ -81,7 +79,6 @@
 
  <jsp:include page="masterFooter.jsp" />	
  
- <script src="resources/js/jquery-ui.min.js"></script>
  
  
  <script>
@@ -200,13 +197,13 @@ function validateLevelName(){
 	var hierarchyId = document.getElementById("hierarchyId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(levelName != null && levelName != '') {
+		$("#add_hierarchy").attr("disabled", "disabled");
 		$.ajax({
 			type : "GET",
 			url: sourceleadUrl+"/validateRoleHierarchyLevelName?${_csrf.parameterName}=${_csrf.token}&levelName="+levelName+"&hierarchyId="+hierarchyId, 
 			success : function(data) {
 				var result = data;
 				if (result == "invalid") {
-			        $("#add_hierarchy").attr("disabled", "disabled");
 					$("input#level").after( "<p class='jquery_form_error_message'>" + levelName + " is already existed</span>");
 					document.getElementById("level").setAttribute( 'record-exist', 'yes');
 					document.getElementById("level").setAttribute( 'record-exist-errorMsg', levelName +"  already existed");
@@ -287,6 +284,7 @@ function cancel(){
 	$("#popup").empty();
 	$(".project_inn_mask").fadeOut(200);
 	var sourceleadUrl ='${sourceleadUrl}';
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	location.replace(sourceleadUrl+"/roleHierarchy");  
 }
 </script>

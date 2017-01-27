@@ -97,6 +97,8 @@ public interface RequirementService {
 	public Requirement getRequirementByRequirementIdOrgLocationsId(String id,Long requirementId, Long orgLocationsId) throws Exception;
 	
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
+	
+	List<String> getAllRequirementSkillsByRequirementI(String requirementId) throws Exception;
 
 	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org, String userRole, User user)throws Exception;
 

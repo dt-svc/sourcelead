@@ -54,6 +54,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -73,6 +74,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -151,6 +153,9 @@ public class RequirementServiceImpl implements RequirementService {
 	 
 	 @Autowired
 	 private OrgRelationsService orgRelationsService;
+	 
+	 @Autowired
+	 LookUpDataService lookUpDataService;
 	 
 	 @Autowired
 	 private PdfUtil pdfUtil;
@@ -337,8 +342,8 @@ public class RequirementServiceImpl implements RequirementService {
 				
 				
 				skillId = skillId.replaceAll("\"", "");
-		  	   requirement.setSkills(skillId);
-			
+		  	    requirement.setSkills(skillId);
+		  	 
 			}
 			
 			if(jsonObj.has("education")){
@@ -354,7 +359,7 @@ public class RequirementServiceImpl implements RequirementService {
 				educationId = educationId.replaceAll("\\[", "").replaceAll("\\]","");
 				educationId = educationId.replaceAll("\"", "");
 				
-		  	  requirement.setEducation(educationId);
+		  	    requirement.setEducation(educationId);
 			
 			 }
 			
@@ -2105,6 +2110,7 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					skillId = skillId.replaceAll("\"", "");
 					reqTemplate.setSkills(skillId);
+					
 				}else{
 					reqTemplate.setSkills(null);	
 				}
@@ -2123,6 +2129,7 @@ public class RequirementServiceImpl implements RequirementService {
 					educationId = educationId.replaceAll("\"", "");
 					
 					reqTemplate.setEducation(educationId);
+					
 				 }else{
 					 reqTemplate.setEducation(null);
 				 }
@@ -2181,8 +2188,20 @@ public class RequirementServiceImpl implements RequirementService {
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception {
 		return requirementDao.validateJobid(id,orgLocationsId);
 	}
-
+	
 	@Override
+	public List<String> getAllRequirementSkillsByRequirementI(String requirementId) throws Exception {
+		return requirementDao.getAllRequirementSkillsByRequirementI(requirementId);
+	}
+	
+/*	@Override
+	public List<String> getAllSkillsBySkillCategory() throws Exception{
+		return lookUpDataService.getAllSkillsBySkillCategory();
+		
+	}
+*/
+	@Override
+
 	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj,Org org,String userRole,User user) throws Exception {
 		
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
