@@ -1,4 +1,4 @@
-﻿@charset "utf-8";
+@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
@@ -16,8 +16,8 @@ body {
 	background-color: #e1e6fa;
 	font-size: 14px;
 	color: #333;
-	font-family: 'Roboto', sans-serif  !important;
-	min-height: 100%;
+	font-family:'Roboto', sans-serif  !important;
+    min-height: 100%;
 }
 img {
 	outline: none;
@@ -1993,6 +1993,25 @@ ul.tree-checkbox::before {
 	font-family: FontAwesome;
 	color: #fff;
 }
+ul.hierachy-role li span.sellevel:before {
+    content: "\f067";
+    font-family: FontAwesome;
+    font-size: 10px;
+    cursor: pointer;
+    font-weight:normal;
+    padding: 3px 5px;
+    background: #ccc;
+    margin-right: 5px;
+    border-radius: 3px;
+}
+ul.hierachy-role li span.role-active:before {
+    content: "\f068";
+    font-family: FontAwesome;
+    font-size: 10px;
+    color: a6a6a6;
+    cursor: pointer;
+    padding: 3px 5px;margin-right: 5px;
+}
 /* Accordion Styles ends */
 .btn-default {
 	background-image: linear-gradient(to bottom, #fff 0px, #e0e0e0 100%);
@@ -2780,11 +2799,13 @@ input:checked + .slider:before {
 	line-height:34px;
 }
 div.heightScroll {
-/*	height:300px;*/
-	min-height:30px;
+/*    height:300px;*/
+    min-height:30px;
     max-height:300px;
     overflow-y:auto;
     border-bottom:1px solid #ccc;
+    position: relative;
+    z-index: 1;
 }
 .divskill table {
 	border-collapse: collapse;
@@ -3101,22 +3122,19 @@ a.collpase-div .fa-angle-down:hover{
 }
 .addTask {
 	position:absolute;
-	right: 1%;
-    top: 5.8%;
+	right: 0px;
+	top: 90px;
 }
 .addTask .icon-addTask{
-	background:linear-gradient(#2196f3,#1565c0);
-	padding:12px;
-	color:#fff;
-	cursor:pointer;
-	-webkit-border-radius:50%;
-	-moz-border-radius:50%;
-	-ms-border-radius:50%;
-	border-radius:50%;
-	box-shadow:0 1px 1px rgba(0, 0, 0, 0.1);
+	background:linear-gradient(#2bddb8,#17aa8c);
+	padding:5px;
+ 	color:#fff;
+ 	cursor:pointer;
+	border-radius:4px 0px 0px 4px;
+ 	box-shadow:0 1px 1px rgba(0, 0, 0, 0.1);
 }
 .addTask .icon-addTask .fa{
-	font-size:18px;
+	font-size:15px;
 }
 .addTasUl {
 	background-color:#ff6f00;
@@ -3172,22 +3190,22 @@ ul.addTasUl li .fa{
 .addTask-widget {
 	background-color:#424242;
 	background:#55688a;
-	border-radius:5px;
-    position: absolute;
-    right:-1000px;
-	top:35px;
-	-webkit-transition: all 0.3s ease-in-out 0s;
-	-ms-transition: all 0.3s ease-in-out 0s;
-	-moz-transition: all 0.3s ease-in-out 0s;
-	transition: all 0.3s ease-in-out 0s;
-	width:950px;
-	padding:10px;
-	z-index:99999;
-	box-shadow: 0 0 5px #000000;
+	border-radius:4px 0px 0px 4px;
+	position: absolute;
+	right:-1100px;
+	top:40px;
+ 	-webkit-transition: all 0.3s ease-in-out 0s;
+ 	-ms-transition: all 0.3s ease-in-out 0s;
+ 	-moz-transition: all 0.3s ease-in-out 0s;
+ 	transition: all 0.3s ease-in-out 0s;
+	width:1000px !important; 
+ 	padding:10px;
+ 	z-index:99999;
+	box-shadow: 0 0 4px #000000;
 }
 .addTask-widget:after {
 	bottom: 100%;
-	right:2%;
+	right:10px;
 	border: solid transparent;
 	content: " ";
 	height: 0;
@@ -3890,17 +3908,28 @@ ul.pipeline li{
 }
 /* Create level styels */
 .create-level ul li {
-	font-size: 15px;
-	font-weight: 600;
+	/*font-size: 15px;*/
+	font-weight: normal;
+    padding: 5px 0;
+}
+.hierachy-role li span.sellevel{
+    border-bottom: 1px dotted #ccc;
 }
 .create-level ul li ul {
-	margin-left: 30px;
-
+    padding-left: 10px;
+    margin-left: 30px;
+    width: 50%;
 }
 .create-level ul li ul li{
-	list-style-type: none;
+    border-left: 1px dotted #ccc;
+    list-style-type: none;
 }
-li.sellevel:before {
+.create-level ul li ul li:before{
+    content: '....';
+    padding-right: 10px;
+    color: #909090;
+}
+/*li.sellevel:before {
     content: '\f067';
 	font-family: FontAwesome;
 	font-weight: normal;
@@ -3909,7 +3938,7 @@ li.sellevel:before {
 
 li.sellevel:before {
     content: "\f068";
-}
+}*/
 .create-level{
 	padding:10px 15px;
 	background: #fff;
@@ -4511,12 +4540,16 @@ import-tranhd  [class*="col-md-"]{
 	left: 0;
 	display: none;
 	z-index: 999;
-	height: 500px;
+	min-height: 100px;
+	max-height: 500px;
     overflow-y: auto;	
 }
 .cand-advsrch-popup .close-div{
-	right: 0;
-	left: auto;
+    right: 5px;
+    left: auto;
+    top: 5px;
+    position:absolute;
+    z-index: 999;
 }
 .cand-advsrch-popup .col-md-4{
 	/*margin-bottom: 10px;*/
@@ -5299,12 +5332,137 @@ max-height: 150px !important;
     z-index:1;
     position: relative;
 }
-.error-field p.jquery_form_error_message{
-	position: absolute;
-	bottom: -10px;
-	width: 100%;
-	left: 0;
-	font-size: 10px;
+.view-level ul > li.sellevel {
+    color:#333;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.view-level ul > li span.fa{
+    margin-right:10px;
+}
+.hierachy-role li.sellevel ul li{
+    line-height: 26px;
+    padding-left: 10px;
+}
+.hierachy-role .sellevel > span {
+    padding:2px 5px;
+    background: #ccc;
+    border-radius: 3px;
+}
+.hierachy-role li span.sellevel{
+    cursor: pointer;
+    font-weight: 600;
+}
+.hierachy-role li .fa-edit{
+    cursor: pointer;
+    margin-left: 30px;
+    float: right;
+    margin-right: 60%;
+    color: #ccc;
+    transition: all 0.3s ease-in-out;
+}
+.hierachy-role li:hover .fa-edit{
+    color: #333;
+}
+.errorInptgroup p.jquery_form_error_message {
+    position: absolute;
+    left: 0;
+    bottom: -16px;
+}
+.addconsultant-popup {
+    display: none;
+    position:absolute;
+    padding: 15px;
+    left: 15%;
+    width: 70%;
+    z-index: 99999;
+    top: 30%;
+    border-radius: 5px;
+}
+.collapse-div-adduser.orgsummary-adduser {
+left: 45px; 
+}
+.orgsummaryuser-pop{
+margin-top: 0;
+}
+.orgsummaryuser-pop:after {
+border-bottom: 10px solid #909090;
+border-left: 10px solid transparent;
+border-right: 10px solid transparent;
+clear: both;
+content: "";
+height: 0;
+position: absolute;
+left: 10px;
+top: -10px;
+width: 0;
+}
+.close-div.closediv-pop{
+left:auto;
+right:-15px;
+}
+.adv-srh-chosen ul li{
+float:none;
+width:100%;
+}
+.input-groupAddon.icon-Addon{
+	right: 0;
+	border-radius:0 4px 4px 0 !important;
+	padding:4px 15px !important;
+	height: 30px !important;
+}
+.anchor-inline a {
+       display: inline !important;
+}
+.addTask-widget .nav > li > a{
+	padding: 5px 10px;
+}
+.addtAsk_popmask {
+    position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.6); top:0px; left:0px; z-index:500; display:none;
+}
+.cand-advsrche {
+	margin: 10px 0 10px 10px;
+}
+.cand-advsrche a .fa-search{
+	color:#fff;
+	font-size: 15px !important;
+	top: 0 !important;
+	padding: 0;
+}
+.timesheet_out.timesheet_background 
+{
+       background-color: #f5f5f5;
+       box-shadow:0 0 3px rgba(0, 0, 0, 0.3);
+       border-radius:3px 3px 0 0;
+}
+.vendor_wrap.vendor_wrap_shadownone{
+box-shadow:none;        
+}
+.edit_orgprimaryuser_pop {
+position: absolute;
+width: 60%;
+min-height: 370px;
+background-color: #FFF;
+box-sizing: border-box;
+left: 295px;
+top: 100px;
+padding: 10px 10px;
+display: none;
+box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+z-index: 999;
+}
+.filter-position .dataTables_filter {
+	position: relative !important;
+	top: 0 !important;
+	z-index: 9999;
+}
+.filter-position {
+	position: relative;
+	top:-30px;
+}
+.zindex {
+	position: relative;
+	z-index: 99;
 }
 /* media 320px */
 @media (max-width: 320px) {

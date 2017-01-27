@@ -1,16 +1,5 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!-- these files for autocomplete with tagit -->
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -46,7 +35,7 @@
 							result = result + '<div class="project_details_cta">';
 								result = result + '<strong>Spoc Name:</strong>';
 								if(json.spocName !=null && json.spocName !='' && json.spocName !='undefined'){
-									result = result + '<span>'+json.spocName+'</span>';
+									result = result + '<span title='+json.spocName+'>'+json.spocName+'</span>';
 								}
 								result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
@@ -54,7 +43,7 @@
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>EmailId:</strong>';
 							if(json.spocEmail !=null && json.spocEmail !='' && json.spocEmail !='undefined'){
-								result = result + '<span>'+json.spocEmail+'</span>';
+								result = result + '<span title='+json.spocEmail+'>'+json.spocEmail+'</span>';
 							}
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
@@ -92,7 +81,7 @@
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Owner :</strong>';
 							if(json.ownerName !=null && json.ownerName !='' && json.ownerName !='undefined'){
-								result = result + '<span>'+json.ownerName+'</span>';
+								result = result + '<span title='+json.ownerName+'>'+json.ownerName+'</span>';
 							}
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';

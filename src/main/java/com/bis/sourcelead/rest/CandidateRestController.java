@@ -10,11 +10,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +36,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CampaignIndex;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
@@ -128,6 +136,8 @@ public class CandidateRestController {
 	@Autowired
 	private SourceleadResumeParser sourceleadResumeParser;
 	
+    @Autowired
+    private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 
 	/**
 	 * @author prasad k
@@ -231,9 +241,47 @@ public class CandidateRestController {
 				@RequestParam(value = "requirementId", required = false) Long requirementId,
 				@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception {
 			String resultJson = null;
+			String candidateStatus = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
-			List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(orgLocations.getId(),requirementId,candidateType);
+			//List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(orgLocations.getId(),requirementId,candidateType);
+			
+			List<Long> candidateIdsList = requirementSubmissionService.getSubmittedCandidateIdsByRequirementId(requirementId);
+			
+			    List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
+			    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		        boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+		        boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
+		        boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
+		        
+		        Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocations.getId(),candidateStatus);
+			
+			if(null != candidateIdsList && candidateIdsList.size() > 0){
+				BoolQueryBuilder candidateBoolQueryBuilder = QueryBuilders.boolQuery();
+				for(Long candidateId : candidateIdsList){
+					candidateBoolQueryBuilder.should(QueryBuilders.matchQuery("candidateId", candidateId));
+				}
+				boolQueryBuilder.mustNot(candidateBoolQueryBuilder);
+			}
+			
+	        try {
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				    if(null != searchHits && searchHits.length >0){
+				    	ObjectMapper mapper = new ObjectMapper();
+				    	for (SearchHit hit : searchHits) {
+				    		String json = hit.getSourceAsString();
+				    		mapper.setDateFormat(df);
+				    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+				    	    
+				    	    candidatesList.add(candidateIndex);
+				    	}
+				    	
+				    }
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			
 			resultJson = toJSON(candidatesList);
 			return resultJson;

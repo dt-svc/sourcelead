@@ -333,6 +333,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
 
 		       result = result + '<div class="require_wrap_details">';
+		       result = result + '<div ><a href="javascript:void(0)" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
 		       result = result + '<div class="clearfix">';
 			   result = result + '</div> ';        
 				   
@@ -407,6 +408,27 @@ $(".new-tabs a").click(function(event) {
  $(".side_mask").fadeIn(200);
  $("body").css('overflow-y', 'hidden');
   
+}
+</script>
+
+<script type="text/javascript">
+function reActivateApplicant(submissionId,candidateId,requirementId){
+	var result = "";
+	var sourceleadUrl ='${sourceleadUrl}';
+	var message = confirm("You are choosing to ReActivate the Applicant");
+	if (message == true) {
+		$.ajax({
+	        type : "POST",
+	         url: sourceleadUrl+"/reActivateRejectedApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+	         success :function(data) {
+	               if(data != null && data != 'undefined' && data != ""){
+	            	   getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
+	                } 
+	                 },
+	              }); 
+		
+	}
+	
 }
 </script>
 
@@ -1264,7 +1286,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '				</div>';
 		result = result + '		    </div>';
 		result = result + '		    <div class="row">';
-		result = result + '				<div class="col-md-8">';
+		result = result + '				<div class="col-md-8" id="docFileuploadFileGroup">';
 		result = result + '					<input type="file" multiple id="docFile" name="docFile" class="mt10" data-validation="required validate_Space validatedoc" field-name="Attachment">';
 		result = result + '				</div>';
 		result = result + '			</div>';
@@ -1277,12 +1299,36 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#request').append(result);
 		$('#accpet-div').fadeOut();
 		$('#reject').fadeOut();
+		attachmentValidationFun();
 	};
 	$("#request, .acceptreject-pop, .labelsuccess").click(function(e){
 		 e.stopPropagation();
 	});
 	
 </script>
+
+
+<%-- 
+     @author : sarath kumar punnana 
+     this script is for validate document
+     1.usage     : request rate
+     2.parameter : .
+     3.ajax url implementation in CandidateResumeRestController.
+--%>
+<script type="text/javascript">
+function attachmentValidationFun(){
+	  	          var el = document.getElementById("docFile");
+	  	    	  el.addEventListener('change', function(event) {
+		        	     	var attach_id = this.id;
+		        	     	var size = $('#'+attach_id)[0].files[0].size;
+		        	     	if(size > 2000000){  
+		        		    	  $("#docFile").val('');
+		        		    	  $("html #docFileuploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+		        	     	}
+		           });
+}   
+</script>
+
 
 <%-- 
      @author : Venkat Kesav

@@ -119,16 +119,16 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		
 		String query = "";
         if(dateRange != null && "today".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and DATE(rih.interviewId.dateOfInterview) = CURDATE() and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+subQuery;
+            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+ subQuery;
         }else if(dateRange != null && "previous".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and DATE(rih.interviewId.dateOfInterview) <= CURDATE() and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+subQuery;
+            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) <= CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+ subQuery;
         }else if(dateRange != null && "upcoming".equals(dateRange)){
-        	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and DATE(rih.interviewId.dateOfInterview) > CURDATE()"+subQuery;
+        	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) > CURDATE())"+ subQuery;
         }else{
         	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         	java.util.Date date = dateFormat.parse(dateRange);
         	java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-        	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and DATE(rih.interviewId.dateOfInterview) = :sqlStartDate"+subQuery;
+        	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = :sqlStartDate)"+ subQuery;
         	params.put("sqlStartDate",sqlStartDate);
         }
         

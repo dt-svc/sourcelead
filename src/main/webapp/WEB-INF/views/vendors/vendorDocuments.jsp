@@ -1,7 +1,3 @@
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -96,13 +92,6 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+vendorLocationId+"&sourceType=Vendor",        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
 	                	 $("#vendorDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -186,7 +175,6 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    
 	                     $("#vendorDocumentsList").append(result); 
 	                     documentpagination(); 
-			    	} 
                }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
@@ -323,6 +311,8 @@ function addDocument(vendorLocationId,orgRelationId) {
 	
 	$('#startDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
@@ -332,6 +322,8 @@ function addDocument(vendorLocationId,orgRelationId) {
 	  
 	  $('#endDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	        onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);
@@ -488,13 +480,6 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
 		    	var json = JSON.parse(data);
 		    	var spoc = "";
 		    	var owner = "";
-		    	if( data.indexOf('Sign In') >= 0){
-	    		location.replace(sourceleadUrl);
-	    	 }
-    		 else if (data.indexOf('exception') >= 0) {
-    			 location.replace(sourceleadUrl+"/errorPage");
-    		 }
-    		 else{
     			 $("#uploadDocumentDiv").hide();
     			 $("#docAddButton").hide();
     			 $("#uploadFile").removeAttr("data-validation");
@@ -561,7 +546,6 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     			 $("#update_doc").attr("onclick", "storeClientDocument("+vendorLocationId+","+orgRelationId+","+json.id+");");
     			 
     			 manageDates();
-    		 }
 		    }
      });
 }
@@ -653,13 +637,6 @@ function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateOrgDocumnet?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
-   		    	if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-        		 else if (data.indexOf('exception') >= 0) {
-        			 location.replace(sourceleadUrl+"/errorPage");
-        		 }
-        		 else{
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
         			 $("#vendorDocSelector").removeAttr("style");
@@ -667,7 +644,6 @@ function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
          			 $("#vendorDocMsgDiv").html(""+docName+" Removed");
         			 vendorDocumentsList(vendorLocationId,orgRelationId);
         			 vendorDocMsgFadein();
-        		 }
    		    }
 	     });
 	}else{

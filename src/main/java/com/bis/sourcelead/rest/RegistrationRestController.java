@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -77,6 +79,9 @@ public class RegistrationRestController {
 	 @Autowired
 	 OrgLocationService orgLocationService;
 	 
+	 @Autowired
+		private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	 
 	 @RequestMapping(value = "/getOrgsList")
 		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
@@ -99,6 +104,8 @@ public class RegistrationRestController {
 					UserRole userRole = userRoleService.getUserByUserId(regOrg.getUser().getId());
 					regOrg.setUserState(userRole.getUserState());
 				}
+				OrgLocations orglocations = orgLocationService.getOrgLocationByOrgId(regOrg.getId());
+				regOrg.setLocation(orglocations.getCountry());
 				
 				regOrgsList.add(regOrg);
 			}
@@ -109,6 +116,8 @@ public class RegistrationRestController {
 		return resultJson;
 
 	}
+	 
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(
 				@RequestParam(value="json", required=false) String json ,
@@ -143,7 +152,67 @@ public class RegistrationRestController {
 	     
 	   }
 	
-	   
+	
+	
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @RequestMapping(value = "/createUesrBySourceleadAdmin" , method = RequestMethod.POST)
+	 public  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	 registrationService.addUserBySourcelead(user, jsonObj);
+	 	
+		 return "success";
+	   }
+	 
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @RequestMapping(value = "/editOrgPrimaryUser" , method = RequestMethod.POST)
+	 public  String editOrgPrimaryUser(@RequestParam(value="json", required=false) String json, 
+			 @RequestParam(value="userId", required=false) Long userId ,HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	 OrgLocations orgLocations= (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	 
+	 	 User primaryUser = userService.getUserById(userId);
+	 	 if(null != primaryUser){
+	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserFirstName"))){
+	 			primaryUser.setFirstName(jsonObj.getString("primaryUserFirstName"));
+	 		 }
+	 		 
+	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserLastName"))){
+		 			primaryUser.setLastName(jsonObj.getString("primaryUserLastName"));
+	 		 }
+	 		 
+	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserEmail"))){
+		 			primaryUser.setEmail(jsonObj.getString("primaryUserEmail"));
+		 			primaryUser.setUserName(jsonObj.getString("primaryUserEmail"));
+	 		 }
+	 		 
+	 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+	 		primaryUser.setPassword(sourceleadPasswordEncoder.encode(password));
+	 		userService.addUser(primaryUser);
+	 		
+	 		userService.sendEmail(primaryUser, user, password,orgLocations.getId());
+	 		
+	 	 }
+	 	
+		 return "success";
+	   }
+	
+	
+	 
+	 
+	
+	  @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	   @RequestMapping(value = "/updateOrgModules" , method = RequestMethod.POST)
 	   public String updateOrgModules(@RequestParam(value="orgId", required=false) Long orgId,
 				@RequestParam(value="modulesList", required=false) String modulesList ,

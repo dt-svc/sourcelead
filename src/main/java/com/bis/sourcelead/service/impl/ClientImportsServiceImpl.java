@@ -250,18 +250,18 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			       if (!isValidated || isUserFound) {
 			    	   FileOutputStream fos = null;
 			    	   if(!fname.endsWith("xlsx")){
-			    		   fos = new FileOutputStream("FailureUsersForCheck.xls");
+			    		   fos = new FileOutputStream(fname);
 			    	   }else{
-			    		   fos = new FileOutputStream("FailureUsersForCheck.xlsx");
+			    		   fos = new FileOutputStream(fname);
 			    	   }
 						wb_hssf.write(fos);
 						fos.close();
 					}
 					if(count > 0){
 						if(!fname.endsWith("xlsx")){
-							isFileCreated = "FailureUsersForCheck.xls";
+							isFileCreated = fname;
 						}else{
-							isFileCreated = "FailureUsersForCheck.xlsx";
+							isFileCreated = fname;
 						}
 						
 					}else{
@@ -565,12 +565,33 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				  client.setReason("Country is required");
 					return false;
 			  }
+			  if(null != row.getCell(5)&& !"".equalsIgnoreCase(row.getCell(5).toString())){
+				  boolean isValid = checkTierLevel(row.getCell(5).toString());
+				   if(isValid == false){
+					   client.setReason("Tier should <=5");
+						return false;
+				   }
+			  }
 		  }
 			return true;
 		}
 	  
-	  
 	  /**
+	   * @author Rajashekar
+	   * It will check tier validation if anybody change level other than Tier it will break
+	   * @param tier
+	   * @return
+	   */
+	  private boolean checkTierLevel(String tier) {
+		boolean isTierValid = true;
+		String[] tierArray = tier.split("-");
+		int level = Integer.parseInt(tierArray[1]);
+		if(level > 5){
+			isTierValid = false;
+		}
+		return isTierValid;
+	}
+	/**
 	   * checks filed validation including spaces
 	   * @param name
 	   * @return boolean

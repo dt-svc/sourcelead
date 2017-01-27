@@ -1,7 +1,3 @@
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -16,7 +12,9 @@ float:none;
 float:none;
 }
 
-
+.addUser-org {
+    overflow-x: auto;
+}
 
 #uploadFileGroup p.jquery_form_error_message{
 	position: absolute;
@@ -88,13 +86,6 @@ function clientDocumentsList(clientLocationId,orgRelationId){
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&sourceType=Client",        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
              			var json = JSON.parse(data);
              			/* for (var i = 0; i < 1; i++) { 
              				var val= json[i];
@@ -128,7 +119,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
 	                    	 if(opt.docName != null && opt.docName != '' && opt.docName != 'undefined'){
-	                    	    result  = result + '<td><div><span>'+opt.docName+'</span></div></td>';
+	                    	    result  = result + '<td><div><span title='+opt.docName+'>'+opt.docName+'</span></div></td>';
                     	     }else{
                     	    	 result  = result + ' <td><div><span>--</span></div></td>';
                     	     }
@@ -139,13 +130,13 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 if(opt.spocName != null && opt.spocName != '' && opt.spocName != 'undefined'){
-		                    	 result  = result + '<td><div><span>'+opt.spocName+'</span></div></td>';
+		                    	 result  = result + '<td><div><span title='+opt.spocName+'>'+opt.spocName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>--</span></div></td>'; 
 	                    	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-		                    	 result  = result + '<td><div><span>'+opt.fileName+'</span></div></td>';
+		                    	 result  = result + '<td><div><span title='+opt.fileName+'>'+opt.fileName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>--</span></div></td>';
 	                    	 }
@@ -163,11 +154,11 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 }
 	                    	 
 	                    	 if(opt.ownerName != null && opt.ownerName != '' && opt.ownerName != 'undefined'){
-	                    	      result  = result + ' <td><div><span>'+opt.ownerName+'</span></div></td>';
+	                    	      result  = result + ' <td><div><span title='+opt.ownerName+'>'+opt.ownerName+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	    result = result+'	 <td><div class="tblicons">';
+	                    	    result = result+'	 <td><div class="tblicons tblminwidth-75">';
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_CLIENT_DOCS\')">'; 
 	                    	    result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
 	                    	 '</sec:authorize>';
@@ -194,7 +185,6 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                     $("#clientDocumentsList").append(result); 
 	                     documentpagination(); 
 	                     //msgFadein();
-			    	} 
                }else{
             	   
             	    var val= "${SourceLeadWeb_deleteDocument}";
@@ -346,6 +336,8 @@ function addDocument(clientLocationId,orgRelationId) {
 	
 	$('#startDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
@@ -355,6 +347,8 @@ function addDocument(clientLocationId,orgRelationId) {
 	  
 	  $('#endDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true,  
 	        onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);
@@ -511,13 +505,6 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
 		    	var json = JSON.parse(data);
 		    	var spoc = "";
 		    	var owner = "";
-		    	if( data.indexOf('Sign In') >= 0){
-	    		location.replace(sourceleadUrl);
-	    	 }
-    		 else if (data.indexOf('exception') >= 0) {
-    			 location.replace(sourceleadUrl+"/errorPage");
-    		 }
-    		 else{
     			 $("#uploadDocumentDiv").hide();
     			 $("#docAddButton").hide();
     			 $("#uploadFile").removeAttr("data-validation");
@@ -585,7 +572,6 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
     			 
     			 manageDates();
     			 
-    		  }
 		    }
      });
 }
@@ -677,13 +663,6 @@ function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateOrgDocumnet?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
-   		    	if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-        		 else if (data.indexOf('exception') >= 0) {
-        			 location.replace(sourceleadUrl+"/errorPage");
-        		 }
-        		 else{
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
         			 $("#clientDocSelector").removeAttr("style");
@@ -691,7 +670,6 @@ function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
          			 $("#clientDococMsgDiv").html(""+docName+" Removed");
         			 clientDocumentsList(clientLocationId,orgRelationId);
         			 clientDocMsgFadein();
-        		 }
    		    }
 	     });
 	}else{

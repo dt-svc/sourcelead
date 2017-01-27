@@ -99,7 +99,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 
 	/**
-	 * to Candidates Count by  orgLocationId
+	 * to Candidates Count by  orgLocationId and candidate status for candidate elastic search
 	 * 
 	 * @author Naresh Bolisetty
 	 * 
@@ -111,11 +111,21 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Long getCandidatesCountByOrgLocationID(Long orgLocationId) {
+	public Long getCandidatesCountByOrgLocationID(Long orgLocationId,String candidateStatus) {
 		logger.debug("..getCandidatesCount() Method Started..");
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.status = '1'";
+		
+		String subQuery  = null;
+		if(null != candidateStatus && !candidateStatus.isEmpty() && candidateStatus.equalsIgnoreCase(Constants.ACTIVE)){
+			subQuery = "and candidate.status = '1'"; 
+		}else if(null != candidateStatus && !candidateStatus.isEmpty() && candidateStatus.equalsIgnoreCase(Constants.INACTIVE)){
+			subQuery = "and candidate.status = '0'"; 
+		}else{
+			subQuery = "and (candidate.status = '1' or candidate.status = '0')";
+		}
+		
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "+subQuery+" ";
 		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
@@ -326,42 +336,13 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
     	
 
-		String query = "from Candidate candidate  where candidate.id IN "
-				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.orgLocationId.id = :orgLocationId and hotlist.status = '1' and hotlist.teamId IS NULL) "+candidateTypeSubQuery+" ";  
+		String query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.isFavourite = '1' and candidate.teamId IS NULL "+candidateTypeSubQuery+" ";  
 		List<Candidate> candidateList = session.createQuery(query)
 				               .setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
 		return candidateList;
 	}
 
-	@Override
-	@Transactional
-	public List<Candidate> getAllActiveCandidatesForCampaignByLocation(Long orgLocationId,String type) throws Exception {
-		logger.debug("In getAllActiveCandidatesByLocation method");
-		Session session = this.sessionFactory.getCurrentSession();
-
-		String query = "from Candidate candidate  where candidate.id NOT IN "
-				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.orgLocationId.id = :orgLocationId and hotlist.status = '1') "
-				+ "and candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.candidateType = :type ";  
-		List<Candidate> candidateList = session.createQuery(query)
-				               .setLong("orgLocationId", orgLocationId).setString("type", type).setCacheable(true).list();
-		return candidateList;
-	}
-
-	@Override
-	@Transactional
-	public List<Candidate> getAllCandidatesForCampaignByTeam(List<Team> teamId, String type) throws Exception {
-		
-		logger.debug("In getAllCandidatesForCampaignByTeam method");
-		Session session = this.sessionFactory.getCurrentSession();
-		
-		String query = "from Candidate candidate  where candidate.id IN "
-				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.teamId IN (:teamId) and "
-				+ "hotlist.candidateId.status = '1' and hotlist.candidateId.candidateType = :type) ";  
-		List<Candidate> candidateList = session.createQuery(query)
-				               .setParameterList("teamId", teamId).setString("type", type).setCacheable(true).list();
-		return candidateList;
-	}
 
 	@Override
 	@Transactional
@@ -376,18 +357,122 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidateList;
 	}
 
+	
+
 	@Override
 	@Transactional
-	public List<Candidate> getAllHotlistCandidatesAndNotAssignedToTeamByLocation(Long orgLocationId) throws Exception {
-		logger.debug("In getAllActiveCandidatesByLocation method");
+	public Integer getHotlistCandidatesCountByTeamIdAndOrgLocationId(Long teamId, Long orgLocationId) throws Exception {
+		
 		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.teamId.id = :teamId ";
+		List<Long> favouriteCount = session.createQuery(query.toString()).setLong("teamId", teamId).setLong("orgLocationId", orgLocationId).list();
+			Integer count = 0;
+			if(favouriteCount != null && !favouriteCount.isEmpty()){
+					count = favouriteCount.get(0).intValue();
+			}
+			return count;
+	}
 
-		String query = "from Candidate candidate  where candidate.id IN "
-				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.orgLocationId.id = :orgLocationId and hotlist.status = '1' and hotlist.teamId IS NULL) "
-				+ "and candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' ";  
+	@Override
+	@Transactional
+	public List<Candidate> getHotListCandidatesByTeamAndOrgLocationId(Long teamId, Long orgLocationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.teamId.id = :teamId  ";  
 		List<Candidate> candidateList = session.createQuery(query)
-				               .setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+				               .setLong("orgLocationId", orgLocationId).setLong("teamId", teamId).setCacheable(true).list();
 		return candidateList;
 	}
+
+	@Override
+	@Transactional
+	public Integer getAllActiveCandidatesCountForCampaignByLocation(Long orgLocationId, String type) throws Exception {
+		logger.debug("In getAllActiveCandidatesCountForCampaignByLocation method");
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :type and candidate.status = '1' and candidate.isFavourite = '0' ";  
+		List<Long> candidatesCount = session.createQuery(query.toString()).setString("type", type).setLong("orgLocationId", orgLocationId).list();
+		Integer count = 0;
+		if(candidatesCount != null && !candidatesCount.isEmpty()){
+				count = candidatesCount.get(0).intValue();
+		}
+		return count;
+	}
+
+	@Override
+	@Transactional
+	public Integer getAllHotlistCandidatesCountNotAssignedToTeamByLocation(Long orgLocationId) throws Exception {
+		
+		logger.debug("In getAllHotlistCandidatesCountNotAssignedToTeamByLocation method");
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isFavourite = '1' and candidate.teamId IS NULL ";  
+		List<Long> candidatesCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+		Integer count = 0;
+		if(candidatesCount != null && !candidatesCount.isEmpty()){
+				count = candidatesCount.get(0).intValue();
+		}
+		return count;
+	}
+
+	@Override
+	@Transactional
+	public Integer getAllCandidatesCountForCampaignByTeam(List<Long> teamId, String type,Long orgLocationId) throws Exception {
+		
+		logger.debug("In getAllCandidatesCountForCampaignByTeam method");
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :type and candidate.status = '1' and candidate.teamId.id IN (:teamId) ";  
+		List<Long> candidatesCount = session.createQuery(query.toString()).setString("type", type).setLong("orgLocationId", orgLocationId).setParameterList("teamId", teamId).list();
+		Integer count = 0;
+		if(candidatesCount != null && !candidatesCount.isEmpty()){
+				count = candidatesCount.get(0).intValue();
+		}
+		return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer dateRange)
+			throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = null;
+		String updatedDate  ="";
+		Date currentDate =  commonUtil.currentDate();
+		List<Candidate> candidateList ;
+		java.sql.Date sqlCurrentDate = null;
+		
+		// for current Date Converting to Sql Date Format
+		 if(currentDate != null){
+				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+		 }
+		
+		 
+		// This Code is for  getting the sql enddate based on range
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	     Calendar c = Calendar.getInstance();
+	      c.setTime(new Date()); // Now use today date.
+	    dateRange = dateRange;
+	    c.add(Calendar.DATE, +dateRange); // Adding  The DateRange days
+	    updatedDate     = dateFormat.format(c.getTime());
+	    Date parsed = dateFormat.parse(updatedDate);
+	    java.sql.Date endDate = new java.sql.Date(parsed.getTime());
+	   
+	    subQuery =   " from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and  candidate.candidateType = 'Consultant' and candidate.isFavourite <> '1'  and candidate.consultantUser.id IN (select emp.user.id from Employees emp where emp.id IN (select pm.employee.id from ProjectMembers pm where pm.id IN ( select pmh.projectMemberId.id from ProjectMembersHistory pmh  where pmh.projectTerminationDate BETWEEN :sqlCurrentDate AND :endDate)  ) )"; 
+
+	    candidateList = session.createQuery(subQuery)
+					    		.setDate("sqlCurrentDate", sqlCurrentDate)
+					    		.setDate("endDate", endDate)
+				                .setLong("orgLocationId", orgLocationId)
+				                .setCacheable(true)
+				               .list();
+	  /*  System.err.println("das"+candidateList.size());*/
+	return candidateList;
+	}
+
+	
 	
 }

@@ -1,8 +1,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+<!-- <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> -->
 
 <div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;"> 
       <!-- Assigned Requirements -->
@@ -72,13 +71,13 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobId+"-"+opt.jobTitle+"</a></div></td>";
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title="+opt.jobId+"-"+opt.jobTitle+">"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
 		                     }else{
-		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
+		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title="+opt.jobTitle+">"+opt.jobTitle+"</span></a></div></td>";
 		                     }
 		                     
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
+		                    	 result = result +"<td><div><span title="+opt.clientName+">"+opt.clientName+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }

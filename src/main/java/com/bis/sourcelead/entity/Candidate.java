@@ -131,6 +131,13 @@ public class Candidate implements Serializable{
 	@Column(name="STATUS")
 	private Integer status;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="TEAM_ID")        
+    private Team teamId;
+	
+	@Column(name="IS_FAVOURITE")
+	private Integer isFavourite;
+	
 	@Column(name="TERMINATE_REASON")
 	private String terminateReason;
 
@@ -157,6 +164,9 @@ public class Candidate implements Serializable{
 	
 	@Transient
 	private String candidateName;
+	
+	@Transient
+	private String candidateLocation;
 	
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
@@ -204,8 +214,6 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private String reqSubmissionId;
 	 
-	 @Transient
-	 private String isFavourite;
 	 
 	 
 	 
@@ -699,12 +707,22 @@ public class Candidate implements Serializable{
 	}
 
 
-	public String getIsFavourite() {
+	public Team getTeamId() {
+		return teamId;
+	}
+
+
+	public void setTeamId(Team teamId) {
+		this.teamId = teamId;
+	}
+
+
+	public Integer getIsFavourite() {
 		return isFavourite;
 	}
 
 
-	public void setIsFavourite(String isFavourite) {
+	public void setIsFavourite(Integer isFavourite) {
 		this.isFavourite = isFavourite;
 	}
 
@@ -761,6 +779,16 @@ public class Candidate implements Serializable{
 
 	public void setCandidateAdedd(boolean isCandidateAdedd) {
 		this.isCandidateAdedd = isCandidateAdedd;
+	}
+
+
+	public String getCandidateLocation() {
+		return candidateLocation;
+	}
+
+
+	public void setCandidateLocation(String candidateLocation) {
+		this.candidateLocation = candidateLocation;
 	}
 	
 	

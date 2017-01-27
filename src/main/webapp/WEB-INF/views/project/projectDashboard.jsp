@@ -8,10 +8,6 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
-
  <style>
  
  .clsDatePicker {
@@ -92,7 +88,7 @@ overflow-x: auto;
 		<div class="project_wrap">
         <div class="timesheet_head">
         	<ul>
-				<li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
+				<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  ></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">
                     	<ul>
                     	  <c:forEach var="report" items="${add_client}">  
@@ -101,12 +97,12 @@ overflow-x: auto;
                         </ul>
                     </div>                	
                 </li>
-                <li><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+                <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
                 	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
                         	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
 							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">STARTED</label></li>
-							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRES-S"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
+							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
 							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">COMPLETED</label></li>
                				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">ONHOLD</label></li>
                         </ul>
@@ -381,7 +377,7 @@ function filter(){
    		    			projectSequeneNumber = "---";
    		    		}
    		    		result = result +'<tr>';
-   		    		result = result +'<td data-title="Id"><div><span>'+projectSequeneNumber+'</span></div></td>';
+   		    		result = result +'<td data-title="Id"><div><span title='+projectSequeneNumber+'>'+projectSequeneNumber+'</span></div></td>';
 
    		    		
    		    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
@@ -395,7 +391,7 @@ function filter(){
    		    		/*result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span class="tbldata-dotdot-vsm">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';*/
 
    		    		result = result +'<td data-title="Manager">';
-   		    		result = result +'<div><span>';
+   		    		result = result +'<div><span title='+report.managerLevel1+'>';
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
    		    			result = result +report.managerLevel1;
    		    		}

@@ -4,21 +4,13 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="icon" type="resources/image/png"
 	href="resources/images/fav.png" />
-<link
-	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
-	rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="resources/css/register-style.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<!-- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> -->
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -31,7 +23,7 @@
 
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
-		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value;
+		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value.trim();
 		 //space value  consider this condition 
 		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -76,7 +68,7 @@
 						<div class="form-group" id="ProjectIdDiv">
 							<label class="col-lg-3">Project Id</label>
 							<div class="col-lg-9">
-								<input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_Space validate_length length2-50"
+								<input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_Space validate_Alphanumeric validate_length length2-50"
 									data-validation-optional="true" class="form-control" onblur="validateProjectSequeneNumber();">
 							</div>
 						</div>
@@ -93,7 +85,7 @@
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-5000"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-500"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -122,7 +114,7 @@
 											<span class="badge" id="addTaskCount">0</span>
 										</button>
 										<sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT_TASKS')"> 
-											<button class="btn btn-primary" id="david" type="button" onclick="addSourceleadTasks();" data-toggle="modal" data-target="#addTask">
+											<button class="btn btn-primary" id="david" type="button" onclick="addSourceleadTasks();flushProjectTasks();" data-toggle="modal" data-target="#addTask">
 												<i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View / Add Tasks 
 											</button>
 										</sec:authorize>
@@ -135,7 +127,7 @@
 										<!-- Modal content-->
 										<div class="modal-content">
 											<div class="modal-header">
-												<button type="button" class="close" data-dismiss="modal">&times;</button>
+												<button type="button" class="close" data-dismiss="modal" onclick="flushProjectTasks();">&times;</button>
 												<h4 class="modal-title">Add Tasks</h4>
 											</div>
 											<div class="modal-body clearfix">
@@ -157,10 +149,10 @@
 																<input type="text" value="" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control">
 															</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group" id="descriptionDiv">
 															<label class="col-md-3">Description</label>
 															<div class="col-md-9">
-																<textarea class="form-control" placeholder="Enter Task Description" id="taskDescription" name="taskDescription" rows="2"></textarea>
+																<textarea class="form-control" placeholder="Enter Task Description" id="taskDescription" name="taskDescription"></textarea>
 															</div>
 														</div>
 													</div>
@@ -171,7 +163,7 @@
 												
 											</div>
 											<div class="modal-footer">
-												<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+												<button type="button" class="btn btn-default" data-dismiss="modal" onclick="flushProjectTasks();">Close</button>
 											</div>
 										</div>
 									</div>
@@ -184,7 +176,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkbox">
-									<label> <input type="checkbox" value="Y"  name="isMailToProjectManager"> 
+									<label> <input type="checkbox" value="Y"  checked="checked" name="isMailToProjectManager"> 
 									Mail to Project Manager
 									</label>
 								</div>
@@ -320,7 +312,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkbox">
-									<label> <input type="checkbox" value="Y" 
+									<label> <input type="checkbox" value="Y"  checked="checked"
 										name="isMailToTeamMembers"> Mail to Team Members
 									</label>
 								</div>
@@ -390,14 +382,20 @@
 	function addTasks() {
 
 		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
-
-		if ($('#taskName').val() == '') {
-			$("input#taskName")
-					.after(
-							"<p class='jquery_form_error_message'>Task Name is required</span>");
+		$('#descriptionDiv').find('p.jquery_form_error_message').remove();
+		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200 || $("#taskName").val().length > 100) {
+			if ($('#taskName').val() == '') {
+				$("input#taskName") .after( "<p class='jquery_form_error_message'>Task Name is required</span>");
+			}
+			if($("#taskName").val().length > 100){
+				$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between10-100 characters</span>");
+			}
+			if ($("#taskDescription").val().length > 200) {
+				$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between10-200 characters</span>");
+			}
 			return true;
-		}
-
+		} 
+		
 		var tbl = document.getElementById("projectTaskTbl");
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 		$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
@@ -572,17 +570,22 @@
 </script>
 
 <!-- Add Task Script Ends -->
-
-
+<script type="text/javascript">
+function flushProjectTasks(){
+	$('#addTask').find('p.jquery_form_error_message').remove();	
+}
+</script>
 
 <script type="text/javascript">
 	function saveProject() {
+		validateProjectSequeneNumber();
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
+		$('#addTask').find('p.jquery_form_error_message').remove();
 		if ($('#project_form').validate(false, validationSettings)) {
 			var frm = $('#project_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -590,7 +593,7 @@
 
 			//It will escape all the special characters
 			var jsonData = encodeURIComponent(con);
-
+			
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_project").attr("disabled", "disabled");
 			$("#save_project").addClass('button').val('Processing..');
@@ -728,6 +731,8 @@
 									
 									$('#startDate'+opt.id).datepicker({
 										dateFormat : 'yy-mm-dd',
+										changeMonth: true,
+										changeYear: true, 
 										minDate:projectStartDate,
 										maxDate:projectEndDate,
 										onSelect : function(selected) {
@@ -742,6 +747,8 @@
 		
 									$('#endDate'+opt.id).datepicker({
 										dateFormat : 'yy-mm-dd',
+										changeMonth: true,
+										changeYear: true, 
 										maxDate:projectEndDate,
 										minDate:projectStartDate,
 										onSelect : function(selected) {
@@ -837,6 +844,8 @@ function assignEmployeespagination(){
 
 		$('#StartDate').datepicker({
 			dateFormat : 'yy-mm-dd',
+			changeMonth: true,
+			changeYear: true, 
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() + 1);
@@ -847,6 +856,8 @@ function assignEmployeespagination(){
 
 		$('#EndDate').datepicker({
 			dateFormat : 'yy-mm-dd',
+			changeMonth: true,
+			changeYear: true, 
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() - 1);
@@ -964,7 +975,7 @@ function getChildLevel1Approvers(currentApproverId){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
+<!-- <script src="resources/js/chosen.jquery.min.js"></script>  -->
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},

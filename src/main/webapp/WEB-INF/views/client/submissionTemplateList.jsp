@@ -3,15 +3,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script> 	
-<script src="resources/js/jquery-ui.min.js" ></script>
 
 <link rel="stylesheet" href="resources/css/style.css" />
 
@@ -106,8 +97,8 @@ function clientSubmissionTemplate(clientLocationId){
 	        		
 	        		
 	        		result = result + '<tr>';
-	                result = result + '<td><div>'+opt.templateName+'</a></div></td>';
-	                result = result + '<td><div class="tbldata-dotdot">'+opt.description+'</div></td>';
+	                result = result + '<td><div><span title="'+opt.templateName+'">'+opt.templateName+'</span></a></div></td>';
+	                result = result + '<td><div class="tbldata-dotdot"><span title="'+opt.description+'">'+opt.description+'</span</div></td>';
 	                result = result + '<td><div>';
 	                '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_SUBMISSION_TEMPLATE\')">';
 	                result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+clientLocationId+','+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;';
@@ -291,7 +282,7 @@ function templatepagination(){
 
 <script type="text/javascript">
 function validateTemplateName(clientLocationId){
-	var templateName = document.getElementById("templateName").value; 
+	var templateName = document.getElementById("templateName").value.trim(); 
 	var templateId = $("#templateId").val();
 	if(templateId == 'undefined' || templateId == null){
 		templateId = '';
@@ -466,9 +457,10 @@ function validateTemplateName(clientLocationId){
          }
     });
     	
+  $('body').on('blur', '#sjfb', function() {
    	$('#sjfb').showHelpOnFocus();
     $('#sjfb').validateOnBlur(false, validationSettings); 
-  
+	});
   </script>
   
 

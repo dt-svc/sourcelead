@@ -3,16 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -25,6 +15,7 @@
 			getAllCountries();
 			disableMonths();
 			getUsersByRole();
+			var type = '${type}';
 		 };
 	</script>
 	 
@@ -88,7 +79,7 @@
         
         <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
         <div class="col-md-12 clearfix">
-        <div class="well">
+        <div class="well clearfix">
           <div class="col-md-4">
            <select class="chosen-select" id="role" name="roleType" field-name="Role" onchange="getUsersByRole()" data-validation="required" >
 	            <option value="">-Select Role-</option>
@@ -103,6 +94,7 @@
              <option value="">-Select User-</option>
            </select>
           </div>
+          <c:if test="${type !='addConsultant'}">
           <div class="input-group col-md-4" id="uploadFileGroup">
             <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
               <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
@@ -111,7 +103,7 @@
 
              <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc " >
          </div>
-          
+          </c:if>
           </div>
         </div>
         <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
@@ -287,7 +279,7 @@
                     <option ${currentRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${currentRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${currentRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${currentRateType  == 'others' ? 'selected' : ''}>Yearly</option>
+                    <option ${currentRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
                  <div class="clearfix"></div> <div class="clearfix"></div>
@@ -325,7 +317,7 @@
                     <option ${rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${rateType  == 'others' ? 'selected' : ''}>Yearly</option>
+                    <option ${rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
                  <div class="clearfix"></div> <div class="clearfix"></div>
@@ -367,15 +359,6 @@
               </div>
             </div>
         
-        
-        
-        <div class="form-group">
-          <label class="col-md-3">Summary</label>
-          <div class="col-md-9">
-            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
-          </div>
-        </div>
-        
         <div class="form-group">
          <label class="col-md-3">Notice Period</label>
           <div class="col-md-9">
@@ -390,7 +373,31 @@
              
            </div>
          </div>
+         
         
+         <c:if test="${type !='parseConsultant'}">
+         <div class="form-group">
+            <label class="col-md-3">Add Resume</label>
+            <div class="col-md-9">
+			 <div class="input-group col-md-12 errorInptgroup"  id="addResumeId" style="margin:0 auto">
+               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadFileBtn"  class="upload">
+                 </span> </label>
+                 <input type="text" class="form-control" readonly id="uploadProfile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+           </div>
+           <!-- <div class="clearfix mt10 text-muted"><i class="fa fa-question-circle text-info"></i>&nbsp; Upload .doc, .pdf, .txt formats only...</div> -->
+         </div>
+        </div>
+        </c:if>
+        
+        <div class="form-group">
+          <label class="col-md-3">Summary</label>
+          <div class="col-md-9">
+            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
+          </div>
+        </div>
+        
+         
         <div class="form-group">
           <label class="col-md-3"></label>
          <!--  <div class="col-md-9 checkbox checkBox">
@@ -869,7 +876,6 @@ function getCities(){
 	       // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
 	     };
 
- 
 </script>
 
 
@@ -991,6 +997,31 @@ function getUserDetails(){
 	}
 	
 }
+</script>
+<script>
+var selectedFile = document.getElementById("uploadFileBtn");
+selectedFile.addEventListener("change", function() {
+	 $("#uploadProfile").focus();
+	 if(validate_fileupload(this.value)){
+		 var docSize = this.files[0].size;
+	      $("#addResumeId").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  document.getElementById("uploadProfile").value = '';
+	    	 /*  $("#uploadFileGroup").append("<p class='jquery_form_error_message'></p>"); */
+	    	  $('#addResumeId').find('p.jquery_form_error_message').remove();
+			  $("input#uploadProfile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  document.getElementById("uploadProfile").setAttribute('record-exist','yes');
+			  document.getElementById("uploadProfile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#uploadProfile').removeAttr( "record-exist record-exist-errormsg");
+  		 $('#addResumeId').find('p.jquery_form_error_message').remove(); 
+	    }
+	 }
+});
+document.getElementById("uploadFileBtn").onchange = function () {
+ 	$('#uploadProfile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+   // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+ };
 </script>
 
 

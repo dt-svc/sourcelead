@@ -23,4 +23,8 @@ public interface TeamDao {
 	public List<Team> getUserAssignedTeamListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 	
 	public Boolean getTeamOwnersListByUserIdAndRequirementId(User user, Long orgLocationId,Long requirement);
+	
+    public List<Long> getTeamIdsListByOrgLocationID(Long orgLocationId) throws Exception;
+	
+	public List<Long> getUserAssignedTeamIdsListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 }

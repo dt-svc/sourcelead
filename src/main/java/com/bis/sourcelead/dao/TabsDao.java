@@ -18,5 +18,7 @@ public interface TabsDao {
 	List<Long> getTabsIdsListByUserRoleIdAndOrgLocationId(Long roleId,Long orgLocationId) throws Exception;
 	
 	List<Tabs> getTabsListByIds(List<Long> tabIds) throws Exception;
+	
+	boolean getTabAccessByRoleIdAndTabId(Long roleId,Long orgLocationId,Long tabId) throws Exception;
 
 }

@@ -468,7 +468,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select userRole.user from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.userState != 'INACTIVE' " ;
+		String query = "select userRole.user from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.userState != 'INACTIVE' and userRole.userState != 'NOT_LOGGEDIN' " ;
 	    List<Long> userIds = session.createQuery(query).setLong( "reportingManagerId", reportingManagerId).setCacheable(true).list();
         return userIds;
         
@@ -586,6 +586,15 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		String query = "from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.orgLocations.id = :locationId ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong( "reportingManagerId", reportingManagerId).setLong("locationId", orgLocationId).setCacheable(true).list();
 		return userRoleList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.user user  where userRole.orgLocations.id IN (select responderLocationId from OrgRelations orl where orl.locationId.id =:orgLocationId) OR (userRole.orgLocations.id =:orgLocationId) ";
+		List<UserRole> usersList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		return usersList;
 	}
 
 	

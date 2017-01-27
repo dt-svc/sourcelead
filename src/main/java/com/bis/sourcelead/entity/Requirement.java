@@ -288,6 +288,22 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String createdByName;
 	
+	@Transient
+    private String[] level1ApproverUserId;
+	
+	@Transient
+	private String[] level2ApproverUserId;
+	
+	@Transient
+	private String level1ApproverStatus;
+	
+	@Transient
+	private String level2ApproverStatus;
+	
+	@Transient
+	private String[] requirementAssignedToUsersId;
+	
+	
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -909,6 +925,46 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setCreatedByName(String createdByName) {
 		this.createdByName = createdByName;
+	}
+
+	public String[] getLevel1ApproverUserId() {
+		return level1ApproverUserId;
+	}
+
+	public void setLevel1ApproverUserId(String[] level1ApproverUserId) {
+		this.level1ApproverUserId = level1ApproverUserId;
+	}
+
+	public String[] getLevel2ApproverUserId() {
+		return level2ApproverUserId;
+	}
+
+	public void setLevel2ApproverUserId(String[] level2ApproverUserId) {
+		this.level2ApproverUserId = level2ApproverUserId;
+	}
+
+	public String getLevel1ApproverStatus() {
+		return level1ApproverStatus;
+	}
+
+	public void setLevel1ApproverStatus(String level1ApproverStatus) {
+		this.level1ApproverStatus = level1ApproverStatus;
+	}
+
+	public String getLevel2ApproverStatus() {
+		return level2ApproverStatus;
+	}
+
+	public void setLevel2ApproverStatus(String level2ApproverStatus) {
+		this.level2ApproverStatus = level2ApproverStatus;
+	}
+
+	public String[] getRequirementAssignedToUsersId() {
+		return requirementAssignedToUsersId;
+	}
+
+	public void setRequirementAssignedToUsersId(String[] requirementAssignedToUsersId) {
+		this.requirementAssignedToUsersId = requirementAssignedToUsersId;
 	}
 	
 }

@@ -1,7 +1,4 @@
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
+
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -51,13 +48,6 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationIdAndSpocUserId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&userId="+userId,        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
              			var json = JSON.parse(data);
              			/* for (var i = 0; i < 1; i++) { 
              				var val= json[i];
@@ -151,7 +141,6 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                     $("#spocDocumentsList").append(result); 
 	                     spocDocumentpagination(); 
 	                    
-			    	} 
                }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
@@ -288,6 +277,8 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	
 	$('#startDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
@@ -297,6 +288,8 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	  
 	  $('#endDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	        onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);
@@ -466,13 +459,6 @@ function saveReason(clientLocationId,orgRelationId,spocName,userId,docId,docName
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateOrgDocumnet?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
-   		    	if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-        		 else if (data.indexOf('exception') >= 0) {
-        			 location.replace(sourceleadUrl+"/errorPage");
-        		 }
-        		 else{
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
         			 $("#selector2").removeAttr("style");
@@ -480,7 +466,6 @@ function saveReason(clientLocationId,orgRelationId,spocName,userId,docId,docName
          			 $("#docMsgDiv").html(""+docName+" Removed");
         			 spocDocumentsList(clientLocationId,orgRelationId,userId,spocName);
         			 spocDocMsgFadein();
-        		 }
    		    }
 	     });
 	}else{
@@ -510,13 +495,6 @@ function getVendorSpocDocument(clientLocationId,orgRelationId,spocName,userId,do
 		    	var json = JSON.parse(data);
 		    	var spoc = "";
 		    	var owner = "";
-		    	if( data.indexOf('Sign In') >= 0){
-	    		location.replace(sourceleadUrl);
-	    	 }
-    		 else if (data.indexOf('exception') >= 0) {
-    			 location.replace(sourceleadUrl+"/errorPage");
-    		 }
-    		 else{
     			 $("#uploadDocumentDiv").hide();
     			 $("#docAddButton").hide();
     			 $("#uploadFile").removeAttr("data-validation");
@@ -570,7 +548,6 @@ function getVendorSpocDocument(clientLocationId,orgRelationId,spocName,userId,do
     			 $("#update_doc").attr("onclick", 'storeSpocDocument(\''+clientLocationId+'\',\''+orgRelationId+'\',\''+userId+'\',\''+spocName+'\',\''+json.id+'\');');
     			 
     			 manageDates();
-    		 }
 		    }
      });
 }

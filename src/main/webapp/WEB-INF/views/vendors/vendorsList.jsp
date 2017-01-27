@@ -3,24 +3,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
 <style type="text/css">
-.vendor_wrap {
+vendor_wrap {
 overflow-x: auto;
 }
 </style>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
     <!-- Content Area -->
       <section class="content-wraper">
         <section class="content-header clearfix">
@@ -44,18 +36,215 @@ overflow-x: auto;
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendors list </div>
         </section>
-        
-       
-       
 		<!-- Project -->
 		 <div id="loading"></div>
-<div class="timesheet_out">
+<div class="timesheet_out timesheet_background">
+ <!-- Advanced Search -->
+  <div class="pull-left cand-advsrch">
+            <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop()"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+            <div class="row">
+              <div class="col-md-4">
+                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+                <div class="clearfix">
+                  <input type="text" class="form-control input-sm" placeholder="Any of Keyword">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+                <div class="clearfix">
+                  <input type="text" class="form-control input-sm" placeholder="All Keywords">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+                <div class="clearfix">
+                  <input type="text" class="form-control input-sm" placeholder="Exclude Keyword">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h4>Details:</h4>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Vendor Name</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Designation">
+                  </div>
+                </div>
+                
+              </div>
+              <div class="clearfix">
+                
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Country</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="Country">
+                      <option>India</option>
+                      <option>USA</option>
+                      <option>Germany</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>State</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="State">
+                      <option>Andhra Pradesh</option>
+                      <option>Telangana</option>
+                      <option>Punjab</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>City</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="City">
+                      <option>India</option>
+                      <option>USA</option>
+                      <option>Germany</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Tier</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="Education" multiple>
+                      <option>MCA</option>
+                      <option>MBA</option>
+                      <option>B.Sc.(Computers)</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Created By</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Created By">
+                  </div>
+                </div>
+                
+              </div>
+             
+               </div>
+                
+                <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Document Name</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Document Name">
+                  </div>
+                </div>
+              
+                <div class="col-md-4">
+                  <label>Document Type</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Document Type">
+                  </div>
+                </div>
+                
+              
+                <div class="col-md-4">
+                  <label>Submission Template</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Submission Template">
+                  </div>
+                </div>
+                 </div>
+                 
+                 
+               <div class="col-md-12">
+                <h4>Vendor Contact:</h4>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Contact Name</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Contact Name">
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <label>Email</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Email">
+                  </div>
+                </div>
+                
+                 <div class="col-md-4">
+                  <label>Phone Number</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Phone Number">
+                  </div>
+                </div>
+                
+              </div>
+              <div class="clearfix">
+                
+              </div>
+                
+                 <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Owner</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Contact Name">
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <label>Vendor</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Email">
+                  </div>
+                </div>
+                
+                 <div class="col-md-4">
+                  <label>Status</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Phone Number">
+                  </div>
+                </div>
+                
+              </div>
+              
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Invitation</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Invitation">
+                  </div>
+                </div>
+                
+                
+              </div>
+              
+              
+            </div>
+            <div class="row form-footer mt">
+              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> </div>
+            </div>
+          </div>
+        </div>
+<!-- Advanced Search Ends -->
 
-<div class="vendor_wrap">
+
+
+<div class="clearfix"></div>
+<div class="vendor_wrap vendor_wrap_shadownone" style="overflow-x: auto;" >
+
+     
+
 	<div class="timesheet_head datatbl-filters customtimesheet-head">
         	<ul>
         	
-        	<li id="vendorsList" ><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
+        	<li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="vendorsList" ></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
 		                    	  <c:forEach var="report" items="${vendor_list}">  
@@ -65,7 +254,7 @@ overflow-x: auto;
 		                    </div>                	
 		                </li>
 	               
-		                <li id="vendorSatatus"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+		                <li id= "filter3ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="vendorSatatus"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
@@ -76,7 +265,7 @@ overflow-x: auto;
 	                        </ul>
 	                      </div>                	
 	                  </li>
-	                  <li id="vendorInvitation"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="filter4ApprovePop"></i>|
+	                  <li  id="filter4ApprovePop"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="vendorInvitation"></i>|
 	                	<div id="filter4ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="vendorInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label>Resend</label></li>
@@ -87,7 +276,7 @@ overflow-x: auto;
 	                      </div>                	
 	                  </li>
                   
-	                
+	                	 
 						<li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
@@ -98,7 +287,8 @@ overflow-x: auto;
 		               				<li><input id="c10"  type="checkbox" name="clinetLevel"value ="Tier-5"  onclick="getVendorLists();"><label>Tier-5</label></li>
 		                        </ul>
 		                    </div>                	
-		                </li>          
+		                </li>  
+		                    
 		          <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')">
 				       <li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
 					</sec:authorize>
@@ -137,6 +327,7 @@ overflow-x: auto;
             </ul>
             <div class="clearfix"></div>
         </div>
+        
     <div class="clients_wrap_table">
 	    <input type="hidden" name="emptyVendorcontactList" id="emptyVendorcontactList">
 	    <input type="hidden" name="emptyVendorList" id="emptyVendorList">
@@ -144,6 +335,7 @@ overflow-x: auto;
     	<table id="vendorList" class="display" cellspacing="0" width="100%"> </table>
     	<table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
    </div>	
+   
 </div>
 
 <div class="side_mask"><div class="proj_close"></div></div>
@@ -160,6 +352,8 @@ overflow-x: auto;
 		</div>
 
  </div>
+ 
+</div>
 <!-- Client Side Nav Div Ends -->
 </section>
 
@@ -214,10 +408,13 @@ function getVendorLists(){
    	        			location = report.country;
    	        		}
    	        		
+   	        		var pattern = new RegExp(/["'"]/g);
+   	        		var orgName = (report.orgName).replace(pattern, "\\'");
+   	        		
    	        		result = result +'<tr>';
    	        		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
    	        			result = result +'<td>';
-   	        			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
    	        		'</sec:authorize>';
@@ -1310,3 +1507,31 @@ function exportVendorContactToExcel(){
         $('#editVendorMsg').delay(2000).fadeOut('slow');
 	}
 </script> 
+
+<script>
+    // Close Advanced Search
+    function closePop(){
+    $("div.cand-advsrch-popup").hide();
+    };
+    function openPop(){
+    $("div.cand-advsrch-popup").toggle();
+    };
+</script> 
+
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+
+         });
+</script>            

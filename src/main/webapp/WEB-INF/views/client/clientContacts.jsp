@@ -3,15 +3,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script> 	
 <style type="text/css">
 .collapse-div-adduser select{
 width: 100% !important;
@@ -132,10 +123,10 @@ function clientContacts(orgRelationID,clientLocationId){
    		    		}
 	        		
 	        		result = result + '	 <tr>';
-	                result = result + '	 	<td><div>'+opt.spocName+'</a></div></td>';
-	                result = result + '	     <td><div>'+opt.spocEmail+'</div></td>';
+	                result = result + '	 	<td><div><span title='+opt.spocName+'>'+opt.spocName+'</span></a></div></td>';
+	                result = result + '	     <td><div><span title='+opt.spocEmail+'>'+opt.spocEmail+'</span></div></td>';
 	                result = result + '	     <td><div>'+spocMobilePhone+'</div></td>';
-	                result = result + '	     <td><div>'+opt.ownerName+'</div></td>';
+	                result = result + '	     <td><div><span title='+opt.ownerName+'>'+opt.ownerName+'</span></div></td>';
 	                
 	                result = result + ' <td><div>';
 					result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+clientLocationId+');">';
