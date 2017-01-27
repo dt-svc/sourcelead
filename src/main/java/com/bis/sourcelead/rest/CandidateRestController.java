@@ -241,6 +241,7 @@ public class CandidateRestController {
 				@RequestParam(value = "requirementId", required = false) Long requirementId,
 				@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception {
 			String resultJson = null;
+			String candidateStatus = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
 			//List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(orgLocations.getId(),requirementId,candidateType);
@@ -255,7 +256,7 @@ public class CandidateRestController {
 		        boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
 		        boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
 		        
-		        Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocations.getId());
+		        Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocations.getId(),candidateStatus);
 			
 			if(null != candidateIdsList && candidateIdsList.size() > 0){
 				BoolQueryBuilder candidateBoolQueryBuilder = QueryBuilders.boolQuery();
