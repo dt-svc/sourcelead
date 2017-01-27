@@ -470,8 +470,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public Long getCandidatesCountByOrgLocationID(Long orgLocationId) {
-		return candidateDao.getCandidatesCountByOrgLocationID(orgLocationId);
+	public Long getCandidatesCountByOrgLocationID(Long orgLocationId,String candidateStatus) {
+		return candidateDao.getCandidatesCountByOrgLocationID(orgLocationId,candidateStatus);
 	}
 
 
