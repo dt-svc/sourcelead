@@ -1,18 +1,11 @@
 package com.bis.sourcelead.elk.index.helper;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.service.OrgRelationsService;
 
 @Component
 public class ClientVendorContactsIndexHelper {
-	
-	
-	@Autowired
-	private OrgRelationsService orgRelationsService;
 	
 	
 	public ClientVendorContactsIndex getClientVendorContactIndexFromSpoc(OrgSpoc orgSpoc) throws Exception{
@@ -24,7 +17,7 @@ public class ClientVendorContactsIndexHelper {
 			clientVendorContactsIndex.setId(orgSpoc.getId());
 			clientVendorContactsIndex.setInitiatorLocationId(orgSpoc.getInitiatorLocationId().getId());
 			clientVendorContactsIndex.setOrgRelationId(orgSpoc.getOrgRelations().getId());
-			//clientVendorContactsIndex.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
+			clientVendorContactsIndex.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
 			//clientVendorContactsIndex.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 			//clientVendorContactsIndex.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 			clientVendorContactsIndex.setInvitationStatus(orgSpoc.getInvitationStatus());
