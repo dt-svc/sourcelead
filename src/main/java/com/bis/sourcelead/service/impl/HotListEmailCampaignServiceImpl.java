@@ -92,7 +92,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	 String candidates = null;
 	 String emails = null;
 	 
-	 String otherEmails = "";
+	 String otherEmails = null;
 	 InternetAddress[] iAdressArray = null;
 	   	 if(!isNullOrEmpty(user.getLastName())){
 	   		 fullName = user.getFirstName()+" "+user.getLastName();
