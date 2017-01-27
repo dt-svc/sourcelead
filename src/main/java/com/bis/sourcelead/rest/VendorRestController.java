@@ -714,7 +714,7 @@ public class VendorRestController {
 				 
 				 boolQueryBuilder.must(combinedQueryBuilder);
 				 
-				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId());
+				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId(),responderType);
 			   	 
 				 //Exclude Keyword
 				 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
@@ -807,7 +807,8 @@ public class VendorRestController {
 					if(tierAdvancedByArray != null && !tierAdvancedByArray.isEmpty()){
 						BoolQueryBuilder tierAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : tierAdvancedByArray){
-							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("initiatorLevel", keywd));
+							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorLevel", keywd));
+							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderLevel", keywd));
 						}
 						boolQueryBuilder.must(tierAdvancedBoolQueryBuilder);
 					}
@@ -819,11 +820,32 @@ public class VendorRestController {
 					if(searchHits != null && searchHits.length >0){
 						ObjectMapper mapper = new ObjectMapper();
 						for (SearchHit hit : searchHits) {
-							json = hit.getSourceAsString();
-							mapper.setDateFormat(df);
-							ClientVendorIndex clientVendorIndex = mapper.readValue(json, ClientVendorIndex.class);
-							clientVendorList.add(clientVendorIndex);
-						}
+									json = hit.getSourceAsString();
+									mapper.setDateFormat(df);
+									ClientVendorIndex clientVendorIndex = mapper.readValue(json, ClientVendorIndex.class);
+									clientVendorList.add(clientVendorIndex);
+									
+									for(ClientVendorIndex clientVendor : clientVendorList){
+										
+										if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
+											if(clientVendor.getInitiatorLevel()!=null){
+												clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
+											}
+										}
+									  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
+										  if(clientVendor.getResponderLevel()!=null){
+											  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
+										  }
+										}
+									  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
+										  if(!clientVendor.getCreatedBy().isEmpty()){
+											  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
+										  }
+										 
+									  }
+									  
+								}
+						}	
 					}
 					
 				 String resultJson;
@@ -858,7 +880,8 @@ public class VendorRestController {
 			    //Vendor Search 
 			    matchQueryBuilderList.add(QueryBuilders.matchQuery("orgName", keywd));
 			    matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorLevel", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("createdByAdvanced", keywd));
+			    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderLevel", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("createdBy", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
@@ -953,6 +976,8 @@ public class VendorRestController {
 				 
 				 // to   get the number of contacts 
 				 Integer maxResults = orgSpocService.getAllVendorContactsCountbyOrgLocationId(loginOrgLocation.getId(),responderType,loginUser.getId());
+				 
+				 
 			   	
 				 //Exclude Keyword
 				 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
@@ -1022,8 +1047,8 @@ public class VendorRestController {
 					if(contactEmailNameArray != null && !contactEmailNameArray.isEmpty()){
 						BoolQueryBuilder contactEmailBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : contactEmailNameArray){
-							contactEmailBoolQueryBuilder.should(QueryBuilders.matchQuery("ownerUserEmail", keywd));
-							contactEmailBoolQueryBuilder.should(QueryBuilders.matchQuery("spocUserEmail", keywd));
+							contactEmailBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("ownerUserEmail", keywd));
+							contactEmailBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocUserEmail", keywd));
 						}
 						boolQueryBuilder.must(contactEmailBoolQueryBuilder);
 					}
@@ -1033,7 +1058,7 @@ public class VendorRestController {
 					if(phoneNumberNameArray != null && !phoneNumberNameArray.isEmpty()){
 						BoolQueryBuilder phoneNumberBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : phoneNumberNameArray){
-							phoneNumberBoolQueryBuilder.should(QueryBuilders.matchQuery("spocUserPhNo", keywd));
+							phoneNumberBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocUserPhNo", keywd));
 						}
 						boolQueryBuilder.must(phoneNumberBoolQueryBuilder);
 					}
@@ -1043,7 +1068,7 @@ public class VendorRestController {
 					if(orgAdvancedArray != null && !orgAdvancedArray.isEmpty()){
 						BoolQueryBuilder orgAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : orgAdvancedArray){
-							orgAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("responderOrgName", keywd));
+							orgAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderOrgName", keywd));
 						}
 						boolQueryBuilder.must(orgAdvancedBoolQueryBuilder);
 					}
@@ -1064,7 +1089,7 @@ public class VendorRestController {
 					if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty()){
 						BoolQueryBuilder statusAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : statusAdvancedArray){
-							statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocStatus", keywd));
+							statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocStatus", "*"+keywd+"*"));
 						
 						}
 						boolQueryBuilder.must(statusAdvancedBoolQueryBuilder);
@@ -1081,8 +1106,13 @@ public class VendorRestController {
 						boolQueryBuilder.must(invitationAdvancedBoolQueryBuilder);
 					}
 										
+					
+					
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 
+
+					
+					
 					List<ClientVendorContactsIndex> clientVendorContactsList = new ArrayList<ClientVendorContactsIndex>();
 					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					df.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -1243,7 +1273,7 @@ public class VendorRestController {
 				 boolQueryBuilder.must(combinedQueryBuilder);
 				 
 				 
-				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId());
+				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId(),responderType);
 			   	 
 				List<ClientVendorIndex> clientVendorList = new ArrayList<ClientVendorIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -1255,7 +1285,29 @@ public class VendorRestController {
 					String	json = hit.getSourceAsString();
 						mapper.setDateFormat(df);
 						ClientVendorIndex clientVendorIndex = mapper.readValue(json, ClientVendorIndex.class);
-						clientVendorList.add(clientVendorIndex);
+						  clientVendorList.add(clientVendorIndex);
+						  
+						for(ClientVendorIndex clientVendor : clientVendorList){
+							
+							if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
+								if(clientVendor.getInitiatorLevel()!=null){
+									clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
+								}
+							}
+						  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
+							  if(clientVendor.getResponderLevel()!=null){
+								  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
+							  }
+							}
+						  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
+							  if(!"".equals(clientVendor.getCreatedBy())){
+								  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
+							  }
+						  }
+						  
+						
+					}
+						
 					}
 				}
 				 String resultJson;

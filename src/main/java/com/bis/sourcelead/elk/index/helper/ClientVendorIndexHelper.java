@@ -59,17 +59,13 @@ public class ClientVendorIndexHelper {
 			clientVendorIndex.setInitiatorLevel(orgRelationsList.getInitiatorLevel());
 			clientVendorIndex.setResponderLevel(orgRelationsList.getResponderLevel());
 			clientVendorIndex.setStatus(orgRelationsList.getStatus());
-		}
-		if("null".equalsIgnoreCase(orgRelationsList.getCreatedBy()) && !"".equalsIgnoreCase(orgRelationsList.getCreatedBy())){
+			
 			User user = userService.getUserByUserCode(orgRelationsList.getCreatedBy());
 			if(null != user){
-				clientVendorIndex.setCreatedBy(user.getFirstName() +""+user.getLastName());
+				StringBuilder sb = new StringBuilder();
+				clientVendorIndex.setCreatedBy(sb.append(user.getFirstName()).append("").append(user.getLastName()).toString());
 			}
-			//clientVendorIndex.setOwnerId(orgSpoc.getOwnerUser().getId());
-
 		}
-			
-		
 		return clientVendorIndex;
 	}
 	
