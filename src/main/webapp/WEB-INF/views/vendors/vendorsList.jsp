@@ -801,8 +801,8 @@ overflow-x: auto;
 
 <script> 
 $(document).ready(function(){
-	getVendorContactLists();
-
+	//getVendorContactLists();
+	getVendorContactListsELK();
     listChange("listbyContact");
 	document.getElementById('listOfVendors').value = 'listbyContact';
 });
@@ -1006,6 +1006,33 @@ function getVendorLists(){
 }	
 </script> 
 
+
+<script>
+function getVendorListsElk(){
+	closePop();
+	var values = [];
+	var responderType = "Vendor";
+	
+	$('input:checkbox[name=clinetLevel]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
+	var sourceleadUrl ='${sourceleadUrl}';
+	//var loginOrgLocId = '${loginOrgLocId}';
+	  $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getVendorFilterListsElK?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&values="+values, 	   
+   		    success: function(data) {
+   		    	//preparedVendorsLists(data);
+   		 	    preparedVendorsListFromElk(data);
+   		    }
+	 });
+	
+}	
+</script> 
+
+
+
  <script>
 function pagination1(){  
 	document.getElementById("vendorContactList").style.display="none";
@@ -1059,6 +1086,45 @@ function getVendorContactLists(){
 	
 }	
 </script> 
+
+<!-- This VendorContactList method  is for getting veendorContacts from ELK  on Windows OnLoad--------- -->
+
+<script>
+function getVendorContactListsELK(){
+	closePop();
+	var vendorId = [];
+	$('input:checkbox[name=vendorNameById]:checked').each(function() 
+    {
+		vendorId.push($(this).val());
+    });
+	var vendorStatus = [];
+	$('input:checkbox[name=vendorStatus]:checked').each(function() 
+    {
+		vendorStatus.push($(this).val());
+    });
+	
+	var invitationStatus = [];
+	$('input:checkbox[name=vendorInvitationStatus]:checked').each(function() 
+    {
+		invitationStatus.push($(this).val());
+    });
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginOrgLocId = '${loginOrgLocId}';
+	var responderType = "Vendor";
+	
+	  $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getVendorContactListsELK?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&responderType="+responderType, 	   
+   		    success: function(data) {
+   		    	//preparedVendorContactList(data);
+   		    	preparedVendorContactListFromElk(data);
+   		    }
+   		    	
+	 });
+	
+}	
+</script>
 
 <!-- contact list preparation from ELK result -->
 <script>
@@ -1818,7 +1884,8 @@ function listChange(sel){
 		'<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="none";
 		 '</sec:authorize> ';
-		 getVendorLists();
+		 //getVendorLists();
+		 getVendorListsElk();
 	 }
 	 if(sel.value=="listbyContact"){
 		 document.getElementById("vendorContactList").style.display="block";
@@ -1836,7 +1903,8 @@ function listChange(sel){
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="block";
 		 '</sec:authorize> ';
-		 getVendorContactLists();
+		 //getVendorContactLists();
+		 getVendorContactListsELK();
 	 }
 	 
 }
