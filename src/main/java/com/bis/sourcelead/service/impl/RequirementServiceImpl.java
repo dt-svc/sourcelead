@@ -2422,7 +2422,7 @@ public class RequirementServiceImpl implements RequirementService {
 		requirement.setId(requirementIndex.getRequirementId());
      	requirement.setJobId(requirementIndex.getJobId());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
-     	requirement.setClientName(requirementIndex.getClientContactName());
+     	requirement.setClientName(requirementIndex.getClient());
      	requirement.setCountry(requirementIndex.getCountry());
      	requirement.setState(requirementIndex.getState());
      	requirement.setCity(requirementIndex.getCity());
@@ -2504,8 +2504,8 @@ public class RequirementServiceImpl implements RequirementService {
 		 
 		 Long maxResults = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
 		//Any Keyword
-		 if(jsonObj.has("anyKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("anyKeyWord"))){
-			 ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyKeyWord");
+		 if(jsonObj.has("searchKey") && !"".equalsIgnoreCase(jsonObj.getString("searchKey"))){
+			 ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "searchKey");
 				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : anyKeyWordArray){
@@ -2562,7 +2562,6 @@ public class RequirementServiceImpl implements RequirementService {
 		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
 		            		requirement = getData(requirementIndex);
 		            	}
-		            	
 		            	reqList.add(requirement);
 		            }
 				}
