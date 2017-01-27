@@ -615,6 +615,15 @@ public class ClientServiceImpl implements ClientService{
 			String vendorCity = "vendorCity";
 			String vendorState = "vendorState";
 			String vendorCountry = "vendorCountry" ;
+			
+			
+			//  This pojo's are for Storing the updated value in Elk 
+			
+			OrgRelations orgRelationsForElk  = null;
+			Org orgForElk  = null;
+			OrgLocations orgLocationsForElk  = null;
+			
+			
 			//String emailId = "EmailId";
 			String level = "level";
 			
@@ -634,7 +643,7 @@ public class ClientServiceImpl implements ClientService{
 						}
 				 }
 				//orgRelation.setLevel(jsonObj.getString(level));
-			 orgRelationsService.addOrgRelations(orgRelation);		
+			       orgRelationsForElk  = orgRelationsService.addOrgRelations(orgRelation);		
 				 
 				Org org = orgLocations.getOrg();
 				if(null != org){
@@ -645,7 +654,7 @@ public class ClientServiceImpl implements ClientService{
 					if(jsonObj.getString(companyWebsite) != null && !jsonObj.getString(companyWebsite).isEmpty()){
 						org.setWebSite(jsonObj.getString(companyWebsite));
 					}
-				orgService.updateOrg(org);
+				 orgForElk = orgService.updateOrg(org);
 				}	
 				if(jsonObj.getString(vendorCity) != null && !jsonObj.getString(vendorCity).isEmpty()){
 					orgLocations.setCity(jsonObj.getString(vendorCity));
@@ -669,11 +678,14 @@ public class ClientServiceImpl implements ClientService{
 				}else{
 					orgLocations.setEmail("");
 				}*/
-				orgLocationService.updateOrgLocations(orgLocations);
+				  orgLocationsForElk = orgLocationService.updateOrgLocations(orgLocations);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
+
+			
+			saveOrUpdateClientVendorElkDocument(orgForElk,orgLocationsForElk,null,null,orgRelationsForElk,null);
 
 		}
 		

@@ -593,80 +593,6 @@ overflow-x: auto;
 		    
 		    
 		    
-		   /*  // This is for DocumentName
-		    var selectdocumentNameAdvanced, chosendocumentNameAdvanced;
-		    selectdocumentNameAdvanced = $("#documentNameAdvanced");
-		    selectdocumentNameAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Document Name:' });
-		    chosendocumentNameAdvanced = selectdocumentNameAdvanced.data('chosen');
-		    chosendocumentNameAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectdocumentNameAdvanced.append(option);
-		            selectdocumentNameAdvanced.find(option).prop('selected', true);
-                    $("#documentNameAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#documentNameAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    
-		    
-		    
-		    // This is for DocumentType
-		    var selectdocumentTypeAdvanced, chosendocumentTypeAdvanced;
-		    selectdocumentTypeAdvanced = $("#documentTypeAdvanced");
-		    selectdocumentTypeAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Document Type:' });
-		    chosendocumentTypeAdvanced = selectdocumentTypeAdvanced.data('chosen');
-		    chosendocumentTypeAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectdocumentTypeAdvanced.append(option);
-		            selectdocumentTypeAdvanced.find(option).prop('selected', true);
-                    $("#documentTypeAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#documentTypeAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		 // This is for Submission Template Name
-		    var selectsubmissionTemplateAdvanced, chosensubmissionTemplateAdvanced;
-		    selectsubmissionTemplateAdvanced = $("#submissionTemplateAdvanced");
-		    selectsubmissionTemplateAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Submission Template Name:' });
-		    chosensubmissionTemplateAdvanced = selectsubmissionTemplateAdvanced.data('chosen');
-		    chosensubmissionTemplateAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectsubmissionTemplateAdvanced.append(option);
-		            selectsubmissionTemplateAdvanced.find(option).prop('selected', true);
-                    $("#submissionTemplateAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#submissionTemplateAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		     */
-		    
-		    
-		    
 		    
 		    //  This is for contact Name
 		    var selectcontactNameAdvanced, chosencontactNameAdvanced;
@@ -998,7 +924,8 @@ function getVendorLists(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getVendorFilterLists?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
-   		    	preparedVendorsLists(data);
+   		    	//preparedVendorsLists(data);
+   		    	preparedVendorsListFromElk(data);
    		    }
 	 });
 	
@@ -1078,7 +1005,8 @@ function getVendorContactLists(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
-   		    	preparedVendorContactList(data);
+   		    	//preparedVendorContactList(data);
+   		    	preparedVendorContactListFromElk(data);
    		    }
    		    	
 	 });
@@ -1418,7 +1346,8 @@ function resendVendorSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Vendor&orgRelationID="+orgRelationId, 
 			        success: function(result) {
 			        	$("#loading").removeAttr("style"); 
-			        	getVendorContactLists();
+			        	/* getVendorContactLists(); */
+			        	 getVendorContactListsELK();
 			        },
 			    });
 		 } 
@@ -1455,7 +1384,8 @@ function saveReason1(spocId, orgRelationID){
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
    			    //vendorContactList(orgRelationID);
-   			 getVendorContactLists();
+   			    /*  getVendorContactLists(); */
+   			     getVendorContactListsELK();
 		    }
 	   });
 	}else{
@@ -1477,7 +1407,8 @@ function updateSpocStatus(spocId){
 	   	type: "POST",
 	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
 	    success: function(data) {
-	    	 getVendorContactLists();
+	    	/*  getVendorContactLists(); */
+	    	 getVendorContactListsELK();
 	    }
    });
 }
@@ -2066,7 +1997,8 @@ function acceptInvitation(spocId){
 		    	$("#selector1").removeAttr("style");
     			$("#selector1").css({ display: "block" });
     			$("#msgDiv1").html("Accept Invitation Successfully");
-		    	getVendorContactLists();
+		    	/* getVendorContactLists(); */
+		    	 getVendorContactListsELK();
 		    	msgFadein();
 		    }
 	   });
@@ -2083,7 +2015,8 @@ function rejectInvitation(spocId){
 		    	$("#selector1").removeAttr("style");
     			$("#selector1").css({ display: "block" });
     			$("#msgDiv1").html("Reject Invitation Successfully");
-		    	getVendorContactLists();
+		    	/* getVendorContactLists(); */
+		    	 getVendorContactListsELK();
 		    	msgFadein();
 		    }
 	   });

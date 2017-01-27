@@ -252,7 +252,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		List<Candidate> CandidateListcopy = new ArrayList<>();
 		String reqSkills = "";
 		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
-			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId);
+			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
 			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
