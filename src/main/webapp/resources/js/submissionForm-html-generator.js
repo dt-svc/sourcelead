@@ -271,6 +271,9 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 var onclick='';
             	 var ratePer = '';
             	 var options = '';
+            	 var onblur='';
+            	 var rateType = '';
+            	 var labelId = '';
             	 
         		 if(required == 1){
         			 if(label == 'Email Id'){
@@ -348,16 +351,14 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 
             	 if(label == "Current CTC"){
             		 
-            		 var datavalidation = '';
-            		 if(required == 1){
-            			 datavalidation = 'data-validation="required"'
-            		 }else{
-            			 datavalidation = 'data-validation-optional="true"'
-            		 }
             		 
-            		 style = 'style="width:160px !important; padding-right:5px;"'; 
+            		 labelId = 'id="currentRate"';
             		 
-            		 ratePer = '&nbsp;<select '+datavalidation+' style="width:160px !important; padding-right:5px;" id="currentCTCRatePer" name="currentCTCRatePer" field-name="Rate Per">'+
+            		 onblur = 'onblur="validateCurrentCTC();"';
+            		 
+            		 style = 'style="width:135px !important; padding-right:5px;"'; 
+            		 
+            		 ratePer = '&nbsp;<select style="width:115px !important; padding-right:5px;" id="currentCTCRatePer" name="currentCTCRatePer" field-name="Rate Per">'+
             		 '<option value="">Rate Per</option>'+
             		 '<option value="Yearly">Yearly</option>'+
             		 '<option value="Monthly">Monthly</option>'+
@@ -367,19 +368,25 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                      '<option value="Bi-weekly">Bi-weekly</option>'+
                      '<option value="Hourly">Hourly</option>'+
                      '</select>';
+            		 
+            		 rateType = '<select style="width:70px !important; padding-right:5px;" id="currentCTCRateType" name="currentCTCRateType" field-name="Rate Type">'+
+            		 '<option value="INR">INR</option>'+
+            		 '<option value="AUD">AUD</option>'+
+            		 '<option value="USD">USD</option>'+
+            		 '<option value="GPB">GPB</option>'+
+            		 '<option value="SGD">SGD</option>'+
+                     '<option value="EUR">EUR</option>'+
+                     '</select>&nbsp;';
             	 }
             	 
             	 if(label == "Expected CTC"){
-            		 style = 'style="width:160px !important; padding-right:5px;"'; 
+            		 style = 'style="width:135px !important; padding-right:5px;"'; 
             		 
-            		 var datavalidation = '';
-            		 if(required == 1){
-            			 datavalidation = 'data-validation="required"'
-            		 }else{
-            			 datavalidation = 'data-validation-optional="true"'
-            		 }
+            		
+            		 labelId = 'id="expectedRate"';
+            		 onblur = 'onblur="validateExpectedCTC();"';
             		 
-            		 ratePer = '&nbsp;<select '+datavalidation+'   style="width:160px !important; padding-right:5px;" id="expectedCTCRatePer" name="expectedCTCRatePer" field-name="Rate Per">'+
+            		 ratePer = '&nbsp;<select  style="width:115px !important; padding-right:5px;" id="expectedCTCRatePer" name="expectedCTCRatePer" field-name="Rate Per">'+
             		 '<option value="">Rate Per</option>'+
             		 '<option value="Yearly">Yearly</option>'+
             		 '<option value="Monthly">Monthly</option>'+
@@ -389,6 +396,15 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                      '<option value="Bi-weekly">Bi-weekly</option>'+
                      '<option value="Hourly">Hourly</option>'+
                      '</select>';
+            		 
+            		 rateType = '<select style="width:70px !important; padding-right:5px;" id="expectedCTCRateType" name="expectedCTCRateType" field-name="Rate Type">'+
+            		 '<option value="INR">INR</option>'+
+            		 '<option value="AUD">AUD</option>'+
+            		 '<option value="USD">USD</option>'+
+            		 '<option value="GPB">GPB</option>'+
+            		 '<option value="SGD">SGD</option>'+
+                     '<option value="EUR">EUR</option>'+
+                     '</select>&nbsp;';
             	 }
             	 
                 
@@ -398,8 +414,9 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                      case 'text':
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
-                             '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+style+' '+onBlurEvent+' '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<label for="text-' + uniqueID + '" '+labelId+'></label>' +
+                              rateType+
+                             '<input type="text" '+onblur+' '+style+' '+onBlurEvent+' '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                               ratePer+
                              '</div>';
 
@@ -478,6 +495,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                  }
              }
              init();
+             changeRateLabels();
              var d = new Date();
              var year = d.getFullYear() - 18;
              d.setFullYear(year);
