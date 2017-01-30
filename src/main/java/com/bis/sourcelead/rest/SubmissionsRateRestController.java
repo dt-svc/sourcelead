@@ -134,6 +134,7 @@ public class SubmissionsRateRestController {
 				requirementSubmission.setSubmissionRateComment(rejectreason);*/
 			}else{
 				if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
+					requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 					requirementSubmission.setRejectedReason(rejectreason);
 				}
@@ -157,7 +158,7 @@ public class SubmissionsRateRestController {
 			if("user".equalsIgnoreCase(type)){
 				requirementSubmissionService.userRejectRateNegotiation(requirement,userRole.getUser(),candidate,orgLocations,requirementRateSubmissionNegotiation,rejectreason,tempHTML);
 			}else{
-				requirementSubmissionService.applicantRejectMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations,rejectreason,tempHTML,requirementRateSubmissionNegotiation);
+				requirementSubmissionService.applicantRejectMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations,rejectreason,tempHTML,requirementRateSubmissionNegotiation,submissionId);
 			}
 			
 			return "success";
