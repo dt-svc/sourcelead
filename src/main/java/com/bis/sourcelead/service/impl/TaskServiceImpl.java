@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.time.DateUtils;
@@ -218,12 +219,7 @@ public class TaskServiceImpl implements TaskService{
 			 
 			 
 			 //setting the Recipient information
-			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-			 EmailRecipient emailRecipient = new EmailRecipient();
-			 emailRecipient.setEmail(emailMessage.getToEmail());
-			 StringBuilder recipBuild = new StringBuilder();
-			 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-			 emailRecipientList.add(emailRecipient);
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_EMAIL,Constants.ENTITY_TYPE_EMAIL);
@@ -245,7 +241,7 @@ public class TaskServiceImpl implements TaskService{
 			 
 			 //calling the Email 
 			 if(tasks.getAlertType().equalsIgnoreCase("Email") && null !=tasks.getAlertType()){
-				 emailScenerioUtil.sendEmail(emailMessage,tasks.getOwnerOrglocationId().getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+				 emailScenerioUtil.sendEmail(emailMessage,tasks.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 }
 			 //calling the Notification 
 			 if(tasks.getAlertType().equalsIgnoreCase("Notification") && null !=tasks.getAlertType()){
@@ -254,7 +250,7 @@ public class TaskServiceImpl implements TaskService{
 			 }
 			 //calling the Email  and notification 
 			 if(tasks.getAlertType().equalsIgnoreCase("Email,Notification") && null !=tasks.getAlertType()){
-				 emailScenerioUtil.sendEmail(emailMessage,tasks.getOwnerOrglocationId().getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+				 emailScenerioUtil.sendEmail(emailMessage,tasks.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 String actionLink="";
 				 emailScenerioUtil.sendNotification(actionLink, tasks.getTaskOwnerId(),tasks.getAssignedUserId(),tasks.getOwnerOrglocationId(), notificationScenario);
 			 }

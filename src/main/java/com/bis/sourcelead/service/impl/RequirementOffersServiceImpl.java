@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONArray;
@@ -320,12 +321,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             globalVarsMap.put("link",linkSB.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 
             // setting the Recipient information
-            ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-            EmailRecipient emailRecipient = new EmailRecipient();
-            emailRecipient.setEmail(emailMessage.getToEmail());
-            StringBuilder nameStringBuilder=new StringBuilder();
-            emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-            emailRecipientList.add(emailRecipient);
+            InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
@@ -352,7 +348,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
             try {
     			
-                emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
+                emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
                 String actionLink="";
                OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
 				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
@@ -439,12 +435,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
         }
 
             // setting the Recipient information
-            ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-            EmailRecipient emailRecipient = new EmailRecipient();
-            emailRecipient.setEmail(emailMessage.getToEmail());
-            StringBuilder nameBuilder=new StringBuilder();
-            emailRecipient.setName(nameBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-            emailRecipientList.add(emailRecipient);
+            InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
@@ -470,7 +461,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
     		try {
     			
-            emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
+            emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
     		}catch (MessagingException e) {
     			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
     		} catch (UnsupportedEncodingException e) {
@@ -547,12 +538,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		
 		// setting the Recipient information
-		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		EmailRecipient emailRecipient = new EmailRecipient();
-		emailRecipient.setEmail(emailMessage.getToEmail());
-		StringBuilder contactsBuilder=new StringBuilder();
-		emailRecipient.setName(contactsBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		emailRecipientList.add(emailRecipient);
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
@@ -571,7 +557,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
+		emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 	}
 	
 	@Override
@@ -636,12 +622,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		
 		// setting the Recipient information
-		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		EmailRecipient emailRecipient = new EmailRecipient();
-		emailRecipient.setEmail(emailMessage.getToEmail());
-		StringBuilder nameStrBuilder=new StringBuilder();
-		emailRecipient.setName(nameStrBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		emailRecipientList.add(emailRecipient);
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
@@ -660,7 +641,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(),emailRecipientList, new ArrayList<EmailAttachment>());
+		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(),iAdressArray, new ArrayList<EmailAttachment>());
 	}
 
 
