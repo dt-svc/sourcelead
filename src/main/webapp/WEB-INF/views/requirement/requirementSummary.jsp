@@ -1723,6 +1723,7 @@ function documentpagination(){
 }
 </script>
 <div id="popUp"></div>
+<div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
 	var selectBox = $('#rejectApplicantSelect'+submissionId).val();
@@ -1952,7 +1953,7 @@ function requirementRecommendations(requirementId){
 			{
 		    var report = json[i];
 		    result = result +'<tr>';
-		    result = result + '<td><div onclick="clientSideBar('+report.id+');" class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    result = result + '<td><div onclick="clientSideBar('+report.id+');" class="proj_show"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
 		    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
 		    	result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
@@ -3221,27 +3222,30 @@ function updateCutomize(requirementId){
     
     if(totalscore>100){
         var result = "";
-		result = result +"	<div class='project_inn_mask'></div>";
-		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		//result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='greater_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>score is greater than 100</p>";
+		result = result +"		<p strong>score must be equal to 100</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<p>score must be equal to 100</p>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelCustomize();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelCustomize();'></b>";
+		result = result +"		<b><input type='button' value='Ok' onclick='cancelCustomize();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelCustomize();'></b>";
 		result = result +"	</div>";
-		$("#popUp").append(result);
-		$("#client_user_pop").slideDown(200);
+		$("#customizePopUp").append(result);
+		$("#customizePopUp").show();
+		$("#greater_user_pop").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
+		
         }else if(totalscore<100){
         	var result = "";
-    		result = result +"	<div class='project_inn_mask'></div>";
-    		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+    		//result = result +"	<div class='project_inn_mask'></div>";
+    		result = result +"	   <div id='less_user_pop' class='remove_user_pop remove_user_pop_a'>";
     		result = result +"		<p>score is less than 100</p>";
-    		result = result +"		<p>score must be equal to 100</p>";
+    		result = result +"		<p strong>score must be equal to 100</p>";
     		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
     		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelCustomize();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelCustomize();'></b>";
     		result = result +"	</div>";
-    		$("#popUp").append(result);
-    		$("#client_user_pop").slideDown(200);
+    		$("#customizePopUp").append(result);
+    		$("#customizePopUp").show();
+    		$("#less_user_pop").slideDown(200);
     		$(".project_inn_mask").fadeIn(200);
         }else if(totalscore=100){
         	var frm = $('#updateCustomize_form').serializeFormJSON();
@@ -3268,7 +3272,7 @@ function updateCutomize(requirementId){
 </script>
 <script>
 function cancelCustomize(){
-	$("#popUp").hide();
+	$("#customizePopUp").hide();
 }
 </script>
 

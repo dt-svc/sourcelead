@@ -188,7 +188,7 @@ public class CandidateListRestController {
 			    		mapper.setDateFormat(df);
 			    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
 			    	    if(candidateIndex.getUpdatedDate() != null){
-			    	    	candidateIndex.setCandidateUpdateDateToString(Constants.DF_YMD.format(candidateIndex.getUpdatedDate()));
+			    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
 			   			}
 			    	    candidatesList.add(candidateIndex);
 			    	}

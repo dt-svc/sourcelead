@@ -561,15 +561,23 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		float ratePercentage = 0;    // rate 20 %
 		float skillPercentage = 0; // skill = 50%
 		float percentPerSkill = 0;
+		float percentPerkeyword = 0;
 		float noticePeriod = 0;
 		List<Candidate> CandidateListcopy = new ArrayList<>();
 		String reqSkills = "";
+		String keyWords = "";
 		if(recommendedCustomizeScore.getCustomizeSkills() != null && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
 			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId);
 			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
 		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
+		     String [] numOfKeyWords = null;
+		     if( recommendedCustomizeScore.getCustomizeKeywords() !=null){
+		    	 numOfKeyWords =  recommendedCustomizeScore.getCustomizeKeywords().split(",");
+		    	 percentPerkeyword = Integer.parseInt(recommendedCustomizeScore.getCustomizeKeywordsScore())/(float)numOfKeyWords.length;
+		     }
+		     
 			String [] reqMaxSkills = reqSkills.split(",");
 			if(reqMaxSkills != null && reqMaxSkills.length >0){
 				for(String skill : reqMaxSkills){
@@ -623,11 +631,11 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				
 				
 				for (SearchHit hit : searchHits) {
-					Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(hit.getId()));
+					//Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(hit.getId()));
 					ObjectMapper mapper = new ObjectMapper();
 					String json = hit.getSourceAsString();
-//		    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
-//		    	    Candidate candidate =	populateCandidate(candidateIndex);
+		    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+	    	        Candidate candidate =	populateCandidate(candidateIndex);
 					boolean isCandidateAdded = false;
 					float expPercentage = 0; //  experience = 20%
 					int matchedSkillCount = 0;
@@ -695,41 +703,52 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					}
 					
 					if(recommendedCustomizeScore.getCustomizeNoticeperiod() !=null){
-						String []  np = recommendedCustomizeScore.getCustomizeNoticeperiod().split(",");
-						int totalDays = 0;
-						int canTotalDays = 0;
-						for(int i=0;i<np.length;i++){
-							if(Constants.NOTICE_PERIOD_15DAYS.equalsIgnoreCase(np[i])){
-								totalDays = totalDays + 15;
-							}else if(Constants.NOTICE_PERIOD_1MONTH.equalsIgnoreCase(np[i])){
-								totalDays = totalDays+30;
-							}else if(Constants.NOTICE_PERIOD_2MONTH.equalsIgnoreCase(np[i])){
-								totalDays = totalDays+60;
-							}else if(Constants.NOTICE_PERIOD_3MONTH.equalsIgnoreCase(np[i])){
-								totalDays = totalDays+90;
-							}else if(Constants.NOTICE_PERIOD_IMMEDIATELY.equalsIgnoreCase(np[i])){
-								totalDays =0;
+							String []  np = recommendedCustomizeScore.getCustomizeNoticeperiod().split(",");
+							int totalDays = 0;
+							int canTotalDays = 0;
+							for(int i=0;i<np.length;i++){
+								if(Constants.NOTICE_PERIOD_15DAYS.equalsIgnoreCase(np[i])){
+									totalDays = totalDays + 15;
+								}else if(Constants.NOTICE_PERIOD_1MONTH.equalsIgnoreCase(np[i])){
+									totalDays = totalDays+30;
+								}else if(Constants.NOTICE_PERIOD_2MONTH.equalsIgnoreCase(np[i])){
+									totalDays = totalDays+60;
+								}else if(Constants.NOTICE_PERIOD_3MONTH.equalsIgnoreCase(np[i])){
+									totalDays = totalDays+90;
+								}else if(Constants.NOTICE_PERIOD_IMMEDIATELY.equalsIgnoreCase(np[i])){
+									totalDays =0;
+								}
+							}
+						
+						if(candidate.getNoticePeriod() != null && !"".equalsIgnoreCase(candidate.getNoticePeriod())){
+							if(Constants.NOTICE_PERIOD_15DAYS.equalsIgnoreCase(candidate.getNoticePeriod())){
+								canTotalDays = canTotalDays + 15;
+							}else if(Constants.NOTICE_PERIOD_1MONTH.equalsIgnoreCase(candidate.getNoticePeriod())){
+								canTotalDays = canTotalDays + 30;
+							}else if(Constants.NOTICE_PERIOD_2MONTH.equalsIgnoreCase(candidate.getNoticePeriod())){
+								canTotalDays = canTotalDays + 60;
+							}else if(Constants.NOTICE_PERIOD_3MONTH.equalsIgnoreCase(candidate.getNoticePeriod())){
+								canTotalDays = canTotalDays + 90;
+							}else if(Constants.NOTICE_PERIOD_IMMEDIATELY.equalsIgnoreCase(candidate.getNoticePeriod())){
+								canTotalDays = 0;
 							}
 						}
-					
-					if(candidate.getNoticePeriod() != null && !"".equalsIgnoreCase(candidate.getNoticePeriod())){
-						if(Constants.NOTICE_PERIOD_15DAYS.equalsIgnoreCase(candidate.getNoticePeriod())){
-							canTotalDays = canTotalDays + 15;
-						}else if(Constants.NOTICE_PERIOD_1MONTH.equalsIgnoreCase(candidate.getNoticePeriod())){
-							canTotalDays = canTotalDays + 30;
-						}else if(Constants.NOTICE_PERIOD_2MONTH.equalsIgnoreCase(candidate.getNoticePeriod())){
-							canTotalDays = canTotalDays + 60;
-						}else if(Constants.NOTICE_PERIOD_3MONTH.equalsIgnoreCase(candidate.getNoticePeriod())){
-							canTotalDays = canTotalDays + 90;
-						}else if(Constants.NOTICE_PERIOD_IMMEDIATELY.equalsIgnoreCase(candidate.getNoticePeriod())){
-							canTotalDays = 0;
+						if(totalDays <= canTotalDays){
+							noticePeriod = Integer.parseInt(recommendedCustomizeScore.getCustomizeNoticeperiodScore());
+						}
+						
+					}
+					//keywords calculation
+				    float totalKeyWordPer = 0;
+					if(candidate.getSummary() != null){
+						for(int i=0;i<numOfKeyWords.length;i++){
+							if(candidate.getSummary().contains(numOfKeyWords[i])){
+								totalKeyWordPer = totalKeyWordPer + percentPerkeyword;	
+							}
 						}
 					}
-					if(totalDays <= canTotalDays){
-						noticePeriod = Integer.parseInt(recommendedCustomizeScore.getCustomizeNoticeperiodScore());
-					}
-					}
-					float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage+noticePeriod;
+					
+					float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage+noticePeriod+totalKeyWordPer;
 					
 					double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
 					String candidateScore = String.valueOf(roundOff);
@@ -782,6 +801,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		 candidate.setCandidateSkills(set);
 		 candidate.setCandidateName(candidateIndex.getFirstName());
 		 candidate.setMobilePhone(candidateIndex.getMobilePhone());
+		 logger.info("++++++++++++++++++++++++++++++++++++++++++++++"+candidateIndex.getSummary());
+		 logger.info("*********************************************"+candidateIndex.getResumeContent());
 		return candidate;
 	}
 }
