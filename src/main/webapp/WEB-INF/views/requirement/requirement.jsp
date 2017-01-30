@@ -1168,7 +1168,8 @@ function storeTeam(){
 					type : "POST",
 					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success :function(data) { 
-						$('#addTeam').modal('hide');
+						$('#addTeam').hide();
+						$('.modal-backdrop').hide();
 				      }, 
 		    });  
 			return true; 
