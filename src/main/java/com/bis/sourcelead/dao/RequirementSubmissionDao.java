@@ -102,5 +102,7 @@ public interface RequirementSubmissionDao {
 	List<RequirementSubmission> duplicateCandidateCountList(Long requirementId, User user, OrgLocations loginOrgLocation) throws Exception;
 	
 	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status);
+	
+	List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception;
 
 }

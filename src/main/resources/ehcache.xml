@@ -258,6 +258,13 @@
             	replicateRemovals=true" />
     </cache>
     
+    <cache name="tasks"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" properties="replicateAsynchronously=true, replicatePuts=true, 
+        replicateUpdates=true,  replicateUpdatesViaCopy=false, replicateRemovals=true" />
+    </cache>
+    
      <cache name="lookupdata"
         maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />

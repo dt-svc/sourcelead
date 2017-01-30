@@ -6,7 +6,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
  <style type="text/css">
  .overflow-data {
@@ -321,7 +320,7 @@ function rejectedCount(requirementId){
 
 
   
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -337,7 +336,7 @@ function rejectedCount(requirementId){
 				$this.next().css({'width': '100%'});
 
 });
-</script> 
+</script>  -->
 
 <!-- Show success message after form submission script -->
 <script>
@@ -728,6 +727,7 @@ function sideBar(requirementId){
 						    result = result+'</div>';
 						    result = result+' <div id="tab-2" class="project_tabs_inn">';
 						    result = result+'</div>';
+						    result = result +'<div id="pipelineLoading"></div>';
 						    result = result +'<div id="status-div"></div>';
 							result = result +'<div id="status-data"></div>';
 						   
@@ -1216,6 +1216,8 @@ function requirementPipeline(requirementId,submissionType){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
+	  
+	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
@@ -1290,7 +1292,7 @@ function requirementPipeline(requirementId,submissionType){
 							
 				           // result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            //result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
-				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix">';
+				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
 				            result = result +'  <ul>';
 				            result = result +'    <li class="li-vendor">';
 				          //  result = result +'      <input type="text" class="vendorfild" placeholder="Search">';
@@ -1344,7 +1346,7 @@ function requirementPipeline(requirementId,submissionType){
 				            '</sec:authorize>';
 				           result = result + '<div class="clearfix"></div>';
 				           result = result + '</div>';
-				           result = result + '<div class="require_wrap_table overflow-data">';
+				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
 				           result = result + '<div class="clerfix">';
 				           result = result + '<table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
 				           result = result + '<thead>';
@@ -1355,19 +1357,7 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<th>Ph. No</th>';
 				           }
 				           result = result + '<th>Resume</th>';
-				           /* if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT'){
-				        	   result = result + '<th>Applied on</th>';
-					           result = result + '<th>Rate</th>';
-					           
-					         if(clientSubmissions == 'Y'){
-					           if(submissionType != 'REQUEST_SENT'){
-					           result = result + '<th>Sub. Rate</th>';
-					           }
-					         }else{
-					        	result = result + '<th>Sub. Rate</th>';
-					         }
-					           result = result + '<th>Source</th>';
-				            } */
+				           
 				            
 				            
 				            
@@ -1376,7 +1366,7 @@ function requirementPipeline(requirementId,submissionType){
 				        	if(submissionType != 'SUBMIT_TO_CLIENT'){
 					           result = result + '<th>Rate</th>';
 				        	}  
-					         if(clientSubmissions == 'Y' && submissionType == 'SUBMIT_TO_CLIENT'){
+					         if(clientSubmissions == 'Y'){
 					           result = result + '<th>Sub. Rate</th>';
 					         }/* else{
 					        	result = result + '<th>Sub. Rate</th>';
@@ -1390,7 +1380,7 @@ function requirementPipeline(requirementId,submissionType){
 						   result = result + '<th>No.of Interviews</th>'; 
 				           }
 				           if(submissionType == 'SHORTLIST'){
-				        	   result = result + '<th>shortlisted By</th>'; 
+				        	   result = result + '<th>Shortlisted By</th>'; 
 				           }
 				           if(submissionType == 'OFFERMADE'){
 							   result = result + '<th>Offer Join Date</th>'; 
@@ -1490,7 +1480,7 @@ function requirementPipeline(requirementId,submissionType){
 								           }
 						        	   }
 							          
-							    	   if(clientSubmissions == 'Y' && submissionType == 'SUBMIT_TO_CLIENT'){
+							    	   if(clientSubmissions == 'Y'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
@@ -1625,11 +1615,11 @@ function requirementPipeline(requirementId,submissionType){
 						           if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT' || submissionType == 'OFFERMADE'){
 						        	   
 						        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED' && submissionType != 'OFFERMADE'){
-						        		   if(report.score != null && report.score != '' && report.score != 'undefined'){
-								        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
+						        		   if(report.candidateScore != null){
+						        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
 									           }
 									       else{
-									        	result = result + '         <td><div><span>--</span></div></td>';
+									    	   result = result + '         <td><div><span>--</span></div></td>';
 								    	     }
 								           
 								           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
@@ -1640,22 +1630,7 @@ function requirementPipeline(requirementId,submissionType){
 								    	     }
 						        	   }
 						        	   
-						        	  /*  if(submissionType != 'REJECTED'){
-						        	   if(report.score != null && report.score != '' && report.score != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-						        	   }
-							           if(submissionType != 'REJECTED'){
-							           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-							           } */
+						        	  
 							           
 							           if(submissionType == 'REJECTED'){
 							           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
@@ -1674,12 +1649,8 @@ function requirementPipeline(requirementId,submissionType){
 								           result = result + '</div></td>';
 							           }
 							           
-							           //result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 							          
 						           }
-						           /* result = result + '	    <td><div>';
-                                   result = result + '<i class="glyphicon glyphicon-trash" onClick="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";></i>';
-           	                       result = result +'</div></td>'; */
 						           result = result + '       </tr>';
 			   				}
 				           
@@ -1692,6 +1663,7 @@ function requirementPipeline(requirementId,submissionType){
 				           
 							$("#tab-1").empty();
 							$("#tab-3").empty();
+							$("#pipelineLoading").removeAttr("style");
 							$("#status-data").empty();
 							$("#status-data").append(result);
 							$("#tab-2").append(status-data);
@@ -1775,8 +1747,20 @@ function cancelRejectApplicant(){
 <script>
 function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 	var sourceleadUrl = '${sourceleadUrl}';
-	var reason = document.getElementById("reasonForReject").value;
-	if(reason.match(/^[^\s-](.*)*$/) != null){
+	var reason ;
+	var rejectedReason;
+	
+	 if ($('#reasonForReject').length){
+		 rejectedReason = document.getElementById("reasonForReject").value; 
+		 
+		 //It will escape all the special characters
+	      reason = encodeURIComponent(rejectedReason);
+	 }
+	 else{
+		 reason = '';
+	 }
+	
+	if(rejectedReason.match(/^[^\s-](.*)*$/) != null){
 		$("#reasonForApplicantDiv").empty();
 		$.ajax({
 		   	type: "POST",
@@ -1788,13 +1772,12 @@ function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 		    }
 	   });
 	}else{
-		if(reason){
+		if(rejectedReason){
 			$("#reasonForApplicantDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
 		}else{
 			$("#reasonForApplicantDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 		}
 	}
-	  
 }
 </script>
 
@@ -1963,7 +1946,7 @@ function requirementRecommendations(requirementId){
 		    }
 		    
 		    if(report.candidateResume != null && report.candidateResume !='' && report.candidateResume !='undefined' ){
-		    result = result +'<td><div><span><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;&nbsp;'+report.candidateResume+'</a></span></div></td>';
+		    result = result +'<td><div><span><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;'+report.candidateResume+'</a></span></div></td>';
 			}else{
 				result = result +'<td><div><span>--</span></div></td>';
 			}
@@ -2478,7 +2461,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     }else{
 		                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
 		                     }
-		                     result = result + '        <td>';
+		                     result = result + '        <td id="loading">';
 		                     
 		                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
 		                    	 var Accepted = 'Accepted';
@@ -2507,7 +2490,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + '<div class="clearfix row">';
 		                     result = result + '<form name="rate_form" id="rate_form" method="post">';
 		                     result = result + '  <div class="form-group col-md-6">';
-		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required">';
+		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required  validate_Space validate_float validate_length length1-10">';
 		                     /* result = result + '    <div class="clearfix mt10 pull-right">';
 		                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr">';
 		                     result = result + '      <input type="button" value="Cancel" class="btn btn-default btn-sm">';
@@ -2638,6 +2621,7 @@ function getRateListDiv(submissionId, candidateId){
 <script type="text/javascript">
 	function acceptRejectRate(submissionId,status) {
 			var sourceleadUrl ='${sourceleadUrl}';
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			$.ajax({
 			type: "POST",
 			url: sourceleadUrl+"/acceptRejectRate?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,
@@ -2744,5 +2728,4 @@ function cancel(){
 <jsp:include page="recommendCandidatesExperience.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesEducation.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesCertificates.jsp"></jsp:include>
-<jsp:include page="recommendCandidatesActivities.jsp"></jsp:include> 
 

@@ -90,6 +90,8 @@ public class CandidateIndex implements Serializable {
 	
 	private Integer isFavourite;
 	
+	private String candidateUpdateDateToString;
+	
 	public Long getCandidateId() {
 		return candidateId;
 	}
@@ -422,6 +424,14 @@ public class CandidateIndex implements Serializable {
 
 	public void setIsFavourite(Integer isFavourite) {
 		this.isFavourite = isFavourite;
+	}
+
+	public String getCandidateUpdateDateToString() {
+		return candidateUpdateDateToString;
+	}
+
+	public void setCandidateUpdateDateToString(String candidateUpdateDateToString) {
+		this.candidateUpdateDateToString = candidateUpdateDateToString;
 	}
 	
 
