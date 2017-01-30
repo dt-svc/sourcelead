@@ -70,5 +70,7 @@ public interface CandidateEducationService {
 	public Boolean validateEducationName(Long candidateId, String candidateEducation) throws Exception;
 	
 	public void saveOrUpdateCandidateElkDocumentWithEducationDetails(Candidate candidate,Long locationId) throws Exception;
+	
+	public List<String> getCandidateEducationNamesByCandidateId(Long candidateId) throws Exception;
 
 }

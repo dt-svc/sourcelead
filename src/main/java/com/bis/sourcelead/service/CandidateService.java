@@ -87,7 +87,7 @@ public interface CandidateService {
 	
 	public void saveOrUpdateCandidateElkDocument(Candidate candidate) throws Exception;
 	
-	public Long getCandidatesCountByOrgLocationID(Long orgLocationId);
+	public Long getCandidatesCountByOrgLocationID(Long orgLocationId, String candidateStatus);
 	
 	
 	public Integer getHotlistCandidatesCountByTeamIdAndOrgLocationId(Long teamId,Long orgLocationId) throws Exception;

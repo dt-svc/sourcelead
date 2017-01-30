@@ -137,6 +137,9 @@ public class CandidateListRestController {
 			 HttpServletRequest request) throws Exception {
 
 		String resultJson;
+		
+		Integer candiStatus  =candidateStatus;
+		
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Candidate> candList = new ArrayList<Candidate>();
@@ -151,9 +154,9 @@ public class CandidateListRestController {
 		    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			
-			if(candidateStatus.equals(Constants.CANDIDATE_ACTIVE)){
+			if(candiStatus.intValue() == (Constants.CANDIDATE_ACTIVE)){
 				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
-			}else if(candidateStatus.equals(Constants.CANDIDATE_IN_ACTIVE)){
+			}else if(candiStatus.intValue() ==(Constants.CANDIDATE_IN_ACTIVE)){
 				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 0));
 			}
 			
@@ -176,7 +179,7 @@ public class CandidateListRestController {
 	   	    	
 			}
 			
-			 maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId());
+			 maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(), candidateStatus.toString());
 			 
 			try {
 				
@@ -217,7 +220,7 @@ public class CandidateListRestController {
 	   * @throws NullPointer
 	   */
 	 @RequestMapping(value = "/searchCandidate", method = RequestMethod.POST)
-	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateStatus", required=false)Integer  candidateStatus,MultipartHttpServletRequest request) throws Exception {
 
 		    MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
@@ -226,7 +229,7 @@ public class CandidateListRestController {
 			}
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
-			
+			 Long maxResults =null;
 			 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
@@ -234,7 +237,14 @@ public class CandidateListRestController {
 			 
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			 
-			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId());
+			 
+			 if(null != candidateStatus){
+				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),candidateStatus.toString());
+			 }else{
+				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),null);
+
+			 }
+			 
 		   	 //Exclude Keyword
 			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
