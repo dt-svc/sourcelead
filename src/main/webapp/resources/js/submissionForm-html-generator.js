@@ -274,6 +274,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 var onblur='';
             	 var rateType = '';
             	 var labelId = '';
+            	 var educationPlaceHolder = '';
             	 
         		 if(required == 1){
         			 if(label == 'Email Id'){
@@ -407,6 +408,10 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                      '</select>&nbsp;';
             	 }
             	 
+            	 if(label == "Education"){
+            		 educationPlaceHolder = 'placeholder="Enter educations by Comma(,) seperated"';
+            	 }
+            	 
                 
 
                  switch (fieldType) {
@@ -416,7 +421,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="text-' + uniqueID + '" '+labelId+'></label>' +
                               rateType+
-                             '<input type="text" '+onblur+' '+style+' '+onBlurEvent+' '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+onblur+' '+style+' '+onBlurEvent+' '+datavalidation+' '+novalidation+' '+educationPlaceHolder+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                               ratePer+
                              '</div>';
 

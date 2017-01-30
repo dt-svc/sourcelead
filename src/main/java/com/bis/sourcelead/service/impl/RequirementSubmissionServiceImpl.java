@@ -281,15 +281,20 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					requirementSubmission.setCandidate(candidate);
 					
 					if(jsonObj.has("Education") && !isNullOrEmpty(jsonObj.getString("Education"))){
-						CandidateEducation candidateEducation = new CandidateEducation();
-						candidateEducation.setCandidateId(candidate);
-						candidateEducation.setOrglocationId(orgLocations);
-						candidateEducation.setName(jsonObj.getString("Education"));
-						candidateEducation.setCreatedBy(user.getUserCode());
-						candidateEducation.setCreatedDate(new Date());
-						candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
-						candidateEducationDao.storeCandidateEducation(candidateEducation);
 						
+			    		
+			    		String[] educationList = jsonObj.getString("Education").split(",");
+			    		   
+						for(int i=0; i<educationList.length; i++){
+							CandidateEducation candidateEducation = new CandidateEducation();
+							candidateEducation.setCandidateId(candidate);
+							candidateEducation.setOrglocationId(orgLocations);
+							candidateEducation.setName(educationList[i].startsWith(" ") ? educationList[i].substring(1) : educationList[i]);
+							candidateEducation.setCreatedBy(user.getUserCode());
+							candidateEducation.setCreatedDate(new Date());
+							candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
+							candidateEducationDao.storeCandidateEducation(candidateEducation);
+						}
 					 }
 					
 					 if(jsonObj.has("Current/LastCompany") && !isNullOrEmpty(jsonObj.getString("Current/LastCompany"))){
