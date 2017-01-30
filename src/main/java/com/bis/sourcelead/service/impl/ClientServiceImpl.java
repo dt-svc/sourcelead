@@ -538,6 +538,10 @@ public class ClientServiceImpl implements ClientService{
 			
 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(clientLocationId,orgRelationId);
 			String level = "level";
+			
+			OrgLocations orgLocationForELk = null;
+			Org orgForElk = null;
+			OrgRelations orgRelationsForElk =null;
 			if(null != orgRelation){
 				
 				 OrgLocations orgLocations = null;
@@ -555,32 +559,32 @@ public class ClientServiceImpl implements ClientService{
 							}
 					 }
 					
-				 orgRelationsService.addOrgRelations(orgRelation);
+					 orgRelationsForElk =	 orgRelationsService.addOrgRelations(orgRelation);
 				
 				
 				Org org = orgLocations.getOrg();
 				if(null != org){
-				if(jsonObj.getString("clientName") != null && !jsonObj.getString("clientName").isEmpty()){
+				if(jsonObj.has("clientName") && jsonObj.getString("clientName") != null && !jsonObj.getString("clientName").isEmpty()){
 					org.setOrgName(jsonObj.getString("clientName"));
 				}
 				
-				if(jsonObj.getString("companyWebsite") != null && !jsonObj.getString("companyWebsite").isEmpty()){
+				if(jsonObj.has("companyWebsite") && jsonObj.getString("companyWebsite") != null && !jsonObj.getString("companyWebsite").isEmpty()){
 					org.setWebSite(jsonObj.getString("companyWebsite"));
 				}
-				orgService.updateOrg(org);
+				orgForElk = orgService.updateOrg(org);
 				}	
-				if(jsonObj.getString("clientCity") != null && !jsonObj.getString("clientCity").isEmpty()){
+				if(jsonObj.has("clientCity") && jsonObj.getString("clientCity") != null && !jsonObj.getString("clientCity").isEmpty()){
 					orgLocations.setCity(jsonObj.getString("clientCity"));
 				}else{
 					orgLocations.setCity("");
 				}
-				if(jsonObj.getString("clientState") != null && !jsonObj.getString("clientState").isEmpty()){
+				if(jsonObj.has("clientState") && jsonObj.getString("clientState") != null && !jsonObj.getString("clientState").isEmpty()){
 					orgLocations.setState(jsonObj.getString("clientState"));
 				}else{
 					
 					orgLocations.setState("");
 				}
-				if(jsonObj.getString("clientCountry") != null && !jsonObj.getString("clientCountry").isEmpty()){
+				if(jsonObj.has("clientCountry") && jsonObj.getString("clientCountry") != null && !jsonObj.getString("clientCountry").isEmpty()){
 					orgLocations.setCountry(jsonObj.getString("clientCountry"));
 			     }else{
 			    	 
@@ -597,11 +601,14 @@ public class ClientServiceImpl implements ClientService{
 				}else{
 					orgLocations.setPhone("");
 				}*/
-				orgLocationService.updateOrgLocations(orgLocations);
+			orgLocationForELk = 	orgLocationService.updateOrgLocations(orgLocations);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
+			
+			saveOrUpdateClientVendorElkDocument(orgForElk,orgLocationForELk,null,null,orgRelationsForElk,null);
+
 			
 		}
 
@@ -615,6 +622,15 @@ public class ClientServiceImpl implements ClientService{
 			String vendorCity = "vendorCity";
 			String vendorState = "vendorState";
 			String vendorCountry = "vendorCountry" ;
+			
+			
+			//  This pojo's are for Storing the updated value in Elk 
+			
+			OrgRelations orgRelationsForElk  = null;
+			Org orgForElk  = null;
+			OrgLocations orgLocationsForElk  = null;
+			
+			
 			//String emailId = "EmailId";
 			String level = "level";
 			
@@ -634,7 +650,7 @@ public class ClientServiceImpl implements ClientService{
 						}
 				 }
 				//orgRelation.setLevel(jsonObj.getString(level));
-			 orgRelationsService.addOrgRelations(orgRelation);		
+			       orgRelationsForElk  = orgRelationsService.addOrgRelations(orgRelation);		
 				 
 				Org org = orgLocations.getOrg();
 				if(null != org){
@@ -645,7 +661,7 @@ public class ClientServiceImpl implements ClientService{
 					if(jsonObj.getString(companyWebsite) != null && !jsonObj.getString(companyWebsite).isEmpty()){
 						org.setWebSite(jsonObj.getString(companyWebsite));
 					}
-				orgService.updateOrg(org);
+				 orgForElk = orgService.updateOrg(org);
 				}	
 				if(jsonObj.getString(vendorCity) != null && !jsonObj.getString(vendorCity).isEmpty()){
 					orgLocations.setCity(jsonObj.getString(vendorCity));
@@ -669,11 +685,14 @@ public class ClientServiceImpl implements ClientService{
 				}else{
 					orgLocations.setEmail("");
 				}*/
-				orgLocationService.updateOrgLocations(orgLocations);
+				  orgLocationsForElk = orgLocationService.updateOrgLocations(orgLocations);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
+
+			
+			saveOrUpdateClientVendorElkDocument(orgForElk,orgLocationsForElk,null,null,orgRelationsForElk,null);
 
 		}
 		

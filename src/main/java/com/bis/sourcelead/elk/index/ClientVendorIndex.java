@@ -37,6 +37,8 @@ public class ClientVendorIndex implements Serializable {
 	private Long ownerId;
 	
 	private String createdBy;
+	
+	private String createdByUserCode;
 
 	public Long getId() {
 		return id;
@@ -170,6 +172,14 @@ public class ClientVendorIndex implements Serializable {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getCreatedByUserCode() {
+		return createdByUserCode;
+	}
+
+	public void setCreatedByUserCode(String createdByUserCode) {
+		this.createdByUserCode = createdByUserCode;
 	}
 
 
