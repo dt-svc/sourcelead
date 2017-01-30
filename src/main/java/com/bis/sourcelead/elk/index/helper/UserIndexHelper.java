@@ -31,7 +31,7 @@ public class UserIndexHelper {
 			userIndex.setOrgLocationId(userRole.getOrgLocations().getId());
 			userIndex.setEmail(user.getEmail());
 			userIndex.setMobilePhone(user.getMobilePhone());
-			userIndex.setIsMailSent(userRole.getUser().getIsMailSent().toString());
+			userIndex.setIsMailSent(user.getIsMailSent().toString());
 			userIndex.setUserStatus(userRole.getUserState().toString());
 			userIndex.setUserType(userRole.getUserType());
 			userIndex.setStatus(userRole.getUser().getStatus());
@@ -39,6 +39,7 @@ public class UserIndexHelper {
 			userIndex.setEmployeeId(employee.getEmployeeId());
 			userIndex.setRate(employee.getRate());
 			userIndex.setRatePer(employee.getRatePer());
+			userIndex.setHireDate(employee.getHireDate());
 			
 			if(null != userRole.getCreatedDate()){
 				userIndex.setCreatedDate(new Date(userRole.getCreatedDate().getTime()));
