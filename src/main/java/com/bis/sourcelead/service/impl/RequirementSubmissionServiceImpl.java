@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -730,12 +732,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setFromName(fullName);
 		 
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder recepientBuilder = new StringBuilder();
-		 emailRecipient.setName(recepientBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("clientFirstName", emailMessage.getFirstName());
@@ -769,7 +766,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 emailAttachment.setUUID(UUID);
 		 attachmentList.add(emailAttachment);
 		 
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,attachmentList);
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,attachmentList);
 		
 	}
 
@@ -986,12 +983,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder recepBuild = new StringBuilder();
-		 emailRecipient.setName(recepBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
@@ -1014,7 +1006,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		//calling the sendEmail method of emailScenerioUtil
 		 //emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 
 	}
 
@@ -1091,12 +1083,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }
 		
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder receipBuild = new StringBuilder();
-		 emailRecipient.setName(receipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
@@ -1122,7 +1109,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, initiatorUser,toUser, orgLocations, notificationScenario);
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 
 	}
 
@@ -1205,12 +1192,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("rejectReason","--");
 			 }
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder mailBuild = new StringBuilder();
-		 emailRecipient.setName(mailBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
@@ -1236,7 +1218,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, initiatorUser,toUser, orgLocations, notificationScenario);
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	}
 	
 	
@@ -1296,12 +1278,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }
 		 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder receipBuild = new StringBuilder();
-		 emailRecipient.setName(receipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_NEGOTIATE_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
@@ -1327,7 +1304,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, initiatorUser,toUser, orgLocations, notificationScenario);
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	}
 	
 	@Override
@@ -1610,26 +1587,17 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		emailMessage.setFromEmail(user.getEmail());
 		StringBuilder emailBuild = new StringBuilder();
 		emailMessage.setFromName(emailBuild.append(user.getFirstName()).append("").append(user.getLastName()).toString());
-		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		InternetAddress[] iAdressArray = null;
 
 		if (jsonObj.has("toMailId")) {
-
-			EmailRecipient toEmailRecipient = new EmailRecipient();
+			String othermail = "";
 			String toamil = jsonObj.getString("toMailId");
-			toEmailRecipient.setEmail(toamil);
-
 			if (jsonObj.has("othersMail") && !"".equalsIgnoreCase(jsonObj.getString("othersMail"))) {
-				String othermail = jsonObj.getString("othersMail");
-				String[] parts = othermail.split(",");
-				List<String> emailList = new ArrayList<String>();
-				emailList.addAll(Arrays.asList(parts));
-				for (String eml : emailList) {
-					EmailRecipient emailRecipient = new EmailRecipient();
-					emailRecipient.setEmail(eml);
-					emailRecipientList.add(emailRecipient);
-				}
+				othermail = jsonObj.getString("othersMail");
 			}
-			emailRecipientList.add(toEmailRecipient);
+			StringBuilder tomaillBuilder = new StringBuilder();
+			iAdressArray = InternetAddress.parse(tomaillBuilder.append(toamil).append(",").append(othermail).toString());
+			
 			String subject = "";
 			String body = "";
 			//String signature = user.getFirstName();
@@ -1683,7 +1651,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}
 			
 			
-			emailScenerioUtil.sendWithAttachmentEmail(emailMessage, loginOrgLocation.getId(), emailRecipientList,attachmentList,submissionId);
+			emailScenerioUtil.sendWithAttachmentEmail(emailMessage, loginOrgLocation.getId(), iAdressArray,attachmentList,submissionId);
 
 		}
 
@@ -1892,12 +1860,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }
 		 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder recipBuild = new StringBuilder();
-		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
@@ -1924,7 +1887,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 String actionLink="";*/
 		 
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());		
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());		
 	}
 
 	@Override
@@ -1982,12 +1945,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }
 		 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder recipBuild = new StringBuilder();
- 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
@@ -2009,7 +1967,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setMessageBody(emailTemplate);
 		  
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	}
 
 	@Override
@@ -2074,12 +2032,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("finalRate","--");
 			 }
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder receipBuild = new StringBuilder();
-		 emailRecipient.setName(receipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_ACCEPT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
@@ -2099,7 +2052,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		
 
 	}
@@ -2223,11 +2176,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }
 		 
 		 
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL);
 
@@ -2240,7 +2189,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 
 	}
 
@@ -2331,12 +2280,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }
 		 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder recipBuild = new StringBuilder();
- 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CLIENT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
@@ -2359,7 +2303,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		  
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	}
 
 	@Override
@@ -2418,12 +2362,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }
 		 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder receipBuild = new StringBuilder();
-		 emailRecipient.setName(receipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_REJECT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
@@ -2443,7 +2382,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		
 	}
 
@@ -2554,12 +2493,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }
 		 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder recipBuild = new StringBuilder();
- 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = null;
@@ -2594,7 +2528,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		  
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	}
 
 	@Override

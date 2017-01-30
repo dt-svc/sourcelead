@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.mail.internet.InternetAddress;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,7 +21,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -115,6 +119,7 @@ public class ClientServiceImpl implements ClientService{
 	
 	@Autowired
     private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
+	
 	
 	
 	@Value("${SourceLead.100}")
@@ -250,6 +255,8 @@ public class ClientServiceImpl implements ClientService{
 				orgSpoc.setUpdatedDate(commonUtil.currentDate());
 				orgSpoc.setUpdatedBy(user.getUserCode());
 				orgSpocService.addOrgSpoc(orgSpoc);
+				
+				
 				}
 			}
 			
@@ -758,6 +765,8 @@ public class ClientServiceImpl implements ClientService{
 				}
 				orgSpocService.addOrgSpoc(orgSpoc);
 				
+				orgSpocService.saveOrUpdateClientVendorContactElkDocument(orgSpoc);
+				
 				if(orgSpoc.getTempOwnerId() != null && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getOwnerUser().getId().longValue()){
 					user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
 					sendEmailToClientContact(user,editUser,orgLocation,loginUser);
@@ -792,11 +801,7 @@ public class ClientServiceImpl implements ClientService{
 				 globalVarsMap.put("ownerEmail",user.getEmail());
 				 
 				 //setting the Recipient information
-				 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-				 EmailRecipient emailRecipient = new EmailRecipient();
-				 emailRecipient.setEmail(emailMessage.getToEmail());
-				 emailRecipient.setName(fromName.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-				 emailRecipientList.add(emailRecipient);
+				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = null;
@@ -815,7 +820,7 @@ public class ClientServiceImpl implements ClientService{
 			 
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 
 			 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT,Constants.ENTITY_TYPE_NOTIFICATION); 
 			 String actionLink = "";
@@ -836,5 +841,11 @@ public class ClientServiceImpl implements ClientService{
 			       sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,orgRelation.getId().toString());
 
 		}
+
+
+
 		
+		
+
+	
 }

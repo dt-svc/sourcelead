@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -90,6 +91,8 @@ public interface ProjectsService {
 		
 		void tereminateAsProjectApprover(JSONObject jsonObj,User user,Long userId,OrgLocations orgLocations) throws Exception;
 		
+		void saveOrUpdateProjectElkDocument(Projects projects) throws Exception;
 		
+		Integer getProjectCountByOrgLocationId(Long orgLocationId)throws Exception;
 		
 }
