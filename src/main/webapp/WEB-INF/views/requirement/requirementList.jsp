@@ -170,10 +170,7 @@ function requirementList(){
            url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	                	 
-	                	 prepareRequirementData(data);
-	                	 
-	                	 
+					prepareRequirementData(data);
                  }else{
                 	 $("#requirementList").empty();
                 	 $("#requirementList").removeAttr("style");
@@ -1653,9 +1650,7 @@ $(".reminder").click(function(){
 
 <script type="text/javascript">
 function changeStatus(requirementId){
-	alert("hi");
 	var status = document.getElementById('changeStatusId' + requirementId).value;
-	alert(status);
 	/* $("#changeStatusId option[value=status]").remove(); */
 	 var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({

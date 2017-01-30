@@ -680,11 +680,17 @@ public class SubmissionsRestController {
 				requirement.setMailBody(sb.toString());
 			}
 		}else{
-			if(requirement.getSpocId()!= null){
-				if(requirement.getSpocId().getSpocUser()!= null){
-					sb.append("<p>").append("Hi,").append(" ").append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ")
-					.append(requirement.getSpocId().getSpocUser().getLastName()).append("</p>").append("\n")
-					.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ").append(requirement.getJobTitle()).append("</p>")
+			if(null != requirement.getSpocId()){
+				if(null != requirement.getSpocId().getSpocUser()){
+					sb.append("<p>").append("Hi,");
+					if(user.getId().longValue() == requirement.getSpocId().getSpocUser().getId().longValue()){
+						sb.append(" ").append(requirement.getSpocId().getOwnerUser().getFirstName()).append(" ")
+						.append(requirement.getSpocId().getOwnerUser().getLastName()).append("</p>").append("\n");
+					}else{
+						sb.append(" ").append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ")
+						.append(requirement.getSpocId().getSpocUser().getLastName()).append("</p>").append("\n");
+					}
+					sb.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ").append(requirement.getJobTitle()).append("</p>")
 					.append("<p>").append("Total no.of submitted applicants :").append(submissions.length).append("</p>")
 					.append("<p>").append("Best Regards,").append("</p>")
 					.append("<p>").append(fullName).append("</p>");
@@ -694,6 +700,38 @@ public class SubmissionsRestController {
 		}
 		resultJson = toJSON(requirement);
 		return resultJson;
+	}
+	
+	/**
+	 * author : Pavan Jampana
+	 * desc : This method is used to Reactivate the Rejected Applicant
+	 * from Requirement Pipeline List from any Stage.
+	 */
+
+	@RequestMapping(value = "/reActivateRejectedApplicant")
+	public @ResponseBody String reActivateApplicant(
+			@RequestParam(value = "submissionId", required = false) Long submissionId,HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+
+		// to update submission history
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REJECTED.getValue());
+		requirementSubmissionHistory.setToStage(requirementSubmission.getPreviousSubmissionStatus().getValue());
+
+		// to update Submission status
+		requirementSubmission.setSubmissionStatus(requirementSubmission.getPreviousSubmissionStatus());
+		requirementSubmission.setPreviousSubmissionStatus(null);
+		requirementSubmission.setUpdatedBy(user.getUserCode());
+		requirementSubmission.setUpdatedDate(new Date());
+		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
+				requirementSubmissionHistory);
+
+		return "success";
 	}
 
 }

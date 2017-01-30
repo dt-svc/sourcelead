@@ -26,5 +26,5 @@ public interface ClientService {
 	void saveOrUpdateClientVendorElkDocument(Org org,OrgLocations clientOrgLocations, String responderType, OrgSpoc orgSpoc,
 			OrgRelations orgRelationsList, SubmissionTemplate submissionTemplate) throws Exception;
 
-
+	
 }
