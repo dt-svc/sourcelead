@@ -88,7 +88,7 @@ public class AddClientVendorELK {
 	
 	private ArrayList<ClientVendorIndex> getElkCampaigns() throws Exception{
 		 DataSource dataSource = comboPooledDataSource();
-		ArrayList<ClientVendorIndex> campaignIndexsList = new ArrayList<ClientVendorIndex>();
+		ArrayList<ClientVendorIndex> clientVendorList = new ArrayList<ClientVendorIndex>();
 		 try {
 				
 				String sql = "SELECT * FROM sourcelead.ORG_RELATIONS relation";
@@ -99,26 +99,80 @@ public class AddClientVendorELK {
 			    while(rs.next()){
 			    	
 			    	ClientVendorIndex campaignIndex = new ClientVendorIndex();
-
-			    	
+                       String createdBy =  rs.getString("CREATED_BY");
+			    	   Long  responderLocationId = rs.getLong("RESPONDER_LOCATION_ID");
+			    	   
 			    	campaignIndex.setId(rs.getLong("ID"));
 			    	campaignIndex.setInitiatorLevel(rs.getString("INITIATOR_LEVEL"));
 			    	campaignIndex.setResponderLevel(rs.getString("RESPONDER_LEVEL"));
+			    	campaignIndex.setResponderLocationId(rs.getLong("RESPONDER_LOCATION_ID"));
+			    	campaignIndex.setResponderType(rs.getString("RESPONDER_TYPE"));
+			    	campaignIndex.setInitiatorType(rs.getString("INITIATOR_TYPE"));
+			    	campaignIndex.setOrgLocationId(rs.getLong("LOCATION_ID"));
+			    	campaignIndex.setOrgRelationId(rs.getLong("ID"));
+			    	campaignIndex.setStatus(rs.getString("STATUS"));
 			    	
+			    	String sql1 = "SELECT * FROM sourcelead.USER  user where  user.USER_CODE = '"+createdBy+"' ";
+						Statement stmt1 = conn.createStatement();
+						ResultSet rs1 = stmt1.executeQuery(sql1);
+						if(rs1 != null){
+							 while(rs1.next()){
+								  campaignIndex.setCreatedBy(createdBy);
+								   if(null != rs1.getString("FIRST_NAME") && null != rs1.getString("LAST_NAME")){
+									   StringBuilder sb =  new StringBuilder();
+									   campaignIndex.setCreatedBy(sb.append(rs1.getString("FIRST_NAME")).append("").append(rs1.getString("LAST_NAME")).toString());
+								   }else if(null != rs1.getString("FIRST_NAME")){
+									   StringBuilder sb =  new StringBuilder();
+									   campaignIndex.setCreatedBy(sb.append(rs1.getString("FIRST_NAME")).toString());
+								   }
+						    }
+	    	           }
+						String sql2 = "SELECT * FROM sourcelead.ORG_LOCATIONS  responderLocationId where responderLocationId.ID = '"+responderLocationId+"' ";
+						Statement stmt2 = conn.createStatement();
+						ResultSet rs2 = stmt2.executeQuery(sql2);
+						if(rs2 != null){
+							 while(rs2.next()){
+								 Long orgId = rs2.getLong("ORG_ID");
+								   if(null != rs2.getString("COUNTRY")){
+									   campaignIndex.setCountry(rs2.getString("COUNTRY"));
+								   }
+								   if(null != rs2.getString("STATE")){
+									   campaignIndex.setState(rs2.getString("STATE"));
+								   }
+								   if(null != rs2.getString("CITY")){
+									   campaignIndex.setCity(rs2.getString("CITY"));
+								   }
+								   
+								   String sql3 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+orgId+"' ";
+									Statement stmt3 = conn.createStatement();
+									ResultSet rs3 = stmt3.executeQuery(sql3);
+									if(rs3 != null){
+										 while(rs3.next()){
+											   if(null != rs3.getString("ORG_NAME")){
+												   campaignIndex.setOrgName(rs3.getString("ORG_NAME"));
+											   }
+											   if(null != rs3.getString("WEBSITE")){
+												   campaignIndex.setWebsite(rs3.getString("WEBSITE"));
+											   }
+									    }
+				    	           }
+						    }
+							
+	    	           }
+						clientVendorList.add(campaignIndex);
+			    	/*
 			    	OrgRelations relation = orgRelationsService.getOrRelationsById(rs.getLong("ID"));
 			    	
 			    	OrgLocations clientOrgLocations =  orgLocationService.getOrgLocationByOrgId(relation.getResponderLocationId().getId());
 			    	Org org  = orgService.findOrgByID(clientOrgLocations.getOrg().getId());
 			    	clientService.saveOrUpdateClientVendorElkDocument(org, clientOrgLocations, null,null, relation, null);
-
-			    	
-					campaignIndexsList.add(campaignIndex);
+					campaignIndexsList.add(campaignIndex);*/
 			    }
 			   conn.close();
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return campaignIndexsList;
+		return clientVendorList;
 	}
 	
 	

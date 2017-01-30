@@ -59,6 +59,7 @@ public class ClientVendorIndexHelper {
 			clientVendorIndex.setInitiatorLevel(orgRelationsList.getInitiatorLevel());
 			clientVendorIndex.setResponderLevel(orgRelationsList.getResponderLevel());
 			clientVendorIndex.setStatus(orgRelationsList.getStatus());
+			clientVendorIndex.setCreatedByUserCode(orgRelationsList.getCreatedBy());
 			
 			User user = userService.getUserByUserCode(orgRelationsList.getCreatedBy());
 			if(null != user){
