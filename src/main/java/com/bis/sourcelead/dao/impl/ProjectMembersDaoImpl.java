@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -229,6 +230,16 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setCacheable(true) 
 			    .list();
 		return allProjectsList;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.employee emp left join fetch emp.user user  where pm.projects.id IN (:projectIds) GROUP BY pm.employee" ;
+		List<ProjectMembers> allProjectMembersList =session.createQuery(query).setParameterList("projectIds", projectIds).setCacheable(true) 
+			    .list();
+		return allProjectMembersList;
 	}
 
 
