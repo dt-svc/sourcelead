@@ -41,6 +41,7 @@ $(document).ready(function() {
 	        		    	    $("#timesheetEntriesDiv").empty();
 	        		    	  	$("#timesheetEntriesDiv").append(result);
 	        		    	  	maskme();
+	        		    	  	$("html").trigger('click');
 	        		    	  	prepareChosenScripts();
 	        		    	  	$("#tab-1").show()
 	        		    	    $(".project-tabs-menu a").click(function(event) {
@@ -125,7 +126,7 @@ $(document).ready(function() {
 
 <script>
 	/* function timesheetDivByTab(startDate,endDate) */
-	function timesheetDivByTab(startDate,endDate){ 
+	function timesheetDivByTab(startDate,endDate,approvalStatus){ 
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
 	         var timesheetFrequency = $("#timesheetFrequency").val();
@@ -134,7 +135,7 @@ $(document).ready(function() {
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
-  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency,		
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus,		
   		          success :function(result) {
   		    	       
   		        	   $("#timesheetDivByTab").removeAttr("style");
@@ -371,13 +372,10 @@ function removeTimeSheetRow(rowId) {
 <script>
 function clearTimesheet(){ 
 	for (var i = 1; i < 8; i++){
-	 $('.NEW').each(function() {
-		 var p = this.id;
 		 for (var j = 1; j < 50; j++){
-			    $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val("00:00");
-			    $("#"+j+"submission"+p+"textArea"+i+"Id").val("");  
+			    $("#"+j+"timeSheetDay"+i+"Id").val("00:00");
+			    $("#"+j+"textArea"+i+"Id").val("");  
 		 }
-    	 });  
 	}
 	$("#weekComment").val('');
 }
@@ -655,6 +653,8 @@ function addAttachment(){
           <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
         </section>
         
+        <div class="loadTime" id="loadTime"></div>    
+        
         <div id="timesheetEntriesDiv"> 
         	<div id="timesheetEntriesDivByProjectMemberId">
         		 <div id="timesheetDivByFrequency">
@@ -667,7 +667,7 @@ function addAttachment(){
         <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
 				         <div id="divadttTd1" style="display:none;" >   
 				             <div> 
-				              <select id="REPLACEROWIDtaskId" name="REPLACEROWIDtaskId" class="existedProjectTaskIdprojectId" onchange="getProjectTasksOnChange('REPLACEROWIDsubmissionsubmissionIdtask1Id','projectId')">  
+				              <select id="REPLACEROWIDtaskId" name="REPLACEROWIDtaskId" class="existedProjectTaskIdprojectId" onchange="getProjectTasksOnChange('REPLACEROWIDtask1Id','projectId')">  
 				                          <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 				                              	<option value="${task.id}">${task.taskName}</option>
 				                           </c:forEach> --%>
@@ -778,8 +778,7 @@ function newSaveTimesheet(status,savingType){
        		   var form = $('#timesheet_form')[0];
        		   var formData = new FormData(form); 
        		   var submissionIds = $("#submissionId").val();
-       		   $("#dynamic").empty();
-       		   $("#dynamic").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+       		   $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
         	   $.ajax({
 	      	          type : "POST",
 	          	      data: formData,
@@ -790,7 +789,10 @@ function newSaveTimesheet(status,savingType){
 	          	      dataType : 'json',
         	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
-        		    	   dynamicTimesheet("left",result); 
+        		    	  $("#loadTime").removeAttr("style"); 
+        		    	 /*  $("#loadTime").removeAttr("style"); */
+        		    	  /*  dynamicTimesheet("left",result);  */
+        		    	   /* timesheetEntriesDiv */
         		    	  /* dynamicTimesheet(); */
         		      }
         	      	  
@@ -806,6 +808,26 @@ $('body').on('blur', '#timesheet_form', function() {
 	$("#timesheet_form").validateOnBlur(false, validationSettings);  
 });
 </script>
+
+
+<!-- this script is for delete document -->
+<script type="text/javascript">
+function deleteSubmissionDocument(submissionDocumentId){  
+    var sourceleadUrl ='${sourceleadUrl}';
+    /*  var startdate; */
+	var navigation;
+    $.ajax({
+          type : "POST",
+      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
+	      success :function(result) {
+	    	  $("#"+submissionDocumentId+"document").remove();
+	      }
+      	  
+    }); 
+	   
+}
+</script>
+
 
 <script type="text/javascript">
          function prepareChosenScripts(){ 

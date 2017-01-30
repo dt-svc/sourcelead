@@ -26,8 +26,9 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  
 
 @Controller 
-public class NewTimesheetController {
-	private static final Logger logger = LoggerFactory.getLogger(NewTimesheetController.class);
+public class TimesheetController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(TimesheetController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	 
@@ -47,12 +48,20 @@ public class NewTimesheetController {
 	private ProjectMembersService projectMembersService;
 	
 	/**
-	 * @author sarath kumar punnana 
+	 * @author naresh bolisetty and sarath kumar
+	 * @since  jan 27 2016
+	 * @version 0.0.1
+	 * 
 	 * this  controller method is for timesheet screen redirection.
+	 * 
 	 * @param request
-	 * @return
+	 *  
+	 * @return TimesheetEntries 
+	 * 
+	 * @throws NullPointer
 	 */
-	@RequestMapping(value = "/newTimesheet")
+	
+	@RequestMapping(value = "/timesheet")
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
 	public ModelAndView newTimesheet(HttpServletRequest request) {
 			ModelAndView model = new ModelAndView();
@@ -86,11 +95,17 @@ public class NewTimesheetController {
 	}
 		
 	/**
-	 * @author sarath kumar punnana
+	 * @author naresh bolisetty and sarath kumar
+	 * 
 	 * this method is for null check
+	 * 
+	 * @since  jan 27 2016
+	 * 
 	 * @param str
+	 * 
 	 * @return boolean
 	 */
+	
 	public static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}

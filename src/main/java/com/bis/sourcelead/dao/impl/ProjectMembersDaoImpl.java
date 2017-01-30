@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
@@ -368,6 +367,20 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String query = "from ProjectMembers pm left join fetch pm.projects pj where pj.orgLocationsId = :orgLocationsId and  pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ) ";
 		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("orgLocationsId", locationsId).setLong("userId", empUserId).setCacheable(true).list();
 		return projectMemberList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(
+			 String status, String startDate, String endDate, Long projectId) {
+		
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "from ProjectMembers pm left join fetch pm.projects pj where  pm.projects.id = :projectId";
+		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("projectId",projectId).setCacheable(true).list();
+		return projectMemberList;
+		
 	}
 	
 
