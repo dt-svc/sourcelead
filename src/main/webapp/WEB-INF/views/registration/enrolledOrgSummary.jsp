@@ -543,6 +543,7 @@ var validationSettings = {
 	     		    	 url: sourceleadUrl+"/createUesrBySourceleadAdmin?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
 	     		        success: function(data) {
 	     		        	if(data != null && data != '' && data == 'success'){
+	     		        		$("#userLoading").removeAttr("style");
 	     	   	        		getUserList();
 	     		        	}
 	     			        
@@ -555,12 +556,22 @@ var validationSettings = {
             	return false;	
                }
             });
-         $('#adduser_form').showHelpOnFocus();
-         $('#adduser_form').validateOnBlur(false, validationSettings); 
-            
-     
+         
+         $('body').on('blur', '#adduser_form', function() {
+     		$("#adduser_form").showHelpOnFocus();
+     		$("#adduser_form").validateOnBlur(false, validationSettings);
+     	});
+      
 </script> 
 
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
 
 <script type="text/javascript">
 (function ($) {
@@ -616,17 +627,24 @@ function getUserList(){
 	                    	 var opt = json[i]; 
 	                    	 var mobilePhone = '';
 	                    	 
-	                    	 if(null != opt.mobilePhone && mobilePhone != '' && mobilePhone != 'undefined'){
+	                    	 
+	                    	 if(null != opt.mobilePhone){
 	                    		 mobilePhone = opt.mobilePhone;
 	                    	 }else{
 	                    		 mobilePhone = '------'
 	                    	 }
 	                    	 
+	                    	 if(opt.lastName && opt.lastName != '' && opt.lastName != 'undefined'){
+	                    		 lastName=opt.lastName;
+	                    	 }
+	                    	 else{
+	                    		 lastName=" ";
+	                    	 }
 	                    	 
 	                    	 result = result +'<tr>';
-	                    	 result = result +'<td>'+opt.firstName+' '+opt.lastName+'</td>';
-	                    	 result = result +'<td>'+opt.email+'</td>';
-	                    	 result = result +'<td>'+mobilePhone+'</td>';
+	                    	 result = result +'<td><span title='+opt.firstName+' '+lastName+'>'+opt.firstName+' '+lastName+'</span></td>';
+	                    	 result = result +'<td><span title='+opt.email+'>'+opt.email+'</span></td>';
+	                    	 result = result +'<td><span title='+mobilePhone+'>'+mobilePhone+'</span></td>';
 	                    	 result = result +'<td>'+opt.role+'</td>';
 	                    	 
 	                    	 if(opt.userState == 'NOT_LOGGEDIN'){

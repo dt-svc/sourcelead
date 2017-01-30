@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -115,6 +117,7 @@ public class ClientServiceImpl implements ClientService{
 	
 	@Autowired
     private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
+	
 	
 	
 	@Value("${SourceLead.100}")
@@ -250,6 +253,8 @@ public class ClientServiceImpl implements ClientService{
 				orgSpoc.setUpdatedDate(commonUtil.currentDate());
 				orgSpoc.setUpdatedBy(user.getUserCode());
 				orgSpocService.addOrgSpoc(orgSpoc);
+				
+				
 				}
 			}
 			
@@ -758,6 +763,8 @@ public class ClientServiceImpl implements ClientService{
 				}
 				orgSpocService.addOrgSpoc(orgSpoc);
 				
+				orgSpocService.saveOrUpdateClientVendorContactElkDocument(orgSpoc);
+				
 				if(orgSpoc.getTempOwnerId() != null && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getOwnerUser().getId().longValue()){
 					user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
 					sendEmailToClientContact(user,editUser,orgLocation,loginUser);
@@ -836,5 +843,11 @@ public class ClientServiceImpl implements ClientService{
 			       sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,orgRelation.getId().toString());
 
 		}
+
+
+
 		
+		
+
+	
 }

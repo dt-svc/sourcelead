@@ -514,7 +514,7 @@ ul.timesheet-menu li a, .backoffice-menu li a {
 }
 ul.timesheet-menu li a::before, .backoffice-menu li a::before {
 	color: #f0ad4e;
-	content: "";
+	content: "ïˆ­";
 	font-family: fontawesome;
 	padding-right: 5px;
 }
@@ -5450,6 +5450,19 @@ padding: 10px 10px;
 display: none;
 box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
 z-index: 999;
+}
+.filter-position .dataTables_filter {
+	position: relative !important;
+	top: 0 !important;
+	z-index: 9999;
+}
+.filter-position {
+	position: relative;
+	top:-30px;
+}
+.zindex {
+	position: relative;
+	z-index: 99;
 }
 /* media 320px */
 @media (max-width: 320px) {

@@ -240,9 +240,17 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					if(jsonObj.has("CurrentCTC") && !isNullOrEmpty(jsonObj.getString("CurrentCTC"))){
 						candidate.setCurrentRate(jsonObj.getString("CurrentCTC"));
 					}
+					
+					if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
+						 candidate.setCurrentRateType(jsonObj.getString("currentCTCRatePer"));
+					}
 					 
 					if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
 						 candidate.setExpectedRate(jsonObj.getString("ExpectedCTC"));
+					}
+					
+					if(jsonObj.has("expectedCTCRatePer") && !isNullOrEmpty(jsonObj.getString("expectedCTCRatePer"))){
+						 candidate.setRateType(jsonObj.getString("expectedCTCRatePer"));
 					}
 					
 					if(jsonObj.has("Designation") && !isNullOrEmpty(jsonObj.getString("Designation"))){
@@ -250,6 +258,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					}
 					 if(jsonObj.has("WorkExperience") && !isNullOrEmpty(jsonObj.getString("WorkExperience"))){
 						 candidate.setExperienceYears(jsonObj.getString("WorkExperience"));
+					 }
+					 
+					 if(jsonObj.has("monthExp") && !isNullOrEmpty(jsonObj.getString("monthExp"))){
+						 candidate.setExperienceMonths(jsonObj.getString("monthExp"));
 					 }
 					candidate.setCandidateType("Candidate");
 					candidate.setCreatedBy(user.getUserCode());
@@ -2583,6 +2595,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+	}
+
+	@Override
+	public List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception {
+		return requirementSubmissionDao.getSubmittedCandidateIdsByRequirementId(requirementId);
 	}
 
 
