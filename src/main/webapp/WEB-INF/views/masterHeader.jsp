@@ -920,21 +920,13 @@ function updateAssignTaskStatus(taskId){
    });
 }
 </script>
+
 <script>
 function universalSearch(){
- 	var sourceleadUrl = '${sourceleadUrl}';
-	var frm = $('#search_form').serializeFormJSON();
-	var con = JSON.stringify(frm);
-	con = con.replace(/[{}]/g, "");
-		  //It will escape all the special characters
-    var jsonData = encodeURIComponent(con);
-		  alert("rrsss"+jsonData);
-	  $.ajax({
-	   	type: "GET",
-	    url: sourceleadUrl+"/universalSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,	    	   
-	    success: function(data) {
-	    }
-   });  
+	 var searchType = document.getElementById('searchType').value;
+	 var searchValue = document.getElementById('searchKey').value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
 }
 </script>
 

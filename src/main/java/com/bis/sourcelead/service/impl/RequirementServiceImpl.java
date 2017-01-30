@@ -2452,6 +2452,15 @@ public class RequirementServiceImpl implements RequirementService {
 		requirement.setId(requirementIndex.getRequirementId());
      	requirement.setJobId(requirementIndex.getJobId());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
+     	if(requirementIndex.getMinExperience() !=null){
+     		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
+     	}
+     	if(requirementIndex.getSkills() !=null){
+     		requirement.setSkills(Arrays.toString(requirementIndex.getSkills()));
+     	}
+     	if(requirementIndex.getMaxExperience() !=null){
+     		requirement.setMaxExp(requirementIndex.getMaxExperience().toString());
+     	}
      	requirement.setClientName(requirementIndex.getClient());
      	requirement.setCountry(requirementIndex.getCountry());
      	requirement.setState(requirementIndex.getState());
@@ -2486,6 +2495,16 @@ public class RequirementServiceImpl implements RequirementService {
          return keyWordList;
      }
 	 
+	private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
+		 ArrayList<String> keyWordList = null;
+		 if(searchValue !=null && !"".equalsIgnoreCase(searchValue)){
+			 String searchKeywordString = searchValue.replaceAll("\\[", "").replaceAll("\\]","");
+		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+		 }
+         return keyWordList;
+	}
+	
+	
 	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
 		   
 		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
@@ -2544,18 +2563,18 @@ public class RequirementServiceImpl implements RequirementService {
 	 }
 	 
 	@Override
-	public List<Object> univesalSearchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org,
-			String userRole, User user) throws JSONException, Exception {
+	public List<Object> univesalSearchRequirement(OrgLocations orgLocation, String searchType,String searchValue, Org org,String userRole, User user) throws JSONException, Exception {
 		List<Object>   searchList = new ArrayList<>();
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 		
-		if(jsonObj.has("searchType") && !"".equalsIgnoreCase(jsonObj.getString("searchType"))&&"Requirement".equalsIgnoreCase(jsonObj.getString("searchType")))
+		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&"Requirement".equalsIgnoreCase(searchType))
 		{
 			 Long maxResults = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
-			//Any Keyword
-			 if(jsonObj.has("searchKey") && !"".equalsIgnoreCase(jsonObj.getString("searchKey"))){
-				 ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "searchKey");
+			//All Keyword
+			 if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
+//				 ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "searchKey");
+				 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
 					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : allKeyWordArray){
@@ -2623,18 +2642,19 @@ public class RequirementServiceImpl implements RequirementService {
 				
 			return searchList;
 		}
-		if(jsonObj.has("searchType") && !"".equalsIgnoreCase(jsonObj.getString("searchType"))&&"Users".equalsIgnoreCase(jsonObj.getString("searchType")))
+		if(searchType != null && !"".equalsIgnoreCase(searchType)&&"Users".equalsIgnoreCase(searchType))
 		{
 			// ELK list for the user
 			return searchList;
 		}
 		
-		if(jsonObj.has("searchType") && !"".equalsIgnoreCase(jsonObj.getString("searchType"))&&("Clients".equalsIgnoreCase(jsonObj.getString("searchType"))||"Vendors".equalsIgnoreCase(jsonObj.getString("searchType"))))
+		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&("Clients".equalsIgnoreCase(searchType)||"Vendors".equalsIgnoreCase(searchType)))
 		{
 			// ELK list for the Clients and Vendors
 			 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocation.getId());
 				//All Keywords
-				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+			 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
 				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : allKeyWordArray){
@@ -2667,21 +2687,22 @@ public class RequirementServiceImpl implements RequirementService {
 			return searchList;
 		}
 	
-		if(jsonObj.has("searchType") && !"".equalsIgnoreCase(jsonObj.getString("searchType"))&&"Projects".equalsIgnoreCase(jsonObj.getString("searchType")))
+		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&"Projects".equalsIgnoreCase(searchType))
 		{
 			// ELK list for the projects
 			
 			return searchList;
 		}
 		
-		if(jsonObj.has("searchType") && !"".equalsIgnoreCase(jsonObj.getString("searchType"))&&"All".equalsIgnoreCase(jsonObj.getString("searchType")))
+		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&"All".equalsIgnoreCase(searchType))
 		{
 			// ELK list for the Candidate
 			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
 		   	 //Exclude Keyword
 			 
 				//All Keywords
-				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "searchKey");
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "searchKey");
+			 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
 				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : allKeyWordArray){
@@ -2719,14 +2740,15 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		
 		
-		if(jsonObj.has("searchType") && !"".equalsIgnoreCase(jsonObj.getString("searchType"))&&"Candidate".equalsIgnoreCase(jsonObj.getString("searchType")))
+		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&"Candidate".equalsIgnoreCase(searchType))
 		{
 			// ELK list for the Candidate
 			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
 		   	 //Exclude Keyword
 			 
 				//All Keywords
-				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "searchKey");
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "searchKey");
+			 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
 				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : allKeyWordArray){
@@ -2764,6 +2786,8 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		return searchList;
 	}
+
+	
 
 	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForAll(String keywd) {
 		// TODO Auto-generated method stub
