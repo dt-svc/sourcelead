@@ -36,23 +36,43 @@ $(document).ready(function() {
 		      	          type : "POST",
 		          	      dataType : 'json',
 	        	      	  url: sourceleadUrl+"/newTimesheetDummy?${_csrf.parameterName}=${_csrf.token}",		
-	        		      success :function(result) {
-	        		    	    $("#timesheetEntriesDiv").removeAttr("style");
-	        		    	    $("#timesheetEntriesDiv").empty();
-	        		    	  	$("#timesheetEntriesDiv").append(result);
-	        		    	  	maskme();
-	        		    	  	$("html").trigger('click');
-	        		    	  	prepareChosenScripts();
-	        		    	  	$("#tab-1").show()
-	        		    	    $(".project-tabs-menu a").click(function(event) {
-	        		    	        event.preventDefault();
-	        		    	        $(this).parent().addClass("current");
-	        		    	        $(this).parent().siblings().removeClass("current");
-	        		    	        var tab = $(this).attr("href");
-	        		    	        $(".project_tabs_inn").not(tab).css("display", "none");
-	        		    	        $(tab).fadeIn();
-	        		    	    }); 
+	        		      success :function(data) {
+	        		    	   if(data != '' && data != 'undefined' && data != null){ 
+		        		    	    $("#timesheetEntriesDiv").removeAttr("style");
+		        		    	    $("#timesheetEntriesDiv").empty();
+		        		    	  	$("#timesheetEntriesDiv").append(data);
+		        		    	  	maskme();
+		        		    	  	$("html").trigger('click');
+		        		    	  	prepareChosenScripts();
+		        		    	  	$("#tab-1").show()
+		        		    	    $(".project-tabs-menu a").click(function(event) {
+		        		    	        event.preventDefault();
+		        		    	        $(this).parent().addClass("current");
+		        		    	        $(this).parent().siblings().removeClass("current");
+		        		    	        var tab = $(this).attr("href");
+		        		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+		        		    	        $(tab).fadeIn();
+		        		    	    }); 
+	        		    	   }else{
+				    	    	    $("#timesheetEntriesDiv").removeAttr("style");
+				    	    	    var result ="";
+						    	     result = result+"   <div class='row'>"; 
+									 result = result+"	<div class='col-lg-12'>"; 
+									 result = result+"		<div class='content-area clearfix'>"; 
+									 result = result+"			<div class='blank-pages'>";
+									 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+									 result = result+"			        <p>No Timesheets Found</p>";
+									 result = result+"			 </div>";
+									 result = result+"		</div>"; 
+									 result = result+"	</div>"; 
+									 result = result+"  </div> "; 
+									$("#timesheetEntriesDiv").empty();
+								    $("#timesheetEntriesDiv").append(result); 
+				    	       }
+	        		    	  	
 	        		      }
+	        	      	  
+	        	      	  
 	        	      	  
 	        	    }); 
 	}
@@ -75,6 +95,7 @@ $(document).ready(function() {
    		        	 $("#timesheetEntriesDivByProjectMemberId").empty();
    		        	 $("#timesheetEntriesDivByProjectMemberId").append(result);
    		        	 maskme();
+   		        	$("html").trigger('click');
    		             prepareChosenScripts();
 		    	  	 $("#tab-1").show();
  		    	     $(".project-tabs-menu a").click(function(event) {
@@ -109,6 +130,7 @@ $(document).ready(function() {
 			    	  	  $("#timesheetDivByFrequency").append(result); 
 			    	  	  
 			    	  	  maskme();
+			    	  	 $("html").trigger('click');
 			    	  	 prepareChosenScripts();
 			    	  	 $("#tab-1").show();
 	 		    	     $(".project-tabs-menu a").click(function(event) {
@@ -790,6 +812,7 @@ function newSaveTimesheet(status,savingType){
         	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
         		    	  $("#loadTime").removeAttr("style"); 
+        		    	  timesheetEntriesDiv();
         		    	 /*  $("#loadTime").removeAttr("style"); */
         		    	  /*  dynamicTimesheet("left",result);  */
         		    	   /* timesheetEntriesDiv */

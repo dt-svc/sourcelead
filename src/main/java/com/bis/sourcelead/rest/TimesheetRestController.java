@@ -182,43 +182,48 @@ public class TimesheetRestController {
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLoc.getId(),loginUser.getId());
 		
-		StringBuilder timesheetEntriesDiv = new StringBuilder();
-		timesheetEntriesDiv.append("");
-		
-		timesheetEntriesDiv.append("<form id='timesheet_form' name='timesheet_form' enctype='multipart/form-data' >");
-		
-		timesheetEntriesDiv.append("		<div class='timesheet_out'> ");
-		timesheetEntriesDiv.append("		<div class='timesheet_wrap' id='timesheet_wrap'>");
-		timesheetEntriesDiv.append("		<div class='data_loading'></div>");
-		
-		timesheetEntriesDiv.append("				<div class='timesheetNewHead'>");
-		
-		timesheetEntriesDiv.append("					<div class='timeNewSe'>");
-		
-		timesheetEntriesDiv.append("		                <select id='projectMemberId' name='projectMemberId' class='form-control chosen-select' onChange='timesheetEntriesDivByProjectMemberId()'>");
-		Long initialProjectMemberId = null;
 		if(projectMembersList != null && !projectMembersList.isEmpty()){
-			long count = 1;
-			for(ProjectMembers pm :projectMembersList){
-				if(count == 1)
-					initialProjectMemberId = pm.getId();
-				timesheetEntriesDiv.append("		                  <option value='"+pm.getId()+"'>"+pm.getProjects().getProjectName()+"</option>");
-			    count++;
-			}
+		
+			StringBuilder timesheetEntriesDiv = new StringBuilder();
+			timesheetEntriesDiv.append("");
 			
+			timesheetEntriesDiv.append("<form id='timesheet_form' name='timesheet_form' enctype='multipart/form-data' >");
+			
+			timesheetEntriesDiv.append("		<div class='timesheet_out'> ");
+			timesheetEntriesDiv.append("		<div class='timesheet_wrap' id='timesheet_wrap'>");
+			timesheetEntriesDiv.append("		<div class='data_loading'></div>");
+			
+			timesheetEntriesDiv.append("				<div class='timesheetNewHead'>");
+			
+			timesheetEntriesDiv.append("					<div class='timeNewSe'>");
+			
+			timesheetEntriesDiv.append("		                <select id='projectMemberId' name='projectMemberId' class='form-control chosen-select' onChange='timesheetEntriesDivByProjectMemberId()'>");
+			Long initialProjectMemberId = null;
+			if(projectMembersList != null && !projectMembersList.isEmpty()){
+				long count = 1;
+				for(ProjectMembers pm :projectMembersList){
+					if(count == 1)
+						initialProjectMemberId = pm.getId();
+					timesheetEntriesDiv.append("		                  <option value='"+pm.getId()+"'>"+pm.getProjects().getProjectName()+"</option>");
+				    count++;
+				}
+				
+			}
+			timesheetEntriesDiv.append("		                </select>");
+			timesheetEntriesDiv.append("		            </div>");
+			
+			if(initialProjectMemberId != null){
+				 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(initialProjectMemberId.toString());
+				 timesheetEntriesDiv.append(projectDiv);		 
+			}
+			timesheetEntriesDiv.append("		    </div>");	
+			timesheetEntriesDiv.append("		</div>  ");	
+			timesheetEntriesDiv.append("		 </form> 	");	
+			
+			return timesheetEntriesDiv.toString();
+		}else{
+			return "";
 		}
-		timesheetEntriesDiv.append("		                </select>");
-		timesheetEntriesDiv.append("		            </div>");
-		
-		if(initialProjectMemberId != null){
-			 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(initialProjectMemberId.toString());
-			 timesheetEntriesDiv.append(projectDiv);		 
-		}
-		timesheetEntriesDiv.append("		    </div>");	
-		timesheetEntriesDiv.append("		</div>  ");	
-		timesheetEntriesDiv.append("		 </form> 	");	
-		
-		return timesheetEntriesDiv.toString();
 	}
 	
 	public StringBuilder timesheetEntriesDivByProjectMemberId(String projectMemberId) throws Exception{
@@ -579,13 +584,13 @@ public class TimesheetRestController {
 						for(TimesheetEntries timesheetEntries   : timesheetEntriesList){
 							           
 									  tabDiv.append("<input type='hidden' name='"+rowCount+"timesheetEntriesId'   id='"+rowCount+"timesheetEntriesId'   value='"+timesheetEntries.getId()+"' />");
-									  tabDiv.append("       <tr id='timesheetRow"+maxCount+"'>");
+									  tabDiv.append("       <tr id='timesheetRow"+rowCount+"'>");
 									  tabDiv.append("                 <td>");
 									  tabDiv.append("                      <div> ");
 									  
 									  //Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasks();
 									  Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
-									  tabDiv.append("                       <select id='"+rowCount+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
+									  tabDiv.append("                       <select id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
 									  tabDiv.append("<option value=''>--select task--</option>");
 						              for(ProjectTasks pt   : ProjectTasksList){
 								    	       if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
