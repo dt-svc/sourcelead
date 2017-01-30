@@ -142,8 +142,8 @@ public class AddClientVendorContactsELK {
 						ResultSet rs7 = stmt7.executeQuery(sql7);
 						if(rs7 != null){
 							 while(rs7.next()){
-								     clientVendorContactsIndex.setInitiatorType(rs7.getString("RESPONDER_TYPE"));
-									 clientVendorContactsIndex.setResponderType(rs7.getString("INITIATOR_TYPE"));
+								     clientVendorContactsIndex.setInitiatorType(rs7.getString("INITIATOR_TYPE"));
+									 clientVendorContactsIndex.setResponderType(rs7.getString("RESPONDER_TYPE"));
 						    }
 							
 			           }
