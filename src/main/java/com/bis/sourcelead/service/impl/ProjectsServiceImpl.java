@@ -945,6 +945,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	    if(projects.getEndDate() != null) {
 	    	    		commonUtil.terminateProjectMembersWhoseAssignedDateOrTerminatedisGreaterThanProjectEndDate(projects, user);
 	    	    }
+	    	    
+	    	    /*
+	    		 * Updating Project data as ElasticSearch Documents
+	    		 */
+	    		saveOrUpdateProjectElkDocument(projects);
 		 return "success";
 	}
 

@@ -196,10 +196,10 @@ overflow-x: auto;
 		                  <label>Status</label>
 		                  <div class="clearfix">
 		                     <select class="chosen-select" id="statusAdvanced" name="statusAdvanced" data-placeholder="Status" multiple>
-										 <option value="Started">Started</option>
-										 <option value="In-Progress">In-Progress</option>
-										 <option value="Completed">Completed</option>
-										 <option value="On-Hold">On-Hold</option>
+										 <option value="STARTED">Started</option>
+										 <option value="INPROGRESS">In-Progress</option>
+										 <option value="COMPLETED">Completed</option>
+										 <option value="ONHOLD">On-Hold</option>
 				             </select>
 		                  </div>
 		                </div>
@@ -307,9 +307,10 @@ overflow-x: auto;
 	
 <script type="text/javascript">
 window.onload = function () {
+	searchProject();
 	$('input[name=projectStatus]').attr('checked',false);
 	$('input[name=clientNameById]').attr('checked',false);
-	filter();
+	//filter();
  };
 </script>
 
@@ -910,15 +911,16 @@ $(document).ready(function() {
 	    	    $("#example").append(result);
 	    	    pagination();
 	  }else{
-     	 $("#candidateList").removeAttr("style");
+     	 $("#example").removeAttr("style");
 	         var result ="";
 			 result = result+"			<div class='blank-pages'>";
 			 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 			 result = result+"			        <p>No Candidates Found</p>";
 			 result = result+"			 </div>";
-			$("#noCandidates").val("nocandidate");
-			$("#candidateList").empty();
-		    $("#candidateList").append(result); 
+			$("#example").empty();
+		    $("#example").append(result); 
+		    $(".dataTables_info").empty();
+		    $(".dataTables_paginate").empty();
       }
   }
 </script>
