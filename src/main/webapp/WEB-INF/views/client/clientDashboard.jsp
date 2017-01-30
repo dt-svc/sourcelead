@@ -730,7 +730,7 @@ window.onload = function () {
     		
     			result = result +'<td>';
     		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-    			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+orgName+'\',\''+report.id+'\');">';
+    			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+orgName+'\');">';
 				result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
     			
     			result = result +'</div>';
@@ -873,7 +873,7 @@ function pagination(){
 </script>
 
 <script>
-	function clientSideBar(clientLocationId,orgName,orgRelationId) {
+	function clientSideBar(clientLocationId,orgRelationId,orgName) {
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
