@@ -28,6 +28,10 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
+import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -136,6 +140,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 private TimesheetSubmissionsService timesheetSubmissionsService;
+	 
+	 @Autowired
+	 private ProjectsIndexHelper projectsIndexHelper;
+	 
+	 @Autowired
+	 private SourceleadELKBaseIndexer<ProjectsIndex> sourceleadELKBaseIndexer;
 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
@@ -342,6 +352,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projects.setProjectMembers(projectMemberList);
 		
 		Projects updatedProjects = saveProject(projects);
+		
+		/*
+		 * Saving Project DB data as ElasticSearch Documents
+		 */
+		saveOrUpdateProjectElkDocument(projects);
 		
 		/**
 		 * this block is for submissions for project member
@@ -1734,5 +1749,21 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				return projectsDao.getAllUserTimeSheetSubmissionStatusCurrentWeek();
 			}
 			  */
+			
+			@Override
+			public void saveOrUpdateProjectElkDocument(Projects projects) throws Exception{
+				List<ProjectApproverHierarchy> projectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectId(projects.getId());
+				Collection<ProjectMembers> projectMembers = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
+				
+				 //Elastic Search Document Saving
+				ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, projectApproverHierarchy, projectMembers);
+				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
+			}
+			
+			@Override
+			public Integer getProjectCountByOrgLocationId(Long orgLocationId)
+					throws Exception {
+				return projectsDao.getProjectCountByOrgLocationId(orgLocationId);
+			}
 
 }
