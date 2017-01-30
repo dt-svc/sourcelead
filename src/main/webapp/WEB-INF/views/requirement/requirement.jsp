@@ -6,6 +6,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
+<script src="resources/js/bootstrap-select.min.js"></script>
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -13,6 +14,7 @@
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> 
 <!-- end files for autocomplete with tagit -->
+
 
 
 <jsp:include page="requirementDetails.jsp"></jsp:include>
@@ -1466,6 +1468,7 @@ function getTemplateVal(){
 </script>
 <script>
 function getRequirementAndLookUpSkills(requirementid){
+	alert("dd");
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
    	type: "POST",
@@ -1476,6 +1479,7 @@ function getRequirementAndLookUpSkills(requirementid){
 	    		var output = "";
 	    		for (var i = 0; i < json.length; i++) { 
                	    var skill = json[i];
+               
 	        		output = output + "<option value='" +skill+ "'>"+skill+"</option>";
 	    		}
 	            $("#skills").empty();
@@ -1494,13 +1498,11 @@ function setTemplateValues(){
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
 		
 		getRequirementAndLookUpSkills(requirementId);
-	
 	$.ajax({
 	   	type: "POST",
 	   	
 	    url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
 		    success: function(data) {
-		    	
 		    	
 		    	if(data != null && data != 'undefined' && data !='' ){ 
 		    		
@@ -1512,7 +1514,9 @@ function setTemplateValues(){
 		    		
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
+			    	
 			    	$("#jobOtherType").val(json.otherJobType);
+			    	alert("json"+json.jobType);
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#jobId").val(json.jobId);
 			    	$("#positions").val(json.positions);
