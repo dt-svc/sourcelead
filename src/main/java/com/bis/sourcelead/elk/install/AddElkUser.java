@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.sql.DataSource;
@@ -65,13 +67,16 @@ public class AddElkUser {
 					userIndex.setStatus(rs.getString("STATUS"));
 					userIndex.setTerminateReason(rs.getString("TERMINATE_REASON"));
 					Timestamp createdDateTimestamp = rs.getTimestamp("CREATED_DATE");
+					DateFormat StringDate = new SimpleDateFormat("dd-MM-yyyy"); 
 				    if (createdDateTimestamp != null){
-					  userIndex.setCreatedDate(new java.util.Date(createdDateTimestamp.getTime()));
+						String createdDate  = StringDate.format(new java.util.Date(createdDateTimestamp.getTime()));
+					  userIndex.setCreatedDate(createdDate);
 				    }
 				    userIndex.setCreatedBy(rs.getString("CREATED_BY"));   
 					Timestamp updatedDateTimestamp = rs.getTimestamp("UPDATED_DATE");
 					if (updatedDateTimestamp != null){
-						userIndex.setUpdatedDate(new java.util.Date(updatedDateTimestamp.getTime()));
+						String updatedDate  = StringDate.format(new java.util.Date(updatedDateTimestamp.getTime()));
+						userIndex.setUpdatedDate(updatedDate);
 				    }
 					userIndex.setUpdatedBy(rs.getString("UPDATED_BY"));
 				    
@@ -79,6 +84,7 @@ public class AddElkUser {
 					
 				    Long userId = rs.getLong("USER_ID");
 				    Long orgLocationId = rs.getLong("ORG_LOCATIONS_ID");
+				    Long userRoleId =rs.getLong("ROLE_ID");
 		    	    if(userId != null && userId != 0){
 		    	    	    String sql1 = "SELECT * FROM sourcelead.USER user where user.ID = '"+ userId+"' ";
 							Statement stmt1 = conn.createStatement();
@@ -90,6 +96,7 @@ public class AddElkUser {
 										userIndex.setEmail(rs1.getString("EMAIL"));
 										userIndex.setMobilePhone(rs1.getString("MOBILE_PHONE"));
 										userIndex.setIsMailSent(rs1.getString("IS_MAIL_SENT"));
+										userIndex.setUserCode(rs1.getString("USER_CODE"));
 							    }
 							   
 		    	           }
@@ -102,9 +109,21 @@ public class AddElkUser {
 									userIndex.setEmployeeId(rs2.getString("EMPLOYEE_ID"));
 									userIndex.setRate(rs2.getString("RATE"));
 									userIndex.setRatePer(rs2.getString("RATE_PER"));
+									userIndex.setHireDate(rs2.getString("HIRE_DATE"));
+
 							    }
 							   
 		    	           }
+						String sql3 = "SELECT * FROM sourcelead.ROLES roles where roles.ORG_LOCATION_ID='"+orgLocationId+"' and roles.ID = '"+userRoleId+"'";
+						Statement stmt3 = conn.createStatement();
+						ResultSet rs3 = stmt3.executeQuery(sql3);
+						if(rs3 != null){
+							 while(rs3.next()){
+								userIndex.setUserRoleId(rs3.getString("ID"));
+								
+						    }
+						   
+	    	           }
 							
 		    	    }
 		    	    userIndexsList.add(userIndex);

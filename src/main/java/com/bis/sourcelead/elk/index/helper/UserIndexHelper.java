@@ -1,5 +1,7 @@
 package com.bis.sourcelead.elk.index.helper;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,17 +41,25 @@ public class UserIndexHelper {
 			userIndex.setEmployeeId(employee.getEmployeeId());
 			userIndex.setRate(employee.getRate());
 			userIndex.setRatePer(employee.getRatePer());
-			userIndex.setHireDate(employee.getHireDate());
-			
+			DateFormat StringDate = new SimpleDateFormat("dd-MM-yyyy"); 
+			if(null != employee.getHireDate() && !"".equalsIgnoreCase(employee.getHireDate().toString())){
+			String hireDate  = StringDate.format(employee.getHireDate());
+			userIndex.setHireDate(hireDate);
+			}
+			userIndex.setUserCode(user.getUserCode());
+			userIndex.setUserRoleId(userRole.getRoles().getId().toString());
 			if(null != userRole.getCreatedDate()){
-				userIndex.setCreatedDate(new Date(userRole.getCreatedDate().getTime()));
+				String createdDate  = StringDate.format(new Date(userRole.getCreatedDate().getTime()));
+				userIndex.setCreatedDate(createdDate);
 			}
 			/*if(null == userRole.getCreatedBy() || "".equalsIgnoreCase(userRole.getCreatedBy())){
 				userIndex.setCreatedBy(loginUserCode);
 			}*/
 			userIndex.setCreatedBy(userRole.getCreatedBy());
 			if(null != userRole.getUpdatedDate()){
-				userRole.setUpdatedDate(new Date(userRole.getUpdatedDate().getTime()));
+				String updatedDate  = StringDate.format(new Date(userRole.getUpdatedDate().getTime()));
+
+				userIndex.setUpdatedDate(updatedDate);
 			}
 			
 			userIndex.setUpdatedBy(loginUserCode);

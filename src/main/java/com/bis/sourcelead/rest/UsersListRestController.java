@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -76,6 +77,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -155,6 +157,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	
 	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
 	@RequestMapping(value = "/getUsersList")
+	@JsonInclude(value = JsonInclude.Include.NON_NULL)
 	@ResponseBody
 	public String getUsersList(HttpServletRequest request,
 			@RequestParam(value="userRole", required=false) String userRole,
@@ -166,8 +169,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	 	String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
-//		List<UserRole> rolesList = new ArrayList<UserRole>();
 		
 			Long userRoleType ;
 			
@@ -177,9 +178,41 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				 userRoleType = null;
 			}
 			
-			List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset);
+			
+			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+			
+			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+			
+			if(null != userState  && !"".equalsIgnoreCase(userState)){
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userStatus", userState));
+				}
+			if(null != userRole  && !"".equalsIgnoreCase(userRole)){
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userRoleId", userRole));
+				}
+				
+			boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
+			 
+			Long maxResults = userRoleService.getUsersCountByOrgLocationID(orgLocations.getId());
+			
+			List<UserIndex> usersList = new ArrayList<UserIndex>();
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		
+			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,offset,maxResults.intValue(),boolQueryBuilder).getHits();
+			if(searchHits != null && searchHits.length >0){
+				ObjectMapper mapper = new ObjectMapper();
+				for (SearchHit hit : searchHits) {
+					String json = hit.getSourceAsString();
+					json = hit.getSourceAsString();
+					mapper.setDateFormat(df);
+					UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+					usersList.add(userIndex);
+				}
+			}
+			
+		List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset);
 	
-			if(null != rolesList){
+		/*	if(null != rolesList){
 				for(UserRole role : rolesList){
 					StringBuilder userName = new StringBuilder();
 					role.setUserRoleName(role.getRoles().getDisplayName());
@@ -195,9 +228,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					role.setIsMailSent(role.getUser().getIsMailSent().toString());
 					userRolesList.add(role);
 				}
-			
-			}	
-		 resultJson = toJSON(userRolesList);
+		
+			}*/
+		 resultJson = toJSON(usersList);
 		 return resultJson;
 
 	}
@@ -220,13 +253,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			 
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
-			 List<User> userList  = userService.getAllUsersByOrgLocationCode(loginOrgLocation.getId());
+				Long maxResults = userRoleService.getUsersCountByOrgLocationID(loginOrgLocation.getId());
 
-			 Integer maxResults = 0;
-			 if(null !=userList){
-				 
-				 maxResults =  userList.size();
-			 }
+			 
 			 
 			//Exclude Keyword
 			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");

@@ -143,9 +143,7 @@ $(document).ready(function(){
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
 	        success: function(data) {
-	        	
 			    var json = JSON.parse(data);
-			     
 			    var result = "";
 			    var submissionCountsResult = "";
 			    
@@ -284,7 +282,7 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				}
 				
-				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
+				if(json.user.mobilePhone != null && json.mobilePhone != "" && json.mobilePhone != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Phone Number:</strong><span class="fix">'+json.user.mobilePhone+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';

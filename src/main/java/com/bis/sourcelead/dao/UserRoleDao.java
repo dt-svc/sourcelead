@@ -52,6 +52,8 @@ public interface UserRoleDao {
 	
 	public UserRole getUserByUserId(Long userId) throws Exception;
 	
+	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception;
+	
 	//Prasad Salina to get all the user ids baded on reportingManager userid
 	List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception;
 	

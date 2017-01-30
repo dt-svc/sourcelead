@@ -3,6 +3,8 @@ package com.bis.sourcelead.elk.index;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
+
 public class UserIndex implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -31,23 +33,27 @@ public class UserIndex implements Serializable {
 
 	private String status;
 	
-	private Date hireDate;
+	private String hireDate;
 	
 	private String rate;
 	
 	private String ratePer;
 
-	private Date createdDate;
+	private String createdDate;
 
 	private String createdBy;
 
-	private Date updatedDate;
+	private String updatedDate;
 
 	private String updatedBy;
 	
 	private String userStatus;
 	
 	private String isMailSent;
+	
+	private String userCode;
+	
+	private String userRoleId;
 
 	public Long getUserId() {
 		return userId;
@@ -141,13 +147,7 @@ public class UserIndex implements Serializable {
 		this.status = status;
 	}
 
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
+	
 
 	public String getCreatedBy() {
 		return createdBy;
@@ -155,14 +155,6 @@ public class UserIndex implements Serializable {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
-	}
-
-	public Date getUpdatedDate() {
-		return updatedDate;
-	}
-
-	public void setUpdatedDate(Date updatedDate) {
-		this.updatedDate = updatedDate;
 	}
 
 	public String getUpdatedBy() {
@@ -197,14 +189,6 @@ public class UserIndex implements Serializable {
 		this.employeeId = employeeId;
 	}
 
-	public Date getHireDate() {
-		return hireDate;
-	}
-
-	public void setHireDate(Date hireDate) {
-		this.hireDate = hireDate;
-	}
-
 	public String getRate() {
 		return rate;
 	}
@@ -220,5 +204,49 @@ public class UserIndex implements Serializable {
 	public void setRatePer(String ratePer) {
 		this.ratePer = ratePer;
 	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
+	}
+
+	public String getUserRoleId() {
+		return userRoleId;
+	}
+
+	public void setUserRoleId(String userRoleId) {
+		this.userRoleId = userRoleId;
+	}
+
+	public String getHireDate() {
+		return hireDate;
+	}
+
+	public void setHireDate(String hireDate) {
+		this.hireDate = hireDate;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+	
+	
+	
+	
 	
 }
