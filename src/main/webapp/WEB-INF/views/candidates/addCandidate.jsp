@@ -118,6 +118,13 @@
           </div>
         </div>
         
+        <div class="form-group">
+          <label class="col-md-3">Alternative Number</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" id="alternateMobilePhone" name="alternateMobilePhone"   field-name="Alternative Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
+          </div>
+        </div>
+        
         
         <div class="form-group">
 				<label class="col-md-3">Country</label>
@@ -142,6 +149,8 @@
                  </select>
 			</div>
 		</div>
+		
+		
         
         <div class="form-group">
           <label class="col-md-3">Address</label>
@@ -306,7 +315,19 @@
               </div>
             </div>
         
-        <div class="form-group">
+         <div class="form-group">
+            <label class="col-md-3">Add Resume</label>
+            <div class="col-md-9">
+			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
+               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
+                 </span> </label>
+                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+           </div>
+         </div>
+        </div>
+        
+         <div class="form-group">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
@@ -327,26 +348,14 @@
              
            </div>
          </div>
-           <div class="form-group">
-            <label class="col-md-3">Add Resume</label>
-            <div class="col-md-9">
-			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
-               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
-                 </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
-           </div>
-           <!-- <div class="clearfix mt10 text-muted"><i class="fa fa-question-circle text-info"></i>&nbsp; Upload .doc, .pdf, .txt formats only...</div> -->
-         </div>
-        </div>
+         
+          <div class="clearfix"></div>
+          
         <div class="form-group">
           <label class="col-md-3"></label>
-         <!--  <div class="col-md-9 checkbox checkBox">
-            <label>
-              <input type="checkbox" value="">
-              Send Invitation </label>
-          </div> -->
         </div> 
+        
+        
         <div class="clearfix"></div>
       </div> 
     </div>

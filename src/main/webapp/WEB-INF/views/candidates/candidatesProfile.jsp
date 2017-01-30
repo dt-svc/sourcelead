@@ -88,10 +88,17 @@ function editCandidate(candidateId){
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
             			 	}
+            			 	
             			 	var mobilePhone = '';
             			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
             			 		mobilePhone = json.mobilePhone;            			 		
             			 	}
+            			 	
+            			 	var alternateMobilePhone = '';
+            			 	if(json.alternateMobilePhone != null && json.alternateMobilePhone != '' && json.alternateMobilePhone != 'undefined'){
+            			 		alternateMobilePhone = json.alternateMobilePhone;            			 		
+            			 	}
+            			 	
             			 	var designation = '';
             			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
             			 		designation = json.designation;            			 		
@@ -148,10 +155,26 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							
+					
+							
 							result = result + '<div class="col-md-6">';
 							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+mobilePhone+'" placeholder="Mobile">';
 							result = result + '</div>';
+							
 							result = result + '</div>';
+							
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6">';
+							result = result + '<input type="text" class="form-control input-sm" name="alternateMobilePhone"  value="'+alternateMobilePhone+'" placeholder="Alternative Number">';
+							result = result + '</div>';
+							
+							result = result + '<div class="col-md-6">';
+							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" placeholder="Designation">';
+							result = result + '</div>';
+							
+							result = result + '</div>';
+							
+							
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6 custom-fields">';
@@ -176,9 +199,16 @@ function editCandidate(candidateId){
 							result = result + '</select>';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" placeholder="Designation">';
-							result = result + '</div>';
+							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
+							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
+							result = result + '<option value="">Select</option>';
+							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'><a href="#">Immediately available</a></option>';
+							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'><a href="#">15 Days</a></option>';
+							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'><a href="#">1 Month</a></option>';
+							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'><a href="#">2 Months</a></option>';
+							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'<a href="#">3 Months</a></option>';
+							result = result + ' </select>';
+							result = result + ' </div>';
 							
 							result = result + '</div>';
 							
@@ -321,18 +351,6 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="clearfix mb10">';
-							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
-							result = result + '<option value="">Select</option>';
-							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'><a href="#">Immediately available</a></option>';
-							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'><a href="#">15 Days</a></option>';
-							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'><a href="#">1 Month</a></option>';
-							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'><a href="#">2 Months</a></option>';
-							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'<a href="#">3 Months</a></option>';
-							result = result + ' </select>';
-							result = result + ' </div>';
-							
-							
 							result = result + '<div class="col-md-6">';
 							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
 							result = result + ' </div>';
