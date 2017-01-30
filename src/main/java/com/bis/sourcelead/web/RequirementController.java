@@ -304,6 +304,9 @@ public class RequirementController {
 		
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
+		
+		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+		model.addObject("educationsList", educationsList);
 
 		// This code is commented as not in use 
 
