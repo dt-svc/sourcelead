@@ -404,6 +404,8 @@ public class Constants {
     
     public static String All_APPLICANTS = "all";
     public static String DUPLICATE_APPLICANTS = "DUPLICATE_APPLICANTS";
+    
+    public static String REQ_SEARCHTYPE = "Requirement";
 
 
     

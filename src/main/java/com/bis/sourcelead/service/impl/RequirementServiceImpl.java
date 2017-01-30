@@ -2456,7 +2456,8 @@ public class RequirementServiceImpl implements RequirementService {
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}
      	if(requirementIndex.getSkills() !=null){
-     		requirement.setSkills(Arrays.toString(requirementIndex.getSkills()));
+     		String skills = getReqSkills(requirementIndex.getSkills());
+     		requirement.setSkills(skills);
      	}
      	if(requirementIndex.getMaxExperience() !=null){
      		requirement.setMaxExp(requirementIndex.getMaxExperience().toString());
@@ -2472,6 +2473,15 @@ public class RequirementServiceImpl implements RequirementService {
          	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
      	}	
      	return requirement;
+	}
+
+	private String getReqSkills(String[] skills) {
+		StringBuilder sb = new StringBuilder();
+		for(int i=0;i<skills.length;i++){
+			sb.append(skills[i]).append(",");
+		}
+		String str = sb.toString();
+		return str.substring(0, str.length()-1);
 	}
 
 	private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
@@ -2778,6 +2788,18 @@ public class RequirementServiceImpl implements RequirementService {
 				    	    if(candidateIndex.getUpdatedDate() != null){
 				    	    	candidateIndex.setCandidateUpdateDateToString(Constants.DF_YMD.format(candidateIndex.getUpdatedDate()));
 				   			}
+				    	    StringBuilder sb = new StringBuilder();
+				    	    if(candidateIndex.getFirstName()!=null && candidateIndex.getLastName() !=null && !"".equalsIgnoreCase(candidateIndex.getFirstName()) && !"".equalsIgnoreCase(candidateIndex.getLastName())){
+				    	    	sb.append(candidateIndex.getFirstName()).append(" ").append(candidateIndex.getLastName());
+				    	    }else{
+				    	    	sb.append(candidateIndex.getFirstName());
+				    	    }
+				    	    candidateIndex.setCandidateName(sb.toString());
+				    	   if(candidateIndex.getSkills() != null){
+				    		   String skillArray[] = candidateIndex.getSkills().toArray(new String[candidateIndex.getSkills().size()]);
+				    		   String skills = getReqSkills(skillArray);
+				    		   candidateIndex.setSkillSet(skills);
+				    	   }
 				    	    searchList.add(candidateIndex);
 				    	}
 				    	
