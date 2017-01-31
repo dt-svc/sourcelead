@@ -807,8 +807,8 @@ function preparedVendorsListFromElk(data){
 		   		}
 				
 		   	result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
-				result = result +' <td><div>====</div></td>';
-				result = result +'<td><div>=====</div></td>';
+				result = result +' <td><div>---</div></td>';
+				result = result +'<td><div>---</div></td>';
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
 				}
