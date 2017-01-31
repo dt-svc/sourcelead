@@ -31,8 +31,10 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.TaskService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -60,6 +62,9 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Autowired
 	private EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	private UserRoleService userRoleService; 
 	
 	@Override
 	public Tasks saveTasks(Tasks tasks) throws Exception {
@@ -102,6 +107,10 @@ public class TaskServiceImpl implements TaskService{
 				 task.setAssignedUserId(ownerUser);
 				 task.setOwnerOrglocationId(loginOrgLocation);
 				 task.setTaskOwnerId(user);
+				 UserRole assignedUser =  userRoleService.getUserByUserId(ownerUser.getId());
+				 if(assignedUser != null && assignedUser.getOrgLocations() != null){
+					 task.setAssignedOrglocationId(assignedUser.getOrgLocations());	 
+				 }
 				 
 				 if(jsonObj.has("priority") && !jsonObj.getString("priority").isEmpty()){
 		        	 task.setPriority(jsonObj.getString("priority"));
