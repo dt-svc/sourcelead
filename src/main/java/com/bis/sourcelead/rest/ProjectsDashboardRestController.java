@@ -489,24 +489,25 @@ public class ProjectsDashboardRestController {
 				}
 				
 				//project Manager
-				/*ArrayList<String> projectManagerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
+				ArrayList<String> projectManagerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
 				if(projectManagerArray != null && !projectManagerArray.isEmpty()){
 					BoolQueryBuilder projectManagerBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectManagerArray){
 						projectManagerBoolQueryBuilder.should(QueryBuilders.matchQuery("level1ManagerName", keywd));
 					}
-					boolQueryBuilder.must(projectManagerBoolQueryBuilder);
-				}*/
+					boolQueryBuilder.should(projectManagerBoolQueryBuilder);
+				}
+				
 				
 				//project Manager2
-				/*ArrayList<String> projectManager2Array = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
+				ArrayList<String> projectManager2Array = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
 				if(projectManager2Array != null && !projectManager2Array.isEmpty()){
 					BoolQueryBuilder projectManager2BoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectManager2Array){
 						projectManager2BoolQueryBuilder.should(QueryBuilders.matchQuery("level2ManagerName", keywd));
 					}
-					boolQueryBuilder.must(projectManager2BoolQueryBuilder);
-				}*/
+					boolQueryBuilder.should(projectManager2BoolQueryBuilder);
+				}
 				
 				//invoice Frequency
 				ArrayList<String> invoiceFrequencyArray = getSearchKeywordsFromChosenSelectField(jsonObj, "invoiceFrequencyAdvanced");
@@ -549,24 +550,24 @@ public class ProjectsDashboardRestController {
 				}*/
 				
 				//project Members
-				/*ArrayList<String> projectMembersArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeNameAdvanced");
+				ArrayList<String> projectMembersArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeNameAdvanced");
 				if(projectMembersArray != null && !projectMembersArray.isEmpty()){
 					BoolQueryBuilder projectMembersBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectMembersArray){
 						projectMembersBoolQueryBuilder.should(QueryBuilders.matchQuery("projectMembers", keywd));
 					}
 					boolQueryBuilder.must(projectMembersBoolQueryBuilder);
-				}*/
+				}
 				
 				//project Member Email
-				/*ArrayList<String> projectMemberEmailArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeEmailAdvanced");
+				ArrayList<String> projectMemberEmailArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeEmailAdvanced");
 				if(projectMemberEmailArray != null && !projectMemberEmailArray.isEmpty()){
 					BoolQueryBuilder projectMemberEmailBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectMemberEmailArray){
 						projectMemberEmailBoolQueryBuilder.should(QueryBuilders.matchQuery("projectMemberEmail", keywd));
 					}
 					boolQueryBuilder.must(projectMemberEmailBoolQueryBuilder);
-				}*/
+				}
 				
 				
 				List<ProjectsIndex> projectsList = new ArrayList<ProjectsIndex>();
