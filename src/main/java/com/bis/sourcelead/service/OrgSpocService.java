@@ -91,4 +91,8 @@ public interface OrgSpocService {
 	
 	List<OrgSpoc> getOrgSpocByOrgRelationId(Long orgRelationId) throws Exception;
 	
+	Integer getAllVendorContactsCountbyOrgLocationId(Long orgId) throws Exception;
+
+	void saveOrUpdateClientVendorContactElkDocument(OrgSpoc orgSpoc) throws Exception;
+
 }

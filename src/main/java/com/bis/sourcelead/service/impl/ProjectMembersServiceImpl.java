@@ -150,8 +150,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getAllProjectsByUserId(userId);
 	}
 	
+	@Override
+	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds) {
+		return projectMembersDao.getAllProjectMembersByProjectIdsList(projectIds);
+	}
 	
-
 	@Override
 	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId, Long projectId) throws Exception {
 		// TODO Auto-generated method stub

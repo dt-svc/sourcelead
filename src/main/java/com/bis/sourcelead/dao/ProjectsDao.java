@@ -14,6 +14,8 @@ public interface ProjectsDao {
 	
 	public Projects getProjectById(Long id) throws Exception;
 	
+	List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception;
+	
 	List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
 	List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
@@ -60,5 +62,7 @@ public interface ProjectsDao {
 	//public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 	
 	Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
+	
+	Integer getProjectCountByOrgLocationId(Long orgLocationId)throws Exception;
 
 }
