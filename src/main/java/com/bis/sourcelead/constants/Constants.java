@@ -359,8 +359,13 @@ public class Constants {
     public static String ELK_CANDIDATE_ID_PREFIX = "CND";
     
     public static String ELK_CLIENTVENDOR_INDEX = "clientvendor";
-    
+        
     public static String ELK_CLIENTVENDOR_TYPE = "clientvendors";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_INDEX = "clientvendorcontacts";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_TYPE = "clientvendorcontacts";
+
     
     public static String ELK_CAMPAIGN_INDEX = "campaigns";
 	
@@ -399,6 +404,8 @@ public class Constants {
     
     public static String All_APPLICANTS = "all";
     public static String DUPLICATE_APPLICANTS = "DUPLICATE_APPLICANTS";
+    
+    public static String REQ_SEARCHTYPE = "Requirement";
 
 
     public static String ONE_DAY_AGO ="1 Day Ago";

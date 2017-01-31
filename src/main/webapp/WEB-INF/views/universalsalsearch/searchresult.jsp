@@ -1,0 +1,244 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<link rel="icon" type="resources/image/png"
+	href="resources/images/fav.png" />
+<link href="resources/css/register-style.css" rel="stylesheet">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<link href="resources/css/register-style.css" rel="stylesheet">
+<!-- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> -->
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<script>
+$(document).ready(function(){
+   var searchType = "${searchType}";
+   var searchValue = "${searchValue}";
+   getSearchResults(searchType,searchValue);
+});
+</script>
+
+
+
+<section class="content-wraper">
+<section class="content-header clearfix">
+		<div class="pull-left">
+			<h2>Universal Search Result</h2>
+		</div>
+		<div class="pull-right brud-crum hide"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/projectDashboard'/>">ProjectList</a> &raquo;Create Project
+	</section>
+	<div class="clearfix">
+<div id ="searchList"></div>
+
+<!-- Requirement Search Results -->
+      <!-- <div class="search-result-widget clearfix">
+           <h4>Requirement</h4>
+          <div class="srchresult clearfix row">
+              <div class="srchresult-content col-xs-12 col-md-12">
+                  <p><label><strong><a href="javascript:void(0)">Requirement Title</a></strong></label>, <label>Type</label>,
+                  <label>Location</label>
+                  </p>
+                  <p><label><strong>Client Name</strong></label></p>
+                  <p><label>2.4 yrs</label>, <label>1 Month</label></p>
+                  <p><label>Java, Hibernet, Sprints, Javascript, MySql, jQuery, AngularJS, ReactJS, NodeJs. etc.. </label></p>
+                  <span href="javascript:void(0)" class="reqstatus-btn">Open</span>
+              </div>
+          </div>
+          
+        <div class="srchresult clearfix row">
+              <div class="srchresult-content col-xs-12 col-md-12">
+                  <p><label><strong><a href="javascript:void(0)">Requirement Title</a></strong></label>, <label>Type</label>
+                  <label>Location</label>
+                  </p>
+                  <p><label><strong>Client Name</strong></label></p>
+                  <p><label>2.4 yrs</label>, <label>1 Month</label></p>
+                  <p><label>Java, Hibernet, Sprints, Javascript, MySql, jQuery, AngularJS, ReactJS, NodeJs. etc.. </label></p>
+
+                  <span href="javascript:void(0)" class="reqstatus-btn">OnHold</span>
+              </div>
+        </div>
+        <div class="srchresult clearfix row">
+              <div class="srchresult-content col-xs-12 col-md-12">
+                  <p><label><strong><a href="javascript:void(0)">Requirement Title</a></strong></label>,<label>Type</label>
+                  <label>Location</label>
+                  </p>
+                  <p><label><strong>Client Name</strong></label></p>
+                  <p><label>2.4 yrs</label>, <label>1 Month</label></p>
+                  <p><label>Java, Hibernet, Sprints, Javascript, MySql, jQuery, AngularJS, ReactJS, NodeJs. etc.. </label></p>
+                  <span href="javascript:void(0)" class="reqstatus-btn">Open</span>
+              </div>
+          </div>
+          <div class="clearfix">
+              <a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>
+          </div>
+
+      </div> -->
+     <!-- Requirement Search Results -->
+	</div>
+	</section>
+
+<script type="text/javascript">
+function getSearchResults(searchType,searchValue){
+	var sourceleadUrl = '${sourceleadUrl}';
+	  $.ajax({
+	   	type: "GET",
+	    url: sourceleadUrl+"/universalSearch?${_csrf.parameterName}=${_csrf.token}&searchType="+searchType+"&searchValue="+searchValue,	    	   
+	    success: function(data) {
+	    	var result='';
+	    	var json = JSON.parse(data);
+	    	result = result+'<div class="search-result-widget clearfix">';
+	    	/* All,Users,Requirement,Candidate,Clients,Vendors,Projects*/
+	    	if(searchType == 'Requirement'){
+	    	result = result+'   <h4>Requirement</h4>';
+	    	 for (var i = 0; i < json.length; i++) {
+	             var report= json[i];
+	            alert(report.searchType);
+	             var location = "";
+	             var exp = "";
+			    	result = result+'  <div class="srchresult clearfix row">';
+			    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
+			    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
+			    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
+			    	}else{
+			    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.jobTitle+'</a></strong></label>';	
+			    	}
+			    	if(report.city !=null && report.city != '' && report.city !="undefined"){
+			    		location = location + report.city;
+			    	}
+			    	if(report.state !=null && report.state != '' && report.state !="undefined"){
+			    		location = location + report.state;
+			    	}
+			    	if(report.country !=null && report.country != '' && report.country !="undefined"){
+			    		location = location + report.country;
+			    	}
+			    	result = result+'          <label>'+location+'</label>';
+			    	
+			    	result = result+'          </p>';
+			    	result = result+'          <p><label><strong>'+report.clientName+'</strong></label></p>';
+			    	if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined"){
+			    		exp = exp + report.minExp;
+			    	}
+			    	if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined" && report.maxExp !=null && report.maxExp != '' && report.maxExp !="undefined"){
+			    		exp = exp + "-";
+			    	}
+			    	
+			    	if(report.maxExp !=null && report.maxExp != '' && report.maxExp !="undefined"){
+			    		exp = exp + report.maxExp;
+			    	}
+			    	result = result+'          <p><label>'+exp+'</label></p>';
+			    	if(report.skills !=null && report.skills != '' && report.skills != 'undefined'){
+			    		result = result+'          <p><label>'+report.skills+'</label></p>';
+			    	}
+			    	result = result+'          <span href="javascript:void(0)" class="reqstatus-btn">'+report.requirementSubmissionStatus+'</span>';
+			    	result = result+'      </div>';
+			    	result = result+'  </div>';
+			    	result = result+'  <div class="clearfix">';
+			    	result = result+'      <a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+			    	result = result+'  </div>';
+	    	 }
+	    	}else if(searchType == 'Candidate'){
+	    		result = result+'   <h4>Candidate</h4>';
+		    	 for (var i = 0; i < json.length; i++) {
+		             var report= json[i];
+		             var location = "";
+		             var experience = "";
+				    	result = result+'  <div class="srchresult clearfix row">';
+				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
+				    	if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined"){
+				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
+				    	}else{
+				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.candidateName+'</a></strong></label>';	
+				    	}
+				    	if(report.email !=null && report.email !='' && report.email !='undefined' && report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined' ){
+				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.email+'</a></strong></label>, <label>'+report.mobilePhone+'</label>';	
+				    	}else{
+				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.email+'</a></strong></label>';
+				    	}
+				    	if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined'){
+				    		experience = experience + report.experienceYears+" Years"; 
+				    	}
+				    	if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined' && report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
+				    		experience = experience +"-";				    	
+				    	}
+				    	if(report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
+				    		experience = experience + report.experienceMonths+" Months";	
+				    	}
+				    	if(report.noticePeriod !=null && report.noticePeriod !='' && report.noticePeriod !='undefined'){
+				    		experience = experience +","+report.noticePeriod;
+				    	}
+				    	result = result+'<label>'+experience+'</label>';
+				    	if(report.city !=null && report.city != '' && report.city !="undefined"){
+				    		location = location + report.city;
+				    	}
+				    	if(report.state !=null && report.state != '' && report.state !="undefined"){
+				    		location = location + report.state;
+				    	}
+				    	if(report.country !=null && report.country != '' && report.country !="undefined"){
+				    		location = location + report.country;
+				    	}
+				    	result = result+'          <label>'+location+'</label>';
+				    	result = result+'          </p>';
+				    	if(report.skillSet !=null && report.skillSet != '' && report.skillSet !="undefined"){
+				    		result = result+'          <p><label>'+report.skillSet+'</label></p>';
+				    	}
+				    	result = result+'      </div>';
+				    	result = result+'  </div>';
+				    	result = result+'  <div class="clearfix">';
+				    	result = result+'      <a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+				    	result = result+'  </div>';
+	    	}
+	    	}else if(searchType == 'Clients' || searchType == 'Vendors'){
+	    		result = result+'   <h4>Clients/Vendors</h4>';
+		    	 for (var i = 0; i < json.length; i++) {
+		             var report= json[i];
+		             var name_location = "";
+				    	result = result+'  <div class="srchresult clearfix row">';
+				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
+				    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
+				    		name_location = name_location + report.orgName+",";
+				    	}
+				    	if(report.city !=null && report.city != '' && report.city !="undefined"){
+				    		name_location = name_location + report.city;
+				    	}
+				    	if(report.state !=null && report.state != '' && report.state !="undefined"){
+				    		name_location = name_location + report.state;
+				    	}
+				    	if(report.country !=null && report.country != '' && report.country !="undefined"){
+				    		name_location = name_location + report.country;
+				    	}
+				    	result = result+'          <label>'+name_location+'</label>';
+				    	result = result+'          </p>';
+				    	if(report.createdBy !=null && report.createdBy != '' && report.createdBy !="undefined"){
+				    		result = result+'          <p><label>'+report.createdBy+'</label></p>';
+				    	}
+				    	result = result+'      </div>';
+				    	result = result+'  </div>';
+				    	result = result+'  <div class="clearfix">';
+				    	result = result+'      <a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+				    	result = result+'  </div>';
+	    	}
+	    	
+	    	}
+	    	 result = result+'</div>';
+	    	 $("#searchList").empty();
+	    	 $("#searchList").append(result);
+	    	
+	    }
+   }); 
+}
+</script>
+
+
+
+<jsp:include page="../masterFooter.jsp" />
+
+
+
+
+
+
+
+
