@@ -31,7 +31,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.index.search.MultiMatchQuery.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -2361,7 +2365,15 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("requirementStatus") && !"".equalsIgnoreCase(jsonObj.getString("requirementStatus"))){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", jsonObj.getString("requirementStatus")));
 		    }
-		    
+			
+			if(jsonObj.has("updatedOn") && !"".equalsIgnoreCase(jsonObj.getString("updatedOn"))){
+				String updatedOn =  jsonObj.getString("updatedOn");
+				String upOn = UpdateOnToDate(updatedOn);
+				if(!Constants.ALL_RECORDS.equalsIgnoreCase(upOn)){
+				 RangeQueryBuilder qb = QueryBuilders.rangeQuery("reqCreatedDate").gte(upOn);
+				boolQueryBuilder.must(qb);
+				}
+			}
 			//Educations
 			if(jsonObj.has("education") && !"".equalsIgnoreCase(jsonObj.getString("education"))){
 				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
@@ -2548,6 +2560,33 @@ public class RequirementServiceImpl implements RequirementService {
 			return matchQueryBuilderList; 
 	 }
 
+	 public String UpdateOnToDate(String updatedOn){
+		
+		 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	     Calendar cal = Calendar.getInstance();
+	     if((Constants.ONE_DAY_AGO).equalsIgnoreCase(updatedOn)){
+	        cal.add(Calendar.DATE, -1);    
+	        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.THREE_DAY_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -3);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.ONE_WEEK_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -7);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.TWO_WEEK_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -14);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.ONE_MONTH_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -30);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.THREE_MONTH_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -90);    
+		        return  dateFormat.format(cal.getTime());
+		 }else{
+			 return updatedOn;
+		 }
+	 }
+ 
 	 
 	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
 		   
@@ -2846,4 +2885,3 @@ public class RequirementServiceImpl implements RequirementService {
 		return matchQueryBuilderList; 
 	}
 }
-
