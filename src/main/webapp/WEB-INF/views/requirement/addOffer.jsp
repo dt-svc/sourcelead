@@ -80,7 +80,7 @@ function addOffer(requirementId){
 				result= result + '<div class="clearfix">';
 				result = result + '<div class="pull-right">';
 				result = result +'				  <button type="submit" id="add_offer" class="btn btn-sm btn-primary mr">Submit</button>';
-				result= result + '	              <button type="submit" class="btn btn-sm btn-danger" onclick="cancelAddOffer();" >Cancel</button>';
+				result= result + '	              <input type="button" class="btn btn-sm btn-danger" value="Cancel" onclick="cancelAddOffer();" >';
 				result= result + '	            </div>';
 				result= result + '	          </div>';
 				result= result + '</div>';

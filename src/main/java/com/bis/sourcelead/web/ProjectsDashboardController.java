@@ -15,9 +15,13 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -38,6 +42,12 @@ public class ProjectsDashboardController {
 	 
 	 @Autowired
 	 private OrgRelationsService orgRelationsService;
+	 
+	 @Autowired
+	 private ProjectsService projectsService;
+	 
+	 @Autowired
+	 private ProjectMembersService projectMembersService;
 	 
 
 	 /**
@@ -69,6 +79,33 @@ public class ProjectsDashboardController {
         }
         model.addObject("add_client", orgClientList);
         model.addObject(orgClientList);
+        
+        List<Long> projectIds = projectsService.getProjectIdsByOrgLocationsId(loginOrgLocations.getId());
+        
+        if(null != projectIds){
+        	List<ProjectApproverHierarchy> projectManagersList = projectApproverHierarchyService.getAllApproverUsersByProjectIdList(projectIds);
+            for(ProjectApproverHierarchy projectManager:projectManagersList){
+            	if(null != projectManager.getApproverUserId() && null != projectManager.getApproverUserId().getLastName()){
+            		projectManager.setFullName(projectManager.getApproverUserId().getFirstName()+" "+projectManager.getApproverUserId().getLastName());
+            	}else{
+            		projectManager.setFullName(projectManager.getApproverUserId().getFirstName());
+            	}
+            }
+            model.addObject("add_projectManagersList", projectManagersList);
+            
+            
+            List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdsList(projectIds);
+            for(ProjectMembers projectMembers:projectMembersList){
+            	if(null != projectMembers.getEmployee() && null != projectMembers.getEmployee().getUser() && null != projectMembers.getEmployee().getUser().getLastName()){
+            		projectMembers.setEmpName(projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName());
+            	}else{
+            		projectMembers.setEmpName(projectMembers.getEmployee().getUser().getFirstName());
+            	}
+            	projectMembers.setEmpEmail(projectMembers.getEmployee().getUser().getEmail());
+            }
+            model.addObject("add_projectMembersList", projectMembersList);
+        }
+        
         
         /*List<Long> projectIds = projectApproverHierarchyService.getProjectIdsByLoginUserId(user.getId());
         
