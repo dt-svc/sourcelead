@@ -192,7 +192,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				
 			boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 			 
-			Long maxResults = userRoleService.getUsersCountByOrgLocationID(orgLocations.getId());
+			Integer maxResults = offset + Constants.MAX_RESULTS_TEN;
 			
 			List<UserIndex> usersList = new ArrayList<UserIndex>();
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -1065,7 +1065,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 						userService.sendEmail(user,loginUser,password,orgLocations.getId());
                      }
 				}
-			    Employees employees = employeesService.getEmployeeByUserId(userId);
+			    Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId,orgLocations.getId());
 			    if(employees !=  null){
 			    	employees.setEmployeeId(jsonObj.getString("EmployeeId"));
 					employees.setRate(jsonObj.getString("Rate"));
