@@ -333,7 +333,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
 
 		       result = result + '<div class="require_wrap_details">';
-		       result = result + '<div ><a href="javascript:void(0)" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		       if(json.submissionStatus == 'REJECTED'){
+		    	   result = result + '<div ><a href="javascript:void(0)" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		       }
 		       result = result + '<div class="clearfix">';
 			   result = result + '</div> ';        
 				   
