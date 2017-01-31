@@ -989,7 +989,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			userService.sendEmail(user,users,password,loginOrgLocation.getId());
 
 		}
-		
+		userService.saveOrUpdateUserElkDocument(userRole,emp,users.getUserCode());
+
 		return null;
 	}
 

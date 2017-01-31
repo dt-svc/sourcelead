@@ -23,9 +23,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -73,6 +75,13 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private EmployeesService employeesService;
+	
+	@Autowired
+	UserIndexHelper userIndexHelper;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<UserIndex> sourceleadELKBaseIndexer;
+	
 	
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
@@ -222,7 +231,11 @@ public class UserServiceImpl implements UserService {
 			/*if(userRole != null && StringUtils.isNotEmpty(userRole.getRoles().getRoleName()) && userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
 				commonUtil.addAdminAsSecondLevelManager(orgLocations.getId(), user, loginuser);
 			}*/
-		 
+			/*
+			 * Saving USER DB data as ElasticSearch Documents
+			 */
+			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
+      
         return user1;
 				
 		
@@ -275,6 +288,11 @@ public class UserServiceImpl implements UserService {
 
 			sendEmail(user,loginUser,password,orgLocationsId);
 		}
+		/*
+		 * Saving/Update USER DB data as ElasticSearch Documents
+		 */
+		saveOrUpdateUserElkDocument(userRole,employee,loginUser.getUserCode());
+
 		 
 	}
 	
@@ -846,7 +864,13 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUsersListByOrglocationId(Long orgLocationId) throws Exception {
 		return userDao.getUsersListByOrglocationId(orgLocationId);
 	}
-	
+	@Override
+	public void saveOrUpdateUserElkDocument(UserRole userRole, Employees employee, String loginUserCode) throws Exception {
+		//Elastic Search Document Saving
+		UserIndex userIndex = userIndexHelper.getUserIndexFromUser(userRole,employee,loginUserCode);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,userRole.getId().toString());
+		
+	}
 	
 	
 }
