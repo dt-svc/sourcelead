@@ -21,15 +21,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
-import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -40,9 +38,11 @@ import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -54,6 +54,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -104,6 +105,12 @@ public class ClientServiceImpl implements ClientService{
 	
 	@Autowired
 	RolesService rolesService;
+	
+	@Autowired
+	private UserRoleService userRoleService;
+	
+	@Autowired
+	private EmployeesService employeesService;
 	
 	@Autowired
 	RoleHierarchyService roleHierarchyService;
@@ -697,6 +704,8 @@ public class ClientServiceImpl implements ClientService{
 				User editUser =null;
 				if(jsonObj.getString("existingSpocUserId") != null && !jsonObj.getString("existingSpocUserId").isEmpty()){
 					User existingUser = userService.getUserById(Long.parseLong(jsonObj.getString("existingSpocUserId")));
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(), orgLocation.getId());
+
 					if(jsonObj.getString(vendorContactFirstName) != null && !jsonObj.getString(vendorContactFirstName).isEmpty()){
 						existingUser.setFirstName(jsonObj.getString(vendorContactFirstName));
 					}else{
@@ -719,6 +728,10 @@ public class ClientServiceImpl implements ClientService{
 						existingUser.setEmail("");
 					}
 					editUser = userService.addUser(existingUser);
+					Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(editUser.getId(), orgLocation.getId());
+					//Update the user details for Elk search
+					userService.saveOrUpdateUserElkDocument(userRole,employee, editUser.getUserCode());
+			
 				}
 				
 				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
