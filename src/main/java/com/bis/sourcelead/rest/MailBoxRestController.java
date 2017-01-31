@@ -337,6 +337,7 @@ public class MailBoxRestController {
 				userMailbox.setUnreadInboxCount(inboxUnreadMailsCount);
 				userMailbox.setUnreadRequestedCount(requestedUnreadMailsCount);
 				userMailbox.setTotalUnReadMailsCount(inboxUnreadMailsCount+requestedUnreadMailsCount);
+				SourceLeadSessionManager.setSessionAttribute(request, "unReadMailsCount", inboxUnreadMailsCount+requestedUnreadMailsCount);
 				userMailbox.setCandidatesList(reqCandidatesList);
 				if(null != nextMail){
 					userMailbox.setNextMailUUID(nextMail.getUuid());
