@@ -55,6 +55,7 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.RequirementHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -90,6 +91,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -157,7 +159,8 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private UserRoleService userRoleService;
 	
-	
+    @Autowired
+    private ProjectsService projectsService;
 	
 	
 	 @Autowired
@@ -2759,6 +2762,43 @@ public class RequirementServiceImpl implements RequirementService {
 		{
 			// ELK list for the projects
 			
+                boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			 
+			 //Integer maxResults = projectsService.getAllProjects().size();
+			 
+			 Integer maxResults = projectsService.getProjectCountByOrgLocationId(orgLocation.getId());
+				
+				//All Keywords
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getProjectsMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(allBoolQueryBuilder);
+				}
+			//	List<ProjectsIndex> projectsList = new ArrayList<ProjectsIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				if(searchHits != null && searchHits.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHits) {
+						String json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						ProjectsIndex projectsIndex = mapper.readValue(json, ProjectsIndex.class);
+						searchList.add(projectsIndex);
+					}
+				}
+			
 			return searchList;
 		}
 		
@@ -2868,6 +2908,20 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	
+
+	private ArrayList<MatchQueryBuilder> getProjectsMatchQueryBuilderList(String keywd) {
+		 ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    //Project Search
+		   // matchQueryBuilderList.add(QueryBuilders.matchQuery("id", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("projectName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("level1ManagerName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("startDate", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMemberEmail", keywd));
+			return matchQueryBuilderList; 
+	}
 
 	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForAll(String keywd) {
 		// TODO Auto-generated method stub

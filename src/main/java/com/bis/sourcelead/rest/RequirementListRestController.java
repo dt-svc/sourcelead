@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
@@ -1262,12 +1263,14 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 				if(obj instanceof Requirement){
 					List<Requirement> reqList = (List<Requirement>)(Object)searchList; 
 					return commonUtil.toJSON(reqList);
-					//return resultJson;
 				}else if(obj instanceof Candidate){
 					List<CandidateIndex> candidateList = (List<CandidateIndex>)(Object)searchList; 
 					return commonUtil.toJSON(candidateList);
 				}else if(obj instanceof ClientVendorIndex){
 					List<ClientVendorIndex> clientVendorList = (List<ClientVendorIndex>)(Object)searchList; 
+					return commonUtil.toJSON(clientVendorList);
+				}else if(obj instanceof ProjectsIndex){
+					List<ProjectsIndex> clientVendorList = (List<ProjectsIndex>)(Object)searchList; 
 					return commonUtil.toJSON(clientVendorList);
 				}
 			}

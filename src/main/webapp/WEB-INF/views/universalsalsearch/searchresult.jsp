@@ -221,7 +221,43 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'  </div>';
 	    	}
 	    	
+	    	}else if(searchType =='Projects'){
+	    		result = result+'   <h4>Projects</h4>';
+		    	 for (var i = 0; i < json.length; i++) {
+		             var report= json[i];
+		             var manager = "";
+		             var date = "";
+				    	result = result+'  <div class="srchresult clearfix row">';
+				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
+				    	if(report.projectName !=null && report.projectName != '' && report.projectName !="undefined" && report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
+				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.projectName+'</a></strong></label>, <label>'+report.invoiceFrequency+'</label>';
+				    	}else{
+				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.projectName+'</a></strong></label>';
+				    	}
+				    	result = result+'</p>';
+				    	if(report.clientName !=null && report.clientName != '' && report.clientName !="undefined"){
+				    		result = result+'<p><label>'+report.clientName+'</label></p>';
+				    	}
+				    	if(report.level1ManagerName !=null && report.level1ManagerName != '' && report.level1ManagerName !="undefined"){
+				    		manager = manager +report.level1ManagerName;
+				    	}if(report.level1ManagerName !=null && report.level1ManagerName != '' && report.level1ManagerName !="undefined" && report.level2ManagerName !=null && report.level2ManagerName !='' && report.level2ManagerName !='undefined'){
+				    		manager = manager+",";
+				    	}if(report.level2ManagerName !=null && report.level2ManagerName !='' && report.level2ManagerName !='undefined'){
+				    		manager = manager + report.level2ManagerName;
+				    	}
+				    	result = result+'<p><label>'+manager+'</label></p>';
+		    	        }if(report.startDate !=null && report.startDate != '' && report.startDate !="undefined" && report.endDate !=null && report.endDate !='' && report.endDate !='undefined'){
+				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.startDate+'</a></strong></label>, <label>'+report.endDate+'</label>';
+				    	}
+				    	result = result+'<span href="javascript:void(0)" class="reqstatus-btn">'+report.projectStatus+'</span>';
+				    	result = result+'</div>';
+				    	result = result+'</div>';
+				    	result = result+'<div class="clearfix">';
+				    	result = result+'<a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+				    	result = result+'</div>';
 	    	}
+	    	
+	    	
 	    	 result = result+'</div>';
 	    	 $("#searchList").empty();
 	    	 $("#searchList").append(result);
