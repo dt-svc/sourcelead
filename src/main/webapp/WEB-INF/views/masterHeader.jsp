@@ -33,11 +33,10 @@
 <script src="resources/js/chosen.jquery.min.js"></script>
 <script src="resources/js/jquery-ui.js"></script>
 <script src="resources/js/jquery-fun.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/jquery.dataTables.min.js"></script>
 <script src="resources/js/jquery.timepicker.js"></script>
 <script src="resources/js/formvalidator.js"></script>
-
+<script src="resources/js/bootstrap-select.min.js"></script>
 
 
 <style>
@@ -923,7 +922,7 @@ function updateAssignTaskStatus(taskId){
 function myTasksPagination(){
     $('#myTasksPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -938,7 +937,7 @@ function myTasksPagination(){
 function assignedTasksPagination(){
     $('#assignedTasksPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -952,7 +951,7 @@ function assignedTasksPagination(){
 function closedTasksPagination(){
     $('#closedTasksPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
