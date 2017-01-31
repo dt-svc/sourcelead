@@ -393,7 +393,8 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     	  
 	     	  
 	     	 if(name == "CurrentCTC"){
-	     		  if(null != inputValue){
+	     		 inputValue = $this.find('input').val();
+	     		 if(inputValue){
 	     			 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value; 
 	     			 var currentCTCRateType = document.getElementById("currentCTCRateType").value; 
 	     			 inputValue = currentCTCRateType+" "+inputValue+" /"+" "+currentCTCRatePer ;
@@ -401,7 +402,8 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     	  }
 	     	 
 	     	if(name == "ExpectedCTC"){
-	     		  if(null != inputValue){
+	     		 inputValue = $this.find('input').val();
+	     		  if(inputValue){
 	     			 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value; 
 	     			 var expectedCTCRateType = document.getElementById("expectedCTCRateType").value; 
 	     			 inputValue = expectedCTCRateType+" "+inputValue+" /"+" "+expectedCTCRatePer ;

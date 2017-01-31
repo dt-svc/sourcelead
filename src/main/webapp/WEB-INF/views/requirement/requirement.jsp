@@ -2196,10 +2196,8 @@ var existingValue = document.getElementById('isClientJob').value;
 		 // $("#clientCurrencyCode").val('');
 			
 		 $('#clientRate').val('');
-		 
 		 $('select[name=clientRateType]').val(1);
-		 $('.selectpicker').selectpicker('refresh');
-		 
+		// $('.selectpicker').selectpicker('refresh');
 		 $("#clientSubmissionForm").val('');
 		 $('#clientSubmissionForm').trigger("chosen:updated");
 		 
