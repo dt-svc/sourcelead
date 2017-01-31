@@ -5,11 +5,24 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,9 +34,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -37,6 +54,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * 
  * @author Rajashekar
@@ -69,9 +87,11 @@ public class VendorRestController {
 	@Autowired
 	private ClientVendorExport clientVendorExport;
 	
-	
+
 	@Autowired
-	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
+	
+	
 	
 	/**
 	 * Handles Vendor Contacts 
@@ -635,5 +655,470 @@ public class VendorRestController {
 			if(file!= null){
 				file.delete();
 			}
-		}
+
+	   }
+	   
+	   
+	   
+	   
+	   
+	   /**
+		   * @author 
+		   * @since  Dec 28 2016
+		   * @version 0.0.1
+		   * 
+		   *  
+		   * @return string 
+		   * 
+		   * @throws NullPointer
+		   */
+		 @RequestMapping(value = "/searchVendorThroughElasticSearch", method = RequestMethod.POST)
+		 public String searchVendorThroughElasticSearch(@RequestParam(value = "responderType", required = false) String responderType, @RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request) throws Exception {
+
+			    MultipartFile multiFile = null;
+				Iterator<String> itrator = request.getFileNames();
+				if(itrator.hasNext()){
+			        multiFile = request.getFile(itrator.next());
+				}
+				String jsonc = "{" + json + "}";
+				JSONObject jsonObj = new JSONObject(jsonc);
+				
+				 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				
+				 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+				 
+				 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+				 boolQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
+				 
+				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId());
+			   	 
+				 //Exclude Keyword
+				 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+				 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+				 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : excludeKeyWordArray){
+						 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+				  }
+					
+					//Any Keyword
+					ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+					if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : anyKeyWordArray){
+							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(anyBoolQueryBuilder);
+					}
+					//All Keywords
+					ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : allKeyWordArray){
+							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									allBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(allBoolQueryBuilder);
+					}
+					
+					//vendorName
+					ArrayList<String> vendorNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "orgNameAdvanced");
+					if(vendorNameArray != null && !vendorNameArray.isEmpty()){
+						BoolQueryBuilder vendorNameBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : vendorNameArray){
+							vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("orgName", keywd));
+						}
+						boolQueryBuilder.must(vendorNameBoolQueryBuilder);
+					}
+					
+					
+
+					 //Country
+					if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
+						boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+				    }
+					
+					 //State
+					if(jsonObj.has("state") && StringUtils.isNotEmpty(jsonObj.getString("state"))){
+						boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
+				    }
+					//City
+					if(jsonObj.has("city")  && StringUtils.isNotEmpty(jsonObj.getString("city"))){
+						boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
+				    }
+					
+					
+					
+						
+					//CreatedBy
+					ArrayList<String> createdByArray = getSearchKeywordsFromChosenSelectField(jsonObj, "createdByAdvanced");
+					if(createdByArray != null && !createdByArray.isEmpty()){
+						BoolQueryBuilder createdByBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : createdByArray){
+							createdByBoolQueryBuilder.should(QueryBuilders.matchQuery("createdBy", keywd));
+						}
+						boolQueryBuilder.must(createdByBoolQueryBuilder);
+					}
+					
+
+					//tierAdvanced
+					ArrayList<String> tierAdvancedByArray = getSearchKeywordsFromChosenSelectField(jsonObj, "tierAdvanced");
+					if(tierAdvancedByArray != null && !tierAdvancedByArray.isEmpty()){
+						BoolQueryBuilder tierAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : tierAdvancedByArray){
+							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("responderLevel", keywd));
+						}
+						boolQueryBuilder.must(tierAdvancedBoolQueryBuilder);
+					}
+					
+					
+					List<ClientVendorIndex> clientVendorList = new ArrayList<ClientVendorIndex>();
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					df.setTimeZone(TimeZone.getTimeZone("GMT"));
+					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+					if(searchHits != null && searchHits.length >0){
+						ObjectMapper mapper = new ObjectMapper();
+						for (SearchHit hit : searchHits) {
+							json = hit.getSourceAsString();
+							mapper.setDateFormat(df);
+							ClientVendorIndex clientVendorIndex = mapper.readValue(json, ClientVendorIndex.class);
+							clientVendorList.add(clientVendorIndex);
+						}
+					}
+				 String resultJson;
+				 resultJson = commonUtil.toJSON(clientVendorList);
+				 return resultJson;
+		 }
+		 
+		 private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
+			 ArrayList<String> keyWordList = null;
+			 if(jsonObj.has(param)){
+				 String searchKeywordString = null;
+				 try{
+		   		   JSONArray jsonArray = jsonObj.getJSONArray(param);
+		   		   searchKeywordString = jsonArray.toString();
+			   	  }
+			   	  catch(JSONException e){
+			   		  searchKeywordString= jsonObj.getString(param);
+			   	  }
+				 
+			     searchKeywordString = searchKeywordString.replaceAll("\\[", "").replaceAll("\\]","");
+			     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+			 }
+			 else{
+				 keyWordList = new ArrayList<String>();
+			 }
+	        return keyWordList;
+	    }
+
+		 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+			    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+			   
+			    //Vendor Search 
+			    matchQueryBuilderList.add(QueryBuilders.matchQuery("orgName", keywd));
+			    matchQueryBuilderList.add(QueryBuilders.matchQuery("tierAdvanced", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("createdByAdvanced", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+				return matchQueryBuilderList; 
+		 }
+		 
+		 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForContacts(String keywd){
+			    ArrayList<MatchQueryBuilder> matchQueryBuilderListForContacts = new ArrayList<MatchQueryBuilder>();
+			   
+			    //Contact  Search 
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("orgName", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocMobilePhone", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocEmail", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("ownerName", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocStatus", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocName", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", keywd));
+			    
+			    
+				
+				
+				
+				return matchQueryBuilderListForContacts; 
+		 }
+		 
+		 
+		 /**
+		   * @author 
+		   * @since  Dec 28 2016
+		   * @version 0.0.1
+		   * 
+		   *  
+		   * @return string 
+		   * 
+		   * @throws NullPointer
+		   */
+		 @RequestMapping(value = "/searchVendorContactsThroughElasticSearch", method = RequestMethod.POST)
+		 public String searchVendorContactsThroughElasticSearch(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+
+			    MultipartFile multiFile = null;
+				Iterator<String> itrator = request.getFileNames();
+				if(itrator.hasNext()){
+			        multiFile = request.getFile(itrator.next());
+				}
+				String jsonc = "{" + json + "}";
+				JSONObject jsonObj = new JSONObject(jsonc);
+				
+				 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+
+				 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+				 
+				 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+					
+				 // to   get the number of contacts 
+				 Integer maxResults = orgSpocService.getAllVendorContactsCountbyOrgLocationId(loginOrgLocation.getId());
+			   	 
+				 //Exclude Keyword
+				 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+				 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+				 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : excludeKeyWordArray){
+						 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForContacts(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+				  }
+					
+					//Any Keyword
+					ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+					if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : anyKeyWordArray){
+							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForContacts(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(anyBoolQueryBuilder);
+					}
+					//All Keywords
+					ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : allKeyWordArray){
+							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForContacts(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									allBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(allBoolQueryBuilder);
+					}
+					
+					//contactName
+					ArrayList<String> vendorNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "contactNameAdvanced");
+					if(vendorNameArray != null && !vendorNameArray.isEmpty()){
+						BoolQueryBuilder vendorNameBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : vendorNameArray){
+							vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("orgName", keywd));
+						}
+						boolQueryBuilder.must(vendorNameBoolQueryBuilder);
+					}
+					
+					
+					
+					//Spock Email
+					ArrayList<String> contactEmailNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "emailAdvanced");
+					if(contactEmailNameArray != null && !contactEmailNameArray.isEmpty()){
+						BoolQueryBuilder contactEmailBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : contactEmailNameArray){
+							contactEmailBoolQueryBuilder.should(QueryBuilders.matchQuery("spocEmail", keywd));
+						}
+						boolQueryBuilder.must(contactEmailBoolQueryBuilder);
+					}
+					
+					
+					//Spock PhoneNumber
+					ArrayList<String> phoneNumberNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "phoneNumberAdvanced");
+					if(phoneNumberNameArray != null && !phoneNumberNameArray.isEmpty()){
+						BoolQueryBuilder phoneNumberBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : phoneNumberNameArray){
+							phoneNumberBoolQueryBuilder.should(QueryBuilders.matchQuery("spocMobilePhone", keywd));
+						}
+						boolQueryBuilder.must(phoneNumberBoolQueryBuilder);
+					}
+					
+					//Spock ownerAdvanced
+					ArrayList<String> ownerAdvancedNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "ownerAdvanced");
+					if(ownerAdvancedNameArray != null && !ownerAdvancedNameArray.isEmpty()){
+						BoolQueryBuilder ownerAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : ownerAdvancedNameArray){
+							ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("spocMobilePhone", keywd));
+						}
+						boolQueryBuilder.must(ownerAdvancedBoolQueryBuilder);
+					}
+					
+					
+					//Spock Status
+					if(jsonObj.has("statusAdvanced")  && StringUtils.isNotEmpty(jsonObj.getString("statusAdvanced"))){
+						boolQueryBuilder.must(QueryBuilders.matchQuery("spocStatus", jsonObj.getString("statusAdvanced")));
+				    }
+					
+					//Invitation  Status
+					if(jsonObj.has("invitationAdvanced")  && StringUtils.isNotEmpty(jsonObj.getString("invitationAdvanced"))){
+						boolQueryBuilder.must(QueryBuilders.matchQuery("invitationStatus", jsonObj.getString("invitationAdvanced")));
+				    }
+					
+					
+					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+
+					List<ClientVendorContactsIndex> clientVendorContactsList = new ArrayList<ClientVendorContactsIndex>();
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					df.setTimeZone(TimeZone.getTimeZone("GMT"));
+					if(searchHits != null && searchHits.length >0){
+						ObjectMapper mapper = new ObjectMapper();
+						for (SearchHit hit : searchHits) {
+							json = hit.getSourceAsString();
+							mapper.setDateFormat(df);
+							ClientVendorContactsIndex clientVendorContactsIndex = mapper.readValue(json, ClientVendorContactsIndex.class);
+							clientVendorContactsList.add(clientVendorContactsIndex);
+						}
+						
+						for(ClientVendorContactsIndex clientVendorContactsIndex : clientVendorContactsList){
+							
+						//loginOrgLocation
+						
+						if(clientVendorContactsIndex.getSpocUserId() == loginUser.getId().longValue() || clientVendorContactsIndex.getOwnerUserId() == loginUser.getId().longValue()){
+							//if login user is spoc
+							if(clientVendorContactsIndex.getSpocUserId() !=null && clientVendorContactsIndex.getSpocUserId() == loginUser.getId().longValue()){
+								
+								if(clientVendorContactsIndex.getOwnerUserId() != null && clientVendorContactsIndex.getOwnerUserFirstName() != "" && clientVendorContactsIndex.getOwnerUserLastName() != null && clientVendorContactsIndex.getOwnerUserLastName() != "" ){
+									StringBuilder spocNameSB = new StringBuilder();
+									clientVendorContactsIndex.setSpocName(spocNameSB.append(clientVendorContactsIndex.getOwnerUserFirstName()).append(" ").append(clientVendorContactsIndex.getOwnerUserLastName()).toString());
+								}else{
+									clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getOwnerUserFirstName());
+								}
+								if(clientVendorContactsIndex.getSpocUserFirstName() != null && clientVendorContactsIndex.getSpocUserFirstName() != "" && clientVendorContactsIndex.getSpocUserLastName() != null && clientVendorContactsIndex.getSpocUserLastName() != "" ){
+									StringBuilder ownerNameSB = new StringBuilder();
+									clientVendorContactsIndex.setOwnerNames(ownerNameSB.append(clientVendorContactsIndex.getSpocUserFirstName()).append(" ").append(clientVendorContactsIndex.getSpocUserLastName()).toString());
+								}else{
+									clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getSpocUserFirstName());
+								}
+								clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getOwnerUserEmail());
+								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getOwnerUserPhNo());
+			    				 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+			    				 //orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+							}
+							//if login user is Owner
+							else if(clientVendorContactsIndex.getOwnerUserId() != null && clientVendorContactsIndex.getOwnerUserId() == loginUser.getId().longValue()){
+								if(clientVendorContactsIndex.getSpocUserFirstName() != null && clientVendorContactsIndex.getSpocUserFirstName() != "" && clientVendorContactsIndex.getSpocUserLastName() != null && clientVendorContactsIndex.getSpocUserLastName() != "" ){
+									StringBuilder spocNameSB1 = new StringBuilder();
+									clientVendorContactsIndex.setSpocName(spocNameSB1.append(clientVendorContactsIndex.getSpocUserFirstName()).append(" ").append(clientVendorContactsIndex.getSpocUserLastName()).toString());
+								}else{
+									clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getSpocUserFirstName());
+								}
+								if(clientVendorContactsIndex.getOwnerUserId() != null && clientVendorContactsIndex.getOwnerUserFirstName() != "" && clientVendorContactsIndex.getOwnerUserLastName() != null && clientVendorContactsIndex.getOwnerUserLastName() != "" ){
+									StringBuilder ownerNameSB1 = new StringBuilder();
+									clientVendorContactsIndex.setOwnerNames(ownerNameSB1.append(clientVendorContactsIndex.getOwnerUserFirstName()).append(" ").append(clientVendorContactsIndex.getOwnerUserLastName()).toString());
+								}else{
+									clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getOwnerUserFirstName());
+								}
+								clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getSpocUserEmail());
+								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
+									 //orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+									 //orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+								}
+								
+							 
+						}else{
+							if(clientVendorContactsIndex.getOrgLocationId() != null && clientVendorContactsIndex.getOrgLocationId() == loginOrgLocation.getId().longValue() ){
+								if(clientVendorContactsIndex.getSpocUserFirstName() != null && clientVendorContactsIndex.getSpocUserFirstName() != "" && clientVendorContactsIndex.getSpocUserLastName() != null && clientVendorContactsIndex.getSpocUserLastName() != "" ){
+									StringBuilder spocNameSB2 = new StringBuilder();
+									clientVendorContactsIndex.setSpocName(spocNameSB2.append(clientVendorContactsIndex.getSpocUserFirstName()).append(" ").append(clientVendorContactsIndex.getSpocUserLastName()).toString());
+								}else{
+									clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getSpocUserFirstName());
+								}
+								
+								if(clientVendorContactsIndex.getOwnerUserFirstName() != null && clientVendorContactsIndex.getOwnerUserFirstName() != "" && clientVendorContactsIndex.getOwnerUserLastName() != null && clientVendorContactsIndex.getOwnerUserLastName() != "" ){
+									StringBuilder ownerNameSB2 = new StringBuilder();
+									clientVendorContactsIndex.setOwnerNames(ownerNameSB2.append(clientVendorContactsIndex.getOwnerUserFirstName()).append(" ").append(clientVendorContactsIndex.getOwnerUserLastName()).toString());
+								}else{
+									clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getOwnerUserFirstName());
+								}
+								clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getSpocUserEmail());
+								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
+								 //orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+								 //orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+							 }
+							if(clientVendorContactsIndex.getSpocLocationId() !=null && clientVendorContactsIndex.getSpocLocationId() == loginOrgLocation.getId().longValue()){
+								if(clientVendorContactsIndex.getOwnerUserFirstName() != null && clientVendorContactsIndex.getOwnerUserFirstName() != "" && clientVendorContactsIndex.getOwnerUserLastName() != null && clientVendorContactsIndex.getOwnerUserLastName() != "" ){
+									StringBuilder spocNameSB3 = new StringBuilder();
+									clientVendorContactsIndex.setSpocName(spocNameSB3.append(clientVendorContactsIndex.getOwnerUserFirstName()).append(" ").append(clientVendorContactsIndex.getOwnerUserLastName()).toString());
+								}else{
+									clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getOwnerUserFirstName());
+								}
+								
+								if(clientVendorContactsIndex.getSpocUserFirstName() != null && clientVendorContactsIndex.getSpocUserFirstName() != "" && clientVendorContactsIndex.getSpocUserLastName() != null && clientVendorContactsIndex.getSpocUserLastName() != "" ){
+									StringBuilder ownerNameSB3 = new StringBuilder();
+									clientVendorContactsIndex.setOwnerNames(ownerNameSB3.append(clientVendorContactsIndex.getSpocUserFirstName()).append(" ").append(clientVendorContactsIndex.getSpocUserLastName()).toString());
+								}else{
+									clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getSpocUserFirstName());
+								}
+								clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getOwnerUserEmail());
+								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getOwnerUserPhNo());
+							 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+							 //orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+							}
+						}
+						if(clientVendorContactsIndex.getSpocLocationId() !=null && clientVendorContactsIndex.getSpocLocationId() == loginOrgLocation.getId().longValue()){
+							clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getOrgLocationId());
+							clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getInitiatorOrgName());
+						}
+						if(clientVendorContactsIndex.getOrgLocationId() !=null && clientVendorContactsIndex.getOrgLocationId() == loginOrgLocation.getId().longValue() ){
+							clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getSpocLocationId());
+							clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getResponderOrgName());
+						}
+						
+						//clientVendorContactsIndex.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
+						//clientVendorContactsIndex.setSpocUserId(orgSpoc.getSpocUser().getId());
+						//clientVendorContactsIndex.setOrgRelationId(orgSpoc.getOrgRelations().getId());
+						
+						}	
+						
+					}
+				 String resultJson;
+				 resultJson = commonUtil.toJSON(clientVendorContactsList);
+				 return resultJson;
+		 }
 }

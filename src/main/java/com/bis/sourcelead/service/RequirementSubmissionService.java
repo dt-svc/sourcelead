@@ -105,7 +105,7 @@ public interface RequirementSubmissionService {
 			OrgLocations orgLocations) throws Exception;
 	
 	public void applicantRejectMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
-			OrgLocations orgLocations, String rejectreason, StringBuilder tempHTML, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation) throws Exception;
+			OrgLocations orgLocations, String rejectreason, StringBuilder tempHTML, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, Long submissionId) throws Exception;
 	
 
 	RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user, RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile,Org loginOrg,OrgLocations loginOrgLocation) throws Exception;
@@ -158,5 +158,7 @@ public interface RequirementSubmissionService {
 	void clientOrVendorAcceptOrRejectRateNegotiation(Org loginOrg, User users, User pastUser,
 			RequirementSubmission requirementSubmission, Candidate candidate, StringBuilder tempHTML,
 			OrgLocations loginOrgLocation,String type, String status) throws Exception;
+	
+	List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception;
 
 }

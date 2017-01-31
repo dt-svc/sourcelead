@@ -89,6 +89,12 @@ public class VendorController {
 		if(countries != null){
 			model.addObject("loginCountryName", countries.getName());
 		}
+		
+
+		List<Countries> countryList = countriesService.getAllCountries();
+		model.addObject("countryList", countryList);
+		
+		
 		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
 		for(OrgRelations orgRelation :vendorsList){
 			if(orgRelation.getLocationId() != null && null != orgRelation.getLocationId().getId() && orgRelation.getLocationId().getId().longValue() == orgLoc.getId().longValue()){

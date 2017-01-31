@@ -320,4 +320,21 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			return spocsList;
 			
 	   	}
+
+		@Override
+		@Transactional
+		public Integer getAllVendorContactsCountbyOrgLocationId(Long orgLocationId) throws Exception {
+		   
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Long> spocsList = null;
+	            
+	            Query query= session.createQuery("select count(*) from OrgSpoc spoc where spoc.initiatorLocationId.id=:locationId and spoc.status <> '0' ");
+				spocsList = query.setLong("locationId", orgLocationId).setCacheable(true).list();
+				
+	        	Integer count = 0;
+	    		if(spocsList != null && !spocsList.isEmpty()){
+	    				count = spocsList.get(0).intValue();
+	    		}
+	    		return count;
+		}
 }

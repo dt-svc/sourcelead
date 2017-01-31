@@ -541,6 +541,41 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			List<OrgRelations> relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setString("type", type).setCacheable(true).list();
 			return relationsList;
 	}
+
+	@Override
+	@Transactional
+	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception {
+
+		logger.debug("In OrgRelations getAllClientsCountByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+
+		Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type )");
+		List<OrgRelations> relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setString("type", "Client").setCacheable(true).list();
+		
+		Integer count = 0;
+		if(relationsList != null && !relationsList.isEmpty()){
+				count = relationsList.size();
+		}
+		return count;
+	}
+
+	@Override
+	@Transactional
+	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId) throws Exception {
+
+		logger.debug("In OrgRelations getAllVendorsCountByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+
+			Query vendorsListQuery= session.createQuery("select count(*) from OrgRelations orgrelation where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type )");
+			List<OrgRelations> relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setString("type", "Vendor").setCacheable(true).list();
+		
+		Integer count = 0;
+		if(relationsList != null && !relationsList.isEmpty()){
+				count = relationsList.size();
+		}
+		return count;
+
+	}
 	
 	
 }

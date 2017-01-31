@@ -615,5 +615,21 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 
 }*/
 
-          }
+
+	@Override
+	@Transactional
+	public Integer getProjectCountByOrgLocationId(Long orgLocationId) throws Exception {
+		logger.debug("getProjectCountByOrgLocationId start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(projects.id) from Projects projects where projects.orgLocationsId.id = :orgLocationId ";
+			
+			List<Long> projectsCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			Integer count = 0;
+			if(projectsCount != null && !projectsCount.isEmpty()){
+					count = projectsCount.get(0).intValue();
+			}
+			return count;
+	}
+
+}
 

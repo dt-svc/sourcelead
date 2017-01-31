@@ -735,6 +735,7 @@ function sideBar(requirementId){
 						    result = result+'</div>';
 						    result = result+' <div id="tab-2" class="project_tabs_inn">';
 						    result = result+'</div>';
+						    result = result +'<div id="pipelineLoading"></div>';
 						    result = result +'<div id="status-div"></div>';
 							result = result +'<div id="status-data"></div>';
 						   
@@ -1223,6 +1224,8 @@ function requirementPipeline(requirementId,submissionType){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
+	  
+	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
@@ -1297,7 +1300,7 @@ function requirementPipeline(requirementId,submissionType){
 							
 				           // result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            //result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
-				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix">';
+				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
 				            result = result +'  <ul>';
 				            result = result +'    <li class="li-vendor">';
 				          //  result = result +'      <input type="text" class="vendorfild" placeholder="Search">';
@@ -1351,7 +1354,7 @@ function requirementPipeline(requirementId,submissionType){
 				            '</sec:authorize>';
 				           result = result + '<div class="clearfix"></div>';
 				           result = result + '</div>';
-				           result = result + '<div class="require_wrap_table overflow-data">';
+				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
 				           result = result + '<div class="clerfix">';
 				           result = result + '<table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
 				           result = result + '<thead>';
@@ -1668,6 +1671,7 @@ function requirementPipeline(requirementId,submissionType){
 				           
 							$("#tab-1").empty();
 							$("#tab-3").empty();
+							$("#pipelineLoading").removeAttr("style");
 							$("#status-data").empty();
 							$("#status-data").append(result);
 							$("#tab-2").append(status-data);
@@ -2329,7 +2333,7 @@ function requirementStatusBar(requirementId){
 		 result = result + '       </a> <span class="label label-default" id="duplicateApplicantsCount">0</span> </li>';
 		 
 		 result = result + '   <li id="requestSentli" class="tabActivation" onclick="filterReq('+requirementId+',\''+requestSent+'\');tabEnable(this);"> <a href="javascript:void(0)" title="RequestSent">';
-         result = result + '     <label><strong>RequestSent</strong></label>';
+         result = result + '     <label><strong>Request Sent</strong></label>';
          result = result + '      </a><span class="label label-warning" id="requestSent">0</span></li>';
 		 
 		 result = result + '      <li id="shortListli" class="tabActivation" onclick="filterReq('+requirementId+',\''+shortList+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Shortlisted">';

@@ -54,9 +54,9 @@ function getAddApplicant(requirementId){
 	result = result + '</div>';
 	
 	result = result + '<div class="clearfix"></div>';
-	result = result + '<div class="col-md-6">';
+	result = result + '<div class="col-md-6 mt10">';
 	result = result + '<div id="selectCandidateDiv" style="display: block;">';
-	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" name="candidateId" id="candidateId" data-validation="required" field-name="Applicant" class="form-control  block mt10">';
+	result = result + '<select class="form-control chosen-select" onchange="getCandidateDetails(); getCandidateResumes();"  name="candidateId" id="candidateId" data-validation="required" field-name="Applicant" class="form-control  block mt10">';
 	result = result + '<option value="">--Select Candidate--</option>';
 	result = result + '</select>';
 	result = result + '</div>';	
@@ -220,7 +220,7 @@ function ApplicantPermit(){
 				        		if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
 				        			lastName = opt.lastName;
 				        		}
-				        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+lastName+"</option>";
+				        		output = output + "<option value='" +opt.candidateId+ "'>"+opt.firstName+" "+lastName+"</option>";
 						}
 			        	$("#candidateId").empty();
 				        $("#candidateId").append(output);
@@ -283,11 +283,10 @@ function ApplicantPermit(){
 	 
 	 $("input[name=PhoneNumber]").val('');
 	 $("input[name=Designation]").val('');
-	 //$("select[name=country]").val('');
 	 $("select[name=state]").val('');
 	 $("select[name=city]").val('');
 	 $("select[name=NoticePeriod]").val('');
-	 $("select[name=WorkExperience]").val('');
+	 $("select[name=WorkExperience]").val(0);
 	 $("input[name=ExpectedCTC]").val('');
 	 $("input[name=CurrentCTC]").val('');
 	 $("input[name=Education]").val('');
@@ -375,6 +374,41 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     		 name = $this.find('select').attr('name');
 	     		 id = $this.find('select').attr('id');
      	      }
+	     	  
+	     	  if(name == "WorkExperience"){
+	     		 var monthExp = document.getElementById("monthExp").value; 
+	     		  if(null != inputValue){
+	     			  if(inputValue == "25+"){
+	     				 inputValue = inputValue+" Years";
+	     			  }else{
+	     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;
+	     			  }
+	     			 
+	     		  }
+	     		  
+	     		  if(null == inputValue && monthExp != '0'){
+	     			 inputValue = monthExp+" Months" ;
+	     		  }
+	     	  }
+	     	  
+	     	  
+	     	 if(name == "CurrentCTC"){
+	     		  if(null != inputValue){
+	     			 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value; 
+	     			 var currentCTCRateType = document.getElementById("currentCTCRateType").value; 
+	     			 inputValue = currentCTCRateType+" "+inputValue+" /"+" "+currentCTCRatePer ;
+	     		  }
+	     	  }
+	     	 
+	     	if(name == "ExpectedCTC"){
+	     		  if(null != inputValue){
+	     			 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value; 
+	     			 var expectedCTCRateType = document.getElementById("expectedCTCRateType").value; 
+	     			 inputValue = expectedCTCRateType+" "+inputValue+" /"+" "+expectedCTCRatePer ;
+	     		  }
+	     	  }
+	     	  
+	     	  
       	  fields.push({
                 label: fieldLabel,
                 id :id,
@@ -536,7 +570,6 @@ $('body').on('submit', '#addApplicant_form', function(e){
 
 <script type="text/javascript">
 function getCandidateDetails(){
-	
 	var candidateId = document.getElementById("candidateId").value
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
@@ -599,8 +632,19 @@ function getCandidateDetails(){
 		        	 
 		        	 if(json['experienceYears'] != null && json['experienceYears'] != "" && json['experienceYears'] != 'undefined'){
 		        		 $("select[name=WorkExperience]").val(json['experienceYears']);
+		        		 if(json['experienceYears'] == "25+"){
+		        			 $("#monthExp").attr("disabled", "disabled");
+		        		 }else{
+		        			 $("#monthExp").removeAttr("disabled");
+		        		 }
 		        	 }else{
-		        		 $("select[name=WorkExperience]").val('');
+		        		 $("select[name=WorkExperience]").val(0);
+		        	 }
+		        	 
+		        	 if(json['experienceMonths'] != null && json['experienceMonths'] != "" && json['experienceMonths'] != 'undefined'){
+		        		 $("select[name=monthExp]").val(json['experienceMonths']);
+		        	 }else{
+		        		 $("select[name=monthExp]").val(0);
 		        	 }
 		        	 
 		        	 if(json['expectedRate'] != null && json['expectedRate'] != "" && json['expectedRate'] != 'undefined'){
@@ -609,10 +653,35 @@ function getCandidateDetails(){
 		        		 $("input[name=ExpectedCTC]").val(''); 
 		        	 }
 		        	 
+		        	 
+		        	 if(json['rateType'] != null && json['rateType'] != "" && json['rateType'] != 'undefined'){
+		        		 $("select[name=expectedCTCRatePer]").val(json['rateType']);
+		        	 }else{
+		        		 $("select[name=expectedCTCRatePer]").val('');
+		        	 }
+		        	 
+		        	 if(json['expectedRateCurrencey'] != null && json['expectedRateCurrencey'] != "" && json['expectedRateCurrencey'] != 'undefined'){
+		        		 $("select[name=expectedCTCRateType]").val(json['expectedRateCurrencey']);
+		        	 }
+		        	 
 		        	 if(json['currentRate'] != null && json['currentRate'] != "" && json['currentRate'] != 'undefined'){
 		        		 $("input[name=CurrentCTC]").val(json['currentRate']);
+		        		 validateCurrentCTC();
 		        	 }else{
 		        		 $("input[name=CurrentCTC]").val(''); 
+		        		 validateCurrentCTC();
+		        	 }
+		        	 
+		        	 if(json['currentRateType'] != null && json['currentRateType'] != "" && json['currentRateType'] != 'undefined'){
+		        		 $("select[name=currentCTCRatePer]").val(json['currentRateType']);
+		        		 validateExpectedCTC();
+		        	 }else{
+		        		 $("select[name=currentCTCRatePer]").val(''); 
+		        		 validateExpectedCTC();
+		        	 }
+		        	 
+		        	 if(json['currentRateCurrency'] != null && json['currentRateCurrency'] != "" && json['currentRateCurrency'] != 'undefined'){
+		        		 $("select[name=currentCTCRateType]").val(json['currentRateCurrency']);
 		        	 }
 		        	 
 		        },
@@ -638,7 +707,16 @@ function getCandidateDetails(){
 }
 </script>
 
-
+<script>
+function getExpYears(){
+	var expYears = $("select[name=WorkExperience]").val();
+	 if(expYears == "25+"){
+		 $("#monthExp").attr("disabled", "disabled");
+	 }else{
+		 $("#monthExp").removeAttr("disabled");
+	 }
+}
+</script>
 
 
 <script type="text/javascript">
@@ -890,3 +968,58 @@ function validate_fileupload(fileName)
 	 }
  }
  </script>   
+ 
+ 
+ <script>
+ function validateCurrentCTC(){
+	 var currentCTC = $("input[name=CurrentCTC]").val();
+	 if(currentCTC){
+		 $("#currentCTCRatePer").removeAttr("data-validation-optional");
+		 $("#currentCTCRatePer").attr("data-validation", "required");
+	 }else{
+		 $("#currentCTCRatePer").removeAttr("data-validation");
+		 $("#currentCTCRatePer").attr("data-validation-optional", "true");
+	 }
+ }
+ </script>
+ 
+  <script>
+ function validateExpectedCTC(){
+	 var expectedCTC = $("input[name=ExpectedCTC]").val();
+	 if(expectedCTC){
+		 $("#expectedCTCRatePer").removeAttr("data-validation-optional");
+		 $("#expectedCTCRatePer").attr("data-validation", "required");
+	 }else{
+		 $("#expectedCTCRatePer").removeAttr("data-validation");
+		 $("#expectedCTCRatePer").attr("data-validation-optional", "true");
+	 }
+ }
+ </script>
+ 
+ <script>
+ function changeRateLabels(){
+	 
+	 var currentRate = document.getElementById("currentRate").textContent;
+	 var currentstringLength = currentRate.length; 
+	 var currentRatelastChar = currentRate.charAt(currentstringLength - 1);
+	 
+	 if(currentRatelastChar == "*"){
+		 $("#currentRate").html("Current Rate *"); 
+	 }else{
+		 $("#currentRate").html("Current Rate");
+	 }
+	 
+	 var expectedRate = document.getElementById("expectedRate").textContent;
+	 var expectedstringLength = expectedRate.length; 
+	 var expectedRatelastChar = expectedRate.charAt(expectedstringLength - 1);
+	 
+	 if(expectedRatelastChar == "*"){
+		 $("#expectedRate").html("Expected Rate *"); 
+	 }else{
+		 $("#expectedRate").html("Expected Rate");
+	 }
+	 
+	 
+	 
+ }
+ </script>
