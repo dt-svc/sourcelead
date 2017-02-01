@@ -180,17 +180,13 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		try {
 
 			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
-			
-			/**
-			 * working mail format 
-			 * message.setFrom(new InternetAddress("prasad.salina@gmail.com", emailMessage.getFromName()));
-			 */
 
 			String UUID = null;
 			if(null != emailMessage.getEmailType() && emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)){
+				message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
 				message.setRecipients(Message.RecipientType.BCC, iAdressArray);
 			}else{
+				message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
 				message.setRecipients(Message.RecipientType.TO, iAdressArray);
 			}
 
