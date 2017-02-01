@@ -1074,14 +1074,13 @@ function preparedClientContactListFromElk(data){
 	  
 			var json = JSON.parse(data);
 		   	var result = "";
-		   	
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
 		   	result = result +'	<th>Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Ph. No</th>';
 		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Vendor</th>';
+		   	result = result +'  <th>Client</th>';
 		   	result = result +' <th>Status</th>';
 		   	result = result +' <th>Invitation</th>';
 		   	result = result +'<th>Action</th>';
@@ -1218,7 +1217,7 @@ function preparedClientListFromElk(data){
 		   	
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
-		   	result = result +' <th>Vendor Name</th>';
+		   	result = result +' <th>Client Name</th>';
 		   	result = result +' <th>Website</th>';
 		   	result = result +'<th>Location</th>';
 		   	result = result +'<th>Tier</th>';
@@ -1287,9 +1286,9 @@ function preparedClientListFromElk(data){
 		   	if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
 				result = result +' <td><div>'+report.createdBy+'</div></td>';
 		   	}else{
-		   		result = result +'<td><div>=====</div></td>';
+		   		result = result +'<td><div>---</div></td>';
 		   	}
-				result = result +'<td><div>=====</div></td>';
+				result = result +'<td><div>---</div></td>';
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
 				}
@@ -1801,6 +1800,8 @@ function getEndDatePickerById(projectId,localFieldName){
 
 <!-- Show success message after form submission script -->
 <script>
+
+$("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');
 </script> 
 <!-- End -->

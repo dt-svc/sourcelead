@@ -64,7 +64,7 @@ public class ClientVendorIndexHelper {
 			User user = userService.getUserByUserCode(orgRelationsList.getCreatedBy());
 			if(null != user){
 				StringBuilder sb = new StringBuilder();
-				clientVendorIndex.setCreatedBy(sb.append(user.getFirstName()).append("").append(user.getLastName()).toString());
+				clientVendorIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			}
 		}
 		return clientVendorIndex;
