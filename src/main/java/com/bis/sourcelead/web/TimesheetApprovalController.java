@@ -63,7 +63,7 @@ public class TimesheetApprovalController {
 			model.addObject("thslist",thslist);
 
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("timesheet/newTimesheetApproval");
+			model.setViewName("timesheet/TimesheetApproval"); 
 	        return model;
 	}
 	
