@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -472,13 +474,8 @@ public class UserServiceImpl implements UserService {
 		 
 		
 		 //setting the Recipient information
-		 StringBuilder emailRecipientBuilder = new StringBuilder();
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailRecipientBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
-		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
 		
@@ -494,7 +491,7 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,locationId,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,locationId,iAdressArray,new ArrayList<EmailAttachment>());
 		
 	}
 
@@ -744,12 +741,7 @@ public class UserServiceImpl implements UserService {
 		 }
 		 
 		 //setting the Recipient information
-		 StringBuilder recipientbuilder = new StringBuilder();
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = null;
@@ -775,7 +767,7 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setOrgLocationId(respondingPartyOrgLocation.getId());
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,respondingPartyOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,respondingPartyOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
 		 noificationEmailScenario.setUUID(UUID);

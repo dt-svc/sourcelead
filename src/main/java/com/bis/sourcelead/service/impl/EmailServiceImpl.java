@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.mail.internet.InternetAddress;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,11 +24,9 @@ import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmailService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
@@ -75,7 +74,7 @@ public class EmailServiceImpl implements EmailService {
 		 String fullName = null;
 		 String signature = "";
 		 String emails = null;
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();	 
+		 InternetAddress[] iAdressArray = null;
 		 	StringBuilder lastName=new StringBuilder();
 		 Set<String> recipantsList = new HashSet<String>();
 		   	 if(!isNullOrEmpty(user.getLastName())){
@@ -86,7 +85,6 @@ public class EmailServiceImpl implements EmailService {
 				
 			
 			if(jsonObj.has("Toemails") && !isNullOrEmpty(jsonObj.getString("Toemails"))){
-				
 		    	  try{
 		    		   JSONArray jsonArray = jsonObj.getJSONArray("Toemails");
 		    		   emails = jsonArray.toString();
@@ -94,20 +92,11 @@ public class EmailServiceImpl implements EmailService {
 		    	  catch(JSONException e){
 		    		  emails= jsonObj.getString("Toemails");
 		    	  }
-		    	  if(emails != null){
+		    	 if(null != emails){
 		    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
 		    		  emails = emails.replaceAll("\"", "");
-			  	      String[] toEmails = emails.split(",");
-			    	  for (String toEmail : toEmails) {
-			    		  recipantsList.add(toEmail);
-			    	  } 
 		    	  }
-		    	  
-		    	  for(String email : recipantsList){
-						EmailRecipient emailRecipient = new EmailRecipient();
-						emailRecipient.setEmail(email);
-						emailRecipientList.add(emailRecipient);
-					}
+		    	  iAdressArray = InternetAddress.parse(emails);
 		    	 
 			}
 			
@@ -150,30 +139,36 @@ public class EmailServiceImpl implements EmailService {
 			 
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,attachmentList);
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList);
 			 
-			 saveUserMailBox(user,orgLocation,emailRecipientList,subject,jsonObj.getString("bodytext"),signature,multiFile);
+			saveUserMailBox(user,orgLocation,iAdressArray,subject,jsonObj.getString("bodytext"),signature,multiFile);
 			 
-			 saveToUserMailBox(user,orgLocation,emailRecipientList,subject,jsonObj.getString("bodytext"),signature,multiFile);
+			saveToUserMailBox(user,orgLocation,iAdressArray,subject,jsonObj.getString("bodytext"),signature,multiFile);
 		
 	}
 	
 	
 	
 
-	private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String subject,String body,String signature,MultipartFile multiFile) throws Exception{
+	private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[] iAdressArray,String subject,String body,String signature,MultipartFile multiFile) throws Exception{
 		
-		UserMailBox userMailBox = new UserMailBox();
-		StringBuilder toEmails = new StringBuilder();
-		for (EmailRecipient recipient : emailRecipientList) {
-			toEmails.append(recipient.getEmail()).append(",");
-		 }
-		toEmails.toString();
+	   UserMailBox userMailBox = new UserMailBox();
+       if(iAdressArray != null && iAdressArray.length >0){
+			StringBuilder recipients = new StringBuilder("");
+			int count = 1;
+			for(InternetAddress address :iAdressArray){
+				if(count >1){
+					recipients.append(",");
+				}
+				count++;
+				recipients.append(address.getAddress());
+			}
+			userMailBox.setToMail(recipients.toString());
+		}
 		
 		userMailBox.setUserId(user);
 		userMailBox.setOrgLocationId(orgLocation);
 		userMailBox.setFromMail(user.getEmail());
-		userMailBox.setToMail(toEmails.substring(0,toEmails.length()-1));
 		userMailBox.setMailStatus(Constants.MAIL_BOX_SENT);
 		userMailBox.setSubject(subject);
 		userMailBox.setBody(body);
@@ -206,53 +201,52 @@ public class EmailServiceImpl implements EmailService {
 	}
 	
 	
-	private void saveToUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String subject,String body,String signature,MultipartFile multiFile) throws Exception{
+	private void saveToUserMailBox(User user,OrgLocations orgLocation,InternetAddress[] iAdressArray,String subject,String body,String signature,MultipartFile multiFile) throws Exception{
 		
-		
-		for (EmailRecipient recipient : emailRecipientList) {
-			
-			UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(recipient.getEmail(), orgLocation.getId());
-			
-			if(null != userRole){
+		if(iAdressArray != null && iAdressArray.length >0){
+			for(InternetAddress address :iAdressArray){
 				
-				UserMailBox userMailBox = new UserMailBox();
-				userMailBox.setUserId(userRole.getUser());
-				userMailBox.setOrgLocationId(orgLocation);
-				userMailBox.setFromMail(user.getEmail());
-				userMailBox.setToMail(recipient.getEmail());
-				userMailBox.setMailStatus(Constants.MAIL_BOX_INBOX);
-				userMailBox.setSubject(subject);
-				userMailBox.setBody(body);
-				userMailBox.setSignature(signature);
-				userMailBox.setIsMailRead(0);
-				userMailBox.setIsFavourite(0);
-				userMailBox.setUuid(SourceLeadRandomCodeHelper.generateUUID());
-				userMailBox.setStatus(1);
-				userMailBox.setCreatedBy(user.getUserCode());
-				userMailBox.setCreatedDate(new Date());
-				userMailBox.setUpdatedBy(user.getUserCode());
-				userMailBox.setUpdatedDate(new Date());
+				UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(address.getAddress(), orgLocation.getId());
 				
-				
-				 if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
-			   	  try {
-			   		userMailBox.setFileContentType(multiFile.getContentType());
-			   		userMailBox.setDocFile(multiFile.getBytes());
-			   		userMailBox.setFileName(multiFile.getOriginalFilename());
-			   	   
-				       }catch (Exception e) {
-			   	      	 e.printStackTrace();
-						    }
-			       }
-				
-				
-				userMailBoxService.saveUserMailBox(userMailBox);
-				userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
-				
-			}
-		 }
-		
-		
+				if(null != userRole){
+					
+					UserMailBox userMailBox = new UserMailBox();
+					userMailBox.setUserId(userRole.getUser());
+					userMailBox.setOrgLocationId(orgLocation);
+					userMailBox.setFromMail(user.getEmail());
+					userMailBox.setToMail(address.getAddress());
+					userMailBox.setMailStatus(Constants.MAIL_BOX_INBOX);
+					userMailBox.setSubject(subject);
+					userMailBox.setBody(body);
+					userMailBox.setSignature(signature);
+					userMailBox.setIsMailRead(0);
+					userMailBox.setIsFavourite(0);
+					userMailBox.setUuid(SourceLeadRandomCodeHelper.generateUUID());
+					userMailBox.setStatus(1);
+					userMailBox.setCreatedBy(user.getUserCode());
+					userMailBox.setCreatedDate(new Date());
+					userMailBox.setUpdatedBy(user.getUserCode());
+					userMailBox.setUpdatedDate(new Date());
+					
+					
+					 if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
+				   	  try {
+				   		userMailBox.setFileContentType(multiFile.getContentType());
+				   		userMailBox.setDocFile(multiFile.getBytes());
+				   		userMailBox.setFileName(multiFile.getOriginalFilename());
+				   	   
+					       }catch (Exception e) {
+				   	      	 e.printStackTrace();
+							    }
+				       }
+					
+					
+					userMailBoxService.saveUserMailBox(userMailBox);
+					userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
+					
+				}
+			 }
+		}
 	}
 
 	

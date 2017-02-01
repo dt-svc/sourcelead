@@ -1,4 +1,3 @@
-
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -14,23 +13,11 @@
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-<jsp:include page="editClientSpocDetails.jsp" />
-<jsp:include page="clientDetails.jsp" />	
-<jsp:include page="clientContacts.jsp" />
-<jsp:include page="clientDocuments.jsp" />	
-<jsp:include page="clientSpocDocuments.jsp" />	
-<jsp:include page="submissionTemplateList.jsp" /> 
-
 <style type="text/css">
 .clients_wrap {
 overflow-x: auto;
@@ -68,195 +55,192 @@ overflow-x: auto;
 		<div class="timesheet_out timesheet_background">
 			
 			<!-- Advanced Search -->
-  <div class="pull-left cand-advsrch">
-            <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+  <%-- <div class="pull-left cand-advsrch">
+            <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop()"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
             <form:form id="clientlist_form" name="clientlist_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
             <div class="row">
               <div class="col-md-4">
                 <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
-	                 <div class="clearfix">
-					        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
-	                        </select>
-				    </div>
+                <div class="clearfix">
+                  <input type="text" class="form-control input-sm" placeholder="Any of Keyword">
+                </div>
               </div>
               <div class="col-md-4">
                 <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
                 <div class="clearfix">
-                  <div class="clearfix">
-					  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
-	                     </select>
-				 </div>
+                  <input type="text" class="form-control input-sm" placeholder="All Keywords">
                 </div>
               </div>
               <div class="col-md-4">
                 <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
                 <div class="clearfix">
-				  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord"></select>
-	            </div>
+                  <input type="text" class="form-control input-sm" placeholder="Exclude Keyword">
+                </div>
               </div>
             </div>
             <div class="row">
-	            <div id="vendorListAdvanced">
-		              <div class="col-md-12">
-		                <h4>Details:</h4>
-		              </div>
-		              <div class="clearfix">
-		                <div class="col-md-4">
-		                  <label>Client Name</label>
-		                  <div class="clearfix">
-		                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Client Name" id="orgNameAdvanced" name="orgNameAdvanced">
-		                    	<c:forEach var="client" items="${clientsList}">
-                            	    <option value="${client.clientName}">${client.clientName}</option>
-                         		</c:forEach>
-		                    </select>
-                	  </div>
-		                </div>
-		                
-		              </div>
-		              <div class="clearfix">
-		                
-		              </div>
-		              <div class="clearfix">
-		                <div class="col-md-4">
-		                  <label>Country</label>
-		                  <div class="clearfix">
-		                    <select class="chosen-select" name="country" id="countrySearch" field-name="Country"  >
-						     <c:forEach var="cntry" items="${countryList}">
-					                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
-				             </c:forEach>
-				           </select>
-		                  </div>
-		                </div>
-		                 <div class="col-md-4"> 
-							  <label>State</label>
-							  <div class="clearfix">
-								  <select  class="chosen-select" name="state" id="stateSearch" field-name="State"  >
-								        <option value="">---select state---</option>
-								        <c:forEach var="state" items="${statesList}">
-							                     <option value="${state.stateName}">${state.stateName}</option>
-						                </c:forEach>
-                                 </select>
-							 </div>
-						  </div>
-						  <div class="col-md-4">
-							  <label>City</label>
-							  <div class="clearfix">
-								  <select  class="chosen-select" name="city" id="citySearch" field-name="City"  >
-								      <option value="">---select city---</option>
-                                  </select>
-							  </div>
-						  </div>
-            		  </div>
-		              <div class="clearfix">
-		                <div class="col-md-4">
-		                  <label>Tier</label>
-		                  <div class="clearfix">
-		                   <select class="chosen-select" data-placeholder="Tier" name="tierAdvanced" id="tierAdvanced"  multiple>
-			                     <option value="Tier-1">Tier-1</option>
-			                     <option value="Tier-2">Tier-2</option>
-			                     <option value="Tier-3">Tier-3</option>
-			                     <option value="Tier-4">Tier-4</option>
-			                     <option value="Tier-5">Tier-5</option>
-                    		</select>
-		                  </div>
-		                </div>
-		                
-		                <div class="clearfix">
-		                <div class="col-md-4">
-		                  <label>Created By</label>
-		                  <div class="clearfix">
-		     	               <select class="chosen-select form-control input-sm" multiple data-placeholder="Created By" id="createdByAdvanced" name="createdByAdvanced"></select>
-		                  </div>
-		                </div>
-		              </div>
-	             
-	               </div>
-	                
-	                <div class="clearfix">
-	              
-	                 </div>
-	                 
-	                 </div>
-               	<div id="vendorContactListAdvanced">  
-		               <div class="col-md-12">
-		                <h4>Client Contact:</h4>
-		              </div>
-		              <div class="clearfix">
-		                <div class="col-md-4">
-		                  <label>Contact Name</label>
-		                  <div class="clearfix">
-		                   <select class="chosen-select form-control input-sm" multiple data-placeholder="Contact Name" id="contactNameAdvanced" name="contactNameAdvanced">
-                           </select>
-		                  </div>
-		                </div>
-		                
-		                <div class="col-md-4">
-		                  <label>Email</label>
-		                  <div class="clearfix">
-		                   <select class="chosen-select form-control input-sm" multiple data-placeholder="Email" id="emailAdvanced" name="emailAdvanced">
-                            </select>
-		                  </div>
-		                </div>
-		                
-		                 <div class="col-md-4">
-		                  <label>Phone Number</label>
-		                  <div class="clearfix">
-		                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Phone Number" id="phoneNumberAdvanced" name="phoneNumberAdvanced">
-                            </select>
-		                  </div>
-		                </div>
-		                
-		              </div>
-		              <div class="clearfix">
-		              </div>
-		                 <div class="clearfix">
-		                <div class="col-md-4">
-		                  <label>Owner</label>
-		                  <div class="clearfix">
-		                   <select class="chosen-select form-control input-sm" multiple data-placeholder="Owner" id="ownerAdvanced" name="ownerAdvanced">
-                           </select>
-		                  </div>
-		                </div>
-		                
-		                <div class="col-md-4">
-		                  <label>Client</label>
-		                  <div class="clearfix">
-		                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Client" id="orgAdvanced" name="orgAdvanced">
-                             	<c:forEach var="client" items="${clientsList}">
-                            	    <option value="${client.clientName}">${client.clientName}</option>
-                         		</c:forEach>
-                             </select>
-		                  </div>
-		                </div>
-		                
-		                
-		            <div class="col-md-4">
-						<label>Status</label>
-								<div class="clearfix">
-										<select class="chosen-select form-control input-sm" multiple data-placeholder="Status" id="statusAdvanced" name="statusAdvanced">
-											<option value="Active">Active</option>
-											<option value="In-Active">In-Active</option>
-											<option value="New">New</option>
-											<option value="Negotiation">Negotiation</option>
-											<option value="Contracted">Contracted</option>
-									</select>
-						 </div>  
-              	</div>
-				</div>
+              <div class="col-md-12">
+                <h4>Details:</h4>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Vendor Name</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Designation">
+                  </div>
+                </div>
+                
+              </div>
+              <div class="clearfix">
+                
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Country</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="Country">
+                      <option>India</option>
+                      <option>USA</option>
+                      <option>Germany</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>State</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="State">
+                      <option>Andhra Pradesh</option>
+                      <option>Telangana</option>
+                      <option>Punjab</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label>City</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="City">
+                      <option>India</option>
+                      <option>USA</option>
+                      <option>Germany</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Tier</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="Education" multiple>
+                      <option>MCA</option>
+                      <option>MBA</option>
+                      <option>B.Sc.(Computers)</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Created By</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Created By">
+                  </div>
+                </div>
+                
+              </div>
              
+               </div>
+                
+                <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Document Name</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Document Name">
+                  </div>
+                </div>
+              
+                <div class="col-md-4">
+                  <label>Document Type</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Document Type">
+                  </div>
+                </div>
+                
+              
+                <div class="col-md-4">
+                  <label>Submission Template</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Submission Template">
+                  </div>
+                </div>
+                 </div>
+                 
+                 
+               <div class="col-md-12">
+                <h4>Vendor Contact:</h4>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Contact Name</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Contact Name">
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <label>Email</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Email">
+                  </div>
+                </div>
+                
+                 <div class="col-md-4">
+                  <label>Phone Number</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Phone Number">
+                  </div>
+                </div>
+                
+              </div>
+              <div class="clearfix">
+                
+              </div>
+                
+                 <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Owner</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Contact Name">
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <label>Vendor</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Email">
+                  </div>
+                </div>
+                
+                 <div class="col-md-4">
+                  <label>Status</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control input-sm" placeholder="Phone Number">
+                  </div>
+                </div>
+                
+              </div>
+              
+              <div class="clearfix">
                 <div class="col-md-4">
                   <label>Invitation</label>
                   <div class="clearfix">
-                		 <select class="chosen-select form-control input-sm" multiple data-placeholder="Invitation" id="invitationAdvanced" name="invitationAdvanced">
-											<option value="Sent">Sent</option>
-											<option value="New">New</option>
-											<option value="Accepted">Accepted</option>
-											<option value="Rejected">Rejected</option>
-						</select>
+                    <input type="text" class="form-control input-sm" placeholder="Invitation">
                   </div>
                 </div>
-            </div>  
+                
+                
+              </div>
+              
               
             </div>
             <div class="row form-footer mt">
@@ -266,7 +250,7 @@ overflow-x: auto;
             </div>
           </div>
           </form:form>
-        </div>
+        </div> --%>
 		<!-- Advanced Search Ends -->
 		<div class="clearfix"></div>
 		<div class="clients_wrap vendor_wrap_shadownone" style="overflow-x: auto;">
@@ -396,412 +380,14 @@ overflow-x: auto;
 
 <script type="text/javascript">
 window.onload = function () {
-	/* getVendorContactLists(); */
-	getVendorContactListsELK();
+	getVendorContactLists();
 	 listChange("listbyContact");
 	document.getElementById('listOfVendors').value = 'listbyContact';
  };
 </script>
 
-
-
-<script type="text/javascript">
-    	   var config = {
-    				  '.chosen-select'           : {},
-    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-    				  '.chosen-select-no-single' : {disable_search_threshold:10},
-    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-    				  '.chosen-select-width'     : {width:"95%"}
-    	   }
-			//Adding Customized Any Of Keyword to the list 
-		    var select, chosen;
-		    select = $("#anyOfKeyword");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
-		    {
-		    	var anyKeyword = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(anyKeyword).text(anyKeyword);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-                    $("#anyOfKeyword option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#anyOfKeyword").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		  //Adding Customized Any Of Keyword to the list
-		    var selectone, chosenone;
-		    selectone = $("#allKeywords");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
-		    {
-		    	var allKeyword = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(allKeyword).text(allKeyword);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-                    $("#allKeywords option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#allKeywords").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    var selecttwo, chosentwo;
-		    selecttwo = $("#excludeKeyWord");
-		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosentwo = selecttwo.data('chosen');
-		    chosentwo.search_field.on('keyup', function(e2)
-		    {
-		    	var excludeKeyword = this.value.replace(",","");
-		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
-		            selecttwo.append(option);
-		            selecttwo.find(option).prop('selected', true);
-                    $("#excludeKeyWord option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#excludeKeyWord").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    // These are choosen fields for vendor List Multiselect
-		    
-		    
-		    // This is for vendorName 
-		    
-		    var selectthree, chosenthree;
-		    selectthree = $("#orgNameAdvanced");
-		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Client Name:' });
-		    chosenthree = selectthree.data('chosen');
-		    chosenthree.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectthree.append(option);
-		            selectthree.find(option).prop('selected', true);
-                    $("#orgNameAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#orgNameAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		   // This is for Created By 
-		    var selectcreatedByAdvanced, chosencreatedByAdvanced;
-		    selectcreatedByAdvanced = $("#createdByAdvanced");
-		    selectcreatedByAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Document Type:' });
-		    chosencreatedByAdvanced = selectcreatedByAdvanced.data('chosen');
-		    chosencreatedByAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectcreatedByAdvanced.append(option);
-		            selectcreatedByAdvanced.find(option).prop('selected', true);
-                    $("#createdByAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#createdByAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    
-		    //  This is for contact Name
-		    var selectcontactNameAdvanced, chosencontactNameAdvanced;
-		    selectcontactNameAdvanced = $("#contactNameAdvanced");
-		    selectcontactNameAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Contact Name:' });
-		    chosencontactNameAdvanced = selectcontactNameAdvanced.data('chosen');
-		    chosencontactNameAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectcontactNameAdvanced.append(option);
-		            selectcontactNameAdvanced.find(option).prop('selected', true);
-                    $("#contactNameAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#contactNameAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    //  This is for Email
-		    var selectemailAdvanced, chosenemailAdvanced;
-		    selectemailAdvanced = $("#emailAdvanced");
-		    selectemailAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Email:' });
-		    chosenemailAdvanced = selectemailAdvanced.data('chosen');
-		    chosenemailAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectemailAdvanced.append(option);
-		            selectemailAdvanced.find(option).prop('selected', true);
-                    $("#emailAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#emailAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    //  This is for Phone Number
-		    var selectphoneNumberAdvanced, chosenphoneNumberAdvanced;
-		    selectphoneNumberAdvanced = $("#phoneNumberAdvanced");
-		    selectphoneNumberAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Phone Number:' });
-		    chosenphoneNumberAdvanced = selectphoneNumberAdvanced.data('chosen');
-		    chosenphoneNumberAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectphoneNumberAdvanced.append(option);
-		            selectphoneNumberAdvanced.find(option).prop('selected', true);
-                    $("#phoneNumberAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#phoneNumberAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    //  This is for Owner
-		    var selectownerAdvanced, chosenownerAdvanced;
-		    selectownerAdvanced = $("#ownerAdvanced");
-		    selectownerAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Owner:' });
-		    chosenownerAdvanced = selectownerAdvanced.data('chosen');
-		    chosenownerAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectownerAdvanced.append(option);
-		            selectownerAdvanced.find(option).prop('selected', true);
-                    $("#ownerAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#ownerAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		//  This is for Vendor
-		    var selectclientAdvanced, chosenclientAdvanced;
-		    selectclientAdvanced = $("#orgAdvanced");
-		    selectclientAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Client:' });
-		    chosenclientAdvanced = selectclientAdvanced.data('chosen');
-		    chosenclientAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectclientAdvanced.append(option);
-		            selectclientAdvanced.find(option).prop('selected', true);
-                    $("#orgAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#orgAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		  
-
-		      $("#countrySearch").on('change', function (e) {
-		    	   getStates();
-		       });
-		       $("#stateSearch").on('change', function (e) {
-		    	   getCities();
-		       });
-				for (var selector in config) {
-				  $(selector).chosen(config[selector]);
-				}
-				$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-</script> 
-
-
-
-<script type="text/javascript">	
-	function loadChosenScripts(){
-		
-		var selectedList = document.getElementById('listOfVendors').value;
-		
-		if(selectedList == "listbyContact" ){
-			
-			 document.getElementById("vendorContactListAdvanced").style.display="block";
-			 document.getElementById("vendorListAdvanced").style.display="none";
-			 
-		}else if(selectedList == "listbyVendor" ){
-			
-			 document.getElementById("vendorListAdvanced").style.display="block";
-			 document.getElementById("vendorContactListAdvanced").style.display="none";
-		}
-		
-	    $('#countrySearch').val('${loginCountryName}'); 
-	    $('#stateSearch').val(''); 
-	    $('#citySearch').val(''); 
-	    
-	    $("#anyOfKeyword").val('').trigger("chosen:updated");
-	    $("#allKeywords").val('').trigger("chosen:updated");
-	    $("#excludeKeyWord").val('').trigger("chosen:updated");
-
-	    $("#anyOfKeyword").empty();
-	    $("#allKeywords").empty();
-	    $("#excludeKeyWord").empty();
-	}
-</script>   
-
-
-
-<<script type="text/javascript">
- function preparedClientDetails(data){
-	 
-	 var json = JSON.parse(data);
-    	var result = "";
-    	/* if(json.length != null && json.length != ''){ */
-    	result = result +'<thead>';
-    	result = result +'<tr>';
-    	result = result +'	<th>Client name</th>';
-    	result = result +'	<th>Website</th>';
-    	result = result +'	<th>Location</th>';
-    	result = result +'	<th>Tier</th>';
-    	result = result +'	<th>Created By</th>';
-    	result = result +'<th>No.of contacts</th>';
-    	/* result = result +'<th>Action</th>'; */
-    	result = result +'</tr>';
-    	result = result +'</thead>';
-    	result = result +'<tbody>';
-    	
-    	for (var i=0; i<json.length; i++)
-		{  
-    		var report = json[i];
-    		var location = "";
-    		if(report.city != null && report.city != '' && report.city != 'undefined'){
-    			location = report.country+", "+report.state+", "+report.city;
-    		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-    			location = report.country+", "+report.state;
-    		}else{
-    			location = report.country;
-    		}
-    		
-    		var pattern = new RegExp(/["'"]/g);
-    		var orgName = (report.orgName).replace(pattern, "\\'");
-    		
-    		result = result +'<tr>';
-    		
-    			result = result +'<td>';
-    		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-    			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+orgName+'\');">';
-				result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
-    			
-    			result = result +'</div>';
-    			'</sec:authorize>';
-    			
-    			'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-    			result = result +'<div class="proj_show" ';
-				result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span>';
-    			result = result +'</div>';
-    			'</sec:authorize>';
-    			
-    				
-    			result = result +'</td>';
-				
-    	
-    		if( report.webSite != null && report.webSite != '' && report.webSite != 'undefined'){
-    			result = result +'<td>';
-    			result = result +'<div>';
-    			result = result +'<span class="tbldata-dotdot-sm" title='+report.webSite+'>'+report.webSite+'</span>';
-    			result = result +'</div>';
-    			result = result +'</td>';
-    		}else{
-    			result = result +'<td><div>--</div></td>';
-    		}
-    		if(location != null && location  != '' && location  != 'undefined'){
-    			result = result +'<td>';
-    			result = result +'<div>';
-    			result = result +'<span class="tbldata-dotdot-me" title="'+location+'">'+location+'</span>';
-    			result = result +'</div>';
-    			result = result +'</td>';
-    		}else{
-    			result = result +'<td><div>--</div></td>';
-    		}
-    		if(report.level != null && report.level != '' && report.level != 'undefined'){
-    			result = result +'<td><div><span class="tbldata-dotdot-vsm" title='+report.level+'>'+report.level+'</span></div></td>';
-    		}else{
-    			result = result +'<td><div>--</div></td>';
-    		}
-    		result = result +'<td><div><span class="tblminwidth-125" title='+report.vendorCreateduserName+'>'+report.vendorCreateduserName+'</span></div></td>';
-    		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
-    		/* result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
-    		result = result +'</tr>';
-    		
-		}
-    	
-    	result = result +'</tbody>';
-    	/* }else{
-    		result = result +'<div class="row mt">';
-    		result = result +'<div class="col-lg-12">';
-    		result = result +'<div class="content-area clearfix">';
-    		result = result +'<div class="blank-pages">';
-    		result = result +'<p>';
-    		result = result +'<i class="fa fa-5x fa-users"></i>';
-    		result = result +'</p>';
-    		result = result +'<p>No Clients for organisation... Add Clients</p>';
-    		result = result +'</div>';
-    		result = result +'</div>';
-    		result = result +'</div>';
-    		result = result +'</div>';
-    	} */
-	    $("#clientList").empty();  
-	    $("#clientList").append(result)
-	    $("#emptyClientList").val(json.length);
-	    pagination();
-	    
- }
-</script>
-
 <script>
 function getClientDetails(){
-	closePop();
 	var values = [];
 	$('input:checkbox[name=clinetLevel]:checked').each(function() 
     {
@@ -814,34 +400,107 @@ function getClientDetails(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
-   		    	/* preparedClientDetails(data); */
-   		    	preparedClientListFromElk(data);
-   		    }
-	 }); 
-	
-	
-}	
-</script>
-
-<script>
-function getClientDetailsELK(){
-	closePop();
-	var values = [];
-	$('input:checkbox[name=clinetLevel]:checked').each(function() 
-    {
-			values.push($(this).val());
-    });
-	
-	var sourceleadUrl ='${sourceleadUrl}';
-	var loginOrgLocId = '${loginOrgLocId}';
-	var responderType = "Client";
-	 $.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/getVendorFilterListsElK?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&values="+values, 	   
-   		    success: function(data) {
-   		    	/* preparedClientDetails(data); */
-   		    	
-   		    	preparedClientListFromElk(data);
+   		    	var json = JSON.parse(data);
+   	        	var result = "";
+   	        	/* if(json.length != null && json.length != ''){ */
+   	        	result = result +'<thead>';
+   	        	result = result +'<tr>';
+   	        	result = result +'	<th>Client name</th>';
+   	        	result = result +'	<th>Website</th>';
+   	        	result = result +'	<th>Location</th>';
+   	        	result = result +'	<th>Tier</th>';
+   	        	result = result +'	<th>Created By</th>';
+   	        	result = result +'<th>No.of contacts</th>';
+   	        	/* result = result +'<th>Action</th>'; */
+   	        	result = result +'</tr>';
+   	        	result = result +'</thead>';
+   	        	result = result +'<tbody>';
+   	        	
+   	        	for (var i=0; i<json.length; i++)
+   				{  
+   	        		var report = json[i];
+   	        		var location = "";
+   	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
+   	        			location = report.country+", "+report.state+", "+report.city;
+   	        		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
+   	        			location = report.country+", "+report.state;
+   	        		}else{
+   	        			location = report.country;
+   	        		}
+   	        		
+   	        		var pattern = new RegExp(/["'"]/g);
+   	        		var orgName = (report.orgName).replace(pattern, "\\'");
+   	        		
+   	        		result = result +'<tr>';
+   	        		
+   	        			result = result +'<td>';
+   	        		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
+   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+orgName+'\',\''+report.id+'\');">';
+						result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			
+   	        			result = result +'</div>';
+   	        			'</sec:authorize>';
+   	        			
+   	        			'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
+   	        			result = result +'<div class="proj_show" ';
+						result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span>';
+   	        			result = result +'</div>';
+   	        			'</sec:authorize>';
+   	        			
+   	        				
+   	        			result = result +'</td>';
+						
+   	        	
+   	        		if( report.webSite != null && report.webSite != '' && report.webSite != 'undefined'){
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span class="tbldata-dotdot-sm" title='+report.webSite+'>'+report.webSite+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		if(location != null && location  != '' && location  != 'undefined'){
+   	        			result = result +'<td>';
+   	        			result = result +'<div>';
+   	        			result = result +'<span class="tbldata-dotdot-me" title="'+location+'">'+location+'</span>';
+   	        			result = result +'</div>';
+   	        			result = result +'</td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		if(report.level != null && report.level != '' && report.level != 'undefined'){
+   	        			result = result +'<td><div><span class="tbldata-dotdot-vsm" title='+report.level+'>'+report.level+'</span></div></td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		result = result +'<td><div><span class="tblminwidth-125" title='+report.vendorCreateduserName+'>'+report.vendorCreateduserName+'</span></div></td>';
+   	        		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
+   	        		/* result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
+   	        		result = result +'</tr>';
+   	        		
+   				}
+   	        	
+   	        	result = result +'</tbody>';
+   	        	/* }else{
+   	        		result = result +'<div class="row mt">';
+   	        		result = result +'<div class="col-lg-12">';
+   	        		result = result +'<div class="content-area clearfix">';
+   	        		result = result +'<div class="blank-pages">';
+   	        		result = result +'<p>';
+   	        		result = result +'<i class="fa fa-5x fa-users"></i>';
+   	        		result = result +'</p>';
+   	        		result = result +'<p>No Clients for organisation... Add Clients</p>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        	} */
+   	    	    $("#clientList").empty();  
+   	    	    $("#clientList").append(result)
+   	    	    $("#emptyClientList").val(json.length);
+   	    	    pagination();
+   	    	    
    		    }
 	 }); 
 	
@@ -873,7 +532,7 @@ function pagination(){
 </script>
 
 <script>
-	function clientSideBar(clientLocationId,orgRelationId,orgName) {
+	function clientSideBar(clientLocationId,orgName,orgRelationId) {
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
@@ -936,377 +595,7 @@ function pagination(){
 </script>
 
 <script>
-function preparedClientContacts(data){
-	
-			var json = JSON.parse(data);
-		   	var result = "";
-		   	/* if(json.length != null && json.length != ''){ */
-		   	result = result +'<thead>';
-		   	result = result +'<tr>';
-		   	result = result +'	<th>Name </th>';
-		   	result = result +'  <th>Email</th>';
-		   	result = result +'  <th>Ph. No</th>';
-		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Client</th>';
-		   	result = result +' <th>Status</th>';
-		   	result = result +' <th>Invitation</th>';
-		   	result = result +'<th>Action</th>';
-		   	result = result +'</tr>';
-		   	result = result +'	</thead>';
-		   	result = result +'<tbody>';
-		   	
-		   	for (var i=0; i<json.length; i++)
-				{  
-		   		var report = json[i];
-		   		var selected1 = '';
-					var selected2 = '';
-					var selected3 = '';
-					var selected4 = '';
-					var selected5 = '';
-		   		
-		   		if(report.spocStatus == 'Active'){
-					selected1 = 'selected';
-				} 
-			
-				if(report.spocStatus == 'In-Active'){
-						selected2 = 'selected';
-					} 
-				
-				if(report.spocStatus == 'New'){
-						selected3 = 'selected';
-					}
-				
-				if(report.spocStatus == 'Negotiation'){
-						selected4 = 'selected';
-					} 
-				
-				if(report.spocStatus == 'Contracted'){
-					selected5 = 'selected';
-				} 
-		   		
-		   		result = result +'<tr>';
-		   		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
-		   			result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span title='+report.spocName+'>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
-		   		'</sec:authorize>';
-		   		
-		   		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
-		   			result = result +'<td><div class="proj_show"><span title='+report.spocName+'>'+report.spocName+'</span></i></div></td>';
-		   		'</sec:authorize>';
-		   		
-		   		result = result +'<td><div><span title='+report.spocEmail+'>'+report.spocEmail+'</span></div></td>';
-		   		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
-		   			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
-		   		}else{
-		   			result = result +'<td><div>--</div></td>';
-		   		}
-		   		result = result +'<td><div><span title='+report.ownerName+'>'+report.ownerName+'</span></div></td>';
-		   		result = result +'<td><div><span title='+report.orgName+'>'+report.orgName+'</span></div></td>';
-		   		
-		   		result = result + ' <td><div>';
-				result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
-				result = result + ' <option '+selected1+'>Active</option>';
-				result = result + ' <option '+selected2+'>In-Active</option>';
-				result = result + ' <option '+selected3+'>New</option>';
-				result = result + ' <option '+selected4+'>Negotiation</option>';
-				result = result + ' <option '+selected5+'>Contracted</option>';
-				result = result + ' </select>';
-				result = result + ' </div></td>';
-				
-		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-		     		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
-		     		}
-		   		
-		       		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-		                result = result +' <td><div>---</div></td>';
-		          	}
-		     		
-		     		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-		     			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Send</a></b></div></td>';
-		     		}
-		     		
-		     		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-		     			result = result +' <td><div>---</div></td>';
-		     		}
-		     		
-		     		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
-		     			result = result +' <td><div><b class="proj_process">Received</b></div></td>';
-		     		}
-		     		
-		     		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-		     			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Resend</a></b></div></td>';
-		     		}
-		     		
-		     		if(report.invitationStatus == 'Accepted'){ 
-		     			result = result +' <td><div><b class="proj_active">'+report.invitationStatus+'</b></div></td>';
-		     		}
-		   		
-		   		if(report.invitationStatus == 'Rejected'){
-		   			result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>';
-		   		}
-		   		
-		   		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
-		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
-		   		
-		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
-		   		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
-		   		'</sec:authorize>';
-		   		
-		   		'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
-		   		result = result + '<td><div>--</div></td>';
-		   		'</sec:authorize>';
-		   		
-		   		result = result +'</tr>';
-				}
-		   	result = result +'</tbody>';
-			    $("#vendorContactList").empty();  
-			    $("#vendorContactList").append(result)
-			    $("#clientContactLength").val(json.length);
-			    pagination1(); 
-   
-   	
-}
-</script>
-
-
-<!-- contact list preparation from ELK result -->
-<script>
-function preparedClientContactListFromElk(data){
-	  
-			var json = JSON.parse(data);
-		   	var result = "";
-		   	result = result +'<thead>';
-		   	result = result +'<tr>';
-		   	result = result +'	<th>Name</th>';
-		   	result = result +'  <th>Email</th>';
-		   	result = result +'  <th>Ph. No</th>';
-		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Client</th>';
-		   	result = result +' <th>Status</th>';
-		   	result = result +' <th>Invitation</th>';
-		   	result = result +'<th>Action</th>';
-		   	result = result +'</tr>';
-		   	result = result +'	</thead>';
-		   	
-		   	result = result +'<tbody>';
-		   	
-		   	for (var i=0; i<json.length; i++)
-				{  
-		   		var report = json[i];
-		   		var selected1 = '';
-					var selected2 = '';
-					var selected3 = '';
-					var selected4 = '';
-					var selected5 = '';
-		   		
-		   		if(report.spocStatus == 'Active'){
-					selected1 = 'selected';
-				} 
-			
-				if(report.spocStatus == 'In-Active'){
-						selected2 = 'selected';
-					} 
-				
-				if(report.spocStatus == 'New'){
-						selected3 = 'selected';
-					}
-				
-				if(report.spocStatus == 'Negotiation'){
-						selected4 = 'selected';
-					} 
-				
-				if(report.spocStatus == 'Contracted'){
-					selected5 = 'selected';
-				} 
-		   		
-		   		result = result +'<tr>';
-		   		
-		   		
-		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
-		   				result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
-		   		'</sec:authorize>';
-		   		
-		   		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
-		   				result = result +'<td><div class="proj_show" ><span title="'+report.spocName+'">'+report.spocName+'</span></div></td>';
-				'</sec:authorize>';
-		   		
-		   		
-		   		
-		   		result = result +'<td><div><span title='+report.spocEmail+'>'+report.spocEmail+'</span></div></td>';
-		   		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
-		   			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
-		   		}else{
-		   			result = result +'<td><div>--</div></td>';
-		   		}
-		   		result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
-		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
-		   		
-		   		
-		   		result = result + ' <td><div>';
-				result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
-				result = result + ' <option '+selected1+'>Active</option>';
-				result = result + ' <option '+selected2+'>In-Active</option>';
-				result = result + ' <option '+selected3+'>New</option>';
-				result = result + ' <option '+selected4+'>Negotiation</option>';
-				result = result + ' <option '+selected5+'>Contracted</option>';
-				result = result + ' </select>';
-				result = result + ' </div></td>';
-		   			
-		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-		   		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
-		   		}
-		   		
-		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-		            result = result +' <td><div>---</div></td>';
-		      	}
-		   		
-		   		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-		   			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Send</a></b></div></td>';
-		   		}
-		   		
-		   		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-		   			result = result +' <td><div>---</div></td>';
-		   		}
-		   		
-		   		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
-		   			result = result +' <td><div><b class="proj_process">Received</b></div></td>';
-		   		}
-		   		
-		   		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-		   			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Resend</a></b></div></td>';
-		   		}
-		   		
-		   		if(report.invitationStatus == 'Accepted'){ 
-		   			result = result +' <td><div><b class="proj_active">'+report.invitationStatus+'</b></div></td>';
-		   		}
-		 		
-		 		if(report.invitationStatus == 'Rejected'){
-		 			result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>';
-		 		}
-		   		
-		   		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
-		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
-		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
-		   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')";></i></div></td>';
-		   	 '</sec:authorize>';
-		   	 
-		   	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
-			    result = result + '<td><div>---</div></td>';
-			 '</sec:authorize>';
-		   		
-		   		
-		   		result = result +'</tr>';
-				}
-		   	
-		   	result = result +'</tbody>';
-		    $("#vendorContactList").empty();  
-		    $("#vendorContactList").append(result)
-		    $("#clientContactLength").val(json.length);
-		    pagination1(); 
-			    
-   }
-</script> 
-
-
-
-
-<!-- Client list preparation from ELK result -->
-<script>
-function preparedClientListFromElk(data){
-			var json = JSON.parse(data);
-		   	var result = "";
-		   	
-		   	result = result +'<thead>';
-		   	result = result +'<tr>';
-		   	result = result +' <th>Client Name</th>';
-		   	result = result +' <th>Website</th>';
-		   	result = result +'<th>Location</th>';
-		   	result = result +'<th>Tier</th>';
-		   	result = result +'<th>Created By</th>';
-		   	result = result +'<th>No.of Contacts</th>';
-		   	/* result = result +'<th>Actions</th>'; */
-		   	result = result +'</tr>';
-		   	result = result +'</thead>';
-		   	result = result +'<tbody>';
-		   	
-		   	for (var i=0; i<json.length; i++)
-				{  
-		   		
-		   		var report = json[i];
-		   		numberOfContactsByOrgRelationId(report.id);
-		   		var location = "";
-		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
-		   			location = report.country+", "+report.state+", "+report.city;
-		   		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-		   			location = report.country+", "+report.state;
-		   		}else{
-		   			location = report.country;
-		   		}
-		   		
-		   		var pattern = new RegExp(/["'"]/g);
-		   		//var orgName = (report.orgName).replace(pattern, "\\'");
-		   		
-		   		result = result +'<tr>';
-		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
-		   			result = result +'<td>';
-		   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
-		   			result = result +'</div>';
-		   			result = result +'</td>';
-		   		'</sec:authorize>';
-		   		
-		   		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
-					result = result +'<td>';
-					result = result +'<div class="proj_show" ><span class="tbldata-dotdot-vsm" title="${report.orgName}">'+report.orgName+'</span>';
-					result = result +'</div>';
-					result = result +'</td>';
-				'</sec:authorize>';
-				
-				
-		   		if( report.website != null && report.website != '' && report.website != 'undefined'){
-		   			result = result +'<td>';
-		   			result = result +'<div>';
-		   			result = result +'<span class="tbldata-dotdot-sm" title='+report.website+'>'+report.website+'</span>';
-		   			result = result +'</div>';
-		   			result = result +'</td>';
-		   		}else{
-		   			result = result +'<td><div>--</div></td>';
-		   		}
-		   		
-		   		if(location != null && location  != '' && location  != 'undefined'){
-		   			result = result +'<td>';
-		   			result = result +'<div>';
-		   			result = result +'<span class="tbldata-dotdot-me" title="'+location+'">'+location+'</span>';
-		   			result = result +'</div>';
-		   			result = result +'</td>';
-		   		}else{
-		   			result = result +'<td><div>--</div></td>';
-		   		}
-				
-		   	result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
-		   	
-		   	if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
-				result = result +' <td><div>'+report.createdBy+'</div></td>';
-		   	}else{
-		   		result = result +'<td><div>---</div></td>';
-		   	}
-			result = result +'<td><div id="noOfContactsCount'+report.id+'">---</div></td>';
-
-				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
-		   		result = result +'</tr>';
-				}
-		   	
-		   	result = result +'</tbody>';
-		    $("#clientList").empty();  
-		    $("#clientList").append(result)
-		    $("#emptyClientList").val(json.length);
-		    pagination();
-}
-</script>
-
-
-
-<script>
 function getVendorContactLists(){
-	closePop();
 	var clientIds = [];
 	$('input:checkbox[name=clientNameById]:checked').each(function() 
     {
@@ -1331,47 +620,150 @@ function getVendorContactLists(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getClientContactLists?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
-   		    	preparedClientContacts(data);
-   		    }
-	 });
-	
-	
-}	
-</script> 
-
-
-<script>
-function getVendorContactListsELK(){
-	closePop();
-	var clientIds = [];
-	$('input:checkbox[name=clientNameById]:checked').each(function() 
-    {
-		clientIds.push($(this).val());
-    });
-	var status = [];
-	$('input:checkbox[name=clientStatus]:checked').each(function() 
-    {
-		status.push($(this).val());
-    });
-	
-	var invitationStatus = [];
-	$('input:checkbox[name=clientInvitationStatus]:checked').each(function() 
-    {
-		invitationStatus.push($(this).val());
-    });
-	
-	
-	var sourceleadUrl ='${sourceleadUrl}';
-	var loginOrgLocId = '${loginOrgLocId}';
-	var responderType = "Client";
-
-	
-	  $.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/getVendorContactListsELK?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
-   		    success: function(data) {
-   		    	/* preparedClientContacts(data); */
-   		    	preparedClientContactListFromElk(data);
+   		    	var json = JSON.parse(data);
+   	        	var result = "";
+   	        	/* if(json.length != null && json.length != ''){ */
+   	        	result = result +'<thead>';
+   	        	result = result +'<tr>';
+   	        	result = result +'	<th>Name </th>';
+   	        	result = result +'  <th>Email</th>';
+   	        	result = result +'  <th>Ph. No</th>';
+   	        	result = result +' <th>Owner</th>';
+   	        	result = result +'  <th>Client</th>';
+   	        	result = result +' <th>Status</th>';
+   	        	result = result +' <th>Invitation</th>';
+   	        	result = result +'<th>Action</th>';
+   	        	result = result +'</tr>';
+   	        	result = result +'	</thead>';
+   	        	result = result +'<tbody>';
+   	        	
+   	        	for (var i=0; i<json.length; i++)
+   				{  
+   	        		var report = json[i];
+   	        		var selected1 = '';
+   					var selected2 = '';
+   					var selected3 = '';
+   					var selected4 = '';
+   					var selected5 = '';
+   	        		
+   	        		if(report.spocStatus == 'Active'){
+						selected1 = 'selected';
+					} 
+				
+					if(report.spocStatus == 'In-Active'){
+							selected2 = 'selected';
+						} 
+					
+					if(report.spocStatus == 'New'){
+							selected3 = 'selected';
+						}
+					
+					if(report.spocStatus == 'Negotiation'){
+							selected4 = 'selected';
+						} 
+					
+					if(report.spocStatus == 'Contracted'){
+						selected5 = 'selected';
+					} 
+   	        		
+   	        		
+   	        		
+   	        		result = result +'<tr>';
+   	        		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
+   	        			result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span title='+report.spocName+'>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		'</sec:authorize>';
+   	        		
+   	        		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
+   	        			result = result +'<td><div class="proj_show"><span title='+report.spocName+'>'+report.spocName+'</span></i></div></td>';
+   	        		'</sec:authorize>';
+   	        		
+   	        		result = result +'<td><div><span title='+report.spocEmail+'>'+report.spocEmail+'</span></div></td>';
+   	        		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
+   	        			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
+   	        		}else{
+   	        			result = result +'<td><div>--</div></td>';
+   	        		}
+   	        		result = result +'<td><div><span title='+report.ownerName+'>'+report.ownerName+'</span></div></td>';
+   	        		result = result +'<td><div><span title='+report.orgName+'>'+report.orgName+'</span></div></td>';
+   	        		
+   	        		result = result + ' <td><div>';
+					result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
+					result = result + ' <option '+selected1+'>Active</option>';
+					result = result + ' <option '+selected2+'>In-Active</option>';
+					result = result + ' <option '+selected3+'>New</option>';
+					result = result + ' <option '+selected4+'>Negotiation</option>';
+					result = result + ' <option '+selected5+'>Contracted</option>';
+					result = result + ' </select>';
+					result = result + ' </div></td>';
+					
+   	        		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+     	        		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
+     	        		}
+   	        		
+	   	        		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+	                        result = result +' <td><div>---</div></td>';
+	                  	}
+     	        		
+     	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+     	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Send</a></b></div></td>';
+     	        		}
+     	        		
+     	        		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+     	        			result = result +' <td><div>---</div></td>';
+     	        		}
+     	        		
+     	        		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
+     	        			result = result +' <td><div><b class="proj_process">Received</b></div></td>';
+     	        		}
+     	        		
+     	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+     	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Resend</a></b></div></td>';
+     	        		}
+     	        		
+     	        		if(report.invitationStatus == 'Accepted'){ 
+     	        			result = result +' <td><div><b class="proj_active">'+report.invitationStatus+'</b></div></td>';
+     	        		}
+               		
+               		if(report.invitationStatus == 'Rejected'){
+               			result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>';
+               		}
+   	        		
+   	        		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
+   	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
+   	        		
+   	        		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
+   	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
+   	        		'</sec:authorize>';
+   	        		
+   	        		'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
+   	        		result = result + '<td><div>--</div></td>';
+   	        		'</sec:authorize>';
+   	        		
+   	        		result = result +'</tr>';
+   				}
+   	        	result = result +'</tbody>';
+   	    	    $("#vendorContactList").empty();  
+   	    	    $("#vendorContactList").append(result)
+   	    	    $("#clientContactLength").val(json.length);
+   	    	    pagination1(); 
+   	        	/* }else{
+   	        		result = result +'<div class="row">';
+   	        		result = result +'<div class="col-lg-12">';
+   	        		result = result +'<div class="content-area clearfix">';
+   	        		result = result +'<div class="blank-pages">';
+   	        		result = result +'<p>';
+   	        		result = result +'<i class="fa fa-5x fa-users"></i>';
+   	        		result = result +'</p>';
+   	        		result = result +'<p>No Client Contacts for organisation... Add Client Contacts</p>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        		result = result +'</div>';
+   	        	    $("#vendorContactList").empty();  
+    	    	    $("#vendorContactList").append(result)
+   	        	} */
+   	        	
+   	    	    
    		    }
 	 });
 	
@@ -1390,9 +782,7 @@ function resendClientSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Client&orgRelationID="+orgRelationId, 
 			        success: function(result) {
 			        	$("#loading").removeAttr("style"); 
-			        	/* getVendorContactLists(); */
-			        	getVendorContactListsELK();
-			        	
+			        	getVendorContactLists();
 			        },
 			    });
 		 }
@@ -1499,8 +889,7 @@ function listChange(sel){
 		 document.getElementById("vendorContactList_info").style.display="none";
 		 document.getElementById("vendorContactList_filter").style.display="none";
 		 
-		/*  getClientDetails(); */
-		 getClientDetailsELK();
+		 getClientDetails();
 	 }
 	 if(sel.value=="listbyContact"){
 		 document.getElementById("vendorContactList").style.display="block";
@@ -1519,8 +908,7 @@ function listChange(sel){
 		 document.getElementById("ContactImports").style.display="block";
 		'</sec:authorize> ';	 
 		 
-		/*  getVendorContactLists(); */
-		 getVendorContactListsELK();
+		 getVendorContactLists();
 	 }
 	 
 }
@@ -1801,8 +1189,6 @@ function getEndDatePickerById(projectId,localFieldName){
 
 <!-- Show success message after form submission script -->
 <script>
-
-$("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');
 </script> 
 <!-- End -->
@@ -1819,8 +1205,7 @@ function acceptInvitation(spocId){
 		    	$("#selector1").removeAttr("style");
     			$("#selector1").css({ display: "block" });
     			$("#msgDiv").html("Accept Invitation Successfully");
-		    	/* getVendorContactLists(); */
-		    	getVendorContactListsELK();
+		    	getVendorContactLists();
 		    	msgFadein();
 		    }
 	   });
@@ -1855,8 +1240,7 @@ function saveReason1(spocId, orgRelationID){
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
-   			   /*  getVendorContactLists(); */
-   			     getVendorContactListsELK();
+   			    getVendorContactLists();
 		    }
 	   });
 	}else{
@@ -1879,8 +1263,7 @@ function rejectInvitation(spocId){
 		    	$("#selector1").removeAttr("style");
     			$("#selector1").css({ display: "block" });
     			$("#msgDiv").html("Reject Invitation Successfully");
-		    	/* getVendorContactLists(); */
-		    	getVendorContactListsELK();
+		    	getVendorContactLists();
 		    	msgFadein();
 		    }
 	   });
@@ -2070,7 +1453,23 @@ $('#selector').delay(2000).fadeOut('slow');
 		}
 </script>
 	
-<!-- 
+<script type="text/javascript">
+        var config = {
+          '.chosen-select'           : {},
+          '.chosen-select-deselect'  : {allow_single_deselect:true},
+          '.chosen-select-no-single' : {disable_search_threshold:10},
+          '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+          '.chosen-select-width'     : {width:"95%"}
+        }
+        for (var selector in config) {
+          $(selector).chosen(config[selector]);
+        }
+        $('.chosen-select').each(function() {
+                var $this = $(this);
+                $this.next().css({'width': '100%'});
+});
+</script>
+
 <script type="text/javascript">
 	function searchClient() {
 		var minRate = $('#minRate').val(); 
@@ -2135,175 +1534,13 @@ $('#selector').delay(2000).fadeOut('slow');
 		$("#clientlist_form").validateOnBlur(false, validationSettings);
 	});
 </script>
- -->
 
 
-<script type="text/javascript">	
-function numberOfContactsByOrgRelationId(orgRelationId){
-	
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/numberOfContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#noOfContactsCount'+orgRelationId).empty();
-        	$('#noOfContactsCount'+orgRelationId).append(data);
-        	
-        },
-        error: function(e){
-        }
-    });
-}
-</script>
-
-
-<script type="text/javascript">
-	function searchClient() {
-		var validationSettings = {
-				errorMessagePosition : 'element',
-				borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd'
-			};
-		$("#search_client").addClass('button').val('Search');
-		$("#search_client").removeAttr("disabled");
-		
-		var responderType = "Client";
-		
-		 if ($('#clientlist_form').validate(false, validationSettings)){ 
-			
-			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#clientlist_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-		    var jsonData = encodeURIComponent(con);
-			var form = $('#clientlist_form')[0];
-      		var formData = new FormData(form); 
-      		
-      		
-      		
-			//It will escape all the special characters
-			$("#search_client").attr("disabled", "disabled");
-			$("#search_client").addClass('button').val('Processing..');
-			
-			 var selectedList = document.getElementById('listOfVendors').value;
-			if(selectedList == "listbyVendor" ){
-				
-				$.ajax({
-					type : "POST",
-	        	    data: formData,
-	        	    contentType : 'application/json; charset=utf-8',
-	        	    enctype: 'multipart/form-data',
-	    	        processData: false,
-	    	        contentType:false,
-	        	    dataType : 'json',
-					url : sourceleadUrl+"/searchVendorThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&json="+jsonData,
-					success : function(data) {
-						$("#search_client").addClass('button').val('Search');
-						$("#search_client").removeAttr("disabled");
-						closePop();
-						preparedClientListFromElk(data);
-					},
-				}); 
-		      return true;
-			}else if(selectedList == "listbyContact"){
-				
-				$.ajax({
-					type : "POST",
-	        	    data: formData,
-	        	    contentType : 'application/json; charset=utf-8',
-	        	    enctype: 'multipart/form-data',
-	    	        processData: false,
-	    	        contentType:false,
-	        	    dataType : 'json',
-					url : sourceleadUrl+"/searchVendorContactsThroughElasticSearch?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&json="+jsonData,
-					success : function(data) {
-						$("#search_client").addClass('button').val('Search');
-						$("#search_client").removeAttr("disabled");
-						closePop();
-						preparedClientContactListFromElk(data);
-					},
-				}); 
-		     return true;
-			} 
-			
-		 }else{ 
-				return false;
-		 } 
-	} 
-	
-	$('body').on('blur', '#vendorList_form', function() {
-		$("#vendorList_form").showHelpOnFocus();
-		$("#vendorList_form").validateOnBlur(false, validationSettings);
-	});
-</script>
-
-
-<script>
-function getStates(){
-	var countryName = $("#countrySearch").val();
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#stateSearch').empty();
-	        	$('#stateSearch').append('<option value="">---select state---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#stateSearch').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#stateSearch').trigger("chosen:updated");
-	            
-	            $('#citySearch').empty();
-	            $('#citySearch').append('<option value="">---select city---</option>');
-	            $('#citySearch').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#stateSearch').empty();
-    	$('#stateSearch').append('<option value="">---select state---</option>');
-    	$('#stateSearch').trigger("chosen:updated");
-    	$('#citySearch').empty();
-    	$('#citySearch').append('<option value="">---select city---</option>');
-        $('#citySearch').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<script>
-function getCities(){
-	var countryName = $("#countrySearch").val();
-	var stateName = $("#stateSearch").val();
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#citySearch').empty();
-	        	$('#citySearch').append('<option value="">---select city---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#citySearch').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#citySearch').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#citySearch').empty();
-    	$('#citySearch').append('<option value="">---select city---</option>');
-    	$('#citySearch').trigger("chosen:updated");
-	}
-}
-</script>  
-
+<jsp:include page="editClientSpocDetails.jsp" />
+<jsp:include page="clientDetails.jsp" />	
+<jsp:include page="clientContacts.jsp" />
+<jsp:include page="clientDocuments.jsp" />	
+<jsp:include page="clientSpocDocuments.jsp" />	
+<jsp:include page="submissionTemplateList.jsp" />	
 <jsp:include page="../masterFooter.jsp" />	
+	

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.mail.internet.InternetAddress;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -819,11 +821,7 @@ public class ClientServiceImpl implements ClientService{
 				 globalVarsMap.put("ownerEmail",user.getEmail());
 				 
 				 //setting the Recipient information
-				 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-				 EmailRecipient emailRecipient = new EmailRecipient();
-				 emailRecipient.setEmail(emailMessage.getToEmail());
-				 emailRecipient.setName(fromName.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-				 emailRecipientList.add(emailRecipient);
+				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = null;
@@ -842,7 +840,7 @@ public class ClientServiceImpl implements ClientService{
 			 
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 
 			 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT,Constants.ENTITY_TYPE_NOTIFICATION); 
 			 String actionLink = "";

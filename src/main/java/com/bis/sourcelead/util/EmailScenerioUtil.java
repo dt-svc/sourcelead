@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -73,8 +75,8 @@ public class EmailScenerioUtil {
 		return emailTemplate ;
 	} 
 	
-	public void sendEmail(EmailMessage emailMessage,Long locationsId, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList) throws Exception{
-			emailMessageService.sendEmail(emailMessage,locationsId,emailRecipientList,attachmentList);
+	public void sendEmail(EmailMessage emailMessage,Long locationsId, InternetAddress[] iAdressArray,List<EmailAttachment> attachmentList) throws Exception{
+			emailMessageService.sendEmail(emailMessage,locationsId,iAdressArray,attachmentList);
 		}
 	
 	
@@ -138,8 +140,8 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	
 	}
 
-public void sendWithAttachmentEmail(EmailMessage emailMessage, Long locationsId, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList, String[] submissionIds) throws Exception{
-	emailMessageService.sendEmailWithAttachment(emailMessage,locationsId,emailRecipientList,attachmentList,submissionIds);
+public void sendWithAttachmentEmail(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray,List<EmailAttachment> attachmentList, String[] submissionIds) throws Exception{
+	emailMessageService.sendEmailWithAttachment(emailMessage,locationsId,iAdressArray,attachmentList,submissionIds);
 	
 }
 
