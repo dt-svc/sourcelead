@@ -92,6 +92,8 @@ public interface ProjectsService {
 		
 		void tereminateAsProjectApprover(JSONObject jsonObj,User user,Long userId,OrgLocations orgLocations) throws Exception;
 		
+		List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) throws Exception;
+		
 		
 		
 }
