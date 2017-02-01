@@ -1,1 +1,31 @@
-UPDATE `sourcelead`.`SUBMISSION_TEMPLATE` SET `JSON_STRING`='[{\"type\":\"text\",\"label\":\"First Name\",\"req\":1,\"isRemoved\":\"N\",\"isLabelModified\":\"N\"},{\"type\":\"text\",\"label\":\"Last Name\",\"req\":0,\"isRemoved\":\"Y\",\"isLabelModified\":\"N\"},{\"type\":\"text\",\"label\":\"Phone Number\",\"req\":1,\"isRemoved\":\"N\",\"isLabelModified\":\"N\"},{\"type\":\"text\",\"label\":\"Alternate Number\",\"req\":0,\"isRemoved\":\"Y\",\"isLabelModified\":\"N\"},{\"type\":\"text\",\"label\":\"Email Id\",\"req\":1,\"isRemoved\":\"N\",\"isLabelModified\":\"N\"},{\"type\":\"autocomplete\",\"label\":\"location\",\"req\":0,\"isRemoved\":\"N\",\"isLabelModified\":\"N\"},{\"type\":\"calendar\",\"label\":\"DOB\",\"req\":0,\"isRemoved\":\"N\",\"isLabelModified\":\"N\"},{\"type\":\"text\",\"label\":\"Current / Last Company\",\"req\":0,\"isRemoved\":\"N\",\"isLabelModified\":\"N\"},{\"type\":\"text\",\"label\":\"Designation\",\"req\":0,\"isRemoved\":\"N\",\"isLabelModified\":\"N\"},{\"type\":\"text\",\"label\":\"Education\",\"req\":0,\"isRemoved\":\"N\",\"isLabelModified\":\"N\"},{\"type\":\"select\",\"label\":\"Work Experience\",\"req\":0,\"choices\":[{\"label\":\"0\",\"sel\":0},{\"label\":\"1\",\"sel\":0},{\"label\":\"2\",\"sel\":0},{\"label\":\"3\",\"sel\":0},{\"label\":\"4\",\"sel\":0},{\"label\":\"5\",\"sel\":0},{\"label\":\"6\",\"sel\":0},{\"label\":\"7\",\"sel\":0},{\"label\":\"8\",\"sel\":0},{\"label\":\"9\",\"sel\":0},{\"label\":\"10\",\"sel\":0},{\"label\":\"11\",\"sel\":0},{\"label\":\"12\",\"sel\":0},{\"label\":\"13\",\"sel\":0},{\"label\":\"14\",\"sel\":0},{\"label\":\"15\",\"sel\":0},{\"label\":\"16\",\"sel\":0},{\"label\":\"17\",\"sel\":0},{\"label\":\"18\",\"sel\":0},{\"label\":\"19\",\"sel\":0},{\"label\":\"20\",\"sel\":0},{\"label\":\"21\",\"sel\":0},{\"label\":\"22\",\"sel\":0},{\"label\":\"23\",\"sel\":0},{\"label\":\"24\",\"sel\":0},{\"label\":\"25+\",\"sel\":0}],\"isRemoved\":\"N\",\"isLabelModified\":\"N\"},{\"type\":\"text\",\"label\":\"Current CTC\",\"req\":0,\"isRemoved\":\"N\",\"isLabelModified\":\"N\"},{\"type\":\"text\",\"label\":\"Expected CTC\",\"req\":0,\"isRemoved\":\"N\",\"isLabelModified\":\"N\"},{\"type\":\"select\",\"label\":\"Notice Period\",\"req\":0,\"choices\":[{\"label\":\"Immediately available\",\"sel\":0},{\"label\":\"15 Days\",\"sel\":0},{\"label\":\"1 Month\",\"sel\":0},{\"label\":\"2 Months\",\"sel\":0},{\"label\":\"3 Months\",\"sel\":0},{\"label\":\"4 Months\",\"sel\":0}],\"isRemoved\":\"N\",\"isLabelModified\":\"N\"}]' WHERE `ID`='1';
+DROP TABLE IF EXISTS `sourcelead`.`RECOMMENDED_CUSTOMIZE_SCORE`;
+CREATE TABLE `sourcelead`.`RECOMMENDED_CUSTOMIZE_SCORE` (
+  ID BIGINT NOT NULL AUTO_INCREMENT,
+  REQIREMENT_ID BIGINT,
+  ORGLOCATION_ID BIGINT,
+  CUSTOMIZE_SKILLS TEXT DEFAULT NULL,
+  CUSTOMIZE_SKILL_SCORE VARCHAR(10),
+  CUSTOMIZE_MIN_EXPERIENCE VARCHAR(10),
+  CUSTOMIZE_MAX_EXPERIENCE VARCHAR(10),
+  CUSTOMIZE_EXPERIENCE_SCORE VARCHAR(10),
+  CUSTOMIZE_RATE VARCHAR(10),
+  CUSTOMIZE_RATE_TYPE VARCHAR(20),
+  CUSTOMIZE_RATE_SCORE VARCHAR(10),
+  CUSTOMIZE_NOTICEPERIOD TEXT DEFAULT NULL,
+  CUSTOMIZE_NOTICEPERIOD_SCORE VARCHAR(10),
+  CUSTOMIZE_KEYWORDS TEXT DEFAULT NULL,
+  CUSTOMIZE_KEYWORDS_SCORE VARCHAR(10),
+  CUSTOMIZE_COUNTRY VARCHAR(50) DEFAULT NULL,
+  CUSTOMIZE_STATE VARCHAR(50) DEFAULT NULL,
+  CUSTOMIZE_CITY VARCHAR(50) DEFAULT NULL,
+  CUSTOMIZE_LOCATION_SCORE VARCHAR(10),
+  STATUS INTEGER,
+  CREATED_DATE DATETIME,
+  CREATED_BY VARCHAR(10),
+  UPDATED_DATE DATETIME,
+  UPDATED_BY VARCHAR(10),
+  PRIMARY KEY (`ID`),
+  FOREIGN KEY(REQIREMENT_ID) REFERENCES `sourcelead`.`REQUIREMENT`(ID),
+  FOREIGN KEY(ORGLOCATION_ID) REFERENCES `sourcelead`.`ORG_LOCATIONS`(ID)
+) ;
+
