@@ -89,7 +89,7 @@ public class TimesheetController {
 			model.addObject("ProjectMembersList", projectMembersList);
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("timesheet/newTimesheet");
+			model.setViewName("timesheet/timesheet");
 			return model;
 
 	}

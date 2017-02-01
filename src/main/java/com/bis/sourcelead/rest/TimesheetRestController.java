@@ -172,9 +172,9 @@ public class TimesheetRestController {
 	}
 	
 	 
-	@RequestMapping(value = "/newTimesheetDummy", method = RequestMethod.POST )   
+	@RequestMapping(value = "/timesheetEntries", method = RequestMethod.POST )   
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
-	public @ResponseBody String newTimesheetDummy(HttpServletRequest request,
+	public @ResponseBody String timesheetEntries(HttpServletRequest request,
 			@RequestParam(value="weekStartDate", required=false) String weekStartDate,
 			@RequestParam(value="weekEndDate", required=false) String weekEndDate) throws Exception {
 		

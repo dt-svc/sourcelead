@@ -173,7 +173,7 @@ public class CommonUtil {
 			/**
 			 * commented by Prasad salina
 			 */
-			//inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId, pmh.getProjectTerminationDate());
+			inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId, pmh.getProjectTerminationDate());
 			
 			ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
 			pm.setStatus(Constants.MEMBER_IN_ACTIVE);
