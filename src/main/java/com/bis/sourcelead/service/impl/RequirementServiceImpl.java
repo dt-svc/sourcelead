@@ -2637,7 +2637,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 }
 	 }
  
-<<<<<<< HEAD
+
 	 
 	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
 		   
@@ -2661,9 +2661,7 @@ public class RequirementServiceImpl implements RequirementService {
 				
 			return matchQueryBuilderList; 
 	 }
-=======
 
->>>>>>> 1acff16c646063d2b916e9cf71005fbd0c5d159d
 	 
 	@Override
 	public List<Object> univesalSearchRequirement(OrgLocations orgLocation, String searchType,String searchValue, Org org,String userRole, User user) throws JSONException, Exception {
@@ -3050,7 +3048,4 @@ public class RequirementServiceImpl implements RequirementService {
 		return matchQueryBuilderList; 
 	}
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> 1acff16c646063d2b916e9cf71005fbd0c5d159d
