@@ -489,24 +489,25 @@ public class ProjectsDashboardRestController {
 				}
 				
 				//project Manager
-				/*ArrayList<String> projectManagerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
+				ArrayList<String> projectManagerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
 				if(projectManagerArray != null && !projectManagerArray.isEmpty()){
 					BoolQueryBuilder projectManagerBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectManagerArray){
 						projectManagerBoolQueryBuilder.should(QueryBuilders.matchQuery("level1ManagerName", keywd));
 					}
-					boolQueryBuilder.must(projectManagerBoolQueryBuilder);
-				}*/
+					boolQueryBuilder.should(projectManagerBoolQueryBuilder);
+				}
+				
 				
 				//project Manager2
-				/*ArrayList<String> projectManager2Array = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
+				ArrayList<String> projectManager2Array = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
 				if(projectManager2Array != null && !projectManager2Array.isEmpty()){
 					BoolQueryBuilder projectManager2BoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectManager2Array){
 						projectManager2BoolQueryBuilder.should(QueryBuilders.matchQuery("level2ManagerName", keywd));
 					}
-					boolQueryBuilder.must(projectManager2BoolQueryBuilder);
-				}*/
+					boolQueryBuilder.should(projectManager2BoolQueryBuilder);
+				}
 				
 				//invoice Frequency
 				ArrayList<String> invoiceFrequencyArray = getSearchKeywordsFromChosenSelectField(jsonObj, "invoiceFrequencyAdvanced");
@@ -549,38 +550,39 @@ public class ProjectsDashboardRestController {
 				}*/
 				
 				//project Members
-				/*ArrayList<String> projectMembersArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeNameAdvanced");
+				ArrayList<String> projectMembersArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeNameAdvanced");
 				if(projectMembersArray != null && !projectMembersArray.isEmpty()){
 					BoolQueryBuilder projectMembersBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectMembersArray){
 						projectMembersBoolQueryBuilder.should(QueryBuilders.matchQuery("projectMembers", keywd));
 					}
 					boolQueryBuilder.must(projectMembersBoolQueryBuilder);
-				}*/
+				}
 				
 				//project Member Email
-				/*ArrayList<String> projectMemberEmailArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeEmailAdvanced");
+				ArrayList<String> projectMemberEmailArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeEmailAdvanced");
 				if(projectMemberEmailArray != null && !projectMemberEmailArray.isEmpty()){
 					BoolQueryBuilder projectMemberEmailBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectMemberEmailArray){
 						projectMemberEmailBoolQueryBuilder.should(QueryBuilders.matchQuery("projectMemberEmail", keywd));
 					}
 					boolQueryBuilder.must(projectMemberEmailBoolQueryBuilder);
-				}*/
-				
+				}
 				
 				List<ProjectsIndex> projectsList = new ArrayList<ProjectsIndex>();
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				df.setTimeZone(TimeZone.getTimeZone("GMT"));
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-				if(searchHits != null && searchHits.length >0){
-					ObjectMapper mapper = new ObjectMapper();
-					for (SearchHit hit : searchHits) {
-						json = hit.getSourceAsString();
-						mapper.setDateFormat(df);
-						ProjectsIndex projectsIndex = mapper.readValue(json, ProjectsIndex.class);
-						projectsList.add(projectsIndex);
+				try {
+					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+					if(searchHits != null && searchHits.length >0){
+						ObjectMapper mapper = new ObjectMapper();
+						for (SearchHit hit : searchHits) {
+							json = hit.getSourceAsString();
+							ProjectsIndex projectsIndex = mapper.readValue(json, ProjectsIndex.class);
+							projectsList.add(projectsIndex);
+						}
 					}
+				
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			 String resultJson;
 			 resultJson = commonUtil.toJSON(projectsList);
