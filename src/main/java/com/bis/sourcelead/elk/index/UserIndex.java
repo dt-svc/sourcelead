@@ -15,11 +15,11 @@ public class UserIndex implements Serializable {
 
 	private Long orgLocationId;
 
-	private String firstName;
+	private String firstName; 
 
 	private String lastName;
-
-	private String email;
+ 
+	private String email; 
 
 	private String mobilePhone;
 

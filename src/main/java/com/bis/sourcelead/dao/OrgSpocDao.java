@@ -70,6 +70,6 @@ public interface OrgSpocDao {
 	
 	List<OrgSpoc> getOrgSpocByOrgRelationId(Long orgRelationId) throws Exception;
 	
-	Integer getAllVendorContactsCountbyOrgLocationId(Long orgId) throws Exception;
+	Integer getAllVendorContactsCountbyOrgLocationId(Long orgId,String type,Long userId) throws Exception;
 
 }

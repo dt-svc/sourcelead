@@ -514,7 +514,7 @@ ul.timesheet-menu li a, .backoffice-menu li a {
 }
 ul.timesheet-menu li a::before, .backoffice-menu li a::before {
 	color: #f0ad4e;
-	content: "ïˆ­";
+	content: "Ã¯Ë†Â­";
 	font-family: fontawesome;
 	padding-right: 5px;
 }

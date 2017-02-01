@@ -90,7 +90,13 @@ public class CandidateIndex implements Serializable {
 	
 	private Integer isFavourite;
 	
+	private String candidateName;
+	
 	private String candidateUpdateDateToString;
+	
+	private String totalExp;
+	
+	private String skillSet;
 	
 	public Long getCandidateId() {
 		return candidateId;
@@ -433,10 +439,29 @@ public class CandidateIndex implements Serializable {
 	public void setCandidateUpdateDateToString(String candidateUpdateDateToString) {
 		this.candidateUpdateDateToString = candidateUpdateDateToString;
 	}
-	
 
-	
+	public String getCandidateName() {
+		return candidateName;
+	}
 
-	
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getTotalExp() {
+		return totalExp;
+	}
+
+	public void setTotalExp(String totalExp) {
+		this.totalExp = totalExp;
+	}
+
+	public String getSkillSet() {
+		return skillSet;
+	}
+
+	public void setSkillSet(String skillSet) {
+		this.skillSet = skillSet;
+	}
 
 }

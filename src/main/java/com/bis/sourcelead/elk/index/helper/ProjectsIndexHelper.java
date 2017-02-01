@@ -31,7 +31,10 @@ public class ProjectsIndexHelper {
 			projectsIndex.setProjectName(projects.getProjectName());
 			projectsIndex.setOrgLocationId(projects.getOrgLocationsId().getId());
 			projectsIndex.setStartDate(Constants.DF_DMY.format(projects.getStartDate()));
-			projectsIndex.setEndDate(Constants.DF_DMY.format(projects.getEndDate()));
+			if(projects.getEndDate() !=null){
+				projectsIndex.setEndDate(Constants.DF_DMY.format(projects.getEndDate()));
+			}
+			
 			projectsIndex.setInvoiceFrequency(projects.getInvoiceFrequency());
 			projectsIndex.setProjectStatus(projects.getProjectStatus().toString());
 			

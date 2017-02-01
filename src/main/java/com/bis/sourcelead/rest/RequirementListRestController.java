@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +33,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
+import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
@@ -1227,13 +1232,54 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		String resultJson = "";
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
-
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Requirement> searchRequirementList = requirementService.searchRequirement(orgLocation, jsonObj,org);
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		List<Requirement> searchRequirementList = requirementService.searchRequirement(orgLocation, jsonObj,org,userRole,user);
 		resultJson = commonUtil.toJSON(searchRequirementList);
 		return resultJson;
 	    
 	    
-}
+        }
+        
+        /**
+		 * Search Requirement
+		 * @param json
+		 * @param request
+		 * @param response
+		 * @return
+		 * @throws Exception
+		 */
+        @SuppressWarnings("unchecked")
+		@RequestMapping(value = "/universalSearch",method = RequestMethod.GET)
+		public @ResponseBody  String universalSearch(@RequestParam(value = "searchType", required = false) String searchType,@RequestParam(value = "searchValue", required = false) String searchValue,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			String resultJson = "";
+			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			List<Object> searchList = requirementService.univesalSearchRequirement(orgLocation, searchType,searchValue,org,userRole,user);
+			for(Object obj : searchList){
+				if(obj instanceof Requirement){
+					List<Requirement> searchReqList = (List<Requirement>)(Object)searchList; 
+					return commonUtil.toJSON(searchReqList);
+				}else if(obj instanceof Candidate){
+					List<CandidateIndex> searchCandidateList = (List<CandidateIndex>)(Object)searchList; 
+					return commonUtil.toJSON(searchCandidateList);
+				}else if(obj instanceof ClientVendorIndex){
+					List<ClientVendorIndex> clientVendorList = (List<ClientVendorIndex>)(Object)searchList; 
+					return commonUtil.toJSON(clientVendorList);
+				}else if(obj instanceof ProjectsIndex){
+					List<ProjectsIndex> searchProjectsList = (List<ProjectsIndex>)(Object)searchList; 
+					return commonUtil.toJSON(searchProjectsList);
+				}else if(obj instanceof UserIndex){
+					List<UserIndex> searchUserList = (List<UserIndex>)(Object)searchList; 
+					return commonUtil.toJSON(searchUserList);
+				}
+			}
+			resultJson = commonUtil.toJSON(searchList);
+			return resultJson;
+        }
+        
 }
