@@ -36,6 +36,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
+import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
@@ -1261,17 +1262,20 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 			List<Object> searchList = requirementService.univesalSearchRequirement(orgLocation, searchType,searchValue,org,userRole,user);
 			for(Object obj : searchList){
 				if(obj instanceof Requirement){
-					List<Requirement> reqList = (List<Requirement>)(Object)searchList; 
-					return commonUtil.toJSON(reqList);
+					List<Requirement> searchReqList = (List<Requirement>)(Object)searchList; 
+					return commonUtil.toJSON(searchReqList);
 				}else if(obj instanceof Candidate){
-					List<CandidateIndex> candidateList = (List<CandidateIndex>)(Object)searchList; 
-					return commonUtil.toJSON(candidateList);
+					List<CandidateIndex> searchCandidateList = (List<CandidateIndex>)(Object)searchList; 
+					return commonUtil.toJSON(searchCandidateList);
 				}else if(obj instanceof ClientVendorIndex){
 					List<ClientVendorIndex> clientVendorList = (List<ClientVendorIndex>)(Object)searchList; 
 					return commonUtil.toJSON(clientVendorList);
 				}else if(obj instanceof ProjectsIndex){
-					List<ProjectsIndex> clientVendorList = (List<ProjectsIndex>)(Object)searchList; 
-					return commonUtil.toJSON(clientVendorList);
+					List<ProjectsIndex> searchProjectsList = (List<ProjectsIndex>)(Object)searchList; 
+					return commonUtil.toJSON(searchProjectsList);
+				}else if(obj instanceof UserIndex){
+					List<UserIndex> searchUserList = (List<UserIndex>)(Object)searchList; 
+					return commonUtil.toJSON(searchUserList);
 				}
 			}
 			resultJson = commonUtil.toJSON(searchList);

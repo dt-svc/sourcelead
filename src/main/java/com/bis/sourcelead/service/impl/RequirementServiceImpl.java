@@ -57,6 +57,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.RequirementHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -2716,6 +2717,43 @@ public class RequirementServiceImpl implements RequirementService {
 		if(searchType != null && !"".equalsIgnoreCase(searchType)&&"Users".equalsIgnoreCase(searchType))
 		{
 			// ELK list for the user
+			 
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
+			 Long maxResults = userRoleService.getUsersCountByOrgLocationID(orgLocation.getId());
+			 
+				//All Keywords
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if(null != allKeyWordArray && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getUsersMatchQueryBuilderList(keywd);
+						if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(allBoolQueryBuilder);
+				}
+			
+//				List<UserIndex> usersList = new ArrayList<UserIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				if(null != searchHits && searchHits.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHits) {
+						String json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+						searchList.add(userIndex);
+					}
+				}
+			
 			return searchList;
 		}
 		
@@ -2908,6 +2946,29 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	
+
+	private ArrayList<MatchQueryBuilder> getUsersMatchQueryBuilderList(String keywd) {
+		 ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("ratePer", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+
+			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			
+			if(matcher.find()){
+				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
+				String mobileKeywd =matcher.group().replaceAll("[+91]", "");
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+			}
+			
+			return matchQueryBuilderList; 
+	}
 
 	private ArrayList<MatchQueryBuilder> getProjectsMatchQueryBuilderList(String keywd) {
 		 ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
