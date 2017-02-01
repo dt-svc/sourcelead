@@ -590,7 +590,7 @@ public class TimesheetRestController {
 									  
 									  //Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasks();
 									  Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
-									  tabDiv.append("                       <select id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
+									  tabDiv.append("                       <select id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasks(\""+rowCount+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
 									  tabDiv.append("<option value=''>--select task--</option>");
 						              for(ProjectTasks pt   : ProjectTasksList){
 								    	       if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
@@ -718,7 +718,7 @@ public class TimesheetRestController {
             }
 			 else{
             	  if((isFillMyTimeSheet )){
-            		  tabDiv.append("     <select  id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' class='existedProjectTaskId"+projectMember.getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"task1Id\",\""+projectMember.getProjects().getId()+"\")' >");
+            		  tabDiv.append("     <select  id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' class='existedProjectTaskId"+projectMember.getProjects().getId()+"' onChange='getProjectTasks(\""+rowCount+"task1Id\",\""+projectMember.getProjects().getId()+"\")' >");
 	                      tabDiv.append("<option value=''>--select task--</option>");
 	                      Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(projectMember.getProjects().getId());
 	                      for(ProjectTasks pt   : ProjectTasksList){
