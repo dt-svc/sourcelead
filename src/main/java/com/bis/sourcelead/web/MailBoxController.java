@@ -204,9 +204,9 @@ public class MailBoxController {
 	 	     if(null != searchHits && searchHits.length >0){
 	 	    	ObjectMapper mapper = new ObjectMapper();
 	 	    	for (SearchHit hit : searchHits) {
-	 	    		String json = hit.getSourceAsString();
+	 	    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
 	 	    		mapper.setDateFormat(df);
-	 	    	    CampaignIndex campaignIndex = mapper.readValue(json, CampaignIndex.class);
+	 	    	    CampaignIndex campaignIndex = mapper.readValue(json.toString(), CampaignIndex.class);
 	 	    		mailBoxList.add(campaignIndex);
 	 	    	}
 	 	    }
@@ -252,7 +252,7 @@ public class MailBoxController {
 	    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
 		boolQueryBuilder.must(QueryBuilders.matchQuery("status", Constants.RECORD_ACTIVE));
-		Integer maxResults = null;
+		Integer maxResults = 0;
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 	    if(!isNullOrEmpty(candidatesListType)){
@@ -308,10 +308,10 @@ public class MailBoxController {
 	    	SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 		    if(null != searchHits && searchHits.length >0){
 		    	ObjectMapper mapper = new ObjectMapper();
+		    	mapper.setDateFormat(df);
 		    	for (SearchHit hit : searchHits) {
-		    		String json = hit.getSourceAsString();
-		    		mapper.setDateFormat(df);
-		    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+		    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
+		    	    CandidateIndex candidateIndex = mapper.readValue(json.toString(), CandidateIndex.class);
 		    	    candidateList.add(candidateIndex);
 		    	}
 		    	

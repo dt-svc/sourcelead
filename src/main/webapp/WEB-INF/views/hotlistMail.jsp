@@ -118,7 +118,9 @@ display: none;
                     </div>
                     <div class="modal-body-custom mailerpopup mt clearfix">
                      <div id="candidatesList"></div>
+                     <div id="candidatesLoading"></div>
                     </div>
+                     
                   </div> 
                 </div>
               </div>
@@ -554,6 +556,9 @@ function pagination(){
 function getCandidates(candidatesListType){
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  
+	  $("#candidatesLoading").attr('style','position:absolute; width:98%; height:49%; background-color:rgba(255,255,255,0.8); top:140px; left:17px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getCandidatesForCampaign?${_csrf.parameterName}=${_csrf.token}&candidatesListType="+candidatesListType,    
@@ -642,6 +647,7 @@ function getCandidates(candidatesListType){
 	                 	 $("#candidatesList").empty(); 
 	                     $("#candidatesList").append(result); 
 	                     candidatePagenation(); 
+	                     $("#candidatesLoading").removeAttr("style");
                  }else{
   	    	         
                  	var result ="";
@@ -667,7 +673,9 @@ function getCandidates(candidatesListType){
  	        		result = result +'     </div>';
  					$("#candidatesList").empty();
  				    $("#candidatesList").append(result); 
- 				    candidatePagenation();  
+ 				    $("#candidatesLoading").removeAttr("style");
+ 				    candidatePagenation(); 
+ 				    
                  } 
           },
             
@@ -681,7 +689,7 @@ function getCandidates(candidatesListType){
 function candidatePagenation(){
     $("#candidates").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
