@@ -532,7 +532,7 @@ function candidateSideBar(candidateId){
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
 			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="'+json.email+'">'+json.email+'</a></li>';
-			             result = result+'<li><i class="fa fa-phone"></i>'+json.mobilePhone+''+alternateMobilePhone+'</li>';
+			             result = result+'<li><i class="fa fa-phone"></i>'+mobilePhone+''+alternateMobilePhone+'</li>';
 			                                                	  
 			             result = result+' <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
 			             
