@@ -479,6 +479,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		return projectsDao.getProjectByOrgLocationsIdAndUserId(id,userId);
 	}
 
+	@Override
+	public List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long id, Long userId) {
+		// TODO Auto-generated method stub
+		return projectsDao.getProjectsByOrgLocationsIdAndApproverUserId(id,userId);
+	}
+	
+	
 
 	@Override
 	public Projects getProjectByIdAndLoginOrgId(Long projectId, Long orgLocationId) throws Exception {
@@ -1773,6 +1780,12 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 								projectApproverHierarchyService.updateProjectApproverHierarchy(hierarchy);
 		    		}
 		    		
+			}
+
+			@Override
+			public List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId,
+					Long userId) throws Exception {
+				return projectsDao.getProjectBasedClientsByOrgLocationsIdAndApproverUserId(orgLocationsId, userId);
 			}
 
 			/*@Override

@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +29,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 @Table(name = "SUBMISSION_APPROVER_HIERARCHY", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionApproverHeirarchy")
 public class SubmissionApproverHierarchy implements  Serializable{
-	  
+	
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -101,7 +102,8 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Transient
 	private Float totalHours;
 	
-	
+	@Transient
+	private LinkedHashMap<Date,Float> weekTotals;
 	
 
 	public Long getId() {
@@ -270,6 +272,14 @@ public class SubmissionApproverHierarchy implements  Serializable{
 
 	public void setTotalHours(Float totalHours) {
 		this.totalHours = totalHours;
+	}
+
+	public LinkedHashMap<Date, Float> getWeekTotals() {
+		return weekTotals;
+	}
+
+	public void setWeekTotals(LinkedHashMap<Date, Float> weekTotals) {
+		this.weekTotals = weekTotals;
 	}
 	
 	

@@ -43,7 +43,9 @@ public interface ProjectsDao {
 	List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
 	
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
-
+	
+	public List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long id, Long userId);
+	
 	public Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
 
 	public Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
@@ -59,5 +61,7 @@ public interface ProjectsDao {
 	//public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 	
 	Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
+	
+	List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) throws Exception;
 
 }

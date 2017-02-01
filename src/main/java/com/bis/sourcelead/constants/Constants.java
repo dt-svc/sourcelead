@@ -64,6 +64,8 @@ public class Constants {
 	public static DateFormat DF_YMD = new SimpleDateFormat("yyyy-MM-dd");
 	public static DateFormat DF_STD_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
 	
+	public static transient DateFormat MY = new SimpleDateFormat("MMMM-yyyy");
+	
 	public static DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
 	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd/MM");
@@ -115,6 +117,9 @@ public class Constants {
 	public static String loginUserAsAdmin =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = ts.projectMembers.projects.orgLocationsId.id)";
 	
 	public static String loginUserAsAdminWithMaxHeirarchyLevel ="(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projects.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id))";
+	
+	
+	public static String loginUserAsAdminForProjects =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = projects.orgLocationsId.id)";
 	
 	/** projectMember  constants**/
 	public static String MEMBER_ACTIVE = "1";

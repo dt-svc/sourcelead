@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,23 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.NotificationsService;
-import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
-import com.bis.sourcelead.service.impl.TimeSheetExcelView;
-import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
  
 
 @Controller 
-public class NewTimesheetApprovalController {
+public class TimesheetApprovalController {
 
 
 	
@@ -43,7 +34,7 @@ public class NewTimesheetApprovalController {
 	
 		
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')")
-	@RequestMapping(value = "/newTimesheetApproval")
+	@RequestMapping(value = "/timesheetApproval")
 	public ModelAndView newTimesheetApproval(HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
 			
@@ -72,7 +63,7 @@ public class NewTimesheetApprovalController {
 			model.addObject("thslist",thslist);
 
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("timesheet/newTimesheetApproval");
+			model.setViewName("timesheet/TimesheetApproval"); 
 	        return model;
 	}
 	

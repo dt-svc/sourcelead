@@ -600,6 +600,24 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndEmpUserId(locationsId, empUserId);
 	}
 
-	
+	@Override
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(
+			String status, String startDate, String endDate, Long projectId) {
+		 
+		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(status, startDate, endDate, projectId);
+		
+	}
+
+	@Override
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Long locationsId,Long approverUserId) {
+		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserId(locationsId,approverUserId);
+	}
+
+	@Override
+	public List<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
+			String timesheetFrequency, Date startDate, Date endDate, Long clientId, String status, Long locationsId,
+			Long approverUserId) {
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId);
+	}
 	
 }
