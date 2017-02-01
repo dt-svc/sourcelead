@@ -154,57 +154,6 @@ public class VendorRestController {
 	 * @throws Exception
 	 */
 	 
-	@RequestMapping(value = "/getReleasedJobsCountByOrgRelationId", method = RequestMethod.POST)
-	public @ResponseBody Long getReleasedJobsCountByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
-
-	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
-	    OrgRelations orgRelation =orgRelationsService.getOrRelationsById(orgRelationId);
-	    Long releasedJobsSize =0l;
-		List<Requirement> vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(),orgRelation.getId(),user,orgLocations);
-		if(null != vendorReleasedJobsList ){
-			
-			releasedJobsSize = (long) vendorReleasedJobsList.size();
-		}
-			 return releasedJobsSize;
-		}
-	
-	
-	/**
-	 * @author Laxman
-	 * this is method is using Vendor List
-	 * @param request
-	 * @return json
-	 * @throws Exception
-	 */
-	 
-	@RequestMapping(value = "/numberOfContactsByOrgRelationId", method = RequestMethod.POST)
-	public @ResponseBody Long numberOfContactsByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
-
-	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
-	    OrgRelations orgRelation =orgRelationsService.getOrRelationsById(orgRelationId);
-	    Long numberOfContacts =0l;
-		List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
-		if(null != contactsList ){
-			numberOfContacts = (long) contactsList.size();
-		}
-			 return numberOfContacts;
-		}
-	
-	
-	
-	
-	/**
-	 * @author Laxman
-	 * this is method is using Vendor List
-	 * @param request
-	 * @return json
-	 * @throws Exception
-	 */
-	 
 	@RequestMapping(value = "/getVendorFilterLists", method = RequestMethod.POST)
 	public @ResponseBody String getVendorFilterLists(@RequestParam(value="values", required=false) String status,HttpServletRequest request) throws Exception {
 
@@ -272,9 +221,6 @@ public class VendorRestController {
 			 resultJson = commonUtil.toJSON(vandorsListByOrgLocationId);
 			 return resultJson;
 		}
-	
-	
-	
 	
 	
 	/**
@@ -939,6 +885,7 @@ public class VendorRestController {
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("website", keywd));
 				return matchQueryBuilderList; 
 		 }
 		 
@@ -1143,7 +1090,7 @@ public class VendorRestController {
 					if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty()){
 						BoolQueryBuilder statusAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : statusAdvancedArray){
-							statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("spocStatus", "*"+keywd+"*"));
+							statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocStatus", "*"+keywd+"*"));
 						
 						}
 						boolQueryBuilder.must(statusAdvancedBoolQueryBuilder);
