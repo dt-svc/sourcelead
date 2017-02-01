@@ -2637,33 +2637,6 @@ public class RequirementServiceImpl implements RequirementService {
 		 }
 	 }
  
-<<<<<<< HEAD
-	 
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
-		   
-		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
-			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
-			if(matcher.find()){
-				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
-			}
-
-				
-			return matchQueryBuilderList; 
-	 }
-=======
-
->>>>>>> 1acff16c646063d2b916e9cf71005fbd0c5d159d
 	 
 	@Override
 	public List<Object> univesalSearchRequirement(OrgLocations orgLocation, String searchType,String searchValue, Org org,String userRole, User user) throws JSONException, Exception {
@@ -3050,7 +3023,4 @@ public class RequirementServiceImpl implements RequirementService {
 		return matchQueryBuilderList; 
 	}
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> 1acff16c646063d2b916e9cf71005fbd0c5d159d
