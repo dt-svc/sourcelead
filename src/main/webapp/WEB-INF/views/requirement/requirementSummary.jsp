@@ -2312,7 +2312,7 @@ function requirementStatusBar(requirementId){
 		 result = result + '       </a> <span class="label label-default" id="duplicateApplicantsCount">0</span> </li>';
 		 
 		 result = result + '   <li id="requestSentli" class="tabActivation" onclick="filterReq('+requirementId+',\''+requestSent+'\');tabEnable(this);"> <a href="javascript:void(0)" title="RequestSent">';
-         result = result + '     <label><strong>RequestSent</strong></label>';
+         result = result + '     <label><strong>Request Sent</strong></label>';
          result = result + '      </a><span class="label label-warning" id="requestSent">0</span></li>';
 		 
 		 result = result + '      <li id="shortListli" class="tabActivation" onclick="filterReq('+requirementId+',\''+shortList+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Shortlisted">';
