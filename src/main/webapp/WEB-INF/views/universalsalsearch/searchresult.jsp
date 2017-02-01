@@ -33,50 +33,7 @@ $(document).ready(function(){
 	<div class="clearfix">
 <div id ="searchList"></div>
 
-<!-- Requirement Search Results -->
-      <!-- <div class="search-result-widget clearfix">
-           <h4>Requirement</h4>
-          <div class="srchresult clearfix row">
-              <div class="srchresult-content col-xs-12 col-md-12">
-                  <p><label><strong><a href="javascript:void(0)">Requirement Title</a></strong></label>, <label>Type</label>,
-                  <label>Location</label>
-                  </p>
-                  <p><label><strong>Client Name</strong></label></p>
-                  <p><label>2.4 yrs</label>, <label>1 Month</label></p>
-                  <p><label>Java, Hibernet, Sprints, Javascript, MySql, jQuery, AngularJS, ReactJS, NodeJs. etc.. </label></p>
-                  <span href="javascript:void(0)" class="reqstatus-btn">Open</span>
-              </div>
-          </div>
-          
-        <div class="srchresult clearfix row">
-              <div class="srchresult-content col-xs-12 col-md-12">
-                  <p><label><strong><a href="javascript:void(0)">Requirement Title</a></strong></label>, <label>Type</label>
-                  <label>Location</label>
-                  </p>
-                  <p><label><strong>Client Name</strong></label></p>
-                  <p><label>2.4 yrs</label>, <label>1 Month</label></p>
-                  <p><label>Java, Hibernet, Sprints, Javascript, MySql, jQuery, AngularJS, ReactJS, NodeJs. etc.. </label></p>
 
-                  <span href="javascript:void(0)" class="reqstatus-btn">OnHold</span>
-              </div>
-        </div>
-        <div class="srchresult clearfix row">
-              <div class="srchresult-content col-xs-12 col-md-12">
-                  <p><label><strong><a href="javascript:void(0)">Requirement Title</a></strong></label>,<label>Type</label>
-                  <label>Location</label>
-                  </p>
-                  <p><label><strong>Client Name</strong></label></p>
-                  <p><label>2.4 yrs</label>, <label>1 Month</label></p>
-                  <p><label>Java, Hibernet, Sprints, Javascript, MySql, jQuery, AngularJS, ReactJS, NodeJs. etc.. </label></p>
-                  <span href="javascript:void(0)" class="reqstatus-btn">Open</span>
-              </div>
-          </div>
-          <div class="clearfix">
-              <a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>
-          </div>
-
-      </div> -->
-     <!-- Requirement Search Results -->
 	</div>
 	</section>
 
@@ -101,9 +58,9 @@ function getSearchResults(searchType,searchValue){
 			    	result = result+'  <div class="srchresult clearfix row">';
 			    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 			    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
-			    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
+			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
 			    	}else{
-			    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.jobTitle+'</a></strong></label>';	
+			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label>';	
 			    	}
 			    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 			    		location = location + report.city;
@@ -132,13 +89,13 @@ function getSearchResults(searchType,searchValue){
 			    	if(report.skills !=null && report.skills != '' && report.skills != 'undefined'){
 			    		result = result+'          <p><label>'+report.skills+'</label></p>';
 			    	}
-			    	result = result+'          <span href="javascript:void(0)" class="reqstatus-btn">'+report.requirementSubmissionStatus+'</span>';
+			    	result = result+'<span href="javascript:void(0)" class="reqstatus-btn">'+report.requirementSubmissionStatus+'</span>';
 			    	result = result+'      </div>';
 			    	result = result+'  </div>';
-			    	result = result+'  <div class="clearfix">';
-			    	result = result+'      <a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
-			    	result = result+'  </div>';
 	    	 }
+	    	    result = result+'  <div class="clearfix">';
+		    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+		    	result = result+'  </div>';
 	    	}else if(searchType == 'Candidate'){
 	    		result = result+'   <h4>Candidate</h4>';
 		    	 for (var i = 0; i < json.length; i++) {
@@ -148,9 +105,9 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'  <div class="srchresult clearfix row">';
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined"){
-				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
-				    	}else{
-				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.candidateName+'</a></strong></label>';	
+				    		result = result+'<p><label><strong><a href="#" onclick="candidateSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
+				    	}else{													
+				    		result = result+'<p><label><strong><a href="#" onclick="candidateSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>';	
 				    	}
 				    	if(report.email !=null && report.email !='' && report.email !='undefined' && report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined' ){
 				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.email+'</a></strong></label>, <label>'+report.mobilePhone+'</label>';	
@@ -186,10 +143,10 @@ function getSearchResults(searchType,searchValue){
 				    	}
 				    	result = result+'      </div>';
 				    	result = result+'  </div>';
-				    	result = result+'  <div class="clearfix">';
-				    	result = result+'      <a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
-				    	result = result+'  </div>';
-	    	}
+	            	}
+		    	    result = result+'  <div class="clearfix">';
+			    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadCandidate();">View More</a>';
+			    	result = result+'  </div>';
 	    	}else if(searchType == 'Clients' || searchType == 'Vendors'){
 	    		result = result+'   <h4>Clients/Vendors</h4>';
 		    	 for (var i = 0; i < json.length; i++) {
@@ -216,14 +173,76 @@ function getSearchResults(searchType,searchValue){
 				    	}
 				    	result = result+'      </div>';
 				    	result = result+'  </div>';
-				    	result = result+'  <div class="clearfix">';
-				    	result = result+'      <a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
-				    	result = result+'  </div>';
 	    	}
-	    	
+		    	    result = result+'  <div class="clearfix">';
+			    	result = result+'      <a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+			    	result = result+'  </div>';
+	    	}else if(searchType =='Projects'){
+	    		result = result+'   <h4>Projects</h4>';
+		    	 for (var i = 0; i < json.length; i++) {
+		             var report= json[i];
+		             var manager = "";
+		             var date = "";
+				    	result = result+'  <div class="srchresult clearfix row">';
+				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
+				    	if(report.projectName !=null && report.projectName != '' && report.projectName !="undefined" && report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
+				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.projectName+'</a></strong></label>, <label>'+report.invoiceFrequency+'</label>';
+				    	}else{
+				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.projectName+'</a></strong></label>';
+				    	}
+				    	result = result+'</p>';
+				    	if(report.clientName !=null && report.clientName != '' && report.clientName !="undefined"){
+				    		result = result+'<p><label>'+report.clientName+'</label></p>';
+				    	}
+				    	if(report.level1ManagerName !=null && report.level1ManagerName != '' && report.level1ManagerName !="undefined"){
+				    		manager = manager +report.level1ManagerName;
+				    	}if(report.level1ManagerName !=null && report.level1ManagerName != '' && report.level1ManagerName !="undefined" && report.level2ManagerName !=null && report.level2ManagerName !='' && report.level2ManagerName !='undefined'){
+				    		manager = manager+",";
+				    	}if(report.level2ManagerName !=null && report.level2ManagerName !='' && report.level2ManagerName !='undefined'){
+				    		manager = manager + report.level2ManagerName;
+				    	}
+				    	result = result+'<p><label>'+manager+'</label></p>';
+				    	if(report.startDate !=null && report.startDate != '' && report.startDate !="undefined" && report.endDate !=null && report.endDate !='' && report.endDate !='undefined'){
+				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.startDate+'</a></strong></label>, <label>'+report.endDate+'</label>';
+				    	}
+				    	result = result+'<span href="javascript:void(0)" class="reqstatus-btn">'+report.projectStatus+'</span>';
+				    	result = result+'</div>';
+				    	result = result+'</div>';
+		    	        }
+				    	result = result+'<div class="clearfix">';
+				    	result = result+'<a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+				    	result = result+'</div>';
+	    	}else if(searchType =='Users'){
+	    		result = result+'   <h4>Users</h4>';
+		    	 for (var i = 0; i < json.length; i++) {
+		             var report= json[i];
+				    	result = result+'  <div class="srchresult clearfix row">';  
+				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
+				    	if(report.firstName !=null && report.firstName != '' && report.firstName !="undefined" && report.lastName !=null && report.lastName !='' && report.lastName !='undefined'){
+				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.firstName+' '+report.lastName+'</a></strong></label>';
+				    	}else{
+				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.firstName+'</a></strong></label>';
+				    	}
+				    	result = result+'</p>'; 
+				    	if(report.email !=null && report.email != '' && report.email !="undefined" && report.mobilePhone !=null && report.mobilePhone != '' && report.mobilePhone !="undefined"){
+				    		result = result+'<p><label>'+report.email+'</label>,<label>'+report.mobilePhone+'<lable></p>';
+				    	}else{
+				    		result = result+'<p><label>'+report.email+'</label></p>';
+				    	}
+				    	if(report.userType !=null && report.userType != '' && report.userType !='undefined'){
+				    		result = result+'<p><label>'+report.userType+'</label></p>';
+				    	}
+				    	result = result+'<span href="javascript:void(0)" class="reqstatus-btn">'+report.userStatus+'</span>';
+				    	result = result+'</div>';
+				    	result = result+'</div>';
+		    	        }
+				    	result = result+'<div class="clearfix">';
+				    	result = result+'<a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+				    	result = result+'</div>';
 	    	}
 	    	 result = result+'</div>';
 	    	 $("#searchList").empty();
+	    	 $("#candidateList").empty();
 	    	 $("#searchList").append(result);
 	    	
 	    }
@@ -231,7 +250,12 @@ function getSearchResults(searchType,searchValue){
 }
 </script>
 
-
+<script type="text/javascript">
+function loadCandidate(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/candidatesList";
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
 

@@ -506,6 +506,8 @@ function notificationStatusAsRead(){
 						success : function(result) {
 							taskwidget();
 							assignedTasksList('assignedTasks');
+							tasksList('myTask');
+							assignTasksList();
 						},
 					});
 			return true;

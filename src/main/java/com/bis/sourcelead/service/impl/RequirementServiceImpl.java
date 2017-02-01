@@ -55,7 +55,9 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.RequirementHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -90,6 +92,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -157,7 +160,8 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private UserRoleService userRoleService;
 	
-	
+    @Autowired
+    private ProjectsService projectsService;
 	
 	
 	 @Autowired
@@ -2483,6 +2487,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 Requirement requirement = new Requirement();
 		requirement.setId(requirementIndex.getRequirementId());
      	requirement.setJobId(requirementIndex.getJobId());
+     	requirement.setJobType(requirementIndex.getJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
@@ -2580,6 +2585,32 @@ public class RequirementServiceImpl implements RequirementService {
 			return matchQueryBuilderList; 
 	 }
 
+
+	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
+		   
+		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			if(matcher.find()){
+				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+			}
+
+				
+			return matchQueryBuilderList; 
+	 }
+
+	 
+
 	 public String UpdateOnToDate(String updatedOn){
 		
 		 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -2607,29 +2638,6 @@ public class RequirementServiceImpl implements RequirementService {
 		 }
 	 }
  
-	 
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
-		   
-		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
-			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
-			if(matcher.find()){
-				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
-			}
-
-				
-			return matchQueryBuilderList; 
-	 }
 	 
 	@Override
 	public List<Object> univesalSearchRequirement(OrgLocations orgLocation, String searchType,String searchValue, Org org,String userRole, User user) throws JSONException, Exception {
@@ -2714,6 +2722,43 @@ public class RequirementServiceImpl implements RequirementService {
 		if(searchType != null && !"".equalsIgnoreCase(searchType)&&"Users".equalsIgnoreCase(searchType))
 		{
 			// ELK list for the user
+			 
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
+			 Long maxResults = userRoleService.getUsersCountByOrgLocationID(orgLocation.getId());
+			 
+				//All Keywords
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if(null != allKeyWordArray && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getUsersMatchQueryBuilderList(keywd);
+						if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(allBoolQueryBuilder);
+				}
+			
+//				List<UserIndex> usersList = new ArrayList<UserIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				if(null != searchHits && searchHits.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHits) {
+						String json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+						searchList.add(userIndex);
+					}
+				}
+			
 			return searchList;
 		}
 		
@@ -2759,6 +2804,43 @@ public class RequirementServiceImpl implements RequirementService {
 		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&"Projects".equalsIgnoreCase(searchType))
 		{
 			// ELK list for the projects
+			
+                boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			 
+			 //Integer maxResults = projectsService.getAllProjects().size();
+			 
+			 Integer maxResults = projectsService.getProjectCountByOrgLocationId(orgLocation.getId());
+				
+				//All Keywords
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getProjectsMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(allBoolQueryBuilder);
+				}
+			//	List<ProjectsIndex> projectsList = new ArrayList<ProjectsIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				if(searchHits != null && searchHits.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHits) {
+						String json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						ProjectsIndex projectsIndex = mapper.readValue(json, ProjectsIndex.class);
+						searchList.add(projectsIndex);
+					}
+				}
 			
 			return searchList;
 		}
@@ -2870,6 +2952,43 @@ public class RequirementServiceImpl implements RequirementService {
 
 	
 
+	private ArrayList<MatchQueryBuilder> getUsersMatchQueryBuilderList(String keywd) {
+		 ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("ratePer", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+
+			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			
+			if(matcher.find()){
+				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
+				String mobileKeywd =matcher.group().replaceAll("[+91]", "");
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+			}
+			
+			return matchQueryBuilderList; 
+	}
+
+	private ArrayList<MatchQueryBuilder> getProjectsMatchQueryBuilderList(String keywd) {
+		 ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    //Project Search
+		   // matchQueryBuilderList.add(QueryBuilders.matchQuery("id", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("projectName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("level1ManagerName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("startDate", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMemberEmail", keywd));
+			return matchQueryBuilderList; 
+	}
+
 	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForAll(String keywd) {
 		// TODO Auto-generated method stub
 		return null;
@@ -2905,3 +3024,4 @@ public class RequirementServiceImpl implements RequirementService {
 		return matchQueryBuilderList; 
 	}
 }
+

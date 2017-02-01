@@ -5,6 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -180,17 +183,13 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		try {
 
 			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
-			
-			/**
-			 * working mail format 
-			 * message.setFrom(new InternetAddress("prasad.salina@gmail.com", emailMessage.getFromName()));
-			 */
 
 			String UUID = null;
 			if(null != emailMessage.getEmailType() && emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)){
+				message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
 				message.setRecipients(Message.RecipientType.BCC, iAdressArray);
 			}else{
+				message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
 				message.setRecipients(Message.RecipientType.TO, iAdressArray);
 			}
 
@@ -437,7 +436,11 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			    	         
 					    	 int i= 0;
 					    	 for(CandidateResumes wte : candidateResumesList){
-			    	        	  addToZipFile(wte.getDocFile(), outZip , wte.getFileName());
+					    		 StringBuilder sb = new StringBuilder();
+					    		 String st =wte.getFileName();
+					    		 String lastIndex = st.substring(0,st.lastIndexOf("."));
+					    		 String newFilename = (sb.append(lastIndex).append("-").append(i).append(st.substring(st.lastIndexOf("."))).toString());
+			    	        	 addToZipFile(wte.getDocFile(), outZip , newFilename);
 			    	        	  i++;
 			    	         }
 					    	 
