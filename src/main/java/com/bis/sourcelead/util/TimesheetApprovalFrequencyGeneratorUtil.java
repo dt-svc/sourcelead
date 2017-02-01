@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +23,26 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 	ProjectMembersHistoryService projectMembersHistoryService;
 	
 	@Autowired
+	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
+	
+	@Autowired
 	CommonUtil commonUtil;
+	
+	public LinkedHashSet<String> getMonthsListFromCurrentDate(int previousMonths,int priorMonths) throws Exception{
+		LinkedHashSet<String> MonthsList = new LinkedHashSet<String>();
+		
+		for(int i =previousMonths;i>0;i--){
+			String date = CalendarUtil.getMonthAndYearPatternDateByMonthPreference(CommonUtil.currentDate(),-i);
+			MonthsList.add(date);
+		}
+		String currentDate = CalendarUtil.getMonthAndYearPatternDateByMonthPreference(CommonUtil.currentDate(),0);
+		MonthsList.add(currentDate);
+		for(int i =1;i<=priorMonths;i++){
+			String date = CalendarUtil.getMonthAndYearPatternDateByMonthPreference(CommonUtil.currentDate(),i);
+			MonthsList.add(date);
+		}
+		return MonthsList;
+	}
 	
 	
 	public Map<String,String> getTimesheetFrequencyListFromProjectInvoiceFrequency(Projects project) throws Exception{
@@ -261,7 +281,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 							    */
 								Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 								cal.setLenient(false);
-								cal.setTime(commonUtil.currentDate());
+								cal.setTime(CommonUtil.currentDate());
 								Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
 								Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
 								Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
@@ -422,7 +442,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 		
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
-		cal.setTime(commonUtil.currentDate());
+		cal.setTime(CommonUtil.currentDate());
 		Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
 		if(projectStartMonday.before(currentMonday)){
 			while(projectStartMonday.before(currentMonday)){

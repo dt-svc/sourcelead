@@ -3,29 +3,89 @@
 <jsp:include page="TimesheetScripts.jsp" />
 
 
+<!-- this is for mask -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script src="resources/js/bootstrap.min.js"></script>
+<script src="resources/js/jquery-fun.js"></script>
+<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
+<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="resources/js/formvalidator.js"></script>
+
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+
+<style type="text/css">
+.glyphicon-none:before {
+    content: "\2122";
+    color: transparent !important;
+}
+.timesheet-content {
+background: #fff;
+min-height: 100px;
+clear:both;
+display: inline-block;
+width:100%;
+}
+.timesheet-content #example_filter {
+position: relative !important;
+top:0px !important;
+}
+</style>
+
+<script>
+function pagination(){ 
+    $('#example').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+    		"sSearch": ""
+    	}
+    } );
+}
+</script>
+
+
+
 <script>
 // project side bar tabs
 $(document).ready(function() {
 	timesheetApprovalDiv();
 });
 </script>  
-
-
+<script>
+	function predefineProfileImage(imageId,userId){
+			$(imageId).attr('src','resources/images/userprofile-img.png');
+	}
+</script>
 <script>  
 	function timesheetApprovalDiv(){ 
-	               var sourceleadUrl ='${sourceleadUrl}';
-	               $("#timesheetApprovalDiv").empty();
-	               $("#timesheetApprovalDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	        	   $.ajax({
-		      	          type : "POST",
-		          	      dataType : 'json',
-	        	      	  url: sourceleadUrl+"/timesheetApprovalDiv?${_csrf.parameterName}=${_csrf.token}",		
-	        		      success :function(result) {
-	        		    	    $("#timesheetApprovalDiv").removeAttr("style");
-	        		    	    $("#timesheetApprovalDiv").empty();
-	        		    	  	$("#timesheetApprovalDiv").append(result);
-	        		      }
-	        	    }); 
+               var sourceleadUrl ='${sourceleadUrl}';
+               $("#timesheetApprovalDiv").empty();
+               $("#timesheetApprovalDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+        	   $.ajax({
+	      	          type : "POST",
+	          	      dataType : 'json',
+        	      	  url: sourceleadUrl+"/timesheetApprovalDiv?${_csrf.parameterName}=${_csrf.token}",		
+        		      success :function(result) {
+        		    	    $("#timesheetApprovalDiv").removeAttr("style");
+        		    	    $("#timesheetApprovalDiv").empty();
+        		    	  	$("#timesheetApprovalDiv").append(result);
+        		    	  	prepareChosenScripts();
+        		      }
+        	    }); 
 	}
 </script>
 
@@ -129,7 +189,7 @@ $(document).ready(function() {
           <div class="pull-left">
             <h2>Timesheet approval</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
+            <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; TimeSheet List</div>
         </section>
         
 		<!-- Project -->
@@ -222,8 +282,109 @@ $(document).ready(function() {
 });
 
 </script>	
+<script type="text/javascript">
+         function prepareChosenScripts(){ 
+        	      var config = {
+        			  '.chosen-select'           : {},
+        			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+        			  '.chosen-select-no-single' : {disable_search_threshold:10},
+        			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        			  '.chosen-select-width'     : {width:"95%"}
+        			};
+        		   for (var selector in config) {
+        			  $(selector).chosen(config[selector]);
+        			};
+        			$('.chosen-select').each(function() {
+        			var $this = $(this);
+        			$this.next().css({'width': '100%'});
+        			})
+           };
+				
+</script> 
+<script>
+function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate){
+	
+	 var msg = $("#reject"+projectMemberId+"message").val(); 
+    var sourceleadUrl ='${sourceleadUrl}';
+    var rowHtmlContent =  $("#row"+userId).html();
+	 $("#row"+projectMemberId).empty();
+	 $("#row"+projectMemberId).html("<td colspan='5'  id='loading"+projectMemberId+"'></td>");
+    $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
+   /*  
+    $("#timesheetApprList").empty(); 
+    $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');   */
+    $(".mask_time").fadeOut(200);
+    $("#reject"+local+"panel").slideUp(200);
+    $.ajax({
+    type: "POST",
+    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
+    success: function(data) {    
+   	   // approvalList();
+   	   var uniqueSepartor = startDate.replace('-','').replace('-','');
+   	   if(projectMemberId.indexOf(uniqueSepartor) >= 0){
+   		   var table = $('#example').DataTable();
+   		   table.row('#row'+projectMemberId+'').remove().draw( false );
+   	   }
+   	   else{
+   		  $("#row"+projectMemberId).empty();
+ 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
+ 	    	  $("#status"+projectMemberId).html("REJECTED");
+ 	    	  $("#action"+projectMemberId).empty();
+ 	    	  $("#action"+projectMemberId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+local+"' onclick='rejectedMessage(\"rejectedMessage"+local+"\");'><div class='app_error_mes' id='rejectedMessage"+local+"'>"+msg+"</div></i></div>");  
+   	   }
+   	  pagination();
+      }
+    }); 
+    
+}
 
 
+function cancelRejectSubmission(local){
+		 $(".mask_time").fadeOut(200);
+		 $("#reject"+local+"panel").slideUp(200);
+}
+
+function rejecteSubmission(projectMemberId,startDate,endDate){  
+        
+        var result = "";
+        result = result +'<div class="time_appr_rejct_pop" id="reject'+projectMemberId+'panel" >';
+		result = result +'<textarea placeholder="Enter comment here" id="reject'+projectMemberId+'message" ></textarea>';
+		result = result +'<a href="#" onClick="saveRejectSubmission(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+local+'\');">Cancel</a>';
+		result = result +'</div>';
+		 
+		$("#rejectedPopup").append(result);
+	    $(".mask_time").fadeIn(200); 
+		$("#reject"+projectMemberId+"panel").slideToggle(200);
+}
+function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate){
+		//$("#timesheetApprList").empty();
+		var rowHtmlContent =  $("#row"+userId).html();
+		$("#row"+projectMemberId).empty();
+		$("#row"+projectMemberId).html("<td colspan='5'  id='loading"+userId+"'></td>");
+	    $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
+	    var rejectedReason;
+        var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+	    type: "POST",
+	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
+		    success: function(data) {
+		    	 var uniqueSepartor = startDate.replace('-','').replace('-','');
+	        	 if(userId.indexOf(uniqueSepartor) >= 0){
+			    	 var table = $('#example').DataTable();
+	        		 table.row('#row'+userId+'').remove().draw( false );
+	        		   
+	        	 }
+	        	 else{
+	        		 $("#row"+userId).empty();
+			    	 $("#row"+userId).html(rowHtmlContent);
+			    	 $("#status"+userId).html("APPROVED");
+			    	 $("#action"+userId).html("<div><h3>Approved</h3></div>"); 
+	        	   }
+		    	 
+		    }
+	    });   
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
  
