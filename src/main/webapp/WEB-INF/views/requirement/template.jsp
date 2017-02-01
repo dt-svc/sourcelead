@@ -14,7 +14,7 @@
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Template List</h2>
+      <h2>Requirement Templates</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Template List</div>
   </section>
@@ -23,7 +23,7 @@
       <div class="timesheet_head">
         <ul>
           <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE')">
-          	<li> <a href="<c:url value='/addTemplate'/>"><i class="fa fa-plus"></i>Add Template</a></li>
+          	<li> <a href="<c:url value='/addTemplate'/>"><i class="fa fa-plus"></i>Add Requirement Template</a></li>
          </sec:authorize>
          
           <div class="clearfix"></div>
