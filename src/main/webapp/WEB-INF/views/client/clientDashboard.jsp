@@ -640,33 +640,6 @@ function getVendorContactLists(){
    	        	for (var i=0; i<json.length; i++)
    				{  
    	        		var report = json[i];
-   	        		var selected1 = '';
-   					var selected2 = '';
-   					var selected3 = '';
-   					var selected4 = '';
-   					var selected5 = '';
-   	        		
-   	        		if(report.spocStatus == 'Active'){
-						selected1 = 'selected';
-					} 
-				
-					if(report.spocStatus == 'In-Active'){
-							selected2 = 'selected';
-						} 
-					
-					if(report.spocStatus == 'New'){
-							selected3 = 'selected';
-						}
-					
-					if(report.spocStatus == 'Negotiation'){
-							selected4 = 'selected';
-						} 
-					
-					if(report.spocStatus == 'Contracted'){
-						selected5 = 'selected';
-					} 
-   	        		
-   	        		
    	        		
    	        		result = result +'<tr>';
    	        		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
@@ -687,13 +660,17 @@ function getVendorContactLists(){
    	        		result = result +'<td><div><span title='+report.orgName+'>'+report.orgName+'</span></div></td>';
    	        		
    	        		result = result + ' <td><div>';
-					result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
-					result = result + ' <option '+selected1+'>Active</option>';
-					result = result + ' <option '+selected2+'>In-Active</option>';
-					result = result + ' <option '+selected3+'>New</option>';
-					result = result + ' <option '+selected4+'>Negotiation</option>';
-					result = result + ' <option '+selected5+'>Contracted</option>';
-					result = result + ' </select>';
+   	        		if(report.invitationStatus == 'Rejected'){
+   	        			result = result + '<span>'+report.spocStatus+'</span>';
+   	        		}else{
+   	        			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
+   	        			result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
+   						result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
+   						result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
+   						result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
+   						result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
+   						result = result + ' </select>';
+   	        		}
 					result = result + ' </div></td>';
 					
    	        		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
