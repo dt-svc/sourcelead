@@ -6,7 +6,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-<script src="resources/js/bootstrap-select.min.js"></script>
+ <!-- <script src="resources/js/bootstrap-select.min.js"></script> -->
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -1468,7 +1468,6 @@ function getTemplateVal(){
 </script>
 <script>
 function getRequirementAndLookUpSkills(requirementid){
-	alert("dd");
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
    	type: "POST",
@@ -1516,7 +1515,6 @@ function setTemplateValues(){
 			    	$("#jobType").val(json.jobType);
 			    	
 			    	$("#jobOtherType").val(json.otherJobType);
-			    	alert("json"+json.jobType);
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#jobId").val(json.jobId);
 			    	$("#positions").val(json.positions);

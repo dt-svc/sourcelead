@@ -380,7 +380,7 @@ jQueryFormUtils.validatePhoneNumber = function(tele) {
     var numPlus = tele.match(/\+/g);
     var numHifen = tele.match(/-/g);
 
-    if ((numPlus !== null && numPlus.length > 1) || (numHifen !== null && numHifen.length > 1)) {
+    if ((numPlus !== null && numPlus.length > 1) || (numHifen !== null && numHifen.length > 4)) {
         return false;
     }
     if (numPlus !== null && tele.indexOf('+') !== 0) {
