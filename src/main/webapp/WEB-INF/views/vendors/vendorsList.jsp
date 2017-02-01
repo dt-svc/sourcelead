@@ -244,8 +244,8 @@ overflow-x: auto;
                   <label>Invitation</label>
                   <div class="clearfix">
                 		 <select class="chosen-select form-control input-sm" multiple data-placeholder="Invitation" id="invitationAdvanced" name="invitationAdvanced">
-											<option value="Sent">Sent</option>
-											<option value="New">New</option>
+											<option value="Sent">Resend</option>
+											<option value="New">send</option>
 											<option value="Accepted">Accepted</option>
 											<option value="Rejected">Rejected</option>
 						</select>
