@@ -1143,7 +1143,7 @@ public class VendorRestController {
 					if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty()){
 						BoolQueryBuilder statusAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : statusAdvancedArray){
-							statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocStatus", "*"+keywd+"*"));
+							statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("spocStatus", "*"+keywd+"*"));
 						
 						}
 						boolQueryBuilder.must(statusAdvancedBoolQueryBuilder);
