@@ -61,5 +61,7 @@ public interface ProjectsDao {
 	//public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 	
 	Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
+	
+	List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) throws Exception;
 
 }

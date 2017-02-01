@@ -1,37 +1,25 @@
 package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
+import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
 	
-	  /*public static void main(String[] args) throws Exception{
-		  DateFormat format = Constants.DF_STD_DMY;
-	        String dateInString = "07/01/2013";
-
-	        try {
-	            Date date = format.parse(dateInString);
-	            System.out.println(date);
-	            System.out.println(format.format(date));
-
-	        } catch (ParseException e) {
-	            e.printStackTrace();
-	        }
-			 
-	  }*/
+	
 	
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
@@ -516,6 +504,24 @@ public  class CalendarUtil {
 		return dateStr;
   	}
     
+    
+    public static LinkedHashMap<String,Date> getMonthStartDateAndEndDateFromGivenMonthString(String month){
+    	LinkedHashMap<String,Date> dateList = new LinkedHashMap<String,Date>();
+	    final DateFormat format = Constants.MY;
+	    final Calendar calendar = Calendar.getInstance();
+	    Date date;
+		try {
+			date = format.parse(month);
+			calendar.setTime(date);
+	  		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+	  		dateList.put("STARTDATE", calendar.getTime());
+	  		
+	  		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+	  		dateList.put("ENDDATE", calendar.getTime());
+		} catch (ParseException e) {}
+		return dateList;
+  	}
+    
     public static HashMap<String,Date> getMonthStartDateByGivenDate(Date date,Integer monthPreference){
   		HashMap<String,Date> dateList = new HashMap<String,Date>();
   		Calendar calendar = Calendar.getInstance();   
@@ -536,8 +542,6 @@ public  class CalendarUtil {
   		dateList.put("ENDDATE", calendar.getTime());
   	    return dateList;
   	}
-    
-    
     
     public static HashMap<String,Date> getMonthStartDateAnd15thDateByGivenDateAndMothPreference(Date startDate,Integer monthPreference){
   		HashMap<String,Date> dateList = new HashMap<String,Date>();

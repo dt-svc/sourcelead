@@ -427,7 +427,6 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	        	   
 	        	   String startDate =  format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime());
 			       String endDate   =  format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime());
-				 
 	        		 		
 			       ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
 			       ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());

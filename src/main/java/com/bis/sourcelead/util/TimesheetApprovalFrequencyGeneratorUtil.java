@@ -23,6 +23,9 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 	ProjectMembersHistoryService projectMembersHistoryService;
 	
 	@Autowired
+	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
+	
+	@Autowired
 	CommonUtil commonUtil;
 	
 	public LinkedHashSet<String> getMonthsListFromCurrentDate(int previousMonths,int priorMonths) throws Exception{
@@ -40,6 +43,8 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 		}
 		return MonthsList;
 	}
+	
+	
 	public Map<String,String> getTimesheetFrequencyListFromProjectInvoiceFrequency(Projects project) throws Exception{
 		Map<String,String> timesheetFrequencyList = new LinkedHashMap<String,String>();
 		if(project != null){
@@ -276,7 +281,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 							    */
 								Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 								cal.setLenient(false);
-								cal.setTime(commonUtil.currentDate());
+								cal.setTime(CommonUtil.currentDate());
 								Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
 								Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
 								Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
@@ -437,7 +442,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 		
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
-		cal.setTime(commonUtil.currentDate());
+		cal.setTime(CommonUtil.currentDate());
 		Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
 		if(projectStartMonday.before(currentMonday)){
 			while(projectStartMonday.before(currentMonday)){
