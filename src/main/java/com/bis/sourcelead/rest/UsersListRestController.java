@@ -175,7 +175,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			if(null != userRole  && !"".equalsIgnoreCase(userRole)){
 				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userRoleId", userRole));
 				}
-				
+		
 			boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 			 
 			Integer maxResults = offset + Constants.MAX_RESULTS_TEN;
@@ -184,17 +184,23 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
-			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,offset,maxResults.intValue(),boolQueryBuilder).getHits();
-			if(searchHits != null && searchHits.length >0){
-				ObjectMapper mapper = new ObjectMapper();
-				for (SearchHit hit : searchHits) {
-					String json = hit.getSourceAsString();
-					json = hit.getSourceAsString();
-					mapper.setDateFormat(df);
-					UserIndex userIndex = mapper.readValue(json, UserIndex.class);
-					usersList.add(userIndex);
+			try{
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,offset,maxResults.intValue(),boolQueryBuilder).getHits();
+				if(searchHits != null && searchHits.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHits) {
+						String json = hit.getSourceAsString();
+						json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+						usersList.add(userIndex);
+					}
 				}
+			}catch (Exception e) {
+				e.printStackTrace();
 			}
+			
+			
 		 resultJson = toJSON(usersList);
 		 return resultJson;
 
