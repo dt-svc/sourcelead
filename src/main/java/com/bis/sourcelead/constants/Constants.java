@@ -154,6 +154,9 @@ public class Constants {
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
 	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	
+	public static String ELK_USER_INDEX = "users";
+	    
+	public static String ELK_USER_TYPE = "user";
 
 	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
 	
@@ -348,6 +351,10 @@ public class Constants {
     
     public static String CLIENT = "Client";
     
+    public static String ELK_PROJECT_INDEX = "projects";
+	
+    public static String ELK_PROJECT_TYPE = "project";
+    
     public static String ELK_CANDIDATE_INDEX = "candidates";
     		
     public static String ELK_CANDIDATE_TYPE = "candidate";
@@ -404,6 +411,8 @@ public class Constants {
     
     public static String All_APPLICANTS = "all";
     public static String DUPLICATE_APPLICANTS = "DUPLICATE_APPLICANTS";
+    
+    public static String REQ_SEARCHTYPE = "Requirement";
 
 
     public static String ONE_DAY_AGO ="1 Day Ago";

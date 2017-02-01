@@ -21,6 +21,8 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -53,7 +55,9 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.RequirementHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -88,6 +92,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -155,7 +160,8 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private UserRoleService userRoleService;
 	
-	
+    @Autowired
+    private ProjectsService projectsService;
 	
 	
 	 @Autowired
@@ -751,8 +757,11 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public Requirement addRequirement(Requirement requirement) throws Exception {
-		saveElkRequirement(requirement,new JSONObject());
-		return requirementDao.storeRequirement(requirement);
+
+		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
+		saveElkRequirement(savedRequirement,new JSONObject());
+		return savedRequirement;
+
 	}
 
 
@@ -930,13 +939,15 @@ public class RequirementServiceImpl implements RequirementService {
          }
 		 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
 		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
@@ -959,7 +970,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	
 }
 	
@@ -1016,12 +1027,14 @@ public class RequirementServiceImpl implements RequirementService {
 		 globalVarsMap.put("attachment",attachBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>").toString());
 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
@@ -1043,7 +1056,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocations, notificationScenario);
 
@@ -1099,13 +1112,15 @@ public class RequirementServiceImpl implements RequirementService {
 		 }
 		 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
-		
+		 emailRecipientList.add(emailRecipient);*/
+	
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVED_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVED_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
@@ -1125,7 +1140,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser,intiatorUser, orgLocations, notificationScenario);
 
@@ -1361,12 +1376,14 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
+		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAILREQUIREMENTTOMANAGER,Constants.ENTITY_TYPE_EMAIL);
@@ -1389,7 +1406,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario);
 
@@ -1461,12 +1478,14 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
+		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ASSIGNTEAMMEMBERSFORREQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
@@ -1489,7 +1508,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser,assUser, orgLocations, notificationScenario);
 
@@ -1561,12 +1580,14 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 
 		// setting the Recipient information
-		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		/*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		EmailRecipient emailRecipient = new EmailRecipient();
 		emailRecipient.setEmail(emailMessage.getToEmail());
 		StringBuilder recipBuild = new StringBuilder();
 		emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		emailRecipientList.add(emailRecipient);
+		emailRecipientList.add(emailRecipient);*/
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
@@ -1590,7 +1611,7 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
+		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, initiatorUser, loginOrgLocation, notificationScenario);
 	}
@@ -1677,12 +1698,14 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 		
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
+		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RELEASEMECHANISM_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
@@ -1708,7 +1731,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
 
@@ -2469,7 +2492,8 @@ public class RequirementServiceImpl implements RequirementService {
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}
      	if(requirementIndex.getSkills() !=null){
-     		requirement.setSkills(Arrays.toString(requirementIndex.getSkills()));
+     		String skills = getReqSkills(requirementIndex.getSkills());
+     		requirement.setSkills(skills);
      	}
      	if(requirementIndex.getMaxExperience() !=null){
      		requirement.setMaxExp(requirementIndex.getMaxExperience().toString());
@@ -2485,6 +2509,15 @@ public class RequirementServiceImpl implements RequirementService {
          	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
      	}	
      	return requirement;
+	}
+
+	private String getReqSkills(String[] skills) {
+		StringBuilder sb = new StringBuilder();
+		for(int i=0;i<skills.length;i++){
+			sb.append(skills[i]).append(",");
+		}
+		String str = sb.toString();
+		return str.substring(0, str.length()-1);
 	}
 
 	private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
@@ -2551,7 +2584,7 @@ public class RequirementServiceImpl implements RequirementService {
 			return matchQueryBuilderList; 
 	 }
 
-	 
+
 	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
 		   
 		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
@@ -2576,6 +2609,7 @@ public class RequirementServiceImpl implements RequirementService {
 	 }
 
 	 
+
 	 public String UpdateOnToDate(String updatedOn){
 		
 		 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -2603,7 +2637,33 @@ public class RequirementServiceImpl implements RequirementService {
 		 }
 	 }
  
+<<<<<<< HEAD
+	 
+	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
+		   
+		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			if(matcher.find()){
+				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+			}
 
+				
+			return matchQueryBuilderList; 
+	 }
+=======
+
+>>>>>>> 1acff16c646063d2b916e9cf71005fbd0c5d159d
 	 
 	@Override
 	public List<Object> univesalSearchRequirement(OrgLocations orgLocation, String searchType,String searchValue, Org org,String userRole, User user) throws JSONException, Exception {
@@ -2688,6 +2748,43 @@ public class RequirementServiceImpl implements RequirementService {
 		if(searchType != null && !"".equalsIgnoreCase(searchType)&&"Users".equalsIgnoreCase(searchType))
 		{
 			// ELK list for the user
+			 
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
+			 Long maxResults = userRoleService.getUsersCountByOrgLocationID(orgLocation.getId());
+			 
+				//All Keywords
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if(null != allKeyWordArray && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getUsersMatchQueryBuilderList(keywd);
+						if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(allBoolQueryBuilder);
+				}
+			
+//				List<UserIndex> usersList = new ArrayList<UserIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				if(null != searchHits && searchHits.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHits) {
+						String json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+						searchList.add(userIndex);
+					}
+				}
+			
 			return searchList;
 		}
 		
@@ -2733,6 +2830,43 @@ public class RequirementServiceImpl implements RequirementService {
 		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&"Projects".equalsIgnoreCase(searchType))
 		{
 			// ELK list for the projects
+			
+                boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			 
+			 //Integer maxResults = projectsService.getAllProjects().size();
+			 
+			 Integer maxResults = projectsService.getProjectCountByOrgLocationId(orgLocation.getId());
+				
+				//All Keywords
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getProjectsMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(allBoolQueryBuilder);
+				}
+			//	List<ProjectsIndex> projectsList = new ArrayList<ProjectsIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				if(searchHits != null && searchHits.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHits) {
+						String json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						ProjectsIndex projectsIndex = mapper.readValue(json, ProjectsIndex.class);
+						searchList.add(projectsIndex);
+					}
+				}
 			
 			return searchList;
 		}
@@ -2821,6 +2955,18 @@ public class RequirementServiceImpl implements RequirementService {
 				    	    if(candidateIndex.getUpdatedDate() != null){
 				    	    	candidateIndex.setCandidateUpdateDateToString(Constants.DF_YMD.format(candidateIndex.getUpdatedDate()));
 				   			}
+				    	    StringBuilder sb = new StringBuilder();
+				    	    if(candidateIndex.getFirstName()!=null && candidateIndex.getLastName() !=null && !"".equalsIgnoreCase(candidateIndex.getFirstName()) && !"".equalsIgnoreCase(candidateIndex.getLastName())){
+				    	    	sb.append(candidateIndex.getFirstName()).append(" ").append(candidateIndex.getLastName());
+				    	    }else{
+				    	    	sb.append(candidateIndex.getFirstName());
+				    	    }
+				    	    candidateIndex.setCandidateName(sb.toString());
+				    	   if(candidateIndex.getSkills() != null){
+				    		   String skillArray[] = candidateIndex.getSkills().toArray(new String[candidateIndex.getSkills().size()]);
+				    		   String skills = getReqSkills(skillArray);
+				    		   candidateIndex.setSkillSet(skills);
+				    	   }
 				    	    searchList.add(candidateIndex);
 				    	}
 				    	
@@ -2831,6 +2977,43 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	
+
+	private ArrayList<MatchQueryBuilder> getUsersMatchQueryBuilderList(String keywd) {
+		 ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("ratePer", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+
+			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			
+			if(matcher.find()){
+				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
+				String mobileKeywd =matcher.group().replaceAll("[+91]", "");
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+			}
+			
+			return matchQueryBuilderList; 
+	}
+
+	private ArrayList<MatchQueryBuilder> getProjectsMatchQueryBuilderList(String keywd) {
+		 ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    //Project Search
+		   // matchQueryBuilderList.add(QueryBuilders.matchQuery("id", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("projectName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("level1ManagerName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("startDate", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMemberEmail", keywd));
+			return matchQueryBuilderList; 
+	}
 
 	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForAll(String keywd) {
 		// TODO Auto-generated method stub
@@ -2867,4 +3050,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return matchQueryBuilderList; 
 	}
 }
+<<<<<<< HEAD
+=======
 
+>>>>>>> 1acff16c646063d2b916e9cf71005fbd0c5d159d

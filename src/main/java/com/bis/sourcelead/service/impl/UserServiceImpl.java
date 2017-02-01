@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,9 +23,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -71,6 +75,13 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private EmployeesService employeesService;
+	
+	@Autowired
+	UserIndexHelper userIndexHelper;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<UserIndex> sourceleadELKBaseIndexer;
+	
 	
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
@@ -220,7 +231,11 @@ public class UserServiceImpl implements UserService {
 			/*if(userRole != null && StringUtils.isNotEmpty(userRole.getRoles().getRoleName()) && userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
 				commonUtil.addAdminAsSecondLevelManager(orgLocations.getId(), user, loginuser);
 			}*/
-		 
+			/*
+			 * Saving USER DB data as ElasticSearch Documents
+			 */
+			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
+      
         return user1;
 				
 		
@@ -273,6 +288,11 @@ public class UserServiceImpl implements UserService {
 
 			sendEmail(user,loginUser,password,orgLocationsId);
 		}
+		/*
+		 * Saving/Update USER DB data as ElasticSearch Documents
+		 */
+		saveOrUpdateUserElkDocument(userRole,employee,loginUser.getUserCode());
+
 		 
 	}
 	
@@ -472,13 +492,8 @@ public class UserServiceImpl implements UserService {
 		 
 		
 		 //setting the Recipient information
-		 StringBuilder emailRecipientBuilder = new StringBuilder();
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailRecipientBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
-		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
 		
@@ -494,7 +509,7 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,locationId,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,locationId,iAdressArray,new ArrayList<EmailAttachment>());
 		
 	}
 
@@ -744,12 +759,7 @@ public class UserServiceImpl implements UserService {
 		 }
 		 
 		 //setting the Recipient information
-		 StringBuilder recipientbuilder = new StringBuilder();
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = null;
@@ -775,7 +785,7 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setOrgLocationId(respondingPartyOrgLocation.getId());
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,respondingPartyOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,respondingPartyOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
 		 noificationEmailScenario.setUUID(UUID);
@@ -854,7 +864,13 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUsersListByOrglocationId(Long orgLocationId) throws Exception {
 		return userDao.getUsersListByOrglocationId(orgLocationId);
 	}
-	
+	@Override
+	public void saveOrUpdateUserElkDocument(UserRole userRole, Employees employee, String loginUserCode) throws Exception {
+		//Elastic Search Document Saving
+		UserIndex userIndex = userIndexHelper.getUserIndexFromUser(userRole,employee,loginUserCode);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,userRole.getId().toString());
+		
+	}
 	
 	
 }

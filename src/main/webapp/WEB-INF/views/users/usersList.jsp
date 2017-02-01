@@ -3,6 +3,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -53,8 +55,131 @@ window.onload = function () {
       
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Users List </div>
     </section>
-      <section class="clearfix section-action-btns">
-        <ul class="pull-right list-unstyled list-inline">
+    <div class="timesheet_out">
+    <div class="vendor_wrap" style="overflow-x: auto;">
+    
+    </div>
+  </div>
+      <section class="clearfix section-action-btns positionRelative">
+      <div class="pull-left cand-advsrche">
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+			  Advanced Search&nbsp;&nbsp;
+			  <i class="fa fa-search"></i>
+			  </a> 
+			  <form id="user_forms" name="user_forms"  >
+				  <div class="cand-advsrch-popup" >
+					  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+					  <div class="row">
+						  <div class="col-md-4">
+							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+							  <div class="clearfix">
+							        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
+                                    </select>
+							  	 <!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword" id="anyOfKeyword" name="anyOfKeyword" value=""> -->
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+							  <div class="clearfix">
+							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
+                                 </select> 
+                                 <!-- <input type="text" class="form-control input-sm" placeholder="All Keywords" id="allKeywords" name="allKeywords" value=""> -->
+                                 
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+							  <div class="clearfix">
+							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
+                                 </select>
+                                <!--  <input type="text" class="form-control input-sm" placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord" value=""> -->
+							  </div>
+						  </div>
+					  </div>
+					  <div class="row">
+						
+	
+						  <div class="col-md-4">
+							  <label>Email<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <div class="clearfix" id = "emailDiv">
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Email" id="email" name="email" data-validation="validate_Space validate_email" data-validation-optional="true">
+                                  </select>
+							  </div>
+							  </div>
+						  <div class="col-md-4">
+							  <label>Phone Number<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <div class="clearfix" id = "mobilePhoneDiv">
+								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Phone Number" data-validation="validate_Space validate_phone" data-validation-optional="true" id="mobilePhone" name="mobilePhone">
+                                  </select>
+							  </div>
+						  </div>
+						  
+						   <div class="col-md-4">
+							  <label>Role<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <div class="clearfix">
+								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Role" id="userType" name="userType">
+                                  <c:forEach var="option" items="${rolesList}">
+	                                   <option value="${option.displayName}">${option.displayName}</option>
+                                  </c:forEach>
+                                  </select>
+							  </div>
+						  </div>
+						  </div>
+						  <div class="row">
+						  <div class="col-md-4">
+							  <label>Employee Id<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <div class="clearfix">
+								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Employee Id" id="employeeId" name="employeeId">
+                                  </select>
+							  </div>
+						  </div>
+						  
+						  <div class="col-md-4">
+							  <label>User Status<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <div class="clearfix">
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="User Status" id="userStatus" name="userStatus">
+                                     <option value="ACTIVE" >Active</option>
+									 <option value="INACTIVE" >In Active</option>
+									 <option value="NOT_LOGGEDIN">Not Logged IN</option>
+                                  </select>
+							  </div>
+						  </div>
+						  
+						  
+						 <div class="col-md-4">
+								<label>Rate</label> 
+								<div class="input-group error-field">
+								    <div id="rateDiv">
+									  <input type="text" class="form-control input-sm" id="rate"  name="rate"  field-name="Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Rate">
+									</div>
+									<div id="ratePerDiv" class="input-group-btn selp-custom-min custommin">
+									      <select class="selectpicker" name="ratePer" id="ratePer" field-name="Rate Per"  >
+									            <option value="">-Rate Per-</option>
+						                        <option>Hourly</option>
+						                        <option>Daily</option>
+						                        <option>Weekly</option>
+						                        <option>Bi-Weekly</option>
+						                        <option>Semi-Monthly</option>
+						                        <option>Monthly</option>
+						                        <option>Yearly</option>
+				                            </select> 
+									</div>
+								</div>
+							</div>
+						
+					  </div>
+					  <div class="row form-footer mt">
+						  <div class="pull-right mr">
+							 <!--  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
+							  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> -->
+							   <input type="button" value="Search" id="search_user" onclick="searchUser();" class="btn btn-sm btn-primary"/>
+                               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
+						  </div>
+					  </div>
+				  </div>
+			  </form>
+      </div>
+       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           <li><i class="fa fa-filter"></i>&nbsp;
                <select id="userState" onchange="getUsersList('manual');">
@@ -103,6 +228,7 @@ window.onload = function () {
 	         </sec:authorize>
         </ul>
       </section>
+      
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
       <div class="row">
           <div id="usersListBody"></div> 
@@ -184,7 +310,45 @@ function exportToPdf(){
 }
 </script>
    
-   
+   <script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+		}
+		function openPop(){
+		  $("div.cand-advsrch-popup").toggle();
+		  
+		}
+	</script>
+	<script type="text/javascript">	
+	function loadChosenScripts(){
+	    $('#search_user').removeAttr('disabled');
+	    $('#rate').val(''); 
+	    $('#ratePer').val('');
+	    $('#mobilePhone').val('');
+
+	   
+	    $('#rateDiv').find('p.jquery_form_error_message').remove();
+	    $('#mobilePhoneDiv').find('p.jquery_form_error_message').remove();
+	    $('#ratePerDiv').find('p.jquery_form_error_message').remove();
+	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	    $("#allKeywords").val('').trigger("chosen:updated");
+	    $("#excludeKeyWord").val('').trigger("chosen:updated");
+	    $("#email").val('').trigger("chosen:updated");
+	    $("#mobilePhone").val('').trigger("chosen:updated");
+	    $("#userType").val('').trigger("chosen:updated");
+	    $("#employeeId").val('').trigger("chosen:updated");
+	    $("#userStatus").val('').trigger("chosen:updated");
+	    
+	    $("#anyOfKeyword").empty();
+	    $("#allKeywords").empty();
+	    $("#excludeKeyWord").empty();
+	    $("#email").empty();
+	    $("#mobilePhone").empty();
+	    $("#employeeId").empty();
+	    
+	}
+</script>
    
  <!--  David
   Script is used scroll based userList -->   
@@ -224,7 +388,6 @@ function exportToPdf(){
   Script is used search  based on search key if Enter Key is Pressed -->    
 <script type="text/javascript">
 	function getUsersList(type){
-		
 		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	    var userRole = document.getElementById("userRole").value;
@@ -254,89 +417,94 @@ function exportToPdf(){
             	 var json = JSON.parse(data);
             	 var result = "";
           if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
-	       	
-	    	if(json.length > 0)	
-	   		{
-	    		$('#loadMoreDiv').empty(); 
-	 			for(var i=0; i<json.length; i++){
-	 				
-			 				var userRole = json[i];
-			 				var mobilePhone = ""
-			 			    
-			 			    if(userRole.user.mobilePhone != null && userRole.user.mobilePhone != ''){
-			 			    	mobilePhone = userRole.user.mobilePhone;
-			 			    }else{
-			 			    	mobilePhone = "No Data"
-			 			    }
-			 				
-			       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
-			       	    	result = result +"<div class='user-profile'>";
-			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
-			       	    	result = result +"<div class='text-center image-parent'>";
-			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
-			       	    	result = result +"</div>";
-			       	    	
-			       	    	
-			       	    	result = result +"</div>";
-			       	    	result = result +"</div>";
-			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
-			       	    	
-			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.userName+"'> "+userRole.userName+"</span> </a> </h4>";
-			       	    	'</sec:authorize>';
-			       	    	
-			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-		       	         	   result = result +"<h4><a href='#'> "+userRole.userName+" </a> </h4>";
-		       	    	    '</sec:authorize>';
-			       	    	
-			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.userEmail+"'> "+userRole.userEmail+"</span></lable></p>";
-			       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
-			       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp;<span title='"+userRole.userRoleName+"'> "+userRole.userRoleName+"</span></label></p>";
-			       	        
-			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N' && userRole.userState != 'INACTIVE'){
-			       	    	  result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p>";
-			 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
-			 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
-			 			    	 result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p>";
-			 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
-			 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
-			 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
-			 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
-			 			    } 
-			       	    	
-			       	    	result = result +"</div>";
-			       	    	result = result +"<div class='clearfix'></div>";
-			       	    	result = result +"</div>";
-			       	    	result = result +"</div>";
-			       	    	$("#loading").removeAttr("style"); 
-			       	    	if(type == "manual"){
-			            		$('#usersListBody').append(result);
-			            		 $("#searchByName").val("");
-			            	}else{
-			            		$('#usersListBody').append(result);
-			            		 $("#searchByName").val("");
-			            	}
-			
-	       	    	
+        	  if(json.length > 0)	
+  	   		{
+  	    		$('#loadMoreDiv').empty(); 
+  	 			for(var i=0; i<json.length; i++){
+  	 				
+  			 				var userRole = json[i];
+  			 				var mobilePhone = ""
+  			 				var lastName = ""
+  			 			    if(userRole.mobilePhone != null && userRole.mobilePhone != ''){
+  			 			    	mobilePhone = userRole.mobilePhone;
+  			 			    }else{
+  			 			    	mobilePhone = "No Data"
+  			 			    }
+  			 				if(userRole.lastName != null && userRole.lastName != ''){
+  			 					lastName = userRole.lastName;
+  			 			    }else{
+  			 			    	lastName = " "
+  			 			    }
+  			       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
+  			       	    	result = result +"<div class='user-profile'>";
+  			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
+  			       	    	result = result +"<div class='text-center image-parent'>";
+  			       	    	result = result +"<div class='imageParent'>";
+  			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
+  			       	    	result = result +"</div>";
+  			       	    	
+  			       	    	
+  			       	    	result = result +"</div>";
+  			       	    	result = result +"</div>";
+  			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
+  			       	    	
+  			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
+  			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
+  			       	    	'</sec:authorize>';
+  			       	    	
+  			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
+  		       	         	   result = result +"<h4><a href='#'> "+userRole.firstName+" " " "+lastName+"</a> </h4>";
+  		       	    	    '</sec:authorize>';
+  			       	    	
+  			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.email+"'> "+userRole.email+"</span></lable></p>";
+  			       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
+  			       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp;<span title='"+userRole.userType+"'> "+userRole.userType+"</span></label></p>";
+  			       	        
+  			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N' && userRole.userStatus != 'INACTIVE'){
+  			       	    	  result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p>";
+  			 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
+  			 			    		(userRole.userStatus != null && userRole.userStatus != "" && userRole.userStatus == 'NOT_LOGGEDIN') ){
+  			 			    	 result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p>";
+  			 			    }else if(userRole.userStatus != null && userRole.userStatus != "" && userRole.userStatus == 'ACTIVE'){
+  			 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
+  			 			    }else if(userRole.userStatus != null && userRole.userStatus != "" && userRole.userStatus == 'INACTIVE'){
+  			 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
+  			 			    } 
+  			       	    	
+  			       	    	result = result +"</div>";
+  			       	    	result = result +"<div class='clearfix'></div>";
+  			       	    	result = result +"</div>";
+  			       	    	result = result +"</div>";
+  			       	    	$("#loading").removeAttr("style"); 
+  			       	    	$('#usersListBody').append(result);
+  		            		$("#searchByName").val("");
+  			       	    	/* if(type == "manual"){
+  			            		$('#usersListBody').append(result);
+  			            		 $("#searchByName").val("");
+  			            	}else{
+  			            		$('#usersListBody').append(result);
+  			            		 $("#searchByName").val("");
+  			            	} */
 
-				   }
-	 			result = result + '<div class="clear"></div>';
-	 			$("#noUsers").val("")
-	   		    }
-            }else if(type == "scroll"){
+  				   }
+  	 			result = result + '<div class="clear"></div>';
+  	 			$("#noUsers").val("")
+  	   		    }
+            } else if(type == "scroll"){
             	$("#noUsers").val("nousers")
             	$('#loadMoreDiv').empty(); 
             	$("#loading").removeAttr("style");
 	         	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No More Records..</div>';
 	         	$('#loadMoreDiv').append(result);
-            }else{
-            	$("#noUsers").val("nousers")
-            	$('#loadMoreDiv').empty(); 
-            	$("#loading").removeAttr("style");
-	         	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No  Records..</div>';
-	         	$('#loadMoreDiv').append(result);
-            }
+            } else{
+            	  $("#usersListBody").removeAttr("style");
+              	  $('#usersListBody').empty();
+	              $('#loadMoreDiv').empty(); 
+	              $("#loading").removeAttr("style");
+                  var result ="";
+               	  result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No  Records..</div>';
+               	  $('#usersListBody').append(result);
+              }
 	    	
 			 },
 	        error: function(e){
@@ -344,6 +512,7 @@ function exportToPdf(){
 	    });  
 	}
 </script>
+
 
 
 <script type="text/javascript">
@@ -365,7 +534,63 @@ function resendInvitation(userId){
 	}
   
 </script>
+<script type="text/javascript">
+var validationSettings = {
+		errorMessagePosition : 'element',
+		borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd'
+	};
+</script>
+<script type="text/javascript">
+	function searchUser() {
+		/* var rate = $('#rate').val();
+		 if(rate != null && rate != "" && rate !='undefined'){
+			 $('#ratePer').removeAttr('data-validation-optional');
+			 $('#ratePer').attr("data-validation","required"); 
+			 
+			 
+		 }else{
+			 $('#ratePer').removeAttr('data-validation');
+			 $('#ratePer').attr("data-validation-optional","true"); 
+			 
+		 } */
+		 
+		 if ($('#user_forms').validate(false, validationSettings)){ 
+      		var sourceleadUrl = '${sourceleadUrl}';
+      		var frm = $('#user_forms').serializeFormJSON();
+			var con = JSON.stringify(frm);
+		 	con = con.replace(/[{}]/g, ""); 
+		    var jsonData = encodeURIComponent(con);
+		    var form = $('#user_forms')[0];
+      		var formData = new FormData(form);  
+			$("#search_user").attr("disabled", "disabled");
 
+			 $.ajax({
+						 type : "POST",
+		        	     data: formData,
+		        	     processData: false,
+		    	         contentType:false,
+		        	     dataType : 'json',
+						 url : sourceleadUrl+"/searchUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						 success : function(data) {
+							$("#search_user").addClass('button').val('Search');
+							$("#search_user").removeAttr("disabled");
+							closePop();
+							prepareUsersList(data);
+						},
+					}); 
+			return true;
+		 }else{ 
+				return false;
+		 } 
+	} 
+	
+	$('body').on('blur', '#user_forms', function() {
+		$("#user_forms").showHelpOnFocus();
+		$("#user_forms").validateOnBlur(false, validationSettings);
+	});
+</script>
 
 <script type="text/javascript">
 function getUserSummary(userId){
@@ -382,7 +607,97 @@ function getUserSummary(userId){
 	}
   
 </script>
+<script>
+  function prepareUsersList(data){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  if(data != null && data != 'undefined' && data != "" && data != '[]'){
+		  $('#usersListBody').empty();
+		  var result = "";
+		  var json = JSON.parse(data);
+		  if(json.length > 0)	
+	   		{
+	    		$('#loadMoreDiv').empty(); 
+	 			for(var i=0; i<json.length; i++){
+	 				
+			 				var userRole = json[i];
+			 				var mobilePhone = ""
+			 				var lastName = ""
+			 			    if(userRole.mobilePhone != null && userRole.mobilePhone != ''){
+			 			    	mobilePhone = userRole.mobilePhone;
+			 			    }else{
+			 			    	mobilePhone = "No Data"
+			 			    }
+			 				if(userRole.lastName != null && userRole.lastName != ''){
+			 					lastName = userRole.lastName;
+			 			    }else{
+			 			    	lastName = " "
+			 			    }
+			       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
+			       	    	result = result +"<div class='user-profile'>";
+			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
+			       	    	result = result +"<div class='text-center image-parent'>";
+			       	    	result = result +"<div class='imageParent'>";
+			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
+			       	    	result = result +"</div>";
+			       	    	
+			       	    	
+			       	    	result = result +"</div>";
+			       	    	result = result +"</div>";
+			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
+			       	    	
+			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
+			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
+			       	    	'</sec:authorize>';
+			       	    	
+			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
+		       	         	   result = result +"<h4><a href='#'> "+userRole.firstName+" " " "+lastName+"</a> </h4>";
+		       	    	    '</sec:authorize>';
+			       	    	
+			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.email+"'> "+userRole.email+"</span></lable></p>";
+			       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
+			       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp;<span title='"+userRole.userType+"'> "+userRole.userType+"</span></label></p>";
+			       	        
+			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N' && userRole.userStatus != 'INACTIVE'){
+			       	    	  result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p>";
+			 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
+			 			    		(userRole.userStatus != null && userRole.userStatus != "" && userRole.userStatus == 'NOT_LOGGEDIN') ){
+			 			    	 result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p>";
+			 			    }else if(userRole.userStatus != null && userRole.userStatus != "" && userRole.userStatus == 'ACTIVE'){
+			 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
+			 			    }else if(userRole.userStatus != null && userRole.userStatus != "" && userRole.userStatus == 'INACTIVE'){
+			 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
+			 			    } 
+			       	    	
+			       	    	result = result +"</div>";
+			       	    	result = result +"<div class='clearfix'></div>";
+			       	    	result = result +"</div>";
+			       	    	result = result +"</div>";
+			       	    	$("#loading").removeAttr("style"); 
+			       	    	$('#usersListBody').append(result);
+		            		$("#searchByName").val("");
+			       	    	/* if(type == "manual"){
+			            		$('#usersListBody').append(result);
+			            		 $("#searchByName").val("");
+			            	}else{
+			            		$('#usersListBody').append(result);
+			            		 $("#searchByName").val("");
+			            	} */
 
+				   }
+	 			result = result + '<div class="clear"></div>';
+	 			$("#noUsers").val("")
+	   		    }
+	  }else{
+      	  $("#usersListBody").removeAttr("style");
+      	  $('#usersListBody').empty();
+      	  $('#loadMoreDiv').empty(); 
+          $("#loading").removeAttr("style");
+          var result ="";
+       	  result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No  Records..</div>';
+       	  $('#usersListBody').append(result);
+      }
+  }
+</script>    
 <script>
 // Back To Top 
     $(window).scroll(function() {
@@ -412,6 +727,153 @@ function getUserSummary(userId){
 	       e.stopPropagation();
 	   });        
 	});  
+</script> 
+<script type="text/javascript">
+    	   var config = {
+    				  '.chosen-select'           : {},
+    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+    				  '.chosen-select-no-single' : {disable_search_threshold:10},
+    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+    				  '.chosen-select-width'     : {width:"95%"}
+    	   }
+			//Adding Customized Any Of Keyword to the list 
+		    var select, chosen;
+		    select = $("#anyOfKeyword");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keyup', function(e)
+		    {
+		    	var anyKeyword = this.value.replace(",","");
+		        if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(anyKeyword).text(anyKeyword);
+		            select.append(option);
+		            select.find(option).prop('selected', true);
+                    $("#anyOfKeyword option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#anyOfKeyword").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		  //Adding Customized Any Of Keyword to the list
+		    var selectone, chosenone;
+		    selectone = $("#allKeywords");
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenone = selectone.data('chosen');
+		    chosenone.search_field.on('keyup', function(e1)
+		    {
+		    	var allKeyword = this.value.replace(",","");
+		        if ((e1.which == 13 || e1.which == 188) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(allKeyword).text(allKeyword);
+		            selectone.append(option);
+		            selectone.find(option).prop('selected', true);
+                    $("#allKeywords option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#allKeywords").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selecttwo, chosentwo;
+		    selecttwo = $("#excludeKeyWord");
+		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosentwo = selecttwo.data('chosen');
+		    chosentwo.search_field.on('keyup', function(e2)
+		    {
+		    	var excludeKeyword = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
+		            selecttwo.append(option);
+		            selecttwo.find(option).prop('selected', true);
+                    $("#excludeKeyWord option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#excludeKeyWord").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectthree, chosenthree;
+		    selectthree = $("#email");
+		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Email:' });
+		    chosenthree = selectthree.data('chosen');
+		    chosenthree.search_field.on('keyup', function(e3)
+		    {
+		    	var desg = this.value.replace(",","");
+		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(desg).text(desg);
+		            selectthree.append(option);
+		            selectthree.find(option).prop('selected', true);
+                    $("#email option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#email").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectfour, chosenfour;
+		    selectfour = $("#mobilePhone");
+		    selectfour.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Mobile Phone:' });
+		    chosenfour = selectfour.data('chosen');
+		    chosenfour.search_field.on('keyup', function(e6)
+		    {
+		    	var cert = this.value.replace(",","");
+		        if ((e6.which == 13 || e6.which == 188) && (cert != null  && cert != '' && cert != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(cert).text(cert);
+		            selectfour.append(option);
+		            selectfour.find(option).prop('selected', true);
+                    $("#mobilePhone option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#mobilePhone").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		     var selectfive, chosenfive;
+		    selectfive = $("#employeeId");
+		    selectfive.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add EmployeeId:' });
+		    chosenfive = selectfive.data('chosen');
+		    chosenfive.search_field.on('keyup', function(e6)
+		    {
+		    	var cert = this.value.replace(",","");
+		        if ((e6.which == 13 || e6.which == 188) && (cert != null  && cert != '' && cert != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(cert).text(cert);
+		            selectfive.append(option);
+		            selectfive.find(option).prop('selected', true);
+                    $("#employeeId option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#employeeId").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+				for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
 </script> 
 
     

@@ -10,8 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
 public interface UserService  {
 
@@ -144,6 +144,8 @@ public interface UserService  {
 	
 	public List<User> getUsersForAddAsConsultant(Org org,Long orgLocationsId) throws Exception;
 	
+	public void saveOrUpdateUserElkDocument(UserRole userRole, Employees employee, String loginUserCode) throws Exception;
+
 	
 	public List<User> getUsersForConsultantsByUserRoleIdAndOrgLocationId(Long roleId,Long orgLocationsId) throws Exception;
 	

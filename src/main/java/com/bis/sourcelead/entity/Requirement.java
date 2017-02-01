@@ -76,7 +76,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "RATE")
 	private String rate;
 	
-	@Column(name = "RATE_TYPE")
+	@Column(name = "RATE_TYPE") 
 	private String rateType;
 	
 	@Column(name = "COUNTRY")

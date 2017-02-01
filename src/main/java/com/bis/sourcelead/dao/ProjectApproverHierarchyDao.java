@@ -14,6 +14,8 @@ public interface ProjectApproverHierarchyDao {
 	
 	public ProjectApproverHierarchy updateProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy) throws Exception;
 
+	public List<ProjectApproverHierarchy> getAllApproverUsersByProjectIdList(List<Long> projectIds) throws Exception;
+	
 	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long Id) throws Exception;
 	
 	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long Id,long userId) throws Exception;

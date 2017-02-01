@@ -730,7 +730,7 @@ window.onload = function () {
     		
     			result = result +'<td>';
     		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-    			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+orgName+'\',\''+report.id+'\');">';
+    			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+orgName+'\');">';
 				result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
     			
     			result = result +'</div>';
@@ -814,7 +814,8 @@ function getClientDetails(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
-   		    	preparedClientDetails(data);
+   		    	/* preparedClientDetails(data); */
+   		    	preparedClientListFromElk(data);
    		    }
 	 }); 
 	
@@ -872,7 +873,7 @@ function pagination(){
 </script>
 
 <script>
-	function clientSideBar(clientLocationId,orgName,orgRelationId) {
+	function clientSideBar(clientLocationId,orgRelationId,orgName) {
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
@@ -1122,7 +1123,7 @@ function preparedClientContactListFromElk(data){
 		   		
 		   		
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
-		   				result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		   				result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
 		   		'</sec:authorize>';
 		   		
 		   		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
@@ -1221,7 +1222,7 @@ function preparedClientListFromElk(data){
 		   	result = result +' <th>Website</th>';
 		   	result = result +'<th>Location</th>';
 		   	result = result +'<th>Tier</th>';
-		   	result = result +'<th>Released Jobs</th>';
+		   	result = result +'<th>Created By</th>';
 		   	result = result +'<th>No.of Contacts</th>';
 		   	/* result = result +'<th>Actions</th>'; */
 		   	result = result +'</tr>';
@@ -1248,7 +1249,7 @@ function preparedClientListFromElk(data){
 		   		result = result +'<tr>';
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 		   			result = result +'<td>';
-		   			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+		   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
 		   			result = result +'</div>';
 		   			result = result +'</td>';
 		   		'</sec:authorize>';
@@ -1282,7 +1283,12 @@ function preparedClientListFromElk(data){
 		   		}
 				
 		   	result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
-				result = result +' <td><div>====</div></td>';
+		   	
+		   	if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
+				result = result +' <td><div>'+report.createdBy+'</div></td>';
+		   	}else{
+		   		result = result +'<td><div>=====</div></td>';
+		   	}
 				result = result +'<td><div>=====</div></td>';
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
@@ -1384,7 +1390,9 @@ function resendClientSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Client&orgRelationID="+orgRelationId, 
 			        success: function(result) {
 			        	$("#loading").removeAttr("style"); 
-			        	getVendorContactLists();
+			        	/* getVendorContactLists(); */
+			        	getVendorContactListsELK();
+			        	
 			        },
 			    });
 		 }
@@ -1809,7 +1817,8 @@ function acceptInvitation(spocId){
 		    	$("#selector1").removeAttr("style");
     			$("#selector1").css({ display: "block" });
     			$("#msgDiv").html("Accept Invitation Successfully");
-		    	getVendorContactLists();
+		    	/* getVendorContactLists(); */
+		    	getVendorContactListsELK();
 		    	msgFadein();
 		    }
 	   });
@@ -1844,7 +1853,8 @@ function saveReason1(spocId, orgRelationID){
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
-   			    getVendorContactLists();
+   			   /*  getVendorContactLists(); */
+   			     getVendorContactListsELK();
 		    }
 	   });
 	}else{
@@ -1867,7 +1877,8 @@ function rejectInvitation(spocId){
 		    	$("#selector1").removeAttr("style");
     			$("#selector1").css({ display: "block" });
     			$("#msgDiv").html("Reject Invitation Successfully");
-		    	getVendorContactLists();
+		    	/* getVendorContactLists(); */
+		    	getVendorContactListsELK();
 		    	msgFadein();
 		    }
 	   });

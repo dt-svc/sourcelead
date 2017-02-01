@@ -1272,27 +1272,17 @@ function requirementPipeline(requirementId){
                     <div class="col-md-6">
                       <select class="chosen-select" id="minExp" name="minExp"  data-placeholder="Min Years">
                        <option value="" selected>Min Years</option>
-                        <option>1 years</option>
-                        <option>2 years</option>
-                        <option>3 years</option>
-                        <option>4 years</option>
-                        <option>5 years</option>
-                        <option>6 years</option>
-                        <option>7 years</option>
-                        <option>8 years</option>
+                       <c:forEach begin="0" end="24" varStatus="loop">
+									    <option value="${loop.index}">${loop.index} Years</option>
+									</c:forEach>
                       </select>
                     </div>
                     <div class="col-md-6">
                       <select class="chosen-select" id="maxExp" name="maxExp" data-placeholder="Max Years">
                          <option value="" selected>Max Years</option>
-                         <option>1 years</option>
-                        <option>2 years</option>
-                        <option>3 years</option>
-                        <option>4 years</option>
-                        <option>5 years</option>
-                        <option>6 years</option>
-                        <option>7 years</option>
-                        <option>8 years</option>
+                         <c:forEach begin="0" end="24" varStatus="loop">
+									    <option value="${loop.index}">${loop.index} Years</option>
+									</c:forEach>
                       </select>
                     </div>
                   </div>
@@ -1997,10 +1987,18 @@ function loadChosenRequirementScripts(){
 	 $('#country').val('${loginCountryName}'); 
      $('#state').val(''); 
      $('#city').val('');
-	
-	 $("#anyKeyWord").val('').trigger("chosen:updated");
+     $("#anyKeyWord").val('').trigger("chosen:updated");
 	 $("#allReqKeyWord").val('').trigger("chosen:updated");
 	 $("#excludeReqKeyWord").val('').trigger("chosen:updated");
+	 $("#requirementTitle").val('').trigger("chosen:updated");
+	 $("#rate").val('').trigger("chosen:updated");
+	 $("#minExp").val('').trigger("chosen:updated");
+	 $("#maxExp").val('').trigger("chosen:updated");
+	 $("#requirementStatu").val('').trigger("chosen:updated");
+	 $("#updatedOn").val('').trigger("chosen:updated");
+	 $("#education").val('').trigger("chosen:updated");
+	 $("#client").val('').trigger("chosen:updated");
+	 $("#skills").val('').trigger("chosen:updated"); 
 	 
 	 $("#anyKeyWord").empty();
 	 $("#allReqKeyWord").empty();
