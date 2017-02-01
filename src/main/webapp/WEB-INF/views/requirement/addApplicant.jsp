@@ -393,7 +393,8 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     	  
 	     	  
 	     	 if(name == "CurrentCTC"){
-	     		  if(null != inputValue){
+	     		 inputValue = $this.find('input').val();
+	     		 if(inputValue){
 	     			 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value; 
 	     			 var currentCTCRateType = document.getElementById("currentCTCRateType").value; 
 	     			 inputValue = currentCTCRateType+" "+inputValue+" /"+" "+currentCTCRatePer ;
@@ -401,7 +402,8 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     	  }
 	     	 
 	     	if(name == "ExpectedCTC"){
-	     		  if(null != inputValue){
+	     		 inputValue = $this.find('input').val();
+	     		  if(inputValue){
 	     			 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value; 
 	     			 var expectedCTCRateType = document.getElementById("expectedCTCRateType").value; 
 	     			 inputValue = expectedCTCRateType+" "+inputValue+" /"+" "+expectedCTCRatePer ;
@@ -944,13 +946,12 @@ function validate_fileupload(fileName)
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#requirementId").val();
 	 if(email != null && email != ""){
-		
+		 $("#save_button").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateRequirementCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
 		        success: function(data) {
 		         	if(data == 'true'){
-		         		  $("#save_button").attr("disabled", "disabled");
 			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
 			        	  $('.jquery_form_error_message').remove();
 		        		  $("input[name=EmailId]").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");

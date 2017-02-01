@@ -243,7 +243,7 @@ $(document).ready(function () {
 <section class="content-wraper">
   <section class="content-header clearfix">
      <div class="pull-left">
-      <h2>Requirement Details</h2>
+      <h2>Add Requirement</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Add Requirement </div>
   </section>
@@ -253,7 +253,7 @@ $(document).ready(function () {
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
         <div class="col-lg-12">
-          <h3>Add Requirement Details</h3>
+          <h3>Requirement Details</h3>
         </div>
 	       <div class="col-md-12 clearfix">
         	  <div class="col-md-12">
@@ -2179,10 +2179,8 @@ var existingValue = document.getElementById('isClientJob').value;
 		 // $("#clientCurrencyCode").val('');
 			
 		 $('#clientRate').val('');
-		 
 		 $('select[name=clientRateType]').val(1);
-		 $('.selectpicker').selectpicker('refresh');
-		 
+		// $('.selectpicker').selectpicker('refresh');
 		 $("#clientSubmissionForm").val('');
 		 $('#clientSubmissionForm').trigger("chosen:updated");
 		 

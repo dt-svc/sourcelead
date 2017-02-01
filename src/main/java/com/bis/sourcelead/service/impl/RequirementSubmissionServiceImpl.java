@@ -241,7 +241,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					
 					if(jsonObj.has("CurrentCTC") && !isNullOrEmpty(jsonObj.getString("CurrentCTC"))){
 						candidate.setCurrentRate(jsonObj.getString("CurrentCTC"));
-						candidate.setCurrentRateCurrency("currentCTCRateType");
+						candidate.setCurrentRateCurrency(jsonObj.getString("currentCTCRateType"));
 					}
 					
 					if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
@@ -250,7 +250,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 
 					if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
 						 candidate.setExpectedRate(jsonObj.getString("ExpectedCTC"));
-						 candidate.setExpectedRateCurrencey("expectedCTCRateType");
+						 candidate.setExpectedRateCurrencey(jsonObj.getString("expectedCTCRateType"));
 						 
 					}
 					
