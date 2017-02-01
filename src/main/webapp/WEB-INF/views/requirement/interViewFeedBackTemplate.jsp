@@ -465,7 +465,7 @@ function validateTemplateName(){
 	      <div class="timesheet_head timesheet_head_11"  id="addTemplate" style="min-height:35px">
 	        <ul>
 	        <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE')">
-	          <li><a onClick="addSubmissionTemplateFields();" id="add-tm"><i class="fa fa-plus"></i>Add Template</a></li>
+	          <li><a onClick="addSubmissionTemplateFields();" id="add-tm"><i class="fa fa-plus"></i>Add Interview Template</a></li>
 	        </sec:authorize>
 	          <div class="clearfix"></div>
 	        </ul>
