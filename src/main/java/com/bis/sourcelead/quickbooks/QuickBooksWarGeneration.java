@@ -1,4 +1,4 @@
-package com.bis.sourcelead.QuickBooks;
+package com.bis.sourcelead.quickbooks;
 
 import java.io.File;
 import java.io.FileOutputStream;
