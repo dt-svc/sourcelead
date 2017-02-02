@@ -360,4 +360,28 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 	    		}
 	    		return count;
 		}
+
+		@Override
+		@Transactional
+		public OrgSpoc getSpocListByResponderLocationId(Long initiatingPartyOrgLocationId,Long responderLocationId,String respondingOrgType) throws Exception {
+			
+			logger.debug("In OrgSpocDaoImpl getSpocListByResponderLocationId method");
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			 
+			String subQuey = "";
+			if(respondingOrgType.equalsIgnoreCase("VMS")){
+				subQuey = "spoc.orgRelations.responderType = 'Client' ";
+			}else if(respondingOrgType.equalsIgnoreCase("ATS")){
+				subQuey = "spoc.orgRelations.responderType = 'Vendor' ";
+			}
+			
+			List<OrgSpoc> orgSpocs  = session.createQuery("from OrgSpoc spoc where spoc.initiatorLocationId.id = :initiatingPartyOrgLocationId and  spoc.responderLocationId.id = :responderLocationId and "+subQuey+" ").setCacheable(true).setLong( "initiatingPartyOrgLocationId", initiatingPartyOrgLocationId).setLong( "responderLocationId", responderLocationId ).setCacheable(true).list();
+			if (orgSpocs.size() > 0) {
+				return orgSpocs.get(0);
+			} else {
+				return null;
+			}
+			
+		}
 }
