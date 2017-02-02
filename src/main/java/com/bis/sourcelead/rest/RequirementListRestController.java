@@ -1282,4 +1282,49 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 			return resultJson;
         }
         
+        
+        
+        /**
+		 * Universal Search  
+		 * @param json
+		 * @param request
+		 * @param response
+		 * @return
+		 * @throws Exception
+		 */
+        @SuppressWarnings("unchecked")
+		@RequestMapping(value = "/universalSearchForAll",method = RequestMethod.GET)
+		public @ResponseBody  String universalSearchForAll(@RequestParam(value = "searchType", required = false) String searchType,@RequestParam(value = "searchValue", required = false) String searchValue,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			String resultJson = "";
+			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			List<List<Object>> searchList = requirementService.univesalSearchRequirementForAll(orgLocation, searchType,searchValue,org,userRole,user);
+			
+			for (List<Object> list : searchList) {
+				for(Object obj : list){
+					if(obj instanceof Requirement){
+						List<Requirement> searchReqList = (List<Requirement>)(Object)searchList; 
+						commonUtil.toJSON(searchReqList);
+					}else if(obj instanceof Candidate){
+						List<CandidateIndex> searchCandidateList = (List<CandidateIndex>)(Object)searchList; 
+						 commonUtil.toJSON(searchCandidateList);
+					}else if(obj instanceof ClientVendorIndex){
+						List<ClientVendorIndex> clientVendorList = (List<ClientVendorIndex>)(Object)searchList; 
+						 commonUtil.toJSON(clientVendorList);
+					}else if(obj instanceof ProjectsIndex){
+						List<ProjectsIndex> searchProjectsList = (List<ProjectsIndex>)(Object)searchList; 
+						 commonUtil.toJSON(searchProjectsList);
+					}else if(obj instanceof UserIndex){
+						List<UserIndex> searchUserList = (List<UserIndex>)(Object)searchList; 
+						 commonUtil.toJSON(searchUserList);
+					}
+			  }
+			
+			}
+			resultJson = commonUtil.toJSON(searchList);
+			return resultJson;
+        }
+        
 }

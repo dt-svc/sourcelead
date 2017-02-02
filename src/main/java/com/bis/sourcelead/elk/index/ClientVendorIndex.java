@@ -37,6 +37,18 @@ public class ClientVendorIndex implements Serializable {
 	private Long ownerId;
 	
 	private String createdBy;
+	
+	private String searchType;
+	
+	
+
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
 
 	public Long getId() {
 		return id;
