@@ -946,13 +946,12 @@ function validate_fileupload(fileName)
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#requirementId").val();
 	 if(email != null && email != ""){
-		
+		 $("#save_button").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateRequirementCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
 		        success: function(data) {
 		         	if(data == 'true'){
-		         		  $("#save_button").attr("disabled", "disabled");
 			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
 			        	  $('.jquery_form_error_message').remove();
 		        		  $("input[name=EmailId]").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");

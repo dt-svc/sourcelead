@@ -357,7 +357,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             		 
             		 onblur = 'onblur="validateCurrentCTC();"';
             		 
-            		 style = 'style="width:135px !important; padding-right:5px;"'; 
+            		 style = 'style="width:130px !important; padding-right:5px;"'; 
             		 
             		 ratePer = '&nbsp;<select style="width:115px !important; padding-right:5px;" id="currentCTCRatePer" name="currentCTCRatePer" field-name="Rate Per">'+
             		 '<option value="">Rate Per</option>'+
@@ -381,7 +381,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 }
             	 
             	 if(label == "Expected CTC"){
-            		 style = 'style="width:135px !important; padding-right:5px;"'; 
+            		 style = 'style="width:130px !important; padding-right:5px;"'; 
             		 
             		
             		 labelId = 'id="expectedRate"';
@@ -409,7 +409,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 }
             	 
             	 if(label == "Education"){
-            		 educationPlaceHolder = 'placeholder="Enter educations by Comma(,) seperated"';
+            		 educationPlaceHolder = 'placeholder="Enter educations by comma(,) seperated"';
             	 }
             	 
                 
