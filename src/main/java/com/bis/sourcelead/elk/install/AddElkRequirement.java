@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.sql.DataSource;
@@ -92,6 +94,37 @@ public class AddElkRequirement {
 				requirementIndex.setCountry(rs.getString("COUNTRY"));
 				requirementIndex.setState(rs.getString("STATE"));
 				requirementIndex.setCity(rs.getString("CITY"));
+				requirementIndex.setReqCreatedBy(rs.getString("CREATED_BY"));
+				requirementIndex.setReqUpdatedBy(rs.getString("UPDATED_BY"));
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String reqcreatedDate = dateFormat.format(rs.getDate("CREATED_DATE"));
+				requirementIndex.setReqCreatedDate(reqcreatedDate);
+				String reqUpDatedDate = dateFormat.format(rs.getDate("CREATED_DATE"));
+				requirementIndex.setReqUpdatedDate(reqUpDatedDate);
+				requirementIndex.setIsTemplate(rs.getString("IS_Template"));
+				requirementIndex.setManagerUserId(rs.getString("MANAGER_USER_ID"));
+				ResultSet approverSet = getApproverUserDetails(Long.parseLong(rs.getString("ID")));
+				while(approverSet.next()){
+					if(approverSet.getInt("LEVEL") == 1){
+						requirementIndex.setReqLevel1ApproverUserId(approverSet.getString("APPROVER_USER_ID").split(","));
+					}
+					if(approverSet.getInt("LEVEL") == 2){
+						requirementIndex.setReqLevel2ApproverUserId(approverSet.getString("APPROVER_USER_ID").split(","));
+					}
+				}
+				
+				ResultSet teamSet = getTeamDetails(Long.parseLong(rs.getString("ID")));
+				while(teamSet.next()){
+					requirementIndex.setTeamOwnerUserId(teamSet.getString("OWNER_USER_ID").split(","));
+					requirementIndex.setTeamAssignUserId(teamSet.getString("ASSIGN_USER_ID").split(","));
+				}
+				
+				ResultSet noOfApplicants = getNoOfApplicantDetails(Long.parseLong(rs.getString("ID")),rs.getString("ORG_LOCATION_ID"));
+				while(noOfApplicants.next()){
+					System.out.println(noOfApplicants.getString(1));
+					requirementIndex.setTeamOwnerUserId(noOfApplicants.getString(1).split(","));
+				}
+				
 				String education = rs.getString("EDUCATION");
 				if(null != education && !"".equalsIgnoreCase(education)){
 					requirementIndex.setEducation(education.split(","));
@@ -165,6 +198,69 @@ public class AddElkRequirement {
 		
 		return reqIndexList;
 	}
+	
+	
+	private ResultSet getTeamDetails(long requirementId) {
+		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		 try{
+			  logger.info("********************************8"+requirementId);  
+			 DataSource dataSource = comboPooledDataSource();
+				String sql = "select * from REQUIREMENT_ASSIGN_TO reqAssaign INNER JOIN TEAM team on reqAssaign.TEAM_ID=team.ID where reqAssaign.REQUIREMENT_ID = ? ;";
+				 conn = dataSource.getConnection();
+				 ps = conn.prepareStatement(sql);
+				 ps.setLong(1, requirementId);
+				 rs = ps.executeQuery();
+		 }catch(Exception e){
+			 e.printStackTrace();
+		 }finally{
+		 }
+	     return rs;
+	}
+	
+	private ResultSet getNoOfApplicantDetails(long requirementId,String orgLocationId) {
+		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		 try{
+			  logger.info("*******************orgLocationId************"+orgLocationId);  
+			 DataSource dataSource = comboPooledDataSource();
+				String sql = "select count(*) from REQUIREMENT_SUBMISSION rs where rs.REQUIREMENT_ID = ? and rs.ORG_LOCATION_ID = ?;";
+				 conn = dataSource.getConnection();
+				 ps = conn.prepareStatement(sql);
+				 ps.setLong(1, requirementId);
+				 ps.setString(2, orgLocationId);
+				 rs = ps.executeQuery();
+		 }catch(Exception e){
+			 e.printStackTrace();
+		 }finally{
+		 }
+	     return rs;
+	}
+
+
+	private ResultSet getApproverUserDetails(long requirementId) throws SQLException {
+		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		 try{
+			  logger.info("********************************team..."+requirementId);  
+			 DataSource dataSource = comboPooledDataSource();
+				String sql = "select * from REQUIREMENT_APPROVER_HIERARCHY rah where rah.REQUIREMENT_ID = ? ;";
+				 conn = dataSource.getConnection();
+				 ps = conn.prepareStatement(sql);
+				 ps.setLong(1, requirementId);
+				 rs = ps.executeQuery();
+		 }catch(Exception e){
+			 e.printStackTrace();
+		 }finally{
+		 }
+	     return rs;
+	}
+	
+	
+	
 /**
  * read client Contact name based on orgLocId
  * @param orgLocId
