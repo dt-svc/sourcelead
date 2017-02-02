@@ -70,8 +70,8 @@ function candidateShortList(requirementId){
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
-			           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-			        	   result = result + '<td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a>'+report.resumeName+'</span></div></td>';
+			           if(report.candidateResumes != null && report.candidateResumes != '' && report.candidateResumes != 'undefined'){
+			        	   result = result + '<td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a></span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';
@@ -90,8 +90,8 @@ function candidateShortList(requirementId){
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
-			           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+			        	   result = result + '<td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
