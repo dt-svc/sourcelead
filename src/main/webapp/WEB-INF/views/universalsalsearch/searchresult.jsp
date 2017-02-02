@@ -98,7 +98,14 @@ function getSearchResults(searchType,searchValue){
 		    	result = result+'  </div>';
 	    	}else if(searchType == 'Candidate'){
 	    		result = result+'   <h4>Candidate</h4>';
-		    	 for (var i = 0; i < json.length; i++) {
+	    		var checkSize = json.length;
+	    		if(checkSize>5){
+	    			checkSize = 5;
+	    		}
+	    		else{
+	    			checkSize = json.length;
+	    		}
+		    	 for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
 		             var location = "";
 		             var experience = "";
@@ -252,8 +259,10 @@ function getSearchResults(searchType,searchValue){
 
 <script type="text/javascript">
 function loadCandidate(){
+	var searchResult = "universalCanddateList";
+	var serachValue = "${searchValue}";
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/candidatesList";
+	window.location.href = sourceleadUrl + "/candidatesList?&searchResult="+searchResult+"&serachValue="+serachValue;
 }
 </script>
 
