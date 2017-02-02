@@ -76,6 +76,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -153,6 +154,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	
 	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
 	@RequestMapping(value = "/getUsersList")
+	@JsonInclude(value = JsonInclude.Include.NON_NULL)
 	@ResponseBody
 	public String getUsersList(HttpServletRequest request,
 			@RequestParam(value="userRole", required=false) String userRole,
@@ -175,10 +177,12 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			if(null != userRole  && !"".equalsIgnoreCase(userRole)){
 				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userRoleId", userRole));
 				}
-		
+			if(null != searchByName  && !"".equalsIgnoreCase(searchByName)){
+				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("email", searchByName));
+				}
 			boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 			 
-			Integer maxResults = offset + Constants.MAX_RESULTS_TEN;
+			Integer maxResults =  Constants.MAX_RESULTS_TEN;
 			
 			List<UserIndex> usersList = new ArrayList<UserIndex>();
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -190,7 +194,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
 						String json = hit.getSourceAsString();
-						json = hit.getSourceAsString();
 						mapper.setDateFormat(df);
 						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
 						usersList.add(userIndex);
