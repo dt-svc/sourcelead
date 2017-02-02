@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -90,6 +91,19 @@ public  class SourceleadELKBaseIndexer<T> {
 		 return response.getHits();
 
   }
+	public  SearchHits searchDocumentWithMaxResultsForAll(int offset,int maxResults,BoolQueryBuilder query){
+		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(Constants.ELK_CANDIDATE_INDEX,Constants.ELK_CLIENTVENDOR_INDEX,Constants.ELK_USER_INDEX,Constants.ELK_PROJECT_INDEX,Constants.ELK_REQUIREMENT_INDEX)
+				                 
+				                 .setTypes(Constants.ELK_CANDIDATE_TYPE,Constants.ELK_CLIENTVENDOR_TYPE,Constants.ELK_USER_TYPE,Constants.ELK_PROJECT_TYPE,Constants.ELK_REQUIREMENT_TYPE)
+				                  .setQuery(query)
+				                 .setFrom(offset).setSize(maxResults)
+	                             .execute()
+	                             .actionGet();
+		 
+		 return response.getHits();
+
+ }
+	
 	public  SearchHits searchDocument(String index,String type,BoolQueryBuilder query){
 		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type).setQuery(query)
 	                             .execute()
