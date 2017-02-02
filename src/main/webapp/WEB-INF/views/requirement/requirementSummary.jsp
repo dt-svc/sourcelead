@@ -1718,6 +1718,2126 @@ function documentpagination(){
     } );
 }
 </script>
+
+<!-- script for Duplicate Applicants -->
+<script>  
+function requirementPipelineDA(requirementId,submissionType){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
+	  var isSpocActive = '${isSpocActive}';
+	  
+	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
+         success :function(data) {  
+        	//requirementSubmissionCount(requirementId);
+        	 var result =""; 
+        	 if(data != null && data != 'undefined' && data != ""){  
+              	var json = JSON.parse(data);
+            		
+            			 var submitToClient = '';
+            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+            			 }
+            			   
+							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
+							
+							//For Add Applicant div
+							result = result + '<div class="new_side_wrap">';
+							result = result + '<div class="new_side_wrap_inn">';
+							result = result + '<div class="new_side_wrap_cta">';
+							result = result +'<div id="addApplicantDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+							//For Add Interview Div
+							result = result + '<div class="add_inter_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addInterviewDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Interview Div
+							
+							//For Add Offer Div
+							result = result + '<div class="add_offer_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addOfferDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Offer Div  
+							
+							
+							//For Submit to Client Div
+							result = result +'<div class="submitnew-wrap">';
+							result = result +' <div class="new_side_wrap_inn">';
+							result = result +'<div class="add_inter">';
+							result = result + '<div id="submitToClientDiv"></div>';
+							result = result + '<div id="emailTemplateDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							//For Submit to Client Div
+							
+							
+							result = result +'<div class="shortlist-wrap">';
+							result = result +'<div class="new_side_wrap_inn">';
+							result = result +'<divsubStatus class="add_inter">';
+							result = result + '<div id="shortlistDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+                             //Candidate submissions details Div
+							 result = result +' <div class="clients_side_wrap">';
+							 result = result +'<div class="clients_side_wrap_inn">';
+							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
+							 result = result + '<div id="viewCandidateDiv"></div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							
+				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
+				            result = result +'  <ul>';
+				            result = result +'    <li class="li-vendor">';
+				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
+				            result = result +'      <div class="export_pop">';
+				            result = result +'        <ul>';
+				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
+				            result = result +'        </ul>';
+				            result = result +'      </div>';
+				            result = result +'    </li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
+				           
+				            
+				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
+				            result = result +'<div class="action-pop">';
+				            result = result +'	<span>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
+				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
+				            	result = result + submitToClient
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            '</sec:authorize>';
+				            result = result +'    </span>';
+				            result = result +' </div>';	
+				            result = result +' </li>';
+				            
+				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+				            result = result +'<div class="export_pipline" style="display:none">';
+				            result = result +'<ul>';
+				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +' </ul>';
+				            result = result +'</div>';
+				            result = result +'</li>';
+				            '</sec:authorize>';
+				           result = result + '<div class="clearfix"></div>';
+				           result = result + '</div>';
+				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
+				           result = result + '<div class="clerfix">';
+				           result = result + '<table id="requirementsPaginationDA" class="display" cellspacing="0" width="100%"">';
+				           result = result + '<thead>';
+				           result = result + '<tr>';
+				           result = result + '<th>Name</th>';
+				           result = result + '<th>Email</th>';
+				           result = result + '<th>Ph. No</th>';
+				           result = result + '<th>Resume</th>';
+				           result = result + '<th>Applied on</th>';
+					       result = result + '<th>Rate</th>';
+					         if(clientSubmissions == 'Y'){
+					           result = result + '<th>Sub. Rate</th>';
+					         }
+					       result = result + '<th>Source</th>';
+		        		   result = result + '<th>Score</th>';
+				           result = result + '<th>Exp</th>';
+				           result = result + '<th>Status</th>';
+				           result = result + '         </tr>';
+				           result = result + '       </thead>';
+				           result = result + '       <tbody>';
+				           for (var i=0; i<json.length; i++)
+			   				{  
+			   	        		var report = json[i];
+			   	        		
+			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
+			   	        			orgName = "("+report.orgName+")";
+			   	        		}else{
+			   	        			orgName = "";
+			   	        		}
+
+						           result = result + '       <tr>';
+						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           '</sec:authorize>';
+						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
+						           '</sec:authorize>';
+						           
+						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
+						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
+							        }  else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	    }
+						           
+						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+							           }
+							       else{
+							    	   result = result + '         <td><div>--</div></td>';
+						    	     }
+						           
+						        	   
+					        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+							           
+							    	     
+						           if(report.vendorLocationId != null && report.sourceSubmission != null){
+						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+						           }else{
+						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+						           }
+							          
+							     if(clientSubmissions == 'Y'){
+							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
+							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        	   }else{
+							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        	   }
+							           }else{
+							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        	   }else{
+							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        	   }
+							           }
+							       }
+							           
+						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     } 
+						        	   
+				        		   if(report.candidateScore != null){
+				        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
+							           }
+							       else{
+							    	   result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+						           result = result + '</div></td>';
+							           
+							          
+						           result = result + '       </tr>';
+			   				}
+				           
+				           
+				           result = result + '       </tbody>';
+				           result = result + '     </table>';
+				           result = result + '   </div>';
+				           result = result + '   </div>';
+				           
+				           
+							$("#tab-1").empty();
+							$("#tab-3").empty();
+							$("#pipelineLoading").removeAttr("style");
+							$("#status-data").empty();
+							$("#status-data").append(result);
+							$("#tab-2").append(status-data);
+							$("#loading").removeAttr("style"); 
+							$("#emptyPipelinelist").val(json.length);
+							
+							documentpaginationDA();
+							$("#tab-2").show();
+							$(".project-tabs-menu a").click(function(event) {
+							     event.preventDefault();
+							     $(this).parent().addClass("current");
+							     $(this).parent().siblings().removeClass("current");
+							     var tab = $(this).attr("href");
+							     $(".project_tabs_inn").not(tab).css("display", "none");
+							     $(tab).fadeIn();
+							 });
+							prepareAllCounts(requirementId);
+							
+              }else{
+                     	 $("#requirementSideDiv").removeAttr("style");
+      		    	     result = result+"   <div class='row'>"; 
+      					 result = result+"	<div class='col-lg-12'>"; 
+      					 result = result+"		<div class='content-area clearfix'>"; 
+      					 result = result+"			<div class='blank-pages'>";
+      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+      					 result = result+"			        <p>No Candidates Found</p>";
+      					 result = result+"			 </div>";
+      					 result = result+"		</div>"; 
+      					 result = result+"	</div>"; 
+      					 result = result+"  </div> "; 
+      					$("#requirementSideDiv").empty();
+      				    $("#requirementSideDiv").append(result); 
+                      }
+               },
+                 
+            }); 
+	 
+}
+</script>
+
+<script>
+function documentpaginationDA(){  
+    $('#requirementsPaginationDA').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+
+<!-- Script for Request Sent List -->
+<script>  
+function requirementPipelineRS(requirementId,submissionType){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
+	  var isSpocActive = '${isSpocActive}';
+	  
+	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
+         success :function(data) {  
+        	 var result =""; 
+        	 if(data != null && data != 'undefined' && data != ""){  
+              	var json = JSON.parse(data);
+            		
+            			 var submitToClient = '';
+            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+            			 }
+            			   
+							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
+							
+							//For Add Applicant div
+							result = result + '<div class="new_side_wrap">';
+							result = result + '<div class="new_side_wrap_inn">';
+							result = result + '<div class="new_side_wrap_cta">';
+							result = result +'<div id="addApplicantDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+							//For Add Interview Div
+							result = result + '<div class="add_inter_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addInterviewDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Interview Div
+							
+							//For Add Offer Div
+							result = result + '<div class="add_offer_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addOfferDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Offer Div  
+							
+							
+							//For Submit to Client Div
+							result = result +'<div class="submitnew-wrap">';
+							result = result +' <div class="new_side_wrap_inn">';
+							result = result +'<div class="add_inter">';
+							result = result + '<div id="submitToClientDiv"></div>';
+							result = result + '<div id="emailTemplateDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							//For Submit to Client Div
+							
+							
+							
+							result = result +'<div class="shortlist-wrap">';
+							result = result +'<div class="new_side_wrap_inn">';
+							result = result +'<divsubStatus class="add_inter">';
+							result = result + '<div id="shortlistDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+                             //Candidate submissions details Div
+							 result = result +' <div class="clients_side_wrap">';
+							 result = result +'<div class="clients_side_wrap_inn">';
+							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
+							 result = result + '<div id="viewCandidateDiv"></div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							
+				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
+				            result = result +'  <ul>';
+				            result = result +'    <li class="li-vendor">';
+				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
+				            result = result +'      <div class="export_pop">';
+				            result = result +'        <ul>';
+				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
+				            result = result +'        </ul>';
+				            result = result +'      </div>';
+				            result = result +'    </li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
+				           
+				            
+				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
+				            result = result +'<div class="action-pop">';
+				            result = result +'	<span>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
+				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
+				            	result = result + submitToClient
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            '</sec:authorize>';
+				            result = result +'    </span>';
+				            result = result +' </div>';	
+				            result = result +' </li>';
+				            
+				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+				            result = result +'<div class="export_pipline" style="display:none">';
+				            result = result +'<ul>';
+				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +' </ul>';
+				            result = result +'</div>';
+				            result = result +'</li>';
+				            '</sec:authorize>';
+				           result = result + '<div class="clearfix"></div>';
+				           result = result + '</div>';
+				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
+				           result = result + '<div class="clerfix">';
+				           result = result + '<table id="requirementsPaginationRS" class="display" cellspacing="0" width="100%"">';
+				           result = result + '<thead>';
+					           result = result + '<tr>';
+					           result = result + '<th>Name</th>';
+					           result = result + '<th>Email</th>';
+					           result = result + '<th>Ph. No</th>';
+					           result = result + '<th>Resume</th>';
+					           result = result + '<th>Applied on</th>';
+					           result = result + '<th>Rate</th>';
+					           if(clientSubmissions == 'Y'){
+						           result = result + '<th>Sub. Rate</th>';
+						       }
+					           result = result + '<th>Source</th>';
+			        		   result = result + '<th>Score</th>';
+					           result = result + '<th>Exp</th>';
+					           result = result + '<th>Status</th>';
+					           result = result + '</tr>';
+				           result = result + '</thead>';
+				           
+				           result = result + '<tbody>';
+				           for (var i=0; i<json.length; i++)
+			   				{  
+			   	        		var report = json[i];
+			   	        		
+			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
+			   	        			orgName = "("+report.orgName+")";
+			   	        		}else{
+			   	        			orgName = "";
+			   	        		}
+
+						           result = result + '<tr>';
+						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           '</sec:authorize>';
+						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
+						           '</sec:authorize>';
+						           
+						            if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
+						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
+							        }else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	    }
+						           
+						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
+							       }else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	   }
+						           
+						           if(report.resumeName != null && report.resumeId != '' && report.resumeId != 'undefined'){
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+							       }else{
+							    	   result = result + '         <td><div>--</div></td>';
+						    	   }
+						        	   
+					        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
+							       }else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	   }
+							    	     
+						           if(report.vendorLocationId != null && report.sourceSubmission != null){
+						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+						           }else{
+						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+						           }
+							          
+							    	if(clientSubmissions == 'Y'){
+							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
+							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        	   }else{
+							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        	   }
+							           }else{
+							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        	   }else{
+							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        	   }
+							           }
+							        }
+							           
+						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	   } 
+						        	   
+				        		   if(report.candidateScore != null){
+				        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
+							           }
+							       else{
+							    	   result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						        	
+					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+						           result = result + '</div></td>';
+						           result = result + '       </tr>';
+			   				}
+				           
+				           
+				           result = result + '       </tbody>';
+				           result = result + '     </table>';
+				           result = result + '   </div>';
+				           result = result + '   </div>';
+				           
+				           
+							$("#tab-1").empty();
+							$("#tab-3").empty();
+							$("#pipelineLoading").removeAttr("style");
+							$("#status-data").empty();
+							$("#status-data").append(result);
+							$("#tab-2").append(status-data);
+							$("#loading").removeAttr("style"); 
+							$("#emptyPipelinelist").val(json.length);
+							
+							documentpaginationRS();
+							$("#tab-2").show();
+							$(".project-tabs-menu a").click(function(event) {
+							     event.preventDefault();
+							     $(this).parent().addClass("current");
+							     $(this).parent().siblings().removeClass("current");
+							     var tab = $(this).attr("href");
+							     $(".project_tabs_inn").not(tab).css("display", "none");
+							     $(tab).fadeIn();
+							 });
+							prepareAllCounts(requirementId);
+							
+              }else{
+                     	 $("#requirementSideDiv").removeAttr("style");
+      		    	     result = result+"   <div class='row'>"; 
+      					 result = result+"	<div class='col-lg-12'>"; 
+      					 result = result+"		<div class='content-area clearfix'>"; 
+      					 result = result+"			<div class='blank-pages'>";
+      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+      					 result = result+"			        <p>No Candidates Found</p>";
+      					 result = result+"			 </div>";
+      					 result = result+"		</div>"; 
+      					 result = result+"	</div>"; 
+      					 result = result+"  </div> "; 
+      					$("#requirementSideDiv").empty();
+      				    $("#requirementSideDiv").append(result); 
+                      }
+               },
+                 
+            }); 
+	 
+}
+</script>
+
+<script>
+function documentpaginationRS(){  
+    $('#requirementsPaginationRS').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+<!-- Script for Short List -->
+<script>  
+function requirementPipelineSL(requirementId,submissionType){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
+	  var isSpocActive = '${isSpocActive}';
+	  
+	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
+         success :function(data) {  
+        	//requirementSubmissionCount(requirementId);
+        	 var result =""; 
+        	 if(data != null && data != 'undefined' && data != ""){  
+              	var json = JSON.parse(data);
+            		
+            			 var submitToClient = '';
+            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+            			 }
+            			   
+							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
+							
+							//For Add Applicant div
+							result = result + '<div class="new_side_wrap">';
+							result = result + '<div class="new_side_wrap_inn">';
+							result = result + '<div class="new_side_wrap_cta">';
+							result = result +'<div id="addApplicantDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+							//For Add Interview Div
+							result = result + '<div class="add_inter_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addInterviewDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Interview Div
+							
+							//For Add Offer Div
+							result = result + '<div class="add_offer_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addOfferDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Offer Div  
+							
+							//For Submit to Client Div
+							result = result +'<div class="submitnew-wrap">';
+							result = result +' <div class="new_side_wrap_inn">';
+							result = result +'<div class="add_inter">';
+							result = result + '<div id="submitToClientDiv"></div>';
+							result = result + '<div id="emailTemplateDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							//For Submit to Client Div
+							
+							result = result +'<div class="shortlist-wrap">';
+							result = result +'<div class="new_side_wrap_inn">';
+							result = result +'<divsubStatus class="add_inter">';
+							result = result + '<div id="shortlistDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+                             //Candidate submissions details Div
+							 result = result +' <div class="clients_side_wrap">';
+							 result = result +'<div class="clients_side_wrap_inn">';
+							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
+							 result = result + '<div id="viewCandidateDiv"></div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							
+				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
+				            result = result +'  <ul>';
+				            result = result +'    <li class="li-vendor">';
+				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
+				            result = result +'      <div class="export_pop">';
+				            result = result +'        <ul>';
+				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
+				            result = result +'        </ul>';
+				            result = result +'      </div>';
+				            result = result +'    </li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
+				           
+				            
+				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
+				            result = result +'<div class="action-pop">';
+				            result = result +'	<span>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
+				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
+				            	result = result + submitToClient
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            '</sec:authorize>';
+				            result = result +'    </span>';
+				            result = result +' </div>';	
+				            result = result +' </li>';
+				            
+				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+				            result = result +'<div class="export_pipline" style="display:none">';
+				            result = result +'<ul>';
+				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +' </ul>';
+				            result = result +'</div>';
+				            result = result +'</li>';
+				            '</sec:authorize>';
+				           result = result + '<div class="clearfix"></div>';
+				           result = result + '</div>';
+				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
+				           result = result + '<div class="clerfix">';
+				           
+				           result = result + '<table id="requirementsPaginationSL" class="display" cellspacing="0" width="100%"">';
+				           result = result + '<thead>';
+				           result = result + '<tr>';
+				           result = result + '<th>Name</th>';
+				           result = result + '<th>Email</th>';
+				           result = result + '<th>Ph. No</th>';
+				           result = result + '<th>Resume</th>';
+			        	   result = result + '<th>Applied on</th>';
+					       result = result + '<th>Rate</th>';
+					       if(clientSubmissions == 'Y'){
+					           result = result + '<th>Sub. Rate</th>';
+					       }
+					       result = result + '<th>Source</th>';
+				           result = result + '<th>Shortlisted By</th>'; 
+		        		   result = result + '<th>Score</th>';
+				           result = result + '<th>Exp</th>';
+				           result = result + '<th>Status</th>';
+				           result = result + '         </tr>';
+				           result = result + '       </thead>';
+				           result = result + '       <tbody>';
+				           for (var i=0; i<json.length; i++)
+			   				{  
+			   	        		var report = json[i];
+			   	        		
+			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
+			   	        			orgName = "("+report.orgName+")";
+			   	        		}else{
+			   	        			orgName = "";
+			   	        		}
+
+						           result = result + '       <tr>';
+						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           '</sec:authorize>';
+						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
+						           '</sec:authorize>';
+						           
+						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
+						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
+							           }
+						           
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.resumeId != null && report.resumeName != '' && report.resumeId != 'undefined'){
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+							        }
+							       else{
+							    	   result = result + '         <td><div>--</div></td>';
+						    	     }
+						           
+					        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+							          
+							    	     
+						           if(report.vendorLocationId != null && report.sourceSubmission != null){
+						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+						           }else{
+						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+						           }
+							          
+							    	   if(clientSubmissions == 'Y'){
+							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
+							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        	   }else{
+							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        	   }
+							           }else{
+							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        	   }else{
+							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        	   }
+							           }
+							           }
+							           
+							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     } 
+						           
+						          
+						        	   if(report.submittedBy != null && report.submittedBy != '' && report.submittedBy != 'undefined'){ 
+						        	   result = result + '<td><div><span>'+report.submittedBy+'</span></div></td>';
+						        	   }else{
+						        		   result = result + '<td><div><span>--</span></div></td>';
+						        	   }
+						        	
+					        		   if(report.candidateScore != null){
+					        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
+								           }
+								       else{
+								    	   result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+							           
+							           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+							           
+						        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+							           result = result + '</div></td>';
+						           result = result + '       </tr>';
+			   				}
+				           
+				           
+				           result = result + '       </tbody>';
+				           result = result + '     </table>';
+				           result = result + '   </div>';
+				           result = result + '   </div>';
+				           
+				           
+							$("#tab-1").empty();
+							$("#tab-3").empty();
+							$("#pipelineLoading").removeAttr("style");
+							$("#status-data").empty();
+							$("#status-data").append(result);
+							$("#tab-2").append(status-data);
+							$("#loading").removeAttr("style"); 
+							$("#emptyPipelinelist").val(json.length);
+							
+							documentpaginationSL();
+							$("#tab-2").show();
+							$(".project-tabs-menu a").click(function(event) {
+							     event.preventDefault();
+							     $(this).parent().addClass("current");
+							     $(this).parent().siblings().removeClass("current");
+							     var tab = $(this).attr("href");
+							     $(".project_tabs_inn").not(tab).css("display", "none");
+							     $(tab).fadeIn();
+							 });
+							prepareAllCounts(requirementId);
+							
+              }else{
+                     	 $("#requirementSideDiv").removeAttr("style");
+      		    	     result = result+"   <div class='row'>"; 
+      					 result = result+"	<div class='col-lg-12'>"; 
+      					 result = result+"		<div class='content-area clearfix'>"; 
+      					 result = result+"			<div class='blank-pages'>";
+      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+      					 result = result+"			        <p>No Candidates Found</p>";
+      					 result = result+"			 </div>";
+      					 result = result+"		</div>"; 
+      					 result = result+"	</div>"; 
+      					 result = result+"  </div> "; 
+      					$("#requirementSideDiv").empty();
+      				    $("#requirementSideDiv").append(result); 
+                      }
+               },
+                 
+            }); 
+	 
+}
+</script>
+
+<script>
+function documentpaginationSL(){  
+    $('#requirementsPaginationSL').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+<!-- script for Submit to client -->
+<script>  
+function requirementPipelineSC(requirementId,submissionType){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
+	  var isSpocActive = '${isSpocActive}';
+	  
+	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
+         success :function(data) {  
+        	 var result =""; 
+        	 if(data != null && data != 'undefined' && data != ""){  
+              	var json = JSON.parse(data);
+            		
+            			 var submitToClient = '';
+            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+            			 }
+            			   
+							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
+							
+							//For Add Applicant div
+							result = result + '<div class="new_side_wrap">';
+							result = result + '<div class="new_side_wrap_inn">';
+							result = result + '<div class="new_side_wrap_cta">';
+							result = result +'<div id="addApplicantDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+							//For Add Interview Div
+							result = result + '<div class="add_inter_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addInterviewDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Interview Div
+							
+							//For Add Offer Div
+							result = result + '<div class="add_offer_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addOfferDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Offer Div  
+							
+							//For Submit to Client Div
+							result = result +'<div class="submitnew-wrap">';
+							result = result +' <div class="new_side_wrap_inn">';
+							result = result +'<div class="add_inter">';
+							result = result + '<div id="submitToClientDiv"></div>';
+							result = result + '<div id="emailTemplateDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							//For Submit to Client Div
+							
+							result = result +'<div class="shortlist-wrap">';
+							result = result +'<div class="new_side_wrap_inn">';
+							result = result +'<divsubStatus class="add_inter">';
+							result = result + '<div id="shortlistDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+                             //Candidate submissions details Div
+							 result = result +' <div class="clients_side_wrap">';
+							 result = result +'<div class="clients_side_wrap_inn">';
+							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
+							 result = result + '<div id="viewCandidateDiv"></div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							
+				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
+				            result = result +'  <ul>';
+				            result = result +'    <li class="li-vendor">';
+				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
+				            result = result +'      <div class="export_pop">';
+				            result = result +'        <ul>';
+				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
+				            result = result +'        </ul>';
+				            result = result +'      </div>';
+				            result = result +'    </li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
+				           
+				            
+				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
+				            result = result +'<div class="action-pop">';
+				            result = result +'	<span>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
+				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
+				            	result = result + submitToClient
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            '</sec:authorize>';
+				            result = result +'    </span>';
+				            result = result +' </div>';	
+				            result = result +' </li>';
+				            
+				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+				            result = result +'<div class="export_pipline" style="display:none">';
+				            result = result +'<ul>';
+				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +' </ul>';
+				            result = result +'</div>';
+				            result = result +'</li>';
+				            '</sec:authorize>';
+				           result = result + '<div class="clearfix"></div>';
+				           result = result + '</div>';
+				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
+				           result = result + '<div class="clerfix">';
+				           result = result + '<table id="requirementsPaginationSC" class="display" cellspacing="0" width="100%"">';
+				           result = result + '<thead>';
+				           result = result + '<tr>';
+				           result = result + '<th>Name</th>';
+				           result = result + '<th>Email</th>';
+				           result = result + '<th>Ph. No</th>';
+				           result = result + '<th>Resume</th>';
+				           result = result + '<th>Applied on</th>';
+				           if(clientSubmissions == 'Y'){
+				             result = result + '<th>Sub. Rate</th>';
+				           }
+				           result = result + '<th>Source</th>';
+		        		   result = result + '<th>Score</th>';
+				           result = result + '<th>Exp</th>';
+				           result = result + '<th>Status</th>';
+				           result = result + '         </tr>';
+				           result = result + '       </thead>';
+				           result = result + '       <tbody>';
+				           for (var i=0; i<json.length; i++)
+			   				{  
+			   	        		var report = json[i];
+			   	        		
+			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
+			   	        			orgName = "("+report.orgName+")";
+			   	        		}else{
+			   	        			orgName = "";
+			   	        		}
+
+						           result = result + '       <tr>';
+						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           '</sec:authorize>';
+						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
+						           '</sec:authorize>';
+						           
+						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
+						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
+							           }
+						           
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+							           }
+							       else{
+							    	   result = result + '         <td><div>--</div></td>';
+						    	     }
+						           
+						        	   
+					        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+							          
+							      if(clientSubmissions == 'Y'){
+							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
+							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        	   }else{
+							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        	   }
+							           }else{
+							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        	   }else{
+							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        	   }
+							           }
+							        }
+							           
+						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     } 
+						        	   
+				        		   if(report.candidateScore != null){
+				        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
+							           }
+							       else{
+							    	   result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+							           
+					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+						           result = result + '</div></td>';
+							           
+							          
+						           result = result + '       </tr>';
+			   				}
+				           
+				           
+				           result = result + '       </tbody>';
+				           result = result + '     </table>';
+				           result = result + '   </div>';
+				           result = result + '   </div>';
+				           
+				           
+							$("#tab-1").empty();
+							$("#tab-3").empty();
+							$("#pipelineLoading").removeAttr("style");
+							$("#status-data").empty();
+							$("#status-data").append(result);
+							$("#tab-2").append(status-data);
+							$("#loading").removeAttr("style"); 
+							$("#emptyPipelinelist").val(json.length);
+							
+							documentpaginationSC();
+							$("#tab-2").show();
+							$(".project-tabs-menu a").click(function(event) {
+							     event.preventDefault();
+							     $(this).parent().addClass("current");
+							     $(this).parent().siblings().removeClass("current");
+							     var tab = $(this).attr("href");
+							     $(".project_tabs_inn").not(tab).css("display", "none");
+							     $(tab).fadeIn();
+							 });
+							prepareAllCounts(requirementId);
+							
+              }else{
+                     	 $("#requirementSideDiv").removeAttr("style");
+      		    	     result = result+"   <div class='row'>"; 
+      					 result = result+"	<div class='col-lg-12'>"; 
+      					 result = result+"		<div class='content-area clearfix'>"; 
+      					 result = result+"			<div class='blank-pages'>";
+      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+      					 result = result+"			        <p>No Candidates Found</p>";
+      					 result = result+"			 </div>";
+      					 result = result+"		</div>"; 
+      					 result = result+"	</div>"; 
+      					 result = result+"  </div> "; 
+      					$("#requirementSideDiv").empty();
+      				    $("#requirementSideDiv").append(result); 
+                      }
+               },
+                 
+            }); 
+	 
+}
+</script>
+
+<script>
+function documentpaginationSC(){  
+    $('#requirementsPaginationSC').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+
+
+<!-- script for Interviews List -->
+<script>  
+function requirementPipelineIN(requirementId,submissionType){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
+	  var isSpocActive = '${isSpocActive}';
+	  
+	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
+         success :function(data) {  
+        	//requirementSubmissionCount(requirementId);
+        	 var result =""; 
+        	 if(data != null && data != 'undefined' && data != ""){  
+              	var json = JSON.parse(data);
+            		
+            			 var submitToClient = '';
+            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+            			 }
+            			   
+							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
+							
+							//For Add Applicant div
+							result = result + '<div class="new_side_wrap">';
+							result = result + '<div class="new_side_wrap_inn">';
+							result = result + '<div class="new_side_wrap_cta">';
+							result = result +'<div id="addApplicantDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+							//For Add Interview Div
+							result = result + '<div class="add_inter_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addInterviewDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Interview Div
+							
+							//For Add Offer Div
+							result = result + '<div class="add_offer_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addOfferDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Offer Div  
+							
+							//For Submit to Client Div
+							result = result +'<div class="submitnew-wrap">';
+							result = result +' <div class="new_side_wrap_inn">';
+							result = result +'<div class="add_inter">';
+							result = result + '<div id="submitToClientDiv"></div>';
+							result = result + '<div id="emailTemplateDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							//For Submit to Client Div
+							
+							result = result +'<div class="shortlist-wrap">';
+							result = result +'<div class="new_side_wrap_inn">';
+							result = result +'<divsubStatus class="add_inter">';
+							result = result + '<div id="shortlistDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+                             //Candidate submissions details Div
+							 result = result +' <div class="clients_side_wrap">';
+							 result = result +'<div class="clients_side_wrap_inn">';
+							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
+							 result = result + '<div id="viewCandidateDiv"></div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							
+				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
+				            result = result +'  <ul>';
+				            result = result +'    <li class="li-vendor">';
+				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
+				            result = result +'      <div class="export_pop">';
+				            result = result +'        <ul>';
+				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
+				            result = result +'        </ul>';
+				            result = result +'      </div>';
+				            result = result +'    </li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
+				           
+				            
+				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
+				            result = result +'<div class="action-pop">';
+				            result = result +'	<span>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
+				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
+				            	result = result + submitToClient
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            '</sec:authorize>';
+				            result = result +'    </span>';
+				            result = result +' </div>';	
+				            result = result +' </li>';
+				            
+				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+				            result = result +'<div class="export_pipline" style="display:none">';
+				            result = result +'<ul>';
+				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +' </ul>';
+				            result = result +'</div>';
+				            result = result +'</li>';
+				            '</sec:authorize>';
+				           result = result + '<div class="clearfix"></div>';
+				           result = result + '</div>';
+				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
+				           result = result + '<div class="clerfix">';
+				          
+				           result = result + '<table id="requirementsPaginationIN" class="display" cellspacing="0" width="100%"">';
+				           result = result + '<thead>';
+				           result = result + '<tr>';
+				           result = result + '<th>Name</th>';
+				           result = result + '<th>Email</th>';
+				           result = result + '<th>Ph. No</th>';
+				           result = result + '<th>Resume</th>';
+						   result = result + '<th>No.of Interviews</th>'; 
+				           result = result + '<th>Status</th>';
+				           result = result + '         </tr>';
+				           result = result + '       </thead>';
+				           result = result + '       <tbody>';
+				           for (var i=0; i<json.length; i++)
+			   				{  
+			   	        		var report = json[i];
+			   	        		
+			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
+			   	        			orgName = "("+report.orgName+")";
+			   	        		}else{
+			   	        			orgName = "";
+			   	        		}
+
+						           result = result + '       <tr>';
+						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           '</sec:authorize>';
+						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
+						           '</sec:authorize>';
+						           
+						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
+						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
+							       }else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.resumeName != null && report.resumeId != '' && report.resumeId != 'undefined'){
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+							           }
+							       else{
+							    	   result = result + '         <td><div>--</div></td>';
+						    	     }
+						        	   
+						           if(report.totalNoOfInterviews != null && report.totalNoOfInterviews != '' && report.totalNoOfInterviews != 'undefined'){
+						        		result = result +'<td><div><span>'+report.totalNoOfInterviews+'</span></div></td>';
+						           }else{
+						        	   result = result + '<td><div><span>--</span></div></td>'; 
+						           }
+
+					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+						           result = result + '</div></td>';
+						           result = result + '       </tr>';
+			   				}
+				           
+				           
+				           result = result + '       </tbody>';
+				           result = result + '     </table>';
+				           result = result + '   </div>';
+				           result = result + '   </div>';
+				           
+				           
+							$("#tab-1").empty();
+							$("#tab-3").empty();
+							$("#pipelineLoading").removeAttr("style");
+							$("#status-data").empty();
+							$("#status-data").append(result);
+							$("#tab-2").append(status-data);
+							$("#loading").removeAttr("style"); 
+							$("#emptyPipelinelist").val(json.length);
+							
+							documentpaginationIN();
+							$("#tab-2").show();
+							$(".project-tabs-menu a").click(function(event) {
+							     event.preventDefault();
+							     $(this).parent().addClass("current");
+							     $(this).parent().siblings().removeClass("current");
+							     var tab = $(this).attr("href");
+							     $(".project_tabs_inn").not(tab).css("display", "none");
+							     $(tab).fadeIn();
+							 });
+							prepareAllCounts(requirementId);
+							
+              }else{
+                     	 $("#requirementSideDiv").removeAttr("style");
+      		    	     result = result+"   <div class='row'>"; 
+      					 result = result+"	<div class='col-lg-12'>"; 
+      					 result = result+"		<div class='content-area clearfix'>"; 
+      					 result = result+"			<div class='blank-pages'>";
+      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+      					 result = result+"			        <p>No Candidates Found</p>";
+      					 result = result+"			 </div>";
+      					 result = result+"		</div>"; 
+      					 result = result+"	</div>"; 
+      					 result = result+"  </div> "; 
+      					$("#requirementSideDiv").empty();
+      				    $("#requirementSideDiv").append(result); 
+                      }
+               },
+                 
+            }); 
+	 
+}
+</script>
+
+<script>
+function documentpaginationIN(){  
+    $('#requirementsPaginationIN').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+<!-- script for offers List -->
+<script>  
+function requirementPipelineOffer(requirementId,submissionType){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
+	  var isSpocActive = '${isSpocActive}';
+	  
+	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
+         success :function(data) {  
+        	 var result =""; 
+        	 if(data != null && data != 'undefined' && data != ""){  
+              	var json = JSON.parse(data);
+            		
+            			 var submitToClient = '';
+            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+            			 }
+            			   
+							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
+							
+							//For Add Applicant div
+							result = result + '<div class="new_side_wrap">';
+							result = result + '<div class="new_side_wrap_inn">';
+							result = result + '<div class="new_side_wrap_cta">';
+							result = result +'<div id="addApplicantDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+							//For Add Interview Div
+							result = result + '<div class="add_inter_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addInterviewDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Interview Div
+							
+							//For Add Offer Div
+							result = result + '<div class="add_offer_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addOfferDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Offer Div  
+							
+							//For Submit to Client Div
+							result = result +'<div class="submitnew-wrap">';
+							result = result +' <div class="new_side_wrap_inn">';
+							result = result +'<div class="add_inter">';
+							result = result + '<div id="submitToClientDiv"></div>';
+							result = result + '<div id="emailTemplateDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							//For Submit to Client Div
+							
+							result = result +'<div class="shortlist-wrap">';
+							result = result +'<div class="new_side_wrap_inn">';
+							result = result +'<divsubStatus class="add_inter">';
+							result = result + '<div id="shortlistDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+                             //Candidate submissions details Div
+							 result = result +' <div class="clients_side_wrap">';
+							 result = result +'<div class="clients_side_wrap_inn">';
+							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
+							 result = result + '<div id="viewCandidateDiv"></div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							
+				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
+				            result = result +'  <ul>';
+				            result = result +'    <li class="li-vendor">';
+				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
+				            result = result +'      <div class="export_pop">';
+				            result = result +'        <ul>';
+				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
+				            result = result +'        </ul>';
+				            result = result +'      </div>';
+				            result = result +'    </li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
+				           
+				            
+				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
+				            result = result +'<div class="action-pop">';
+				            result = result +'	<span>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
+				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
+				            	result = result + submitToClient
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            '</sec:authorize>';
+				            result = result +'    </span>';
+				            result = result +' </div>';	
+				            result = result +' </li>';
+				            
+				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+				            result = result +'<div class="export_pipline" style="display:none">';
+				            result = result +'<ul>';
+				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +' </ul>';
+				            result = result +'</div>';
+				            result = result +'</li>';
+				            '</sec:authorize>';
+				           result = result + '<div class="clearfix"></div>';
+				           result = result + '</div>';
+				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
+				           result = result + '<div class="clerfix">';
+				           result = result + '<table id="requirementsPaginationOffer" class="display" cellspacing="0" width="100%"">';
+				           result = result + '<thead>';
+				           result = result + '<tr>';
+				           result = result + '<th>Name</th>';
+				           result = result + '<th>Email</th>';
+				           result = result + '<th>Ph. No</th>';
+				           result = result + '<th>Resume</th>';
+						   result = result + '<th>Offer Join Date</th>'; 
+						   result = result + '<th>Position Type</th>'; 
+						   result = result + '<th>Offer Rate</th>'; 
+						   result = result + '<th>Attachment</th>'; 
+				           result = result + '<th>Status</th>';
+				           result = result + '         </tr>';
+				           result = result + '       </thead>';
+				           result = result + '       <tbody>';
+				           for (var i=0; i<json.length; i++)
+			   				{  
+			   	        		var report = json[i];
+			   	        		
+			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
+			   	        			orgName = "("+report.orgName+")";
+			   	        		}else{
+			   	        			orgName = "";
+			   	        		}
+
+						           result = result + '       <tr>';
+						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           '</sec:authorize>';
+						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
+						           '</sec:authorize>';
+						           
+						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
+						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
+							        }else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	    }
+						           
+						           if(report.resumeName != null && report.resumeId != '' && report.resumeId != 'undefined'){
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+							       }
+							       else{
+							    	   result = result + '         <td><div>--</div></td>';
+						    	     }
+						           
+					        	   if(report.offerJoinDate != null && report.offerJoinDate != '' && report.offerJoinDate != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.offerJoinDate+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     } 
+					        	   if(report.positionType != null && report.positionType != '' && report.positionType != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.positionType+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     } 
+					        	   if(report.offerRate != null && report.offerRate != '' && report.offerRate != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.offerRate+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     } 
+					        	   if(report.attachment != null && report.attachment != '' && report.attachment != 'undefined'){
+					        		   result = result + '         <td><div><span><a href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId+'\">'+report.attachment+'</a></span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     } 
+
+					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+						           result = result + '</div></td>';
+							          
+						           result = result + '       </tr>';
+			   				}
+				           
+				           
+				           result = result + '       </tbody>';
+				           result = result + '     </table>';
+				           result = result + '   </div>';
+				           result = result + '   </div>';
+				           
+				           
+							$("#tab-1").empty();
+							$("#tab-3").empty();
+							$("#pipelineLoading").removeAttr("style");
+							$("#status-data").empty();
+							$("#status-data").append(result);
+							$("#tab-2").append(status-data);
+							$("#loading").removeAttr("style"); 
+							$("#emptyPipelinelist").val(json.length);
+							
+							documentpaginationOffer();
+							$("#tab-2").show();
+							$(".project-tabs-menu a").click(function(event) {
+							     event.preventDefault();
+							     $(this).parent().addClass("current");
+							     $(this).parent().siblings().removeClass("current");
+							     var tab = $(this).attr("href");
+							     $(".project_tabs_inn").not(tab).css("display", "none");
+							     $(tab).fadeIn();
+							 });
+							prepareAllCounts(requirementId);
+							
+              }else{
+                     	 $("#requirementSideDiv").removeAttr("style");
+      		    	     result = result+"   <div class='row'>"; 
+      					 result = result+"	<div class='col-lg-12'>"; 
+      					 result = result+"		<div class='content-area clearfix'>"; 
+      					 result = result+"			<div class='blank-pages'>";
+      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+      					 result = result+"			        <p>No Candidates Found</p>";
+      					 result = result+"			 </div>";
+      					 result = result+"		</div>"; 
+      					 result = result+"	</div>"; 
+      					 result = result+"  </div> "; 
+      					$("#requirementSideDiv").empty();
+      				    $("#requirementSideDiv").append(result); 
+                      }
+               },
+                 
+            }); 
+	 
+}
+</script>
+
+<script>
+function documentpaginationOffer(){  
+    $('#requirementsPaginationOffer').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+<script>  
+function requirementPipelineRejected(requirementId,submissionType){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
+	  var isSpocActive = '${isSpocActive}';
+	  
+	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
+         success :function(data) {  
+        	 var result =""; 
+        	 if(data != null && data != 'undefined' && data != ""){  
+              	var json = JSON.parse(data);
+            		
+            			 var submitToClient = '';
+            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+            			 }
+            			   
+							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
+							
+							//For Add Applicant div
+							result = result + '<div class="new_side_wrap">';
+							result = result + '<div class="new_side_wrap_inn">';
+							result = result + '<div class="new_side_wrap_cta">';
+							result = result +'<div id="addApplicantDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+							//For Add Interview Div
+							result = result + '<div class="add_inter_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addInterviewDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Interview Div
+							
+							//For Add Offer Div
+							result = result + '<div class="add_offer_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addOfferDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Offer Div  
+							
+							//For Submit to Client Div
+							result = result +'<div class="submitnew-wrap">';
+							result = result +' <div class="new_side_wrap_inn">';
+							result = result +'<div class="add_inter">';
+							result = result + '<div id="submitToClientDiv"></div>';
+							result = result + '<div id="emailTemplateDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							//For Submit to Client Div
+							
+							result = result +'<div class="shortlist-wrap">';
+							result = result +'<div class="new_side_wrap_inn">';
+							result = result +'<divsubStatus class="add_inter">';
+							result = result + '<div id="shortlistDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+                             //Candidate submissions details Div
+							 result = result +' <div class="clients_side_wrap">';
+							 result = result +'<div class="clients_side_wrap_inn">';
+							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
+							 result = result + '<div id="viewCandidateDiv"></div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							
+				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
+				            result = result +'  <ul>';
+				            result = result +'    <li class="li-vendor">';
+				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
+				            result = result +'      <div class="export_pop">';
+				            result = result +'        <ul>';
+				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
+				            result = result +'        </ul>';
+				            result = result +'      </div>';
+				            result = result +'    </li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
+				           
+				            
+				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
+				            result = result +'<div class="action-pop">';
+				            result = result +'	<span>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
+				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
+				            	result = result + submitToClient
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            '</sec:authorize>';
+				            result = result +'    </span>';
+				            result = result +' </div>';	
+				            result = result +' </li>';
+				            
+				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+				            result = result +'<div class="export_pipline" style="display:none">';
+				            result = result +'<ul>';
+				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +' </ul>';
+				            result = result +'</div>';
+				            result = result +'</li>';
+				            '</sec:authorize>';
+				           result = result + '<div class="clearfix"></div>';
+				           result = result + '</div>';
+				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
+				           result = result + '<div class="clerfix">';
+				           result = result + '<table id="requirementsPaginationRejected" class="display" cellspacing="0" width="100%"">';
+				           result = result + '<thead>';
+				           result = result + '<tr>';
+				           result = result + '<th>Name</th>';
+				           result = result + '<th>Email</th>';
+				           result = result + '<th>Resume</th>';
+				           result = result + '<th>Applied on</th>';
+					       result = result + '<th>Rate</th>';
+					         if(clientSubmissions == 'Y'){
+					           result = result + '<th>Sub. Rate</th>';
+					         }
+					       result = result + '<th>Source</th>';
+			        	   result = result + '<th>Rejected On</th>';
+			        	   result = result + '<th>Rejected By</th>';
+				           result = result + '<th>Rejected Stage</th>';
+				           result = result + '<th>Status</th>';
+				           result = result + '         </tr>';
+				           result = result + '       </thead>';
+				           result = result + '       <tbody>';
+				           for (var i=0; i<json.length; i++)
+			   				{  
+			   	        		var report = json[i];
+			   	        		
+			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
+			   	        			orgName = "("+report.orgName+")";
+			   	        		}else{
+			   	        			orgName = "";
+			   	        		}
+
+						           result = result + '       <tr>';
+						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           '</sec:authorize>';
+						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
+						           '</sec:authorize>';
+						           
+						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
+						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.resumeName != null && report.resumeId != '' && report.resumeId != 'undefined'){
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+							        }
+							       else{
+							    	   result = result + '         <td><div>--</div></td>';
+						    	     }
+						           
+						        	   
+					        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+							           
+							    	     
+						           if(report.vendorLocationId != null && report.sourceSubmission != null){
+						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+						           }else{
+						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+						           }
+							          
+							      if(clientSubmissions == 'Y'){
+							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
+							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        	   }else{
+							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        	   }
+							           }else{
+							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        	   }else{
+							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        	   }
+							           }
+							        }
+							           
+						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	   } 
+
+						           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
+					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submittedBy+'</span>';
+					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
+					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+					        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+					        	   }		  
+						           result = result + '       </tr>';
+			   				}
+				           
+				           
+				           result = result + '       </tbody>';
+				           result = result + '     </table>';
+				           result = result + '   </div>';
+				           result = result + '   </div>';
+				           
+				           
+							$("#tab-1").empty();
+							$("#tab-3").empty();
+							$("#pipelineLoading").removeAttr("style");
+							$("#status-data").empty();
+							$("#status-data").append(result);
+							$("#tab-2").append(status-data);
+							$("#loading").removeAttr("style"); 
+							$("#emptyPipelinelist").val(json.length);
+							
+							documentpaginationRejected();
+							$("#tab-2").show();
+							$(".project-tabs-menu a").click(function(event) {
+							     event.preventDefault();
+							     $(this).parent().addClass("current");
+							     $(this).parent().siblings().removeClass("current");
+							     var tab = $(this).attr("href");
+							     $(".project_tabs_inn").not(tab).css("display", "none");
+							     $(tab).fadeIn();
+							 });
+							prepareAllCounts(requirementId);
+							
+              }else{
+                     	 $("#requirementSideDiv").removeAttr("style");
+      		    	     result = result+"   <div class='row'>"; 
+      					 result = result+"	<div class='col-lg-12'>"; 
+      					 result = result+"		<div class='content-area clearfix'>"; 
+      					 result = result+"			<div class='blank-pages'>";
+      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+      					 result = result+"			        <p>No Candidates Found</p>";
+      					 result = result+"			 </div>";
+      					 result = result+"		</div>"; 
+      					 result = result+"	</div>"; 
+      					 result = result+"  </div> "; 
+      					$("#requirementSideDiv").empty();
+      				    $("#requirementSideDiv").append(result); 
+                      }
+               },
+                 
+            }); 
+	 
+}
+</script>
+
+<script>
+function documentpaginationRejected(){  
+    $('#requirementsPaginationRejected').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
 <div id="popUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
@@ -1811,6 +3931,47 @@ function filterReq(requirementId,submissionType){
 }
 </script>
 
+<script>
+function filterReqDA(requirementId,submissionType){
+	requirementPipelineDA(requirementId,submissionType);
+}
+</script>
+
+<script>
+function filterReqRS(requirementId,submissionType){
+	requirementPipelineRS(requirementId,submissionType);
+}
+</script>
+
+<script>
+function filterReqSL(requirementId,submissionType){
+	requirementPipelineSL(requirementId,submissionType);
+}
+</script>
+
+<script>
+function filterReqIN(requirementId,submissionType){
+	requirementPipelineIN(requirementId,submissionType);
+}
+</script>
+
+<script>
+function filterReqOffer(requirementId,submissionType){
+	requirementPipelineOffer(requirementId,submissionType);
+}
+</script>
+
+<script>
+function filterReqRejected(requirementId,submissionType){
+	requirementPipelineRejected(requirementId,submissionType);
+}
+</script>
+
+<script>
+function filterReqSC(requirementId,submissionType){
+	requirementPipelineSC(requirementId,submissionType);
+}
+</script>
 <%-- 
      @author : sarath kumar.
      this script is for edit Candidate.
@@ -2307,29 +4468,29 @@ function requirementStatusBar(requirementId){
 		 result = result + '       <label><strong>Applicants</strong></label>';
 		 result = result + '       </a> <span class="label label-default" id="applicantsCount">0</span> </li>';
 		 
-		 result = result + '     <li id="duplicataplctli" class="tabActivation" onclick="filterReq('+requirementId+',\''+duplicateApplicantCount+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Duplicate Applicants">';
+		 result = result + '     <li id="duplicataplctli" class="tabActivation" onclick="filterReqDA('+requirementId+',\''+duplicateApplicantCount+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Duplicate Applicants">';
 		 result = result + '       <label><strong>Duplicate Applicants</strong></label>';
 		 result = result + '       </a> <span class="label label-default" id="duplicateApplicantsCount">0</span> </li>';
 		 
-		 result = result + '   <li id="requestSentli" class="tabActivation" onclick="filterReq('+requirementId+',\''+requestSent+'\');tabEnable(this);"> <a href="javascript:void(0)" title="RequestSent">';
+		 result = result + '   <li id="requestSentli" class="tabActivation" onclick="filterReqRS('+requirementId+',\''+requestSent+'\');tabEnable(this);"> <a href="javascript:void(0)" title="RequestSent">';
          result = result + '     <label><strong>Request Sent</strong></label>';
          result = result + '      </a><span class="label label-warning" id="requestSent">0</span></li>';
 		 
-		 result = result + '      <li id="shortListli" class="tabActivation" onclick="filterReq('+requirementId+',\''+shortList+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Shortlisted">';
+		 result = result + '      <li id="shortListli" class="tabActivation" onclick="filterReqSL('+requirementId+',\''+shortList+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Shortlisted">';
 		 result = result + '       <label><strong>Shortlisted</strong></label>';
 		 result = result + '     </a> <span class="label label-warning" id="shortlistCount">0</span></li>';
 		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-		 result = result + '    <li id="submitToClientli" class="tabActivation" onclick="filterReq('+requirementId+',\''+submitToClient+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Submit to Client">';
+		 result = result + '    <li id="submitToClientli" class="tabActivation" onclick="filterReqSC('+requirementId+',\''+submitToClient+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Submit to Client">';
 		 result = result + '       <label><strong>Submit to Client</strong></label>';
 		 result = result + '       </a> <span class="label label-info" id="submitToClientCount">0</span> </li>';
 		}
-		 result = result + '    <li id="interviewli" class="tabActivation" onclick="filterReq('+requirementId+',\''+interview+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Interviews">';
+		 result = result + '    <li id="interviewli" class="tabActivation" onclick="filterReqIN('+requirementId+',\''+interview+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Interviews">';
 		 result = result + '      <label><strong>Interviews</strong></label>';
 		 result = result + '      </a><span class="label label-primary" id="interviewCount">0</span></li>';
-		 result = result + '     <li id="offerMadeli" class="tabActivation" onclick="filterReq('+requirementId+',\''+offerMade+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Offers">';
+		 result = result + '     <li id="offerMadeli" class="tabActivation" onclick="filterReqOffer('+requirementId+',\''+offerMade+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Offers">';
 		 result = result + '      <label><strong>Offers</strong></label>';
        	 result = result + '      </a><span class="label label-success" id="offersCount">0</span> </li>';
-         result = result + '   <li id="rejectedli" class="tabActivation" onclick="filterReq('+requirementId+',\''+rejected+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Rejected">';
+         result = result + '   <li id="rejectedli" class="tabActivation" onclick="filterReqRejected('+requirementId+',\''+rejected+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Rejected">';
          result = result + '     <label><strong>Rejected</strong></label>';
          result = result + '      </a><span class="label label-warning" id="rejectedCount">0</span></li>';
          
