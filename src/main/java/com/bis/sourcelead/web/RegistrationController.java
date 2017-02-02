@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -31,6 +32,7 @@ import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -85,6 +87,9 @@ public class RegistrationController {
 	 
 	 @Autowired
 	 RolesService roleService;
+	 
+	 @Autowired
+	 OrgSpocService orgSpocService;
 	 
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
@@ -147,7 +152,8 @@ public class RegistrationController {
 		public String acceptClientOrVendorInvitation(@RequestParam(value = "respondingOrgType", required = false) String respondingOrgType,
 				@RequestParam(value = "actionLink", required = false) String actionLink,
 				@RequestParam(value = "UUID", required = false) String UUID,
-				@RequestParam(value = "respondingPartyOrgLocationId", required = false) Long respondingPartyOrgLocationId) {
+				@RequestParam(value = "respondingPartyOrgLocationId", required = false) Long respondingPartyOrgLocationId,
+				@RequestParam(value = "initiatingPartyOrgLocationId", required = false) Long initiatingPartyOrgLocationId) {
 			
 		    Org org = null;
 		    OrgLocations orgLocations = null;
@@ -195,6 +201,13 @@ public class RegistrationController {
 						 notifications.setUserNotificationStatus("Accepted");
 						 notificationsService.saveNotification(notifications);
 					 }
+					 
+					 OrgSpoc orgSpoc = orgSpocService.getSpocListByResponderLocationId(initiatingPartyOrgLocationId,respondingPartyOrgLocationId,respondingOrgType);
+					 if(null != orgSpoc ){
+						 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+						 orgSpocService.addOrgSpoc(orgSpoc);
+					 }
+					 
 		    	}
 				 
 				
