@@ -569,19 +569,20 @@ public class ProjectsDashboardRestController {
 					boolQueryBuilder.must(projectMemberEmailBoolQueryBuilder);
 				}
 				
-				
 				List<ProjectsIndex> projectsList = new ArrayList<ProjectsIndex>();
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				df.setTimeZone(TimeZone.getTimeZone("GMT"));
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-				if(searchHits != null && searchHits.length >0){
-					ObjectMapper mapper = new ObjectMapper();
-					for (SearchHit hit : searchHits) {
-						json = hit.getSourceAsString();
-						mapper.setDateFormat(df);
-						ProjectsIndex projectsIndex = mapper.readValue(json, ProjectsIndex.class);
-						projectsList.add(projectsIndex);
+				try {
+					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+					if(searchHits != null && searchHits.length >0){
+						ObjectMapper mapper = new ObjectMapper();
+						for (SearchHit hit : searchHits) {
+							json = hit.getSourceAsString();
+							ProjectsIndex projectsIndex = mapper.readValue(json, ProjectsIndex.class);
+							projectsList.add(projectsIndex);
+						}
 					}
+				
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			 String resultJson;
 			 resultJson = commonUtil.toJSON(projectsList);
