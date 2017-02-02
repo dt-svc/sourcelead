@@ -1719,7 +1719,7 @@ function documentpagination(){
 }
 </script>
 
-<!-- script for Duplicate Applicants -->
+<!-- script for Duplicate Applicants --> 
 <script>  
 function requirementPipelineDA(requirementId,submissionType){
 	  var sourceleadUrl = '${sourceleadUrl}';
