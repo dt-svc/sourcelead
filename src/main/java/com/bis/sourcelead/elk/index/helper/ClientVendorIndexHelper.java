@@ -10,7 +10,9 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.UserService;
 
 @Component
@@ -21,9 +23,14 @@ public class ClientVendorIndexHelper {
 	@Autowired
 	OrgRelationsService orgRelationsService;
 	
-
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	OrgService orgService;
 	
 	
 	public ClientVendorIndex getClientVendorIndexFromCandidate(Org org,OrgLocations clientOrgLocations, String responderType,
@@ -33,21 +40,48 @@ public class ClientVendorIndexHelper {
 		
 		if(null != clientOrgLocations){
 			
-				if(!"".equalsIgnoreCase(clientOrgLocations.getCountry())){
-					clientVendorIndex.setCountry(clientOrgLocations.getCountry());
-				}
-				if(!"".equalsIgnoreCase(clientOrgLocations.getState())){
-					clientVendorIndex.setState(clientOrgLocations.getState());
-				}
-				if(!"".equalsIgnoreCase(clientOrgLocations.getCity())){
-					clientVendorIndex.setCity(clientOrgLocations.getCity());
+			// this is to setting values for Initiator Details
+			OrgLocations initiatorLocation = orgLocationService.getOrgLocations(orgRelationsList.getLocationId().getId());
+			
+					if(!"".equalsIgnoreCase(initiatorLocation.getCountry())){
+						clientVendorIndex.setInitiatorCountry(initiatorLocation.getCountry());
+					}
+					if(!"".equalsIgnoreCase(initiatorLocation.getState())){
+						clientVendorIndex.setInitiatorState(initiatorLocation.getState());
+					}
+					if(!"".equalsIgnoreCase(initiatorLocation.getCity())){
+						clientVendorIndex.setInitiatorCity(initiatorLocation.getCity());
+					}
+					
+				   Org initiatorOrg = orgService.findOrgByID(initiatorLocation.getOrg().getId());
+				       if(null != initiatorOrg){
+						 clientVendorIndex.setInitiatorOrgName(initiatorOrg.getOrgName());
+						 clientVendorIndex.setInitiatorWebSite(initiatorOrg.getWebSite());
+					 }
+					
+				// this is to setting values for ResponderLocationId
+				       
+				OrgLocations  responderorgLocation = orgLocationService.getOrgLocations(orgRelationsList.getResponderLocationId().getId());
+				if(null !=responderorgLocation){
+					
+					if(!"".equalsIgnoreCase(responderorgLocation.getCountry())){
+						clientVendorIndex.setResponderCountry(responderorgLocation.getCountry());
+					}
+					if(!"".equalsIgnoreCase(responderorgLocation.getState())){
+						clientVendorIndex.setResponderState(responderorgLocation.getState());
+					}
+					if(!"".equalsIgnoreCase(responderorgLocation.getCity())){
+						clientVendorIndex.setResponderCity(responderorgLocation.getCity());
+					}
+					
+					 Org responderOrg = orgService.findOrgByID(initiatorLocation.getOrg().getId());
+				       if(null != initiatorOrg){
+						 clientVendorIndex.setResponderOrgName(responderOrg.getOrgName());
+						 clientVendorIndex.setResponderWebSite(responderOrg.getWebSite());
+					 }
+					
 				}
 			
-		}
-		if(null != org){
-			
-			clientVendorIndex.setOrgName(org.getOrgName());
-			clientVendorIndex.setWebsite(org.getWebSite());
 		}
 		
 		if(null != orgRelationsList){

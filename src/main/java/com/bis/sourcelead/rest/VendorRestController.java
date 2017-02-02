@@ -826,25 +826,37 @@ public class VendorRestController {
 					if(vendorNameArray != null && !vendorNameArray.isEmpty()){
 						BoolQueryBuilder vendorNameBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : vendorNameArray){
-							vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("orgName", keywd));
+							//vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+							vendorNameBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderOrgName", keywd));
 						}
 						boolQueryBuilder.must(vendorNameBoolQueryBuilder);
 					}
 					
 					 //Country
 					if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
-						boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+						boolQueryBuilder.should(QueryBuilders.matchQuery("responderCountry", jsonObj.getString("country")));
 				    }
+					if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
+						boolQueryBuilder.should(QueryBuilders.matchQuery("responderCountry", jsonObj.getString("country")));
+				    }
+					
 					
 					 //State
 					if(jsonObj.has("state") && StringUtils.isNotEmpty(jsonObj.getString("state"))){
-						boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
+						boolQueryBuilder.should(QueryBuilders.matchQuery("responderState", jsonObj.getString("state")));
 				    }
-				    
+					if(jsonObj.has("state") && StringUtils.isNotEmpty(jsonObj.getString("state"))){
+						boolQueryBuilder.should(QueryBuilders.matchQuery("initiatorState", jsonObj.getString("state")));
+				    }
+					
 					//City
 					if(jsonObj.has("city")  && StringUtils.isNotEmpty(jsonObj.getString("city"))){
-						boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
+						boolQueryBuilder.should(QueryBuilders.matchQuery("initiatorCity", jsonObj.getString("city")));
 				    }
+					if(jsonObj.has("city")  && StringUtils.isNotEmpty(jsonObj.getString("city"))){
+						boolQueryBuilder.should(QueryBuilders.matchQuery("responderCity", jsonObj.getString("city")));
+				    }
+					
 						
 					//CreatedBy
 					ArrayList<String> createdByArray = getSearchKeywordsFromChosenSelectField(jsonObj, "createdByAdvanced");
@@ -876,29 +888,41 @@ public class VendorRestController {
 						for (SearchHit hit : searchHits) {
 									json = hit.getSourceAsString();
 									mapper.setDateFormat(df);
-									ClientVendorIndex clientVendorIndex = mapper.readValue(json, ClientVendorIndex.class);
-									clientVendorList.add(clientVendorIndex);
+									ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
 									
-									for(ClientVendorIndex clientVendor : clientVendorList){
+									if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 										
-										if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
-											if(clientVendor.getInitiatorLevel()!=null){
-												clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
-											}
+										clientVendor.setWebsite("www."+clientVendor.getResponderWebSite());
+										clientVendor.setOrgName(clientVendor.getResponderOrgName());
+										clientVendor.setCountry(clientVendor.getResponderCountry());
+										clientVendor.setState(clientVendor.getResponderState());
+										clientVendor.setCity(clientVendor.getResponderCity());
+										
+										if(clientVendor.getInitiatorLevel()!=null){
+											clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
 										}
-									  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
-										  if(clientVendor.getResponderLevel()!=null){
-											  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
-										  }
-										}
-									  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
-										  if(!clientVendor.getCreatedBy().isEmpty()){
-											  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
-										  }
-										 
-									  }
+									}
+								  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
+									 
+									  clientVendor.setWebsite("www."+clientVendor.getInitiatorWebSite());
+									  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
+									  clientVendor.setCountry(clientVendor.getInitiatorCountry());
+									  clientVendor.setState(clientVendor.getInitiatorState());
+									  clientVendor.setCity(clientVendor.getInitiatorCity());
 									  
-								}
+									  if(clientVendor.getResponderLevel()!=null){
+										  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
+									  }
+									}
+								  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
+									  if(!clientVendor.getCreatedBy().isEmpty()){
+										  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
+									  }
+									 
+								  }
+								  
+								  clientVendorList.add(clientVendor);
+
 						}	
 					}
 					
@@ -932,13 +956,22 @@ public class VendorRestController {
 			    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 			   
 			    //Vendor Search 
-			    matchQueryBuilderList.add(QueryBuilders.matchQuery("orgName", keywd));
+			    matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+			    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
 			    matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorLevel", keywd));
 			    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderLevel", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("createdBy", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+				
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCountry", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
+				
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderWebSite", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorWebSite", keywd));
+				
 				return matchQueryBuilderList; 
 		 }
 		 
@@ -1348,6 +1381,7 @@ public class VendorRestController {
 				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId(),responderType);
 			   	 
 				List<ClientVendorIndex> clientVendorList = new ArrayList<ClientVendorIndex>();
+				List<ClientVendorIndex> finalList = new ArrayList<ClientVendorIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
@@ -1356,29 +1390,37 @@ public class VendorRestController {
 					for (SearchHit hit : searchHits) {
 					String	json = hit.getSourceAsString();
 						mapper.setDateFormat(df);
-						ClientVendorIndex clientVendorIndex = mapper.readValue(json, ClientVendorIndex.class);
-						  clientVendorList.add(clientVendorIndex);
-						  
-						for(ClientVendorIndex clientVendor : clientVendorList){
-							
-							if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
-								if(clientVendor.getInitiatorLevel()!=null){
-									clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
-								}
-							}
-						  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
-							  if(clientVendor.getResponderLevel()!=null){
-								  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
-							  }
-							}
-						  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
-							  if(!"".equals(clientVendor.getCreatedBy())){
-								  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
-							  }
-						  }
-						  
+						ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
 						
-					}
+						if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
+							
+							clientVendor.setWebsite("www."+clientVendor.getResponderWebSite());
+							clientVendor.setOrgName(clientVendor.getResponderOrgName());
+							clientVendor.setCountry(clientVendor.getResponderCountry());
+							clientVendor.setState(clientVendor.getResponderState());
+							clientVendor.setCity(clientVendor.getResponderCity());
+							if(clientVendor.getInitiatorLevel()!=null){
+								clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
+							}
+						}
+					  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
+						 
+						  clientVendor.setWebsite("www."+clientVendor.getInitiatorWebSite());
+						  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
+						  clientVendor.setCountry(clientVendor.getInitiatorCountry());
+						  clientVendor.setState(clientVendor.getInitiatorState());
+						  clientVendor.setCity(clientVendor.getInitiatorCity());
+						  
+						  if(clientVendor.getResponderLevel()!=null){
+							  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
+						  }
+						}
+					  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
+						  if(!"".equals(clientVendor.getCreatedBy())){
+							  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
+						  }
+					  }
+				     clientVendorList.add(clientVendor);
 						
 					}
 				}
