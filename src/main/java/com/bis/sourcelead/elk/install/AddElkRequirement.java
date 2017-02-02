@@ -121,7 +121,6 @@ public class AddElkRequirement {
 				
 				ResultSet noOfApplicants = getNoOfApplicantDetails(Long.parseLong(rs.getString("ID")),rs.getString("ORG_LOCATION_ID"));
 				while(noOfApplicants.next()){
-					System.out.println(noOfApplicants.getString(1));
 					requirementIndex.setTeamOwnerUserId(noOfApplicants.getString(1).split(","));
 				}
 				
