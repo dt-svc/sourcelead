@@ -768,8 +768,11 @@ public class VendorRestController {
 				 
 				 boolQueryBuilder.must(combinedQueryBuilder);
 				 
-				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId(),responderType);
 			   	 
+				 // to   get the number of contacts 
+					Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilder).getTotalHits();
+					  
+				 
 				 //Exclude Keyword
 				 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 				 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
@@ -826,12 +829,15 @@ public class VendorRestController {
 					if(vendorNameArray != null && !vendorNameArray.isEmpty()){
 						BoolQueryBuilder vendorNameBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : vendorNameArray){
-							//vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+							vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("initiatorOrgName", keywd));
 							vendorNameBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderOrgName", keywd));
 						}
 						boolQueryBuilder.must(vendorNameBoolQueryBuilder);
 					}
 					
+					/* matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+					    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
+					*/
 					 //Country
 					if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
 						boolQueryBuilder.should(QueryBuilders.matchQuery("responderCountry", jsonObj.getString("country")));
@@ -1062,9 +1068,8 @@ public class VendorRestController {
 				}
 				 
 				 // to   get the number of contacts 
-				 Integer maxResults = orgSpocService.getAllVendorContactsCountbyOrgLocationId(loginOrgLocation.getId(),responderType,loginUser.getId());
-				 
-				 
+			      Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,0,boolQueryBuilder).getTotalHits();
+					 
 			   	
 				 //Exclude Keyword
 				 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
@@ -1378,10 +1383,11 @@ public class VendorRestController {
 				 boolQueryBuilder.must(combinedQueryBuilder);
 				 
 				 
-				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId(),responderType);
-			   	 
+			   
+				 // to   get the number of Vendor/Clients 
+				Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilder).getTotalHits();
+				 
 				List<ClientVendorIndex> clientVendorList = new ArrayList<ClientVendorIndex>();
-				List<ClientVendorIndex> finalList = new ArrayList<ClientVendorIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
@@ -1493,11 +1499,9 @@ public class VendorRestController {
 							 boolQueryBuilder.must(combinationQueryBuilder);
 				}
 				 
-				 // to   get the number of contacts 
-				 Integer maxResults = orgSpocService.getAllVendorContactsCountbyOrgLocationId(loginOrgLocation.getId(),responderType,loginUser.getId());
-			   	
-				
-										
+				   // to   get the number of contacts 
+					Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,0,boolQueryBuilder).getTotalHits();
+						
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 
 					List<ClientVendorContactsIndex> clientVendorContactsList = new ArrayList<ClientVendorContactsIndex>();

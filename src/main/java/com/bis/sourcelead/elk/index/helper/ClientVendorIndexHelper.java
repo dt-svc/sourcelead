@@ -74,8 +74,8 @@ public class ClientVendorIndexHelper {
 						clientVendorIndex.setResponderCity(responderorgLocation.getCity());
 					}
 					
-					 Org responderOrg = orgService.findOrgByID(initiatorLocation.getOrg().getId());
-				       if(null != initiatorOrg){
+					 Org responderOrg = orgService.findOrgByID(responderorgLocation.getOrg().getId());
+				       if(null != responderOrg){
 						 clientVendorIndex.setResponderOrgName(responderOrg.getOrgName());
 						 clientVendorIndex.setResponderWebSite(responderOrg.getWebSite());
 					 }
