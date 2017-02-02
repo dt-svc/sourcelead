@@ -30,6 +30,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
@@ -2503,6 +2505,7 @@ public class RequirementServiceImpl implements RequirementService {
      	requirement.setCountry(requirementIndex.getCountry());
      	requirement.setState(requirementIndex.getState());
      	requirement.setCity(requirementIndex.getCity());
+     	requirement.setSearchType("Requirement");
      	requirement.setPositions(requirementIndex.getNumberOfPositions());
      	requirement.setNoOfApplicants(requirementIndex.getNumberOfApplicants());
      	requirement.setManager(requirementIndex.getManager());
@@ -2847,9 +2850,14 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&"All".equalsIgnoreCase(searchType))
 		{
-			// ELK list for the Candidate
-			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
-		   	 //Exclude Keyword
+			// ELK list for All
+			 Long maxResultsForCandidate = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
+			 Integer maxResultsForProjects = projectsService.getProjectCountByOrgLocationId(orgLocation.getId());
+			 Integer maxResultsForClientsAndVendors = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocation.getId());
+			 Long maxResultsForUsers = userRoleService.getUsersCountByOrgLocationID(orgLocation.getId());
+			 Long maxResultsForRequirement = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
+		   	 Long maxResults = maxResultsForCandidate + maxResultsForProjects + maxResultsForClientsAndVendors + maxResultsForUsers + maxResultsForRequirement;
+			 //Exclude Keyword
 			 
 				//All Keywords
 //				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "searchKey");
@@ -2873,7 +2881,7 @@ public class RequirementServiceImpl implements RequirementService {
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResultsForAll(0,maxResults.intValue(),boolQueryBuilder).getHits();
 				    if(null != searchHits && searchHits.length >0){
 				    	ObjectMapper mapper = new ObjectMapper();
 				    	for (SearchHit hit : searchHits) {
@@ -3022,6 +3030,271 @@ public class RequirementServiceImpl implements RequirementService {
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
 		return matchQueryBuilderList; 
+	}
+
+	@Override
+	public List<List<Object>> univesalSearchRequirementForAll(OrgLocations orgLocation, String searchType, String searchValue,
+			Org org, String userRole, User user) throws Exception {
+		List<Object>   searchListForRequirement = new ArrayList<>();
+		List<Object>   searchListForUsers = new ArrayList<>();
+		List<Object>   searchListForProjects = new ArrayList<>();
+		List<Object>   searchListForCandidates = new ArrayList<>();
+		List<Object>   searchListForClientVendors = new ArrayList<>();
+		
+		
+		List<List<Object>>   searchListForAll = new ArrayList<>();
+		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+		
+			 Long maxResultsForRequirement = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
+			//All Keyword
+			 if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
+//				 ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "searchKey");
+				 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : allKeyWordArray){
+							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForUniversalSearch(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									allBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(allBoolQueryBuilder);
+					}
+			 }
+			 
+			 
+			 
+			 
+			 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResultsForRequirement.intValue(),boolQueryBuilder).getHits();
+				
+				if(searchHits != null && searchHits.length >0){
+					for (SearchHit hit : searchHits) {
+						String sourceAsString = hit.getSourceAsString();
+						ObjectMapper mapper = new ObjectMapper();
+						if (sourceAsString != null) {
+							Requirement requirement = null;
+							RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
+			            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
+			            		requirement = getData(requirementIndex);
+			            	}
+			            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
+			            	{
+			            		requirement = getData(requirementIndex);
+			            	}
+			            	
+			            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+			            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
+			            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+			            			)){
+			            		requirement = getData(requirementIndex);
+			            	}
+			            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
+			            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+			            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
+			            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+			            			)){
+			            		requirement = getData(requirementIndex);
+			            	}
+			            	
+			            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+			            		requirement = getData(requirementIndex);
+			            	}
+			            	
+			            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+			            		requirement = getData(requirementIndex);
+			            	}
+			            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+			            		requirement = getData(requirementIndex);
+			            	}
+			            	searchListForRequirement.add(requirement);
+			            }
+					}
+				}
+				
+			// ELK list for the user
+			BoolQueryBuilder userBoolQueryBuilder = new BoolQueryBuilder();
+			userBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			userBoolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
+			 Long maxResultsForUser = userRoleService.getUsersCountByOrgLocationID(orgLocation.getId());
+			 
+				//All Keywords
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if(null != allKeyWordArray && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getUsersMatchQueryBuilderList(keywd);
+						if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 userBoolQueryBuilder.must(allBoolQueryBuilder);
+				}
+			
+//				List<UserIndex> usersList = new ArrayList<UserIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				SearchHit[] searchHitsForUser = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResultsForUser.intValue(),userBoolQueryBuilder).getHits();
+				if(null != searchHitsForUser && searchHitsForUser.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHitsForUser) {
+						String json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+						userIndex.setSearchType("User");
+						searchListForUsers.add(userIndex);
+					}
+				}
+			
+		
+			// ELK list for the Clients and Vendors
+				BoolQueryBuilder clientVendorBoolQueryBuilder = new BoolQueryBuilder();
+			 Integer maxResultsClientAndVendor = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocation.getId());
+				//All Keywords
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+			 ArrayList<String> allKeyWordArrayForClientAndVendor = getSearchValuesFromChosenSelectField(searchValue);
+				if(allKeyWordArrayForClientAndVendor != null && !allKeyWordArrayForClientAndVendor.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArrayForClientAndVendor){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForClientVendor(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 clientVendorBoolQueryBuilder.must(allBoolQueryBuilder);
+				}
+				
+				
+				SearchHit[] searchHitsForClientVendor = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResultsClientAndVendor.intValue(),clientVendorBoolQueryBuilder).getHits();
+				if(searchHitsForClientVendor != null && searchHitsForClientVendor.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHitsForClientVendor) {
+						String json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						ClientVendorIndex clientVendorIndex = mapper.readValue(json, ClientVendorIndex.class);
+						clientVendorIndex.setSearchType("ClientVendor");
+						searchListForClientVendors.add(clientVendorIndex);
+					}
+				}
+			
+	
+			// ELK list for the projects
+				BoolQueryBuilder projectBoolQueryBuilder = new BoolQueryBuilder();
+				projectBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			 
+			 //Integer maxResults = projectsService.getAllProjects().size();
+			 
+			 Integer maxResultsForProjects = projectsService.getProjectCountByOrgLocationId(orgLocation.getId());
+				
+				//All Keywords
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				 ArrayList<String> allKeyWordArrayForProjects = getSearchValuesFromChosenSelectField(searchValue);
+				if(allKeyWordArrayForProjects != null && !allKeyWordArrayForProjects.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArrayForProjects){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getProjectsMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 projectBoolQueryBuilder.must(allBoolQueryBuilder);
+				}
+			//	List<ProjectsIndex> projectsList = new ArrayList<ProjectsIndex>();
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				SearchHit[] searchHitsForProjects = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResultsForProjects.intValue(),projectBoolQueryBuilder).getHits();
+				if(searchHitsForProjects != null && searchHitsForProjects.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHitsForProjects) {
+						String json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						ProjectsIndex projectsIndex = mapper.readValue(json, ProjectsIndex.class);
+						projectsIndex.setSearchType("Projects");
+						searchListForProjects.add(projectsIndex);
+					}
+				}
+			
+		
+			
+		
+			// ELK list for the Candidate
+				BoolQueryBuilder candidateBoolQueryBuilder = new BoolQueryBuilder();
+				candidateBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			 Long maxResultsForCandidate = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
+		   	 //Exclude Keyword
+			 
+				//All Keywords
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "searchKey");
+			 ArrayList<String> allKeyWordArrayForCandidate = getSearchValuesFromChosenSelectField(searchValue);
+				if(allKeyWordArrayForCandidate != null && !allKeyWordArrayForCandidate.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArrayForCandidate){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						 // need to change for setters 
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForCandidate(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 candidateBoolQueryBuilder.must(allBoolQueryBuilder);
+				}
+				
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				
+				SearchHit[] searchHitsForCandidate = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResultsForCandidate.intValue(),candidateBoolQueryBuilder).getHits();
+				    if(null != searchHitsForCandidate && searchHitsForCandidate.length >0){
+				    	ObjectMapper mapper = new ObjectMapper();
+				    	for (SearchHit hit : searchHitsForCandidate) {
+				    		String json = hit.getSourceAsString();
+				    		mapper.setDateFormat(df);
+				    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+				    	    if(candidateIndex.getUpdatedDate() != null){
+				    	    	candidateIndex.setCandidateUpdateDateToString(Constants.DF_YMD.format(candidateIndex.getUpdatedDate()));
+				   			}
+				    	    StringBuilder sb = new StringBuilder();
+				    	    if(candidateIndex.getFirstName()!=null && candidateIndex.getLastName() !=null && !"".equalsIgnoreCase(candidateIndex.getFirstName()) && !"".equalsIgnoreCase(candidateIndex.getLastName())){
+				    	    	sb.append(candidateIndex.getFirstName()).append(" ").append(candidateIndex.getLastName());
+				    	    }else{
+				    	    	sb.append(candidateIndex.getFirstName());
+				    	    }
+				    	    candidateIndex.setCandidateName(sb.toString());
+				    	   if(candidateIndex.getSkills() != null){
+				    		   String skillArray[] = candidateIndex.getSkills().toArray(new String[candidateIndex.getSkills().size()]);
+				    		   String skills = getReqSkills(skillArray);
+				    		   candidateIndex.setSkillSet(skills);
+				    	   }
+				    	   candidateIndex.setSearchType("Candidate");
+				    	    searchListForCandidates.add(candidateIndex);
+				    	}
+				    	
+				    }
+				    searchListForAll.add(searchListForCandidates) ;
+				    searchListForAll.add(searchListForClientVendors) ;
+				    searchListForAll.add(searchListForProjects) ;
+				    searchListForAll.add(searchListForUsers) ;
+				    searchListForAll.add(searchListForRequirement);
+				    
+				    
+					return searchListForAll;
 	}
 }
 

@@ -1,8 +1,11 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
@@ -103,5 +106,8 @@ public interface RequirementService {
 	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org, String userRole, User user)throws Exception;
 
 	public List<Object> univesalSearchRequirement(OrgLocations orgLocation, String searchType, String searchValue,Org org,String userRole, User user) throws JSONException, Exception;
+
+	public List<List<Object>> univesalSearchRequirementForAll(OrgLocations orgLocation, String searchType, String searchValue,
+			Org org, String userRole, User user) throws JsonParseException, JsonMappingException, IOException, Exception;
 
 }
