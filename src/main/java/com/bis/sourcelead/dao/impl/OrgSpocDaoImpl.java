@@ -329,8 +329,10 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			List<Long> spocsList = null;
 			
 			
-	            Query query= session.createQuery("select count(*) from OrgSpoc spoc where  (spoc.ownerUser.id = :loginUserId OR spoc.spocUser.id =:loginUserId) and  ((spoc.orgRelations.locationId.id = :locationId and spoc.orgRelations.initiatorType = :responderType ) or (spoc.orgRelations.responderLocationId.id = :locationId and spoc.orgRelations.responderType = :responderType )) and spoc.status <> '0' ");
-				spocsList = query.setLong("locationId", orgLocationId).setLong("loginUserId", userId).setString("responderType", type).setCacheable(true).list();
+	           // Query query= session.createQuery("select count(*) from OrgSpoc spoc where  ((spoc.ownerUser.id = :loginUserId OR spoc.spocUser.id =:loginUserId) and  ((spoc.orgRelations.locationId.id = :locationId and spoc.orgRelations.initiatorType = :responderType ) or (spoc.orgRelations.responderLocationId.id = :locationId and spoc.orgRelations.responderType = :responderType )) ) and spoc.status <> '0' ");
+				
+                  Query query= session.createQuery(" from OrgSpoc spoc where  ((spoc.orgRelations.locationId.id = :locationId and spoc.orgRelations.initiatorType = :responderType ) or (spoc.orgRelations.responderLocationId.id = :locationId and spoc.orgRelations.responderType = :responderType )) and (spoc.ownerUser.id = :loginUserId OR spoc.spocUser.id =:loginUserId)  and spoc.status <> '0' ");
+	              spocsList = query.setLong("locationId", orgLocationId).setLong("loginUserId", userId).setString("responderType", type).setCacheable(true).list();
 					
 					
 
