@@ -892,7 +892,7 @@ public class VendorRestController {
 									
 									if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 										
-										clientVendor.setWebsite(clientVendor.getResponderWebSite());
+										clientVendor.setWebsite("www."+clientVendor.getResponderWebSite());
 										clientVendor.setOrgName(clientVendor.getResponderOrgName());
 										clientVendor.setCountry(clientVendor.getResponderCountry());
 										clientVendor.setState(clientVendor.getResponderState());
@@ -904,7 +904,7 @@ public class VendorRestController {
 									}
 								  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
 									 
-									  clientVendor.setWebsite(clientVendor.getInitiatorWebSite());
+									  clientVendor.setWebsite("www."+clientVendor.getInitiatorWebSite());
 									  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
 									  clientVendor.setCountry(clientVendor.getInitiatorCountry());
 									  clientVendor.setState(clientVendor.getInitiatorState());
@@ -1394,7 +1394,7 @@ public class VendorRestController {
 						
 						if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 							
-							clientVendor.setWebsite(clientVendor.getResponderWebSite());
+							clientVendor.setWebsite("www."+clientVendor.getResponderWebSite());
 							clientVendor.setOrgName(clientVendor.getResponderOrgName());
 							clientVendor.setCountry(clientVendor.getResponderCountry());
 							clientVendor.setState(clientVendor.getResponderState());
@@ -1405,7 +1405,7 @@ public class VendorRestController {
 						}
 					  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
 						 
-						  clientVendor.setWebsite(clientVendor.getInitiatorWebSite());
+						  clientVendor.setWebsite("www."+clientVendor.getInitiatorWebSite());
 						  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
 						  clientVendor.setCountry(clientVendor.getInitiatorCountry());
 						  clientVendor.setState(clientVendor.getInitiatorState());
