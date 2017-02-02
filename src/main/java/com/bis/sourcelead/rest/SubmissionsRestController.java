@@ -136,9 +136,14 @@ public class SubmissionsRestController {
 
 		String resultJson = null;
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		CandidateEducation education = candidateEducationService.getCandidateEducationByCandidateId(candidateId);
-		if (education != null) {
-			candidate.setCandidateEdu(education.getName());
+		List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
+		StringBuilder education = new StringBuilder();
+		if (educationList != null && educationList.size() > 0) {
+			for(String educationName : educationList){
+				education.append(educationName).append(", ");
+			}
+			
+			candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
 		}
 		resultJson = toJSON(candidate);
 		return resultJson;

@@ -99,7 +99,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 
 	/**
-	 * to Candidates Count by  orgLocationId
+	 * to Candidates Count by  orgLocationId and candidate status for candidate elastic search
 	 * 
 	 * @author Naresh Bolisetty
 	 * 
@@ -111,11 +111,21 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Long getCandidatesCountByOrgLocationID(Long orgLocationId) {
+	public Long getCandidatesCountByOrgLocationID(Long orgLocationId,String candidateStatus) {
 		logger.debug("..getCandidatesCount() Method Started..");
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.status = '1'";
+		
+		String subQuery  = null;
+		if(null != candidateStatus && !candidateStatus.isEmpty() && candidateStatus.equalsIgnoreCase(Constants.ACTIVE)){
+			subQuery = "and candidate.status = '1'"; 
+		}else if(null != candidateStatus && !candidateStatus.isEmpty() && candidateStatus.equalsIgnoreCase(Constants.INACTIVE)){
+			subQuery = "and candidate.status = '0'"; 
+		}else{
+			subQuery = "and (candidate.status = '1' or candidate.status = '0')";
+		}
+		
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "+subQuery+" ";
 		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
@@ -381,7 +391,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		logger.debug("In getAllActiveCandidatesCountForCampaignByLocation method");
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :type and candidate.status = '1' and candidate.isFavourite = '0' ";  
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :type and candidate.status = '1' and (candidate.isFavourite = '0' OR candidate.isFavourite IS NULL) ";  
 		List<Long> candidatesCount = session.createQuery(query.toString()).setString("type", type).setLong("orgLocationId", orgLocationId).list();
 		Integer count = 0;
 		if(candidatesCount != null && !candidatesCount.isEmpty()){

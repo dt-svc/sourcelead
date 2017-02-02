@@ -35,6 +35,10 @@ public interface OrgSpocService {
 	 */
 	List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId ,Long orgLocationId) throws Exception;
 	
+	
+	List<OrgSpoc> getAllActiveSpocsByOrgRelationId(Long orgRelationId, Long userId ,Long orgLocationId) throws Exception;
+	
+	
 	/**To get OrgSpoc by ID
 	 * @author Prasad Salina
 	 * @param Id
@@ -91,4 +95,8 @@ public interface OrgSpocService {
 	
 	List<OrgSpoc> getOrgSpocByOrgRelationId(Long orgRelationId) throws Exception;
 	
+	Integer getAllVendorContactsCountbyOrgLocationId(Long orgId) throws Exception;
+
+	void saveOrUpdateClientVendorContactElkDocument(OrgSpoc orgSpoc) throws Exception;
+
 }

@@ -81,6 +81,29 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 		return spocsList;
 	}
 	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgSpoc> getAllActiveSpocsByOrgRelationId(Long orgRelationId, Long userId, List<Long> ids,Long orgLocationId) throws Exception {
+		logger.debug("In OrgSpocDaoImpl getAllSpocsByOrgRelationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OrgSpoc> spocsList;
+		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(userId,orgLocationId);
+		if (isadmin) {
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.invitationStatus = 'Accepted' and spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' ");
+			spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		}else if(ids != null && !ids.isEmpty()){
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.invitationStatus = 'Accepted' and spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' and (spoc.ownerUser.id = :userId OR spoc.ownerUser IN (:ids))");
+			spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameterList("ids", ids).setCacheable(true).list();
+		}else{
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser owner where spoc.invitationStatus = 'Accepted' and spoc.orgRelations.id = :orgRelationId and (spoc.ownerUser.id = :userId OR spoc.spocUser.id = :userId) and spoc.status <> '0' ");
+			spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
+		}
+		
+		return spocsList;
+	}
+	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public OrgSpoc getOrgSpocById(Long Id) throws Exception {
@@ -320,4 +343,21 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			return spocsList;
 			
 	   	}
+
+		@Override
+		@Transactional
+		public Integer getAllVendorContactsCountbyOrgLocationId(Long orgLocationId) throws Exception {
+		   
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Long> spocsList = null;
+	            
+	            Query query= session.createQuery("select count(*) from OrgSpoc spoc where spoc.initiatorLocationId.id=:locationId and spoc.status <> '0' ");
+				spocsList = query.setLong("locationId", orgLocationId).setCacheable(true).list();
+				
+	        	Integer count = 0;
+	    		if(spocsList != null && !spocsList.isEmpty()){
+	    				count = spocsList.get(0).intValue();
+	    		}
+	    		return count;
+		}
 }

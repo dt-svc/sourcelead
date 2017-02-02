@@ -241,6 +241,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					
 					if(jsonObj.has("CurrentCTC") && !isNullOrEmpty(jsonObj.getString("CurrentCTC"))){
 						candidate.setCurrentRate(jsonObj.getString("CurrentCTC"));
+						candidate.setCurrentRateCurrency(jsonObj.getString("currentCTCRateType"));
 					}
 					
 					if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
@@ -249,6 +250,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 
 					if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
 						 candidate.setExpectedRate(jsonObj.getString("ExpectedCTC"));
+						 candidate.setExpectedRateCurrencey(jsonObj.getString("expectedCTCRateType"));
+						 
 					}
 					
 					if(jsonObj.has("expectedCTCRatePer") && !isNullOrEmpty(jsonObj.getString("expectedCTCRatePer"))){
@@ -278,15 +281,20 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					requirementSubmission.setCandidate(candidate);
 					
 					if(jsonObj.has("Education") && !isNullOrEmpty(jsonObj.getString("Education"))){
-						CandidateEducation candidateEducation = new CandidateEducation();
-						candidateEducation.setCandidateId(candidate);
-						candidateEducation.setOrglocationId(orgLocations);
-						candidateEducation.setName(jsonObj.getString("Education"));
-						candidateEducation.setCreatedBy(user.getUserCode());
-						candidateEducation.setCreatedDate(new Date());
-						candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
-						candidateEducationDao.storeCandidateEducation(candidateEducation);
 						
+			    		
+			    		String[] educationList = jsonObj.getString("Education").split(",");
+			    		   
+						for(int i=0; i<educationList.length; i++){
+							CandidateEducation candidateEducation = new CandidateEducation();
+							candidateEducation.setCandidateId(candidate);
+							candidateEducation.setOrglocationId(orgLocations);
+							candidateEducation.setName(educationList[i].startsWith(" ") ? educationList[i].substring(1) : educationList[i]);
+							candidateEducation.setCreatedBy(user.getUserCode());
+							candidateEducation.setCreatedDate(new Date());
+							candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
+							candidateEducationDao.storeCandidateEducation(candidateEducation);
+						}
 					 }
 					
 					 if(jsonObj.has("Current/LastCompany") && !isNullOrEmpty(jsonObj.getString("Current/LastCompany"))){
@@ -1115,9 +1123,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public void applicantRejectMailAboutRequirement(Requirement requirement, User initiatorUser, Candidate candidate,
-			OrgLocations orgLocations,String rejectreason, StringBuilder tempHTML, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation) throws Exception {
+			OrgLocations orgLocations,String rejectreason, StringBuilder tempHTML, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, Long submissionId) throws Exception {
 		
-		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getId());
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());

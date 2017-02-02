@@ -393,16 +393,20 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     	  
 	     	  
 	     	 if(name == "CurrentCTC"){
-	     		  if(null != inputValue){
+	     		 inputValue = $this.find('input').val();
+	     		 if(inputValue){
 	     			 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value; 
-	     			 inputValue = inputValue+" /"+" "+currentCTCRatePer ;
+	     			 var currentCTCRateType = document.getElementById("currentCTCRateType").value; 
+	     			 inputValue = currentCTCRateType+" "+inputValue+" /"+" "+currentCTCRatePer ;
 	     		  }
 	     	  }
 	     	 
 	     	if(name == "ExpectedCTC"){
-	     		  if(null != inputValue){
+	     		 inputValue = $this.find('input').val();
+	     		  if(inputValue){
 	     			 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value; 
-	     			 inputValue = inputValue+" /"+" "+expectedCTCRatePer ;
+	     			 var expectedCTCRateType = document.getElementById("expectedCTCRateType").value; 
+	     			 inputValue = expectedCTCRateType+" "+inputValue+" /"+" "+expectedCTCRatePer ;
 	     		  }
 	     	  }
 	     	  
@@ -653,17 +657,33 @@ function getCandidateDetails(){
 		        	 
 		        	 
 		        	 if(json['rateType'] != null && json['rateType'] != "" && json['rateType'] != 'undefined'){
-		        		 $("input[name=expectedCTCRatePer]").val(json['rateType']);
+		        		 $("select[name=expectedCTCRatePer]").val(json['rateType']);
+		        	 }else{
+		        		 $("select[name=expectedCTCRatePer]").val('');
+		        	 }
+		        	 
+		        	 if(json['expectedRateCurrencey'] != null && json['expectedRateCurrencey'] != "" && json['expectedRateCurrencey'] != 'undefined'){
+		        		 $("select[name=expectedCTCRateType]").val(json['expectedRateCurrencey']);
 		        	 }
 		        	 
 		        	 if(json['currentRate'] != null && json['currentRate'] != "" && json['currentRate'] != 'undefined'){
 		        		 $("input[name=CurrentCTC]").val(json['currentRate']);
+		        		 validateCurrentCTC();
 		        	 }else{
 		        		 $("input[name=CurrentCTC]").val(''); 
+		        		 validateCurrentCTC();
 		        	 }
 		        	 
 		        	 if(json['currentRateType'] != null && json['currentRateType'] != "" && json['currentRateType'] != 'undefined'){
-		        		 $("input[name=currentCTCRatePer]").val(json['currentRateType']);
+		        		 $("select[name=currentCTCRatePer]").val(json['currentRateType']);
+		        		 validateExpectedCTC();
+		        	 }else{
+		        		 $("select[name=currentCTCRatePer]").val(''); 
+		        		 validateExpectedCTC();
+		        	 }
+		        	 
+		        	 if(json['currentRateCurrency'] != null && json['currentRateCurrency'] != "" && json['currentRateCurrency'] != 'undefined'){
+		        		 $("select[name=currentCTCRateType]").val(json['currentRateCurrency']);
 		        	 }
 		        	 
 		        },
@@ -926,13 +946,12 @@ function validate_fileupload(fileName)
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#requirementId").val();
 	 if(email != null && email != ""){
-		
+		 $("#save_button").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateRequirementCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
 		        success: function(data) {
 		         	if(data == 'true'){
-		         		  $("#save_button").attr("disabled", "disabled");
 			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
 			        	  $('.jquery_form_error_message').remove();
 		        		  $("input[name=EmailId]").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
@@ -950,3 +969,58 @@ function validate_fileupload(fileName)
 	 }
  }
  </script>   
+ 
+ 
+ <script>
+ function validateCurrentCTC(){
+	 var currentCTC = $("input[name=CurrentCTC]").val();
+	 if(currentCTC){
+		 $("#currentCTCRatePer").removeAttr("data-validation-optional");
+		 $("#currentCTCRatePer").attr("data-validation", "required");
+	 }else{
+		 $("#currentCTCRatePer").removeAttr("data-validation");
+		 $("#currentCTCRatePer").attr("data-validation-optional", "true");
+	 }
+ }
+ </script>
+ 
+  <script>
+ function validateExpectedCTC(){
+	 var expectedCTC = $("input[name=ExpectedCTC]").val();
+	 if(expectedCTC){
+		 $("#expectedCTCRatePer").removeAttr("data-validation-optional");
+		 $("#expectedCTCRatePer").attr("data-validation", "required");
+	 }else{
+		 $("#expectedCTCRatePer").removeAttr("data-validation");
+		 $("#expectedCTCRatePer").attr("data-validation-optional", "true");
+	 }
+ }
+ </script>
+ 
+ <script>
+ function changeRateLabels(){
+	 
+	 var currentRate = document.getElementById("currentRate").textContent;
+	 var currentstringLength = currentRate.length; 
+	 var currentRatelastChar = currentRate.charAt(currentstringLength - 1);
+	 
+	 if(currentRatelastChar == "*"){
+		 $("#currentRate").html("Current Rate *"); 
+	 }else{
+		 $("#currentRate").html("Current Rate");
+	 }
+	 
+	 var expectedRate = document.getElementById("expectedRate").textContent;
+	 var expectedstringLength = expectedRate.length; 
+	 var expectedRatelastChar = expectedRate.charAt(expectedstringLength - 1);
+	 
+	 if(expectedRatelastChar == "*"){
+		 $("#expectedRate").html("Expected Rate *"); 
+	 }else{
+		 $("#expectedRate").html("Expected Rate");
+	 }
+	 
+	 
+	 
+ }
+ </script>

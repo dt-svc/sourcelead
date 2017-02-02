@@ -348,6 +348,10 @@ public class Constants {
     
     public static String CLIENT = "Client";
     
+    public static String ELK_PROJECT_INDEX = "projects";
+	
+    public static String ELK_PROJECT_TYPE = "project";
+    
     public static String ELK_CANDIDATE_INDEX = "candidates";
     		
     public static String ELK_CANDIDATE_TYPE = "candidate";
@@ -359,8 +363,13 @@ public class Constants {
     public static String ELK_CANDIDATE_ID_PREFIX = "CND";
     
     public static String ELK_CLIENTVENDOR_INDEX = "clientvendor";
-    
+        
     public static String ELK_CLIENTVENDOR_TYPE = "clientvendors";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_INDEX = "clientvendorcontacts";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_TYPE = "clientvendorcontacts";
+
     
     public static String ELK_CAMPAIGN_INDEX = "campaigns";
 	

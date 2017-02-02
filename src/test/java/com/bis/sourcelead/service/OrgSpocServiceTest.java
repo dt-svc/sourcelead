@@ -146,4 +146,12 @@ public class OrgSpocServiceTest {
 		OrgSpoc orgSpoc = orgSpocService.getSpocUserByUserId(4l);
 		logger.info("retrieved sucessfully...."+orgSpoc.getSpocStatus());
 	}
+
+	@Test
+	public void getAllVendorContactsCountbyOrgLocationId() throws Exception{
+		
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(3L);
+		Integer vendorContactsList = orgSpocService.getAllVendorContactsCountbyOrgLocationId(orgLocations.getId());
+		logger.info("retrieved  sucessfully...."+vendorContactsList);
+	}
 }

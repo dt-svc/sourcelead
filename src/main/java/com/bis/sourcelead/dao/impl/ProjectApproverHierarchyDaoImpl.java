@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
@@ -96,6 +97,17 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
+	public List<ProjectApproverHierarchy> getAllApproverUsersByProjectIdList(List<Long> projectIds) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "from  ProjectApproverHierarchy projectHirachy  left join fetch projectHirachy.approverUserId usr where projectHirachy.projectId.id IN (:projectIds) GROUP BY projectHirachy.approverUserId";
+	        List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setParameterList("projectIds", projectIds).setCacheable(true).list();
+	        return projectHirachyList;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
 	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId ";
@@ -105,6 +117,7 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	        return projectHirachyList;
 		
 	}
+	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
