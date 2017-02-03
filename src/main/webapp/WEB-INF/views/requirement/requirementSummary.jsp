@@ -3199,7 +3199,7 @@ function assignedMemberList(requirementId){
 
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
-	  $("#actionsDiv" ).hide();
+	  $("#actionsDiv" ).hide(); 
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
     type : "POST",
