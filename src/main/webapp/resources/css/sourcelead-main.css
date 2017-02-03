@@ -5697,8 +5697,37 @@ z-index: 99;
 	color:#757575;
 	margin-bottom: 0;
 }
-
 /* Customize Score styles Ends */
+
+/* Prasad Salina styles */
+#status-data, #recommendationTable_wrapper {
+position: relative;
+background-color: #fff;
+}
+.applicant_export {
+position: absolute;
+right: 350px;
+top: -26px;
+z-index: 999;
+}
+.applicant_export a{
+color:#333;
+font-weight: 500;
+}
+.applicant_export .glyphicon-export {
+font-size: 15px;
+color: #545454;
+padding: 0px 10px 0px 0px;
+}
+.applicant_export div.export_pipline {
+top: 30px;
+right: 70px !important;
+}
+.timesheetHead {
+background-color: #fff;
+}
+
+/* Prasad Salina Styles ends */
 
 /* media 320px */
 @media (max-width: 320px) {
