@@ -36,13 +36,17 @@ public class UserIndexHelper {
 			userIndex.setIsMailSent(user.getIsMailSent().toString());
 			userIndex.setUserStatus(userRole.getUserState().toString());
 			userIndex.setUserType(userRole.getUserType());
+			
+			if(null != userRole.getReportingManager()){
+			userIndex.setReportingManagerId(userRole.getReportingManager().getId());
+			}
 			userIndex.setStatus(userRole.getUser().getStatus());
 			userIndex.setTerminateReason(userRole.getTerminateReason());
 			userIndex.setEmployeeId(employee.getEmployeeId());
 			userIndex.setRate(employee.getRate());
 			userIndex.setRatePer(employee.getRatePer());
 			DateFormat StringDate = new SimpleDateFormat("dd-MM-yyyy"); 
-			if(null != employee.getHireDate() && !"".equalsIgnoreCase(employee.getHireDate().toString())){
+			if(null != employee.getHireDate()){
 			String hireDate  = StringDate.format(employee.getHireDate());
 			userIndex.setHireDate(hireDate);
 			}

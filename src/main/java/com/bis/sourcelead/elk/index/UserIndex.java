@@ -53,6 +53,8 @@ public class UserIndex implements Serializable {
 	
 	private String userCode;
 	
+	private Long reportingManagerId;
+	
 	private String userRoleId;
 
 	public Long getUserId() {
@@ -227,6 +229,16 @@ public class UserIndex implements Serializable {
 
 	public void setHireDate(String hireDate) {
 		this.hireDate = hireDate;
+	}
+
+	
+
+	public Long getReportingManagerId() {
+		return reportingManagerId;
+	}
+
+	public void setReportingManagerId(Long reportingManagerId) {
+		this.reportingManagerId = reportingManagerId;
 	}
 
 	public String getCreatedDate() {

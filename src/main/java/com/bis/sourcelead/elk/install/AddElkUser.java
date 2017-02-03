@@ -66,6 +66,7 @@ public class AddElkUser {
 					userIndex.setUserType(rs.getString("USER_TYPE"));
 					userIndex.setStatus(rs.getString("STATUS"));
 					userIndex.setTerminateReason(rs.getString("TERMINATE_REASON"));
+					userIndex.setReportingManagerId(rs.getLong("REPORTING_MANAGER_ID"));
 					Timestamp createdDateTimestamp = rs.getTimestamp("CREATED_DATE");
 					DateFormat StringDate = new SimpleDateFormat("dd-MM-yyyy"); 
 				    if (createdDateTimestamp != null){

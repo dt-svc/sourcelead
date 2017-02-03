@@ -193,9 +193,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				if(searchHits != null && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
-						String json = hit.getSourceAsString();
+						StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
 						mapper.setDateFormat(df);
-						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+						UserIndex userIndex = mapper.readValue(json1.toString(), UserIndex.class);
 						usersList.add(userIndex);
 					}
 				}
@@ -353,9 +353,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				if(null != searchHits && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
-						json = hit.getSourceAsString();
+						StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
 						mapper.setDateFormat(df);
-						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+						UserIndex userIndex = mapper.readValue(json1.toString(), UserIndex.class);
 						usersList.add(userIndex);
 					}
 				}
