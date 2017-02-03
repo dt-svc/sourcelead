@@ -80,7 +80,6 @@ public interface OrgSpocService {
 	 */
 	List<OrgSpoc> getAllContactsbyOrgLocationIdAndUserIdForRequirement(Long orgLocationId,Long userId,String relationType) throws Exception;
 	
-	
 	List<OrgSpoc> getAllContactsbyOrgId(Long orgId) throws Exception;
 	
 	List<OrgSpoc> getAllContactsbyOrgIdAndInvitationStatusAndSpocStatus(Long orgId, String invitationStatus, String spocStatus) throws Exception;
@@ -97,7 +96,7 @@ public interface OrgSpocService {
 	
 	List<OrgSpoc> getOrgSpocByOrgRelationId(Long orgRelationId) throws Exception;
 	
-	Integer getAllVendorContactsCountbyOrgLocationId(Long orgId) throws Exception;
+	Integer getAllVendorContactsCountbyOrgLocationId(Long orgId,String type,Long userId) throws Exception;
 
 	void saveOrUpdateClientVendorContactElkDocument(OrgSpoc orgSpoc) throws Exception;
 

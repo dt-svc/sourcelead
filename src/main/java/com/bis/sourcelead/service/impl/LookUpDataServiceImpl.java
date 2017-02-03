@@ -40,8 +40,5 @@ public class LookUpDataServiceImpl implements LookUpDataService {
 	public List<LookUpData> getSkillsBySkillsName(List<String> skillNames) throws Exception {
 		return lookUpDataDao.getSkillsBySkillsName(skillNames);
 	}
-
-	
-	
 	
 }

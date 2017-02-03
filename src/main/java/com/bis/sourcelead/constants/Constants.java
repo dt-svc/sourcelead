@@ -74,6 +74,13 @@ public class Constants {
 	
 	public static String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
 	public static String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
+	
+	public static String ACCEPT_CLIENT = "Accept Client";
+	public static String ACCEPT_VENDOR = "Accept Vendor";
+	
+	public static String REJECT_CLIENT = "Reject Client";
+	public static String REJECT_VENDOR = "Reject Vendor";
+	
 	public static String OFFER_MAIL_TO_VENDORS="Client to Vendor Acceptence";
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";

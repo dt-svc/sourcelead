@@ -622,26 +622,26 @@ function sideBar(requirementId){
 					    result = result+'<li><i class="fa fa-black-tie"></i><span>Experience : --</span></li>';
 				        }
 				        
-				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '')
+				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined')
 				    	   {
 				        result = result+' <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
 				    	   }
-				       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
+				       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
 					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
-				       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
+				       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
 					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
 				       }
-				       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
+				       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
 					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
    
 				       }
-				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
+				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
 					   result = result+'<li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
    
 				       }
-				       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
+				       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
 					   result = result+'<li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
   
 				       }

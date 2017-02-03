@@ -39,7 +39,7 @@ public class CandidateIndex implements Serializable {
 
 	private String designationType;
 
-	private Float currentRate;
+	private String currentRate;
 
 	private String currentRateType;
 
@@ -219,11 +219,13 @@ public class CandidateIndex implements Serializable {
 		this.designationType = designationType;
 	}
 
-	public Float getCurrentRate() {
+	
+
+	public String getCurrentRate() {
 		return currentRate;
 	}
 
-	public void setCurrentRate(Float currentRate) {
+	public void setCurrentRate(String currentRate) {
 		this.currentRate = currentRate;
 	}
 

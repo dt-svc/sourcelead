@@ -183,7 +183,7 @@ public class OrgRelationServiceTest {
 		
 		OrgLocations orglocations = new OrgLocations();
 		orglocations.setId(3L);
-		Integer vendorListCount = orgRelationsService.getAllVendorsCountByOrgLocationId(orglocations.getId());
+		Integer vendorListCount = orgRelationsService.getAllVendorsCountByOrgLocationId(orglocations.getId(),null);
 		logger.info("getAllVendorsCountByOrgLocationId "+vendorListCount);
 		
 	}

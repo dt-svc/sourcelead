@@ -398,7 +398,18 @@ function candidateSideBar(candidateId){
          			 		expectedRateCurrencey = '';
          			 	}
          			 	
+         			 	if(json.alternateMobilePhone != null && json.alternateMobilePhone != '' && json.alternateMobilePhone != 'undefined'){
+         			 		alternateMobilePhone = json.alternateMobilePhone;
+         			 	}else{
+         			 		alternateMobilePhone = '';
+         			 	}
          			 	
+         			 	 if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+         			 		mobilePhone =json.mobilePhone+',';
+         			 	 }else{
+         			 		 
+         			 		mobilePhone = '';
+         			 	 }
          			 	 
 	                	 var result = "";
 	                	 
@@ -500,6 +511,8 @@ function candidateSideBar(candidateId){
 			             } 
 			             }
 			             
+			             
+			             
 			             result = result+'</ul>';
 			             
 			             result = result+'</div>';
@@ -519,12 +532,8 @@ function candidateSideBar(candidateId){
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
 			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="'+json.email+'">'+json.email+'</a></li>';
-			                                                  if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
-			                                                  }else{
+			             result = result+'<li><i class="fa fa-phone"></i>'+mobilePhone+''+alternateMobilePhone+'</li>';
 			                                                	  
-			             result = result+'<li><i class="fa fa-phone"></i>----</li>';         	  
-			                                                  }
 			             result = result+' <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
 			             
 			             result = result+'<li><i class="fa fa-money"></i><b>Current Rate:</b>';

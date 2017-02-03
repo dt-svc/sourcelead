@@ -151,7 +151,7 @@ public class OrgSpocServiceTest {
 	public void getAllVendorContactsCountbyOrgLocationId() throws Exception{
 		
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(3L);
-		Integer vendorContactsList = orgSpocService.getAllVendorContactsCountbyOrgLocationId(orgLocations.getId());
+		Integer vendorContactsList = orgSpocService.getAllVendorContactsCountbyOrgLocationId(orgLocations.getId(),null,null);
 		logger.info("retrieved  sucessfully...."+vendorContactsList);
 	}
 }

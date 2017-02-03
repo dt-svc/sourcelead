@@ -96,7 +96,7 @@ public class CandidateIndexHelper {
 			candidateIndex.setDesignation(candidate.getDesignation());
 			candidateIndex.setDesignationType(candidate.getDesignationType());
 			if(StringUtils.isNotEmpty(candidate.getCurrentRate())){
-				candidateIndex.setCurrentRate(Float.parseFloat(candidate.getCurrentRate()));
+				candidateIndex.setCurrentRate(candidate.getCurrentRate());
 			}
 			
 			candidateIndex.setCurrentRateType(candidate.getCurrentRateType());

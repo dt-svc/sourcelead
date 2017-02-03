@@ -38,6 +38,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
@@ -108,6 +109,9 @@ public class RequirementRestController {
 	 @Autowired
 	 private RequirementAssignToService requirementAssignToService;
 	 
+	 @Autowired
+	 private LookUpDataService lookUpDataService;
+
 	 @Autowired
 	 RecommendedCustomizeScoreService recommendedCustomizeScoreService;
 	 
@@ -704,6 +708,27 @@ public class RequirementRestController {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				Boolean validatejobName = requirementService.validateRequirementTitle(templateName,orgLocation.getId());
 				return validatejobName.toString();
+		    }
+	 
+	 
+	    @RequestMapping(value = "/getRequirementAndLookUpSkills",  method = RequestMethod.POST)
+	    public @ResponseBody String getRequirementAndLookUpSkills(@RequestParam(value="requirementid", required=false) Long requirementid) throws Exception {
+	    	
+	    	List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirementid.toString());		
+		  	List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+		  	
+		  	if(allReqSkills != null){
+		  		String[] skills = allReqSkills.get(0).split(","); 
+			    for(String skill : skills){ 
+			    	if(!skillsList.contains(skill)){
+			    		    skillsList.add(skill);
+			    	}
+			    }  
+		  	}
+		  	
+	    	String resultJson; 
+		  	resultJson = commonUtil.toJSON(skillsList);
+			return resultJson;
 		    }
 
 }

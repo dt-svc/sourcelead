@@ -235,6 +235,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
 					}
 					
+					if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+						 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+					}
+					
 					if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
 					candidate.setEmail(jsonObj.getString("EmailId"));
 					}

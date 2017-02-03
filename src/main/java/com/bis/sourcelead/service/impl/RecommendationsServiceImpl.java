@@ -254,6 +254,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		float percentPerSkill = 0;
 		List<Candidate> CandidateListcopy = new ArrayList<>();
 		String reqSkills = "";
+
 		if(null != requirement.getSkills() && !"".equalsIgnoreCase(requirement.getSkills())){
 			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
 			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();

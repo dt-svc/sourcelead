@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +21,14 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -67,7 +70,8 @@ public class ClientController {
 	@Autowired
 	CountriesService countriesService;
 
-	
+	@Autowired
+	StatesService statesService;
 	
 	/**
 	 * Handles to display client jsp
@@ -140,14 +144,19 @@ public class ClientController {
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
 			model.addObject("userList", userList);
 			
-			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-			if(countries != null){
-				model.addObject("loginCountryName", countries.getName());
-			}
-			
 			List<Countries> countryList = countriesService.getAllCountries();
 			model.addObject("countryList", countryList);
-		
+			
+			if(null != orgLocations && StringUtils.isNotEmpty(orgLocations.getCountry())){
+				
+				Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+				if(null != countries){
+				   model.addObject("loginCountryName", countries.getName());
+				}
+		        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
+		        model.addObject("statesList", statesList);
+			}
+			
 			commonUtil.highLightMenu(Constants.Clients, request);
 			String msg = "";
 			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientCreateMsg");
