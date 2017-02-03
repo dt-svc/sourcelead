@@ -739,8 +739,11 @@ function sideBar(requirementId){
 						    result = result +'<div id="status-div"></div>';
 							result = result +'<div id="status-data"></div>';
 						   
-						    result = result+'<div id="tab-3" class="project_tabs_inn">';
+						    result = result+'<div id="tab-3" class="project_tabs_inn overflow-data">';
+						    
 						    result = result+'</div> ';
+						    result = result +'<div id="recommendationsLoading"></div>'; 
+						    
 					    result = result+'</div>';
 					    result = result+'</div>';
 					    
@@ -1910,7 +1913,8 @@ function assignedMemberList(requirementId){
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
 	  var sourceleadUrl = '${sourceleadUrl}';
-	  $.ajax({
+	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
     type : "POST",
      url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
      success :function(data) {
@@ -1946,7 +1950,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<tr>';
 		    result = result +'<th>Name</th>';
 		    result = result +'<th>Ph. No</th>';
-		    result = result +'<th>Resume</th>';
+		    result = result +'<th style="width:50px;">Resume</th>';
 		    result = result +'<th>Number of req</th>';
 		    result = result +'<th>Score</th>';
 		    result = result +'<th>Action</th>';
@@ -1960,17 +1964,17 @@ function requirementRecommendations(requirementId){
 		    result = result + '<td><div onclick="clientSideBar('+report.id+');" class="proj_show"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
 		    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
-		    	result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
+		    	result = result +'<td class="text-center"><div><span>'+report.mobilePhone+'</span></div></td>';
 		    }else{
 		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
 		    
-		    if(report.candidateResume != null && report.candidateResume !='' && report.candidateResume !='undefined' ){
-		    result = result +'<td><div><span><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;'+report.candidateResume+'</a></span></div></td>';
-			}else{
+		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
+		  	   result = result +'<td class="text-center"><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"></a></span></div></td>';
+			  }else{
 				result = result +'<td><div><span>--</span></div></td>';
-			}
-		    result = result +'<td><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
+			} 
+		   result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
 		    if(report.requirementSubmisstions.length > 0){
 		    	result = result +'<div class="tooltip_div">';
 			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
@@ -1990,7 +1994,73 @@ function requirementRecommendations(requirementId){
 			    result = result +' </div>'; 
 		    }
 		    result = result +' </div></td>';
-		    result = result +'<td><div><span>'+report.candidateScore+'%</span></div></td>';
+		    result = result +'<td class="text-center"><div class="show_scroe"><span>'+report.candidateScore+'%</span>';
+		    result = result +'<div class="scroe">';
+		    
+		    result = result +'<div class="clearfix row">';
+		    
+		    result = result +'<div class="col-md-6 paddingRight">';
+		    result = result +'<label>Skills</label>';
+		    result = result +'<div class="progress">';
+		    result = result +'<div class="progress-bar progress-bar-success" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.skillPercentage+'%"> '+report.skillPercentage+'%';
+   	        result = result +'</div>';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    
+		    result = result +'<div class="col-md-6 paddingLeft">';
+		    result = result +'<label>Location</label>';
+		    result = result +'<div class="progress">';
+		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.locationPercentage+'%"> '+report.locationPercentage+'% ';
+		    result = result +'</div>';
+		    result = result +'</div>';
+		    result = result +' </div>';
+		    
+		    result = result +' </div>';
+		    
+		    
+		    result = result +'<div class="clearfix row">';
+		    
+		    result = result +'<div class="col-md-6 paddingRight">';
+		    result = result +'<label>Experience</label>';
+		    result = result +'<div class="progress">';
+		    result = result +'<div class="progress-bar progress-bar-info" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.expPercentage+'%"> '+report.expPercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +'<div class="col-md-6 paddingLeft">';
+		    result = result +'<label>Rate</label>';
+		    result = result +'<div class="progress">';
+		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.ratePercentage+'%"> '+report.ratePercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +' </div>';
+		    
+		    result = result +'<div class="clearfix row">';
+		    
+		    result = result +'<div class="col-md-6 paddingRight">';
+		    result = result +'<label>NoticePeriod</label>';
+		    result = result +'<div class="progress">';
+		    result = result +'<div class="progress-bar progress-bar-danger" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.noticePeriodPercentage+'%"> '+report.noticePeriodPercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +'<div class="col-md-6 paddingLeft">';
+		    result = result +'<label>KeyWord</label>';
+		    result = result +'<div class="progress">';
+		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.totalKeyWordPerPercentage+'%"> '+report.totalKeyWordPerPercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +' </div>';
+		  
+		   
+		    result = result +'</div>';		    
+		    result = result +'</div></td>';
 		    result = result +'<td><div><span>';
 		    if(report.isCandidateAdedd == true){
 		    	result = result +'<input type="button" value="Added" class="btn btn-primary btn-sm">';
@@ -2016,6 +2086,7 @@ function requirementRecommendations(requirementId){
 		    $("#tab-1").empty();
 			$("#tab-2").empty(); 
 		    $("#tab-3").empty();
+		    $("#recommendationsLoading").removeAttr("style");
 		    $("#status-div").empty();
 		    $("#status-data").empty();
 			$("#tab-3").append(result);
@@ -3228,8 +3299,8 @@ function updateCutomize(requirementId){
         var result = "";
 		//result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='greater_user_pop' class='remove_user_pop remove_user_pop_a'>";
-		result = result +"		<p>score is greater than 100</p>";
-		result = result +"		<p strong>score must be equal to 100</p>";
+		result = result +"		<p>Score is greater than 100</p>";
+		result = result +"		<p><strong>Score must be equal to 100</strong></p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 		result = result +"		<b><input type='button' value='Ok' onclick='cancelCustomize();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelCustomize();'></b>";
 		result = result +"	</div>";
@@ -3242,8 +3313,8 @@ function updateCutomize(requirementId){
         	var result = "";
     		//result = result +"	<div class='project_inn_mask'></div>";
     		result = result +"	   <div id='less_user_pop' class='remove_user_pop remove_user_pop_a'>";
-    		result = result +"		<p>score is less than 100</p>";
-    		result = result +"		<p strong>score must be equal to 100</p>";
+    		result = result +"		<p>Score is less than 100</p>";
+    		result = result +"		<p><strong>Score must be equal to 100</strong></p>";
     		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
     		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelCustomize();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelCustomize();'></b>";
     		result = result +"	</div>";
@@ -3279,40 +3350,6 @@ function cancelCustomize(){
 	$("#customizePopUp").hide();
 }
 </script>
-
-<script type="text/javascript">
-
-function calculateScore(){
-	var countryName = $("#country").val();
-    alert("hi");
-    var skillPerc = parseInt(document.getElementById("skillsId").value);
-    alert(skillPerc);
-    
-    var expPerc = parseInt(document.getElementById("expId").value);
-    alert(expPerc);
-    
-    var ratePerc = parseInt(document.getElementById("rateId").value);
-    alert(ratePerc);
-    
-    var noticePerc = parseInt(document.getElementById("noticeId").value);
-    alert(noticePerc);
-    
-    var kewordsPerc = parseInt(document.getElementById("keywordsId").value);
-    alert(kewordsPerc);
-    
-    var totalscore = (skillPerc+expPerc+noticePerc+ratePerc);
-    alert(totalscore);
-    
-    if(totalscore>100){
-        alert("score is greater than 100");
-        }else if(totalscore<100){
-            alert("score is less than 100");
-        }else if(totalscore=100){
-            alert("score is equal to 100");
-        }
-            }
-</script>
-
 
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />

@@ -58,7 +58,18 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 	public RecommendedCustomizeScore saveCustomizeScore(Requirement requirement) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		RecommendedCustomizeScore res = new RecommendedCustomizeScore();
+		
+		RecommendedCustomizeScore res;
+		
+		res = getRecommendedCustomizeScoreByRequirementId(requirement.getId());
+		if(null != res && null != res.getId()){
+			 if(user.getUserCode() != null){
+				 res.setUpdatedBy(user.getUserCode());	
+		    }
+			res.setUpdatedDate(commonUtil.currentDate());
+		}else{
+			res = new RecommendedCustomizeScore();
+		}
 		if(null != requirement){
 			res.setReqirementId(requirement);	
 		}
@@ -78,12 +89,12 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 			res.setCustomizeRatetype(requirement.getRateType());	
 		}
 		
-		res.setCustomizeSkillScore(Constants.CUSTOMIZE_SKILLS);
-		res.setCustomizeRateScore(Constants.CUSTOMIZE_RATE);
-		res.setCustomizeExperienceScore(Constants.CUSTOMIZE_EXPERIENCE);
-		res.setCustomizeLocationScore(Constants.CUSTOMIZE_LOCATION);
-		res.setCustomizeNoticeperiodScore(Constants.CUSTOMIZE_NOTICE_PERIOD);
-		res.setCustomizeKeywordsScore(Constants.CUSTOMIZE_KEYWORDS);
+		res.setCustomizeSkillScore(Constants.SCORE_20);
+		res.setCustomizeRateScore(Constants.SCORE_20);
+		res.setCustomizeExperienceScore(Constants.SCORE_20);
+		res.setCustomizeLocationScore(Constants.SCORE_10);
+		res.setCustomizeNoticeperiodScore(Constants.SCORE_10);
+		res.setCustomizeKeywordsScore(Constants.SCORE_20);
 		if("" != requirement.getMaxExp() && null != requirement.getMaxExp()){
 			res.setCustomizeMaxExperience(requirement.getMaxExp());	
 		}
@@ -104,7 +115,6 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 		return recommendedCustomizeScoreDao.saveCustomizeScore(res);
 	}
 
-	
 }
 	
 

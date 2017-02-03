@@ -152,7 +152,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				}
 			}
 			skillPercentage = matchedSkillCount*percentPerSkill;
-			if(candidate.getExperienceYears() != null && !"".equalsIgnoreCase(candidate.getExperienceYears()) && candidate.getExperienceMonths()!=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
+			if(null != candidate.getExperienceYears() && !"".equalsIgnoreCase(candidate.getExperienceYears()) && null != candidate.getExperienceMonths() && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
 				int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
 				if(candidateExpMonths < reqMinExp *12){
 					expPercentage = 0;
@@ -162,13 +162,13 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					expPercentage = 20;
 				}
 			}
-			if(candidate.getCity() != null && !"".equalsIgnoreCase(candidate.getCity())){
+			if(null != candidate.getCity() && !"".equalsIgnoreCase(candidate.getCity())){
 				if(candidate.getCity().equalsIgnoreCase(reqCity)){
 					locationPercentage = 10;
 				}
 			}
 			
-			if(candidate.getExpectedRate() != null && !"".equalsIgnoreCase(candidate.getExpectedRate()) && candidate.getRateType() !=null && !"".equalsIgnoreCase(candidate.getRateType())){
+			if(null != candidate.getExpectedRate() && !"".equalsIgnoreCase(candidate.getExpectedRate()) && null != candidate.getRateType() && !"".equalsIgnoreCase(candidate.getRateType())){
 				String candidateRateType = candidate.getRateType();
 				String  expectedRate = candidate.getExpectedRate();
 				
@@ -255,7 +255,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		List<Candidate> CandidateListcopy = new ArrayList<>();
 		String reqSkills = "";
 		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
-			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId);
+			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
 			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
@@ -559,15 +559,16 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		logger.info("....getRecommendationsUpdateWithScoreByUsingElk Method Started...");
 		float locationPercentage = 0; // location 10%
 		float ratePercentage = 0;    // rate 20 %
-		float skillPercentage = 0; // skill = 50%
+		float skillPercentage = 0; // skill = 20%
 		float percentPerSkill = 0;
-		float percentPerkeyword = 0;
-		float noticePeriod = 0;
+		float percentPerkeyword = 0; //keyword 20%
+		float noticePeriod = 0; // notice 10%
+		float expPercentage = 0; //  experience = 20%
+		
 		List<Candidate> CandidateListcopy = new ArrayList<>();
 		String reqSkills = "";
-		String keyWords = "";
 		if(recommendedCustomizeScore.getCustomizeSkills() != null && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
-			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId);
+			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
 			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
@@ -637,11 +638,11 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
 	    	        Candidate candidate =	populateCandidate(candidateIndex);
 					boolean isCandidateAdded = false;
-					float expPercentage = 0; //  experience = 20%
+					
 					int matchedSkillCount = 0;
 					Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
 					List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
-					CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
+					/*CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);*/
 					
 					if(candidateSkillList != null && candidateSkillList.size() >0){
 						for(CandidateSkills candidateSkills : candidateSkillList){
@@ -673,8 +674,9 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					if(candidate.getExpectedRate() != null && !"".equalsIgnoreCase(candidate.getExpectedRate()) && candidate.getRateType() !=null && !"".equalsIgnoreCase(candidate.getRateType())){
 						String candidateRateType = candidate.getRateType();
 						String  expectedRate = candidate.getExpectedRate();
+						expectedRate = expectedRate.substring(0, expectedRate.length() - 2);
 						
-						int reqRate = Integer.parseInt(expectedRate);
+						int reqRate = Integer.parseInt(expectedRate.toString());
 						float perMonthCandidateSal = 0;
 						if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(candidateRateType)){
 							int perDaySal = reqRate *9;
@@ -754,13 +756,20 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					String candidateScore = String.valueOf(roundOff);
 					candidate.setCandidateScore(candidateScore);
 					candidate.setNoOfReq(reqList.size());
-					if(candidateResume != null){
+					candidate.setSkillPercentage(skillPercentage);
+					candidate.setExpPercentage(expPercentage);
+					candidate.setLocationPercentage(locationPercentage);
+					candidate.setRatePercentage(ratePercentage);
+					candidate.setNoticePeriodPercentage(noticePeriod);
+					candidate.setTotalKeyWordPerPercentage(totalKeyWordPer);
+					
+					/*if(candidateResume != null){
 							if(candidateResume.getTitle() !=null && !"".equalsIgnoreCase(candidateResume.getTitle())){
 								candidate.setCandidateResume(candidateResume.getTitle());
 							}else{
 								candidate.setCandidateResume(candidateResume.getFileName());
 							}
-					}
+					}*/
 					if(reqList.size() >0){
 						
 						for(RequirementSubmission reqSubmission : reqList){
@@ -791,7 +800,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	private Candidate populateCandidate(CandidateIndex candidateIndex) {
 		Candidate candidate = new Candidate();
 		candidate.setId(candidateIndex.getCandidateId());
-		 Set<CandidateSkills> set = new HashSet();
+		 Set<CandidateSkills> set = new HashSet<CandidateSkills>();
 		 List<String> skillList = candidateIndex.getSkills();
 		 for(String skill :skillList){
 			 CandidateSkills candSkill = new CandidateSkills();
@@ -801,8 +810,28 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		 candidate.setCandidateSkills(set);
 		 candidate.setCandidateName(candidateIndex.getFirstName());
 		 candidate.setMobilePhone(candidateIndex.getMobilePhone());
-		 logger.info("++++++++++++++++++++++++++++++++++++++++++++++"+candidateIndex.getSummary());
-		 logger.info("*********************************************"+candidateIndex.getResumeContent());
+		 if(null != candidateIndex.getExperienceYears()){
+			 candidate.setExperienceYears(candidateIndex.getExperienceYears().toString());	 
+		 }
+		 if(null != candidateIndex.getExperienceMonths()){
+			 candidate.setExperienceMonths(candidateIndex.getExperienceMonths().toString());
+		 }
+		 if(null != candidateIndex.getNoticePriod() ){
+			 candidate.setNoticePeriod(candidateIndex.getNoticePriod());	 
+		 }
+		 if(null != candidateIndex.getCity()){
+			 candidate.setCity(candidateIndex.getCity());	 
+		 }
+		 if(null != candidateIndex.getCurrentResumeId()){
+			 candidate.setCurrentResumeId(candidateIndex.getCurrentResumeId());	 
+		 }
+		 
+		 if(null != candidateIndex.getExpectedRate() && null != candidateIndex.getRateType()){
+			 candidate.setRateType(candidateIndex.getRateType());
+			 candidate.setExpectedRate(String.valueOf(candidateIndex.getExpectedRate()));
+			 	 
+		 }
+		 
 		return candidate;
 	}
 }

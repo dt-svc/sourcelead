@@ -73,7 +73,7 @@ public class RecommendedCustomizeScoreDaoImpl implements RecommendedCustomizeSco
 		List<RecommendedCustomizeScore> recommendedCustomizeScoreList = session.createQuery(query).setLong("requirementId",requirementId).setCacheable(true).list();
 				
 		RecommendedCustomizeScore customizeScore = null;
-		if (recommendedCustomizeScoreList != null && recommendedCustomizeScoreList.size() > 0) {
+		if (null != recommendedCustomizeScoreList && recommendedCustomizeScoreList.size() > 0) {
 			customizeScore = (RecommendedCustomizeScore) recommendedCustomizeScoreList.iterator().next();
 		}
 		return customizeScore;

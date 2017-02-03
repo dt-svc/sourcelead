@@ -614,14 +614,11 @@ public class RequirementRestController {
 	public @ResponseBody String getRequirementRecommendationsByRequirementId(
 			@RequestParam(value = "requirementId", required = false) Long requirementId, HttpServletRequest request)
 			throws Exception {
-		
-		long startTime = System.currentTimeMillis();
-		
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
        // List<Candidate> candidateList = recommendationsService.getAllCandidatesByLocation(orgLocation.getId());
 		
-		Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
+		//Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
 	    RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
 	    List<Candidate> candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);
 		//List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScoreByUsingElk(orgLocation.getId(),requirement);
@@ -630,9 +627,6 @@ public class RequirementRestController {
 		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScore.getScore(requirementId.getId());
 			
 		List<Candidate> candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);*/
-	    long endTime   = System.currentTimeMillis();
-	    long totalTime = endTime - startTime;
-	   logger.info("**************************Total Service Time "+totalTime);
 		resultJson = commonUtil.toJSON(candidateListCopy);
 		return resultJson;
 

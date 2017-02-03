@@ -1,13 +1,21 @@
 package com.bis.sourcelead.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -18,9 +26,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -31,6 +43,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @PropertySource("${propertyLocation:app.properties}")
 public class RecommendedCustomizeScoreRestController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(RecommendedCustomizeScoreRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -41,8 +54,13 @@ public class RecommendedCustomizeScoreRestController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
-	
-	
+	 @Autowired
+	 private CandidateResumesService candidateResumeSerivce;
+	 
+	 @Autowired
+	 private CandidateService candidateService;
+	 
+	 
 	 
 	 @Autowired
 	 CommonUtil commonUtil;
@@ -175,10 +193,9 @@ public class RecommendedCustomizeScoreRestController {
 		
 		recommendedCustomizeScoreService.updateCustomizeScore(rcs);
 		
-		
-		
 		return "success";
 	}
+	
 	
    protected static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
