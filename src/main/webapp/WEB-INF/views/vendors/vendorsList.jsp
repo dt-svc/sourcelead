@@ -244,8 +244,8 @@ overflow-x: auto;
                   <label>Invitation</label>
                   <div class="clearfix">
                 		 <select class="chosen-select form-control input-sm" multiple data-placeholder="Invitation" id="invitationAdvanced" name="invitationAdvanced">
-											<option value="Sent">Sent</option>
-											<option value="New">New</option>
+											<option value="Sent">Resend</option>
+											<option value="New">send</option>
 											<option value="Accepted">Accepted</option>
 											<option value="Rejected">Rejected</option>
 						</select>
@@ -1718,9 +1718,9 @@ function pagination1(){
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Vendor City:</strong>';
-							if(json.city != null && json.city !='' && json.city !='undefined'){
-								result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
+							result = result + '<strong>Vendor Country:</strong>';
+							if(json.country != null && json.country !='' && json.country !='undefined'){
+								result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
 							}else{
 								result = result + '<span>No Data</span><div class="clearfix"></div>';
 							}
@@ -1736,9 +1736,9 @@ function pagination1(){
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Vendor Country:</strong>';
-							if(json.country != null && json.country !='' && json.country !='undefined'){
-								result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
+							result = result + '<strong>Vendor City:</strong>';
+							if(json.city != null && json.city !='' && json.city !='undefined'){
+								result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
 							}else{
 								result = result + '<span>No Data</span><div class="clearfix"></div>';
 							}

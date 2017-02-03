@@ -28,13 +28,11 @@
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
 </head>
-
-
 <script src="resources/js/jquery-1.11.1.min.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script>
 <script src="resources/js/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/jquery.dataTables.min.js"></script> 
+<script src="resources/js/jquery-fun.js"></script>
+<script src="resources/js/jquery.dataTables.min.js"></script>
 <script src="resources/js/jquery.timepicker.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/bootstrap-select.min.js"></script>
@@ -335,22 +333,11 @@ function notificationStatusAsRead(){
 		      <div class="clearfix require_wrap_table dashboard-data" id="myTask">
 		        <div class="addtsk-btn"> <span class="btn btn-success btn-sm" onClick="showtaskdiv()"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Task</span> </div>
 		        <ul class="nav nav-tabs">
-		          <li class="active"><a data-toggle="tab" href="#my-task" onclick="tasksList('myTask');">My Tasks</a></li>
-		          <li><a data-toggle="tab" href="#other-task" onclick="assignedTasksList('assignedTasks');">Assigned Tasks</a></li>
-		          <li><a data-toggle="tab" href="#closed-task" onclick="closedTasksList('closedTasks');">Closed Task</a></li>
+		          <li id="myTaskDivId"><a data-toggle="tab" href="#my-task" onclick="tasksList('myTask');">My Tasks</a></li>
+		          <li id="assignedTasksDivId"><a data-toggle="tab" href="#other-task" onclick="assignedTasksList('assignedTasks');">Assigned Tasks</a></li>
+		          <li id="closedTasksDivId"><a data-toggle="tab" href="#closed-task" onclick="closedTasksList('closedTasks');">Closed Task</a></li>
 		        </ul>
 				        <div class="tab-content clearfix">
-				        <div id="other-task" class="tab-pane fade">
-							 <div class="col-md-6 clearfix newdate">
-			                    <i class="fa fa-filter"></i>
-								 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="assignedTaskDatpicker" id="assignedTaskDatpicker"  type="text" readonly="readonly" >
-								<i class="fa fa-calendar"></i></span>
-				               </div>								
-					            <div class="clearfix require_wrap_table">
-					              <div id="assignedTasksId"></div>
-					            </div>
-				          </div>
-				          
 				          <div id="my-task" class="tab-pane fade in active">
 				               <div class="col-md-6 clearfix newdate">
 				                    <i class="fa fa-filter"></i>
@@ -362,6 +349,17 @@ function notificationStatusAsRead(){
 				               <div id="myTasksId"></div>
 				              
 				            </div>
+				          </div>
+				          
+				          <div id="other-task" class="tab-pane fade">
+							 <div class="col-md-6 clearfix newdate">
+			                    <i class="fa fa-filter"></i>
+								 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="assignedTaskDatpicker" id="assignedTaskDatpicker"  type="text" readonly="readonly" >
+								<i class="fa fa-calendar"></i></span>
+				               </div>								
+					            <div class="clearfix require_wrap_table">
+					              <div id="assignedTasksId"></div>
+					            </div>
 				          </div>
 				          
 				          <div id="closed-task" class="tab-pane fade">
@@ -485,6 +483,11 @@ function notificationStatusAsRead(){
 						url : sourceleadUrl+ "/storeTasks?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 						success : function(result) {
 							taskwidget();
+							    document.getElementById("assignedTasksDivId").className = 'active'
+								document.getElementById("closedTasksDivId").removeAttribute("class")
+								document.getElementById("myTaskDivId").removeAttribute("class")
+								$("#closed-task, #my-task").hide();
+							    $("#other-task").show().css("opacity", "1");
 							assignedTasksList('assignedTasks');
 						},
 					});
@@ -575,6 +578,9 @@ $(".collpase-div").click(function(){
 	$(".newTask-widget").hide();
 	$("#myTask").show();
 	tasksList('myTask');
+		document.getElementById("myTaskDivId").className = 'active'
+		document.getElementById("closedTasksDivId").removeAttribute("class")
+		document.getElementById("assignedTasksDivId").removeAttribute("class")
  });
  
 
@@ -638,6 +644,8 @@ function assignedUserList(){
 
 <script type="text/javascript">
 function tasksList(status){
+	$("#closed-task, #other-task").hide();
+    $("#my-task").show().css("opacity", "1");
 	var sourceleadUrl ='${sourceleadUrl}';
 	var date = $("#myTaskDatpicker").val();
 	$.ajax({
@@ -717,6 +725,8 @@ function tasksList(status){
 
 <script type="text/javascript">
 function assignedTasksList(status){
+	$("#my-task, #closed-task").hide();
+    $("#other-task").show().css("opacity", "1");
 	var sourceleadUrl ='${sourceleadUrl}';
 	var date = $("#assignedTaskDatpicker").val();
 	$.ajax({
@@ -797,6 +807,8 @@ function assignedTasksList(status){
 
 <script type="text/javascript">
 function closedTasksList(status){
+	$("#my-task, #other-task").hide();
+    $("#closed-task").show().css("opacity", "1");
 	var sourceleadUrl ='${sourceleadUrl}';
 	var date = $("#closedTaskDatpicker").val();
 	$.ajax({
@@ -907,7 +919,7 @@ function updateAssignTaskStatus(taskId){
 function myTasksPagination(){
     $('#myTasksPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -922,7 +934,7 @@ function myTasksPagination(){
 function assignedTasksPagination(){
     $('#assignedTasksPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -936,7 +948,7 @@ function assignedTasksPagination(){
 function closedTasksPagination(){
     $('#closedTasksPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -965,7 +977,7 @@ $('.taskpop-close').click(function (){
 });
 </script>
 
-<script>
+<!-- <script>
 //scroll top top fix Header
 jQuery(window).scroll(function(){
 var top = jQuery(window).scrollTop();
@@ -974,5 +986,15 @@ jQuery('.main-header').addClass('navbar-fixed-top');
 } else {
 jQuery('.main-header').removeClass('navbar-fixed-top');}
 });
+</script> -->
+<script>
+jQuery(window).scroll(function () {
+if( jQuery(window).scrollTop() > jQuery('.main-header').offset().top + 50 && !(jQuery('.main-header').hasClass('navbar-fixed-top'))){
+jQuery('.main-header').addClass('navbar-fixed-top').animate({"top":"0%"}, 500);
+} else if (jQuery(window).scrollTop() <= 10){
+jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-13%"});
+}
+});
 </script>
+
 <!-- Task related code Ends -->

@@ -249,8 +249,8 @@ overflow-x: auto;
                   <label>Invitation</label>
                   <div class="clearfix">
                 		 <select class="chosen-select form-control input-sm" multiple data-placeholder="Invitation" id="invitationAdvanced" name="invitationAdvanced">
-											<option value="Sent">Sent</option>
-											<option value="New">New</option>
+											<option value="Sent">Resend</option>
+											<option value="New">Send</option>
 											<option value="Accepted">Accepted</option>
 											<option value="Rejected">Rejected</option>
 						</select>
@@ -1288,7 +1288,7 @@ function preparedClientListFromElk(data){
 		   	}else{
 		   		result = result +'<td><div>---</div></td>';
 		   	}
-				result = result +'<td><div>---</div></td>';
+		   	result = result +'<td><div id="noOfContactsCount'+report.id+'">---</div></td>';
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
 				}

@@ -191,7 +191,7 @@ public class CandidateListRestController {
 			    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
 			    	    CandidateIndex candidateIndex = mapper.readValue(json.toString(), CandidateIndex.class);
 			    	    if(candidateIndex.getUpdatedDate() != null){
-			    	    	candidateIndex.setCandidateUpdateDateToString(Constants.DF_YMD.format(candidateIndex.getUpdatedDate()));
+			    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
 			   			}
 			    	    candidatesList.add(candidateIndex);
 			    	}

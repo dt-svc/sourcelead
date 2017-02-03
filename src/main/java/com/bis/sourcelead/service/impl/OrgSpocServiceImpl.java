@@ -632,5 +632,10 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		
 		 
 		}
+
+	@Override
+	public OrgSpoc getSpocListByResponderLocationId(Long initiatingPartyOrgLocationId,Long responderLocationId,String respondingOrgType) throws Exception {
+		return orgSpocDao.getSpocListByResponderLocationId(initiatingPartyOrgLocationId,responderLocationId,respondingOrgType);
+	}
 	
 }

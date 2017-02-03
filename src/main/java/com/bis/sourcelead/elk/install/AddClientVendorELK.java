@@ -60,11 +60,10 @@ public class AddClientVendorELK {
 	private ArrayList<ClientVendorIndex> getElkCampaigns() throws Exception{
 		 DataSource dataSource = comboPooledDataSource();
 		ArrayList<ClientVendorIndex> clientVendorList = new ArrayList<ClientVendorIndex>();
+		Connection conn = dataSource.getConnection();
 		 try {
 				
 				String sql = "SELECT * FROM sourcelead.ORG_RELATIONS relation";
-				
-				Connection conn = dataSource.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);
 			    while(rs.next()){
@@ -72,6 +71,7 @@ public class AddClientVendorELK {
 			    	ClientVendorIndex clientVendorIndex = new ClientVendorIndex();
                        String createdBy =  rs.getString("CREATED_BY");
 			    	   Long  responderLocationId = rs.getLong("RESPONDER_LOCATION_ID");
+			    	   Long  initiatorLocationId = rs.getLong("LOCATION_ID");
 			    	   
 			    	clientVendorIndex.setId(rs.getLong("ID"));
 			    	clientVendorIndex.setInitiatorLevel(rs.getString("INITIATOR_LEVEL"));
@@ -105,13 +105,13 @@ public class AddClientVendorELK {
 							 while(rs2.next()){
 								 Long orgId = rs2.getLong("ORG_ID");
 								   if(null != rs2.getString("COUNTRY")){
-									   clientVendorIndex.setCountry(rs2.getString("COUNTRY"));
+									   clientVendorIndex.setResponderCountry(rs2.getString("COUNTRY"));
 								   }
 								   if(null != rs2.getString("STATE")){
-									   clientVendorIndex.setState(rs2.getString("STATE"));
+									   clientVendorIndex.setResponderState(rs2.getString("STATE"));
 								   }
 								   if(null != rs2.getString("CITY")){
-									   clientVendorIndex.setCity(rs2.getString("CITY"));
+									   clientVendorIndex.setResponderCity(rs2.getString("CITY"));
 								   }
 								   
 								   String sql3 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+orgId+"' ";
@@ -120,10 +120,42 @@ public class AddClientVendorELK {
 									if(rs3 != null){
 										 while(rs3.next()){
 											   if(null != rs3.getString("ORG_NAME")){
-												   clientVendorIndex.setOrgName(rs3.getString("ORG_NAME"));
+												   clientVendorIndex.setResponderOrgName(rs3.getString("ORG_NAME"));
 											   }
 											   if(null != rs3.getString("WEBSITE")){
-												   clientVendorIndex.setWebsite(rs3.getString("WEBSITE"));
+												   clientVendorIndex.setResponderWebSite(rs3.getString("WEBSITE"));
+											   }
+									    }
+				    	           }
+						    }
+							
+	    	           }
+						String sql4 = "SELECT * FROM sourcelead.ORG_LOCATIONS  initiatorLocationId where initiatorLocationId.ID = '"+initiatorLocationId+"' ";
+						Statement stmt4 = conn.createStatement();
+						ResultSet rs4 = stmt4.executeQuery(sql4);
+						if(rs4 != null){
+							 while(rs4.next()){
+								 Long orgId = rs4.getLong("ORG_ID");
+								   if(null != rs4.getString("COUNTRY")){
+									   clientVendorIndex.setInitiatorCountry(rs4.getString("COUNTRY"));
+								   }
+								   if(null != rs4.getString("STATE")){
+									   clientVendorIndex.setInitiatorState(rs4.getString("STATE"));
+								   }
+								   if(null != rs4.getString("CITY")){
+									   clientVendorIndex.setInitiatorCity(rs4.getString("CITY"));
+								   }
+								   
+								   String sql5 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+orgId+"' ";
+									Statement stmt5 = conn.createStatement();
+									ResultSet rs5 = stmt5.executeQuery(sql5);
+									if(rs5 != null){
+										 while(rs5.next()){
+											   if(null != rs5.getString("ORG_NAME")){
+												   clientVendorIndex.setInitiatorOrgName(rs5.getString("ORG_NAME"));
+											   }
+											   if(null != rs5.getString("WEBSITE")){
+												   clientVendorIndex.setInitiatorWebSite(rs5.getString("WEBSITE"));
 											   }
 									    }
 				    	           }
@@ -133,9 +165,11 @@ public class AddClientVendorELK {
 						clientVendorList.add(clientVendorIndex);
 			    	
 			    }
-			   conn.close();
+			 //  conn.close();
 		}catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			conn.close();
 		}
 		return clientVendorList;
 	}

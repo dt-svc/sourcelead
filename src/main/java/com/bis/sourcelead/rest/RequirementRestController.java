@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -40,6 +41,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
@@ -109,6 +111,9 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 private LookUpDataService lookUpDataService;
+
+	 @Autowired
+	 RecommendedCustomizeScoreService recommendedCustomizeScoreService;
 	 
 	/**
 	 * @author prasad k
@@ -615,13 +620,17 @@ public class RequirementRestController {
 			throws Exception {
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
        // List<Candidate> candidateList = recommendationsService.getAllCandidatesByLocation(orgLocation.getId());
 		
-		Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
+		//Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
+	    RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
+	    List<Candidate> candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);
+		//List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScoreByUsingElk(orgLocation.getId(),requirement);
 		
-		List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScoreByUsingElk(orgLocation.getId(),requirement);
-
+		/*Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
+		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScore.getScore(requirementId.getId());
+			
+		List<Candidate> candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);*/
 		resultJson = commonUtil.toJSON(candidateListCopy);
 		return resultJson;
 
