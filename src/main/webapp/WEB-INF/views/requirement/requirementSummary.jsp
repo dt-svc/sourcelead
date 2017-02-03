@@ -569,8 +569,6 @@ function openTopDiv(){
 <script>
 function sideBar(requirementId){
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  var clientSubmissions = '${clientSubmissions}';
-	  var isSpocActive = '${isSpocActive}';
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
@@ -624,26 +622,26 @@ function sideBar(requirementId){
 					    result = result+'<li><i class="fa fa-black-tie"></i><span>Experience : --</span></li>';
 				        }
 				        
-				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined')
+				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '')
 				    	   {
 				        result = result+' <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
 				    	   }
-				       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
+				       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
 					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
-				       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
+				       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
 					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
 				       }
-				       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
+				       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
 					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
    
 				       }
-				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
+				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
 					   result = result+'<li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
    
 				       }
-				       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
+				       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
 					   result = result+'<li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
   
 				       }
@@ -724,7 +722,7 @@ function sideBar(requirementId){
 					   
 					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'REJECTED' &&  json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
                             var all = 'all';
-					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Applicants</a></li>';
+					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Pipeline</a></li>';
 					    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
                              result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
                              '</sec:authorize>';
@@ -739,113 +737,6 @@ function sideBar(requirementId){
 						    result = result+'</div>';
 						    result = result +'<div id="pipelineLoading"></div>';
 						    result = result +'<div id="status-div"></div>';
-						    
-						    //#####################  actions div @prasad salina ################################################
-						    //For Add Applicant div
-							result = result + '<div class="new_side_wrap">';
-							result = result + '<div class="new_side_wrap_inn">';
-							result = result + '<div class="new_side_wrap_cta">';
-							result = result +'<div id="addApplicantDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-							//For Add Interview Div
-							result = result + '<div class="add_inter_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addInterviewDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Interview Div
-							
-							//For Add Offer Div
-							result = result + '<div class="add_offer_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addOfferDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Offer Div  
-							
-							
-							//For Submit to Client Div
-							result = result +'<div class="submitnew-wrap">';
-							result = result +' <div class="new_side_wrap_inn">';
-							result = result +'<div class="add_inter">';
-							result = result + '<div id="submitToClientDiv"></div>';
-							result = result + '<div id="emailTemplateDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							//For Submit to Client Div
-							
-							result = result +'<div class="shortlist-wrap">';
-							result = result +'<div class="new_side_wrap_inn">';
-							result = result +'<divsubStatus class="add_inter">';
-							result = result + '<div id="shortlistDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-                             //Candidate submissions details Div
-							 result = result +' <div class="clients_side_wrap">';
-							 result = result +'<div class="clients_side_wrap_inn">';
-							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
-							 result = result + '<div id="viewCandidateDiv"></div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							 
-							 var submitToClient = '';
-						     if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-	           				    submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
-	           			     }
-							
-				            result = result +'<div id="actionsDiv" class="timesheet_head timesheetHead candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">';
-				            result = result +'  <ul>';
-				            result = result +'    <li class="li-vendor">';
-				            /* result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
-				            result = result +'      <div class="export_pop">';
-				            result = result +'        <ul>';
-				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
-				            result = result +'        </ul>';
-				            result = result +'      </div>';
-				            result = result +'    </li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>'; */
-				           
-				            
-				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
-				            result = result +'<div class="action-pop">';
-				            result = result +'	<span>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
-				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-				            	result = result + submitToClient
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
-				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
-				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
-				            '</sec:authorize>';
-				            result = result +'    </span>';
-				            result = result +' </div>';	
-				            result = result +' </li>';
-				            
-				            
-				           result = result + '<div class="clearfix"></div>';
-				           result = result + '</div>';
-				           //#####################  actions div @prasad salina ################################################
-						    
-						    
 							result = result +'<div id="status-data"></div>';
 						   
 						    result = result+'<div id="tab-3" class="project_tabs_inn overflow-data">';
@@ -909,7 +800,6 @@ function sideBar(requirementId){
 --%>
 <script>  
 function requirementDetails(requirementId){ 
-	$("#actionsDiv" ).hide();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
@@ -1334,8 +1224,6 @@ function cancelAlert(){
 --%>
 <script>  
 function requirementPipeline(requirementId,submissionType){
-	$("#actionsDiv" ).show();
-	
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
@@ -1345,27 +1233,130 @@ function requirementPipeline(requirementId,submissionType){
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
          success :function(data) {  
+        	//requirementSubmissionCount(requirementId);
         	 var result =""; 
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
             		
             			 var submitToClient = '';
-            			
+            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+            			 }
             			   
 							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-							 result = result +'<span class="applicant_export">';
-							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-					            result = result +'<div class="export_pipline" style="display:none">';
-					            result = result +'<ul>';
-					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-					            result = result +' </ul>';
-					            result = result +'</div>';
-					          '</sec:authorize>';
-					          result = result +'</span>';
+							
+							//For Add Applicant div
+							result = result + '<div class="new_side_wrap">';
+							result = result + '<div class="new_side_wrap_inn">';
+							result = result + '<div class="new_side_wrap_cta">';
+							result = result +'<div id="addApplicantDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+							//For Add Interview Div
+							result = result + '<div class="add_inter_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addInterviewDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Interview Div
+							
+							//For Add Offer Div
+							result = result + '<div class="add_offer_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addOfferDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Offer Div  
+							
+							
+							//For Submit to Client Div
+							result = result +'<div class="submitnew-wrap">';
+							result = result +' <div class="new_side_wrap_inn">';
+							result = result +'<div class="add_inter">';
+							result = result + '<div id="submitToClientDiv"></div>';
+							result = result + '<div id="emailTemplateDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							//For Submit to Client Div
+							
+							
+							
+							result = result +'<div class="shortlist-wrap">';
+							result = result +'<div class="new_side_wrap_inn">';
+							result = result +'<divsubStatus class="add_inter">';
+							result = result + '<div id="shortlistDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+                             //Candidate submissions details Div
+							 result = result +' <div class="clients_side_wrap">';
+							 result = result +'<div class="clients_side_wrap_inn">';
+							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
+							 result = result + '<div id="viewCandidateDiv"></div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							
+				           // result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
+				            //result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
+				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
+				            result = result +'  <ul>';
+				            result = result +'    <li class="li-vendor">';
+				          //  result = result +'      <input type="text" class="vendorfild" placeholder="Search">';
+				          // result = result +'      <i class="fa fa-search"></i></li>';
+				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
+				            result = result +'      <div class="export_pop">';
+				            result = result +'        <ul>';
+				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
+				            result = result +'        </ul>';
+				            result = result +'      </div>';
+				            result = result +'    </li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
 				           
+				            
+				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
+				            result = result +'<div class="action-pop">';
+				            result = result +'	<span>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
+				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
+				            	result = result + submitToClient
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            '</sec:authorize>';
+				            result = result +'    </span>';
+				            result = result +' </div>';	
+				            result = result +' </li>';
+				            
+				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+				            result = result +'<div class="export_pipline" style="display:none">';
+				            result = result +'<ul>';
+				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +' </ul>';
+				            result = result +'</div>';
+				            result = result +'</li>';
+				            '</sec:authorize>';
 				           result = result + '<div class="clearfix"></div>';
+				           result = result + '</div>';
 				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
 				           result = result + '<div class="clerfix">';
 				           result = result + '<table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
@@ -1373,16 +1364,53 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<tr>';
 				           result = result + '<th>Name</th>';
 				           result = result + '<th>Email</th>';
+				           if(submissionType != 'REJECTED'){
 				           result = result + '<th>Ph. No</th>';
+				           }
 				           result = result + '<th>Resume</th>';
-				           result = result + '<th>Applied on</th>';
-					       result = result + '<th>Rate</th>';
+				           
+				            
+				            
+				            
+				           if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT'){
+				        	   result = result + '<th>Applied on</th>';
+				        	if(submissionType != 'SUBMIT_TO_CLIENT'){
+					           result = result + '<th>Rate</th>';
+				        	}  
 					         if(clientSubmissions == 'Y'){
 					           result = result + '<th>Sub. Rate</th>';
-					         }
-					       result = result + '<th>Source</th>';
-		        		   result = result + '<th>Score</th>';
-				           result = result + '<th>Exp</th>';
+					         }/* else{
+					        	result = result + '<th>Sub. Rate</th>';
+					         } */
+					           result = result + '<th>Source</th>';
+				            }
+				            
+				            
+						  
+				           if(submissionType == 'INTERVIEW'){
+						   result = result + '<th>No.of Interviews</th>'; 
+				           }
+				           if(submissionType == 'SHORTLIST'){
+				        	   result = result + '<th>Shortlisted By</th>'; 
+				           }
+				           if(submissionType == 'OFFERMADE'){
+							   result = result + '<th>Offer Join Date</th>'; 
+							   result = result + '<th>Position Type</th>'; 
+							   result = result + '<th>Offer Rate</th>'; 
+							   result = result + '<th>Attachment</th>'; 
+					           }
+
+				           if(submissionType == 'all' || submissionType == 'DUPLICATE_APPLICANTS' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'|| submissionType == 'REQUEST_SENT'){
+				        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED'){
+				        		   result = result + '<th>Score</th>';
+						           result = result + '<th>Exp</th>';
+				        	   }
+				           }
+				           if(submissionType == 'REJECTED'){
+				        	   result = result + '<th>Rejected On</th>';
+				        	   result = result + '<th>Rejected By</th>';
+					           result = result + '<th>Rejected Stage</th>';
+				           }
 				           result = result + '<th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
@@ -1412,6 +1440,7 @@ function requirementPipeline(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
 						           
+						           if(submissionType != 'REJECTED'){
 						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
 							           }
@@ -1419,78 +1448,220 @@ function requirementPipeline(requirementId,submissionType){
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
+						           }
 						           
-						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
+						           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
 						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+						        	  /*  result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a>&nbsp;&nbsp;'+report.resumeName+'</span></div></td>'; */
 							           }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
 						    	     }
 						           
+						           if(submissionType == 'all' || submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'|| submissionType == 'REQUEST_SENT'){
 						        	   
-					        	    if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
-							           }
-							        else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-							          
-						            if(report.vendorLocationId != null && report.sourceSubmission != null){
-						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+						        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     }
-						            }else{
-						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							           /* if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop" id="ratepop"></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-						            }
+							    	     } */
+							    	     
+						        	   if(submissionType != 'SUBMIT_TO_CLIENT'){
+								           if(report.vendorLocationId != null && report.sourceSubmission != null){
+								        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+									        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
+										           }
+										       else{
+										        	result = result + '         <td><div><span>--</span></div></td>';
+									    	     }
+								           }else{
+								        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+									        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop" id="ratepop"></div></td>';
+										           }
+										       else{
+										        	result = result + '         <td><div><span>--</span></div></td>';
+									    	     }
+								           }
+						        	   }
 							          
-							      if(clientSubmissions == 'Y'){
+							    	   if(clientSubmissions == 'Y'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
 							        	   }else{
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							           }else{
+// 							        	   if(clientSubmissions == 'Y'){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
 							        	   }else{
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
+// 							        	   }
 							           }
-							       }
+							           }
 							           
-						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     } 
-						          
-						        	   
-				        		   if(report.candidateScore != null){
-				        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
-							           }
-							       else{
-							    	   result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
+							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     } 
+						           }
 						           
-						           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
+						           if(submissionType == 'INTERVIEW'){
+						        	   
+						        	   if(report.totalNoOfInterviews != null && report.totalNoOfInterviews != '' && report.totalNoOfInterviews != 'undefined'){
+						        		   /* ------tooltip---- */
+						        		   result = result +'<td><a heref="#"><div class="show-tooltip"><span style="text-decoration: underline;">'+report.totalNoOfInterviews+'</span>';
+						       		   if(report.requirementInterviewHistoryList.length > 0){
+						       		        result = result +'<div class="tooltipint_detilas">';
+						       			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
+						       			    result = result +' <thead><tr>';
+						       			 	result = result +'<th>Interview&nbsp;Type</th>';
+						       			    result = result +'<th>Interview&nbsp;Date</th>';
+						       			    result = result +'<th>Start&nbsp;Time</th>';
+						       			    result = result +'<th>End Time</th>';
+						       			    result = result +'<th>Location</th>';
+						       			   // result = result +'<th>Feedback</th>';
+						       			    result = result +'<th>Interview</th>'; 
+						       			    result = result +'</tr></thead>';
+						       			    result = result +'<tbody>';
+						       			    for(var j=0;j<report.requirementInterviewHistoryList.length;j++){
+						       			    	 var sub = report.requirementInterviewHistoryList[j];
+						       			    	 var location = "---";
+						       			    	 var endDate = "---";
+						       			    	 if(sub.interviewId.location != null && sub.interviewId.location != "" && sub.interviewId.location !="undefined"){
+						       			    		location = sub.interviewId.location;
+						       			    	 }
+						       			    	
+						       			    	 if(sub.interviewId.endTimeStr != null && sub.interviewId.endTimeStr != "" && sub.interviewId.endTimeStr !="undefined"){
+						       			    		endDate = sub.interviewId.endTimeStr;
+						       			    	 }
+						       			    	result = result +'<tr>';
+							       			       if(sub.interviewId.interviewType != null && sub.interviewId.interviewType != '' && sub.interviewId.interviewType != 'undefined'){
+							       			    	result = result +'<td><span>'+sub.interviewId.interviewType+'</span></td>';
+							       			       }else{
+							       			    	result = result +'<td><span>--</span></td>';
+							       			       }
+							       			    if(sub.dateOfInterviewStr != null && sub.dateOfInterviewStr != '' && sub.dateOfInterviewStr != 'undefined'){
+							       			    	result = result +'<td><span>'+sub.dateOfInterviewStr+'</span></td>';
+							       			    }else{
+							       			    	result = result +'<td><span>--</span></td>';
+							       			    }
+							       			    
+							       			   if(sub.startTimeStr != null && sub.startTimeStr != '' && sub.startTimeStr != 'undefined'){
+							       			 	result = result +'<td><span>'+sub.startTimeStr+'</span></td>';
+							       			    }else{
+							       			    	result = result +'<td><span>--</span></td>';
+							       			    }
+							       			 
+							       			   if(sub.endTimeStr != null && sub.endTimeStr != '' && sub.endTimeStr != 'undefined'){
+							       				result = result +'<td><span>'+sub.endTimeStr+'</span></td>';
+							       			    }else{
+							       			    	result = result +'<td><span>--</span></td>';
+							       			    }
+							       			if(location != null && location != '' && location != 'undefined'){
+							       				result = result +'<td><span>'+location+'</span></td>';
+							       			    }else{
+							       			    	result = result +'<td><span>--</span></td>';
+							       			    }
+						       			    	
+						       			    	 result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>'; 
+						       			    	result = result +'</tr>';
+						       			    } 
+						       			    result = result +'</tbody>';
+						       			    result = result +' </table>';
+						       			    result = result +' </div>'; 
+						       		    } 
+						       		    result = result +' </div></a></td>';
+						        		   /* ----------tooltip end------------- */
+						        		   
+								           }else{
+								        	   result = result + '<td><div><span>--</span></div></td>'; 
+								           }
 							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
-						           result = result + '</div></td>';
+						           if(submissionType == 'SHORTLIST'){
+						        	   if(report.submittedBy != null && report.submittedBy != '' && report.submittedBy != 'undefined'){ 
+						        	   result = result + '<td><div><span>'+report.submittedBy+'</span></div></td>';
+						        	   }else{
+						        		   result = result + '<td><div><span>--</span></div></td>';
+						        	   }
+						           }
+						           if(submissionType == 'OFFERMADE'){
+						        	   if(report.offerJoinDate != null && report.offerJoinDate != '' && report.offerJoinDate != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.offerJoinDate+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     } 
+						        	   if(report.positionType != null && report.positionType != '' && report.positionType != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.positionType+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     } 
+						        	   if(report.offerRate != null && report.offerRate != '' && report.offerRate != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.offerRate+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     } 
+						        	   if(report.attachment != null && report.attachment != '' && report.attachment != 'undefined'){
+						        		   result = result + '         <td><div><span><a href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId+'\">'+report.attachment+'</a></span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     } 
+						           }
+
+						           if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT' || submissionType == 'OFFERMADE'){
+						        	   
+						        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED' && submissionType != 'OFFERMADE'){
+						        		   if(report.candidateScore != null){
+						        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
+									           }
+									       else{
+									    	   result = result + '         <td><div><span>--</span></div></td>';
+								    	     }
+								           
+								           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+								        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
+									           }
+									       else{
+									        	result = result + '         <td><div><span>--</span></div></td>';
+								    	     }
+						        	   }
+						        	   
+						        	  
+							           
+							           if(submissionType == 'REJECTED'){
+							           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submittedBy+'</span>';
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
+							           
+							           }
+							           
+							           if(report.submissionStatus == 'REJECTED'){
+							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+							        	   }		  
+							           }else{
+							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+								           result = result + '</div></td>';
+							           }
+							           
 							          
+						           }
 						           result = result + '       </tr>';
 			   				}
 				           
@@ -1506,7 +1677,6 @@ function requirementPipeline(requirementId,submissionType){
 							$("#pipelineLoading").removeAttr("style");
 							$("#status-data").empty();
 							$("#status-data").append(result);
-						
 							$("#tab-2").append(status-data);
 							$("#loading").removeAttr("style"); 
 							$("#emptyPipelinelist").val(json.length);
@@ -1559,1431 +1729,6 @@ function documentpagination(){
     } );
 }
 </script>
-
-<!-- script for Duplicate Applicants --> 
-<script>  
-function requirementPipelineDA(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
-	  var clientSubmissions = '${clientSubmissions}';
-	  var isSpocActive = '${isSpocActive}';
-	  
-	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
-         success :function(data) {  
-        	 var result =""; 
-        	 if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            		
-            			   
-						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-						   
-						   result = result +'<span class="applicant_export">';
-							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-					            result = result +'<div class="export_pipline" style="display:none">';
-					            result = result +'<ul>';
-					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-					            result = result +' </ul>';
-					            result = result +'</div>';
-					          '</sec:authorize>';
-					       result = result +'</span>';
-					       
-				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
-				           result = result + '<div class="clerfix">';
-				           result = result + '<table id="requirementsPaginationDA" class="display" cellspacing="0" width="100%"">';
-				           result = result + '<thead>';
-				           result = result + '<tr>';
-				           result = result + '<th>Name</th>';
-				           result = result + '<th>Email</th>';
-				           result = result + '<th>Ph. No</th>';
-				           result = result + '<th>Resume</th>';
-				           result = result + '<th>Applied on</th>';
-					       result = result + '<th>Rate</th>';
-					         if(clientSubmissions == 'Y'){
-					           result = result + '<th>Sub. Rate</th>';
-					         }
-					       result = result + '<th>Source</th>';
-		        		   result = result + '<th>Score</th>';
-				           result = result + '<th>Exp</th>';
-				           result = result + '<th>Status</th>';
-				           result = result + '         </tr>';
-				           result = result + '       </thead>';
-				           result = result + '       <tbody>';
-				           for (var i=0; i<json.length; i++)
-			   				{  
-			   	        		var report = json[i];
-			   	        		
-			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
-			   	        			orgName = "("+report.orgName+")";
-			   	        		}else{
-			   	        			orgName = "";
-			   	        		}
-
-						           result = result + '       <tr>';
-						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
-						           '</sec:authorize>';
-						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
-						           '</sec:authorize>';
-						           
-						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
-							        }  else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	    }
-						           
-						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
-							           }
-							       else{
-							    	   result = result + '         <td><div>--</div></td>';
-						    	     }
-						           
-						        	   
-					        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-							           
-							    	     
-						           if(report.vendorLocationId != null && report.sourceSubmission != null){
-						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-						           }else{
-						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-						           }
-							          
-							     if(clientSubmissions == 'Y'){
-							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
-							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-							        	   }else{
-							        		   result = result + '         <td><div><span>--</span></div></td>';
-							        	   }
-							           }else{
-							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-							        	   }else{
-							        		   result = result + '         <td><div><span>--</span></div></td>';
-							        	   }
-							           }
-							       }
-							           
-						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     } 
-						        	   
-				        		   if(report.candidateScore != null){
-				        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
-							           }
-							       else{
-							    	   result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
-						           result = result + '</div></td>';
-							           
-							          
-						           result = result + '       </tr>';
-			   				}
-				           
-				           
-				           result = result + '       </tbody>';
-				           result = result + '     </table>';
-				           result = result + '   </div>';
-				           result = result + '   </div>';
-				           
-				           
-							$("#tab-1").empty();
-							$("#tab-3").empty();
-							$("#pipelineLoading").removeAttr("style");
-							$("#status-data").empty();
-							$("#status-data").append(result);
-							$("#tab-2").append(status-data);
-							$("#loading").removeAttr("style"); 
-							$("#emptyPipelinelist").val(json.length);
-							
-							documentpaginationDA();
-							$("#tab-2").show();
-							$(".project-tabs-menu a").click(function(event) {
-							     event.preventDefault();
-							     $(this).parent().addClass("current");
-							     $(this).parent().siblings().removeClass("current");
-							     var tab = $(this).attr("href");
-							     $(".project_tabs_inn").not(tab).css("display", "none");
-							     $(tab).fadeIn();
-							 });
-							prepareAllCounts(requirementId);
-							
-              }else{
-                     	 $("#requirementSideDiv").removeAttr("style");
-      		    	     result = result+"   <div class='row'>"; 
-      					 result = result+"	<div class='col-lg-12'>"; 
-      					 result = result+"		<div class='content-area clearfix'>"; 
-      					 result = result+"			<div class='blank-pages'>";
-      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-      					 result = result+"			        <p>No Candidates Found</p>";
-      					 result = result+"			 </div>";
-      					 result = result+"		</div>"; 
-      					 result = result+"	</div>"; 
-      					 result = result+"  </div> "; 
-      					$("#requirementSideDiv").empty();
-      				    $("#requirementSideDiv").append(result); 
-                      }
-               },
-                 
-            }); 
-	 
-}
-</script>
-
-<script>
-function documentpaginationDA(){  
-    $('#requirementsPaginationDA').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": ""
-     	}
-    } );
-}
-</script>
-
-
-<!-- Script for Request Sent List -->
-<script>  
-function requirementPipelineRS(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
-	  var clientSubmissions = '${clientSubmissions}';
-	  var isSpocActive = '${isSpocActive}';
-	  
-	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
-         success :function(data) {  
-        	 var result =""; 
-        	 if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            		
-						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-						   
-						   result = result +'<span class="applicant_export">';
-							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-					            result = result +'<div class="export_pipline" style="display:none">';
-					            result = result +'<ul>';
-					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-					            result = result +' </ul>';
-					            result = result +'</div>';
-					          '</sec:authorize>';
-					       result = result +'</span>';
-						   
-						   result = result + '<div class="require_wrap_table overflow-data filter-position">';
-				           result = result + '<div class="clerfix">';
-				           result = result + '<table id="requirementsPaginationRS" class="display" cellspacing="0" width="100%"">';
-				           result = result + '<thead>';
-					           result = result + '<tr>';
-					           result = result + '<th>Name</th>';
-					           result = result + '<th>Email</th>';
-					           result = result + '<th>Ph. No</th>';
-					           result = result + '<th>Resume</th>';
-					           result = result + '<th>Applied on</th>';
-					           result = result + '<th>Rate</th>';
-					           if(clientSubmissions == 'Y'){
-						           result = result + '<th>Sub. Rate</th>';
-						       }
-					           result = result + '<th>Source</th>';
-			        		   result = result + '<th>Score</th>';
-					           result = result + '<th>Exp</th>';
-					           result = result + '<th>Status</th>';
-					           result = result + '</tr>';
-				           result = result + '</thead>';
-				           
-				           result = result + '<tbody>';
-				           for (var i=0; i<json.length; i++)
-			   				{  
-			   	        		var report = json[i];
-			   	        		
-			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
-			   	        			orgName = "("+report.orgName+")";
-			   	        		}else{
-			   	        			orgName = "";
-			   	        		}
-
-						           result = result + '<tr>';
-						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
-						           '</sec:authorize>';
-						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
-						           '</sec:authorize>';
-						           
-						            if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
-							        }else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	    }
-						           
-						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
-							       }else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	   }
-						           
-						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
-							       }else{
-							    	   result = result + '         <td><div>--</div></td>';
-						    	   }
-						        	   
-					        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
-							       }else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	   }
-							    	     
-						           if(report.vendorLocationId != null && report.sourceSubmission != null){
-						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-						           }else{
-						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-						           }
-							          
-							    	if(clientSubmissions == 'Y'){
-							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
-							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-							        	   }else{
-							        		   result = result + '         <td><div><span>--</span></div></td>';
-							        	   }
-							           }else{
-							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-							        	   }else{
-							        		   result = result + '         <td><div><span>--</span></div></td>';
-							        	   }
-							           }
-							        }
-							           
-						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	   } 
-						        	   
-				        		   if(report.candidateScore != null){
-				        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
-							           }
-							       else{
-							    	   result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						        	
-					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
-						           result = result + '</div></td>';
-						           result = result + '       </tr>';
-			   				}
-				           
-				           
-				           result = result + '       </tbody>';
-				           result = result + '     </table>';
-				           result = result + '   </div>';
-				           result = result + '   </div>';
-				           
-				           
-							$("#tab-1").empty();
-							$("#tab-3").empty();
-							$("#pipelineLoading").removeAttr("style");
-							$("#status-data").empty();
-							$("#status-data").append(result);
-							$("#tab-2").append(status-data);
-							$("#loading").removeAttr("style"); 
-							$("#emptyPipelinelist").val(json.length);
-							
-							documentpaginationRS();
-							$("#tab-2").show();
-							$(".project-tabs-menu a").click(function(event) {
-							     event.preventDefault();
-							     $(this).parent().addClass("current");
-							     $(this).parent().siblings().removeClass("current");
-							     var tab = $(this).attr("href");
-							     $(".project_tabs_inn").not(tab).css("display", "none");
-							     $(tab).fadeIn();
-							 });
-							prepareAllCounts(requirementId);
-							
-              }else{
-                     	 $("#requirementSideDiv").removeAttr("style");
-      		    	     result = result+"   <div class='row'>"; 
-      					 result = result+"	<div class='col-lg-12'>"; 
-      					 result = result+"		<div class='content-area clearfix'>"; 
-      					 result = result+"			<div class='blank-pages'>";
-      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-      					 result = result+"			        <p>No Candidates Found</p>";
-      					 result = result+"			 </div>";
-      					 result = result+"		</div>"; 
-      					 result = result+"	</div>"; 
-      					 result = result+"  </div> "; 
-      					$("#requirementSideDiv").empty();
-      				    $("#requirementSideDiv").append(result); 
-                      }
-               },
-                 
-            }); 
-	 
-}
-</script>
-
-<script>
-function documentpaginationRS(){  
-    $('#requirementsPaginationRS').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": ""
-     	}
-    } );
-}
-</script>
-
-<!-- Script for Short List -->
-<script>  
-function requirementPipelineSL(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
-	  var clientSubmissions = '${clientSubmissions}';
-	  var isSpocActive = '${isSpocActive}';
-	  
-	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
-         success :function(data) {  
-        	 var result =""; 
-        	 if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            		
-						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-				           
-						   result = result +'<span class="applicant_export">';
-							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-					            result = result +'<div class="export_pipline" style="display:none">';
-					            result = result +'<ul>';
-					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-					            result = result +' </ul>';
-					            result = result +'</div>';
-					          '</sec:authorize>';
-					       result = result +'</span>';
-						   
-						   result = result + '<div class="require_wrap_table overflow-data filter-position">';
-				           result = result + '<div class="clerfix">';
-				           result = result + '<table id="requirementsPaginationSL" class="display" cellspacing="0" width="100%"">';
-				           result = result + '<thead>';
-				           result = result + '<tr>';
-				           result = result + '<th>Name</th>';
-				           result = result + '<th>Email</th>';
-				           result = result + '<th>Ph. No</th>';
-				           result = result + '<th>Resume</th>';
-			        	   result = result + '<th>Applied on</th>';
-					       result = result + '<th>Rate</th>';
-					       if(clientSubmissions == 'Y'){
-					           result = result + '<th>Sub. Rate</th>';
-					       }
-					       result = result + '<th>Source</th>';
-				           result = result + '<th>Shortlisted By</th>'; 
-		        		   result = result + '<th>Score</th>';
-				           result = result + '<th>Exp</th>';
-				           result = result + '<th>Status</th>';
-				           result = result + '         </tr>';
-				           result = result + '       </thead>';
-				           result = result + '       <tbody>';
-				           for (var i=0; i<json.length; i++)
-			   				{  
-			   	        		var report = json[i];
-			   	        		
-			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
-			   	        			orgName = "("+report.orgName+")";
-			   	        		}else{
-			   	        			orgName = "";
-			   	        		}
-
-						           result = result + '       <tr>';
-						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
-						           '</sec:authorize>';
-						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
-						           '</sec:authorize>';
-						           
-						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
-							           }
-						           
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
-							        }
-							       else{
-							    	   result = result + '         <td><div>--</div></td>';
-						    	     }
-						           
-					        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-							          
-							    	     
-						           if(report.vendorLocationId != null && report.sourceSubmission != null){
-						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-						           }else{
-						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-						           }
-							          
-							    	   if(clientSubmissions == 'Y'){
-							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
-							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-							        	   }else{
-							        		   result = result + '         <td><div><span>--</span></div></td>';
-							        	   }
-							           }else{
-							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-							        	   }else{
-							        		   result = result + '         <td><div><span>--</span></div></td>';
-							        	   }
-							           }
-							           }
-							           
-							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     } 
-						           
-						          
-						        	   if(report.submittedBy != null && report.submittedBy != '' && report.submittedBy != 'undefined'){ 
-						        	   result = result + '<td><div><span>'+report.submittedBy+'</span></div></td>';
-						        	   }else{
-						        		   result = result + '<td><div><span>--</span></div></td>';
-						        	   }
-						        	
-					        		   if(report.candidateScore != null){
-					        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
-								           }
-								       else{
-								    	   result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-							           
-							           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-							           
-						        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
-							           result = result + '</div></td>';
-						           result = result + '       </tr>';
-			   				}
-				           
-				           
-				           result = result + '       </tbody>';
-				           result = result + '     </table>';
-				           result = result + '   </div>';
-				           result = result + '   </div>';
-				           
-				           
-							$("#tab-1").empty();
-							$("#tab-3").empty();
-							$("#pipelineLoading").removeAttr("style");
-							$("#status-data").empty();
-							$("#status-data").append(result);
-							$("#tab-2").append(status-data);
-							$("#loading").removeAttr("style"); 
-							$("#emptyPipelinelist").val(json.length);
-							
-							documentpaginationSL();
-							$("#tab-2").show();
-							$(".project-tabs-menu a").click(function(event) {
-							     event.preventDefault();
-							     $(this).parent().addClass("current");
-							     $(this).parent().siblings().removeClass("current");
-							     var tab = $(this).attr("href");
-							     $(".project_tabs_inn").not(tab).css("display", "none");
-							     $(tab).fadeIn();
-							 });
-							prepareAllCounts(requirementId);
-							
-              }else{
-                     	 $("#requirementSideDiv").removeAttr("style");
-      		    	     result = result+"   <div class='row'>"; 
-      					 result = result+"	<div class='col-lg-12'>"; 
-      					 result = result+"		<div class='content-area clearfix'>"; 
-      					 result = result+"			<div class='blank-pages'>";
-      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-      					 result = result+"			        <p>No Candidates Found</p>";
-      					 result = result+"			 </div>";
-      					 result = result+"		</div>"; 
-      					 result = result+"	</div>"; 
-      					 result = result+"  </div> "; 
-      					$("#requirementSideDiv").empty();
-      				    $("#requirementSideDiv").append(result); 
-                      }
-               },
-                 
-            }); 
-	 
-}
-</script>
-
-<script>
-function documentpaginationSL(){  
-    $('#requirementsPaginationSL').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": ""
-     	}
-    } );
-}
-</script>
-
-<!-- script for Submit to client -->
-<script>  
-function requirementPipelineSC(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
-	  var clientSubmissions = '${clientSubmissions}';
-	  var isSpocActive = '${isSpocActive}';
-	  
-	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
-         success :function(data) {  
-        	 var result =""; 
-        	 if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            			   
-						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-						   
-						   result = result +'<span class="applicant_export">';
-							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-					            result = result +'<div class="export_pipline" style="display:none">';
-					            result = result +'<ul>';
-					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-					            result = result +' </ul>';
-					            result = result +'</div>';
-					          '</sec:authorize>';
-					       result = result +'</span>';
-						   
-						   result = result + '<div class="require_wrap_table overflow-data filter-position">';
-				           result = result + '<div class="clerfix">';
-				           result = result + '<table id="requirementsPaginationSC" class="display" cellspacing="0" width="100%"">';
-				           result = result + '<thead>';
-				           result = result + '<tr>';
-				           result = result + '<th>Name</th>';
-				           result = result + '<th>Email</th>';
-				           result = result + '<th>Ph. No</th>';
-				           result = result + '<th>Resume</th>';
-				           result = result + '<th>Applied on</th>';
-				           if(clientSubmissions == 'Y'){
-				             result = result + '<th>Sub. Rate</th>';
-				           }
-				           result = result + '<th>Source</th>';
-		        		   result = result + '<th>Score</th>';
-				           result = result + '<th>Exp</th>';
-				           result = result + '<th>Status</th>';
-				           result = result + '         </tr>';
-				           result = result + '       </thead>';
-				           result = result + '       <tbody>';
-				           for (var i=0; i<json.length; i++)
-			   				{  
-			   	        		var report = json[i];
-			   	        		
-			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
-			   	        			orgName = "("+report.orgName+")";
-			   	        		}else{
-			   	        			orgName = "";
-			   	        		}
-
-						           result = result + '       <tr>';
-						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
-						           '</sec:authorize>';
-						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
-						           '</sec:authorize>';
-						           
-						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
-							           }
-						           
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
-							           }
-							       else{
-							    	   result = result + '         <td><div>--</div></td>';
-						    	     }
-						           
-						        	   
-					        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-							          
-							      if(clientSubmissions == 'Y'){
-							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
-							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-							        	   }else{
-							        		   result = result + '         <td><div><span>--</span></div></td>';
-							        	   }
-							           }else{
-							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-							        	   }else{
-							        		   result = result + '         <td><div><span>--</span></div></td>';
-							        	   }
-							           }
-							        }
-							           
-						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     } 
-						        	   
-				        		   if(report.candidateScore != null){
-				        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
-							           }
-							       else{
-							    	   result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-							           
-					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
-						           result = result + '</div></td>';
-							           
-							          
-						           result = result + '       </tr>';
-			   				}
-				           
-				           
-				           result = result + '       </tbody>';
-				           result = result + '     </table>';
-				           result = result + '   </div>';
-				           result = result + '   </div>';
-				           
-				           
-							$("#tab-1").empty();
-							$("#tab-3").empty();
-							$("#pipelineLoading").removeAttr("style");
-							$("#status-data").empty();
-							$("#status-data").append(result);
-							$("#tab-2").append(status-data);
-							$("#loading").removeAttr("style"); 
-							$("#emptyPipelinelist").val(json.length);
-							
-							documentpaginationSC();
-							$("#tab-2").show();
-							$(".project-tabs-menu a").click(function(event) {
-							     event.preventDefault();
-							     $(this).parent().addClass("current");
-							     $(this).parent().siblings().removeClass("current");
-							     var tab = $(this).attr("href");
-							     $(".project_tabs_inn").not(tab).css("display", "none");
-							     $(tab).fadeIn();
-							 });
-							prepareAllCounts(requirementId);
-							
-              }else{
-                     	 $("#requirementSideDiv").removeAttr("style");
-      		    	     result = result+"   <div class='row'>"; 
-      					 result = result+"	<div class='col-lg-12'>"; 
-      					 result = result+"		<div class='content-area clearfix'>"; 
-      					 result = result+"			<div class='blank-pages'>";
-      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-      					 result = result+"			        <p>No Candidates Found</p>";
-      					 result = result+"			 </div>";
-      					 result = result+"		</div>"; 
-      					 result = result+"	</div>"; 
-      					 result = result+"  </div> "; 
-      					$("#requirementSideDiv").empty();
-      				    $("#requirementSideDiv").append(result); 
-                      }
-               },
-                 
-            }); 
-	 
-}
-</script>
-
-<script>
-function documentpaginationSC(){  
-    $('#requirementsPaginationSC').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": ""
-     	}
-    } );
-}
-</script>
-
-
-
-<!-- script for Interviews List -->
-<script>  
-function requirementPipelineIN(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
-	  var clientSubmissions = '${clientSubmissions}';
-	  var isSpocActive = '${isSpocActive}';
-	  
-	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
-         success :function(data) {  
-        	 var result =""; 
-        	 if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            			   
-						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-						   
-						   result = result +'<span class="applicant_export">';
-							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-					            result = result +'<div class="export_pipline" style="display:none">';
-					            result = result +'<ul>';
-					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-					            result = result +' </ul>';
-					            result = result +'</div>';
-					          '</sec:authorize>';
-					       result = result +'</span>';
-						   
-						   result = result + '<div class="require_wrap_table overflow-data filter-position">';
-				           result = result + '<div class="clerfix">';
-				           result = result + '<table id="requirementsPaginationIN" class="display" cellspacing="0" width="100%"">';
-				           result = result + '<thead>';
-				           result = result + '<tr>';
-				           result = result + '<th>Name</th>';
-				           result = result + '<th>Email</th>';
-				           result = result + '<th>Ph. No</th>';
-				           result = result + '<th>Resume</th>';
-						   result = result + '<th>No.of Interviews</th>'; 
-				           result = result + '<th>Status</th>';
-				           result = result + '         </tr>';
-				           result = result + '       </thead>';
-				           result = result + '       <tbody>';
-				           for (var i=0; i<json.length; i++)
-			   				{  
-			   	        		var report = json[i];
-			   	        		
-			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
-			   	        			orgName = "("+report.orgName+")";
-			   	        		}else{
-			   	        			orgName = "";
-			   	        		}
-
-						           result = result + '       <tr>';
-						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
-						           '</sec:authorize>';
-						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
-						           '</sec:authorize>';
-						           
-						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
-							       }else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
-							           }
-							       else{
-							    	   result = result + '         <td><div>--</div></td>';
-						    	     }
-						        	   
-						           if(report.totalNoOfInterviews != null && report.totalNoOfInterviews != '' && report.totalNoOfInterviews != 'undefined'){
-						        		result = result +'<td><div><span>'+report.totalNoOfInterviews+'</span></div></td>';
-						           }else{
-						        	   result = result + '<td><div><span>--</span></div></td>'; 
-						           }
-
-					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
-						           result = result + '</div></td>';
-						           result = result + '       </tr>';
-			   				}
-				           
-				           
-				           result = result + '       </tbody>';
-				           result = result + '     </table>';
-				           result = result + '   </div>';
-				           result = result + '   </div>';
-				           
-				           
-							$("#tab-1").empty();
-							$("#tab-3").empty();
-							$("#pipelineLoading").removeAttr("style");
-							$("#status-data").empty();
-							$("#status-data").append(result);
-							$("#tab-2").append(status-data);
-							$("#loading").removeAttr("style"); 
-							$("#emptyPipelinelist").val(json.length);
-							
-							documentpaginationIN();
-							$("#tab-2").show();
-							$(".project-tabs-menu a").click(function(event) {
-							     event.preventDefault();
-							     $(this).parent().addClass("current");
-							     $(this).parent().siblings().removeClass("current");
-							     var tab = $(this).attr("href");
-							     $(".project_tabs_inn").not(tab).css("display", "none");
-							     $(tab).fadeIn();
-							 });
-							prepareAllCounts(requirementId);
-							
-              }else{
-                     	 $("#requirementSideDiv").removeAttr("style");
-      		    	     result = result+"   <div class='row'>"; 
-      					 result = result+"	<div class='col-lg-12'>"; 
-      					 result = result+"		<div class='content-area clearfix'>"; 
-      					 result = result+"			<div class='blank-pages'>";
-      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-      					 result = result+"			        <p>No Candidates Found</p>";
-      					 result = result+"			 </div>";
-      					 result = result+"		</div>"; 
-      					 result = result+"	</div>"; 
-      					 result = result+"  </div> "; 
-      					$("#requirementSideDiv").empty();
-      				    $("#requirementSideDiv").append(result); 
-                      }
-               },
-                 
-            }); 
-	 
-}
-</script>
-
-<script>
-function documentpaginationIN(){  
-    $('#requirementsPaginationIN').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": ""
-     	}
-    } );
-}
-</script>
-
-<!-- script for offers List -->
-<script>  
-function requirementPipelineOffer(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
-	  var clientSubmissions = '${clientSubmissions}';
-	  var isSpocActive = '${isSpocActive}';
-	  
-	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
-         success :function(data) {  
-        	 var result =""; 
-        	 if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            			   
-						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-						   
-						   result = result +'<span class="applicant_export">';
-							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-					            result = result +'<div class="export_pipline" style="display:none">';
-					            result = result +'<ul>';
-					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-					            result = result +' </ul>';
-					            result = result +'</div>';
-					          '</sec:authorize>';
-					       result = result +'</span>';
-						   
-						   result = result + '<div class="require_wrap_table overflow-data filter-position">';
-				           result = result + '<div class="clerfix">';
-				           result = result + '<table id="requirementsPaginationOffer" class="display" cellspacing="0" width="100%"">';
-				           result = result + '<thead>';
-				           result = result + '<tr>';
-				           result = result + '<th>Name</th>';
-				           result = result + '<th>Email</th>';
-				           result = result + '<th>Ph. No</th>';
-				           result = result + '<th>Resume</th>';
-						   result = result + '<th>Offer Join Date</th>'; 
-						   result = result + '<th>Position Type</th>'; 
-						   result = result + '<th>Offer Rate</th>'; 
-						   result = result + '<th>Attachment</th>'; 
-				           result = result + '<th>Status</th>';
-				           result = result + '         </tr>';
-				           result = result + '       </thead>';
-				           result = result + '       <tbody>';
-				           for (var i=0; i<json.length; i++)
-			   				{  
-			   	        		var report = json[i];
-			   	        		
-			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
-			   	        			orgName = "("+report.orgName+")";
-			   	        		}else{
-			   	        			orgName = "";
-			   	        		}
-
-						           result = result + '       <tr>';
-						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
-						           '</sec:authorize>';
-						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
-						           '</sec:authorize>';
-						           
-						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
-							        }else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	    }
-						           
-						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
-							       }
-							       else{
-							    	   result = result + '         <td><div>--</div></td>';
-						    	     }
-						           
-					        	   if(report.offerJoinDate != null && report.offerJoinDate != '' && report.offerJoinDate != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.offerJoinDate+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     } 
-					        	   if(report.positionType != null && report.positionType != '' && report.positionType != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.positionType+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     } 
-					        	   if(report.offerRate != null && report.offerRate != '' && report.offerRate != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.offerRate+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     } 
-					        	   if(report.attachment != null && report.attachment != '' && report.attachment != 'undefined'){
-					        		   result = result + '         <td><div><span><a href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId+'\">'+report.attachment+'</a></span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     } 
-
-					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
-						           result = result + '</div></td>';
-							          
-						           result = result + '       </tr>';
-			   				}
-				           
-				           
-				           result = result + '       </tbody>';
-				           result = result + '     </table>';
-				           result = result + '   </div>';
-				           result = result + '   </div>';
-				           
-				           
-							$("#tab-1").empty();
-							$("#tab-3").empty();
-							$("#pipelineLoading").removeAttr("style");
-							$("#status-data").empty();
-							$("#status-data").append(result);
-							$("#tab-2").append(status-data);
-							$("#loading").removeAttr("style"); 
-							$("#emptyPipelinelist").val(json.length);
-							
-							documentpaginationOffer();
-							$("#tab-2").show();
-							$(".project-tabs-menu a").click(function(event) {
-							     event.preventDefault();
-							     $(this).parent().addClass("current");
-							     $(this).parent().siblings().removeClass("current");
-							     var tab = $(this).attr("href");
-							     $(".project_tabs_inn").not(tab).css("display", "none");
-							     $(tab).fadeIn();
-							 });
-							prepareAllCounts(requirementId);
-							
-              }else{
-                     	 $("#requirementSideDiv").removeAttr("style");
-      		    	     result = result+"   <div class='row'>"; 
-      					 result = result+"	<div class='col-lg-12'>"; 
-      					 result = result+"		<div class='content-area clearfix'>"; 
-      					 result = result+"			<div class='blank-pages'>";
-      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-      					 result = result+"			        <p>No Candidates Found</p>";
-      					 result = result+"			 </div>";
-      					 result = result+"		</div>"; 
-      					 result = result+"	</div>"; 
-      					 result = result+"  </div> "; 
-      					$("#requirementSideDiv").empty();
-      				    $("#requirementSideDiv").append(result); 
-                      }
-               },
-                 
-            }); 
-	 
-}
-</script>
-
-<script>
-function documentpaginationOffer(){  
-    $('#requirementsPaginationOffer').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": ""
-     	}
-    } );
-}
-</script>
-
-<script>  
-function requirementPipelineRejected(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
-	  var clientSubmissions = '${clientSubmissions}';
-	  var isSpocActive = '${isSpocActive}';
-	  
-	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
-         success :function(data) {  
-        	 var result =""; 
-        	 if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            		
-						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-						  
-						   result = result +'<span class="applicant_export">';
-							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-					            result = result +'<div class="export_pipline" style="display:none">';
-					            result = result +'<ul>';
-					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-					            result = result +' </ul>';
-					            result = result +'</div>';
-					          '</sec:authorize>';
-					       result = result +'</span>';
-						   
-						   result = result + '<div class="require_wrap_table overflow-data filter-position">';
-				           result = result + '<div class="clerfix">';
-				           result = result + '<table id="requirementsPaginationRejected" class="display" cellspacing="0" width="100%"">';
-				           result = result + '<thead>';
-				           result = result + '<tr>';
-				           result = result + '<th>Name</th>';
-				           result = result + '<th>Email</th>';
-				           result = result + '<th>Resume</th>';
-				           result = result + '<th>Applied on</th>';
-					       result = result + '<th>Rate</th>';
-					         if(clientSubmissions == 'Y'){
-					           result = result + '<th>Sub. Rate</th>';
-					         }
-					       result = result + '<th>Source</th>';
-			        	   result = result + '<th>Rejected On</th>';
-			        	   result = result + '<th>Rejected By</th>';
-				           result = result + '<th>Rejected Stage</th>';
-				           result = result + '<th>Status</th>';
-				           result = result + '         </tr>';
-				           result = result + '       </thead>';
-				           result = result + '       <tbody>';
-				           for (var i=0; i<json.length; i++)
-			   				{  
-			   	        		var report = json[i];
-			   	        		
-			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
-			   	        			orgName = "("+report.orgName+")";
-			   	        		}else{
-			   	        			orgName = "";
-			   	        		}
-
-						           result = result + '       <tr>';
-						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
-						           '</sec:authorize>';
-						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
-						           '</sec:authorize>';
-						           
-						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
-							        }
-							       else{
-							    	   result = result + '         <td><div>--</div></td>';
-						    	     }
-						           
-						        	   
-					        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-							           
-							    	     
-						           if(report.vendorLocationId != null && report.sourceSubmission != null){
-						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-						           }else{
-						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-						           }
-							          
-							      if(clientSubmissions == 'Y'){
-							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
-							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-							        	   }else{
-							        		   result = result + '         <td><div><span>--</span></div></td>';
-							        	   }
-							           }else{
-							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-							        	   }else{
-							        		   result = result + '         <td><div><span>--</span></div></td>';
-							        	   }
-							           }
-							        }
-							           
-						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	   } 
-
-						           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
-					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submittedBy+'</span>';
-					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
-					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
-					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
-					        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
-					        	   }		  
-						           result = result + '       </tr>';
-			   				}
-				           
-				           
-				           result = result + '       </tbody>';
-				           result = result + '     </table>';
-				           result = result + '   </div>';
-				           result = result + '   </div>';
-				           
-				           
-							$("#tab-1").empty();
-							$("#tab-3").empty();
-							$("#pipelineLoading").removeAttr("style");
-							$("#status-data").empty();
-							$("#status-data").append(result);
-							$("#tab-2").append(status-data);
-							$("#loading").removeAttr("style"); 
-							$("#emptyPipelinelist").val(json.length);
-							
-							documentpaginationRejected();
-							$("#tab-2").show();
-							$(".project-tabs-menu a").click(function(event) {
-							     event.preventDefault();
-							     $(this).parent().addClass("current");
-							     $(this).parent().siblings().removeClass("current");
-							     var tab = $(this).attr("href");
-							     $(".project_tabs_inn").not(tab).css("display", "none");
-							     $(tab).fadeIn();
-							 });
-							prepareAllCounts(requirementId);
-							
-              }else{
-                     	 $("#requirementSideDiv").removeAttr("style");
-      		    	     result = result+"   <div class='row'>"; 
-      					 result = result+"	<div class='col-lg-12'>"; 
-      					 result = result+"		<div class='content-area clearfix'>"; 
-      					 result = result+"			<div class='blank-pages'>";
-      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-      					 result = result+"			        <p>No Candidates Found</p>";
-      					 result = result+"			 </div>";
-      					 result = result+"		</div>"; 
-      					 result = result+"	</div>"; 
-      					 result = result+"  </div> "; 
-      					$("#requirementSideDiv").empty();
-      				    $("#requirementSideDiv").append(result); 
-                      }
-               },
-                 
-            }); 
-	 
-}
-</script>
-
-<script>
-function documentpaginationRejected(){  
-    $('#requirementsPaginationRejected').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": ""
-     	}
-    } );
-}
-</script>
-
 <div id="popUp"></div>
 <div id="customizePopUp"></div>
 <script>
@@ -3078,48 +1823,6 @@ function filterReq(requirementId,submissionType){
 }
 </script>
 
-<script>
-function filterReqDA(requirementId,submissionType){
-	requirementPipelineDA(requirementId,submissionType);
-}
-</script>
-
-<script>
-function filterReqRS(requirementId,submissionType){
-	requirementPipelineRS(requirementId,submissionType);
-}
-</script>
-
-<script>
-function filterReqSL(requirementId,submissionType){
-	requirementPipelineSL(requirementId,submissionType);
-}
-</script>
-
-<script>
-function filterReqIN(requirementId,submissionType){
-	requirementPipelineIN(requirementId,submissionType);
-}
-</script>
-
-<script>
-function filterReqOffer(requirementId,submissionType){
-	requirementPipelineOffer(requirementId,submissionType);
-}
-</script>
-
-<script>
-function filterReqRejected(requirementId,submissionType){
-	requirementPipelineRejected(requirementId,submissionType);
-}
-</script>
-
-<script>
-function filterReqSC(requirementId,submissionType){
-	requirementPipelineSC(requirementId,submissionType);
-}
-</script>
-
 <%-- 
      @author : sarath kumar.
      this script is for edit Candidate.
@@ -3209,7 +1912,6 @@ function assignedMemberList(requirementId){
 
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
-	$("#actionsDiv" ).hide();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
@@ -3258,30 +1960,19 @@ function requirementRecommendations(requirementId){
     	 for (var i=0; i<json.length; i++)
 			{
 		    var report = json[i];
-		    if(report.firstName != null && report.firstName != '' && report.firstName != 'undefiend'){
-		    	firstName = report.firstName;
-		    }else{
-		    	firstName = "";
-		    } 
-		    if(report.lastName != null && report.lastName != '' && report.lastName != 'undefiend'){
-		    	lastName = report.lastName;
-		    }else{
-		    	lastName = "";
-		    } 
-		    
 		    result = result +'<tr>';
-		    result = result + '<td><div onclick="clientSideBar('+report.id+');" class="proj_show"><span>'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    result = result + '<td><div onclick="clientSideBar('+report.id+');" class="proj_show"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
 		    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
 		    	result = result +'<td class="text-center"><div><span>'+report.mobilePhone+'</span></div></td>';
 		    }else{
-		    	result = result +'<td class="text-center"><div><span>--</span></div></td>';
+		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
 		    
 		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
 		  	   result = result +'<td class="text-center"><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"></a></span></div></td>';
 			  }else{
-				result = result +'<td class="text-center"><div><span>--</span></div></td>';
+				result = result +'<td><div><span>--</span></div></td>';
 			} 
 		   result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
 		    if(report.requirementSubmisstions.length > 0){
@@ -3708,34 +2399,34 @@ function requirementStatusBar(requirementId){
 		 result = result + '       <label><strong>Applicants</strong></label>';
 		 result = result + '       </a> <span class="label label-default" id="applicantsCount">0</span> </li>';
 		 
-		 result = result + '     <li id="duplicataplctli" class="tabActivation" onclick="filterReqDA('+requirementId+',\''+duplicateApplicantCount+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Duplicate Applicants">';
+		 result = result + '     <li id="duplicataplctli" class="tabActivation" onclick="filterReq('+requirementId+',\''+duplicateApplicantCount+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Duplicate Applicants">';
 		 result = result + '       <label><strong>Duplicate Applicants</strong></label>';
 		 result = result + '       </a> <span class="label label-default" id="duplicateApplicantsCount">0</span> </li>';
 		 
-		 result = result + '   <li id="requestSentli" class="tabActivation" onclick="filterReqRS('+requirementId+',\''+requestSent+'\');tabEnable(this);"> <a href="javascript:void(0)" title="RequestSent">';
+		 result = result + '   <li id="requestSentli" class="tabActivation" onclick="filterReq('+requirementId+',\''+requestSent+'\');tabEnable(this);"> <a href="javascript:void(0)" title="RequestSent">';
          result = result + '     <label><strong>Request Sent</strong></label>';
          result = result + '      </a><span class="label label-warning" id="requestSent">0</span></li>';
 		 
-		 result = result + '      <li id="shortListli" class="tabActivation" onclick="filterReqSL('+requirementId+',\''+shortList+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Shortlisted">';
+		 result = result + '      <li id="shortListli" class="tabActivation" onclick="filterReq('+requirementId+',\''+shortList+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Shortlisted">';
 		 result = result + '       <label><strong>Shortlisted</strong></label>';
 		 result = result + '     </a> <span class="label label-warning" id="shortlistCount">0</span></li>';
 		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-		 result = result + '    <li id="submitToClientli" class="tabActivation" onclick="filterReqSC('+requirementId+',\''+submitToClient+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Submit to Client">';
+		 result = result + '    <li id="submitToClientli" class="tabActivation" onclick="filterReq('+requirementId+',\''+submitToClient+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Submit to Client">';
 		 result = result + '       <label><strong>Submit to Client</strong></label>';
 		 result = result + '       </a> <span class="label label-info" id="submitToClientCount">0</span> </li>';
 		}
-		 result = result + '    <li id="interviewli" class="tabActivation" onclick="filterReqIN('+requirementId+',\''+interview+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Interviews">';
+		 result = result + '    <li id="interviewli" class="tabActivation" onclick="filterReq('+requirementId+',\''+interview+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Interviews">';
 		 result = result + '      <label><strong>Interviews</strong></label>';
 		 result = result + '      </a><span class="label label-primary" id="interviewCount">0</span></li>';
-		 result = result + '     <li id="offerMadeli" class="tabActivation" onclick="filterReqOffer('+requirementId+',\''+offerMade+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Offers">';
+		 result = result + '     <li id="offerMadeli" class="tabActivation" onclick="filterReq('+requirementId+',\''+offerMade+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Offers">';
 		 result = result + '      <label><strong>Offers</strong></label>';
        	 result = result + '      </a><span class="label label-success" id="offersCount">0</span> </li>';
-         result = result + '   <li id="rejectedli" class="tabActivation" onclick="filterReqRejected('+requirementId+',\''+rejected+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Rejected">';
+         result = result + '   <li id="rejectedli" class="tabActivation" onclick="filterReq('+requirementId+',\''+rejected+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Rejected">';
          result = result + '     <label><strong>Rejected</strong></label>';
          result = result + '      </a><span class="label label-warning" id="rejectedCount">0</span></li>';
          
          result = result + '   </ul>';
-         result = result +' <div> <i class="ratepop rate_pop" id="ratepop"></div>';
+         result = result +' <div> <i class="ratepop" id="ratepop"></div>';
          result = result + ' </div>';
        $("#status-div").empty();
       $("#status-div").prepend(result);
@@ -4672,4 +3363,3 @@ function cancelCustomize(){
 <jsp:include page="recommendCandidatesExperience.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesEducation.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesCertificates.jsp"></jsp:include>
-
