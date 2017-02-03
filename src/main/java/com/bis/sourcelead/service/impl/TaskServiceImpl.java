@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.time.DateUtils;
@@ -31,8 +32,10 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.TaskService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -60,6 +63,9 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Autowired
 	private EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	private UserRoleService userRoleService; 
 	
 	@Override
 	public Tasks saveTasks(Tasks tasks) throws Exception {
@@ -102,6 +108,10 @@ public class TaskServiceImpl implements TaskService{
 				 task.setAssignedUserId(ownerUser);
 				 task.setOwnerOrglocationId(loginOrgLocation);
 				 task.setTaskOwnerId(user);
+				 UserRole assignedUser =  userRoleService.getUserByUserId(ownerUser.getId());
+				 if(assignedUser != null && assignedUser.getOrgLocations() != null){
+					 task.setAssignedOrglocationId(assignedUser.getOrgLocations());	 
+				 }
 				 
 				 if(jsonObj.has("priority") && !jsonObj.getString("priority").isEmpty()){
 		        	 task.setPriority(jsonObj.getString("priority"));
@@ -218,12 +228,7 @@ public class TaskServiceImpl implements TaskService{
 			 
 			 
 			 //setting the Recipient information
-			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-			 EmailRecipient emailRecipient = new EmailRecipient();
-			 emailRecipient.setEmail(emailMessage.getToEmail());
-			 StringBuilder recipBuild = new StringBuilder();
-			 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-			 emailRecipientList.add(emailRecipient);
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_EMAIL,Constants.ENTITY_TYPE_EMAIL);
@@ -245,7 +250,7 @@ public class TaskServiceImpl implements TaskService{
 			 
 			 //calling the Email 
 			 if(tasks.getAlertType().equalsIgnoreCase("Email") && null !=tasks.getAlertType()){
-				 emailScenerioUtil.sendEmail(emailMessage,tasks.getOwnerOrglocationId().getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+				 emailScenerioUtil.sendEmail(emailMessage,tasks.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 }
 			 //calling the Notification 
 			 if(tasks.getAlertType().equalsIgnoreCase("Notification") && null !=tasks.getAlertType()){
@@ -254,7 +259,7 @@ public class TaskServiceImpl implements TaskService{
 			 }
 			 //calling the Email  and notification 
 			 if(tasks.getAlertType().equalsIgnoreCase("Email,Notification") && null !=tasks.getAlertType()){
-				 emailScenerioUtil.sendEmail(emailMessage,tasks.getOwnerOrglocationId().getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+				 emailScenerioUtil.sendEmail(emailMessage,tasks.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 String actionLink="";
 				 emailScenerioUtil.sendNotification(actionLink, tasks.getTaskOwnerId(),tasks.getAssignedUserId(),tasks.getOwnerOrglocationId(), notificationScenario);
 			 }

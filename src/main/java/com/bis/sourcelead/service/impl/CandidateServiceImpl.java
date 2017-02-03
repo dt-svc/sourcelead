@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,7 +34,6 @@ import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
@@ -153,6 +151,9 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("mobilePhone") && jsonObj.getString("mobilePhone") !=null){
 		candidate.setMobilePhone(jsonObj.getString("mobilePhone"));
 		}
+		if(jsonObj.has("alternateMobilePhone") && jsonObj.getString("alternateMobilePhone") !=null){
+			candidate.setAlternateMobilePhone(jsonObj.getString("alternateMobilePhone"));
+		}
 		if(jsonObj.has("email") && jsonObj.getString("email") !=null){
 		candidate.setEmail(jsonObj.getString("email"));
 		}
@@ -170,6 +171,13 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("designation") && jsonObj.getString("designation") !=null){
 		candidate.setDesignation(jsonObj.getString("designation"));
 		}
+		
+		if(jsonObj.has("designationOtherType") && jsonObj.has("designationType") && "Other".equalsIgnoreCase(jsonObj.getString("designationType"))){
+			candidate.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+		}else{
+			candidate.setDesignationOtherType(null);
+		}
+		
 		if(jsonObj.has("expectedRate") && jsonObj.getString("expectedRate") !=null ){
 		candidate.setExpectedRate(jsonObj.getString("expectedRate"));
 		}
@@ -401,6 +409,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	if(candidate.getMobilePhone() !=null && !"".equalsIgnoreCase(candidate.getMobilePhone())){
 		writeRow.createCell(3).setCellValue(candidate.getMobilePhone());
 	}
+	
 	if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
 		writeRow.createCell(4).setCellValue(candidate.getCountry());
 	}
@@ -470,8 +479,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public Long getCandidatesCountByOrgLocationID(Long orgLocationId) {
-		return candidateDao.getCandidatesCountByOrgLocationID(orgLocationId);
+	public Long getCandidatesCountByOrgLocationID(Long orgLocationId,String candidateStatus) {
+		return candidateDao.getCandidatesCountByOrgLocationID(orgLocationId,candidateStatus);
 	}
 
 

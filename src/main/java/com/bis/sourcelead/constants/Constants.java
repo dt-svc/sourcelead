@@ -74,6 +74,13 @@ public class Constants {
 	
 	public static String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
 	public static String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
+	
+	public static String ACCEPT_CLIENT = "Accept Client";
+	public static String ACCEPT_VENDOR = "Accept Vendor";
+	
+	public static String REJECT_CLIENT = "Reject Client";
+	public static String REJECT_VENDOR = "Reject Vendor";
+	
 	public static String OFFER_MAIL_TO_VENDORS="Client to Vendor Acceptence";
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
@@ -348,6 +355,10 @@ public class Constants {
     
     public static String CLIENT = "Client";
     
+    public static String ELK_PROJECT_INDEX = "projects";
+	
+    public static String ELK_PROJECT_TYPE = "project";
+    
     public static String ELK_CANDIDATE_INDEX = "candidates";
     		
     public static String ELK_CANDIDATE_TYPE = "candidate";
@@ -359,8 +370,13 @@ public class Constants {
     public static String ELK_CANDIDATE_ID_PREFIX = "CND";
     
     public static String ELK_CLIENTVENDOR_INDEX = "clientvendor";
-    
+        
     public static String ELK_CLIENTVENDOR_TYPE = "clientvendors";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_INDEX = "clientvendorcontacts";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_TYPE = "clientvendorcontacts";
+
     
     public static String ELK_CAMPAIGN_INDEX = "campaigns";
 	
@@ -401,9 +417,23 @@ public class Constants {
     public static String DUPLICATE_APPLICANTS = "DUPLICATE_APPLICANTS";
 
 
+    public static String SCORE_20 = "20";
+    public static String SCORE_10 = "10";
     
-    
-    
-     
+    public static String NOTICE_PERIOD_15DAYS = "15 Days";
+    public static String NOTICE_PERIOD_1MONTH = "1 Month";
+    public static String NOTICE_PERIOD_2MONTH = "2 Month";
+    public static String NOTICE_PERIOD_3MONTH = "3 Month";
+    public static String NOTICE_PERIOD_IMMEDIATELY = "Immediately available";
+   
+    public static String RATE_TYPE_HOURLY = "Hourly";
+    public static String RATE_TYPE_WEEKLY = "Weekly";
+    public static String RATE_TYPE_BI_WEEKLY = "Bi-weekly";
+    public static String RATE_TYPE_SEMI_MONTHLY = "Semi-Monthly";
+    public static String RATE_TYPE_MONTHLY = "Monthly";
+    public static String RATE_TYPE_BI_MONTHLY = "Bi-Monthly";
+   
+   
+   
    
 }

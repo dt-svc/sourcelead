@@ -18,6 +18,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -55,10 +57,12 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -74,8 +78,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
@@ -157,6 +163,9 @@ public class RequirementServiceImpl implements RequirementService {
 	 private OrgRelationsService orgRelationsService;
 	 
 	 @Autowired
+	 LookUpDataService lookUpDataService;
+	 
+	 @Autowired
 	 private PdfUtil pdfUtil;
 	 
 	 @Autowired
@@ -167,6 +176,9 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Autowired
+	private RecommendedCustomizeScoreService recommendedCustomizeScoreService;
 	
 	/**
 	 * @author prasad k
@@ -299,7 +311,8 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			if(jsonObj.has("description")){
 				if(!"".equalsIgnoreCase(jsonObj.getString("description"))){
-					requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));		
+					//requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));
+					requirement.setDescription(jsonObj.getString("description"));	
 				}
 			
 			}
@@ -341,8 +354,8 @@ public class RequirementServiceImpl implements RequirementService {
 				
 				
 				skillId = skillId.replaceAll("\"", "");
-		  	   requirement.setSkills(skillId);
-			
+		  	    requirement.setSkills(skillId);
+		  	 
 			}
 			
 			if(jsonObj.has("education")){
@@ -358,7 +371,7 @@ public class RequirementServiceImpl implements RequirementService {
 				educationId = educationId.replaceAll("\\[", "").replaceAll("\\]","");
 				educationId = educationId.replaceAll("\"", "");
 				
-		  	  requirement.setEducation(educationId);
+		  	    requirement.setEducation(educationId);
 			
 			 }
 			
@@ -599,13 +612,13 @@ public class RequirementServiceImpl implements RequirementService {
 			} 
 			
 			
-			if(requirement.getId() != null){
+			/*if(requirement.getId() != null){
 				requirementAssignToService.deleteRequirementAssignToByRequirementId(requirement.getId());
-			}
+			}*/
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
-						Long teamId = 0L;
+				        Long teamId = 0L;
 						Team team = null;
 						if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
 							String assignedTeamId = jsonObj.getString("assignedTeamId");
@@ -627,19 +640,25 @@ public class RequirementServiceImpl implements RequirementService {
 						if(StringUtils.isNotEmpty(assignedToMaxCount)){
 						int MaxCount = Integer.parseInt(assignedToMaxCount);
 							for (int c = 1; c < MaxCount; c++) {
-								RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+								RequirementAssignTo  requirementAssignTo = null;
+								User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+								if(requirement.getId() !=null){
+									 requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(), assUser.getId());
+									if(requirementAssignTo == null){
+										requirementAssignTo = new RequirementAssignTo();
+										requirementAssignTo.setTeamId(team);
+									}
+								}else{
+									requirementAssignTo = new RequirementAssignTo();
+									requirementAssignTo.setTeamId(team);
+								}
+								
 								
 		//						User assUser = new User();
 		//						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
-								User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
 								requirementAssignTo.setAssignUserId(assUser);
 								
 								requirementAssignTo.setRequirementId(requirement);
-								
-								
-								requirementAssignTo.setTeamId(team);
-								
-								
 								UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
 								requirementAssignTo.setRoleId(userRole.getRoles());
 								requirementAssignToList.add(requirementAssignTo);
@@ -652,6 +671,8 @@ public class RequirementServiceImpl implements RequirementService {
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		
+		//store recommended customizeScore
+		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.saveCustomizeScore(requirement);
 	
 			       if(!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)){
 				 		
@@ -710,6 +731,10 @@ public class RequirementServiceImpl implements RequirementService {
 					}
 		 }		
 			       saveElkRequirement(savedRequirement);
+			       
+			       
+			       
+			       
 		return savedRequirement;
 	}
 
@@ -721,8 +746,9 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public Requirement addRequirement(Requirement requirement) throws Exception {
-		saveElkRequirement(requirement);
-		return requirementDao.storeRequirement(requirement);
+		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
+		saveElkRequirement(savedRequirement);
+		return savedRequirement;
 	}
 
 
@@ -900,13 +926,15 @@ public class RequirementServiceImpl implements RequirementService {
          }
 		 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
 		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
@@ -929,7 +957,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	
 }
 	
@@ -986,12 +1014,14 @@ public class RequirementServiceImpl implements RequirementService {
 		 globalVarsMap.put("attachment",attachBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>").toString());
 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
@@ -1013,7 +1043,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocations, notificationScenario);
 
@@ -1069,13 +1099,15 @@ public class RequirementServiceImpl implements RequirementService {
 		 }
 		 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
-		
+		 emailRecipientList.add(emailRecipient);*/
+	
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVED_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVED_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
@@ -1095,7 +1127,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser,intiatorUser, orgLocations, notificationScenario);
 
@@ -1331,12 +1363,14 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
+		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAILREQUIREMENTTOMANAGER,Constants.ENTITY_TYPE_EMAIL);
@@ -1359,7 +1393,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario);
 
@@ -1431,12 +1465,14 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
+		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ASSIGNTEAMMEMBERSFORREQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
@@ -1459,7 +1495,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser,assUser, orgLocations, notificationScenario);
 
@@ -1531,12 +1567,14 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 
 		// setting the Recipient information
-		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		/*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		EmailRecipient emailRecipient = new EmailRecipient();
 		emailRecipient.setEmail(emailMessage.getToEmail());
 		StringBuilder recipBuild = new StringBuilder();
 		emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		emailRecipientList.add(emailRecipient);
+		emailRecipientList.add(emailRecipient);*/
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
@@ -1560,7 +1598,7 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
+		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, initiatorUser, loginOrgLocation, notificationScenario);
 	}
@@ -1647,12 +1685,14 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 		
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
+		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RELEASEMECHANISM_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
@@ -1678,7 +1718,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
 
@@ -2109,6 +2149,7 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					skillId = skillId.replaceAll("\"", "");
 					reqTemplate.setSkills(skillId);
+					
 				}else{
 					reqTemplate.setSkills(null);	
 				}
@@ -2127,6 +2168,7 @@ public class RequirementServiceImpl implements RequirementService {
 					educationId = educationId.replaceAll("\"", "");
 					
 					reqTemplate.setEducation(educationId);
+					
 				 }else{
 					 reqTemplate.setEducation(null);
 				 }
@@ -2187,6 +2229,15 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
+	public List<String> getAllRequirementSkillsByRequirementI(String requirementId) throws Exception {
+		return requirementDao.getAllRequirementSkillsByRequirementI(requirementId);
+	}
+	
+	public List<String> getAllSkillsBySkillCategory() throws Exception{
+		return lookUpDataService.getAllSkillsBySkillCategory();
+		
+	}
+
 	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj,Org org) throws Exception {
 		
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();

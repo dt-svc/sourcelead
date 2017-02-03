@@ -189,18 +189,25 @@ textarea {
  color:#fff;
 }
 .main-header .navbar .custom-navbar .search-area .form-control {
-	background: #3687d1 !important;
+	/*background: #375d81 !important;*/
+    background:rgba(55,93,129, 0.2);
 	border: 0;
 	margin-top: 8px;
 	color: #fff;
 	box-shadow: none;
-	padding-left: 35px;
+	padding-left: 15px;
+    padding-right: 30px;
+    border-radius: 0 3px 3px 0;
 }
-.main-header .navbar .custom-navbar .search-area .fa-search {
+.main-header .navbar .custom-navbar .search-area .srcbutton {
 	position: absolute;
-	top: 18px;
-	color: #fff;
-	padding: 0 15px;
+    top: 8px;
+    color: #fff;
+    right: 0;
+    padding-right: 10px;
+    height: 34px;
+    background: transparent;
+    border: 0;
 }
 .main-header .header-nav .custom-navbar ul > li > a > .label {
 	font-size: 9px;
@@ -298,7 +305,7 @@ textarea {
 	text-align: center;
 }
 /* Alerts Styels */
-.alert-area {
+#alert .alert-area {
 	min-width: 275px;
 }
 .alert-area {
@@ -309,7 +316,15 @@ textarea {
 	-webkit-transition: all ease-in-out 0.5s;
 	-ms-transition: all ease-in-out 0.5s;
 }
-.alert-area.alert-area-active {
+#alert .alert-area {
+	transform: translateX(5000px);
+	-ms-transform: translateX(5000px);
+	-webkit-transform: translateX(5000px);
+	transition: all ease-in-out 0.5s;
+	-webkit-transition: all ease-in-out 0.5s;
+	-ms-transition: all ease-in-out 0.5s;
+}
+#alert:hover .alert-area {
 	transform: translateX(0px);
 	-ms-transform: translateX(0px);
 	-webkit-transform: translateX(0px);
@@ -731,10 +746,12 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	min-height: 620px;
 	margin-left: 230px;
 	padding: 0 30px 30px;
+/*
 	-moz-transition: all ease-in-out 0.3s;
 	-ms-transition: all ease-in-out 0.3s;
 	-webkit-transition: all ease-in-out 0.5s;
 	transition: all ease-in-out 0.3s;
+*/
 }
 .content-wraper.content-wraper-active {
 	margin-left: 50px;
@@ -3068,7 +3085,7 @@ color:#101010;
     color:#fff;
 	position: relative;
     cursor:default;
-	/*border-radius:0;*/
+	border-radius:3px 3px 0 0;
 }
 dashboard-widget .nav-tabs li.active > a:after {
 	top: 100%;
@@ -3570,6 +3587,11 @@ font-style:normal;
 display:none;
 box-shadow: 0 0 10px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 10px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.6); -o-box-shadow: 0 0 10px rgba(0,0,0,0.6);
 width: 600px;
+}
+.ratepop.rate_pop{
+top:30px;
+bottom:auto;
+left:30px;
 }
 .ratepop .select-field select{
 width: 100% !important;
@@ -5305,6 +5327,8 @@ table tr.greentxt td{
     position: fixed !important;
     background: rgba(54,142,224,0.8);
     box-shadow: none;
+    transition: top 0s;
+    top: 0;   
 }
 .mail-next-previous-muted{
 color: #ccc
@@ -5451,19 +5475,260 @@ display: none;
 box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
 z-index: 999;
 }
+.reqHistTitle h3 a{
+       display: inline-block;
+       width: 750px !important;
+       overflow: hidden;
+       text-overflow: ellipsis;
+       white-space: nowrap;
+}
+.theme-styels{
+background: #222;
+border-radius: 3px 0 0 3px;
+cursor: pointer;
+left: -30px;
+padding: 2px;
+position: absolute;
+top: 0;
+color: #fff;
+}
+.theme-styels figure {
+    height: 28px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    width: 28px;
+    margin:0;
+}
+.theme-styels figure img {
+	height: auto;
+	margin: auto;
+	max-height: 100%;
+	max-width: 100%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	top: 0;
+	vertical-align: middle;
+	width: auto;
+}
+.srch-select select {
+    height: 34px;
+    margin-top: 8px;
+    background-color: rgb(55, 93, 129);
+    background-color: #2d74b7;
+    border: none !important;
+    color: #fff;
+    border-radius: 3px 0 0 3px !important;
+    background-image: url("../images/arrow-w.png") !important;
+    background-repeat: no-repeat;
+    background-position: 92% center;
+    background-size: 8px;
+}
+.universalSrch {
+    position:relative;
+}
+/* Search Result styles */
+.srchresult  {
+border-bottom: 1px inset #909090;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+}
+.search-result-widget {
+    min-height: 100px;
+    margin-bottom:25px;
+    background-color: #f5f5f5;
+    padding: 10px 15px;
+    box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+.image_parent {
+    height: 54px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    width: 54px;
+    float: left;
+    padding-right: 10px;
+    margin: 0px auto 5px;
+}
+.image_parent img {
+    border: 1px medium #f5f5f5;
+    width: auto;
+    height: auto;
+	margin: auto;
+	max-height: 100%;
+	max-width: 100%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	top: 0;
+	vertical-align: middle;
+	border-radius: 50%;
+}
+.srchresult-content {
+    position: relative;
+}
+.srchresult-content p
+{
+    margin: 0;
+    line-height: 18px;
+}
+.srchresult-content label{
+    padding-right: 5px;
+}
+.status-btn {
+    position: absolute;
+    right:0;
+    top:0;
+    padding:3px 10px;
+    min-width:75px;
+}
+.reqstatus-btn{
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 5px 10px;
+    min-width: 75px;
+    border: 1px solid #3081cb;
+    text-align: center;
+    border-radius: 5px;
+}
+
+/* search result styels ends */
+.customizescore-pop {
+ width: 650px;   
+}
 .filter-position .dataTables_filter {
-	position: relative !important;
-	top: 0 !important;
-	z-index: 9999;
+position: relative !important;
+top: 0 !important;
+z-index: 9999;
 }
 .filter-position {
-	position: relative;
-	top:-30px;
+position: relative;
+top:-30px;
 }
 .zindex {
-	position: relative;
-	z-index: 99;
+position: relative;
+z-index: 99;
 }
+.icon-inner {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+}
+.customscorePop.cand-advsrch-popup {
+	display: block;
+}
+.paddingLeft {
+    padding-left: 5px;
+}
+.paddingRight {
+    padding-right: 5px;
+}
+.customscorePop .col-md-4{
+    min-height:20px
+}
+/* Customize Score styles */
+.show_scroe {
+	position: relative;
+	cursor: pointer;
+	color:#368ee0;
+	font-weight: 500px;
+}
+.scroe {
+	position: absolute !important;
+	width: 400px;
+	min-height: 50px;
+	border: 1px solid #EDEDED;
+	background: #fff;
+	border-radius:3px;
+	display: none;
+	top:-15px;
+	padding:5px 10px;
+	left:-380px;
+	z-index:999;
+	transition:all ease-in-out 0.3s;
+	-moz-box-shadow: 0px 1px 8px #9E9E9E;
+	-webkit-box-shadow: 0px 1px 8px #9E9E9E;
+	box-shadow: 0px 1px 8px #9E9E9E;
+}
+.show_scroe:hover .scroe {
+	display: block;
+}
+.scroe .progress {
+	margin-bottom: 5px;
+	min-height: 20px;
+	width: 185px;
+	padding: 0;
+}
+.scroe .progress:first-child{
+	margin-right: 15px;
+}
+.scroe .progress .progress-bar {
+	font-size: 12px;
+	/* padding: 5px 35px 5px 5px; */
+	padding:0 1px;
+	color:#333;
+	line-height: 20px;
+	min-height: 20px;
+}
+.scroe:after {
+	top: 8%;
+    right: -24px;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(255, 111, 0, 0);
+	border-left-color: #616161;
+	border-width:12px;
+}
+.scroe label{
+	font-size: 12px;
+	color:#757575;
+	margin-bottom: 0;
+}
+/* Customize Score styles Ends */
+
+/* Prasad Salina styles */
+#status-data, #recommendationTable_wrapper {
+position: relative;
+background-color: #fff;
+}
+.applicant_export {
+position: absolute;
+right: 350px;
+top: -26px;
+z-index: 999;
+}
+.applicant_export a{
+color:#333;
+font-weight: 500;
+}
+.applicant_export .glyphicon-export {
+font-size: 15px;
+color: #545454;
+padding: 0px 10px 0px 0px;
+}
+.applicant_export div.export_pipline {
+top: 30px;
+right: 70px !important;
+}
+.timesheetHead {
+background-color: #fff;
+}
+
+/* Prasad Salina Styles ends */
+
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
@@ -5550,9 +5815,24 @@ div.pages-404.width {
 .note-area.note-area-active {
 	transform: translateX(123px);
 }
+.universalSrch {
+     margin-top:8px;
+     width: 60% !important;
+}
+
 }
 
 @media (max-width: 1160px) {
+    .universalSrch {
+    margin-top:8px;
+    width: 82%;
+}
+.universalSrch .fa-search{
+ top: 10px !important;
+ }
+.universalSrch .form-control {
+    width: 100%;
+}
 .table {
 	max-width: 850px !important;
 	width: 850px;

@@ -137,6 +137,9 @@ public class CandidateListRestController {
 			 HttpServletRequest request) throws Exception {
 
 		String resultJson;
+		
+		Integer candiStatus  =candidateStatus;
+		
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Candidate> candList = new ArrayList<Candidate>();
@@ -151,9 +154,9 @@ public class CandidateListRestController {
 		    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			
-			if(candidateStatus.equals(Constants.CANDIDATE_ACTIVE)){
+			if(candiStatus.intValue() == (Constants.CANDIDATE_ACTIVE)){
 				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
-			}else if(candidateStatus.equals(Constants.CANDIDATE_IN_ACTIVE)){
+			}else if(candiStatus.intValue() ==(Constants.CANDIDATE_IN_ACTIVE)){
 				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 0));
 			}
 			
@@ -176,19 +179,19 @@ public class CandidateListRestController {
 	   	    	
 			}
 			
-			 maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId());
+			 maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(), candidateStatus.toString());
 			 
 			try {
 				
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 			    if(null != searchHits && searchHits.length >0){
 			    	ObjectMapper mapper = new ObjectMapper();
+			    	mapper.setDateFormat(df);
 			    	for (SearchHit hit : searchHits) {
-			    		String json = hit.getSourceAsString();
-			    		mapper.setDateFormat(df);
-			    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+			    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
+			    	    CandidateIndex candidateIndex = mapper.readValue(json.toString(), CandidateIndex.class);
 			    	    if(candidateIndex.getUpdatedDate() != null){
-			    	    	candidateIndex.setCandidateUpdateDateToString(Constants.DF_YMD.format(candidateIndex.getUpdatedDate()));
+			    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
 			   			}
 			    	    candidatesList.add(candidateIndex);
 			    	}
@@ -217,7 +220,7 @@ public class CandidateListRestController {
 	   * @throws NullPointer
 	   */
 	 @RequestMapping(value = "/searchCandidate", method = RequestMethod.POST)
-	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateStatus", required=false)Integer  candidateStatus,MultipartHttpServletRequest request) throws Exception {
 
 		    MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
@@ -226,7 +229,7 @@ public class CandidateListRestController {
 			}
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
-			
+			 Long maxResults =null;
 			 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
@@ -234,7 +237,14 @@ public class CandidateListRestController {
 			 
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			 
-			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId());
+			 
+			 if(null != candidateStatus){
+				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),candidateStatus.toString());
+			 }else{
+				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),null);
+
+			 }
+			 
 		   	 //Exclude Keyword
 			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
@@ -466,10 +476,10 @@ public class CandidateListRestController {
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 				    if(null != searchHits && searchHits.length >0){
 				    	ObjectMapper mapper = new ObjectMapper();
+				    	mapper.setDateFormat(df);
 				    	for (SearchHit hit : searchHits) {
-				    		json = hit.getSourceAsString();
-				    		mapper.setDateFormat(df);
-				    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+				    		StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
+				    	    CandidateIndex candidateIndex = mapper.readValue(json1.toString(), CandidateIndex.class);
 				    	    if(candidateIndex.getUpdatedDate() != null){
 				    	    	candidateIndex.setCandidateUpdateDateToString(Constants.DF_YMD.format(candidateIndex.getUpdatedDate()));
 				   			}
@@ -582,8 +592,9 @@ public class CandidateListRestController {
 	   */
 	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
-			String resultJson;
+			String resultJson ="" ;
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+			if(null != can){
 			StringBuilder skillsList = new StringBuilder();
 			List<CandidateSkills> candidateSkills = candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
 			int i = 0;
@@ -598,6 +609,7 @@ public class CandidateListRestController {
 			}
 			can.setSkillsList(skillsList.toString());
 			resultJson = commonUtil.toJSON(can);
+			}
 			return resultJson;
      }
 			 

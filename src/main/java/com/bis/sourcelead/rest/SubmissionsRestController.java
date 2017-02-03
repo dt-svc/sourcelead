@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -135,9 +136,14 @@ public class SubmissionsRestController {
 
 		String resultJson = null;
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		CandidateEducation education = candidateEducationService.getCandidateEducationByCandidateId(candidateId);
-		if (education != null) {
-			candidate.setCandidateEdu(education.getName());
+		List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
+		StringBuilder education = new StringBuilder();
+		if (educationList != null && educationList.size() > 0) {
+			for(String educationName : educationList){
+				education.append(educationName).append(", ");
+			}
+			
+			candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
 		}
 		resultJson = toJSON(candidate);
 		return resultJson;
@@ -289,7 +295,6 @@ public class SubmissionsRestController {
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
 
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
-			CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
 					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 			if (requirementSubmissionTemplateFields.getLastName() != null) {
@@ -316,10 +321,6 @@ public class SubmissionsRestController {
 				requirementSubmission
 						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 			}
-			User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-			StringBuilder userNameSB = new StringBuilder();
-			requirementSubmission.setUserName(userNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
-			requirementSubmission.setResumeName(candidateResumes.getFileName());
 			candidatesList.add(requirementSubmission);
 		}
 		resultJson = toJSON(candidatesList);
@@ -340,8 +341,7 @@ public class SubmissionsRestController {
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
 
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
-			CandidateResumes candidateResumes = candidateResumesService
-					.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+			
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
 					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 			if (requirementSubmissionTemplateFields.getLastName() != null) {
@@ -370,10 +370,6 @@ public class SubmissionsRestController {
 				requirementSubmission
 						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 			}
-			User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-			StringBuilder userNameSB = new StringBuilder();
-			requirementSubmission.setUserName(userNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
-			requirementSubmission.setResumeName(candidateResumes.getFileName());
 			candidatesList.add(requirementSubmission);
 		}
 		resultJson = toJSON(candidatesList);
@@ -555,12 +551,7 @@ public class SubmissionsRestController {
 		globalVarsMap.put("LoginURL", loginURLBuilder.append("<a href='").append(sourceleadUrl).append("/").append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		// setting the Recipient information
-		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		EmailRecipient emailRecipient = new EmailRecipient();
-		emailRecipient.setEmail(emailMessage.getToEmail());
-		StringBuilder nameSB = new StringBuilder();
-		emailRecipient.setName(nameSB.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		emailRecipientList.add(emailRecipient);
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
@@ -581,7 +572,7 @@ public class SubmissionsRestController {
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocations.getId(), emailRecipientList,
+		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocations.getId(), iAdressArray,
 				new ArrayList<EmailAttachment>());
 
 	}

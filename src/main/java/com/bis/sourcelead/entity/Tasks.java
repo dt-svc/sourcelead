@@ -47,6 +47,10 @@ public class Tasks implements Serializable{
    	private OrgLocations ownerOrglocationId;
 	
 	@ManyToOne
+	@JoinColumn(name = "ASSIGNED_ORGLOCATION_ID")
+   	private OrgLocations assignedOrglocationId;
+	
+	@ManyToOne
 	@JoinColumn(name = "TASK_OWNER_ID")
    	private User taskOwnerId;
 	
@@ -117,6 +121,14 @@ public class Tasks implements Serializable{
 
 	public void setOwnerOrglocationId(OrgLocations ownerOrglocationId) {
 		this.ownerOrglocationId = ownerOrglocationId;
+	}
+
+	public OrgLocations getAssignedOrglocationId() {
+		return assignedOrglocationId;
+	}
+
+	public void setAssignedOrglocationId(OrgLocations assignedOrglocationId) {
+		this.assignedOrglocationId = assignedOrglocationId;
 	}
 
 	public User getTaskOwnerId() {

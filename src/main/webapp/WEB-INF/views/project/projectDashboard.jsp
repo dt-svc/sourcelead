@@ -8,6 +8,25 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
+<script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
+
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+
+
  <style>
  
  .clsDatePicker {
@@ -43,7 +62,7 @@ overflow-x: auto;
         </section>
 
         
-	   <div class="timesheet_out">
+	   <div class="timesheet_out timesheet_background">
 	   <%-- <c:if test="${empty projectsList}">
 			<div class="project_wrap">
         <div class="timesheet_head">
@@ -86,6 +105,155 @@ overflow-x: auto;
 		</c:if> --%>
 		<%-- <c:if test="${!empty projectsList}"> --%>
 		<div class="project_wrap">
+		
+		<div class="pull-left cand-advsrche">
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+			  Advanced Search&nbsp;&nbsp;
+			  <i class="fa fa-search"></i>
+			  </a> 
+			    <div class="cand-advsrch-popup" >
+			  <form:form id="projectlist_form" name="projectlist_form"  enctype='multipart/form-data' >
+				
+					  <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
+					  <div class="row">
+						   <div class="col-md-4">
+			                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+				                 <div class="clearfix">
+								        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
+				                        </select>
+							    </div>
+			              </div>
+			              <div class="col-md-4">
+			                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+			                <div class="clearfix">
+			                  <div class="clearfix">
+								  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
+				                     </select>
+							 </div>
+			                </div>
+			              </div>
+			              <div class="col-md-4">
+			                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+			                <div class="clearfix">
+							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
+			                     </select>
+				            </div>
+			              </div>
+			              </div>
+			              
+			              <div class="row">
+			              <div class="col-md-12">
+		                	<h4>Project Details:</h4>
+		              	  </div>
+		              	<div class="clearfix">
+		                <div class="col-md-4">
+		                  <label>Project ID</label>
+		                  <div class="clearfix">
+		                  <select class="chosen-select form-control input-sm" multiple data-placeholder="Project ID" id="projectIdAdvanced" name="projectIdAdvanced">
+                            </select>
+		                  </div>
+		                </div>
+					  
+		                <div class="col-md-4">
+		                  <label>Project Name</label>
+		                  <div class="clearfix">
+		                  <select class="chosen-select form-control input-sm" multiple data-placeholder="Project Name" id="projectNameAdvanced" name="projectNameAdvanced">
+                            </select>
+		                  </div>
+		                </div>
+					  
+		                <div class="col-md-4">
+		                  <label>Project Manager</label>
+		                  <div class="clearfix">
+		                  		<!-- <input type="text" class="form-control input-sm" placeholder="Project manager" value = "" id="projectManagerAdvanced" name="projectManagerAdvanced"> -->
+						  		<select class="chosen-select form-control input-sm" multiple data-placeholder="Project manager" id="projectManagerAdvanced" name="projectManagerAdvanced">
+                                    <c:forEach var="report" items="${add_projectManagersList}">
+				                    	<option value="${report.fullName}">${report.fullName}</option>
+			                		</c:forEach>
+                                </select>
+		                  </div>
+		                </div>
+					  
+		                <div class="col-md-4">
+							  <label>Invoice frequency</label>
+							  <div class="clearfix">
+								 <select class="chosen-select" id="invoiceFrequencyAdvanced" name="invoiceFrequencyAdvanced" data-placeholder="Invoice Frequency" multiple>
+										 <option value="Weekly">Weekly</option>
+										 <option value="Bi-weekly">Bi-weekly</option>
+										 <option value="Semi-Monthly">Semi-Monthly</option>
+										 <option value="Monthly">Monthly</option>
+				                </select>
+							  </div>
+						  </div>
+		                
+		                <div class="col-md-4">
+			                <label>Clients</label>
+			                  <div class="clearfix">
+									 <select class="chosen-select form-control input-sm" multiple data-placeholder="Clients" id="clientsAdvanced" name="clientsAdvanced">
+                                       <c:forEach var="report" items="${add_client}">
+							                     <option value="${report.clientName}">${report.clientName}</option>
+						                </c:forEach>
+                                    </select>
+							 </div>
+			            </div>
+			              
+			            <div class="col-md-4">
+		                  <label>Status</label>
+		                  <div class="clearfix">
+		                     <select class="chosen-select" id="statusAdvanced" name="statusAdvanced" data-placeholder="Status" multiple>
+										 <option value="STARTED">Started</option>
+										 <option value="INPROGRESS">In-Progress</option>
+										 <option value="COMPLETED">Completed</option>
+										 <option value="ONHOLD">On-Hold</option>
+				             </select>
+		                  </div>
+		                </div>
+		                
+		                <div class="col-md-4">
+		                  <label>Project Start Date</label>
+		                  <div class="clearfix positionRelative">
+		                  	<input type="text" class="form-control input-sm" placeholder="Project Start-Date" id="projectStartDateAdvanced" name="projectStartDateAdvanced">
+		                  	<i class="fa fa-calendar icon-inner"></i>
+		                  </div>
+		                </div>
+		                
+		                <div class="col-md-4">
+		                  <label>Employee Name</label>
+		                  <div class="clearfix">
+		                  	<!-- <input type="text" class="form-control input-sm" placeholder="Employee Name" id="employeeNameAdvanced" name="employeeNameAdvanced"> -->
+		                  	<select class="chosen-select form-control input-sm" multiple data-placeholder="Employee Name" id="employeeNameAdvanced" name="employeeNameAdvanced">
+                                    <c:forEach var="report" items="${add_projectMembersList}">
+				                    	<option value="${report.empName}">${report.empName}</option>
+			                		</c:forEach>
+                            </select>
+		                  </div>
+		                </div>
+		                
+		                <div class="col-md-4">
+		                  <label>Employee Email</label>
+		                  <div class="clearfix">
+		                  	<!-- <input type="text" class="form-control input-sm" placeholder="Employee Email" id="employeeEmailAdvanced" name="employeeEmailAdvanced"> -->
+		                  	<select class="chosen-select form-control input-sm" multiple data-placeholder="Employee Email" id="employeeEmailAdvanced" name="employeeEmailAdvanced">
+                                    <c:forEach var="report" items="${add_projectMembersList}">
+				                    	<option value="${report.empEmail}">${report.empEmail}</option>
+			                		</c:forEach>
+                            </select>
+		                  </div>
+		                </div>
+		                </div>
+					  </div>
+					  <div class="row form-footer mt">
+						  <div class="pull-right mr">
+							   <input type="button" value="Search" id="search_project" onclick="searchProject();" class="btn btn-sm btn-primary"/>
+                               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
+						  </div>
+					  </div>
+				  
+			  </form:form>
+			  </div>
+      </div>
+		
+		
         <div class="timesheet_head">
         	<ul>
 				<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  ></i>|
@@ -154,9 +322,10 @@ overflow-x: auto;
 	
 <script type="text/javascript">
 window.onload = function () {
+	searchProject();
 	$('input[name=projectStatus]').attr('checked',false);
 	$('input[name=clientNameById]').attr('checked',false);
-	filter();
+	//filter();
  };
 </script>
 
@@ -497,5 +666,471 @@ $(document).ready(function() {
 		
 });
 </script> 
-    
+<script>
+	// Close Advanced Search
+	function closePop(){
+		$("div.cand-advsrch-popup").hide();
+	}
+	function openPop(){
+	  $("div.cand-advsrch-popup").toggle();
+	  
+	}
+</script>
+<script type="text/javascript">	
+	function loadChosenScripts(){
+
+	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	    $("#allKeywords").val('').trigger("chosen:updated");
+	    $("#excludeKeyWord").val('').trigger("chosen:updated");
+	    $("#projectIdAdvanced").val('').trigger("chosen:updated");
+	    $("#projectNameAdvanced").val('').trigger("chosen:updated");
+	    $("#projectStartDateAdvanced").val('').trigger("chosen:updated");
+	   /*  $("#projectManagerAdvanced").val('').trigger("chosen:updated");
+	    $("#invoiceFrequencyAdvanced").val('').trigger("chosen:updated");
+	    $("#clientsAdvanced").val('').trigger("chosen:updated");
+	    $("#statusAdvanced").val('').trigger("chosen:updated");
+	    $("#employeeNameAdvanced").val('').trigger("chosen:updated");
+	    $("#employeeEmailAdvanced").val('').trigger("chosen:updated"); */
+	    
+	    $("#anyOfKeyword").empty();
+	    $("#allKeywords").empty();
+	    $("#excludeKeyWord").empty();
+	    $("#projectIdAdvanced").empty();
+	    $("#projectNameAdvanced").empty();
+	    $("#projectStartDateAdvanced").empty();
+	    /* $("#projectManagerAdvanced").empty();
+	    $("#invoiceFrequencyAdvanced").empty();
+	    $("#clientsAdvanced").empty();
+	    $("#statusAdvanced").empty();
+	    $("#employeeNameAdvanced").empty();
+	    $("#employeeEmailAdvanced").empty(); */
+	}
+</script>
+	
+<script type="text/javascript">
+    	   var config = {
+    				  '.chosen-select'           : {},
+    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+    				  '.chosen-select-no-single' : {disable_search_threshold:10},
+    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+    				  '.chosen-select-width'     : {width:"95%"}
+    	   }
+			//Adding Customized Any Of Keyword to the list 
+		    var select, chosen;
+		    select = $("#anyOfKeyword");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keyup', function(e)
+		    {
+		    	var anyKeyword = this.value.replace(",","");
+		        if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(anyKeyword).text(anyKeyword);
+		            select.append(option);
+		            select.find(option).prop('selected', true);
+                    $("#anyOfKeyword option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#anyOfKeyword").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		  //Adding Customized Any Of Keyword to the list
+		    var selectone, chosenone;
+		    selectone = $("#allKeywords");
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenone = selectone.data('chosen');
+		    chosenone.search_field.on('keyup', function(e1)
+		    {
+		    	var allKeyword = this.value.replace(",","");
+		        if ((e1.which == 13 || e1.which == 188) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(allKeyword).text(allKeyword);
+		            selectone.append(option);
+		            selectone.find(option).prop('selected', true);
+                    $("#allKeywords option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#allKeywords").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    var selecttwo, chosentwo;
+		    selecttwo = $("#excludeKeyWord");
+		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosentwo = selecttwo.data('chosen');
+		    chosentwo.search_field.on('keyup', function(e2)
+		    {
+		    	var excludeKeyword = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
+		            selecttwo.append(option);
+		            selecttwo.find(option).prop('selected', true);
+                    $("#excludeKeyWord option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#excludeKeyWord").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectthree, chosenthree;
+		    selectthree = $("#projectIdAdvanced");
+		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenthree = selectthree.data('chosen');
+		    chosenthree.search_field.on('keyup', function(e2)
+		    {
+		    	var projectIdAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (projectIdAdvanced != null  && projectIdAdvanced != '' && projectIdAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(projectIdAdvanced).text(projectIdAdvanced);
+		            selectthree.append(option);
+		            selectthree.find(option).prop('selected', true);
+                    $("#projectIdAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#projectIdAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectfour, chosenthree;
+		    selectfour = $("#projectNameAdvanced");
+		    selectfour.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenthree = selectfour.data('chosen');
+		    chosenthree.search_field.on('keyup', function(e2)
+		    {
+		    	var projectNameAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (projectNameAdvanced != null  && projectNameAdvanced != '' && projectNameAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(projectNameAdvanced).text(projectNameAdvanced);
+		            selectfour.append(option);
+		            selectfour.find(option).prop('selected', true);
+                    $("#projectNameAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#projectNameAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    /* var selectfive, chosenfive;
+		    selectfive = $("#projectManagerAdvanced");
+		    selectfive.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenfive = selectfive.data('chosen');
+		    chosenfive.search_field.on('keyup', function(e2)
+		    {
+		    	var projectManagerAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (projectManagerAdvanced != null  && projectManagerAdvanced != '' && projectManagerAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(projectManagerAdvanced).text(projectManagerAdvanced);
+		            selectfive.append(option);
+		            selectfive.find(option).prop('selected', true);
+                    $("#projectManagerAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#projectManagerAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectsix, chosensix;
+		    selectsix = $("#invoiceFrequencyAdvanced");
+		    selectsix.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosensix = selectsix.data('chosen');
+		    chosensix.search_field.on('keyup', function(e2)
+		    {
+		    	var invoiceFrequencyAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (invoiceFrequencyAdvanced != null  && invoiceFrequencyAdvanced != '' && invoiceFrequencyAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(invoiceFrequencyAdvanced).text(invoiceFrequencyAdvanced);
+		            selectsix.append(option);
+		            selectsix.find(option).prop('selected', true);
+                    $("#invoiceFrequencyAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#invoiceFrequencyAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectseven, chosenseven;
+		    selectseven = $("#clientsAdvanced");
+		    selectseven.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenseven = selectseven.data('chosen');
+		    chosenseven.search_field.on('keyup', function(e2)
+		    {
+		    	var clientsAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (clientsAdvanced != null  && clientsAdvanced != '' && clientsAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(clientsAdvanced).text(clientsAdvanced);
+		            selectseven.append(option);
+		            selectseven.find(option).prop('selected', true);
+                    $("#clientsAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#clientsAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selecteight, choseneight;
+		    selecteight = $("#statusAdvanced");
+		    selecteight.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    choseneight = selecteight.data('chosen');
+		    choseneight.search_field.on('keyup', function(e2)
+		    {
+		    	var statusAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (statusAdvanced != null  && statusAdvanced != '' && statusAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(statusAdvanced).text(statusAdvanced);
+		            selecteight.append(option);
+		            selecteight.find(option).prop('selected', true);
+                    $("#statusAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#statusAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectnine, chosennine;
+		    selectnine = $("#employeeNameAdvanced");
+		    selectnine.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosennine = selectnine.data('chosen');
+		    chosennine.search_field.on('keyup', function(e2)
+		    {
+		    	var employeeNameAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (employeeNameAdvanced != null  && employeeNameAdvanced != '' && employeeNameAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(employeeNameAdvanced).text(employeeNameAdvanced);
+		            selectnine.append(option);
+		            selectnine.find(option).prop('selected', true);
+                    $("#employeeNameAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#employeeNameAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectten, chosenten;
+		    selectten = $("#employeeEmailAdvanced");
+		    selectten.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenten = selectten.data('chosen');
+		    chosenten.search_field.on('keyup', function(e2)
+		    {
+		    	var employeeEmailAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (employeeEmailAdvanced != null  && employeeEmailAdvanced != '' && employeeEmailAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(employeeEmailAdvanced).text(employeeEmailAdvanced);
+		            selectten.append(option);
+		            selectten.find(option).prop('selected', true);
+                    $("#employeeEmailAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#employeeEmailAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    }); */
+		    
+				for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+</script>
+<script>
+	$('#projectStartDateAdvanced').datepicker({
+		dateFormat : 'yy-mm-dd',
+	      changeMonth: true,
+	      changeYear: true,
+		onSelect : function(selected) {
+			var dt = new Date(selected);
+			dt.setDate(dt.getDate() + 1);
+		}
+	});
+</script> 
+<script type="text/javascript">
+	function searchProject() {
+		var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd'
+			};
+		
+		 if ($('#projectlist_form').validate(false, validationSettings)){ 
+			
+			var sourceleadUrl = '${sourceleadUrl}';
+			var frm = $('#projectlist_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, ""); 
+		    var jsonData = encodeURIComponent(con);
+			var form = $('#projectlist_form')[0];
+      		var formData = new FormData(form); 
+			//It will escape all the special characters
+			$("#search_project").attr("disabled", "disabled");
+			$("#search_project").addClass('button').val('Processing..');
+
+			$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/searchProject?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						success : function(data) {
+							$("#search_project").addClass('button').val('Search');
+							$("#search_project").removeAttr("disabled");
+							closePop();
+							prepareProjectsList(data);
+						},
+					}); 
+			return true;
+		 }else{ 
+				return false;
+		 } 
+	} 
+	
+	$('body').on('blur', '#projectlist_form', function() {
+		$("#projectlist_form").showHelpOnFocus();
+		$("#projectlist_form").validateOnBlur(false, validationSettings);
+	});
+</script>
+
+<script>
+  function prepareProjectsList(data){
+	  if(data != null && data != 'undefined' && data != "" && data != '[]'){
+		    	var json = JSON.parse(data);
+	        	var result = "";
+		    	result = result +'<thead>';
+		    	result = result +'	<tr>';
+		    	result = result +'	<th>Id</th>';
+		    	result = result +'    <th>Name</th>'; 
+		    	result = result +'     <th>Manager</th>';
+		    	result = result +'     <th>Invoice Frequency</th>';
+		    	result = result +'     <th>Date</th>';
+		    	result = result +'      <th>Client</th>';
+		    	result = result +'       <th>Status</th>';
+		    	result = result +'    </tr>';
+		    	result = result +'</thead>	';
+		    	result = result +'<tbody>';
+		    	for (var i=0; i<json.length; i++)
+				{   
+		    		var report = json[i];
+		    		var projectSequeneNumber;
+		    		if(report.projectSequeneNumber != null && report.projectSequeneNumber != '' && report.projectSequeneNumber !='undefined'){
+		    				projectSequeneNumber = report.projectSequeneNumber;
+		    		}else{
+		    			projectSequeneNumber = "---";
+		    		}
+		    		result = result +'<tr>';
+		    		result = result +'<td data-title="Id"><div><span title='+projectSequeneNumber+'>'+projectSequeneNumber+'</span></div></td>';
+	
+		    		
+		    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
+		    			result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\');"><span title="'+report.projectName+'">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    		'</sec:authorize>';
+		    		
+		    		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
+	    		  		result = result +'<td data-title="Name"><div class="proj_show"><span title="'+report.projectName+'">'+report.projectName+'</span></div></td>';
+	    			'</sec:authorize>';
+	
+		    		result = result +'<td data-title="Manager">';
+		    		result = result +'<div><span title='+report.level1ManagerName+'>';
+		    		if(report.level1ManagerName !=null && report.level1ManagerName !='' && report.level1ManagerName !='undefined'){
+		    			result = result +report.level1ManagerName;
+		    		}
+		    		if(report.level1ManagerName !=null && report.level1ManagerName !='' && report.level1ManagerName !='undefined' && report.level2ManagerName!=null && report.level2ManagerName!='' && report.level2ManagerName !='undefined'){
+		    			result = result + " , ";
+		    		}
+		    		if(report.level2ManagerName!=null && report.level2ManagerName!='' && report.level2ManagerName !='undefined'){
+		    			result = result +report.level2ManagerName;
+		    		}
+		    		result = result +'</span></div>';
+		    		result = result +'</td>';
+		    		
+		    		result = result +'<td data-title="Invoice Frequency">';
+		    		result = result +'<div><span title="'+report.invoiceFrequency+'">';
+		    		if(report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
+		    			result = result +report.invoiceFrequency;
+		    		}
+		    		
+		    		result = result +'</span></div>';
+		    		result = result +'</td>';
+		    		
+		    		result = result +'<td data-title="Date"><div><span title="'+report.startDate+'">'+report.startDate+'</span>';
+		    		if(report.endDate != null && report.endDate != '' && report.endDate != 'undefined'){
+	   		    		result = result +'- <span title="'+report.endDate+'">'+report.endDate+'</span> </div></td>';
+		    		}
+		    		if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
+		    			result = result +'<td data-title="Client"><div><span title="'+report.clientName+'">'+report.clientName+'</span></div></td>';  
+		    		}else{
+		    			result = result +'<td data-title="Client"><div>---</div></td>';  
+		    		}
+		    		result = result +'<td data-title="Status"><div>';
+		    		if(report.projectStatus == 'STARTED'){
+	   			  result = result +'<b>'+report.projectStatus+'</b>';
+	   			}
+		    		if(report.projectStatus == 'INPROGRESS'){
+	   			  result = result +'<b class="proj_process">'+report.projectStatus+'</b>';
+	   			}
+		    		if(report.projectStatus == 'COMPLETED'){
+	   			  result = result +'<b class="proj_active">'+report.projectStatus+'</b>';
+	   			}
+		    		if(report.projectStatus == 'ONHOLD'){
+	   			  result = result +'<b class="proj_deactivate">'+report.projectStatus+'</b>';
+	   			}
+		    		
+		    		result = result +'</div></td>';
+		    		
+	                result = result +'</tr>';
+				}
+	            result = result +'  </tbody>';
+	            result = result +' </table>';
+	            result = result +'</div>';
+	            $("#example").empty();  
+	    	    $("#example").append(result);
+	    	    pagination();
+	  }else{
+     	 $("#example").removeAttr("style");
+	         var result ="";
+			 result = result+"			<div class='blank-pages'>";
+			 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+			 result = result+"			        <p>No Projects Found</p>";
+			 result = result+"			 </div>";
+			$("#example").empty();
+		    $("#example").append(result); 
+		    $(".dataTables_info").empty();
+		    $(".dataTables_paginate").empty();
+      }
+  }
+</script>
 </html>

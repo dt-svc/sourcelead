@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -37,8 +38,10 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
@@ -105,6 +108,12 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 private RequirementAssignToService requirementAssignToService;
+	 
+	 @Autowired
+	 private LookUpDataService lookUpDataService;
+
+	 @Autowired
+	 RecommendedCustomizeScoreService recommendedCustomizeScoreService;
 	 
 	/**
 	 * @author prasad k
@@ -611,13 +620,17 @@ public class RequirementRestController {
 			throws Exception {
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
        // List<Candidate> candidateList = recommendationsService.getAllCandidatesByLocation(orgLocation.getId());
 		
-		Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
+		//Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
+	    RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
+	    List<Candidate> candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);
+		//List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScoreByUsingElk(orgLocation.getId(),requirement);
 		
-		List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScoreByUsingElk(orgLocation.getId(),requirement);
-
+		/*Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
+		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScore.getScore(requirementId.getId());
+			
+		List<Candidate> candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);*/
 		resultJson = commonUtil.toJSON(candidateListCopy);
 		return resultJson;
 
@@ -695,6 +708,27 @@ public class RequirementRestController {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				Boolean validatejobName = requirementService.validateRequirementTitle(templateName,orgLocation.getId());
 				return validatejobName.toString();
+		    }
+	 
+	 
+	    @RequestMapping(value = "/getRequirementAndLookUpSkills",  method = RequestMethod.POST)
+	    public @ResponseBody String getRequirementAndLookUpSkills(@RequestParam(value="requirementid", required=false) Long requirementid) throws Exception {
+	    	
+	    	List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirementid.toString());		
+		  	List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+		  	
+		  	if(allReqSkills != null){
+		  		String[] skills = allReqSkills.get(0).split(","); 
+			    for(String skill : skills){ 
+			    	if(!skillsList.contains(skill)){
+			    		    skillsList.add(skill);
+			    	}
+			    }  
+		  	}
+		  	
+	    	String resultJson; 
+		  	resultJson = commonUtil.toJSON(skillsList);
+			return resultJson;
 		    }
 
 }
