@@ -1,0 +1,204 @@
+package com.bis.sourcelead.rest;
+
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+
+@RestController
+@PropertySource("${propertyLocation:app.properties}")
+public class RecommendedCustomizeScoreRestController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(RecommendedCustomizeScoreRestController.class);
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
+	@Autowired
+	RecommendedCustomizeScoreService recommendedCustomizeScoreService;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
+	
+	 @Autowired
+	 private CandidateResumesService candidateResumeSerivce;
+	 
+	 @Autowired
+	 private CandidateService candidateService;
+	 
+	 
+	 
+	 @Autowired
+	 CommonUtil commonUtil;
+	 
+	 
+	@RequestMapping(value = "/getCustomizeScore")
+	public @ResponseBody String getCustomizeScore(@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson = null;
+		RecommendedCustomizeScore rcs = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementIdAndOrgLocationId(requirementId, orgLocations.getId());
+		List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+		if(null != rcs && null != rcs.getCustomizeSkills()){
+	  		String[] skills = rcs.getCustomizeSkills().split(","); 
+		    for(String skill : skills){ 
+		    	if(skillsList.contains(skill)){
+		    		    skillsList.remove(skill);
+		    	}
+		   }  
+	  	}
+		rcs.setDbSkills(skillsList.toString());
+		resultJson = commonUtil.toJSON(rcs);
+		return resultJson;
+	}
+
+	
+
+	@RequestMapping(value = "/updateCustomizeScore")
+	public @ResponseBody String updateCustomizeScore(@RequestParam(value="requirementId", required=false) Long requirementId,
+			@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String resultJson = null;
+		String json1 = "{"+json+"}";
+	    JSONObject jsonObj = new JSONObject(json1);
+	    
+		RecommendedCustomizeScore rcs = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementIdAndOrgLocationId(requirementId, orgLocations.getId());
+		
+		rcs.setReqirementId(rcs.getReqirementId());	
+		rcs.setOrgLocationId(rcs.getOrgLocationId());
+
+		//splits the Skills 
+		if(jsonObj.has("customizeSkills")){
+			
+			String skillId =null;
+			try{
+				JSONArray jsonArray = jsonObj.getJSONArray("customizeSkills");
+				skillId = jsonArray.toString();
+			}
+			catch(JSONException e){
+				skillId =jsonObj.getString("customizeSkills");
+			}
+			skillId = skillId.replaceAll("\\[", "").replaceAll("\\]","");
+			
+			
+			skillId = skillId.replaceAll("\"", "");
+			rcs.setCustomizeSkills(skillId);
+		
+		}
+		
+		
+		//Split the Noticeperiod
+		if(jsonObj.has("noticeperiod")){
+				String jsonArray = jsonObj.getString("noticeperiod");
+				String noticeperiodId = jsonArray.replaceAll("\\[", "").replaceAll("\\]","").replaceAll("\"", "");
+				rcs.setCustomizeNoticeperiod(noticeperiodId);
+			
+			}
+		
+		//Split the Keywords
+				if(jsonObj.has("anyKeyWord")){
+							
+						String anyKeyWordId =null;
+						try{
+							JSONArray jsonArray = jsonObj.getJSONArray("anyKeyWord");
+							anyKeyWordId = jsonArray.toString();
+						}
+						catch(JSONException e){
+							anyKeyWordId =jsonObj.getString("anyKeyWord");
+						}
+						anyKeyWordId = anyKeyWordId.replaceAll("\\[", "").replaceAll("\\]","");
+						
+						
+						anyKeyWordId = anyKeyWordId.replaceAll("\"", "");
+						rcs.setCustomizeKeywords(anyKeyWordId);
+					
+					}
+		if(jsonObj.has("customizeCountry")){
+			rcs.setCustomizeState(jsonObj.getString("customizeCountry"));
+		 }
+		if(jsonObj.has("customizeState")  && null != jsonObj.getString("customizeState") && "" != jsonObj.getString("customizeState")){
+			rcs.setCustomizeState(jsonObj.getString("customizeState"));
+		 }
+		if(jsonObj.has("customizedCity") && null != jsonObj.getString("customizedCity") && "" != jsonObj.getString("customizedCity")){
+			rcs.setCustomizeCity(jsonObj.getString("customizedCity"));
+		 }
+		if(jsonObj.has("minExperience") && null != jsonObj.getString("minExperience") && "" != jsonObj.getString("minExperience")){
+			rcs.setCustomizeMinExperience(jsonObj.getString("minExperience"));
+		 }
+		if(jsonObj.has("maxExperience") && null != jsonObj.getString("maxExperience") && "" != jsonObj.getString("maxExperience")){
+			rcs.setCustomizeMaxExperience(jsonObj.getString("maxExperience"));
+		 }
+		
+		if(jsonObj.has("customizeRate") && null != jsonObj.getString("customizeRate") && "" != jsonObj.getString("customizeRate")){
+			rcs.setCustomizeRate(jsonObj.getString("customizeRate"));
+		 }
+		
+		if(jsonObj.has("skillScore")){
+			rcs.setCustomizeSkillScore(jsonObj.getString("skillScore"));
+		 }
+		if(jsonObj.has("locationScore")){
+			rcs.setCustomizeLocationScore(jsonObj.getString("locationScore"));
+		 }
+		if(jsonObj.has("experienceScore")){
+			rcs.setCustomizeExperienceScore(jsonObj.getString("experienceScore"));
+		 }
+		if(jsonObj.has("rateScore")){
+			rcs.setCustomizeRateScore(jsonObj.getString("rateScore"));
+		 }
+		if(jsonObj.has("noticeperiodScore")){
+			rcs.setCustomizeNoticeperiodScore(jsonObj.getString("noticeperiodScore"));
+		 }
+		if(jsonObj.has("keywordScore")){
+			rcs.setCustomizeKeywordsScore(jsonObj.getString("keywordScore"));
+		 }
+		
+		 if(user.getUserCode() != null){
+			 rcs.setUpdatedBy(user.getUserCode());	
+	    }
+		rcs.setUpdatedDate(commonUtil.currentDate());
+		
+		recommendedCustomizeScoreService.updateCustomizeScore(rcs);
+		
+		return "success";
+	}
+	
+	
+   protected static boolean isNullOrEmpty(String str) {
+		return str == null || "".equals(str.trim());
+	}
+}
+

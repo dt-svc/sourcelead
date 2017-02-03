@@ -57,10 +57,12 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -76,8 +78,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
@@ -159,6 +163,9 @@ public class RequirementServiceImpl implements RequirementService {
 	 private OrgRelationsService orgRelationsService;
 	 
 	 @Autowired
+	 LookUpDataService lookUpDataService;
+	 
+	 @Autowired
 	 private PdfUtil pdfUtil;
 	 
 	 @Autowired
@@ -169,6 +176,9 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Autowired
+	private RecommendedCustomizeScoreService recommendedCustomizeScoreService;
 	
 	/**
 	 * @author prasad k
@@ -344,8 +354,8 @@ public class RequirementServiceImpl implements RequirementService {
 				
 				
 				skillId = skillId.replaceAll("\"", "");
-		  	   requirement.setSkills(skillId);
-			
+		  	    requirement.setSkills(skillId);
+		  	 
 			}
 			
 			if(jsonObj.has("education")){
@@ -361,7 +371,7 @@ public class RequirementServiceImpl implements RequirementService {
 				educationId = educationId.replaceAll("\\[", "").replaceAll("\\]","");
 				educationId = educationId.replaceAll("\"", "");
 				
-		  	  requirement.setEducation(educationId);
+		  	    requirement.setEducation(educationId);
 			
 			 }
 			
@@ -602,13 +612,13 @@ public class RequirementServiceImpl implements RequirementService {
 			} 
 			
 			
-			if(requirement.getId() != null){
+			/*if(requirement.getId() != null){
 				requirementAssignToService.deleteRequirementAssignToByRequirementId(requirement.getId());
-			}
+			}*/
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
-						Long teamId = 0L;
+				        Long teamId = 0L;
 						Team team = null;
 						if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
 							String assignedTeamId = jsonObj.getString("assignedTeamId");
@@ -630,19 +640,25 @@ public class RequirementServiceImpl implements RequirementService {
 						if(StringUtils.isNotEmpty(assignedToMaxCount)){
 						int MaxCount = Integer.parseInt(assignedToMaxCount);
 							for (int c = 1; c < MaxCount; c++) {
-								RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+								RequirementAssignTo  requirementAssignTo = null;
+								User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+								if(requirement.getId() !=null){
+									 requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(), assUser.getId());
+									if(requirementAssignTo == null){
+										requirementAssignTo = new RequirementAssignTo();
+										requirementAssignTo.setTeamId(team);
+									}
+								}else{
+									requirementAssignTo = new RequirementAssignTo();
+									requirementAssignTo.setTeamId(team);
+								}
+								
 								
 		//						User assUser = new User();
 		//						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
-								User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
 								requirementAssignTo.setAssignUserId(assUser);
 								
 								requirementAssignTo.setRequirementId(requirement);
-								
-								
-								requirementAssignTo.setTeamId(team);
-								
-								
 								UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
 								requirementAssignTo.setRoleId(userRole.getRoles());
 								requirementAssignToList.add(requirementAssignTo);
@@ -655,6 +671,8 @@ public class RequirementServiceImpl implements RequirementService {
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		
+		//store recommended customizeScore
+		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.saveCustomizeScore(requirement);
 	
 			       if(!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)){
 				 		
@@ -713,6 +731,10 @@ public class RequirementServiceImpl implements RequirementService {
 					}
 		 }		
 			       saveElkRequirement(savedRequirement);
+			       
+			       
+			       
+			       
 		return savedRequirement;
 	}
 
@@ -2127,6 +2149,7 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					skillId = skillId.replaceAll("\"", "");
 					reqTemplate.setSkills(skillId);
+					
 				}else{
 					reqTemplate.setSkills(null);	
 				}
@@ -2145,6 +2168,7 @@ public class RequirementServiceImpl implements RequirementService {
 					educationId = educationId.replaceAll("\"", "");
 					
 					reqTemplate.setEducation(educationId);
+					
 				 }else{
 					 reqTemplate.setEducation(null);
 				 }
@@ -2205,6 +2229,15 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
+	public List<String> getAllRequirementSkillsByRequirementI(String requirementId) throws Exception {
+		return requirementDao.getAllRequirementSkillsByRequirementI(requirementId);
+	}
+	
+	public List<String> getAllSkillsBySkillCategory() throws Exception{
+		return lookUpDataService.getAllSkillsBySkillCategory();
+		
+	}
+
 	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj,Org org) throws Exception {
 		
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();

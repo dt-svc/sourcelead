@@ -118,6 +118,13 @@
           </div>
         </div>
         
+        <div class="form-group">
+          <label class="col-md-3">Alternative Number</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" id="alternateMobilePhone" name="alternateMobilePhone"   field-name="Alternative Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
+          </div>
+        </div>
+        
         
         <div class="form-group">
 				<label class="col-md-3">Country</label>
@@ -142,6 +149,8 @@
                  </select>
 			</div>
 		</div>
+		
+		
         
         <div class="form-group">
           <label class="col-md-3">Address</label>
@@ -160,7 +169,7 @@
        <div class="form-group">
          <label class="col-md-3">Employment type</label>
          <div class="col-md-9">
-             <select class="selectpicker form-control" id="designationType" name="designationType">
+             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
                 <option value=""><a href="#">Select</a></option>
                  <option><a href="#">C2C</a></option>
                  <option><a href="#">W-2</a></option>
@@ -197,7 +206,12 @@
           </div>
         </div>
        
-       
+       <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
+            <label class="col-md-3">Employment Type</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" id="designationOtherType" name="designationOtherType" value="${candidate.designationOtherType}"  field-name="Job Type" value="">
+            </div>
+          </div>
        
        
        <div class="form-group">
@@ -306,7 +320,19 @@
               </div>
             </div>
         
-        <div class="form-group">
+         <div class="form-group">
+            <label class="col-md-3">Add Resume</label>
+            <div class="col-md-9">
+			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
+               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
+                 </span> </label>
+                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+           </div>
+         </div>
+        </div>
+        
+         <div class="form-group">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
@@ -327,26 +353,14 @@
              
            </div>
          </div>
-           <div class="form-group">
-            <label class="col-md-3">Add Resume</label>
-            <div class="col-md-9">
-			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
-               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
-                 </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
-           </div>
-           <!-- <div class="clearfix mt10 text-muted"><i class="fa fa-question-circle text-info"></i>&nbsp; Upload .doc, .pdf, .txt formats only...</div> -->
-         </div>
-        </div>
+         
+          <div class="clearfix"></div>
+          
         <div class="form-group">
           <label class="col-md-3"></label>
-         <!--  <div class="col-md-9 checkbox checkBox">
-            <label>
-              <input type="checkbox" value="">
-              Send Invitation </label>
-          </div> -->
         </div> 
+        
+        
         <div class="clearfix"></div>
       </div> 
     </div>
@@ -756,3 +770,21 @@ function getCities(){
  
 </script>
 <!-- Experience Years and Months validation Script End here -->
+
+<script>
+function getDesignationType(designationType){
+	var existingDesignationType = '${requirement.designationType}';
+	if(designationType.value == 'Other'){
+		 document.getElementById("designationTypeDiv").style.display="block";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+	}else{
+		document.getElementById("designationTypeDiv").style.display="none";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
+		  if(existingDesignationType ==null || existingDesignationType == "" || existingDesignationType == "undefined" || existingDesignationType != 'Other'){
+			  $("#designationOtherType").val('');
+		  }
+	}
+}
+</script>

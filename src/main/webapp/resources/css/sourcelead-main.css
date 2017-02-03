@@ -3588,13 +3588,11 @@ display:none;
 box-shadow: 0 0 10px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 10px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.6); -o-box-shadow: 0 0 10px rgba(0,0,0,0.6);
 width: 600px;
 }
-
 .ratepop.rate_pop{
 top:30px;
 bottom:auto;
 left:30px;
 }
-
 .ratepop .select-field select{
 width: 100% !important;
 padding: 0 10px;
@@ -5637,7 +5635,99 @@ z-index: 99;
 .customscorePop .col-md-4{
     min-height:20px
 }
+/* Customize Score styles */
+.show_scroe {
+	position: relative;
+	cursor: pointer;
+	color:#368ee0;
+	font-weight: 500px;
+}
+.scroe {
+	position: absolute !important;
+	width: 400px;
+	min-height: 50px;
+	border: 1px solid #EDEDED;
+	background: #fff;
+	border-radius:3px;
+	display: none;
+	top:-15px;
+	padding:5px 10px;
+	left:-380px;
+	z-index:999;
+	transition:all ease-in-out 0.3s;
+	-moz-box-shadow: 0px 1px 8px #9E9E9E;
+	-webkit-box-shadow: 0px 1px 8px #9E9E9E;
+	box-shadow: 0px 1px 8px #9E9E9E;
+}
+.show_scroe:hover .scroe {
+	display: block;
+}
+.scroe .progress {
+	margin-bottom: 5px;
+	min-height: 20px;
+	width: 185px;
+	padding: 0;
+}
+.scroe .progress:first-child{
+	margin-right: 15px;
+}
+.scroe .progress .progress-bar {
+	font-size: 12px;
+	/* padding: 5px 35px 5px 5px; */
+	padding:0 1px;
+	color:#333;
+	line-height: 20px;
+	min-height: 20px;
+}
+.scroe:after {
+	top: 8%;
+    right: -24px;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(255, 111, 0, 0);
+	border-left-color: #616161;
+	border-width:12px;
+}
+.scroe label{
+	font-size: 12px;
+	color:#757575;
+	margin-bottom: 0;
+}
+/* Customize Score styles Ends */
 
+/* Prasad Salina styles */
+#status-data, #recommendationTable_wrapper {
+position: relative;
+background-color: #fff;
+}
+.applicant_export {
+position: absolute;
+right: 350px;
+top: -26px;
+z-index: 999;
+}
+.applicant_export a{
+color:#333;
+font-weight: 500;
+}
+.applicant_export .glyphicon-export {
+font-size: 15px;
+color: #545454;
+padding: 0px 10px 0px 0px;
+}
+.applicant_export div.export_pipline {
+top: 30px;
+right: 70px !important;
+}
+.timesheetHead {
+background-color: #fff;
+}
+
+/* Prasad Salina Styles ends */
 
 /* media 320px */
 @media (max-width: 320px) {
