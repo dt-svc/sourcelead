@@ -16,7 +16,7 @@
       	  <div class="content-wraper">
 <section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Template Details</h2>
+			<h2>Requirement Template Details</h2>
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="/sourcelead/dashboard/1">Home</a>»<a href="/sourcelead/template">Template List </a>»

@@ -424,8 +424,8 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	}
 
 	@Override
-	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId) throws Exception {
-		return orgRelationsDao.getAllVendorsCountByOrgLocationId(orgLocationId);
+	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception {
+		return orgRelationsDao.getAllVendorsCountByOrgLocationId(orgLocationId,type);
 
 	}
 	

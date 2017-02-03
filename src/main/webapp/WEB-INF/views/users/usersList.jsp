@@ -51,7 +51,7 @@ window.onload = function () {
 			</div>
 	     </c:if>
       <div class="pull-left">
-        <h2>Users List</h2>
+        <h2>Users </h2>
       </div>
       
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Users List </div>

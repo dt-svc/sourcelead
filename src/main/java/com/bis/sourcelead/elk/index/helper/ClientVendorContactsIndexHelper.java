@@ -1,11 +1,18 @@
 package com.bis.sourcelead.elk.index.helper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.UserService;
 
 @Component
 public class ClientVendorContactsIndexHelper {
+	
+	
+	@Autowired
+	private UserService userService;
 	
 	
 	public ClientVendorContactsIndex getClientVendorContactIndexFromSpoc(OrgSpoc orgSpoc) throws Exception{
@@ -23,27 +30,39 @@ public class ClientVendorContactsIndexHelper {
 			clientVendorContactsIndex.setInvitationStatus(orgSpoc.getInvitationStatus());
 			clientVendorContactsIndex.setSpocStatus(orgSpoc.getSpocStatus());
 			clientVendorContactsIndex.setSpocUserId(orgSpoc.getSpocUser().getId());
-			clientVendorContactsIndex.setOwnerUserId(orgSpoc.getOwnerUser().getId());
+			
+			User ownerUser = userService.getUserById(orgSpoc.getOwnerUser().getId());
+			
+			
+			if(null != ownerUser){
+				
+				clientVendorContactsIndex.setOwnerUserFirstName(ownerUser.getFirstName());
+				clientVendorContactsIndex.setOwnerUserLastName(ownerUser.getLastName());
+				clientVendorContactsIndex.setOwnerUserId(orgSpoc.getOwnerUser().getId());
+				clientVendorContactsIndex.setOwnerUserEmail(ownerUser.getEmail());
+				clientVendorContactsIndex.setOwnerUserPhNo(ownerUser.getMobilePhone());
+			}
 			clientVendorContactsIndex.setResponderLocationId(orgSpoc.getResponderLocationId().getId());
+			
 			//clientVendorContactsIndex.setSpocName(orgSpoc.getSpocUser().getFirstName());
 			//clientVendorContactsIndex.setTempOwnerId(orgSpoc.getSpocUser().getId());
 			//clientVendorContactsIndex.setUserId(orgSpoc.getOwnerUser().getId());
 			
 			
 			//  Storing the value of OrgRelations InitiatorType and ResponderType
-			
 			clientVendorContactsIndex.setInitiatorType(orgSpoc.getOrgRelations().getInitiatorType());
 			clientVendorContactsIndex.setResponderType(orgSpoc.getOrgRelations().getResponderType());
-
+			User spockUser = userService.getUserById(orgSpoc.getSpocUser().getId());
 			
-			clientVendorContactsIndex.setSpocUserFirstName(orgSpoc.getSpocUser().getFirstName());
-			clientVendorContactsIndex.setSpocUserLastName(orgSpoc.getSpocUser().getLastName());
-			clientVendorContactsIndex.setOwnerUserFirstName(orgSpoc.getOwnerUser().getFirstName());
-			clientVendorContactsIndex.setOwnerUserLastName(orgSpoc.getOwnerUser().getLastName());
-			clientVendorContactsIndex.setSpocUserEmail(orgSpoc.getSpocUser().getEmail());
-			clientVendorContactsIndex.setSpocUserPhNo(orgSpoc.getSpocUser().getMobilePhone());
-			clientVendorContactsIndex.setOwnerUserEmail(orgSpoc.getOwnerUser().getEmail());
-			clientVendorContactsIndex.setOwnerUserPhNo(orgSpoc.getOwnerUser().getMobilePhone());
+            if(null != spockUser){
+            	
+            	clientVendorContactsIndex.setSpocUserFirstName(spockUser.getFirstName());
+    			clientVendorContactsIndex.setSpocUserLastName(spockUser.getLastName());
+    			clientVendorContactsIndex.setSpocUserEmail(spockUser.getEmail());
+    			clientVendorContactsIndex.setSpocUserPhNo(spockUser.getMobilePhone());
+            	
+            }
+			
 			clientVendorContactsIndex.setInitiatorOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
 			clientVendorContactsIndex.setResponderOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
 		

@@ -244,8 +244,8 @@ overflow-x: auto;
                   <label>Invitation</label>
                   <div class="clearfix">
                 		 <select class="chosen-select form-control input-sm" multiple data-placeholder="Invitation" id="invitationAdvanced" name="invitationAdvanced">
-											<option value="Sent">Sent</option>
-											<option value="New">New</option>
+											<option value="Sent">Resend</option>
+											<option value="New">send</option>
 											<option value="Accepted">Accepted</option>
 											<option value="Rejected">Rejected</option>
 						</select>
@@ -758,6 +758,9 @@ function preparedVendorsListFromElk(data){
 		   		
 		   		var report = json[i];
 		   		
+		   		releasedJobsCountByOrgRelationId(report.id);
+		   		numberOfContactsByOrgRelationId(report.id);
+		   		
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
 		   			location = report.country+", "+report.state+", "+report.city;
@@ -806,14 +809,14 @@ function preparedVendorsListFromElk(data){
 		   			result = result +'<td><div>--</div></td>';
 		   		}
 				
-		   	result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
-				result = result +' <td><div>====</div></td>';
-				result = result +'<td><div>=====</div></td>';
+		   	    result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
+				result = result +' <td><div id="releasedJobsCount'+report.id+'">---</div></td>';
+				result = result +'<td><div id="noOfContactsCount'+report.id+'">---</div></td>';
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
 				}
 		   	
-		   	result = result +'</tbody>';
+		    	result = result +'</tbody>';
 			    $("#vendorList").empty();  
 			    $("#vendorList").append(result)
 			    $("#emptyVendorList").val(json.length)
@@ -1005,7 +1008,6 @@ function getVendorContactLists(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
-
    		    	//preparedVendorContactList(data);
    		    	preparedVendorContactListFromElk(data);
    		    }
@@ -1674,9 +1676,9 @@ function pagination1(){
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Vendor City:</strong>';
-							if(json.city != null && json.city !='' && json.city !='undefined'){
-								result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
+							result = result + '<strong>Vendor Country:</strong>';
+							if(json.country != null && json.country !='' && json.country !='undefined'){
+								result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
 							}else{
 								result = result + '<span>No Data</span><div class="clearfix"></div>';
 							}
@@ -1692,9 +1694,9 @@ function pagination1(){
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Vendor Country:</strong>';
-							if(json.country != null && json.country !='' && json.country !='undefined'){
-								result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
+							result = result + '<strong>Vendor City:</strong>';
+							if(json.city != null && json.city !='' && json.city !='undefined'){
+								result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
 							}else{
 								result = result + '<span>No Data</span><div class="clearfix"></div>';
 							}
@@ -2205,7 +2207,6 @@ function getStates(){
 }
 </script> 
 
-
 <script>
 function getCities(){
 	var countryName = $("#country").val();
@@ -2235,6 +2236,46 @@ function getCities(){
 	}
 }
 </script>  
+
+<script type="text/javascript">	
+function releasedJobsCountByOrgRelationId(orgRelationId){
+	
+	$.ajax({
+    	type: "POST",
+    	dataType: "json",
+    	 url: '${sourceleadUrl}'+"/getReleasedJobsCountByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	$('#releasedJobsCount'+orgRelationId).empty();
+        	$('#releasedJobsCount'+orgRelationId).append(data);
+        	
+        },
+        error: function(e){
+        }
+    });
+}
+</script> 
+
+<!-- ---This script is used to get the number of SpockCounts--------------------- -->
+
+<script type="text/javascript">	
+function numberOfContactsByOrgRelationId(orgRelationId){
+	
+	$.ajax({
+    	type: "POST",
+    	dataType: "json",
+    	 url: '${sourceleadUrl}'+"/numberOfContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	$('#noOfContactsCount'+orgRelationId).empty();
+        	$('#noOfContactsCount'+orgRelationId).append(data);
+        	
+        },
+        error: function(e){
+        }
+    });
+}
+</script>
 
 
 <script type="text/javascript">	

@@ -391,7 +391,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		logger.debug("In getAllActiveCandidatesCountForCampaignByLocation method");
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :type and candidate.status = '1' and candidate.isFavourite = '0' ";  
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :type and candidate.status = '1' and (candidate.isFavourite = '0' OR candidate.isFavourite IS NULL) ";  
 		List<Long> candidatesCount = session.createQuery(query.toString()).setString("type", type).setLong("orgLocationId", orgLocationId).list();
 		Integer count = 0;
 		if(candidatesCount != null && !candidatesCount.isEmpty()){

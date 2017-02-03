@@ -249,8 +249,8 @@ overflow-x: auto;
                   <label>Invitation</label>
                   <div class="clearfix">
                 		 <select class="chosen-select form-control input-sm" multiple data-placeholder="Invitation" id="invitationAdvanced" name="invitationAdvanced">
-											<option value="Sent">Sent</option>
-											<option value="New">New</option>
+											<option value="Sent">Resend</option>
+											<option value="New">Send</option>
 											<option value="Accepted">Accepted</option>
 											<option value="Rejected">Rejected</option>
 						</select>
@@ -1054,14 +1054,13 @@ function preparedClientContactListFromElk(data){
 	  
 			var json = JSON.parse(data);
 		   	var result = "";
-		   	
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
 		   	result = result +'	<th>Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Ph. No</th>';
 		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Vendor</th>';
+		   	result = result +'  <th>Client</th>';
 		   	result = result +' <th>Status</th>';
 		   	result = result +' <th>Invitation</th>';
 		   	result = result +'<th>Action</th>';
@@ -1177,7 +1176,7 @@ function preparedClientListFromElk(data){
 		   	
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
-		   	result = result +' <th>Vendor Name</th>';
+		   	result = result +' <th>Client Name</th>';
 		   	result = result +' <th>Website</th>';
 		   	result = result +'<th>Location</th>';
 		   	result = result +'<th>Tier</th>';
@@ -1192,7 +1191,7 @@ function preparedClientListFromElk(data){
 				{  
 		   		
 		   		var report = json[i];
-		   		
+		   		numberOfContactsByOrgRelationId(report.id);
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
 		   			location = report.country+", "+report.state+", "+report.city;
@@ -1246,9 +1245,12 @@ function preparedClientListFromElk(data){
 		   	if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
 				result = result +' <td><div>'+report.createdBy+'</div></td>';
 		   	}else{
+
 		   		result = result +'<td><div>=====</div></td>';
 		   	}
-				result = result +'<td><div>=====</div></td>';
+				
+		   	result = result +'<td><div id="noOfContactsCount'+report.id+'">---</div></td>';
+
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
 				}
@@ -1290,7 +1292,6 @@ function getVendorContactLists(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getClientContactLists?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
-
    		    	preparedClientContacts(data);
    		    }
 	 });
@@ -1761,6 +1762,8 @@ function getEndDatePickerById(projectId,localFieldName){
 
 <!-- Show success message after form submission script -->
 <script>
+
+$("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');
 </script> 
 <!-- End -->
@@ -2096,6 +2099,24 @@ $('#selector').delay(2000).fadeOut('slow');
  -->
 
 
+<script type="text/javascript">	
+function numberOfContactsByOrgRelationId(orgRelationId){
+	
+	$.ajax({
+    	type: "POST",
+    	dataType: "json",
+    	 url: '${sourceleadUrl}'+"/numberOfContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	$('#noOfContactsCount'+orgRelationId).empty();
+        	$('#noOfContactsCount'+orgRelationId).append(data);
+        	
+        },
+        error: function(e){
+        }
+    });
+}
+</script>
 
 <script type="text/javascript">
 	function searchClient() {

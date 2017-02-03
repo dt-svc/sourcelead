@@ -82,5 +82,5 @@ public interface UserRoleDao {
 
 	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 
-	List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId);
+	public List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId,Long loginUserId) throws Exception;
 }

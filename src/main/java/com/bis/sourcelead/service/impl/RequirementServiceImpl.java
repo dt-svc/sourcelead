@@ -325,7 +325,8 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			if(jsonObj.has("description")){
 				if(!"".equalsIgnoreCase(jsonObj.getString("description"))){
-					requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));		
+					//requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));
+					requirement.setDescription(jsonObj.getString("description"));	
 				}
 			
 			}

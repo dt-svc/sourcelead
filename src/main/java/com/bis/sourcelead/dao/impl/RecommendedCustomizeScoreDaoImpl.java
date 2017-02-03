@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -10,7 +12,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RecommendedCustomizeScoreDao;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Tasks;
 
 @Repository
 public class RecommendedCustomizeScoreDaoImpl implements RecommendedCustomizeScoreDao{
@@ -38,11 +43,41 @@ public class RecommendedCustomizeScoreDaoImpl implements RecommendedCustomizeSco
 	public RecommendedCustomizeScore saveCustomizeScore(RecommendedCustomizeScore recommendedCustomizeScore) throws Exception {
 		logger.debug("In RecommendedCustomizeScore Save method");
 		Session session = this.sessionFactory.getCurrentSession();
-			session.saveOrUpdate(recommendedCustomizeScore);
+		session.saveOrUpdate(recommendedCustomizeScore);
 		return recommendedCustomizeScore;
 	}
 
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RecommendedCustomizeScore getRecommendedCustomizeScoreByRequirementIdAndOrgLocationId(Long requirementId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RecommendedCustomizeScore rcs  where rcs.reqirementId.id =:requirementId and rcs.orgLocationId =:orgLocationId ";
+		List<RecommendedCustomizeScore> recommendedCustomizeScoreLIst = session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		RecommendedCustomizeScore recommendedCustomizeScore = null;
+		if(recommendedCustomizeScoreLIst != null && !recommendedCustomizeScoreLIst.isEmpty())
+		{
+			recommendedCustomizeScore = (RecommendedCustomizeScore) recommendedCustomizeScoreLIst.iterator().next();
+		}
+		return recommendedCustomizeScore;
+		
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RecommendedCustomizeScore getRecommendedCustomizeScoreByRequirementId(Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="from RecommendedCustomizeScore rcs where rcs.reqirementId.id = :requirementId";
+		List<RecommendedCustomizeScore> recommendedCustomizeScoreList = session.createQuery(query).setLong("requirementId",requirementId).setCacheable(true).list();
+				
+		RecommendedCustomizeScore customizeScore = null;
+		if (null != recommendedCustomizeScoreList && recommendedCustomizeScoreList.size() > 0) {
+			customizeScore = (RecommendedCustomizeScore) recommendedCustomizeScoreList.iterator().next();
+		}
+		return customizeScore;
+	}
 
 
 }

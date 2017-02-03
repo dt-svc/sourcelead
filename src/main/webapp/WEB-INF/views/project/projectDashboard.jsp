@@ -1124,7 +1124,7 @@ $(document).ready(function() {
 	         var result ="";
 			 result = result+"			<div class='blank-pages'>";
 			 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-			 result = result+"			        <p>No Candidates Found</p>";
+			 result = result+"			        <p>No Projects Found</p>";
 			 result = result+"			 </div>";
 			$("#example").empty();
 		    $("#example").append(result); 
