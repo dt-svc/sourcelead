@@ -39,6 +39,8 @@ public class CandidateIndex implements Serializable {
 	private String designation;
 
 	private String designationType;
+	
+	private String designationOtherType;
 
 	private String currentRate;
 
@@ -220,7 +222,14 @@ public class CandidateIndex implements Serializable {
 		this.designationType = designationType;
 	}
 
-	
+
+	public String getDesignationOtherType() {
+		return designationOtherType;
+	}
+
+	public void setDesignationOtherType(String designationOtherType) {
+		this.designationOtherType = designationOtherType;
+	}
 
 	public String getCurrentRate() {
 		return currentRate;
