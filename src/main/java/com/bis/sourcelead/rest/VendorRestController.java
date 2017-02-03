@@ -912,7 +912,7 @@ public class VendorRestController {
 								  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
 									 
 									  StringBuilder website=new StringBuilder();
-									  clientVendor.setWebsite(clientVendor.getInitiatorWebSite());
+									  clientVendor.setWebsite(website.append("www.").append(clientVendor.getInitiatorWebSite()).toString());
 									  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
 									  clientVendor.setCountry(clientVendor.getInitiatorCountry());
 									  clientVendor.setState(clientVendor.getInitiatorState());
