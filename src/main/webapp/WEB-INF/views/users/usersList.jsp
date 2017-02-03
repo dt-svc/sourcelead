@@ -24,7 +24,8 @@ margin-right: 15px;
 </style>
 <script type="text/javascript">
 window.onload = function () {
-	getUsersList('manual');
+//getUsersList('manual');
+	searchUser("manual");
  };
 </script>
 
@@ -102,14 +103,14 @@ window.onload = function () {
 						  <div class="col-md-4">
 							  <label>Email<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix" id = "emailDiv">
-								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Email" id="email" name="email" data-validation="validate_Space validate_email" data-validation-optional="true">
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Email" id="email" name="email" data-validation="validate_Space validate_email" data-validation-optional="true" onclick = "validationMessage();">
                                   </select>
 							  </div>
 							  </div>
 						  <div class="col-md-4">
 							  <label>Phone Number<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix" id = "mobilePhoneDiv">
-								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Phone Number" data-validation="validate_Space validate_phone" data-validation-optional="true" id="mobilePhone" name="mobilePhone">
+								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Phone Number" data-validation="validate_Space validate_phone" data-validation-optional="true" id="mobilePhone" name="mobilePhone"onclick = "validationMessage();">
                                   </select>
 							  </div>
 						  </div>
@@ -172,7 +173,7 @@ window.onload = function () {
 						  <div class="pull-right mr">
 							 <!--  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
 							  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> -->
-							   <input type="button" value="Search" id="search_user" onclick="searchUser();" class="btn btn-sm btn-primary"/>
+							   <input type="button" value="Search" id="search_user" onclick="searchUser('manual');" class="btn btn-sm btn-primary"/>
                                <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
 						  </div>
 					  </div>
@@ -182,7 +183,7 @@ window.onload = function () {
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           <li><i class="fa fa-filter"></i>&nbsp;
-               <select id="userState" onchange="getUsersList('manual');">
+               <select id="userState" onchange="searchUser('manual');">
 				<option value="">--Select Status--</option>
 				<option value="ACTIVE" >Active</option>
 				<option value="INACTIVE" >In Active</option>
@@ -192,7 +193,7 @@ window.onload = function () {
           </li>
           
 		   <li><i class="fa fa-filter"></i>&nbsp;
-				<select id="userRole" onchange="getUsersList('manual');">
+				<select id="userRole" onchange="searchUser('manual');">
 				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
 				<!-- <option value="All" >All Roles</option> -->
 				<c:forEach var="roles" items="${rolesList}">
@@ -205,7 +206,7 @@ window.onload = function () {
 			  <a href="javascript:void(0)">
 			  <i class="fa fa-user"></i></a>
 				<span class="action-search"><input type="text" placeholder="Name / Email" id="searchByName"></span>
-				<span class="action-search" onclick="getUsersList('manual');"><i class="fa fa-search"></i></span>
+				<span class="action-search" onclick="searchUser('manual');"><i class="fa fa-search"></i></span>
 		  </li> 
 		
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
@@ -283,6 +284,15 @@ function cancel(){
   
  <!--  Rajashkar
   SCript is used to export user data as pdf format --> 
+  <script type="text/javascript">
+  function validationMessage() {
+	   var email = document.getElementById("email").value;
+	   var mobilePhone = document.getElementById("mobilePhone").value;
+	   $("#email").attr("disabled", "disabled");
+	   $("#search_user").removeAttr("disabled");
+	   
+}
+</script>
 <script>
 function exportToPdf(){
 	var userListEmpty = $("#noUsers").val();
@@ -365,7 +375,8 @@ function exportToPdf(){
 	    	
 	    	avilableCount = parseInt(avilableCount) + parseInt(10); 
 	    	$("#usersOffset").val(avilableCount);
-	    	getUsersList("scroll");
+	    	searchUser("scroll");
+	    	 //getUsersList("scroll");
 	    }
 	});
 </script>
@@ -379,7 +390,8 @@ function exportToPdf(){
     $("#searchByName").keydown(function (e) {
 			  if (e.keyCode == 13) {
 			    $('input[name = searchByName]').click();
-			    getUsersList("manual");
+				 $("#user_forms")[0].reset();
+				 searchUser("manual");
 			  }
 			});
   </script> 
@@ -543,20 +555,44 @@ var validationSettings = {
 	};
 </script>
 <script type="text/javascript">
-	function searchUser() {
-		/* var rate = $('#rate').val();
-		 if(rate != null && rate != "" && rate !='undefined'){
-			 $('#ratePer').removeAttr('data-validation-optional');
-			 $('#ratePer').attr("data-validation","required"); 
+	function searchUser(type) {
+		if(type == "scroll"){
+			offset = $("#usersOffset").val();
+    	}
+		
+		if(type == "manual"){
+    		$('#usersListBody').empty();
+    		$("#usersOffset").val(0);
+    		offset = 0;
+    	}
+		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	    var userRole = document.getElementById("userRole").value;
+		var searchByName = document.getElementById("searchByName").value;
+		var userState = document.getElementById("userState").value;
+		
+		
+		if(loginUserRole != ''){
+		 loginUserRole = '${SourceLeadWeb_loginUserRole}';
+		}else{
+			loginUserRole = "";	
+		}
+		if(userRole != ''){
+			userRole  =  userRole;
+		}else{
+			userRole ="";
+		}
+		if(searchByName != ''){
+			 searchByNames = searchByName;
+		}else{
+			searchByName = "";
+		}
+		if(userState != ''){
+			userState = userState;
+		}else{
+			userState = "";
+		}
+		 if ($('#user_forms').validate(false, validationSettings)){
 			 
-			 
-		 }else{
-			 $('#ratePer').removeAttr('data-validation');
-			 $('#ratePer').attr("data-validation-optional","true"); 
-			 
-		 } */
-		 
-		 if ($('#user_forms').validate(false, validationSettings)){ 
       		var sourceleadUrl = '${sourceleadUrl}';
       		var frm = $('#user_forms').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -565,19 +601,18 @@ var validationSettings = {
 		    var form = $('#user_forms')[0];
       		var formData = new FormData(form);  
 			$("#search_user").attr("disabled", "disabled");
-
 			 $.ajax({
 						 type : "POST",
 		        	     data: formData,
 		        	     processData: false,
 		    	         contentType:false,
 		        	     dataType : 'json',
-						 url : sourceleadUrl+"/searchUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						 url : sourceleadUrl+"/searchUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&offset="+offset+"&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole,
 						 success : function(data) {
 							$("#search_user").addClass('button').val('Search');
 							$("#search_user").removeAttr("disabled");
 							closePop();
-							prepareUsersList(data);
+							prepareUsersList(data,type);
 						},
 					}); 
 			return true;
@@ -608,10 +643,9 @@ function getUserSummary(userId){
   
 </script>
 <script>
-  function prepareUsersList(data){
+  function prepareUsersList(data,type){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-		  $('#usersListBody').empty();
 		  var result = "";
 		  var json = JSON.parse(data);
 		  if(json.length > 0)	
@@ -675,27 +709,27 @@ function getUserSummary(userId){
 			       	    	$("#loading").removeAttr("style"); 
 			       	    	$('#usersListBody').append(result);
 		            		$("#searchByName").val("");
-			       	    	/* if(type == "manual"){
-			            		$('#usersListBody').append(result);
-			            		 $("#searchByName").val("");
-			            	}else{
-			            		$('#usersListBody').append(result);
-			            		 $("#searchByName").val("");
-			            	} */
 
 				   }
 	 			result = result + '<div class="clear"></div>';
 	 			$("#noUsers").val("")
 	   		    }
-	  }else{
-      	  $("#usersListBody").removeAttr("style");
-      	  $('#usersListBody').empty();
-      	  $('#loadMoreDiv').empty(); 
-          $("#loading").removeAttr("style");
-          var result ="";
-       	  result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No  Records..</div>';
-       	  $('#usersListBody').append(result);
-      }
+			  }else if(type == "scroll"){
+		      	$("#noUsers").val("nousers")
+		    	$('#loadMoreDiv').empty(); 
+		    	$("#loading").removeAttr("style");
+		     	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No More Records..</div>';
+		     	$('#loadMoreDiv').append(result);
+		    }
+			  else{
+		      	  $("#usersListBody").removeAttr("style");
+		      	  $('#usersListBody').empty();
+		      	  $('#loadMoreDiv').empty(); 
+		          $("#loading").removeAttr("style");
+		          var result ="";
+		       	  result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No  Records..</div>';
+		       	  $('#usersListBody').append(result);
+		      }
   }
 </script>    
 <script>
