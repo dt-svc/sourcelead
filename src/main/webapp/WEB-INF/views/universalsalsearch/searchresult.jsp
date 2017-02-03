@@ -100,7 +100,7 @@ function getSearchResults(searchType,searchValue){
 			    	result = result+'  </div>';
 	    	 }
 	    	    result = result+'  <div class="clearfix">';
-		    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+		    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadRequirement();">View More</a>';
 		    	result = result+'  </div>';
 	    	}else if(searchType == 'Candidate'){
 	    		result = result+'   <h4>Candidate</h4>';
@@ -482,6 +482,15 @@ function loadCandidate(){
 	var serachValue = "${searchValue}";
 	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/candidatesList?&searchResult="+searchResult+"&serachValue="+serachValue;
+}
+</script>
+
+<script type="text/javascript">
+function loadRequirement(){
+	var searchResult = "universalRequirementList";
+	var serachValue = "${searchValue}";
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/requirementList?&searchResult="+searchResult+"&serachValue="+serachValue;
 }
 </script>
 

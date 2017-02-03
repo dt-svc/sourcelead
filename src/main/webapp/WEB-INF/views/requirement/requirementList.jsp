@@ -132,10 +132,31 @@ width:100% !important;
 
 <script>
  window.onload = function() { 
- 	 requirementList();
+ 	requirementListCheck("${serachValue}","${universalRequirementList}");
  	// requirementListIndividualStatusCounts();
 };
 </script>
+
+
+<script>
+function requirementListCheck(serachValue,universalRequirementSearchList){
+if(universalRequirementSearchList=="universalRequirementList")	 {
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/getUniversalRequirementsListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&serachValue="+serachValue,       
+          success :function(data) {
+        	  prepareRequirementData(data);
+         },
+          
+     }); 
+  }
+/* else{
+	requirementList();
+	 	$("#requirementList").val('');
+	} */
+  }
+  </script>
 
 <%-- 
      @author : sarath kumar.

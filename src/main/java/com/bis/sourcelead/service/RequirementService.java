@@ -110,4 +110,6 @@ public interface RequirementService {
 	public List<List<Object>> univesalSearchRequirementForAll(OrgLocations orgLocation, String searchType, String searchValue,
 			Org org, String userRole, User user) throws JsonParseException, JsonMappingException, IOException, Exception;
 
+	public List<Object> getAllUniversalSearchRequirementList(OrgLocations orgLocations, String serachValue,String userRole, User user) throws Exception;
+
 }
