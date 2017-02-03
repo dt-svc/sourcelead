@@ -23,6 +23,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -413,6 +414,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String dateQuery = "";
 		String clientQuery = "";
 		String statusQuery = "";
+		String statusQueryForAdmin = "";
 		if(startDate != null && endDate != null){
 	    	 /*
 				 * startdate and enddate comparison with projectmemberhistory table
@@ -428,9 +430,19 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			clientQuery = " and projects.orgRelationId.id = :clientId ";
 		}
 		
-		if(StringUtils.isNotEmpty(status)){
-			statusQuery = " and pah.id IN(select sah.hierarchyId.id from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = :status)";
+	   if(StringUtils.isNotEmpty(status) && !status.equalsIgnoreCase("null")){
+			statusQuery = " and  sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.getNameByValue(status)+"'";
 		}
+		if(StringUtils.isNotEmpty(status)&& !status.equalsIgnoreCase("null") && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
+			statusQueryForAdmin = " projects.id IN ( "
+					             + "select subsah.hierarchyId.projectId.id from SubmissionApproverHierarchy subsah "
+					             + " where   subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.getNameByValue(status)+"'  and subsah.submissionId.startDate between :startDate and :endDate "
+					             		+ " and (subsah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id)))  ";
+		}
+		else{
+			statusQueryForAdmin = Constants.loginUserAsAdminForProjects;
+		}
+		
 		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.employee emp left join fetch emp.user  user "
 				+ " where projects.invoiceFrequency = :timesheetFrequency and projects.orgLocationsId.id = :locationsId  "
 				    +clientQuery
@@ -438,14 +450,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	                 /*
 	 				 *  approverUserId comparison
 	 				 */
-					+ " and user.id IN(select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE')  "
+					+ " and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE')  "
 					+ " and ( "
-					+ "  (projects.id IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId "
-					+ statusQuery
-					+ "     )) "
-					+ "   OR "
-					+     Constants.loginUserAsAdminForProjects+""
-				    + ")  "; 
+					+  "      (  projects.id IN ( select sah.hierarchyId.projectId.id from SubmissionApproverHierarchy sah  where sah.hierarchyId.approverUserId.id =:userId "+statusQuery+" ))"
+					 + "       OR "+statusQueryForAdmin+""
+					+ "     ) ";
 		
 		
 		Query query = session.createQuery(queryStr.toString());
@@ -455,9 +464,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		if(clientId != null){
 			query.setParameter("clientId", clientId);
-		}
-		if(StringUtils.isNotEmpty(status)){
-			query.setParameter("status", status);
 		}
 		
 		@SuppressWarnings("unchecked")
