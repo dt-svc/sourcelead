@@ -99,6 +99,21 @@ public class RequirementSubmissionTemplateFields implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
 
+    
+    @Column(name = "CURRENT_RATE_TYPE")
+	private String currentRateType;
+    
+    @Column(name = "CURRENT_RATE_PER")
+	private String currentRatePer;
+    
+    
+    @Column(name = "EXPECTED_RATE_TYPE")
+	private String expectedRateType;
+    
+    
+    @Column(name = "EXPECTED_RATE_PER")
+	private String expectedRatePer;
+    
 	public Long getId() {
 		return id;
 	}
@@ -283,5 +298,37 @@ public class RequirementSubmissionTemplateFields implements Serializable{
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getCurrentRateType() {
+		return currentRateType;
+	}
+
+	public void setCurrentRateType(String currentRateType) {
+		this.currentRateType = currentRateType;
+	}
+
+	public String getCurrentRatePer() {
+		return currentRatePer;
+	}
+
+	public void setCurrentRatePer(String currentRatePer) {
+		this.currentRatePer = currentRatePer;
+	}
+
+	public String getExpectedRateType() {
+		return expectedRateType;
+	}
+
+	public void setExpectedRateType(String expectedRateType) {
+		this.expectedRateType = expectedRateType;
+	}
+
+	public String getExpectedRatePer() {
+		return expectedRatePer;
+	}
+
+	public void setExpectedRatePer(String expectedRatePer) {
+		this.expectedRatePer = expectedRatePer;
 	}
 }

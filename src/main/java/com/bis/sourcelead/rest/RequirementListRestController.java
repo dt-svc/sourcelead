@@ -438,12 +438,9 @@ public class RequirementListRestController {
 											}
 										}
 										
-										List<RequirementInterviewHistory> numberOfInterviews = requirementInterviewHistoryService.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
-										requirementSubmission.setTotalNoOfInterviews(numberOfInterviews.size());
-										requirementSubmission.setRequirementInterviewHistoryList(numberOfInterviews);
 										
-										/*Integer numberOfInterviews = requirementInterviewHistoryService.getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
-										requirementSubmission.setTotalNoOfInterviews(numberOfInterviews);*/
+										Integer numberOfInterviews = requirementInterviewHistoryService.getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
+										requirementSubmission.setTotalNoOfInterviews(numberOfInterviews);
 									}
 									
 									if(null != submissionType && submissionType.equalsIgnoreCase("OFFERMADE")){
@@ -503,18 +500,19 @@ public class RequirementListRestController {
 											if(pastRequirementRateSubmissionNegotiation != null){
 												requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 											}
-										}else{
-											RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
-											if(pastRequirementRateSubmissionNegotiation != null){
-												if(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.VENDOR) || pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.CLIENT)){
-													requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
-												}else{
-													requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
-												}
-												
-											}
 										}
 									}
+									
+									
+										RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+										if(pastRequirementRateSubmissionNegotiation != null){
+											if(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.VENDOR) || pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.CLIENT)){
+												requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+											}else{
+												requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+											}
+											
+										}
 									
 									if(requirementSubmission.getCreatedDate() != null){
 										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
