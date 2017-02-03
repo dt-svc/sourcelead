@@ -77,7 +77,7 @@
       <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>Vendor Contact Details</h2>
+            <h2>Add Vendor Contact</h2>
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/vendorsList'/>"> Vendor List</a> &raquo; Vendor Contact</div>
         </section>

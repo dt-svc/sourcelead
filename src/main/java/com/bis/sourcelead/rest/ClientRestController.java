@@ -353,7 +353,8 @@ public class ClientRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
+		//List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllActiveSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
 		if(orgSpocsList != null){
 			for(OrgSpoc orgSpoc : orgSpocsList){
 				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientContactCreateMsg");
@@ -590,16 +591,19 @@ public class ClientRestController {
 	  */
 	 @RequestMapping(value = "/saveInvitationStatus", method = RequestMethod.POST)
 	 public  String saveInvitationStatus(@RequestParam(value="spocId", required=false) Long spocId,
-													@RequestParam(value="invitationStaus", required=false) String invitationStaus) throws Exception{
-										             
+													@RequestParam(value="invitationStaus", required=false) String invitationStaus,HttpServletRequest request) throws Exception{
+		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");        
 	        OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
 	        if(orgSpoc !=  null){
 	        	if(invitationStaus != null && "Accepted".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+	        		clientService.sendAcceptEmailToClientOrVendor(orgSpoc,loginUser,orgLocations);
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Success !! Accepted the invitation.");
 	        	}else if(invitationStaus != null && "Rejected".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
 	        		orgSpoc.setSpocStatus(Constants.INACTIVE);
+	        		clientService.sendRejectEmailToClientOrVendor(orgSpoc,loginUser,orgLocations);
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Rejected the invitation.");
 	        	}
 	        	orgSpocService.addOrgSpoc(orgSpoc);

@@ -62,7 +62,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		
 
 		RequirementAssignTo requirementAssignTo = null;
-		if (requirementAssignToList != null && requirementAssignToList.size() > 0) {
+		if (null != requirementAssignToList && requirementAssignToList.size() > 0) {
 			requirementAssignTo = (RequirementAssignTo) requirementAssignToList.iterator().next();
 		}
 		return requirementAssignTo;
@@ -96,7 +96,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 					                                     .setCacheable(true)
 					                                     .list();
 				Integer count = 0;
-				if(requirementAssignToCount != null && !requirementAssignToCount.isEmpty()){
+				if(null != requirementAssignToCount && !requirementAssignToCount.isEmpty()){
 						count = requirementAssignToCount.get(0).intValue();
 				}
 				return count;
@@ -108,7 +108,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 														.setCacheable(true)
 														.list();
 				Integer count = 0;
-				if(requirementAssignToCount != null && !requirementAssignToCount.isEmpty()){
+				if(null != requirementAssignToCount && !requirementAssignToCount.isEmpty()){
 						count = requirementAssignToCount.get(0).intValue();
 				}
 				return count;
@@ -131,7 +131,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 			
 
 			RequirementAssignTo requirementAssignTo = null;
-			if (requirementAssignToList != null && requirementAssignToList.size() > 0) {
+			if (null != requirementAssignToList && requirementAssignToList.size() > 0) {
 				requirementAssignTo = (RequirementAssignTo) requirementAssignToList.iterator().next();
 			}
 			return requirementAssignTo;
@@ -155,7 +155,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		
 
 		RequirementAssignTo requirementAssignTo = null;
-		if (requirementAssignToList != null && requirementAssignToList.size() > 0) {
+		if (null != requirementAssignToList && requirementAssignToList.size() > 0) {
 			requirementAssignTo = (RequirementAssignTo) requirementAssignToList.iterator().next();
 			isAvilable = true;
 		}
@@ -171,6 +171,23 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		return session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 
-    
-  }
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional(rollbackFor = { Exception.class })	
+	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignedUserId(Long requirementId,Long assignedUserId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementAssignTo  rato   where rato.requirementId.id = :requirementId and rato.assignUserId.id = :assignedUserId ";
+		List<RequirementAssignTo> requirementAssignToList =  session.createQuery(query.toString())
+																	.setLong("assignedUserId", assignedUserId)
+																	.setLong("requirementId", requirementId)
+																	.setCacheable(true)
+																	.list();
+		RequirementAssignTo requirementAssignTo = null;
+		if (null != requirementAssignToList && requirementAssignToList.size() > 0) {
+			requirementAssignTo = (RequirementAssignTo) requirementAssignToList.iterator().next();
+		}
+		return requirementAssignTo;
+	}
+}
 

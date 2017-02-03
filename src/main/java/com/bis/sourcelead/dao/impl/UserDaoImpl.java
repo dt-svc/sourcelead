@@ -807,7 +807,7 @@ public class UserDaoImpl implements UserDao {
 	public List<User> getUsersListByOrglocationId(Long orgLocationId) throws Exception {
 
 		 Session session = this.sessionFactory.getCurrentSession();
-	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationId) ";
+	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationId) ORDER BY user.id DESC";
 	     List<User> usersList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
 	     return usersList;
 	}
