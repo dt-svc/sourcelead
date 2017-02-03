@@ -561,6 +561,8 @@ function openTopDiv(){
 <script>
 function sideBar(requirementId){
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
+	  var isSpocActive = '${isSpocActive}';
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
@@ -719,7 +721,7 @@ function sideBar(requirementId){
                              result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
                              '</sec:authorize>';
                         }
-					   
+					    
 					    result = result+'      <div class="clearfix"></div>';
 					    result = result+'    </ul>';
 					    result = result+'    <div class="project_tabs">';
@@ -729,6 +731,116 @@ function sideBar(requirementId){
 						    result = result+'</div>';
 						    result = result +'<div id="pipelineLoading"></div>';
 						    result = result +'<div id="status-div"></div>';
+						    
+						    
+						  //#####################  actions div @prasad salina ################################################
+						    //For Add Applicant div
+							result = result + '<div class="new_side_wrap">';
+							result = result + '<div class="new_side_wrap_inn">';
+							result = result + '<div class="new_side_wrap_cta">';
+							result = result +'<div id="addApplicantDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+							//For Add Interview Div
+							result = result + '<div class="add_inter_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addInterviewDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Interview Div
+							
+							//For Add Offer Div
+							result = result + '<div class="add_offer_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addOfferDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Offer Div  
+							
+							
+							//For Submit to Client Div
+							result = result +'<div class="submitnew-wrap">';
+							result = result +' <div class="new_side_wrap_inn">';
+							result = result +'<div class="add_inter">';
+							result = result + '<div id="submitToClientDiv"></div>';
+							result = result + '<div id="emailTemplateDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							//For Submit to Client Div
+							
+							
+							
+							result = result +'<div class="shortlist-wrap">';
+							result = result +'<div class="new_side_wrap_inn">';
+							result = result +'<divsubStatus class="add_inter">';
+							result = result + '<div id="shortlistDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+                             //Candidate submissions details Div
+							 result = result +' <div class="clients_side_wrap">';
+							 result = result +'<div class="clients_side_wrap_inn">';
+							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
+							 result = result + '<div id="viewCandidateDiv"></div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							 
+							 var submitToClient = '';
+						     if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+	           				    submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+	           			     }
+							
+				            result = result +'<div id="actionsDiv" class="timesheet_head timesheetHead candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">';
+				            result = result +'  <ul>';
+				            result = result +'    <li class="li-vendor">';
+				            /* result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
+				            result = result +'      <div class="export_pop">';
+				            result = result +'        <ul>';
+				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
+				            result = result +'        </ul>';
+				            result = result +'      </div>';
+				            result = result +'    </li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>'; */
+				           
+				            
+				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
+				            result = result +'<div class="action-pop">';
+				            result = result +'	<span>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
+				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
+				            	result = result + submitToClient
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            '</sec:authorize>';
+				            result = result +'    </span>';
+				            result = result +' </div>';	
+				            result = result +' </li>';
+				            
+				            
+				           result = result + '<div class="clearfix"></div>';
+				           result = result + '</div>';
+				           //#####################  actions div @prasad salina ################################################
+						    
+						    
 							result = result +'<div id="status-data"></div>';
 						   
 						    result = result+'<div id="tab-3" class="project_tabs_inn">';
@@ -789,6 +901,7 @@ function sideBar(requirementId){
 --%>
 <script>  
 function requirementDetails(requirementId){ 
+	$("#actionsDiv" ).hide();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
@@ -1213,6 +1326,8 @@ function cancelAlert(){
 --%>
 <script>  
 function requirementPipeline(requirementId,submissionType){
+	$("#actionsDiv" ).show();
+	
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
@@ -1222,130 +1337,27 @@ function requirementPipeline(requirementId,submissionType){
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
          success :function(data) {  
-        	//requirementSubmissionCount(requirementId);
         	 var result =""; 
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
             		
             			 var submitToClient = '';
-            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
-            			 }
+            			
             			   
 							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-							
-							//For Add Applicant div
-							result = result + '<div class="new_side_wrap">';
-							result = result + '<div class="new_side_wrap_inn">';
-							result = result + '<div class="new_side_wrap_cta">';
-							result = result +'<div id="addApplicantDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-							//For Add Interview Div
-							result = result + '<div class="add_inter_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addInterviewDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Interview Div
-							
-							//For Add Offer Div
-							result = result + '<div class="add_offer_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addOfferDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Offer Div  
-							
-							
-							//For Submit to Client Div
-							result = result +'<div class="submitnew-wrap">';
-							result = result +' <div class="new_side_wrap_inn">';
-							result = result +'<div class="add_inter">';
-							result = result + '<div id="submitToClientDiv"></div>';
-							result = result + '<div id="emailTemplateDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							//For Submit to Client Div
-							
-							
-							
-							result = result +'<div class="shortlist-wrap">';
-							result = result +'<div class="new_side_wrap_inn">';
-							result = result +'<divsubStatus class="add_inter">';
-							result = result + '<div id="shortlistDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-                             //Candidate submissions details Div
-							 result = result +' <div class="clients_side_wrap">';
-							 result = result +'<div class="clients_side_wrap_inn">';
-							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
-							 result = result + '<div id="viewCandidateDiv"></div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							
-				           // result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
-				            //result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
-				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
-				            result = result +'  <ul>';
-				            result = result +'    <li class="li-vendor">';
-				          //  result = result +'      <input type="text" class="vendorfild" placeholder="Search">';
-				          // result = result +'      <i class="fa fa-search"></i></li>';
-				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
-				            result = result +'      <div class="export_pop">';
-				            result = result +'        <ul>';
-				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
-				            result = result +'        </ul>';
-				            result = result +'      </div>';
-				            result = result +'    </li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
+							 result = result +'<span class="applicant_export">';
+							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<div class="export_pipline" style="display:none">';
+					            result = result +'<ul>';
+					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+					            result = result +' </ul>';
+					            result = result +'</div>';
+					          '</sec:authorize>';
+					          result = result +'</span>';
 				           
-				            
-				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
-				            result = result +'<div class="action-pop">';
-				            result = result +'	<span>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
-				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-				            	result = result + submitToClient
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
-				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
-				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
-				            '</sec:authorize>';
-				            result = result +'    </span>';
-				            result = result +' </div>';	
-				            result = result +' </li>';
-				            
-				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-				            result = result +'<div class="export_pipline" style="display:none">';
-				            result = result +'<ul>';
-				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +' </ul>';
-				            result = result +'</div>';
-				            result = result +'</li>';
-				            '</sec:authorize>';
 				           result = result + '<div class="clearfix"></div>';
-				           result = result + '</div>';
 				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
 				           result = result + '<div class="clerfix">';
 				           result = result + '<table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
@@ -1353,53 +1365,16 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<tr>';
 				           result = result + '<th>Name</th>';
 				           result = result + '<th>Email</th>';
-				           if(submissionType != 'REJECTED'){
 				           result = result + '<th>Ph. No</th>';
-				           }
 				           result = result + '<th>Resume</th>';
-				           
-				            
-				            
-				            
-				           if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT'){
-				        	   result = result + '<th>Applied on</th>';
-				        	if(submissionType != 'SUBMIT_TO_CLIENT'){
-					           result = result + '<th>Rate</th>';
-				        	}  
+				           result = result + '<th>Applied on</th>';
+					       result = result + '<th>Rate</th>';
 					         if(clientSubmissions == 'Y'){
 					           result = result + '<th>Sub. Rate</th>';
-					         }/* else{
-					        	result = result + '<th>Sub. Rate</th>';
-					         } */
-					           result = result + '<th>Source</th>';
-				            }
-				            
-				            
-						  
-				           if(submissionType == 'INTERVIEW'){
-						   result = result + '<th>No.of Interviews</th>'; 
-				           }
-				           if(submissionType == 'SHORTLIST'){
-				        	   result = result + '<th>Shortlisted By</th>'; 
-				           }
-				           if(submissionType == 'OFFERMADE'){
-							   result = result + '<th>Offer Join Date</th>'; 
-							   result = result + '<th>Position Type</th>'; 
-							   result = result + '<th>Offer Rate</th>'; 
-							   result = result + '<th>Attachment</th>'; 
-					           }
-
-				           if(submissionType == 'all' || submissionType == 'DUPLICATE_APPLICANTS' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'|| submissionType == 'REQUEST_SENT'){
-				        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED'){
-				        		   result = result + '<th>Score</th>';
-						           result = result + '<th>Exp</th>';
-				        	   }
-				           }
-				           if(submissionType == 'REJECTED'){
-				        	   result = result + '<th>Rejected On</th>';
-				        	   result = result + '<th>Rejected By</th>';
-					           result = result + '<th>Rejected Stage</th>';
-				           }
+					         }
+					       result = result + '<th>Source</th>';
+		        		   result = result + '<th>Score</th>';
+				           result = result + '<th>Exp</th>';
 				           result = result + '<th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
@@ -1429,7 +1404,6 @@ function requirementPipeline(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
 						           
-						           if(submissionType != 'REJECTED'){
 						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
 							           }
@@ -1437,50 +1411,39 @@ function requirementPipeline(requirementId,submissionType){
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
-						           }
 						           
-						           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
+						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
 						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
-						        	  /*  result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a>&nbsp;&nbsp;'+report.resumeName+'</span></div></td>'; */
 							           }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
 						    	     }
 						           
-						           if(submissionType == 'all' || submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'|| submissionType == 'REQUEST_SENT'){
 						        	   
-						        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
+					        	    if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
+							           }
+							        else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+							          
+						            if(report.vendorLocationId != null && report.sourceSubmission != null){
+						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     }
-							           /* if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop" id="ratepop"></div></td>';
+						            }else{
+						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     } */
-							    	     
-						        	   if(submissionType != 'SUBMIT_TO_CLIENT'){
-								           if(report.vendorLocationId != null && report.sourceSubmission != null){
-								        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-									        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-										           }
-										       else{
-										        	result = result + '         <td><div><span>--</span></div></td>';
-									    	     }
-								           }else{
-								        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-									        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
-										           }
-										       else{
-										        	result = result + '         <td><div><span>--</span></div></td>';
-									    	     }
-								           }
-						        	   }
+							    	     }
+						            }
 							          
-							    	   if(clientSubmissions == 'Y'){
+							      if(clientSubmissions == 'Y'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
@@ -1488,169 +1451,38 @@ function requirementPipeline(requirementId,submissionType){
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							           }else{
-// 							        	   if(clientSubmissions == 'Y'){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 							        	   }else{
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
-// 							        	   }
 							           }
-							           }
+							       }
 							           
-							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     } 
-						           }
+						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     } 
+						          
+						        	   
+				        		   if(report.candidateScore != null){
+				        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
+							           }
+							       else{
+							    	   result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
 						           
-						           if(submissionType == 'INTERVIEW'){
-						        	   
-						        	   if(report.totalNoOfInterviews != null && report.totalNoOfInterviews != '' && report.totalNoOfInterviews != 'undefined'){
-						        		   /* ------tooltip---- */
-						        		   result = result +'<td><a heref="#"><div class="show-tooltip"><span style="text-decoration: underline;">'+report.totalNoOfInterviews+'</span>';
-						       		   if(report.requirementInterviewHistoryList.length > 0){
-						       		        result = result +'<div class="tooltipint_detilas">';
-						       			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
-						       			    result = result +' <thead><tr>';
-						       			 	result = result +'<th>Interview&nbsp;Type</th>';
-						       			    result = result +'<th>Interview&nbsp;Date</th>';
-						       			    result = result +'<th>Start&nbsp;Time</th>';
-						       			    result = result +'<th>End Time</th>';
-						       			    result = result +'<th>Location</th>';
-						       			   // result = result +'<th>Feedback</th>';
-						       			    result = result +'<th>Interview</th>'; 
-						       			    result = result +'</tr></thead>';
-						       			    result = result +'<tbody>';
-						       			    for(var j=0;j<report.requirementInterviewHistoryList.length;j++){
-						       			    	 var sub = report.requirementInterviewHistoryList[j];
-						       			    	 var location = "---";
-						       			    	 var endDate = "---";
-						       			    	 if(sub.interviewId.location != null && sub.interviewId.location != "" && sub.interviewId.location !="undefined"){
-						       			    		location = sub.interviewId.location;
-						       			    	 }
-						       			    	
-						       			    	 if(sub.interviewId.endTimeStr != null && sub.interviewId.endTimeStr != "" && sub.interviewId.endTimeStr !="undefined"){
-						       			    		endDate = sub.interviewId.endTimeStr;
-						       			    	 }
-						       			    	result = result +'<tr>';
-							       			       if(sub.interviewId.interviewType != null && sub.interviewId.interviewType != '' && sub.interviewId.interviewType != 'undefined'){
-							       			    	result = result +'<td><span>'+sub.interviewId.interviewType+'</span></td>';
-							       			       }else{
-							       			    	result = result +'<td><span>--</span></td>';
-							       			       }
-							       			    if(sub.dateOfInterviewStr != null && sub.dateOfInterviewStr != '' && sub.dateOfInterviewStr != 'undefined'){
-							       			    	result = result +'<td><span>'+sub.dateOfInterviewStr+'</span></td>';
-							       			    }else{
-							       			    	result = result +'<td><span>--</span></td>';
-							       			    }
-							       			    
-							       			   if(sub.startTimeStr != null && sub.startTimeStr != '' && sub.startTimeStr != 'undefined'){
-							       			 	result = result +'<td><span>'+sub.startTimeStr+'</span></td>';
-							       			    }else{
-							       			    	result = result +'<td><span>--</span></td>';
-							       			    }
-							       			 
-							       			   if(sub.endTimeStr != null && sub.endTimeStr != '' && sub.endTimeStr != 'undefined'){
-							       				result = result +'<td><span>'+sub.endTimeStr+'</span></td>';
-							       			    }else{
-							       			    	result = result +'<td><span>--</span></td>';
-							       			    }
-							       			if(location != null && location != '' && location != 'undefined'){
-							       				result = result +'<td><span>'+location+'</span></td>';
-							       			    }else{
-							       			    	result = result +'<td><span>--</span></td>';
-							       			    }
-						       			    	
-						       			    	 result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>'; 
-						       			    	result = result +'</tr>';
-						       			    } 
-						       			    result = result +'</tbody>';
-						       			    result = result +' </table>';
-						       			    result = result +' </div>'; 
-						       		    } 
-						       		    result = result +' </div></a></td>';
-						        		   /* ----------tooltip end------------- */
-						        		   
-								           }else{
-								        	   result = result + '<td><div><span>--</span></div></td>'; 
-								           }
+						           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
 							           }
-						           if(submissionType == 'SHORTLIST'){
-						        	   if(report.submittedBy != null && report.submittedBy != '' && report.submittedBy != 'undefined'){ 
-						        	   result = result + '<td><div><span>'+report.submittedBy+'</span></div></td>';
-						        	   }else{
-						        		   result = result + '<td><div><span>--</span></div></td>';
-						        	   }
-						           }
-						           if(submissionType == 'OFFERMADE'){
-						        	   if(report.offerJoinDate != null && report.offerJoinDate != '' && report.offerJoinDate != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.offerJoinDate+'</span></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     } 
-						        	   if(report.positionType != null && report.positionType != '' && report.positionType != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.positionType+'</span></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     } 
-						        	   if(report.offerRate != null && report.offerRate != '' && report.offerRate != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.offerRate+'</span></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     } 
-						        	   if(report.attachment != null && report.attachment != '' && report.attachment != 'undefined'){
-						        		   result = result + '         <td><div><span><a href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId+'\">'+report.attachment+'</a></span></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     } 
-						           }
-
-						           if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT' || submissionType == 'OFFERMADE'){
-						        	   
-						        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED' && submissionType != 'OFFERMADE'){
-						        		   if(report.candidateScore != null){
-						        			   result = result + '         <td><div><span>'+report.candidateScore+' %</span></div></td>';
-									           }
-									       else{
-									    	   result = result + '         <td><div><span>--</span></div></td>';
-								    	     }
-								           
-								           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
-								        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
-									           }
-									       else{
-									        	result = result + '         <td><div><span>--</span></div></td>';
-								    	     }
-						        	   }
-						        	   
-						        	  
-							           
-							           if(submissionType == 'REJECTED'){
-							           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
-						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submittedBy+'</span>';
-						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
-							           
-							           }
-							           
-							           if(report.submissionStatus == 'REJECTED'){
-							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
-							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
-							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
-							        	   }		  
-							           }else{
-							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
-								           result = result + '</div></td>';
-							           }
-							           
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+						           result = result + '</div></td>';
 							          
-						           }
 						           result = result + '       </tr>';
 			   				}
 				           
@@ -1666,6 +1498,7 @@ function requirementPipeline(requirementId,submissionType){
 							$("#pipelineLoading").removeAttr("style");
 							$("#status-data").empty();
 							$("#status-data").append(result);
+						
 							$("#tab-2").append(status-data);
 							$("#loading").removeAttr("style"); 
 							$("#emptyPipelinelist").val(json.length);
@@ -1731,125 +1564,25 @@ function requirementPipelineDA(requirementId,submissionType){
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
          success :function(data) {  
-        	//requirementSubmissionCount(requirementId);
         	 var result =""; 
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
             		
-            			 var submitToClient = '';
-            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
-            			 }
             			   
-							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-							
-							//For Add Applicant div
-							result = result + '<div class="new_side_wrap">';
-							result = result + '<div class="new_side_wrap_inn">';
-							result = result + '<div class="new_side_wrap_cta">';
-							result = result +'<div id="addApplicantDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-							//For Add Interview Div
-							result = result + '<div class="add_inter_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addInterviewDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Interview Div
-							
-							//For Add Offer Div
-							result = result + '<div class="add_offer_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addOfferDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Offer Div  
-							
-							
-							//For Submit to Client Div
-							result = result +'<div class="submitnew-wrap">';
-							result = result +' <div class="new_side_wrap_inn">';
-							result = result +'<div class="add_inter">';
-							result = result + '<div id="submitToClientDiv"></div>';
-							result = result + '<div id="emailTemplateDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							//For Submit to Client Div
-							
-							
-							result = result +'<div class="shortlist-wrap">';
-							result = result +'<div class="new_side_wrap_inn">';
-							result = result +'<divsubStatus class="add_inter">';
-							result = result + '<div id="shortlistDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-                             //Candidate submissions details Div
-							 result = result +' <div class="clients_side_wrap">';
-							 result = result +'<div class="clients_side_wrap_inn">';
-							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
-							 result = result + '<div id="viewCandidateDiv"></div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							
-				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
-				            result = result +'  <ul>';
-				            result = result +'    <li class="li-vendor">';
-				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
-				            result = result +'      <div class="export_pop">';
-				            result = result +'        <ul>';
-				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
-				            result = result +'        </ul>';
-				            result = result +'      </div>';
-				            result = result +'    </li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
-				           
-				            
-				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
-				            result = result +'<div class="action-pop">';
-				            result = result +'	<span>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
-				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-				            	result = result + submitToClient
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
-				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
-				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
-				            '</sec:authorize>';
-				            result = result +'    </span>';
-				            result = result +' </div>';	
-				            result = result +' </li>';
-				            
-				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-				            result = result +'<div class="export_pipline" style="display:none">';
-				            result = result +'<ul>';
-				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +' </ul>';
-				            result = result +'</div>';
-				            result = result +'</li>';
-				            '</sec:authorize>';
-				           result = result + '<div class="clearfix"></div>';
-				           result = result + '</div>';
+						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
+						   
+						   result = result +'<span class="applicant_export">';
+							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<div class="export_pipline" style="display:none">';
+					            result = result +'<ul>';
+					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+					            result = result +' </ul>';
+					            result = result +'</div>';
+					          '</sec:authorize>';
+					       result = result +'</span>';
+					       
 				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
 				           result = result + '<div class="clerfix">';
 				           result = result + '<table id="requirementsPaginationDA" class="display" cellspacing="0" width="100%"">';
@@ -2059,122 +1792,21 @@ function requirementPipelineRS(requirementId,submissionType){
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
             		
-            			 var submitToClient = '';
-            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
-            			 }
-            			   
-							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-							
-							//For Add Applicant div
-							result = result + '<div class="new_side_wrap">';
-							result = result + '<div class="new_side_wrap_inn">';
-							result = result + '<div class="new_side_wrap_cta">';
-							result = result +'<div id="addApplicantDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-							//For Add Interview Div
-							result = result + '<div class="add_inter_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addInterviewDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Interview Div
-							
-							//For Add Offer Div
-							result = result + '<div class="add_offer_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addOfferDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Offer Div  
-							
-							
-							//For Submit to Client Div
-							result = result +'<div class="submitnew-wrap">';
-							result = result +' <div class="new_side_wrap_inn">';
-							result = result +'<div class="add_inter">';
-							result = result + '<div id="submitToClientDiv"></div>';
-							result = result + '<div id="emailTemplateDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							//For Submit to Client Div
-							
-							
-							
-							result = result +'<div class="shortlist-wrap">';
-							result = result +'<div class="new_side_wrap_inn">';
-							result = result +'<divsubStatus class="add_inter">';
-							result = result + '<div id="shortlistDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-                             //Candidate submissions details Div
-							 result = result +' <div class="clients_side_wrap">';
-							 result = result +'<div class="clients_side_wrap_inn">';
-							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
-							 result = result + '<div id="viewCandidateDiv"></div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							
-				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
-				            result = result +'  <ul>';
-				            result = result +'    <li class="li-vendor">';
-				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
-				            result = result +'      <div class="export_pop">';
-				            result = result +'        <ul>';
-				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
-				            result = result +'        </ul>';
-				            result = result +'      </div>';
-				            result = result +'    </li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
-				           
-				            
-				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
-				            result = result +'<div class="action-pop">';
-				            result = result +'	<span>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
-				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-				            	result = result + submitToClient
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
-				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
-				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
-				            '</sec:authorize>';
-				            result = result +'    </span>';
-				            result = result +' </div>';	
-				            result = result +' </li>';
-				            
-				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-				            result = result +'<div class="export_pipline" style="display:none">';
-				            result = result +'<ul>';
-				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +' </ul>';
-				            result = result +'</div>';
-				            result = result +'</li>';
-				            '</sec:authorize>';
-				           result = result + '<div class="clearfix"></div>';
-				           result = result + '</div>';
-				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
+						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
+						   
+						   result = result +'<span class="applicant_export">';
+							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<div class="export_pipline" style="display:none">';
+					            result = result +'<ul>';
+					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+					            result = result +' </ul>';
+					            result = result +'</div>';
+					          '</sec:authorize>';
+					       result = result +'</span>';
+						   
+						   result = result + '<div class="require_wrap_table overflow-data filter-position">';
 				           result = result + '<div class="clerfix">';
 				           result = result + '<table id="requirementsPaginationRS" class="display" cellspacing="0" width="100%"">';
 				           result = result + '<thead>';
@@ -2226,7 +1858,7 @@ function requirementPipelineRS(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	   }
 						           
-						           if(report.resumeName != null && report.resumeId != '' && report.resumeId != 'undefined'){
+						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
 						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
 							       }else{
 							    	   result = result + '         <td><div>--</div></td>';
@@ -2373,126 +2005,26 @@ function requirementPipelineSL(requirementId,submissionType){
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
          success :function(data) {  
-        	//requirementSubmissionCount(requirementId);
         	 var result =""; 
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
             		
-            			 var submitToClient = '';
-            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
-            			 }
-            			   
-							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-							
-							//For Add Applicant div
-							result = result + '<div class="new_side_wrap">';
-							result = result + '<div class="new_side_wrap_inn">';
-							result = result + '<div class="new_side_wrap_cta">';
-							result = result +'<div id="addApplicantDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-							//For Add Interview Div
-							result = result + '<div class="add_inter_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addInterviewDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Interview Div
-							
-							//For Add Offer Div
-							result = result + '<div class="add_offer_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addOfferDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Offer Div  
-							
-							//For Submit to Client Div
-							result = result +'<div class="submitnew-wrap">';
-							result = result +' <div class="new_side_wrap_inn">';
-							result = result +'<div class="add_inter">';
-							result = result + '<div id="submitToClientDiv"></div>';
-							result = result + '<div id="emailTemplateDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							//For Submit to Client Div
-							
-							result = result +'<div class="shortlist-wrap">';
-							result = result +'<div class="new_side_wrap_inn">';
-							result = result +'<divsubStatus class="add_inter">';
-							result = result + '<div id="shortlistDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-                             //Candidate submissions details Div
-							 result = result +' <div class="clients_side_wrap">';
-							 result = result +'<div class="clients_side_wrap_inn">';
-							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
-							 result = result + '<div id="viewCandidateDiv"></div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							
-				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
-				            result = result +'  <ul>';
-				            result = result +'    <li class="li-vendor">';
-				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
-				            result = result +'      <div class="export_pop">';
-				            result = result +'        <ul>';
-				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
-				            result = result +'        </ul>';
-				            result = result +'      </div>';
-				            result = result +'    </li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
+						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
 				           
-				            
-				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
-				            result = result +'<div class="action-pop">';
-				            result = result +'	<span>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
-				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-				            	result = result + submitToClient
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
-				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
-				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
-				            '</sec:authorize>';
-				            result = result +'    </span>';
-				            result = result +' </div>';	
-				            result = result +' </li>';
-				            
-				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-				            result = result +'<div class="export_pipline" style="display:none">';
-				            result = result +'<ul>';
-				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +' </ul>';
-				            result = result +'</div>';
-				            result = result +'</li>';
-				            '</sec:authorize>';
-				           result = result + '<div class="clearfix"></div>';
-				           result = result + '</div>';
-				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
+						   result = result +'<span class="applicant_export">';
+							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<div class="export_pipline" style="display:none">';
+					            result = result +'<ul>';
+					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+					            result = result +' </ul>';
+					            result = result +'</div>';
+					          '</sec:authorize>';
+					       result = result +'</span>';
+						   
+						   result = result + '<div class="require_wrap_table overflow-data filter-position">';
 				           result = result + '<div class="clerfix">';
-				           
 				           result = result + '<table id="requirementsPaginationSL" class="display" cellspacing="0" width="100%"">';
 				           result = result + '<thead>';
 				           result = result + '<tr>';
@@ -2546,7 +2078,7 @@ function requirementPipelineSL(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
 						           
-						           if(report.resumeId != null && report.resumeName != '' && report.resumeId != 'undefined'){
+						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
 						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
 							        }
 							       else{
@@ -2706,120 +2238,22 @@ function requirementPipelineSC(requirementId,submissionType){
         	 var result =""; 
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
-            		
-            			 var submitToClient = '';
-            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
-            			 }
             			   
-							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-							
-							//For Add Applicant div
-							result = result + '<div class="new_side_wrap">';
-							result = result + '<div class="new_side_wrap_inn">';
-							result = result + '<div class="new_side_wrap_cta">';
-							result = result +'<div id="addApplicantDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-							//For Add Interview Div
-							result = result + '<div class="add_inter_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addInterviewDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Interview Div
-							
-							//For Add Offer Div
-							result = result + '<div class="add_offer_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addOfferDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Offer Div  
-							
-							//For Submit to Client Div
-							result = result +'<div class="submitnew-wrap">';
-							result = result +' <div class="new_side_wrap_inn">';
-							result = result +'<div class="add_inter">';
-							result = result + '<div id="submitToClientDiv"></div>';
-							result = result + '<div id="emailTemplateDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							//For Submit to Client Div
-							
-							result = result +'<div class="shortlist-wrap">';
-							result = result +'<div class="new_side_wrap_inn">';
-							result = result +'<divsubStatus class="add_inter">';
-							result = result + '<div id="shortlistDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-                             //Candidate submissions details Div
-							 result = result +' <div class="clients_side_wrap">';
-							 result = result +'<div class="clients_side_wrap_inn">';
-							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
-							 result = result + '<div id="viewCandidateDiv"></div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							
-				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
-				            result = result +'  <ul>';
-				            result = result +'    <li class="li-vendor">';
-				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
-				            result = result +'      <div class="export_pop">';
-				            result = result +'        <ul>';
-				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
-				            result = result +'        </ul>';
-				            result = result +'      </div>';
-				            result = result +'    </li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
-				           
-				            
-				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
-				            result = result +'<div class="action-pop">';
-				            result = result +'	<span>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
-				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-				            	result = result + submitToClient
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
-				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
-				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
-				            '</sec:authorize>';
-				            result = result +'    </span>';
-				            result = result +' </div>';	
-				            result = result +' </li>';
-				            
-				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-				            result = result +'<div class="export_pipline" style="display:none">';
-				            result = result +'<ul>';
-				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +' </ul>';
-				            result = result +'</div>';
-				            result = result +'</li>';
-				            '</sec:authorize>';
-				           result = result + '<div class="clearfix"></div>';
-				           result = result + '</div>';
-				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
+						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
+						   
+						   result = result +'<span class="applicant_export">';
+							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<div class="export_pipline" style="display:none">';
+					            result = result +'<ul>';
+					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+					            result = result +' </ul>';
+					            result = result +'</div>';
+					          '</sec:authorize>';
+					       result = result +'</span>';
+						   
+						   result = result + '<div class="require_wrap_table overflow-data filter-position">';
 				           result = result + '<div class="clerfix">';
 				           result = result + '<table id="requirementsPaginationSC" class="display" cellspacing="0" width="100%"">';
 				           result = result + '<thead>';
@@ -3010,126 +2444,26 @@ function requirementPipelineIN(requirementId,submissionType){
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
          success :function(data) {  
-        	//requirementSubmissionCount(requirementId);
         	 var result =""; 
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
-            		
-            			 var submitToClient = '';
-            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
-            			 }
             			   
-							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-							
-							//For Add Applicant div
-							result = result + '<div class="new_side_wrap">';
-							result = result + '<div class="new_side_wrap_inn">';
-							result = result + '<div class="new_side_wrap_cta">';
-							result = result +'<div id="addApplicantDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-							//For Add Interview Div
-							result = result + '<div class="add_inter_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addInterviewDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Interview Div
-							
-							//For Add Offer Div
-							result = result + '<div class="add_offer_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addOfferDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Offer Div  
-							
-							//For Submit to Client Div
-							result = result +'<div class="submitnew-wrap">';
-							result = result +' <div class="new_side_wrap_inn">';
-							result = result +'<div class="add_inter">';
-							result = result + '<div id="submitToClientDiv"></div>';
-							result = result + '<div id="emailTemplateDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							//For Submit to Client Div
-							
-							result = result +'<div class="shortlist-wrap">';
-							result = result +'<div class="new_side_wrap_inn">';
-							result = result +'<divsubStatus class="add_inter">';
-							result = result + '<div id="shortlistDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-                             //Candidate submissions details Div
-							 result = result +' <div class="clients_side_wrap">';
-							 result = result +'<div class="clients_side_wrap_inn">';
-							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
-							 result = result + '<div id="viewCandidateDiv"></div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							
-				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
-				            result = result +'  <ul>';
-				            result = result +'    <li class="li-vendor">';
-				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
-				            result = result +'      <div class="export_pop">';
-				            result = result +'        <ul>';
-				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
-				            result = result +'        </ul>';
-				            result = result +'      </div>';
-				            result = result +'    </li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
-				           
-				            
-				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
-				            result = result +'<div class="action-pop">';
-				            result = result +'	<span>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
-				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-				            	result = result + submitToClient
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
-				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
-				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
-				            '</sec:authorize>';
-				            result = result +'    </span>';
-				            result = result +' </div>';	
-				            result = result +' </li>';
-				            
-				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-				            result = result +'<div class="export_pipline" style="display:none">';
-				            result = result +'<ul>';
-				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +' </ul>';
-				            result = result +'</div>';
-				            result = result +'</li>';
-				            '</sec:authorize>';
-				           result = result + '<div class="clearfix"></div>';
-				           result = result + '</div>';
-				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
+						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
+						   
+						   result = result +'<span class="applicant_export">';
+							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<div class="export_pipline" style="display:none">';
+					            result = result +'<ul>';
+					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+					            result = result +' </ul>';
+					            result = result +'</div>';
+					          '</sec:authorize>';
+					       result = result +'</span>';
+						   
+						   result = result + '<div class="require_wrap_table overflow-data filter-position">';
 				           result = result + '<div class="clerfix">';
-				          
 				           result = result + '<table id="requirementsPaginationIN" class="display" cellspacing="0" width="100%"">';
 				           result = result + '<thead>';
 				           result = result + '<tr>';
@@ -3173,7 +2507,7 @@ function requirementPipelineIN(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
 						           
-						           if(report.resumeName != null && report.resumeId != '' && report.resumeId != 'undefined'){
+						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
 						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
 							           }
 							       else{
@@ -3271,120 +2605,22 @@ function requirementPipelineOffer(requirementId,submissionType){
         	 var result =""; 
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
-            		
-            			 var submitToClient = '';
-            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
-            			 }
             			   
-							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-							
-							//For Add Applicant div
-							result = result + '<div class="new_side_wrap">';
-							result = result + '<div class="new_side_wrap_inn">';
-							result = result + '<div class="new_side_wrap_cta">';
-							result = result +'<div id="addApplicantDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-							//For Add Interview Div
-							result = result + '<div class="add_inter_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addInterviewDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Interview Div
-							
-							//For Add Offer Div
-							result = result + '<div class="add_offer_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addOfferDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Offer Div  
-							
-							//For Submit to Client Div
-							result = result +'<div class="submitnew-wrap">';
-							result = result +' <div class="new_side_wrap_inn">';
-							result = result +'<div class="add_inter">';
-							result = result + '<div id="submitToClientDiv"></div>';
-							result = result + '<div id="emailTemplateDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							//For Submit to Client Div
-							
-							result = result +'<div class="shortlist-wrap">';
-							result = result +'<div class="new_side_wrap_inn">';
-							result = result +'<divsubStatus class="add_inter">';
-							result = result + '<div id="shortlistDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-                             //Candidate submissions details Div
-							 result = result +' <div class="clients_side_wrap">';
-							 result = result +'<div class="clients_side_wrap_inn">';
-							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
-							 result = result + '<div id="viewCandidateDiv"></div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							
-				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
-				            result = result +'  <ul>';
-				            result = result +'    <li class="li-vendor">';
-				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
-				            result = result +'      <div class="export_pop">';
-				            result = result +'        <ul>';
-				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
-				            result = result +'        </ul>';
-				            result = result +'      </div>';
-				            result = result +'    </li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
-				           
-				            
-				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
-				            result = result +'<div class="action-pop">';
-				            result = result +'	<span>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
-				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-				            	result = result + submitToClient
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
-				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
-				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
-				            '</sec:authorize>';
-				            result = result +'    </span>';
-				            result = result +' </div>';	
-				            result = result +' </li>';
-				            
-				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-				            result = result +'<div class="export_pipline" style="display:none">';
-				            result = result +'<ul>';
-				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +' </ul>';
-				            result = result +'</div>';
-				            result = result +'</li>';
-				            '</sec:authorize>';
-				           result = result + '<div class="clearfix"></div>';
-				           result = result + '</div>';
-				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
+						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
+						   
+						   result = result +'<span class="applicant_export">';
+							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<div class="export_pipline" style="display:none">';
+					            result = result +'<ul>';
+					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+					            result = result +' </ul>';
+					            result = result +'</div>';
+					          '</sec:authorize>';
+					       result = result +'</span>';
+						   
+						   result = result + '<div class="require_wrap_table overflow-data filter-position">';
 				           result = result + '<div class="clerfix">';
 				           result = result + '<table id="requirementsPaginationOffer" class="display" cellspacing="0" width="100%"">';
 				           result = result + '<thead>';
@@ -3432,7 +2668,7 @@ function requirementPipelineOffer(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	    }
 						           
-						           if(report.resumeName != null && report.resumeId != '' && report.resumeId != 'undefined'){
+						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
 						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
 							       }
 							       else{
@@ -3550,119 +2786,21 @@ function requirementPipelineRejected(requirementId,submissionType){
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
             		
-            			 var submitToClient = '';
-            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
-            			 }
-            			   
-							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-							
-							//For Add Applicant div
-							result = result + '<div class="new_side_wrap">';
-							result = result + '<div class="new_side_wrap_inn">';
-							result = result + '<div class="new_side_wrap_cta">';
-							result = result +'<div id="addApplicantDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-							//For Add Interview Div
-							result = result + '<div class="add_inter_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addInterviewDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Interview Div
-							
-							//For Add Offer Div
-							result = result + '<div class="add_offer_wrap">';
-							result = result +      '<div class="new_side_wrap_inn">';
-							result = result +              '<div id="addOfferDiv"></div>';
-							result = result +       '</div>';
-							result = result +'</div>'; 
-							//end Add Offer Div  
-							
-							//For Submit to Client Div
-							result = result +'<div class="submitnew-wrap">';
-							result = result +' <div class="new_side_wrap_inn">';
-							result = result +'<div class="add_inter">';
-							result = result + '<div id="submitToClientDiv"></div>';
-							result = result + '<div id="emailTemplateDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							//For Submit to Client Div
-							
-							result = result +'<div class="shortlist-wrap">';
-							result = result +'<div class="new_side_wrap_inn">';
-							result = result +'<divsubStatus class="add_inter">';
-							result = result + '<div id="shortlistDiv"></div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'</div>';
-							
-                             //Candidate submissions details Div
-							 result = result +' <div class="clients_side_wrap">';
-							 result = result +'<div class="clients_side_wrap_inn">';
-							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
-							 result = result + '<div id="viewCandidateDiv"></div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							 result = result +'</div>';
-							
-				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix zindex">';
-				            result = result +'  <ul>';
-				            result = result +'    <li class="li-vendor">';
-				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
-				            result = result +'      <div class="export_pop">';
-				            result = result +'        <ul>';
-				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
-				            result = result +'        </ul>';
-				            result = result +'      </div>';
-				            result = result +'    </li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
-				           
-				            
-				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
-				            result = result +'<div class="action-pop">';
-				            result = result +'	<span>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
-				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-				            	result = result + submitToClient
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
-				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
-				            '</sec:authorize>';
-				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
-				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
-				            '</sec:authorize>';
-				            result = result +'    </span>';
-				            result = result +' </div>';	
-				            result = result +' </li>';
-				            
-				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
-				            result = result +'<div class="export_pipline" style="display:none">';
-				            result = result +'<ul>';
-				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +' </ul>';
-				            result = result +'</div>';
-				            result = result +'</li>';
-				            '</sec:authorize>';
-				           result = result + '<div class="clearfix"></div>';
-				           result = result + '</div>';
-				           result = result + '<div class="require_wrap_table overflow-data filter-position">';
+						   result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
+						  
+						   result = result +'<span class="applicant_export">';
+							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
+					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<div class="export_pipline" style="display:none">';
+					            result = result +'<ul>';
+					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+					            result = result +' </ul>';
+					            result = result +'</div>';
+					          '</sec:authorize>';
+					       result = result +'</span>';
+						   
+						   result = result + '<div class="require_wrap_table overflow-data filter-position">';
 				           result = result + '<div class="clerfix">';
 				           result = result + '<table id="requirementsPaginationRejected" class="display" cellspacing="0" width="100%"">';
 				           result = result + '<thead>';
@@ -3708,7 +2846,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
 						           
-						           if(report.resumeName != null && report.resumeId != '' && report.resumeId != 'undefined'){
+						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
 						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
 							        }
 							       else{
@@ -4061,6 +3199,7 @@ function assignedMemberList(requirementId){
 
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
+	  $("#actionsDiv" ).hide();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
     type : "POST",
@@ -4078,7 +3217,7 @@ function requirementRecommendations(requirementId){
 			 result = result +'</div>';
     	    
     	    //--------------------------------
-    	    result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
+    	    result = result +'<div class="timesheet_head candidateHead recruitmentHead timesheetHead ">';
 		    result = result +'<div class="rec_head"></div>';
 		    result = result +'</div>';
 		    result = result +'<div class="project_tabs_inn_table  clients_wrap_table">';
