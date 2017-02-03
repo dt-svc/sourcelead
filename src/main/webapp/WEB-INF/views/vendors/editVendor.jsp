@@ -146,11 +146,11 @@
 				            $("#city").chosen();
 				            
 				            $("#country").on('change', function (e) {
-				         	   getAllStates();
+				         	   getStates1();
 				            });
 				           
 				            $("#state").on('change', function (e) {
-				         	   getAllCities();
+				         	   getCities1();
 				            });
 				           
 				            $('.chosen-select').each(function() {
@@ -311,6 +311,7 @@ function validateClientName(vName,orgRelationId){
 function getAllCountries(){
 	setTimeout(function(){ 
 		var countryName = $("#existingCountry").val();
+		
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
@@ -332,7 +333,8 @@ function getAllCountries(){
 	            }
 	            
 	            $('#country').trigger("chosen:updated");
-	            getAllStates();
+	           
+	            getStates1();
 	        },
 	        error: function(e){
 	        }
@@ -343,16 +345,14 @@ function getAllCountries(){
 
 
 <script>
-function getAllStates(){
+function getStates1(){
 	var countryName = $("#country").val();
-	
 	//to set existing state value(Auto populate)
 	var stateName = $("#state").val();
 	if(stateName == null || stateName == 'undefined' || stateName == ''){
 		stateName = document.getElementById("existingState").value;
 	}
 	//end state Auto populate
-	
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
@@ -370,8 +370,9 @@ function getAllStates(){
 	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            	} 
 	            }
+	            $('#state').append('<option value="">---select state---</option>');
 	            $('#state').trigger("chosen:updated");
-	            getAllCities();
+	            getCities1();
 	        },
 	        error: function(e){
 	        }
@@ -389,10 +390,12 @@ function getAllStates(){
 
 
 <script>
-function getAllCities(){
+function getCities1(){
+	alert("haiiii");
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
-	
+	 alert("country1Name1"+countryName);
+	alert("country1Name11"+stateName);
 	//to set existing city value(Auto populate)
 	var cityName = $("#city").val();
 	if(cityName == null || cityName == 'undefined' || cityName == ''){
@@ -400,6 +403,7 @@ function getAllCities(){
 	}
 	//end city Auto populate
 	
+	alert("country1Name111"+cityName);
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
 	    	type: "POST",

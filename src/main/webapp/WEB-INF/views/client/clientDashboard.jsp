@@ -1289,6 +1289,7 @@ function preparedClientListFromElk(data){
 		   		result = result +'<td><div>---</div></td>';
 		   	}
 		   	result = result +'<td><div id="noOfContactsCount'+report.id+'">---</div></td>';
+		   	
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
 				}
@@ -1852,10 +1853,15 @@ function saveReason1(spocId, orgRelationID){
 		   	type: "POST",
 		   url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
 		    success: function(data) {
-		    	$("#popUp").empty();
-   			 	$(".project_inn_mask").fadeOut(200);
-   			   /*  getVendorContactLists(); */
-   			     getVendorContactListsELK();
+   			   
+   			 $("#selector1").removeAttr("style");
+  			 $("#selector1").css({ display: "block" });
+  			 $("#msgDiv").html("Client contact removed");
+  			 $("#popUp").empty();
+ 			 $(".project_inn_mask").fadeOut(200);
+			   /*  getVendorContactLists(); */
+			     getVendorContactListsELK();
+			 	 msgFadein();
 		    }
 	   });
 	}else{

@@ -1053,7 +1053,14 @@ public class VendorRestController {
 				 combinedQueryBuilder.should(initiatorQueryBuilder);
 				 combinedQueryBuilder.should(responderQueryBuilder);
 				 
+				 
+				 BoolQueryBuilder statusQueryBuilder = QueryBuilders.boolQuery();
+				 statusQueryBuilder.must(QueryBuilders.matchQuery("status", "1"));
+				 
+				 
+				 boolQueryBuilder.must(statusQueryBuilder);
 				 boolQueryBuilder.must(combinedQueryBuilder);
+				
 				 
 				 //  this condition is if Login user is Owner or SpocUserId
 				 if(!isadmin){
@@ -1485,10 +1492,14 @@ public class VendorRestController {
 				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", loginOrgLocation.getId()));
 				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
 				 
+				 BoolQueryBuilder statusQueryBuilder = QueryBuilders.boolQuery();
+				 statusQueryBuilder.must(QueryBuilders.matchQuery("status", "1"));
+				 
 				 combinedQueryBuilder.should(initiatorQueryBuilder);
 				 combinedQueryBuilder.should(responderQueryBuilder);
 				 
 				 boolQueryBuilder.must(combinedQueryBuilder);
+				 boolQueryBuilder.must(statusQueryBuilder);
 				 
 				 //  this condition is if Login user is Owner or SpocUserId
 				 if(!isadmin){
@@ -1544,8 +1555,6 @@ public class VendorRestController {
 									}
 									clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getOwnerUserEmail());
 									clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getOwnerUserPhNo());
-				    				 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-				    				 //orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 									
 									 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getSpocUserId());
 				    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getOwnerUserId());
@@ -1567,8 +1576,6 @@ public class VendorRestController {
 									}
 									clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getSpocUserEmail());
 									clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
-										 //orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-										 //orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
 									
 									 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getOwnerUserId());
 				    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getSpocUserId());
@@ -1593,9 +1600,6 @@ public class VendorRestController {
 									}
 									clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getSpocUserEmail());
 									clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
-									 //orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-									 //orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-									
 
 									 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getOwnerUserId());
 				    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getSpocUserId());
@@ -1617,9 +1621,6 @@ public class VendorRestController {
 									}
 									clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getOwnerUserEmail());
 									clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getOwnerUserPhNo());
-								 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-								 //orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
-									
 
 									 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getSpocUserId());
 				    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getOwnerUserId());
