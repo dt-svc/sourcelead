@@ -65,11 +65,10 @@ public class AddClientVendorContactsELK {
 	private ArrayList<ClientVendorContactsIndex> getElkCampaigns() throws Exception{
 		 DataSource dataSource = comboPooledDataSource();
 		ArrayList<ClientVendorContactsIndex> contactsList = new ArrayList<ClientVendorContactsIndex>();
-		 try {
+		Connection conn = dataSource.getConnection(); 
+		try {
 				
 				String sql = "SELECT * FROM sourcelead.ORG_SPOC orgSpock";
-				
-				Connection conn = dataSource.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);
 			    while(rs.next()){
@@ -192,9 +191,11 @@ public class AddClientVendorContactsELK {
 							 contactsList.add(clientVendorContactsIndex);
 						     }
 
-			   conn.close();
+			   
 		}catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			conn.close();
 		}
 		return contactsList;
 	}

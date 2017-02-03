@@ -660,23 +660,23 @@ public class ClientServiceImpl implements ClientService{
 						org.setOrgName(jsonObj.getString(vendorName));
 					}
 					
-					if(jsonObj.getString(companyWebsite) != null && !jsonObj.getString(companyWebsite).isEmpty()){
+					if(jsonObj.has("companyWebsite") &&   jsonObj.getString(companyWebsite) != null && !jsonObj.getString(companyWebsite).isEmpty()){
 						org.setWebSite(jsonObj.getString(companyWebsite));
 					}
 				 orgForElk = orgService.updateOrg(org);
 				}	
-				if(jsonObj.getString(vendorCity) != null && !jsonObj.getString(vendorCity).isEmpty()){
+				if( jsonObj.has("vendorCity") && jsonObj.getString(vendorCity) != null && !jsonObj.getString(vendorCity).isEmpty()){
 					orgLocations.setCity(jsonObj.getString(vendorCity));
 				}else{
 					orgLocations.setCity("");
 				}
-				if(jsonObj.getString(vendorState) != null && !jsonObj.getString(vendorState).isEmpty()){
+				if(jsonObj.has("vendorState") &&  jsonObj.getString(vendorState) != null && !jsonObj.getString(vendorState).isEmpty()){
 					orgLocations.setState(jsonObj.getString(vendorState));
 				}else{
 					
 					orgLocations.setState("");
 				}
-				if(jsonObj.getString(vendorCountry) != null && !jsonObj.getString(vendorCountry).isEmpty()){
+				if(jsonObj.has("vendorCountry") && jsonObj.getString(vendorCountry) != null && !jsonObj.getString(vendorCountry).isEmpty()){
 					orgLocations.setCountry(jsonObj.getString(vendorCountry));
 			     }else{
 			    	 
