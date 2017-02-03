@@ -462,7 +462,7 @@ public class TimesheetApprovalRestController {
 					timesheetApprovalDiv.append("				</thead>");	
 					for (ProjectMembers projectMember : projectMembers)
 					{
-						 timesheetApprovalDiv.append("<tr>");
+						 timesheetApprovalDiv.append("<tr id='row"+projectMember.getId()+"'>");
 						 timesheetApprovalDiv.append("  <td>");
 						 timesheetApprovalDiv.append("<div class='time_appr_user'>");
 						 timesheetApprovalDiv.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
@@ -497,13 +497,13 @@ public class TimesheetApprovalRestController {
 					    	 timesheetApprovalDiv.append("<div id='rejectedPopup'></div>");
 					     }
 					      if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
-			            	 timesheetApprovalDiv.append("<div><i class='fa fa-check' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\""+sah.getSubmissionId().getProjectMembers().getId()+"\",\""+sah.getSubmissionId().getStartDateStr()+"\",\""+sah.getSubmissionId().getEndDateStr()+"\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\""+sah.getSubmissionId().getProjectMembers().getId()+"\",\""+sah.getSubmissionId().getStartDateStr()+"\",\""+sah.getSubmissionId().getEndDateStr()+"\");'></i></div>");
+			            	 timesheetApprovalDiv.append("<div><i class='fa fa-check' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\""+projectMember.getId()+"\",\""+format.format(sah.getSubmissionId().getStartDate())+"\",\""+format.format(sah.getSubmissionId().getEndDate())+"\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\""+projectMember.getId()+"\",\""+format.format(sah.getSubmissionId().getStartDate())+"\",\""+format.format(sah.getSubmissionId().getEndDate())+"\");'></i></div>");
 			                 timesheetApprovalDiv.append("<div id='rejectedPopup'></div>");
 			             }
 					      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 			            	 timesheetApprovalDiv.append(" <div><h3 class='reje_color'>Rejected</h3>");
-			            	 timesheetApprovalDiv.append(" <i class='glyphicon glyphicon-comment' id='"+sah.getSubmissionId().getProjectMembers().getId()+"' onclick='rejectedMessage(\"rejectedMessage"+sah.getSubmissionId().getProjectMembers().getId()+"\");'>");
-			            	 timesheetApprovalDiv.append(" <div class='app_error_mes' id='rejectedMessage"+sah.getSubmissionId().getProjectMembers().getId()+"'>").append(sah.getSubmissionId().getRejectedReason()).append("</div>");
+			            	 timesheetApprovalDiv.append(" <i class='glyphicon glyphicon-comment' id='"+projectMember.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+projectMember.getId()+"\");'>");
+			            	 timesheetApprovalDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMember.getId()+"'>").append(sah.getSubmissionId().getRejectedReason()).append("</div>");
 			            	 timesheetApprovalDiv.append(" </i>");
 			            	 timesheetApprovalDiv.append(" </div>");
 			            }
