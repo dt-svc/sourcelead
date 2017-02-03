@@ -552,6 +552,12 @@ public class ProjectsDashboardRestController {
 					}
 					boolQueryBuilder.must(startDateBoolQueryBuilder);
 				}*/
+				String startDateKey = getSearchKeywordsFromTextField(jsonObj, "projectStartDateAdvanced");
+				if(startDateKey != null && !startDateKey.isEmpty()){
+					BoolQueryBuilder startDateBoolQueryBuilder = QueryBuilders.boolQuery();
+					startDateBoolQueryBuilder.must(QueryBuilders.matchQuery("startDate", startDateKey));
+					boolQueryBuilder.must(startDateBoolQueryBuilder);
+				}
 				
 				//project Members
 				ArrayList<String> projectMembersArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeNameAdvanced");
@@ -591,6 +597,14 @@ public class ProjectsDashboardRestController {
 			 String resultJson;
 			 resultJson = commonUtil.toJSON(projectsList);
 			 return resultJson;
+	 }
+	 
+	 private String getSearchKeywordsFromTextField(JSONObject jsonObj,String param) throws Exception{
+		 		String startDate = "";
+		 		if(jsonObj.has(param)){
+		 			startDate = jsonObj.getString("projectStartDateAdvanced");
+		 		}
+		 		return startDate;
 	 }
 	 
 	 private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
