@@ -556,7 +556,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Candidate> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore) throws Exception {
+	public List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore) throws Exception {
 		logger.info("....getRecommendationsUpdateWithScoreByUsingElk Method Started...");
 		float locationPercentage = 0; // location 10%
 		float ratePercentage = 0;    // rate 20 %
@@ -566,7 +566,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		float noticePeriod = 0; // notice 10%
 		float expPercentage = 0; //  experience = 20%
 		
-		List<Candidate> CandidateListcopy = new ArrayList<>();
+		List<CandidateIndex> CandidateListcopy = new ArrayList<>(); 
 		String reqSkills = "";
 		if(null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
 			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
@@ -631,121 +631,39 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					}
 				 }
 				
-				
 				for (SearchHit hit : searchHits) {
-					//Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(hit.getId()));
 					ObjectMapper mapper = new ObjectMapper();
 					String json = hit.getSourceAsString();
 		    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
-	    	        Candidate candidate =	populateCandidate(candidateIndex);
 					boolean isCandidateAdded = false;
 					
 					int matchedSkillCount = 0;
-					Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
-					List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
-					/*CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);*/
+					ArrayList<String> candidateSkillList = candidateIndex.getSkills();
+					List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
 					
-					if(candidateSkillList != null && candidateSkillList.size() >0){
-						for(CandidateSkills candidateSkills : candidateSkillList){
-							if(candidateSkills.getName() !=null && !"".equalsIgnoreCase(candidateSkills.getName())){
-								if(reqSkills.contains(candidateSkills.getName())){
-									matchedSkillCount++;
-								}
-								
-							}
-						}
-					}
-					skillPercentage = matchedSkillCount*percentPerSkill;
-					if(null != candidate.getExperienceYears() && !"".equalsIgnoreCase(candidate.getExperienceYears()) && null != candidate.getExperienceMonths()  && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
-						int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
-						if(candidateExpMonths < reqMinExp *12){
-							expPercentage = 0;
-						}else if(candidateExpMonths >= reqMinExp *12 && candidateExpMonths <= reqMaxExp *12){
-							expPercentage = percentPerMonthExp*(float)candidateExpMonths;
-						}else{
-							expPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore());
-						}
-					}
-					if(null != candidate.getCity() && !"".equalsIgnoreCase(candidate.getCity())){
-						if(candidate.getCity().equalsIgnoreCase(reqCity)){
+					//get the skillPercentage method
+					skillPercentage = getSkillPercentage(candidateSkillList,percentPerSkill,matchedSkillCount,reqSkills);
+					
+					//get the ExperiencePercentage
+					expPercentage = getExperiencePercentage(candidateIndex,recommendedCustomizeScore,reqMinExp,expPercentage,percentPerMonthExp,reqMaxExp);
+					
+					//get the RatePercentage
+					ratePercentage = getRatePercentage(candidateIndex,ratePercentage,recommendedCustomizeScore,reqPerMonthSal);
+					
+					// get the NoticeperiodPercentage
+					noticePeriod = getNoticeperiodPercentage(recommendedCustomizeScore,candidateIndex,noticePeriod);
+					
+					if(null != candidateIndex.getCity() && !"".equalsIgnoreCase(candidateIndex.getCity())){
+						if(candidateIndex.getCity().equalsIgnoreCase(reqCity)){
 							locationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore());
 						}
 					}
 					
-					if(null != candidate.getExpectedRate() && !"".equalsIgnoreCase(candidate.getExpectedRate()) && null != candidate.getRateType()  && !"".equalsIgnoreCase(candidate.getRateType())){
-						String candidateRateType = candidate.getRateType();
-						String  expectedRate = candidate.getExpectedRate();
-						expectedRate = expectedRate.substring(0, expectedRate.length() - 2);
-						
-						int reqRate = Integer.parseInt(expectedRate.toString());
-						float perMonthCandidateSal = 0;
-						if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(candidateRateType)){
-							int perDaySal = reqRate *9;
-							perMonthCandidateSal = perDaySal * 30;
-						}else if(Constants.RATE_TYPE_WEEKLY.equalsIgnoreCase(candidateRateType)){
-							int perDaySal = reqRate /7;
-							perMonthCandidateSal = perDaySal * 30;
-						}else if(Constants.RATE_TYPE_BI_WEEKLY.equalsIgnoreCase(candidateRateType)){
-							int perDaySal = reqRate /14;
-							perMonthCandidateSal = perDaySal * 30;
-						}else if(Constants.RATE_TYPE_SEMI_MONTHLY.equalsIgnoreCase(candidateRateType)){
-							int perDaySal = reqRate /15;
-							perMonthCandidateSal = perDaySal * 30;
-						}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(candidateRateType)){
-							perMonthCandidateSal = reqRate;
-						}else if(Constants.RATE_TYPE_BI_MONTHLY.equalsIgnoreCase(candidateRateType)){
-							int perDaySal = reqRate /60;
-							perMonthCandidateSal = perDaySal * 30;
-						}else{
-							perMonthCandidateSal = reqRate /12;
-						}
-						
-						if(perMonthCandidateSal<=reqPerMonthSal){
-							ratePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeRateScore());
-						}
-					}
-					
-					if(recommendedCustomizeScore.getCustomizeNoticeperiod() !=null){
-							String []  np = recommendedCustomizeScore.getCustomizeNoticeperiod().split(",");
-							int totalDays = 0;
-							int canTotalDays = 0;
-							for(int i=0;i<np.length;i++){
-								if(Constants.NOTICE_PERIOD_15DAYS.equalsIgnoreCase(np[i])){
-									totalDays = totalDays + 15;
-								}else if(Constants.NOTICE_PERIOD_1MONTH.equalsIgnoreCase(np[i])){
-									totalDays = totalDays+30;
-								}else if(Constants.NOTICE_PERIOD_2MONTH.equalsIgnoreCase(np[i])){
-									totalDays = totalDays+60;
-								}else if(Constants.NOTICE_PERIOD_3MONTH.equalsIgnoreCase(np[i])){
-									totalDays = totalDays+90;
-								}else if(Constants.NOTICE_PERIOD_IMMEDIATELY.equalsIgnoreCase(np[i])){
-									totalDays =0;
-								}
-							}
-						
-						if(null != candidate.getNoticePeriod() && !"".equalsIgnoreCase(candidate.getNoticePeriod())){
-							if(Constants.NOTICE_PERIOD_15DAYS.equalsIgnoreCase(candidate.getNoticePeriod())){
-								canTotalDays = canTotalDays + 15;
-							}else if(Constants.NOTICE_PERIOD_1MONTH.equalsIgnoreCase(candidate.getNoticePeriod())){
-								canTotalDays = canTotalDays + 30;
-							}else if(Constants.NOTICE_PERIOD_2MONTH.equalsIgnoreCase(candidate.getNoticePeriod())){
-								canTotalDays = canTotalDays + 60;
-							}else if(Constants.NOTICE_PERIOD_3MONTH.equalsIgnoreCase(candidate.getNoticePeriod())){
-								canTotalDays = canTotalDays + 90;
-							}else if(Constants.NOTICE_PERIOD_IMMEDIATELY.equalsIgnoreCase(candidate.getNoticePeriod())){
-								canTotalDays = 0;
-							}
-						}
-						if(totalDays <= canTotalDays){
-							noticePeriod = Integer.parseInt(recommendedCustomizeScore.getCustomizeNoticeperiodScore());
-						}
-						
-					}
 					//keywords calculation
 				    float totalKeyWordPer = 0;
-					if(null != candidate.getSummary()){
+					if(null != candidateIndex.getSummary() && null != numOfKeyWords){
 						for(int i=0;i<numOfKeyWords.length;i++){
-							if(candidate.getSummary().contains(numOfKeyWords[i])){
+							if(candidateIndex.getSummary().contains(numOfKeyWords[i])){
 								totalKeyWordPer = totalKeyWordPer + percentPerkeyword;	
 							}
 						}
@@ -755,22 +673,15 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					
 					double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
 					String candidateScore = String.valueOf(roundOff);
-					candidate.setCandidateScore(candidateScore);
-					candidate.setNoOfReq(reqList.size());
-					candidate.setSkillPercentage(skillPercentage);
-					candidate.setExpPercentage(expPercentage);
-					candidate.setLocationPercentage(locationPercentage);
-					candidate.setRatePercentage(ratePercentage);
-					candidate.setNoticePeriodPercentage(noticePeriod);
-					candidate.setTotalKeyWordPerPercentage(totalKeyWordPer);
+					candidateIndex.setCandidateScore(candidateScore);
+					candidateIndex.setNoOfReq(reqList.size());
+					candidateIndex.setSkillPercentage(skillPercentage);
+					candidateIndex.setExpPercentage(expPercentage);
+					candidateIndex.setLocationPercentage(locationPercentage);
+					candidateIndex.setRatePercentage(ratePercentage);
+					candidateIndex.setNoticePeriodPercentage(noticePeriod);
+					candidateIndex.setTotalKeyWordPerPercentage(totalKeyWordPer);
 					
-					/*if(candidateResume != null){
-							if(candidateResume.getTitle() !=null && !"".equalsIgnoreCase(candidateResume.getTitle())){
-								candidate.setCandidateResume(candidateResume.getTitle());
-							}else{
-								candidate.setCandidateResume(candidateResume.getFileName());
-							}
-					}*/
 					if(reqList.size() >0){
 						
 						for(RequirementSubmission reqSubmission : reqList){
@@ -779,60 +690,164 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 							}
 							reqSubmission.setRequirementName(reqSubmission.getRequirement().getJobTitle());
 							reqSubmission.setRequirementStage(reqSubmission.getSubmissionStatus());
-							candidate.setReqSubmissionId(reqSubmission.getId().toString());
+							candidateIndex.setReqSubmissionId(reqSubmission.getId().toString());
 						}
 					}
-					candidate.setRequirementSubmisstions(reqList);
-					candidate.setIsCandidateAdedd(isCandidateAdded);
+					candidateIndex.setRequirementSubmisstions(reqList);
+					candidateIndex.setIsCandidateAdedd(isCandidateAdded);
 					
 					if(skillPercentage !=0 && totalPercentage !=0 ){
-						CandidateListcopy.add(candidate);
+						CandidateListcopy.add(candidateIndex);
 					}
-					
-					
 				}
-				
+				Collections.sort(CandidateListcopy, new Comparator() {  
+		            @Override  
+		            public int compare(Object obj1, Object obj2) {  
+		            	CandidateIndex candidate1 = (CandidateIndex)obj1;  
+		            	CandidateIndex candidate2 = (CandidateIndex)obj2; 
+		            	return candidate2.getCandidateScore().compareToIgnoreCase(candidate1.getCandidateScore());  
+		            }  
+		        });
+//			return CandidateListcopy;
 			 }
 		 }
 		logger.info("....getRecommendationsWithScoreByUsingElk Method Ended...");
 		return CandidateListcopy;
 	}
+	
+	
+	/**
+	 * this method is used to calculate the skillPercentage
+	 * @param candidateSkillList
+	 * @param percentPerSkill
+	 * @param matchedSkillCount
+	 * @param reqSkills
+	 * @return float
+	 */
+	private float getSkillPercentage(ArrayList<String> candidateSkillList, float percentPerSkill, int matchedSkillCount, String reqSkills) {
+		if(candidateSkillList != null && candidateSkillList.size() >0){
+			for(String skill : candidateSkillList){
+					if(reqSkills.contains(skill)){
+						matchedSkillCount++;
+					}
+			}
+		}
+		return matchedSkillCount*percentPerSkill;
+		
+	}
 
-	private Candidate populateCandidate(CandidateIndex candidateIndex) {
-		Candidate candidate = new Candidate();
-		candidate.setId(candidateIndex.getCandidateId());
-		 Set<CandidateSkills> set = new HashSet<CandidateSkills>();
-		 List<String> skillList = candidateIndex.getSkills();
-		 for(String skill :skillList){
-			 CandidateSkills candSkill = new CandidateSkills();
-			 candSkill.setName(skill);
-			 set.add(candSkill);
-		 }
-		 candidate.setCandidateSkills(set);
-		 candidate.setCandidateName(candidateIndex.getFirstName());
-		 candidate.setMobilePhone(candidateIndex.getMobilePhone());
-		 if(null != candidateIndex.getExperienceYears()){
-			 candidate.setExperienceYears(candidateIndex.getExperienceYears().toString());	 
-		 }
-		 if(null != candidateIndex.getExperienceMonths()){
-			 candidate.setExperienceMonths(candidateIndex.getExperienceMonths().toString());
-		 }
-		 if(null != candidateIndex.getNoticePriod() ){
-			 candidate.setNoticePeriod(candidateIndex.getNoticePriod());	 
-		 }
-		 if(null != candidateIndex.getCity()){
-			 candidate.setCity(candidateIndex.getCity());	 
-		 }
-		 if(null != candidateIndex.getCurrentResumeId()){
-			 candidate.setCurrentResumeId(candidateIndex.getCurrentResumeId());	 
-		 }
-		 
-		 if(null != candidateIndex.getExpectedRate() && null != candidateIndex.getRateType()){
-			 candidate.setRateType(candidateIndex.getRateType());
-			 candidate.setExpectedRate(String.valueOf(candidateIndex.getExpectedRate()));
-			 	 
-		 }
-		 
-		return candidate;
+	/**
+	 * this method is used to calculate the Experience Percentage
+	 * @param candidateIndex
+	 * @param recommendedCustomizeScore
+	 * @param reqMinExp
+	 * @param expPercentage
+	 * @param percentPerMonthExp
+	 * @param reqMaxExp
+	 * @return float
+	 */
+	private float getExperiencePercentage(CandidateIndex candidateIndex, RecommendedCustomizeScore recommendedCustomizeScore, int reqMinExp, float expPercentage, float percentPerMonthExp, int reqMaxExp) {
+		if(null != candidateIndex.getExperienceYears()  && null != candidateIndex.getExperienceMonths() ){
+			int  candidateExpMonths = (candidateIndex.getExperienceYears())*12 + (candidateIndex.getExperienceMonths());
+			if(candidateExpMonths < reqMinExp *12){
+				expPercentage = 0;
+			}else if(candidateExpMonths >= reqMinExp *12 && candidateExpMonths <= reqMaxExp *12){
+				expPercentage = percentPerMonthExp*(float)candidateExpMonths;
+			}else{
+				expPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore());
+			}
+		}
+		return expPercentage;
+	}
+
+	/**
+	 * this method is used to calculate the Rate Percentage
+	 * @param candidateIndex
+	 * @param ratePercentage
+	 * @param recommendedCustomizeScore
+	 * @param reqPerMonthSal
+	 * @return float
+	 */
+	private float getRatePercentage(CandidateIndex candidateIndex, float ratePercentage, RecommendedCustomizeScore recommendedCustomizeScore, float reqPerMonthSal) {
+		if(null != candidateIndex.getExpectedRate() && null != candidateIndex.getRateType()  && !"".equalsIgnoreCase(candidateIndex.getRateType())){
+			String candidateRateType = candidateIndex.getRateType();
+			String  expectedRate = candidateIndex.getExpectedRate().toString();
+			expectedRate = expectedRate.substring(0, expectedRate.length() - 2);
+			
+			int reqRate = Integer.parseInt(expectedRate.toString());
+			float perMonthCandidateSal = 0;
+			if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(candidateRateType)){
+				int perDaySal = reqRate *9;
+				perMonthCandidateSal = perDaySal * 30;
+			}else if(Constants.RATE_TYPE_WEEKLY.equalsIgnoreCase(candidateRateType)){
+				int perDaySal = reqRate /7;
+				perMonthCandidateSal = perDaySal * 30;
+			}else if(Constants.RATE_TYPE_BI_WEEKLY.equalsIgnoreCase(candidateRateType)){
+				int perDaySal = reqRate /14;
+				perMonthCandidateSal = perDaySal * 30;
+			}else if(Constants.RATE_TYPE_SEMI_MONTHLY.equalsIgnoreCase(candidateRateType)){
+				int perDaySal = reqRate /15;
+				perMonthCandidateSal = perDaySal * 30;
+			}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(candidateRateType)){
+				perMonthCandidateSal = reqRate;
+			}else if(Constants.RATE_TYPE_BI_MONTHLY.equalsIgnoreCase(candidateRateType)){
+				int perDaySal = reqRate /60;
+				perMonthCandidateSal = perDaySal * 30;
+			}else{
+				perMonthCandidateSal = reqRate /12;
+			}
+			
+			if(perMonthCandidateSal<=reqPerMonthSal){
+				ratePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeRateScore());
+			}
+		}
+		return ratePercentage;
+	}
+	
+	
+	/**
+	 * this method is used to calculate the Noticeperiod Percentage
+	 * @param recommendedCustomizeScore
+	 * @param candidateIndex
+	 * @param noticePeriod
+	 * @return float
+	 */
+	private float getNoticeperiodPercentage(RecommendedCustomizeScore recommendedCustomizeScore, CandidateIndex candidateIndex, float noticePeriod) {
+		if(recommendedCustomizeScore.getCustomizeNoticeperiod() !=null){
+			String []  np = recommendedCustomizeScore.getCustomizeNoticeperiod().split(",");
+			int totalDays = 0;
+			int canTotalDays = 0;
+			for(int i=0;i<np.length;i++){
+				if(Constants.NOTICE_PERIOD_15DAYS.equalsIgnoreCase(np[i])){
+					totalDays = totalDays + 15;
+				}else if(Constants.NOTICE_PERIOD_1MONTH.equalsIgnoreCase(np[i])){
+					totalDays = totalDays+30;
+				}else if(Constants.NOTICE_PERIOD_2MONTH.equalsIgnoreCase(np[i])){
+					totalDays = totalDays+60;
+				}else if(Constants.NOTICE_PERIOD_3MONTH.equalsIgnoreCase(np[i])){
+					totalDays = totalDays+90;
+				}else if(Constants.NOTICE_PERIOD_IMMEDIATELY.equalsIgnoreCase(np[i])){
+					totalDays =0;
+				}
+			}
+		
+			if(null != candidateIndex.getNoticePriod() && !"".equalsIgnoreCase(candidateIndex.getNoticePriod())){
+				if(Constants.NOTICE_PERIOD_15DAYS.equalsIgnoreCase(candidateIndex.getNoticePriod())){
+					canTotalDays = canTotalDays + 15;
+				}else if(Constants.NOTICE_PERIOD_1MONTH.equalsIgnoreCase(candidateIndex.getNoticePriod())){
+					canTotalDays = canTotalDays + 30;
+				}else if(Constants.NOTICE_PERIOD_2MONTH.equalsIgnoreCase(candidateIndex.getNoticePriod())){
+					canTotalDays = canTotalDays + 60;
+				}else if(Constants.NOTICE_PERIOD_3MONTH.equalsIgnoreCase(candidateIndex.getNoticePriod())){
+					canTotalDays = canTotalDays + 90;
+				}else if(Constants.NOTICE_PERIOD_IMMEDIATELY.equalsIgnoreCase(candidateIndex.getNoticePriod())){
+					canTotalDays = 0;
+				}
+			}
+			if(totalDays <= canTotalDays){
+				noticePeriod = Integer.parseInt(recommendedCustomizeScore.getCustomizeNoticeperiodScore());
+			}
+		}
+		return noticePeriod;
 	}
 }
