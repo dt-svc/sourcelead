@@ -235,13 +235,17 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
 					}
 					
+					if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+						 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+					}
+					
 					if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
 					candidate.setEmail(jsonObj.getString("EmailId"));
 					}
 					
 					if(jsonObj.has("CurrentCTC") && !isNullOrEmpty(jsonObj.getString("CurrentCTC"))){
 						candidate.setCurrentRate(jsonObj.getString("CurrentCTC"));
-						candidate.setCurrentRateCurrency("currentCTCRateType");
+						candidate.setCurrentRateCurrency(jsonObj.getString("currentCTCRateType"));
 					}
 					
 					if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
@@ -250,7 +254,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 
 					if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
 						 candidate.setExpectedRate(jsonObj.getString("ExpectedCTC"));
-						 candidate.setExpectedRateCurrencey("expectedCTCRateType");
+						 candidate.setExpectedRateCurrencey(jsonObj.getString("expectedCTCRateType"));
 						 
 					}
 					
@@ -366,6 +370,19 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 		 String score = recommendationsService.getCandidateScore(candidate,requirementSubmission.getRequirement());
 		 requirementSubmission.setCandidateScore(Integer.parseInt(score));
+		 
+		 StringBuilder userName = new StringBuilder();
+		 StringBuilder nameBuilder = new StringBuilder();
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 userName = nameBuilder.append(user.getFirstName()).append(" ").append(user.getLastName());
+	   	 }else{
+	   		 userName = nameBuilder.append(user.getFirstName());
+	   	 }
+		 
+		 requirementSubmission.setCreatedUser(userName.toString());
+		 requirementSubmission.setUpdatedUser(userName.toString());
+		 
 		 requirementSubmission = requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 		
 		 RequirementSubmissionTemplateFields templateFields = new RequirementSubmissionTemplateFields();

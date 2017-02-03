@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
@@ -113,6 +114,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	OrgLocationsDao orglocationsDao;
 	
 
 	@Override
@@ -702,6 +706,7 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder emailMsgBuilder = new StringBuilder();
 		 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 OrgLocations loginOrgLocation = orglocationsDao.getOrgLocationByOrgId(loginOrg.getId());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -716,7 +721,7 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("clientOrgName",respondingPartyOrg.getOrgName());
 			 globalVarsMap.put("vendorOrgName",loginOrg.getOrgName());
 			 StringBuilder urlBuilder = new StringBuilder();
-			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&UUID=").append(UUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 			 
 		     if(null != password){
 			    globalVarsMap.put("userName",user.getEmail());
@@ -733,7 +738,7 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
 			 } 
 		     StringBuilder actionUrlBuilder = new StringBuilder();
-			 actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&UUID=").append(UUID).append(" ").toString();
+			 actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append(" ").toString();
 			 
 			 
 		 }else if("Vendor".equals(responderType)){
@@ -746,7 +751,7 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("vendorOrgName",respondingPartyOrg.getOrgName());
 			 globalVarsMap.put("clientOrgName",loginOrg.getOrgName());
 			 StringBuilder actionUrlBuilder = new StringBuilder();
-			 globalVarsMap.put("acceptURL",actionUrlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&UUID=").append(UUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+			 globalVarsMap.put("acceptURL",actionUrlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 			
 			 if(null != password){
 			    globalVarsMap.put("userName",user.getEmail());
@@ -764,7 +769,7 @@ public class UserServiceImpl implements UserService {
 			 }
 			 
 			 StringBuilder actionLinkBuilder = new StringBuilder();
-			 actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&UUID=").append(UUID).append("").toString();
+			 actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("").toString();
 			 
 		 }
 		 

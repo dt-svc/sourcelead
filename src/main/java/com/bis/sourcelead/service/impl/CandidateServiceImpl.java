@@ -163,6 +163,9 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("mobilePhone") && jsonObj.getString("mobilePhone") !=null){
 		candidate.setMobilePhone(jsonObj.getString("mobilePhone"));
 		}
+		if(jsonObj.has("alternateMobilePhone") && jsonObj.getString("alternateMobilePhone") !=null){
+			candidate.setAlternateMobilePhone(jsonObj.getString("alternateMobilePhone"));
+		}
 		if(jsonObj.has("email") && jsonObj.getString("email") !=null){
 		candidate.setEmail(jsonObj.getString("email"));
 		}
@@ -411,6 +414,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	if(candidate.getMobilePhone() !=null && !"".equalsIgnoreCase(candidate.getMobilePhone())){
 		writeRow.createCell(3).setCellValue(candidate.getMobilePhone());
 	}
+	
 	if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
 		writeRow.createCell(4).setCellValue(candidate.getCountry());
 	}

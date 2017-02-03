@@ -45,6 +45,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
     @JoinColumn(name="REQIREMENT_ID", nullable=false )        
     private Requirement reqirementId;
 	
+	@ManyToOne
+    @JoinColumn(name="ORGLOCATION_ID", nullable=false )        
+    private OrgLocations orgLocationId;
+	
 	@Column(name = "CUSTOMIZE_SKILLS", columnDefinition = "TEXT default NULL")
 	private String customizeSkills;
 	
@@ -62,6 +66,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Column(name = "CUSTOMIZE_RATE")
 	private String customizeRate;
+	
+	@Column(name = "CUSTOMIZE_RATE_TYPE")
+	private String customizeRatetype;
 	
 	@Column(name = "CUSTOMIZE_RATE_SCORE")
 	private String customizeRateScore;
@@ -105,6 +112,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
+	@Transient
+	private String dbSkills;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -119,6 +130,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setReqirementId(Requirement reqirementId) {
 		this.reqirementId = reqirementId;
+	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	public String getCustomizeSkills() {
@@ -167,6 +186,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setCustomizeRate(String customizeRate) {
 		this.customizeRate = customizeRate;
+	}
+
+	public String getCustomizeRatetype() {
+		return customizeRatetype;
+	}
+
+	public void setCustomizeRatetype(String customizeRatetype) {
+		this.customizeRatetype = customizeRatetype;
 	}
 
 	public String getCustomizeRateScore() {
@@ -280,7 +307,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
+
+	public String getDbSkills() {
+		return dbSkills;
+	}
+
+	public void setDbSkills(String dbSkills) {
+		this.dbSkills = dbSkills;
+	}
 	
 	
 }
