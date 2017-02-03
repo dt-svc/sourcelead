@@ -856,7 +856,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
 	    	for(SubmissionApproverHierarchy sah : submissionApproverHierarchyList){
 			     weekTotalsMap.put(sah.getSubmissionId().getStartDate(), sah.getTotalHours());
-			     totalHours = totalHours+sah.getTotalHours();
+			     if(sah.getTotalHours()!= null){
+			    	 totalHours = totalHours+sah.getTotalHours();
+			     }
+			     else{
+			    	 totalHours = totalHours+0;
+			     }
+			    
 				if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 					isRejected   = true;  
 					submissionApproverHierarchy = sah;
