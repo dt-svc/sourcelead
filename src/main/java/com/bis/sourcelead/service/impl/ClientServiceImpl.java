@@ -26,6 +26,7 @@ import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -914,13 +915,16 @@ public class ClientServiceImpl implements ClientService{
 					 StringBuilder loginBuilder = new StringBuilder();
 					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			}
-			 //setting the Recipient information
+			 /*//setting the Recipient information
 			 StringBuilder recipientbuilder = new StringBuilder();
 			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 			 EmailRecipient emailRecipient = new EmailRecipient();
 			 emailRecipient.setEmail(emailMessage.getToEmail());
 			 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-			 emailRecipientList.add(emailRecipient);
+			 emailRecipientList.add(emailRecipient);*/
+			 
+			 //setting the Recipient information
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = null;
@@ -944,7 +948,7 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setOrgLocationId(orgLocations.getId());
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		
 		}
 
@@ -978,13 +982,16 @@ public class ClientServiceImpl implements ClientService{
 					 globalVarsMap.put("clientLastName",loginUser.getLastName());
 					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
 				}
-			 //setting the Recipient information
+			 /*//setting the Recipient information
 			 StringBuilder recipientbuilder = new StringBuilder();
 			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 			 EmailRecipient emailRecipient = new EmailRecipient();
 			 emailRecipient.setEmail(emailMessage.getToEmail());
 			 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-			 emailRecipientList.add(emailRecipient);
+			 emailRecipientList.add(emailRecipient);*/
+			 
+			 //setting the Recipient information
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = null;
@@ -1008,7 +1015,7 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setOrgLocationId(orgLocations.getId());
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		}
 		
 
