@@ -317,19 +317,39 @@ overflow-x: auto;
                <jsp:include page="projectDetails.jsp" />
                <jsp:include page="projectTasks.jsp" />
 <jsp:include page="../masterFooter.jsp" />	
-	
-	
+
 	
 <script type="text/javascript">
 window.onload = function () {
-	searchProject();
+	alert("${searchValue}");
+	projectsList("${searchValue}","${searchResult}");
+	alert("test123");
+// 	searchProject();
 	$('input[name=projectStatus]').attr('checked',false);
 	$('input[name=clientNameById]').attr('checked',false);
 	//filter();
  };
 </script>
 
-
+<script type="text/javascript">
+function projectsList(searchValue,searchresult){ 
+	if(searchresult=="universalProjectsList")	 {
+		alert("hii")
+		var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+	         type : "POST",
+	          url: sourceleadUrl+"/getUniversalProjectsListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
+	          success :function(data) {
+	        	  prepareProjectsList(data);
+	         },
+	          
+	     }); 
+	  }
+	else{
+		searchProject();
+		}
+}
+</script>
 
 <script>
 //project side bar

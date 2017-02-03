@@ -253,7 +253,7 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'</div>';
 		    	        }
 				    	result = result+'<div class="clearfix">';
-				    	result = result+'<a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+				    	result = result+'<a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadProjects();">View More</a>';
 				    	result = result+'</div>';
 	    	}else if(searchType =='Users'){
 	    		result = result+'   <h4>Users</h4>';
@@ -616,12 +616,14 @@ function loadUsers(){
 }
 </script>
 
+<script>
+function loadProjects(){
+	var searchResult = "universalProjectsList";
+	var searchValue = "${searchValue}";
+	var sourceleadUrl = '${sourceleadUrl}';
+	alert("hiii"+searchResult+"     searchValue "+searchValue)
+	window.location.href = sourceleadUrl + "/projectDashboard?&searchResult="+searchResult+"&searchValue="+searchValue;
+}
+</script>
+
 <jsp:include page="../masterFooter.jsp" />
-
-
-
-
-
-
-
-
