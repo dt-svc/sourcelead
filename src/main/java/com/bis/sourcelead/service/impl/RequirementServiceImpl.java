@@ -30,6 +30,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.xmlbeans.impl.regex.RegularExpression;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -3012,6 +3013,18 @@ public class RequirementServiceImpl implements RequirementService {
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
 			
+			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			if(matcher.find()){
+				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
+				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths", keywd));
+				
+				String regex = "^(\\+[9]\\d|[1]\\d{2})$";
+				RegularExpression regExp = new RegularExpression(regex);
+				String mobileKeywd =matcher.group().replaceAll(regExp.toString(), "");
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+			}
 			return matchQueryBuilderList; 
 	}
 
@@ -3385,8 +3398,6 @@ public class RequirementServiceImpl implements RequirementService {
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
 		}
-
-			
 		return matchQueryBuilderList; 
 	}
 }

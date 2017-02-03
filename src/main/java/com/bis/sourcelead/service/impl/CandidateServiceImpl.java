@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.xmlbeans.impl.regex.RegularExpression;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -63,6 +64,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class CandidateServiceImpl implements CandidateService {
+	
 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateServiceImpl.class);
 
@@ -591,7 +593,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			Float expYears = Float.valueOf(matcher.group());
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
 			//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths", keywd));
-			String mobileKeywd =matcher.group().replaceAll("[+91]", "");
+			
+			String regex = "^(\\+[9]\\d|[1]\\d{2})$";
+			RegularExpression regExp = new RegularExpression(regex);
+			String mobileKeywd =matcher.group().replaceAll(regExp.toString(), "");
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
 		}
