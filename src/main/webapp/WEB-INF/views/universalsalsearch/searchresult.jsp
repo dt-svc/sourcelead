@@ -100,12 +100,12 @@ function getSearchResults(searchType,searchValue){
 			    	result = result+'  </div>';
 	    	 }
 	    	    result = result+'  <div class="clearfix">';
-		    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+		    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadRequirement();">View More</a>';
 		    	result = result+'  </div>';
 	    	}else if(searchType == 'Candidate'){
 	    		result = result+'   <h4>Candidate</h4>';
 	    		var checkSize = json.length;
-	    		if(checkSize>5){
+	    		if(checkSize > 5){
 	    			checkSize = 5;
 	    		}
 	    		else{
@@ -597,6 +597,15 @@ function loadCandidate(){
 }
 </script>
 
+<script type="text/javascript">
+function loadRequirement(){
+	var searchResult = "universalRequirementList";
+	var serachValue = "${searchValue}";
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/requirementList?&searchResult="+searchResult+"&serachValue="+serachValue;
+}
+</script>
+
 <!-- /usersList -->
 <script>
 function loadUsers(){
@@ -605,7 +614,6 @@ function loadUsers(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/usersList?&searchResult="+searchResult+"&searchValue="+searchValue;
 }
-
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
