@@ -111,6 +111,7 @@ public class RequirementController {
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
+	@SuppressWarnings("unchecked")
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
@@ -218,10 +219,13 @@ public class RequirementController {
         
 		
 		if(requirement != null && requirement.getId() != null){
+			List<String> totskils;
 			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId().toString());		  	
 		  	List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
-		  	List<String> totskils = ListUtils.sum(skillsList,allReqSkills);
+		  	if(!allReqSkills.contains(null)){
+		  	 totskils = ListUtils.sum(skillsList,allReqSkills);
 		  	model.addObject("skillsList", totskils);
+		  	}
 		}else{
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillsList", skillsList);
