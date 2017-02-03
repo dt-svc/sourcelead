@@ -3615,6 +3615,7 @@ function clientSideBar(candidateId){
 			             result = result+'       <li><a href="#tab-14" onclick="candidateEducation('+candidateId+');">Education</a></li>';
 			             result = result+'       <li><a href="#tab-15" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
 			             result = result+'       <li><a href="#tab-16" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; 
+			             result = result+'       <li><a href="#history" onclick="candidateHistory('+candidateId+');">History</a></li>';
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
 			             result = result+'     <div class="project_tabs">';
@@ -3635,6 +3636,10 @@ function clientSideBar(candidateId){
 						 
 						 result = result + '<div id="tab-16" class="canreq-tabs-menu_inn">';
 						 result = result + '</div>';
+						 
+						 result = result + '<div id="history" class="canreq-tabs-menu_inn">';
+						 result = result + '</div>';
+						 
 			             result = result+'     </div>';
 			             result = result+'   </div>';
 			             
@@ -4671,4 +4676,5 @@ function cancelCustomize(){
 <jsp:include page="recommendCandidatesExperience.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesEducation.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesCertificates.jsp"></jsp:include>
+<jsp:include page="recommendCandidatesHistory.jsp"></jsp:include>
 
