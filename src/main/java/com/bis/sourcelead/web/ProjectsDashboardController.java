@@ -82,7 +82,7 @@ public class ProjectsDashboardController {
         
         List<Long> projectIds = projectsService.getProjectIdsByOrgLocationsId(loginOrgLocations.getId());
         
-        if(null != projectIds){
+        if(null != projectIds && !projectIds.isEmpty()){
         	List<ProjectApproverHierarchy> projectManagersList = projectApproverHierarchyService.getAllApproverUsersByProjectIdList(projectIds);
             for(ProjectApproverHierarchy projectManager:projectManagersList){
             	if(null != projectManager.getApproverUserId() && null != projectManager.getApproverUserId().getLastName()){
@@ -93,17 +93,20 @@ public class ProjectsDashboardController {
             }
             model.addObject("add_projectManagersList", projectManagersList);
             
-            
-            List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdsList(projectIds);
-            for(ProjectMembers projectMembers:projectMembersList){
-            	if(null != projectMembers.getEmployee() && null != projectMembers.getEmployee().getUser() && null != projectMembers.getEmployee().getUser().getLastName()){
-            		projectMembers.setEmpName(projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName());
-            	}else{
-            		projectMembers.setEmpName(projectMembers.getEmployee().getUser().getFirstName());
-            	}
-            	projectMembers.setEmpEmail(projectMembers.getEmployee().getUser().getEmail());
+            if(null != projectIds  && !projectIds.isEmpty()){
+            	  List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdsList(projectIds);
+                  for(ProjectMembers projectMembers:projectMembersList){
+                  	if(null != projectMembers.getEmployee() && null != projectMembers.getEmployee().getUser() && null != projectMembers.getEmployee().getUser().getLastName()){
+                  		projectMembers.setEmpName(projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName());
+                  	}else{
+                  		projectMembers.setEmpName(projectMembers.getEmployee().getUser().getFirstName());
+                  	}
+                  	projectMembers.setEmpEmail(projectMembers.getEmployee().getUser().getEmail());
+                  }
+                  model.addObject("add_projectMembersList", projectMembersList);
+                  
             }
-            model.addObject("add_projectMembersList", projectMembersList);
+          
         }
         
         

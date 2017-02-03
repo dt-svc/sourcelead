@@ -105,7 +105,7 @@ function getSearchResults(searchType,searchValue){
 	    	}else if(searchType == 'Candidate'){
 	    		result = result+'   <h4>Candidate</h4>';
 	    		var checkSize = json.length;
-	    		if(checkSize>5){
+	    		if(checkSize > 5){
 	    			checkSize = 5;
 	    		}
 	    		else{

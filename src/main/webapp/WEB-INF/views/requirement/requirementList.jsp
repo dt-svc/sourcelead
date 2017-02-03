@@ -151,10 +151,9 @@ if(universalRequirementSearchList=="universalRequirementList")	 {
           
      }); 
   }
-/* else{
-	requirementList();
-	 	$("#requirementList").val('');
-	} */
+	 else{
+		requirementList();
+	} 
   }
   </script>
 
