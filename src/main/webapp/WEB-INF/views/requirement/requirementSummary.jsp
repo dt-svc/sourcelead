@@ -1960,19 +1960,30 @@ function requirementRecommendations(requirementId){
     	 for (var i=0; i<json.length; i++)
 			{
 		    var report = json[i];
+		    if(report.firstName != null && report.firstName != '' && report.firstName != 'undefiend'){
+		    	firstName = report.firstName;
+		    }else{
+		    	firstName = "";
+		    } 
+		    if(report.lastName != null && report.lastName != '' && report.lastName != 'undefiend'){
+		    	lastName = report.lastName;
+		    }else{
+		    	lastName = "";
+		    } 
+		    
 		    result = result +'<tr>';
-		    result = result + '<td><div onclick="clientSideBar('+report.id+');" class="proj_show"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    result = result + '<td><div onclick="clientSideBar('+report.id+');" class="proj_show"><span>'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
 		    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
 		    	result = result +'<td class="text-center"><div><span>'+report.mobilePhone+'</span></div></td>';
 		    }else{
-		    	result = result +'<td><div><span>--</span></div></td>';
+		    	result = result +'<td class="text-center"><div><span>--</span></div></td>';
 		    }
 		    
 		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
 		  	   result = result +'<td class="text-center"><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"></a></span></div></td>';
 			  }else{
-				result = result +'<td><div><span>--</span></div></td>';
+				result = result +'<td class="text-center"><div><span>--</span></div></td>';
 			} 
 		   result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
 		    if(report.requirementSubmisstions.length > 0){
