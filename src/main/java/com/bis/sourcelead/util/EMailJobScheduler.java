@@ -9,10 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.time.DateUtils;
-import org.codehaus.plexus.util.dag.DAG;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +17,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateHotList;
-import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -115,7 +113,16 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	CandidateHotListService candidateHotListService;
+	
+	@Autowired
+	SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
+	
+	@Autowired
+	CandidateIndexHelper candidateIndexHelper;
 
+	
+	
+	
 
 	
 	@Autowired
@@ -582,8 +589,9 @@ public class EMailJobScheduler {
 	/**
 	 * @author David Raju
 	 * This Cron Method is to add  the Candidates which are consultants  to  HotList (i,e making  them favorite list ) When they are going to terminate  from  the Project within  the given noticePeriod 
+	 * This Cron Runs Daily once at 3 AM
 	 */
-	@Scheduled(cron = "0 0/1 * 1/1 * ? ")
+	@Scheduled(cron = "0 0 3 1/1 * ? ")
 	public void runHotlistCandidatesDaily() throws Exception {
 		logger.info("******************  Daily HotList Candidates Started **********");
 			List<Org> orgList = orgService.getOrgs();
@@ -597,7 +605,12 @@ public class EMailJobScheduler {
   			    if(null != candidatesListToBeAddedInHotList){
   			    	 for(Candidate can :candidatesListToBeAddedInHotList){
   			    		can.setIsFavourite(Constants.RECORD_ACTIVE);
-  			    		candidateService.addCandidate(can);
+  			    		Candidate candi = candidateService.addCandidate(can);
+	  			  		
+		  			  	CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candi);
+		  			  	sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candi.getId().toString());
+  				
+  				
   	                }
   			    }
   			      
