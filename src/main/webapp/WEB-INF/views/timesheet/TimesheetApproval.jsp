@@ -71,14 +71,35 @@ $(document).ready(function() {
 	}
 </script>
 <script>  
-	function timesheetApprovalDiv(){ 
+	function timesheetApprovalDiv(filter){ 
+		
                var sourceleadUrl ='${sourceleadUrl}';
+               var frequencyMonth = $("#frequencyMonth").val();
+               if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
+            	   frequencyMonth = '';
+               
+  	           var timesheetFrequency = $('#timesheetFrequency').val();
+  	           if(timesheetFrequency == null || timesheetFrequency == '' || timesheetFrequency == 'undefined')
+  	        	 timesheetFrequency = '';
+  	           
+  	           var weekFrequency = $('#weekFrequency').val();
+	           if((weekFrequency == null || weekFrequency == '' || weekFrequency == 'undefined') || (filter == 'month')  || (filter == 'frequency'))
+	        	   weekFrequency = '';
+  	         
+	           var stage = $('#stage').val();
+	           if(timesheetFrequency == null || timesheetFrequency == '' || timesheetFrequency == 'undefined')
+	        	   stage = '';
+	           
+	           var client = $('#client').val();
+	           if(client == null || client == '' || client == 'undefined')
+	        	   client = '';
+	           
                $("#timesheetApprovalDiv").empty();
                $("#timesheetApprovalDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
         	   $.ajax({
 	      	          type : "POST",
 	          	      dataType : 'json',
-        	      	  url: sourceleadUrl+"/timesheetApprovalDiv?${_csrf.parameterName}=${_csrf.token}",		
+        	      	  url: sourceleadUrl+"/timesheetApprovalDiv?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage,		
         		      success :function(result) {
         		    	    $("#timesheetApprovalDiv").removeAttr("style");
         		    	    $("#timesheetApprovalDiv").empty();
@@ -91,20 +112,20 @@ $(document).ready(function() {
 
 
 <script>
-	function timesheetApprovalDivByProject(projectId){ 
-			 
+	function timesheetApprovalDivByMonthAndTimesheetFrequency(){ 
 	         var sourceleadUrl ='${sourceleadUrl}';
-	         $("#timesheetApprovalDivByProject").empty();
-	         $("#timesheetApprovalDivByProject").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         var frequencyMonth = $("#frequencyMonth").val();
+	         var timesheetFrequency = $('#timesheetFrequency').val();
+	         $("#timesheetApprovalDivByMonthAndTimesheetFrequency").empty();
+	         $("#timesheetApprovalDivByMonthAndTimesheetFrequency").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
-   	      	  	  url: sourceleadUrl+"/timesheetApprovalDivByProject?${_csrf.parameterName}=${_csrf.token}",		
+   	      	  	  url: sourceleadUrl+"/timesheetApprovalDivByMonthAndTimesheetFrequency?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency,		
    		          success :function(result) {
-   		        	 $("#timesheetApprovalDivByProject").removeAttr("style");
-   		        	 $("#timesheetApprovalDivByProject").empty();
-   		             $("#timesheetApprovalDivByProject").append(result);  
-		    	  	 
+   		        	 $("#timesheetApprovalDivByMonthAndTimesheetFrequency").removeAttr("style");
+   		             $("#timesheetApprovalDivByMonthAndTimesheetFrequency").html(result);  
+   		      	     prepareChosenScripts();
    		          }
    	         }); 
 	}
