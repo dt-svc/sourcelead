@@ -622,10 +622,13 @@ public class RequirementRestController {
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
        // List<Candidate> candidateList = recommendationsService.getAllCandidatesByLocation(orgLocation.getId());
-		
+		List<CandidateIndex> candidateListCopy = null;
 		//Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
-	    RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
-	    List<CandidateIndex> candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);
+	    
+		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
+	    if(null != recommendedCustomizeScore){ 
+		candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);
+	    }
 		//List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScoreByUsingElk(orgLocation.getId(),requirement);
 		
 		/*Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
