@@ -3229,7 +3229,7 @@ function requirementRecommendations(requirementId){
     	    
     	    //--------------------------------
     	    //result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
-    	    result = result +'<div class="clearfix">';
+    	    result = result +'<div class="clearfix timesheetHead">';
 		    result = result +'<div class="rec_head">';
 
 		    result = result +'		   <div class="pull-left cand-advsrch">																							';
@@ -3251,26 +3251,36 @@ function requirementRecommendations(requirementId){
 		    result = result +'<th style="width:50px;">Resume</th>';
 		    result = result +'<th>Number of req</th>';
 		    result = result +'<th>Score</th>';
-		    result = result +'<th>Action</th>';
+		    //result = result +'<th>Action</th>';
 		    result = result +'</tr>';
 		    result = result +'</thead>';
 		    result = result +'<tbody>';
     	 for (var i=0; i<json.length; i++)
 			{
 		    var report = json[i];
+		    if(report.firstName != null && report.firstName != '' && report.firstName != 'undefiend'){
+		    	firstName = report.firstName;
+		    }else{
+		    	firstName = "";
+		    } 
+		    if(report.lastName != null && report.lastName != '' && report.lastName != 'undefiend'){
+		    	lastName = report.lastName;
+		    }else{
+		    	lastName = "";
+		    } 
 		    result = result +'<tr>';
-		    result = result + '<td><div onclick="clientSideBar('+report.id+');" class="proj_show"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    result = result + '<td><div onclick="clientSideBar('+report.candidateId+');" class="proj_show"><span>'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
 		    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
 		    	result = result +'<td class="text-center"><div><span>'+report.mobilePhone+'</span></div></td>';
 		    }else{
-		    	result = result +'<td><div><span>--</span></div></td>';
+		    	result = result +'<td class="text-center"><div><span>--</span></div></td>';
 		    }
 		    
 		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
-		  	   result = result +'<td class="text-center"><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"></a></span></div></td>';
+		  	   result = result +'<td class="text-center"><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.candidateId+'\"></a></span></div></td>';
 			  }else{
-				result = result +'<td><div><span>--</span></div></td>';
+				result = result +'<td class="text-center"><div><span>--</span></div></td>';
 			} 
 		   result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
 		    if(report.requirementSubmisstions.length > 0){
@@ -3359,12 +3369,12 @@ function requirementRecommendations(requirementId){
 		   
 		    result = result +'</div>';		    
 		    result = result +'</div></td>';
-		    result = result +'<td><div><span>';
+		   /*  result = result +'<td><div><span>';
 		    if(report.isCandidateAdedd == true){
 		    	result = result +'<input type="button" value="Added" class="btn btn-primary btn-sm">';
 		    }else{
 		    	result = result +'<input type="button" value="--" class="btn btn-primary btn-sm">';
-		    }
+		    } */
 		    
 		   /*  result = result +'<select>';
 		    result = result +'<option>Interview</option>';
@@ -3373,8 +3383,8 @@ function requirementRecommendations(requirementId){
 		    result = result +'<option>Screening</option>';
 		    result = result +'<option>Offer</option>';
 		    result = result +'</select>' */;
-		    result = result +'</span></div>';
-		    result = result +'</td>';
+		   /*  result = result +'</span></div>';
+		    result = result +'</td>'; */
 		    result = result +'</tr>';
 		   
 			}
