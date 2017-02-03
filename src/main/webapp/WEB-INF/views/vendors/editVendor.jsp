@@ -370,7 +370,6 @@ function getAllStates(){
 	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            	} 
 	            }
-	            $('#state').append('<option value="">---select state---</option>');
 	            $('#state').trigger("chosen:updated");
 	            getAllCities();
 	        },
