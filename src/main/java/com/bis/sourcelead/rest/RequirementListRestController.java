@@ -1318,4 +1318,17 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 			return resultJson;
         }
         
+        @RequestMapping(value = "/getUniversalRequirementsListByOrgLocationID")
+   	 public String getUniversalRequirementsListByOrgLocationID(@RequestParam(value="serachValue", required=false) String  serachValue,
+   			 HttpServletRequest request) throws Exception {
+   		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+   		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+   		String resultJson;
+   		List<Object> uniRequirementList =	requirementService.getAllUniversalSearchRequirementList(orgLocations, serachValue,userRole,user);
+   		resultJson = commonUtil.toJSON(uniRequirementList);
+   		return resultJson;
+   	 }
+        
 }
+
