@@ -402,7 +402,7 @@ public class TimesheetApprovalRestController {
 	
 	public StringBuilder timesheetApprovalTableDiv(HttpServletRequest request,String startDate,String endDate,String timesheetFrequency,String client,String stage) throws Exception{
 		       
-		       OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		        DateFormat format = Constants.DF_DMY;
@@ -474,22 +474,22 @@ public class TimesheetApprovalRestController {
 					     timesheetApprovalDiv.append("	<td><div>"+projectMember.getProjects().getProjectName()+"</div></td>");
 					     timesheetApprovalDiv.append("	<td><div>"+((projectMember.getProjects().getOrgRelationId() != null) ?projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName() : "--")+"</div></td>");
 					     
-					     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(projectMember.getId(),actualStartDate,actualEndDate);
+					     Float totalHours = 0f;
+					     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projectMember.getId(),actualStartDate,actualEndDate);
 					     if(displayWeeksList != null && !displayWeeksList.isEmpty()){
-					    	 
-					    	     displayWeeksList.forEach((key,value)->
-					    	     {
+					    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
+					    	    	
 					    	    	 if(sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()){
-					    	    		 timesheetApprovalDiv.append("<td><div class='sm'>"+sah.getWeekTotals().get(key)+"/40</div></td>");
+					    	    		 totalHours = sah.getWeekTotals().get(entry.getKey());
+					    	    		 timesheetApprovalDiv.append("<td><div class='sm'>"+sah.getWeekTotals().get(entry.getKey())+"/40</div></td>");
 					    	    	 }
 					    	    	 else{
 					    	    		 timesheetApprovalDiv.append("<td><div class='sm'>0/40</div></td>");
 					    	    	 }
 					    	    	
 					    	     }
-					    	);
 					     }
-					    timesheetApprovalDiv.append("<td><div class='sm'><a href='javascript:void(0)'>"+sah.getTotalHours()+"/40</a></div></td>");
+					    timesheetApprovalDiv.append("<td><div class='sm'><a href='javascript:void(0)'>"+totalHours+"/40</a></div></td>");
 					    timesheetApprovalDiv.append("<td><div>"+sah.getSubmissionApprovalStatus()+"</div></td>");
 					    timesheetApprovalDiv.append("    <td><div id='action"+projectMember.getId()+"'> " );
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){

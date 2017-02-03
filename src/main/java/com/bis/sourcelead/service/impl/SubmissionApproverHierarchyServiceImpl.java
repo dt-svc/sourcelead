@@ -246,9 +246,9 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 
 	@Override
-	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin (
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin (Long approverUserId,
 			Long projectMemberId, Date startDate, Date endDate) throws Exception{
-		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(projectMemberId, startDate, endDate);
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(approverUserId,projectMemberId, startDate, endDate);
 	}
 
 	@Override
