@@ -43,8 +43,10 @@ public class CandidateIndex implements Serializable {
 	private String designation;
 
 	private String designationType;
+	
+	private String designationOtherType;
 
-	private Float currentRate;
+	private String currentRate;
 
 	private String currentRateType;
 
@@ -246,11 +248,20 @@ public class CandidateIndex implements Serializable {
 		this.designationType = designationType;
 	}
 
-	public Float getCurrentRate() {
+
+	public String getDesignationOtherType() {
+		return designationOtherType;
+	}
+
+	public void setDesignationOtherType(String designationOtherType) {
+		this.designationOtherType = designationOtherType;
+	}
+
+	public String getCurrentRate() {
 		return currentRate;
 	}
 
-	public void setCurrentRate(Float currentRate) {
+	public void setCurrentRate(String currentRate) {
 		this.currentRate = currentRate;
 	}
 

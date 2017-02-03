@@ -112,7 +112,7 @@ public class AddElkCandidate{
 					candidateIndex.setCurrentRateCurrency(rs.getString("CURRENT_RATE_CURRENCY"));
 					
 					if(StringUtils.isNotEmpty(rs.getString("CURRENT_RATE"))){
-						candidateIndex.setCurrentRate(Float.parseFloat(rs.getString("CURRENT_RATE")));
+						candidateIndex.setCurrentRate(rs.getString("CURRENT_RATE"));
 					}
 					
 					if(StringUtils.isNotEmpty(rs.getString("EXPECTED_RATE"))){
