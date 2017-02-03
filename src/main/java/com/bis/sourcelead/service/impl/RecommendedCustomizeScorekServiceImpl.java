@@ -1,16 +1,11 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RecommendedCustomizeScoreDao;
@@ -63,7 +58,7 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 		
 		res = getRecommendedCustomizeScoreByRequirementId(requirement.getId());
 		if(null != res && null != res.getId()){
-			 if(user.getUserCode() != null){
+			 if(null != user.getUserCode()){
 				 res.setUpdatedBy(user.getUserCode());	
 		    }
 			res.setUpdatedDate(commonUtil.currentDate());

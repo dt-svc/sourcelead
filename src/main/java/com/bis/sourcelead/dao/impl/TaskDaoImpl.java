@@ -63,7 +63,7 @@ public class TaskDaoImpl implements TaskDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId, String TaskStatus,String date) throws Exception {
+	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId, String taskStatus,String date) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String subQuery = "";
@@ -78,23 +78,23 @@ public class TaskDaoImpl implements TaskDao{
 			subQuery = "";
 		}
 		 
-		if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(TaskStatus)){
+		if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)){
 			query = "from Tasks tasks where tasks.assignedUserId =:userId "+subQuery+" and ((tasks.ownerOrglocationId =:OrgLocationId) OR (tasks.assignedOrglocationId =:OrgLocationId)) ORDER BY tasks.createdDate DESC";
 			//query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.assignedUserId =:userId "+subQuery+" ORDER BY tasks.createdDate DESC";
-		}else if(Constants.TASK_STATUS_ASSIGNTASK.equalsIgnoreCase(TaskStatus)){
+		}else if(Constants.TASK_STATUS_ASSIGNTASK.equalsIgnoreCase(taskStatus)){
 			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId "+subQuery+" ORDER BY tasks.createdDate DESC";
-		}else if(Constants.TASK_STATUS_CLOSEDTASK.equalsIgnoreCase(TaskStatus)){
+		}else if(Constants.TASK_STATUS_CLOSEDTASK.equalsIgnoreCase(taskStatus)){
 			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and (tasks.taskOwnerId =:userId OR tasks.assignedUserId =:userId) and  tasks.taskStatus = 'Closed' "+subQuery+" ORDER BY tasks.createdDate DESC";
 		}
 		if(null != date && "" != date){
-			if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(TaskStatus)){
+			if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)){
 				tasksList = session.createQuery(query).setLong( "userId", userId).setString("strDate", strDate).setCacheable(true).list();
 			}else{
 				tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setString("strDate", strDate).setCacheable(true).list();	
 			}
 			 	
 		}else{
-			if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(TaskStatus)){
+			if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)){
 				tasksList = session.createQuery(query).setLong( "userId", userId).setLong( "OrgLocationId", OrgLocationId).setCacheable(true).list();	
 			}else{
 				tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setCacheable(true).list();

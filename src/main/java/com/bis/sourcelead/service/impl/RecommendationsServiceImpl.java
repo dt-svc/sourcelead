@@ -82,7 +82,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		float percentPerSkill = 0;
 		List<Candidate> CandidateListcopy = new ArrayList<>();
 		String reqSkills = "";
-		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
+		if(null != requirement.getSkills() && !"".equalsIgnoreCase(requirement.getSkills())){
 		     reqSkills = requirement.getSkills();
 			String [] reqMaxSkills = reqSkills.split(",");
 			 percentPerSkill = 50/(float)reqMaxSkills.length;
@@ -90,18 +90,18 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		int reqMinExp = 0;
 		int reqMaxExp = 0;
 		float percentPerMonthExp = 0;
-		if(requirement.getMinExp() !=null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+		if(null != requirement.getMinExp() && !"".equalsIgnoreCase(requirement.getMinExp()) && null != requirement.getMaxExp() && !"".equalsIgnoreCase(requirement.getMaxExp())){
 			 reqMinExp = Integer.parseInt(requirement.getMinExp());
 			 reqMaxExp = Integer.parseInt(requirement.getMaxExp());
 			int reqExp = reqMaxExp *12 ;
 			 percentPerMonthExp = 20/(float)reqExp;
 		}
 		String reqCity = "";
-		if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
+		if(null != requirement.getCity() && !"".equalsIgnoreCase(requirement.getCity())){
 			 reqCity = requirement.getCity();
 		}
 		float reqPerMonthSal = 0;
-		if(requirement.getRate() !=null && !"".equalsIgnoreCase(requirement.getRate())){
+		if(null != requirement.getRate() && !"".equalsIgnoreCase(requirement.getRate())){
 			int reqRate = Integer.parseInt(requirement.getRate());
 			String reqRateType = requirement.getRateType();
 			if("Hourly".equalsIgnoreCase(reqRateType)){
@@ -141,7 +141,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
 			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
 			
-			if(candidateSkillList != null && candidateSkillList.size() >0){
+			if(null != candidateSkillList && candidateSkillList.size() >0){
 				for(CandidateSkills candidateSkills : candidateSkillList){
 					if(candidateSkills.getName() !=null && !"".equalsIgnoreCase(candidateSkills.getName())){
 						if(reqSkills.contains(candidateSkills.getName())){
@@ -205,7 +205,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			String candidateScore = String.valueOf(roundOff);
 			candidate.setCandidateScore(candidateScore);
 			candidate.setNoOfReq(reqList.size());
-			if(candidateResume != null){
+			if(null != candidateResume){
 					if(candidateResume.getTitle() !=null && !"".equalsIgnoreCase(candidateResume.getTitle())){
 						candidate.setCandidateResume(candidateResume.getTitle());
 					}else{
@@ -254,7 +254,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		float percentPerSkill = 0;
 		List<Candidate> CandidateListcopy = new ArrayList<>();
 		String reqSkills = "";
-		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
+		if(null != requirement.getSkills() && !"".equalsIgnoreCase(requirement.getSkills())){
 			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
 			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
@@ -274,7 +274,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				int reqMinExp = 0;
 				int reqMaxExp = 0;
 				float percentPerMonthExp = 0;
-				if(requirement.getMinExp() !=null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+				if(null != requirement.getMinExp() && !"".equalsIgnoreCase(requirement.getMinExp()) && null != requirement.getMaxExp()  && !"".equalsIgnoreCase(requirement.getMaxExp())){
 					 reqMinExp = Integer.parseInt(requirement.getMinExp());
 					 reqMaxExp = Integer.parseInt(requirement.getMaxExp());
 					int reqExp = reqMaxExp *12 ;
@@ -286,7 +286,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					 reqCity = requirement.getCity();
 				}
 				float reqPerMonthSal = 0;
-				if(requirement.getRate() !=null && !"".equalsIgnoreCase(requirement.getRate())){
+				if(null != requirement.getRate() && !"".equalsIgnoreCase(requirement.getRate())){
 					int reqRate = Integer.parseInt(requirement.getRate());
 					String reqRateType = requirement.getRateType();
 					if("Hourly".equalsIgnoreCase(reqRateType)){
@@ -333,7 +333,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 						}
 					}
 					skillPercentage = matchedSkillCount*percentPerSkill;
-					if(candidate.getExperienceYears() != null && !"".equalsIgnoreCase(candidate.getExperienceYears()) && candidate.getExperienceMonths()!=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
+					if(null != candidate.getExperienceYears() && !"".equalsIgnoreCase(candidate.getExperienceYears()) && null != candidate.getExperienceMonths()  && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
 						int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
 						if(candidateExpMonths < reqMinExp *12){
 							expPercentage = 0;
@@ -343,13 +343,13 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 							expPercentage = 20;
 						}
 					}
-					if(candidate.getCity() != null && !"".equalsIgnoreCase(candidate.getCity())){
+					if(null != candidate.getCity() && !"".equalsIgnoreCase(candidate.getCity())){
 						if(candidate.getCity().equalsIgnoreCase(reqCity)){
 							locationPercentage = 10;
 						}
 					}
 					
-					if(candidate.getExpectedRate() != null && !"".equalsIgnoreCase(candidate.getExpectedRate()) && candidate.getRateType() !=null && !"".equalsIgnoreCase(candidate.getRateType())){
+					if(null != candidate.getExpectedRate() && !"".equalsIgnoreCase(candidate.getExpectedRate()) && null != candidate.getRateType() && !"".equalsIgnoreCase(candidate.getRateType())){
 						String candidateRateType = candidate.getRateType();
 						String  expectedRate = candidate.getExpectedRate();
 						
@@ -386,8 +386,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					String candidateScore = String.valueOf(roundOff);
 					candidate.setCandidateScore(candidateScore);
 					candidate.setNoOfReq(reqList.size());
-					if(candidateResume != null){
-							if(candidateResume.getTitle() !=null && !"".equalsIgnoreCase(candidateResume.getTitle())){
+					if(null != candidateResume){
+							if(null != candidateResume.getTitle() && !"".equalsIgnoreCase(candidateResume.getTitle())){
 								candidate.setCandidateResume(candidateResume.getTitle());
 							}else{
 								candidate.setCandidateResume(candidateResume.getFileName());
@@ -437,18 +437,18 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		int reqMinExp = 0;
 		int reqMaxExp = 0;
 		float percentPerMonthExp = 0;
-		if(requirement.getMinExp() !=null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+		if(null != requirement.getMinExp() && !"".equalsIgnoreCase(requirement.getMinExp()) && null != requirement.getMaxExp() && !"".equalsIgnoreCase(requirement.getMaxExp())){
 			 reqMinExp = Integer.parseInt(requirement.getMinExp());
 			 reqMaxExp = Integer.parseInt(requirement.getMaxExp());
 			int reqExp = reqMaxExp *12 ;
 			 percentPerMonthExp = 20/(float)reqExp;
 		}
 		String reqCity = "";
-		if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
+		if(null != requirement.getCity() && !"".equalsIgnoreCase(requirement.getCity())){
 			 reqCity = requirement.getCity();
 		}
 		float reqPerMonthSal = 0;
-		if(requirement.getRate() !=null && !"".equalsIgnoreCase(requirement.getRate())){
+		if(null != requirement.getRate() && !"".equalsIgnoreCase(requirement.getRate())){
 			int reqRate = Integer.parseInt(requirement.getRate());
 			String reqRateType = requirement.getRateType();
 			if("Hourly".equalsIgnoreCase(reqRateType)){
@@ -485,9 +485,9 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
 			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
 			
-			if(candidateSkillList != null && candidateSkillList.size() >0){
+			if(null != candidateSkillList && candidateSkillList.size() >0){
 				for(CandidateSkills candidateSkills : candidateSkillList){
-					if(candidateSkills.getName() !=null && !"".equalsIgnoreCase(candidateSkills.getName())){
+					if(null != candidateSkills.getName() && !"".equalsIgnoreCase(candidateSkills.getName())){
 						if(reqSkills.contains(candidateSkills.getName())){
 							matchedSkillCount++;
 						}
@@ -496,7 +496,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				}
 			}
 			skillPercentage = matchedSkillCount*percentPerSkill;
-			if(candidate.getExperienceYears() != null && !"".equalsIgnoreCase(candidate.getExperienceYears()) && candidate.getExperienceMonths()!=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
+			if(null != candidate.getExperienceYears() && !"".equalsIgnoreCase(candidate.getExperienceYears()) && null != candidate.getExperienceMonths() && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
 				int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
 				if(candidateExpMonths < reqMinExp *12){
 					expPercentage = 0;
@@ -506,13 +506,13 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					expPercentage = 20;
 				}
 			}
-			if(candidate.getCity() != null && !"".equalsIgnoreCase(candidate.getCity())){
+			if(null != candidate.getCity() && !"".equalsIgnoreCase(candidate.getCity())){
 				if(candidate.getCity().equalsIgnoreCase(reqCity)){
 					locationPercentage = 10;
 				}
 			}
 			
-			if(candidate.getExpectedRate() != null && !"".equalsIgnoreCase(candidate.getExpectedRate()) && candidate.getRateType() !=null && !"".equalsIgnoreCase(candidate.getRateType())){
+			if(null != candidate.getExpectedRate() && !"".equalsIgnoreCase(candidate.getExpectedRate()) && null != candidate.getRateType()  && !"".equalsIgnoreCase(candidate.getRateType())){
 				String candidateRateType = candidate.getRateType();
 				String  expectedRate = candidate.getExpectedRate();
 				
@@ -567,14 +567,14 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		
 		List<Candidate> CandidateListcopy = new ArrayList<>();
 		String reqSkills = "";
-		if(recommendedCustomizeScore.getCustomizeSkills() != null && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
+		if(null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
 			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
 			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
 		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
 		     String [] numOfKeyWords = null;
-		     if( recommendedCustomizeScore.getCustomizeKeywords() !=null){
+		     if(null != recommendedCustomizeScore.getCustomizeKeywords()){
 		    	 numOfKeyWords =  recommendedCustomizeScore.getCustomizeKeywords().split(",");
 		    	 percentPerkeyword = Integer.parseInt(recommendedCustomizeScore.getCustomizeKeywordsScore())/(float)numOfKeyWords.length;
 		     }
@@ -588,12 +588,12 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			boolQueryBuilder.minimumShouldMatch("1");
 			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 			
-			if(searchHits != null && searchHits.length >0){
+			if(null != searchHits && searchHits.length >0){
 				percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
 				int reqMinExp = 0;
 				int reqMaxExp = 0;
 				float percentPerMonthExp = 0;
-				if(recommendedCustomizeScore.getCustomizeMinExperience() !=null && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) && recommendedCustomizeScore.getCustomizeMaxExperience() !=null && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
+				if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) && null !=recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
 					 reqMinExp = Integer.parseInt(recommendedCustomizeScore.getCustomizeMinExperience());
 					 reqMaxExp = Integer.parseInt(recommendedCustomizeScore.getCustomizeMaxExperience());
 					int reqExp = reqMaxExp *12 ;
@@ -601,11 +601,11 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				}
 				
 				String reqCity = "";
-				if(recommendedCustomizeScore.getCustomizeCity() != null && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCity())){
+				if(null != recommendedCustomizeScore.getCustomizeCity() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCity())){
 					 reqCity = recommendedCustomizeScore.getCustomizeCity();
 				}
 				float reqPerMonthSal = 0;
-				if(recommendedCustomizeScore.getCustomizeRate() !=null && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeRate())){
+				if(null != recommendedCustomizeScore.getCustomizeRate() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeRate())){
 					int reqRate = Integer.parseInt(recommendedCustomizeScore.getCustomizeRate());
 					String reqRateType = recommendedCustomizeScore.getCustomizeRatetype();
 					if("Hourly".equalsIgnoreCase(reqRateType)){
@@ -655,7 +655,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 						}
 					}
 					skillPercentage = matchedSkillCount*percentPerSkill;
-					if(candidate.getExperienceYears() != null && !"".equalsIgnoreCase(candidate.getExperienceYears()) && candidate.getExperienceMonths()!=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
+					if(null != candidate.getExperienceYears() && !"".equalsIgnoreCase(candidate.getExperienceYears()) && null != candidate.getExperienceMonths()  && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
 						int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
 						if(candidateExpMonths < reqMinExp *12){
 							expPercentage = 0;
@@ -665,13 +665,13 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 							expPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore());
 						}
 					}
-					if(candidate.getCity() != null && !"".equalsIgnoreCase(candidate.getCity())){
+					if(null != candidate.getCity() && !"".equalsIgnoreCase(candidate.getCity())){
 						if(candidate.getCity().equalsIgnoreCase(reqCity)){
 							locationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore());
 						}
 					}
 					
-					if(candidate.getExpectedRate() != null && !"".equalsIgnoreCase(candidate.getExpectedRate()) && candidate.getRateType() !=null && !"".equalsIgnoreCase(candidate.getRateType())){
+					if(null != candidate.getExpectedRate() && !"".equalsIgnoreCase(candidate.getExpectedRate()) && null != candidate.getRateType()  && !"".equalsIgnoreCase(candidate.getRateType())){
 						String candidateRateType = candidate.getRateType();
 						String  expectedRate = candidate.getExpectedRate();
 						expectedRate = expectedRate.substring(0, expectedRate.length() - 2);
@@ -722,7 +722,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 								}
 							}
 						
-						if(candidate.getNoticePeriod() != null && !"".equalsIgnoreCase(candidate.getNoticePeriod())){
+						if(null != candidate.getNoticePeriod() && !"".equalsIgnoreCase(candidate.getNoticePeriod())){
 							if(Constants.NOTICE_PERIOD_15DAYS.equalsIgnoreCase(candidate.getNoticePeriod())){
 								canTotalDays = canTotalDays + 15;
 							}else if(Constants.NOTICE_PERIOD_1MONTH.equalsIgnoreCase(candidate.getNoticePeriod())){
@@ -742,7 +742,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					}
 					//keywords calculation
 				    float totalKeyWordPer = 0;
-					if(candidate.getSummary() != null){
+					if(null != candidate.getSummary()){
 						for(int i=0;i<numOfKeyWords.length;i++){
 							if(candidate.getSummary().contains(numOfKeyWords[i])){
 								totalKeyWordPer = totalKeyWordPer + percentPerkeyword;	
