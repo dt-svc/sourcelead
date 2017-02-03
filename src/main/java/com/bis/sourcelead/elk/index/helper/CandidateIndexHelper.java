@@ -117,6 +117,8 @@ public class CandidateIndexHelper {
 			
 			if(null != candidate.getIsFavourite()){
 				candidateIndex.setIsFavourite(candidate.getIsFavourite());
+			}else{
+				candidateIndex.setIsFavourite(0);
 			}
 			
 			candidateIndex.setTerminateReason(candidate.getTerminateReason());

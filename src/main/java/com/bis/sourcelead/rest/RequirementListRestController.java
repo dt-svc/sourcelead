@@ -420,7 +420,7 @@ public class RequirementListRestController {
 						if(requirementStatusList != null){
 							for (RequirementSubmission requirementSubmission : requirementStatusList) {
 								if(requirementSubmission.getCandidateResumes() != null){
-									CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+									
 									RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 									
 									
@@ -441,7 +441,9 @@ public class RequirementListRestController {
 										List<RequirementInterviewHistory> numberOfInterviews = requirementInterviewHistoryService.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
 										requirementSubmission.setTotalNoOfInterviews(numberOfInterviews.size());
 										requirementSubmission.setRequirementInterviewHistoryList(numberOfInterviews);
-									
+										
+										/*Integer numberOfInterviews = requirementInterviewHistoryService.getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
+										requirementSubmission.setTotalNoOfInterviews(numberOfInterviews);*/
 									}
 									
 									if(null != submissionType && submissionType.equalsIgnoreCase("OFFERMADE")){
@@ -488,27 +490,29 @@ public class RequirementListRestController {
 									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 									
 									
-									if(requirementSubmission.getVendorLocationId() != null){
-										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
-									}
-									
-									RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
-									
-									if(clientSubmission != null){
-										requirementSubmission.setClientSubmissionId(clientSubmission.getId().toString());
-										RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(clientSubmission.getId());
-										if(pastRequirementRateSubmissionNegotiation != null){
-											requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+									if(null != submissionType && submissionType.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
+										if(requirementSubmission.getVendorLocationId() != null){
+											requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
 										}
-									}else{
-										RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
-										if(pastRequirementRateSubmissionNegotiation != null){
-											if(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.VENDOR) || pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.CLIENT)){
+										
+										RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
+										
+										if(clientSubmission != null){
+											requirementSubmission.setClientSubmissionId(clientSubmission.getId().toString());
+											RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(clientSubmission.getId());
+											if(pastRequirementRateSubmissionNegotiation != null){
 												requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
-											}else{
-												requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 											}
-											
+										}else{
+											RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+											if(pastRequirementRateSubmissionNegotiation != null){
+												if(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.VENDOR) || pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.CLIENT)){
+													requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+												}else{
+													requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+												}
+												
+											}
 										}
 									}
 									
@@ -519,20 +523,7 @@ public class RequirementListRestController {
 										requirementSubmission.setUpDatedStr(Constants.DF_YMD.format(requirementSubmission.getUpdatedDate()));
 									}
 									
-									if(null != submissionType && (submissionType.equalsIgnoreCase("REJECTED") || submissionType.equalsIgnoreCase("SHORTLIST"))){
-										User usr = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-										if(usr.getFirstName() != null && usr.getLastName() !=null){
-											StringBuilder name = new StringBuilder();
-											requirementSubmission.setSubmittedBy(name.append(usr.getFirstName()).append(" ").append(usr.getLastName()).toString());
-										}else{
-											requirementSubmission.setSubmittedBy(usr.getFirstName());
-										}
-									}
 									
-									User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-									StringBuilder userNameSB = new StringBuilder();
-									requirementSubmission.setUserName(userNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
-									requirementSubmission.setResumeName(candidateResumes.getFileName());
 									submissionList.add(requirementSubmission);
 								}
 							}

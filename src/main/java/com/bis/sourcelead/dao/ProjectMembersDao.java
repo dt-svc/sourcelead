@@ -43,6 +43,8 @@ public interface ProjectMembersDao {
     List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
 
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
+	
+	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds);
 
 	public Integer getAllProjectMembersCountByProjectId(Long id);
 	

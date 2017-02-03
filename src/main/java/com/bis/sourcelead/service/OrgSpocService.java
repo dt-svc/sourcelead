@@ -35,6 +35,10 @@ public interface OrgSpocService {
 	 */
 	List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId ,Long orgLocationId) throws Exception;
 	
+	
+	List<OrgSpoc> getAllActiveSpocsByOrgRelationId(Long orgRelationId, Long userId ,Long orgLocationId) throws Exception;
+	
+	
 	/**To get OrgSpoc by ID
 	 * @author Prasad Salina
 	 * @param Id
@@ -88,6 +92,8 @@ public interface OrgSpocService {
 	List<OrgSpoc> getAssignedAsClientOrVendorSpocByUserId(Long userId, Long orgLocationId,String type) throws Exception;
 	
 	List<OrgSpoc> getAllClientContactsListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
+	OrgSpoc getSpocListByResponderLocationId(Long initiatingPartyOrgLocationId,Long responderLocationId,String respondingOrgType) throws Exception;
 	
 	List<OrgSpoc> getOrgSpocByOrgRelationId(Long orgRelationId) throws Exception;
 	

@@ -101,6 +101,20 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	}
 	
 	/**
+	 * This method for get project Ids by orgLocationsId
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception {
+		logger.debug("In ProjectsDaoImpl class getProjectIdsByOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select project.id from Projects project where project.orgLocationsId = :orgLocationsId ";
+		List<Long> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		
+		return projectsList;
+	}
+	
+	/**
 	 * This method for get project by orgLocationsId
 	 */
 	@Override
