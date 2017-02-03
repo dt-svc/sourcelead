@@ -2305,3 +2305,30 @@ function numberOfContactsByOrgRelationId(orgRelationId){
 	    $("#excludeKeyWord").empty();
 	}
 </script>      
+
+<script>
+ window.onload = function() {
+	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}");
+};
+</script>
+
+<script>
+function vendorListCheck(searchValue,universalvendorSearchList,searchType){
+	alert(searchValue);
+if(universalvendorSearchList=="universalVendorList")	 {
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/getUniversalvendorListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&searchType="+searchType,   
+          success :function(data) {
+              	// prepareCandidateList(data);
+         },
+          
+     }); 
+  }
+else{
+	candidateList();
+	 	$("#upcandidateStatus").val('');
+	}
+  }
+  </script>

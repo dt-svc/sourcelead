@@ -2,7 +2,9 @@ package com.bis.sourcelead.service.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,17 +12,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
+import javax.servlet.http.HttpServletRequest;
 
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -60,6 +70,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
@@ -1017,6 +1029,65 @@ public class ClientServiceImpl implements ClientService{
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		}
-		
 
+
+		@Override
+		public List<Object> getAllUniversalSearchVendorList(OrgLocations orgLocation, String searchValue,String searchType)
+				throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+
+	/*	@Override
+		public List<Object> getAllUniversalSearchVendorList(OrgLocations orgLocation, String searchValue)
+				throws Exception {
+			 public String getUniversalCandidatesListByOrgLocationID(@RequestParam(value="serachValue", required=false) String  serachValue,
+					 HttpServletRequest request) throws Exception {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String resultJson;
+				List<Object> uniCandidateList =	candidateService.getAllUniversalSearchCandidateList(orgLocations, serachValue);
+				resultJson = commonUtil.toJSON(uniCandidateList);
+				return resultJson;
+			List<Object>   searchList = new ArrayList<>();
+			 Long maxResults = getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
+			 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();;
+				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						 // need to change for setters 
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForAll(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(allBoolQueryBuilder);
+				}
+				
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				    if(null != searchHits && searchHits.length >0){
+				    	ObjectMapper mapper = new ObjectMapper();
+				    	for (SearchHit hit : searchHits) {
+				    		String json = hit.getSourceAsString();
+				    		mapper.setDateFormat(df);
+				    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+				    	    if(candidateIndex.getUpdatedDate() != null){
+				    	    	candidateIndex.setCandidateUpdateDateToString(Constants.DF_YMD.format(candidateIndex.getUpdatedDate()));
+				   			}
+				    	    searchList.add(candidateIndex);
+				    	} 
+				    	
+				    }
+			return searchList;
+				
+		}		
+*/
 }

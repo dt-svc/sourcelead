@@ -218,7 +218,7 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'  </div>';
 	    	}
 		    	    result = result+'  <div class="clearfix">';
-			    	result = result+'      <a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+			    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadVendor();">View More</a>';
 			    	result = result+'  </div>';
 	    	}else if(searchType =='Projects'){
 	    		result = result+'   <h4>Projects</h4>';
@@ -597,6 +597,7 @@ function loadCandidate(){
 }
 </script>
 
+<!-- /requirementList -->
 <script type="text/javascript">
 function loadRequirement(){
 	var searchResult = "universalRequirementList";
@@ -616,6 +617,19 @@ function loadUsers(){
 }
 </script>
 
+<script>
+function loadVendor(){
+	alert("hiiii");
+	var searchResult = "universalVendorList";
+	alert(searchResult);
+	var searchValue = "${searchValue}";
+	alert(searchValue);
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/vendorsList?&searchResult="+searchResult+"&searchValue="+searchValue+"&searchType="+searchType;
+
+}
+
+</script>
 <jsp:include page="../masterFooter.jsp" />
 
 
