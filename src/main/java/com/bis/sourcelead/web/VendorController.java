@@ -131,6 +131,13 @@ public class VendorController {
 			model.addObject("msg", msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "vendorContactCreateMsg");
 		}
+		
+		if(msg == null){
+			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "vendorImport");
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "vendorImport");
+		}
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -272,7 +279,7 @@ public class VendorController {
 				return "upload/uploadClientForm";
 			}
 			
-			
+			SourceLeadSessionManager.setSessionAttribute(request, "vendorImport", "Success!! New vendors created ");
 			return "redirect:/vendorsList";
 			
 		}

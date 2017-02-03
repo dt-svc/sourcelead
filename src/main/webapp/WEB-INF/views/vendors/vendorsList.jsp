@@ -36,7 +36,7 @@ overflow-x: auto;
         <section class="content-header clearfix">
         <div id="msgDiv" ></div>
 		<c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector" style="display: block;">
+	        <div class="success_pop" id="selector" style="display: none;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
@@ -758,8 +758,8 @@ function preparedVendorsListFromElk(data){
 		   		
 		   		var report = json[i];
 		   		
-		   		releasedJobsCountByOrgRelationId(report.id);
-		   		numberOfContactsByOrgRelationId(report.id);
+		   		releasedJobsCountByOrgRelationId(report.orgRelationId);
+		   		numberOfContactsByOrgRelationId(report.orgRelationId);
 		   		
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
@@ -810,8 +810,8 @@ function preparedVendorsListFromElk(data){
 		   		}
 				
 		   	    result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
-				result = result +' <td><div id="releasedJobsCount'+report.id+'">---</div></td>';
-				result = result +'<td><div id="noOfContactsCount'+report.id+'">---</div></td>';
+				result = result +' <td><div id="releasedJobsCount'+report.orgRelationId+'">---</div></td>';
+				result = result +'<td><div id="noOfContactsCount'+report.orgRelationId+'">---</div></td>';
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
 				}
@@ -1384,11 +1384,15 @@ function saveReason1(spocId, orgRelationID){
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
 		    success: function(data) {
-		    	$("#popUp").empty();
-   			 	$(".project_inn_mask").fadeOut(200);
+		    	 $("#selector1").removeAttr("style");
+	  			 $("#selector1").css({ display: "block" });
+	  			 $("#msgDiv").html("vendor contact removed");
+	  			 $("#popUp").empty();
+	 			 $(".project_inn_mask").fadeOut(200);
    			    //vendorContactList(orgRelationID);
    			    /*  getVendorContactLists(); */
    			     getVendorContactListsELK();
+   			  msgFadein();
 		    }
 	   });
 	}else{
@@ -2195,6 +2199,12 @@ function exportVendorContactToExcel(){
 	}
 </script> 
 <!-- End -->
+
+<script>
+  $("#selector").fadeIn(200);
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
+
 <script>
 	function editVendorMsgMsgFadein() {
 		$("#editVendorMsg").fadeIn(200);
@@ -2309,6 +2319,7 @@ function numberOfContactsByOrgRelationId(orgRelationId){
     	dataType: "json",
     	 url: '${sourceleadUrl}'+"/numberOfContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
         success: function(data) {
+        	
         	var json = JSON.parse(data);
         	$('#noOfContactsCount'+orgRelationId).empty();
         	$('#noOfContactsCount'+orgRelationId).append(data);
