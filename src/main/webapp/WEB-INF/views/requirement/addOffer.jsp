@@ -37,7 +37,7 @@ function addOffer(requirementId){
 				result = result + '<input type="hidden" id="isFlushCandidateRequired" name="isFlushCandidateRequired">';
 				
 				/* result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>'; */
-				result= result + '	            <div class="add_inter_head"> <span>Add Offer</span>';
+				result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedOfferApplicantsCount">0</b></span>';
 				result= result + '	              <div class="clearfix"></div>';
 				result= result + '	            </div>';
 				
@@ -124,10 +124,20 @@ function loadRemiderDiv(){
 }
 </script>
 
-
+<script>
+function selectOfferApplicants(){
+	var selectedOfferApplicants =  $('#1applicantId_chosen  span').size();
+	$("#selectedOfferApplicantsCount").html(selectedOfferApplicants);
+	
+	$('.search-choice-close').click(function() {
+		var offerApplicants =  $('#1applicantId_chosen  span').size();
+		$("#selectedOfferApplicantsCount").html(offerApplicants);
+	});
+}
+</script>
 
 <div id="divOfferTd1" style="display: none; float: left;">
-       <select multiple class="blminwidth-50" id="REPLACEROWIDapplicantId" data-placeholder="select Apllicants" name="REPLACEROWIDapplicantId" field-name="Applicant" data-validation="required" >
+       <select multiple class="blminwidth-50"  id="REPLACEROWIDapplicantId" onchange="selectOfferApplicants()" data-placeholder="select Apllicants" name="REPLACEROWIDapplicantId" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
@@ -308,9 +318,9 @@ function cancelAddOffer(){
  		var form = $('#addOffer_form')[0];
   		var formData = new FormData(form); 
   		
-  	  var applicant = $("#1applicantId").val();
+  		var selectedOfferApplicants =  $('#1applicantId_chosen  span').size();
   	  
-  	  if(applicant.length <= 30){
+  	  if(selectedOfferApplicants <= 50){
   		$("#add_offer").attr("disabled", "disabled");
   		$("#add_offer" ).addClass('button').val('Processing..');  
   		
@@ -333,7 +343,7 @@ function cancelAddOffer(){
 	        },
 	    });
   	  }else{
-  		alertOfferMessage("<b>Selected Applicants should not more than 30</b>");
+  		alertOfferMessage("<b>Selected Applicants should not more than 50</b>");
   	  }
   	  
  		

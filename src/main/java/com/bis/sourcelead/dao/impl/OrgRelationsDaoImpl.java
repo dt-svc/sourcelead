@@ -366,7 +366,6 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 				subQuery3 = " (" + subQuery3.substring(0, subQuery3.length() - 4) + ")";
 			}
 		}
-	
 			
 		
 		
@@ -561,19 +560,19 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 
 	@Override
 	@Transactional
-	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId) throws Exception {
+	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception {
 
 		logger.debug("In OrgRelations getAllVendorsCountByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
 
-			Query vendorsListQuery= session.createQuery("select count(*) from OrgRelations orgrelation where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type )");
-			List<OrgRelations> relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setString("type", "Vendor").setCacheable(true).list();
+			Query vendorsListQuery= session.createQuery("select count(*) from OrgRelations orgrelation where ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type ))");
+			List<Long> relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setString("type",type).setCacheable(true).list();
 		
-		Integer count = 0;
+		Long count = 0l;
 		if(relationsList != null && !relationsList.isEmpty()){
-				count = relationsList.size();
+				count = relationsList.get(0).longValue();
 		}
-		return count;
+		return count.intValue();
 
 	}
 	

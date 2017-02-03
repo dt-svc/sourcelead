@@ -83,12 +83,22 @@ function requirementApproverList(statusType){
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
-	                    	  if(opt.minExp !=null && opt.minExp !='' && opt.minExp !='undefined'){
+		                     
+		                     var exp='';
+		                     
+		                     if(opt.maxExp !=null && opt.maxExp !='' && opt.maxExp !='undefined'){
+		                    	 exp =opt.maxExp;
+		                     }
+		                     
+		                     if(opt.minExp !=null && opt.minExp !='' && opt.minExp !='undefined'){
+		                    	 exp =opt.minExp; 
+		                     }
+		                     if(opt.maxExp !=null && opt.maxExp !='' && opt.maxExp !='undefined' &&  opt.minExp !=null && opt.minExp !='' && opt.minExp !='undefined'){
+		                    		 exp = opt.minExp+" - "+opt.maxExp;
+		                     } 
+		                     
                                   
-		                     result = result +"<td><div><span title='"+opt.minExp+"'>"+opt.minExp+"</span></div></td>";
-                                  }else{
-                             result = result +"<td><div>-----</div></td>";
-                             }
+		                     result = result +"<td><div><span title='"+exp+"'>"+exp+"</span></div></td>";
 	                    	  
                              var APPROVED = "APPROVED";     
  				             var REJECTED = "REJECTED";

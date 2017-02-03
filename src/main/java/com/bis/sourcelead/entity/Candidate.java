@@ -94,6 +94,9 @@ public class Candidate implements Serializable{
 	@Column(name = "DESIGNATION_TYPE")
 	private String designationType;
 	
+	@Column(name = "DESIGNATION_OTHER_TYPE")
+	private String designationOtherType;
+	
 	@Column(name = "CURRENT_RATE")
 	private String currentRate;
 	
@@ -214,7 +217,26 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private String reqSubmissionId;
 	 
+	 @Transient
+	 private float skillPercentage;
 	 
+	 @Transient
+	 private float expPercentage;
+	 
+	 @Transient
+	 private float locationPercentage;
+	 
+	 @Transient
+	 private float ratePercentage;
+	 
+	 @Transient
+	 private float noticePeriodPercentage;
+	 
+	 @Transient
+	 private float totalKeyWordPerPercentage;
+	 
+	 @Transient
+	 private Long currentResumeId;
 	 
 	 
 	 @Transient
@@ -378,6 +400,16 @@ public class Candidate implements Serializable{
 
 	public void setDesignationType(String designationType) {
 		this.designationType = designationType;
+	}
+
+	
+	public String getDesignationOtherType() {
+		return designationOtherType;
+	}
+
+
+	public void setDesignationOtherType(String designationOtherType) {
+		this.designationOtherType = designationOtherType;
 	}
 
 
@@ -790,6 +822,74 @@ public class Candidate implements Serializable{
 	public void setCandidateLocation(String candidateLocation) {
 		this.candidateLocation = candidateLocation;
 	}
-	
-	
+
+
+	public float getSkillPercentage() {
+		return skillPercentage;
+	}
+
+
+	public void setSkillPercentage(float skillPercentage) {
+		this.skillPercentage = skillPercentage;
+	}
+
+
+	public float getExpPercentage() {
+		return expPercentage;
+	}
+
+
+	public void setExpPercentage(float expPercentage) {
+		this.expPercentage = expPercentage;
+	}
+
+
+	public float getLocationPercentage() {
+		return locationPercentage;
+	}
+
+
+	public void setLocationPercentage(float locationPercentage) {
+		this.locationPercentage = locationPercentage;
+	}
+
+
+	public float getRatePercentage() {
+		return ratePercentage;
+	}
+
+
+	public void setRatePercentage(float ratePercentage) {
+		this.ratePercentage = ratePercentage;
+	}
+
+
+	public float getNoticePeriodPercentage() {
+		return noticePeriodPercentage;
+	}
+
+
+	public void setNoticePeriodPercentage(float noticePeriodPercentage) {
+		this.noticePeriodPercentage = noticePeriodPercentage;
+	}
+
+
+	public float getTotalKeyWordPerPercentage() {
+		return totalKeyWordPerPercentage;
+	}
+
+
+	public void setTotalKeyWordPerPercentage(float totalKeyWordPerPercentage) {
+		this.totalKeyWordPerPercentage = totalKeyWordPerPercentage;
+	}
+
+
+	public Long getCurrentResumeId() {
+		return currentResumeId;
+	}
+
+
+	public void setCurrentResumeId(Long currentResumeId) {
+		this.currentResumeId = currentResumeId;
+	}
 }

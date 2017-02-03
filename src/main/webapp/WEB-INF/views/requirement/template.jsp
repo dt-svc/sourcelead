@@ -14,9 +14,10 @@
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
+
       <h2>Requirement Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Template List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement Template List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
