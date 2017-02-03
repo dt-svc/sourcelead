@@ -1467,8 +1467,8 @@ function requirementPipeline(requirementId,submissionType){
 							           }
 							       }
 							           
-						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -1691,8 +1691,8 @@ function requirementPipelineDA(requirementId,submissionType){
 							           }
 							       }
 							           
-						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -1910,8 +1910,8 @@ function requirementPipelineRS(requirementId,submissionType){
 							           }
 							        }
 							           
-						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -2133,8 +2133,8 @@ function requirementPipelineSL(requirementId,submissionType){
 							           }
 							           }
 							           
-							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+							           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
@@ -2345,8 +2345,8 @@ function requirementPipelineSC(requirementId,submissionType){
 							           }
 							        }
 							           
-						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -2902,8 +2902,8 @@ function requirementPipelineRejected(requirementId,submissionType){
 							           }
 							        }
 							           
-						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
