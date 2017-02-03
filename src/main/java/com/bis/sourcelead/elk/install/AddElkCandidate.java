@@ -8,7 +8,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.sql.DataSource;
 
@@ -124,12 +127,14 @@ public class AddElkCandidate{
 
 					Timestamp createdDateTimestamp = rs.getTimestamp("CREATED_DATE");
 				    if (createdDateTimestamp != null){
-					  candidateIndex.setCreatedDate(new java.util.Date(createdDateTimestamp.getTime()));
+				    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+						candidateIndex.setCreatedDate(df.format(new java.util.Date(createdDateTimestamp.getTime())));
 				    }
 				    candidateIndex.setCreatedBy(rs.getString("CREATED_BY"));   
 					Timestamp updatedDateTimestamp = rs.getTimestamp("UPDATED_DATE");
 					if (updatedDateTimestamp != null){
-						candidateIndex.setUpdatedDate(new java.util.Date(updatedDateTimestamp.getTime()));
+						DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+						candidateIndex.setUpdatedDate(df.format(new java.util.Date(updatedDateTimestamp.getTime())));
 				    }
 					candidateIndex.setUpdatedBy(rs.getString("UPDATED_BY"));
 				    

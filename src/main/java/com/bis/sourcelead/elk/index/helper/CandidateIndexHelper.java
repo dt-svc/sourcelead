@@ -1,5 +1,7 @@
 package com.bis.sourcelead.elk.index.helper;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -15,6 +17,7 @@ import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.service.CandidateResumesService;
+import com.ibm.icu.impl.duration.DateFormatter;
 
 @Component
 public class CandidateIndexHelper {
@@ -114,15 +117,19 @@ public class CandidateIndexHelper {
 			
 			if(null != candidate.getIsFavourite()){
 				candidateIndex.setIsFavourite(candidate.getIsFavourite());
+			}else{
+				candidateIndex.setIsFavourite(0);
 			}
 			
 			candidateIndex.setTerminateReason(candidate.getTerminateReason());
 			if(candidate.getCreatedDate() != null){
-				candidateIndex.setCreatedDate(new Date(candidate.getCreatedDate().getTime()));
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				candidateIndex.setCreatedDate(df.format(new Date(candidate.getCreatedDate().getTime())));
 			}
 			candidateIndex.setCreatedBy(candidate.getCreatedBy());
 			if(candidate.getUpdatedDate() != null){
-				candidateIndex.setUpdatedDate(new Date(candidate.getUpdatedDate().getTime()));
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				candidateIndex.setUpdatedDate(df.format(new Date(candidate.getUpdatedDate().getTime())));
 			}
 			
 			candidateIndex.setUpdatedBy(candidate.getUpdatedBy());

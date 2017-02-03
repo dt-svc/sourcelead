@@ -56,6 +56,7 @@ function submitToClient(requirementId){
 	           result = result + '         </tr>';
 	           result = result + '       </thead>';
 	           result = result + '       <tbody>';
+	           
 		        
 		    	if(json.length > 0)
 		   		{
@@ -87,9 +88,8 @@ function submitToClient(requirementId){
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
-			           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-/* 			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.id+'\"></a>'+report.resumeName+'</span></div></td>';*/
- 			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a>'+report.resumeName+'</span></div></td>';
+			           if(report.candidateResumes != null && report.candidateResumes != '' && report.candidateResumes != 'undefined'){
+ 			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a></span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';
@@ -116,8 +116,8 @@ function submitToClient(requirementId){
 				    	   result = result + '<td><div><input type="text" class="form-control" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
 			    	     }
 			           
-			           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+			        	   result = result + '<td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
@@ -249,7 +249,7 @@ function clientSubmissions(requirementId){
 	 });
 	 
 	 if(selectedShortlists.length > 0){
-		 if(selectedShortlists.length <= 30){
+		 if(selectedShortlists.length <= 50){
 			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			 $.ajax({ 
 			    	type: "POST",
@@ -267,7 +267,7 @@ function clientSubmissions(requirementId){
 		 }
 		
 	 }else{
-		 alertMessage("<b>Selected Candidates should not more than 30</b>");
+		 alertMessage("<b>Selected Candidates should not more than 50</b>");
 	 }
 	
 }

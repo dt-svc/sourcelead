@@ -26,7 +26,9 @@ public interface ProjectsService {
 		
 	    Projects getProjectById(Long id) throws Exception;
 		
-		List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
+	    List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception;
+	    
+	    List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
 		List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
 		

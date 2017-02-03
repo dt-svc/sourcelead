@@ -155,7 +155,7 @@ function getOrgDetails()
       <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>Client Contact Details</h2>
+            <h2>Add Client Contact</h2>
           </div>
               <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Client Contact Details</div>
         </section>

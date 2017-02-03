@@ -1,6 +1,8 @@
 package com.bis.sourcelead.rest;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -76,7 +78,12 @@ public class TaskRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(orgLocations.getId(),user.getId(),status,date);
-		 
+		
+		Set<Tasks> taskList = new HashSet<Tasks>();
+		for(Tasks tasks : taklist) {
+			taskList.add(tasks);
+		}
+		
 		for(Tasks tk :taklist){
 			tk.setSubject(tk.getSubject());
 			if(null != tk.getTaskDate()){
@@ -141,7 +148,8 @@ public class TaskRestController {
 	 @RequestMapping(value = "/assignedUserList", method = RequestMethod.POST)
 	 @ResponseBody String assignedUserList(HttpServletRequest request) throws Exception{
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		 List<UserRole> userRoleList = userRoleService.getAllUsersListByOrgLocationId(orgLocations.getId());
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 List<UserRole> userRoleList = userRoleService.getAllUsersListByOrgLocationId(orgLocations.getId(),user.getId());
 			for(UserRole ur :userRoleList){
 				StringBuilder userName = new StringBuilder();
 				ur.setUserId(ur.getUser().getId());
