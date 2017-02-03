@@ -489,7 +489,9 @@ public class TimesheetApprovalRestController {
 					    	     }
 					    	);
 					     }
-					    timesheetApprovalDiv.append("<td><div class='sm'><a href='javascript:void(0)'>"+sah.getTotalHours()+"/40</a></div></td>");
+					    //timesheetApprovalDiv.append("<td><div class='sm'><a href='#'>"+sah.getTotalHours()+"/40</a></div></td>");
+					    timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\");'>"+sah.getTotalHours()+"/40</a></div></td>");
+					    
 					    timesheetApprovalDiv.append("<td><div>"+sah.getSubmissionApprovalStatus()+"</div></td>");
 					    timesheetApprovalDiv.append("    <td><div id='action"+projectMember.getId()+"'> " );
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
