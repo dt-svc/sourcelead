@@ -89,7 +89,8 @@ function editCandidate(candidateId){
             			 		lastName = json.lastName;            			 		
             			 	}
             			 	
-            			 	var mobilePhone = '';
+            			 	
+        			 	    var mobilePhone = '';
             			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
             			 		mobilePhone = json.mobilePhone;            			 		
             			 	}
@@ -234,10 +235,9 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '</div>';
-							
-				
-							result = result + '<div class="designationTypeDiv col-md-6" id="designationTypeDiv" style="display:none">';
-							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  value="'+designationOtherType+'" placeholder="Designation Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+							 
+							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
+							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+json.designationOtherType+'" placeholder="Designation Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 							result = result + '</div>';
 						
 							result = result + '</div>';
@@ -383,6 +383,8 @@ function editCandidate(candidateId){
 							
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
+							
+							updateDesignationType();
 							
 							$(".edit-details").toggleClass("edit-details-active");
 							$(".collapse-div").removeClass("edit-details-active");
@@ -692,7 +694,7 @@ function candidateProfile(candidateId){
 								result = result + '<div class="project_tabs_inn_head mt10"><div class="anchor-inline"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> </div>';
 								'</sec:authorize>';
 							}else{
-								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\')"> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize></div>';
+								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\')"> <a href="#" onClick="editCandidate('+candidateId+');" onChange="updateDesignationType(this);" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize></div>';
 							}
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
@@ -1516,20 +1518,16 @@ $('.selectpicker').selectpicker('refresh');
   
   
   <script>
-function updateDesignationType(designationType){
-	alert("DD");
-	var existingDesignationType = '${requirement.designationType}';
+function updateDesignationType(){
+	
 	if(designationType.value == 'Other'){
-		 document.getElementById("designationTypeDiv").style.display="block";
+		  document.getElementById("designationTypeDiv").style.display="block";
 		  $("#designationOtherType").attr("data-validation-optional", "true");
 		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
 	}else{
 		document.getElementById("designationTypeDiv").style.display="none";
 		  $("#designationOtherType").attr("data-validation-optional", "true");
 		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
-		  if(existingDesignationType ==null || existingDesignationType == "" || existingDesignationType == "undefined" || existingDesignationType != 'Other'){
-			  $("#designationOtherType").val('');
-		  }
 	}
 }
 </script>
