@@ -372,7 +372,7 @@ jQueryFormUtils.validateEmail = function(email) {
 };
 
 /**
- * Validate phone number, at least 7 digits only one hyphen and plus allowed
+ * Validate phone number, at least 7 digits only 3 hyphen and plus allowed
  *
  * @return {Boolean}
  */

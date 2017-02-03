@@ -309,22 +309,28 @@ $(document).ready(function () {
 	             </select>
          </div>
        </div>
-		          
-          <div class="form-group" id="jobIdDiv">
+       
+       
+       <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
 			 <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}" field-name="JobId" data-validation="validate_Space validate_Alphanumeric validate_length length2-100" data-validation-optional="true" onkeyup="validateJobId();" value=""> 
 				<input type="hidden" name="requirementId" id="requirementId" value="${requirement.id}"/>
             </div>
           </div>
-           
-            <div class="form-group jobTypeDiv" id="jobTypeDiv" style="display:none">
+       
+       
+       <div class="form-group jobTypeDiv" id="jobTypeDiv" style="display:none">
             <label class="col-md-3">Employment Type</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}"  field-name="Job Type" value="">
             </div>
           </div>
           
+		          
+          
+           
+            
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
             <div class="col-md-9">
