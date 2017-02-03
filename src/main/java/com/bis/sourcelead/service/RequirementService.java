@@ -105,10 +105,6 @@ public interface RequirementService {
 
 	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org, String userRole, User user)throws Exception;
 
-	public List<Object> univesalSearchRequirement(OrgLocations orgLocation, String searchType, String searchValue,Org org,String userRole, User user) throws JSONException, Exception;
-
-	public List<List<Object>> univesalSearchRequirementForAll(OrgLocations orgLocation, String searchType, String searchValue,
-			Org org, String userRole, User user) throws JsonParseException, JsonMappingException, IOException, Exception;
 
 	public List<Object> getAllUniversalSearchRequirementList(OrgLocations orgLocations, String serachValue,String userRole, User user) throws Exception;
 

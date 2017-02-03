@@ -53,11 +53,18 @@ function getSearchResults(searchType,searchValue){
 	    success: function(data) {
 	    	var result='';
 	    	var json = JSON.parse(data);
+	    	var checkSize = json.length;
+            if(checkSize>5){
+                checkSize = 5;
+            }
+            else{
+                checkSize = json.length;
+            }
 	    	result = result+'<div class="search-result-widget clearfix">';
 	    	/* All,Users,Requirement,Candidate,Clients,Vendors,Projects*/
 	    	if(searchType == 'Requirement'){
 	    	result = result+'   <h4>Requirement</h4>';
-	    	 for (var i = 0; i < json.length; i++) {
+	    	 for (var i = 0; i < checkSize; i++) {
 	             var report= json[i];
 	             var location = "";
 	             var exp = "";
@@ -104,13 +111,6 @@ function getSearchResults(searchType,searchValue){
 		    	result = result+'  </div>';
 	    	}else if(searchType == 'Candidate'){
 	    		result = result+'   <h4>Candidate</h4>';
-	    		var checkSize = json.length;
-	    		if(checkSize > 5){
-	    			checkSize = 5;
-	    		}
-	    		else{
-	    			checkSize = json.length;
-	    		}
 		    	 for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
 		             var location = "";
@@ -162,7 +162,7 @@ function getSearchResults(searchType,searchValue){
 			    	result = result+'  </div>';
 	    	}else if(searchType == 'Client'){
 	    		result = result+'   <h4>Clients</h4>';
-	    		for (var i = 0; i < json.length; i++) {
+	    		for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
 		             var name_location = "";
 		                result = result+'  <div class="srchresult clearfix row">';
@@ -192,7 +192,7 @@ function getSearchResults(searchType,searchValue){
 			    	result = result+'  </div>';
 	    	}else if(searchType == 'Vendor'){
 	    		result = result+'   <h4>Vendors</h4>';
-	    		for (var i = 0; i < json.length; i++) {
+	    		for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
 		             var name_location = "";
 		                result = result+'  <div class="srchresult clearfix row">';
@@ -222,7 +222,7 @@ function getSearchResults(searchType,searchValue){
 			    	result = result+'  </div>';
 	    	}else if(searchType =='Projects'){
 	    		result = result+'   <h4>Projects</h4>';
-		    	 for (var i = 0; i < json.length; i++) {
+		    	 for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
 		             var manager = "";
 		             var date = "";
@@ -257,7 +257,7 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'</div>';
 	    	}else if(searchType =='Users'){
 	    		result = result+'   <h4>Users</h4>';
-		    	 for (var i = 0; i < json.length; i++) {
+		    	 for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
 				    	result = result+'  <div class="srchresult clearfix row">';  
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
@@ -279,9 +279,9 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'</div>';
 				    	result = result+'</div>';
 		    	        }
-				    	result = result+'<div class="clearfix">';
-				    	result = result+'<a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
-				    	result = result+'</div>';
+				    	 result = result+'  <div class="clearfix">';
+		                 result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadUsers();">View More</a>';
+		                 result = result+'  </div>';
 	    	}
 	    	 result = result+'</div>';
 	    	 $("#searchList").empty();
@@ -619,7 +619,6 @@ function loadUsers(){
 
 <script>
 function loadVendor(){
-	alert("hiiii");
 	var searchResult = "universalVendorList";
 	alert(searchResult);
 	var searchValue = "${searchValue}";
