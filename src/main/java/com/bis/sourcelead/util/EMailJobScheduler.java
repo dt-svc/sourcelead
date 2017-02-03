@@ -589,8 +589,9 @@ public class EMailJobScheduler {
 	/**
 	 * @author David Raju
 	 * This Cron Method is to add  the Candidates which are consultants  to  HotList (i,e making  them favorite list ) When they are going to terminate  from  the Project within  the given noticePeriod 
+	 * This Cron Runs Daily once at 3 AM
 	 */
-	@Scheduled(cron = "0 0/1 * 1/1 * ? ")
+	@Scheduled(cron = "0 0 3 1/1 * ? ")
 	public void runHotlistCandidatesDaily() throws Exception {
 		logger.info("******************  Daily HotList Candidates Started **********");
 			List<Org> orgList = orgService.getOrgs();

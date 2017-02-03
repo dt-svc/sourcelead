@@ -154,6 +154,57 @@ public class VendorRestController {
 	 * @throws Exception
 	 */
 	 
+	@RequestMapping(value = "/getReleasedJobsCountByOrgRelationId", method = RequestMethod.POST)
+	public @ResponseBody Long getReleasedJobsCountByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
+
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+	    OrgRelations orgRelation =orgRelationsService.getOrRelationsById(orgRelationId);
+	    Long releasedJobsSize =0l;
+		List<Requirement> vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(),orgRelation.getId(),user,orgLocations);
+		if(null != vendorReleasedJobsList ){
+			
+			releasedJobsSize = (long) vendorReleasedJobsList.size();
+		}
+			 return releasedJobsSize;
+		}
+	
+	
+	/**
+	 * @author Laxman
+	 * this is method is using Vendor List
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
+	 
+	@RequestMapping(value = "/numberOfContactsByOrgRelationId", method = RequestMethod.POST)
+	public @ResponseBody Long numberOfContactsByOrgRelationId(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
+
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+	    OrgRelations orgRelation =orgRelationsService.getOrRelationsById(orgRelationId);
+	    Long numberOfContacts =0l;
+		List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
+		if(null != contactsList ){
+			numberOfContacts = (long) contactsList.size();
+		}
+			 return numberOfContacts;
+		}
+	
+	
+	
+	
+	/**
+	 * @author Laxman
+	 * this is method is using Vendor List
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
+	 
 	@RequestMapping(value = "/getVendorFilterLists", method = RequestMethod.POST)
 	public @ResponseBody String getVendorFilterLists(@RequestParam(value="values", required=false) String status,HttpServletRequest request) throws Exception {
 
@@ -221,6 +272,9 @@ public class VendorRestController {
 			 resultJson = commonUtil.toJSON(vandorsListByOrgLocationId);
 			 return resultJson;
 		}
+	
+	
+	
 	
 	
 	/**
@@ -714,8 +768,11 @@ public class VendorRestController {
 				 
 				 boolQueryBuilder.must(combinedQueryBuilder);
 				 
-				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId());
 			   	 
+				 // to   get the number of contacts 
+					Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilder).getTotalHits();
+					  
+				 
 				 //Exclude Keyword
 				 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 				 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
@@ -772,32 +829,47 @@ public class VendorRestController {
 					if(vendorNameArray != null && !vendorNameArray.isEmpty()){
 						BoolQueryBuilder vendorNameBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : vendorNameArray){
-							vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("orgName", keywd));
+							vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+							vendorNameBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderOrgName", keywd));
 						}
 						boolQueryBuilder.must(vendorNameBoolQueryBuilder);
 					}
 					
+					/* matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+					    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
+					*/
 					 //Country
 					if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
-						boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+						boolQueryBuilder.should(QueryBuilders.matchQuery("responderCountry", jsonObj.getString("country")));
 				    }
+					if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
+						boolQueryBuilder.should(QueryBuilders.matchQuery("responderCountry", jsonObj.getString("country")));
+				    }
+					
 					
 					 //State
 					if(jsonObj.has("state") && StringUtils.isNotEmpty(jsonObj.getString("state"))){
-						boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
+						boolQueryBuilder.should(QueryBuilders.matchQuery("responderState", jsonObj.getString("state")));
 				    }
-				    
+					if(jsonObj.has("state") && StringUtils.isNotEmpty(jsonObj.getString("state"))){
+						boolQueryBuilder.should(QueryBuilders.matchQuery("initiatorState", jsonObj.getString("state")));
+				    }
+					
 					//City
 					if(jsonObj.has("city")  && StringUtils.isNotEmpty(jsonObj.getString("city"))){
-						boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
+						boolQueryBuilder.should(QueryBuilders.matchQuery("initiatorCity", jsonObj.getString("city")));
 				    }
+					if(jsonObj.has("city")  && StringUtils.isNotEmpty(jsonObj.getString("city"))){
+						boolQueryBuilder.should(QueryBuilders.matchQuery("responderCity", jsonObj.getString("city")));
+				    }
+					
 						
 					//CreatedBy
 					ArrayList<String> createdByArray = getSearchKeywordsFromChosenSelectField(jsonObj, "createdByAdvanced");
 					if(createdByArray != null && !createdByArray.isEmpty()){
 						BoolQueryBuilder createdByBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : createdByArray){
-							createdByBoolQueryBuilder.should(QueryBuilders.matchQuery("createdBy", keywd));
+							createdByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("createdBy", keywd));
 						}
 						boolQueryBuilder.must(createdByBoolQueryBuilder);
 					}
@@ -807,7 +879,8 @@ public class VendorRestController {
 					if(tierAdvancedByArray != null && !tierAdvancedByArray.isEmpty()){
 						BoolQueryBuilder tierAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : tierAdvancedByArray){
-							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("initiatorLevel", keywd));
+							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorLevel", keywd));
+							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderLevel", keywd));
 						}
 						boolQueryBuilder.must(tierAdvancedBoolQueryBuilder);
 					}
@@ -819,11 +892,46 @@ public class VendorRestController {
 					if(searchHits != null && searchHits.length >0){
 						ObjectMapper mapper = new ObjectMapper();
 						for (SearchHit hit : searchHits) {
-							json = hit.getSourceAsString();
-							mapper.setDateFormat(df);
-							ClientVendorIndex clientVendorIndex = mapper.readValue(json, ClientVendorIndex.class);
-							clientVendorList.add(clientVendorIndex);
-						}
+									json = hit.getSourceAsString();
+									mapper.setDateFormat(df);
+									ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
+									
+									if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
+										
+									    StringBuilder website=new StringBuilder();
+									    clientVendor.setWebsite(website.append("www.").append(clientVendor.getResponderWebSite()).toString());
+										clientVendor.setOrgName(clientVendor.getResponderOrgName());
+										clientVendor.setCountry(clientVendor.getResponderCountry());
+										clientVendor.setState(clientVendor.getResponderState());
+										clientVendor.setCity(clientVendor.getResponderCity());
+										
+										if(clientVendor.getInitiatorLevel()!=null){
+											clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
+										}
+									}
+								  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
+									 
+									  StringBuilder website=new StringBuilder();
+									  clientVendor.setWebsite(website.append("www.").append(clientVendor.getInitiatorWebSite()).toString());
+									  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
+									  clientVendor.setCountry(clientVendor.getInitiatorCountry());
+									  clientVendor.setState(clientVendor.getInitiatorState());
+									  clientVendor.setCity(clientVendor.getInitiatorCity());
+									  
+									  if(clientVendor.getResponderLevel()!=null){
+										  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
+									  }
+									}
+								  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
+									  if(!clientVendor.getCreatedBy().isEmpty()){
+										  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
+									  }
+									 
+								  }
+								  
+								  clientVendorList.add(clientVendor);
+
+						}	
 					}
 					
 				 String resultJson;
@@ -856,12 +964,22 @@ public class VendorRestController {
 			    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 			   
 			    //Vendor Search 
-			    matchQueryBuilderList.add(QueryBuilders.matchQuery("orgName", keywd));
+			    matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+			    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
 			    matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorLevel", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("createdByAdvanced", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderLevel", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("createdBy", keywd));
+				
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCountry", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
+				
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderWebSite", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorWebSite", keywd));
+				
 				return matchQueryBuilderList; 
 		 }
 		 
@@ -874,6 +992,7 @@ public class VendorRestController {
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserFirstName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserLastName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserPhNo", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("ownerUserPhNo", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserEmail", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("ownerUserEmail", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("responderOrgName", keywd));
@@ -952,7 +1071,8 @@ public class VendorRestController {
 				}
 				 
 				 // to   get the number of contacts 
-				 Integer maxResults = orgSpocService.getAllVendorContactsCountbyOrgLocationId(loginOrgLocation.getId(),responderType,loginUser.getId());
+			      Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,0,boolQueryBuilder).getTotalHits();
+					 
 			   	
 				 //Exclude Keyword
 				 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
@@ -1022,8 +1142,8 @@ public class VendorRestController {
 					if(contactEmailNameArray != null && !contactEmailNameArray.isEmpty()){
 						BoolQueryBuilder contactEmailBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : contactEmailNameArray){
-							contactEmailBoolQueryBuilder.should(QueryBuilders.matchQuery("ownerUserEmail", keywd));
-							contactEmailBoolQueryBuilder.should(QueryBuilders.matchQuery("spocUserEmail", keywd));
+							contactEmailBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocUserEmail", keywd));
+							contactEmailBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("ownerUserEmail", keywd));
 						}
 						boolQueryBuilder.must(contactEmailBoolQueryBuilder);
 					}
@@ -1033,7 +1153,8 @@ public class VendorRestController {
 					if(phoneNumberNameArray != null && !phoneNumberNameArray.isEmpty()){
 						BoolQueryBuilder phoneNumberBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : phoneNumberNameArray){
-							phoneNumberBoolQueryBuilder.should(QueryBuilders.matchQuery("spocUserPhNo", keywd));
+							phoneNumberBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocUserPhNo", keywd));
+							phoneNumberBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("ownerUserPhNo", keywd));
 						}
 						boolQueryBuilder.must(phoneNumberBoolQueryBuilder);
 					}
@@ -1043,7 +1164,7 @@ public class VendorRestController {
 					if(orgAdvancedArray != null && !orgAdvancedArray.isEmpty()){
 						BoolQueryBuilder orgAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : orgAdvancedArray){
-							orgAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("responderOrgName", keywd));
+							orgAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderOrgName", keywd));
 						}
 						boolQueryBuilder.must(orgAdvancedBoolQueryBuilder);
 					}
@@ -1064,7 +1185,7 @@ public class VendorRestController {
 					if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty()){
 						BoolQueryBuilder statusAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : statusAdvancedArray){
-							statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocStatus", keywd));
+							statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("spocStatus", "*"+keywd+"*"));
 						
 						}
 						boolQueryBuilder.must(statusAdvancedBoolQueryBuilder);
@@ -1081,8 +1202,13 @@ public class VendorRestController {
 						boolQueryBuilder.must(invitationAdvancedBoolQueryBuilder);
 					}
 										
+					
+					
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 
+
+					
+					
 					List<ClientVendorContactsIndex> clientVendorContactsList = new ArrayList<ClientVendorContactsIndex>();
 					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					df.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -1119,6 +1245,10 @@ public class VendorRestController {
 								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getOwnerUserPhNo());
 			    				 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
 			    				 //orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+								
+								 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getSpocUserId());
+			    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getOwnerUserId());
+								
 							}
 							//if login user is Owner
 							else if(clientVendorContactsIndex.getOwnerUserId() != null && clientVendorContactsIndex.getOwnerUserId() == loginUser.getId().longValue()){
@@ -1138,6 +1268,10 @@ public class VendorRestController {
 								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
 									 //orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 									 //orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+								
+								 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getOwnerUserId());
+			    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getSpocUserId());
+								
 								}
 								
 							 
@@ -1160,6 +1294,11 @@ public class VendorRestController {
 								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
 								 //orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 								 //orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+								
+
+								 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getOwnerUserId());
+			    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getSpocUserId());
+								
 							 }
 							if(clientVendorContactsIndex.getResponderLocationId() !=null && clientVendorContactsIndex.getResponderLocationId() == loginOrgLocation.getId().longValue()){
 								if(clientVendorContactsIndex.getOwnerUserFirstName() != null && clientVendorContactsIndex.getOwnerUserFirstName() != "" && clientVendorContactsIndex.getOwnerUserLastName() != null && clientVendorContactsIndex.getOwnerUserLastName() != "" ){
@@ -1179,14 +1318,19 @@ public class VendorRestController {
 								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getOwnerUserPhNo());
 							 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
 							 //orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+								
+
+								 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getSpocUserId());
+			    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getOwnerUserId());
+								
 							}
 						}
 						if(clientVendorContactsIndex.getResponderLocationId() !=null && clientVendorContactsIndex.getResponderLocationId() == loginOrgLocation.getId().longValue()){
-							clientVendorContactsIndex.setResponderLocationId(clientVendorContactsIndex.getInitiatorLocationId());
+							clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getInitiatorLocationId());
 							clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getInitiatorOrgName());
 						}
 						if(clientVendorContactsIndex.getInitiatorLocationId() !=null && clientVendorContactsIndex.getInitiatorLocationId() == loginOrgLocation.getId().longValue() ){
-							clientVendorContactsIndex.setResponderLocationId(clientVendorContactsIndex.getResponderLocationId());
+							clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getResponderLocationId());
 							clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getResponderOrgName());
 						}
 						
@@ -1243,8 +1387,10 @@ public class VendorRestController {
 				 boolQueryBuilder.must(combinedQueryBuilder);
 				 
 				 
-				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId());
-			   	 
+			   
+				 // to   get the number of Vendor/Clients 
+				Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilder).getTotalHits();
+				 
 				List<ClientVendorIndex> clientVendorList = new ArrayList<ClientVendorIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -1254,8 +1400,40 @@ public class VendorRestController {
 					for (SearchHit hit : searchHits) {
 					String	json = hit.getSourceAsString();
 						mapper.setDateFormat(df);
-						ClientVendorIndex clientVendorIndex = mapper.readValue(json, ClientVendorIndex.class);
-						clientVendorList.add(clientVendorIndex);
+						ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
+						
+						if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
+							
+							StringBuilder website=new StringBuilder();
+							clientVendor.setWebsite(website.append("www.").append(clientVendor.getResponderWebSite()).toString());
+							clientVendor.setOrgName(clientVendor.getResponderOrgName());
+							clientVendor.setCountry(clientVendor.getResponderCountry());
+							clientVendor.setState(clientVendor.getResponderState());
+							clientVendor.setCity(clientVendor.getResponderCity());
+							if(clientVendor.getInitiatorLevel()!=null){
+								clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
+							}
+						}
+					  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
+						 
+						  StringBuilder website=new StringBuilder();
+						  clientVendor.setWebsite(website.append("www.").append(clientVendor.getInitiatorWebSite()).toString());
+						  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
+						  clientVendor.setCountry(clientVendor.getInitiatorCountry());
+						  clientVendor.setState(clientVendor.getInitiatorState());
+						  clientVendor.setCity(clientVendor.getInitiatorCity());
+						  
+						  if(clientVendor.getResponderLevel()!=null){
+							  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
+						  }
+						}
+					  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
+						  if(!"".equals(clientVendor.getCreatedBy())){
+							  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
+						  }
+					  }
+				     clientVendorList.add(clientVendor);
+						
 					}
 				}
 				 String resultJson;
@@ -1327,11 +1505,9 @@ public class VendorRestController {
 							 boolQueryBuilder.must(combinationQueryBuilder);
 				}
 				 
-				 // to   get the number of contacts 
-				 Integer maxResults = orgSpocService.getAllVendorContactsCountbyOrgLocationId(loginOrgLocation.getId(),responderType,loginUser.getId());
-			   	
-				
-										
+				   // to   get the number of contacts 
+					Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,0,boolQueryBuilder).getTotalHits();
+						
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 
 					List<ClientVendorContactsIndex> clientVendorContactsList = new ArrayList<ClientVendorContactsIndex>();
@@ -1348,93 +1524,121 @@ public class VendorRestController {
 						
 						for(ClientVendorContactsIndex clientVendorContactsIndex : clientVendorContactsList){
 							
-						//loginOrgLocation
-						
-						if(clientVendorContactsIndex.getSpocUserId() == loginUser.getId().longValue() || clientVendorContactsIndex.getOwnerUserId() == loginUser.getId().longValue()){
-							//if login user is spoc
-							if(clientVendorContactsIndex.getSpocUserId() !=null && clientVendorContactsIndex.getSpocUserId() == loginUser.getId().longValue()){
-								
-								if(clientVendorContactsIndex.getOwnerUserId() != null && clientVendorContactsIndex.getOwnerUserFirstName() != "" && clientVendorContactsIndex.getOwnerUserLastName() != null && clientVendorContactsIndex.getOwnerUserLastName() != "" ){
-									StringBuilder spocNameSB = new StringBuilder();
-									clientVendorContactsIndex.setSpocName(spocNameSB.append(clientVendorContactsIndex.getOwnerUserFirstName()).append(" ").append(clientVendorContactsIndex.getOwnerUserLastName()).toString());
-								}else{
-									clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getOwnerUserFirstName());
+							//loginOrgLocation
+							
+							if(clientVendorContactsIndex.getSpocUserId() == loginUser.getId().longValue() || clientVendorContactsIndex.getOwnerUserId() == loginUser.getId().longValue()){
+								//if login user is spoc
+								if(clientVendorContactsIndex.getSpocUserId() !=null && clientVendorContactsIndex.getSpocUserId() == loginUser.getId().longValue()){
+									
+									if(clientVendorContactsIndex.getOwnerUserId() != null && clientVendorContactsIndex.getOwnerUserFirstName() != "" && clientVendorContactsIndex.getOwnerUserLastName() != null && clientVendorContactsIndex.getOwnerUserLastName() != "" ){
+										StringBuilder spocNameSB = new StringBuilder();
+										clientVendorContactsIndex.setSpocName(spocNameSB.append(clientVendorContactsIndex.getOwnerUserFirstName()).append(" ").append(clientVendorContactsIndex.getOwnerUserLastName()).toString());
+									}else{
+										clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getOwnerUserFirstName());
+									}
+									if(clientVendorContactsIndex.getSpocUserFirstName() != null && clientVendorContactsIndex.getSpocUserFirstName() != "" && clientVendorContactsIndex.getSpocUserLastName() != null && clientVendorContactsIndex.getSpocUserLastName() != "" ){
+										StringBuilder ownerNameSB = new StringBuilder();
+										clientVendorContactsIndex.setOwnerNames(ownerNameSB.append(clientVendorContactsIndex.getSpocUserFirstName()).append(" ").append(clientVendorContactsIndex.getSpocUserLastName()).toString());
+									}else{
+										clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getSpocUserFirstName());
+									}
+									clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getOwnerUserEmail());
+									clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getOwnerUserPhNo());
+				    				 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+				    				 //orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+									
+									 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getSpocUserId());
+				    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getOwnerUserId());
+									
 								}
-								if(clientVendorContactsIndex.getSpocUserFirstName() != null && clientVendorContactsIndex.getSpocUserFirstName() != "" && clientVendorContactsIndex.getSpocUserLastName() != null && clientVendorContactsIndex.getSpocUserLastName() != "" ){
-									StringBuilder ownerNameSB = new StringBuilder();
-									clientVendorContactsIndex.setOwnerNames(ownerNameSB.append(clientVendorContactsIndex.getSpocUserFirstName()).append(" ").append(clientVendorContactsIndex.getSpocUserLastName()).toString());
-								}else{
-									clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getSpocUserFirstName());
-								}
-								clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getOwnerUserEmail());
-								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getOwnerUserPhNo());
-			    				
+								//if login user is Owner
+								else if(clientVendorContactsIndex.getOwnerUserId() != null && clientVendorContactsIndex.getOwnerUserId() == loginUser.getId().longValue()){
+									if(clientVendorContactsIndex.getSpocUserFirstName() != null && clientVendorContactsIndex.getSpocUserFirstName() != "" && clientVendorContactsIndex.getSpocUserLastName() != null && clientVendorContactsIndex.getSpocUserLastName() != "" ){
+										StringBuilder spocNameSB1 = new StringBuilder();
+										clientVendorContactsIndex.setSpocName(spocNameSB1.append(clientVendorContactsIndex.getSpocUserFirstName()).append(" ").append(clientVendorContactsIndex.getSpocUserLastName()).toString());
+									}else{
+										clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getSpocUserFirstName());
+									}
+									if(clientVendorContactsIndex.getOwnerUserId() != null && clientVendorContactsIndex.getOwnerUserFirstName() != "" && clientVendorContactsIndex.getOwnerUserLastName() != null && clientVendorContactsIndex.getOwnerUserLastName() != "" ){
+										StringBuilder ownerNameSB1 = new StringBuilder();
+										clientVendorContactsIndex.setOwnerNames(ownerNameSB1.append(clientVendorContactsIndex.getOwnerUserFirstName()).append(" ").append(clientVendorContactsIndex.getOwnerUserLastName()).toString());
+									}else{
+										clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getOwnerUserFirstName());
+									}
+									clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getSpocUserEmail());
+									clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
+										 //orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+										 //orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+									
+									 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getOwnerUserId());
+				    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getSpocUserId());
+									
+									}
+									
+								 
+							}else{
+								if(clientVendorContactsIndex.getInitiatorLocationId() != null && clientVendorContactsIndex.getInitiatorLocationId() == loginOrgLocation.getId().longValue() ){
+									if(clientVendorContactsIndex.getSpocUserFirstName() != null && clientVendorContactsIndex.getSpocUserFirstName() != "" && clientVendorContactsIndex.getSpocUserLastName() != null && clientVendorContactsIndex.getSpocUserLastName() != "" ){
+										StringBuilder spocNameSB2 = new StringBuilder();
+										clientVendorContactsIndex.setSpocName(spocNameSB2.append(clientVendorContactsIndex.getSpocUserFirstName()).append(" ").append(clientVendorContactsIndex.getSpocUserLastName()).toString());
+									}else{
+										clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getSpocUserFirstName());
+									}
+									
+									if(clientVendorContactsIndex.getOwnerUserFirstName() != null && clientVendorContactsIndex.getOwnerUserFirstName() != "" && clientVendorContactsIndex.getOwnerUserLastName() != null && clientVendorContactsIndex.getOwnerUserLastName() != "" ){
+										StringBuilder ownerNameSB2 = new StringBuilder();
+										clientVendorContactsIndex.setOwnerNames(ownerNameSB2.append(clientVendorContactsIndex.getOwnerUserFirstName()).append(" ").append(clientVendorContactsIndex.getOwnerUserLastName()).toString());
+									}else{
+										clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getOwnerUserFirstName());
+									}
+									clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getSpocUserEmail());
+									clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
+									 //orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+									 //orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+									
 
+									 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getOwnerUserId());
+				    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getSpocUserId());
+									
+								 }
+								if(clientVendorContactsIndex.getResponderLocationId() !=null && clientVendorContactsIndex.getResponderLocationId() == loginOrgLocation.getId().longValue()){
+									if(clientVendorContactsIndex.getOwnerUserFirstName() != null && clientVendorContactsIndex.getOwnerUserFirstName() != "" && clientVendorContactsIndex.getOwnerUserLastName() != null && clientVendorContactsIndex.getOwnerUserLastName() != "" ){
+										StringBuilder spocNameSB3 = new StringBuilder();
+										clientVendorContactsIndex.setSpocName(spocNameSB3.append(clientVendorContactsIndex.getOwnerUserFirstName()).append(" ").append(clientVendorContactsIndex.getOwnerUserLastName()).toString());
+									}else{
+										clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getOwnerUserFirstName());
+									}
+									
+									if(clientVendorContactsIndex.getSpocUserFirstName() != null && clientVendorContactsIndex.getSpocUserFirstName() != "" && clientVendorContactsIndex.getSpocUserLastName() != null && clientVendorContactsIndex.getSpocUserLastName() != "" ){
+										StringBuilder ownerNameSB3 = new StringBuilder();
+										clientVendorContactsIndex.setOwnerNames(ownerNameSB3.append(clientVendorContactsIndex.getSpocUserFirstName()).append(" ").append(clientVendorContactsIndex.getSpocUserLastName()).toString());
+									}else{
+										clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getSpocUserFirstName());
+									}
+									clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getOwnerUserEmail());
+									clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getOwnerUserPhNo());
+								 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+								 //orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+									
+
+									 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getSpocUserId());
+				    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getOwnerUserId());
+									
+								}
 							}
-							//if login user is Owner
-							else if(clientVendorContactsIndex.getOwnerUserId() != null && clientVendorContactsIndex.getOwnerUserId() == loginUser.getId().longValue()){
-								if(clientVendorContactsIndex.getSpocUserFirstName() != null && clientVendorContactsIndex.getSpocUserFirstName() != "" && clientVendorContactsIndex.getSpocUserLastName() != null && clientVendorContactsIndex.getSpocUserLastName() != "" ){
-									StringBuilder spocNameSB1 = new StringBuilder();
-									clientVendorContactsIndex.setSpocName(spocNameSB1.append(clientVendorContactsIndex.getSpocUserFirstName()).append(" ").append(clientVendorContactsIndex.getSpocUserLastName()).toString());
-								}else{
-									clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getSpocUserFirstName());
-								}
-								if(clientVendorContactsIndex.getOwnerUserId() != null && clientVendorContactsIndex.getOwnerUserFirstName() != "" && clientVendorContactsIndex.getOwnerUserLastName() != null && clientVendorContactsIndex.getOwnerUserLastName() != "" ){
-									StringBuilder ownerNameSB1 = new StringBuilder();
-									clientVendorContactsIndex.setOwnerNames(ownerNameSB1.append(clientVendorContactsIndex.getOwnerUserFirstName()).append(" ").append(clientVendorContactsIndex.getOwnerUserLastName()).toString());
-								}else{
-									clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getOwnerUserFirstName());
-								}
-								clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getSpocUserEmail());
-								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
-								}
-								
-							 
-						}else{
-							if(clientVendorContactsIndex.getInitiatorLocationId() != null && clientVendorContactsIndex.getInitiatorLocationId() == loginOrgLocation.getId().longValue() ){
-								if(clientVendorContactsIndex.getSpocUserFirstName() != null && clientVendorContactsIndex.getSpocUserFirstName() != "" && clientVendorContactsIndex.getSpocUserLastName() != null && clientVendorContactsIndex.getSpocUserLastName() != "" ){
-									StringBuilder spocNameSB2 = new StringBuilder();
-									clientVendorContactsIndex.setSpocName(spocNameSB2.append(clientVendorContactsIndex.getSpocUserFirstName()).append(" ").append(clientVendorContactsIndex.getSpocUserLastName()).toString());
-								}else{
-									clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getSpocUserFirstName());
-								}
-								
-								if(clientVendorContactsIndex.getOwnerUserFirstName() != null && clientVendorContactsIndex.getOwnerUserFirstName() != "" && clientVendorContactsIndex.getOwnerUserLastName() != null && clientVendorContactsIndex.getOwnerUserLastName() != "" ){
-									StringBuilder ownerNameSB2 = new StringBuilder();
-									clientVendorContactsIndex.setOwnerNames(ownerNameSB2.append(clientVendorContactsIndex.getOwnerUserFirstName()).append(" ").append(clientVendorContactsIndex.getOwnerUserLastName()).toString());
-								}else{
-									clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getOwnerUserFirstName());
-								}
-								clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getSpocUserEmail());
-								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
-							 }
 							if(clientVendorContactsIndex.getResponderLocationId() !=null && clientVendorContactsIndex.getResponderLocationId() == loginOrgLocation.getId().longValue()){
-								if(clientVendorContactsIndex.getOwnerUserFirstName() != null && clientVendorContactsIndex.getOwnerUserFirstName() != "" && clientVendorContactsIndex.getOwnerUserLastName() != null && clientVendorContactsIndex.getOwnerUserLastName() != "" ){
-									StringBuilder spocNameSB3 = new StringBuilder();
-									clientVendorContactsIndex.setSpocName(spocNameSB3.append(clientVendorContactsIndex.getOwnerUserFirstName()).append(" ").append(clientVendorContactsIndex.getOwnerUserLastName()).toString());
-								}else{
-									clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getOwnerUserFirstName());
-								}
-								
-								if(clientVendorContactsIndex.getSpocUserFirstName() != null && clientVendorContactsIndex.getSpocUserFirstName() != "" && clientVendorContactsIndex.getSpocUserLastName() != null && clientVendorContactsIndex.getSpocUserLastName() != "" ){
-									StringBuilder ownerNameSB3 = new StringBuilder();
-									clientVendorContactsIndex.setOwnerNames(ownerNameSB3.append(clientVendorContactsIndex.getSpocUserFirstName()).append(" ").append(clientVendorContactsIndex.getSpocUserLastName()).toString());
-								}else{
-									clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getSpocUserFirstName());
-								}
-								clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getOwnerUserEmail());
-								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getOwnerUserPhNo());
+								clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getInitiatorLocationId());
+								clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getInitiatorOrgName());
 							}
-						}
-						if(clientVendorContactsIndex.getResponderLocationId() !=null && clientVendorContactsIndex.getResponderLocationId() == loginOrgLocation.getId().longValue()){
-							clientVendorContactsIndex.setResponderLocationId(clientVendorContactsIndex.getInitiatorLocationId());
-							clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getInitiatorOrgName());
-						}
-						if(clientVendorContactsIndex.getInitiatorLocationId() !=null && clientVendorContactsIndex.getInitiatorLocationId() == loginOrgLocation.getId().longValue() ){
-							clientVendorContactsIndex.setResponderLocationId(clientVendorContactsIndex.getResponderLocationId());
-							clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getResponderOrgName());
-						}
-						
+							if(clientVendorContactsIndex.getInitiatorLocationId() !=null && clientVendorContactsIndex.getInitiatorLocationId() == loginOrgLocation.getId().longValue() ){
+								clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getResponderLocationId());
+								clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getResponderOrgName());
+							}
+							
+							//clientVendorContactsIndex.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
+							//clientVendorContactsIndex.setSpocUserId(orgSpoc.getSpocUser().getId());
+							//clientVendorContactsIndex.setOrgRelationId(orgSpoc.getOrgRelations().getId());
+							
 						
 						}	
 						

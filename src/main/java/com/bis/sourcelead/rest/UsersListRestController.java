@@ -1085,6 +1085,25 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			return resultJson;
 	   }
 	 
+	 
+		/**
+		 * Redirectin for universal users list
+		 * @param searchValue
+		 * @param request
+		 * @return json
+		 * @throws Exception
+		 */
+	 @RequestMapping(value = "/getUniversalSearchUsersList" , method = RequestMethod.GET)
+	 public @ResponseBody String getUniversalSearchUsersList(@RequestParam(value="searchValue", required=false) String searchValue,HttpServletRequest request) throws Exception {
+		    String resultJson = null;
+		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	List<UserIndex> usersList =	userService.getAllUniversalSearchUsersList(orgLocations, searchValue,user);
+			resultJson = commonUtil.toJSON(usersList);
+			return resultJson;
+		 	
+	   }
+	 
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {

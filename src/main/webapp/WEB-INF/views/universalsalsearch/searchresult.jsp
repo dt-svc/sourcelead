@@ -160,8 +160,38 @@ function getSearchResults(searchType,searchValue){
 		    	    result = result+'  <div class="clearfix">';
 			    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadCandidate();">View More</a>';
 			    	result = result+'  </div>';
-	    	}else if(searchType == 'Clients' || searchType == 'Vendors'){
-	    		result = result+'   <h4>Clients/Vendors</h4>';
+	    	}else if(searchType == 'Client'){
+	    		result = result+'   <h4>Clients</h4>';
+	    		for (var i = 0; i < json.length; i++) {
+		             var report= json[i];
+		             var name_location = "";
+		                result = result+'  <div class="srchresult clearfix row">';
+				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
+				    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
+				    		name_location = name_location + report.orgName+",";
+				    	}
+				    	if(report.city !=null && report.city != '' && report.city !="undefined"){
+				    		name_location = name_location + report.city;
+				    	}
+				    	if(report.state !=null && report.state != '' && report.state !="undefined"){
+				    		name_location = name_location + report.state;
+				    	}
+				    	if(report.country !=null && report.country != '' && report.country !="undefined"){
+				    		name_location = name_location + report.country;
+				    	}
+				    	result = result+'          <label>'+name_location+'</label>';
+				    	result = result+'          </p>';
+				    	if(report.createdBy !=null && report.createdBy != '' && report.createdBy !="undefined"){
+				    		result = result+'          <p><label>'+report.createdBy+'</label></p>';
+				    	}
+				    	result = result+'      </div>';
+				    	result = result+'  </div>';
+	    	}
+		    	    result = result+'  <div class="clearfix">';
+			    	result = result+'      <a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+			    	result = result+'  </div>';
+	    	}else if(searchType == 'Vendor'){
+	    		result = result+'   <h4>Vendors</h4>';
 	    		for (var i = 0; i < json.length; i++) {
 		             var report= json[i];
 		             var name_location = "";
@@ -277,13 +307,20 @@ function getSearchResultsForAll(searchType,searchValue){
 	    	/* All,Users,Requirement,Candidate,Clients,Vendors,Projects*/
 	    	 for (var i = 0; i < json.length; i++) {
 	             var opt= json[i];
-	             for (var j = 0; j < opt.length; j++) {
+	             var listSize;
+	             if(opt.length>5)
+	            	 listSize = 5;
+	             else
+	            	 listSize = opt.length;
+	             for (var j = 0; j < listSize; j++) {
 	            	 var report=opt[j];
 	            	 var location ="";
 	            	 var exp="";
 	            	 if(report.searchType=="Requirement"){	 
 			            	 if((report.searchType=="Requirement") && j == 0){
-			            	 result = result+'   <h4>Requirement</h4>';
+			            		 result = result+'  <div class="clearfix">';	 
+			            	   		result = result+'   <h4>Requirement</h4>';
+			            	   	 result = result+' </div>';
 			            	 }
 			            	 result = result+'  <div class="srchresult clearfix row">';
 						    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
@@ -304,7 +341,10 @@ function getSearchResultsForAll(searchType,searchValue){
 						    	result = result+'          <label>'+location+'</label>';
 						    	
 						    	result = result+'          </p>';
-						    	result = result+'          <p><label><strong>'+report.clientName+'</strong></label></p>';
+						    	if(report.clientName !=null && report.clientName !='' && report.clientName !='undefined'){
+						    		result = result+'          <p><label><strong>'+report.clientName+'</strong></label></p>';	
+						    	}
+						    	
 						    	if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined"){
 						    		exp = exp + report.minExp;
 						    	}
@@ -322,10 +362,20 @@ function getSearchResultsForAll(searchType,searchValue){
 						    	result = result+'<span href="javascript:void(0)" class="reqstatus-btn">'+report.requirementSubmissionStatus+'</span>';
 						    	result = result+'      </div>';
 						    	result = result+'  </div>';
+						    	
+						    	if(opt.length>5 && j==4){
+					                result = result+'  <div class="clearfix">';
+							    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+							    	result = result+'  </div>';
+					             }
+						    	
+						    	
 			             } 
 	            	 if(report.searchType=="User"){
 	            		 	if((report.searchType=="User") && j == 0){
+	            		 		result = result+'  <div class="clearfix">';
 			            		 result = result+'   <h4>User</h4>';
+			            		result = result+'  </div>'; 
 			            	 }
 	            			result = result+'  <div class="srchresult clearfix row">';  
 					    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
@@ -346,10 +396,17 @@ function getSearchResultsForAll(searchType,searchValue){
 					    	result = result+'<span href="javascript:void(0)" class="reqstatus-btn">'+report.userStatus+'</span>';
 					    	result = result+'</div>';
 					    	result = result+'</div>';
+					    	if(opt.length>5 && j==4){
+				                result = result+'  <div class="clearfix">';
+						    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadUsers();">View More</a>';
+						    	result = result+'  </div>';
+				             }
 	            	 }
 	            	 if(report.searchType=="Projects"){
 	            		 if((report.searchType=="Projects") && j == 0){
+	            			 result = result+'  <div class="clearfix">'; 
 		            		 result = result+'   <h4>Projects</h4>';
+		            		 result = result+'  </div>';
 		            	 }
 	            		   var manager = "";
 	  		             	var date = "";
@@ -378,12 +435,20 @@ function getSearchResultsForAll(searchType,searchValue){
 	  				    	result = result+'<span href="javascript:void(0)" class="reqstatus-btn">'+report.projectStatus+'</span>';
 	  				    	result = result+'</div>';
 	  				    	result = result+'</div>';
+	  				    	
+	  				    	if(opt.length>5 && j==4){
+				                result = result+'  <div class="clearfix">';
+						    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+						    	result = result+'  </div>';
+				             }
 	            	 }
 	            	 if(report.searchType=="Candidate"){
 	            		 var location = "";
 			             var experience = "";
 			             if((report.searchType=="Candidate") && j == 0){
-			            	 result = result+'   <h4>Candidate</h4>';
+			            	 result = result+'  <div class="clearfix">';
+			            		 result = result+'   <h4>Candidate</h4>';
+			            	 result = result+'  </div>';
 			            	 }
 					    	result = result+'  <div class="srchresult clearfix row">';
 					    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
@@ -393,9 +458,9 @@ function getSearchResultsForAll(searchType,searchValue){
 					    		result = result+'<p><label><strong><a href="#" onclick="candidateSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>';	
 					    	}
 					    	if(report.email !=null && report.email !='' && report.email !='undefined' && report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined' ){
-					    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.email+'</a></strong></label>, <label>'+report.mobilePhone+'</label>';	
+					    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>';	
 					    	}else{
-					    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.email+'</a></strong></label>';
+					    		result = result+'<p><label><strong>'+report.email+'</strong></label>';
 					    	}
 					    	if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined'){
 					    		experience = experience + report.experienceYears+" Years"; 
@@ -426,11 +491,19 @@ function getSearchResultsForAll(searchType,searchValue){
 					    	}
 					    	result = result+'      </div>';
 					    	result = result+'  </div>';
+					    	
+					    	if(opt.length>5 && j==4){
+				                result = result+'  <div class="clearfix">';
+						    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadCandidate();">View More</a>';
+						    	result = result+'  </div>';
+				             }
 		            	}
 			    	
-					 if(report.searchType=="ClientVendor"){
-						 if((report.searchType=="ClientVendor") && j == 0){
-			            	 result = result+'   <h4>Client/Vendor</h4>';
+					 if(report.searchType=="Client"){
+						 if((report.searchType=="Client") && j == 0){
+							 result = result+'  <div class="clearfix">';
+							 result = result+'   <h4>Client</h4>';
+							 result = result+'  </div>';
 			            	 }
 						 var name_location = "";
 					    	result = result+'  <div class="srchresult clearfix row">';
@@ -454,16 +527,55 @@ function getSearchResultsForAll(searchType,searchValue){
 					    	}
 					    	result = result+'      </div>';
 					    	result = result+'  </div>';
+					    	
+					    	if(opt.length>5 && j==4){
+				                result = result+'  <div class="clearfix">';
+						    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+						    	result = result+'  </div>';
+				             }
 	            	 }
-	            	 
-			             
+					 
+					 
+					 
+					 if(report.searchType=="Vendor"){
+						 if((report.searchType=="Vendor") && j == 0){
+							 result = result+'  <div class="clearfix">';
+							 result = result+'   <h4>Vendor</h4>';
+							 result = result+'  </div>';
+			            	 }
+						 var name_location = "";
+					    	result = result+'  <div class="srchresult clearfix row">';
+					    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
+					    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
+					    		name_location = name_location + report.orgName+",";
+					    	}
+					    	if(report.city !=null && report.city != '' && report.city !="undefined"){
+					    		name_location = name_location + report.city;
+					    	}
+					    	if(report.state !=null && report.state != '' && report.state !="undefined"){
+					    		name_location = name_location + report.state;
+					    	}
+					    	if(report.country !=null && report.country != '' && report.country !="undefined"){
+					    		name_location = name_location + report.country;
+					    	}
+					    	result = result+'          <label>'+name_location+'</label>';
+					    	result = result+'          </p>';
+					    	if(report.createdBy !=null && report.createdBy != '' && report.createdBy !="undefined"){
+					    		result = result+'          <p><label>'+report.createdBy+'</label></p>';
+					    	}
+					    	result = result+'      </div>';
+					    	result = result+'  </div>';
+					    	
+					    	if(opt.length>5 && j==4){
+				                result = result+'  <div class="clearfix">';
+						    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+						    	result = result+'  </div>';
+				             }
+	            	 }
+					    
 	    	 }   
-	           
-			  
+	             
 	    	 }
-	    	    result = result+'  <div class="clearfix">';
-		    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
-		    	result = result+'  </div>';
 	    	
 	    	 result = result+'</div>';
 	    	 $("#searchList").empty();
@@ -475,13 +587,13 @@ function getSearchResultsForAll(searchType,searchValue){
 </script>
 
 
-
+<!-- /candidateList -->
 <script type="text/javascript">
 function loadCandidate(){
 	var searchResult = "universalCanddateList";
-	var serachValue = "${searchValue}";
+	var searchValue = "${searchValue}";
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/candidatesList?&searchResult="+searchResult+"&serachValue="+serachValue;
+	window.location.href = sourceleadUrl + "/candidatesList?&searchResult="+searchResult+"&searchValue="+searchValue;
 }
 </script>
 
@@ -491,6 +603,16 @@ function loadRequirement(){
 	var serachValue = "${searchValue}";
 	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/requirementList?&searchResult="+searchResult+"&serachValue="+serachValue;
+}
+</script>
+
+<!-- /usersList -->
+<script>
+function loadUsers(){
+	var searchResult = "searchresult";
+	var searchValue = "${searchValue}";
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/usersList?&searchResult="+searchResult+"&searchValue="+searchValue;
 }
 </script>
 

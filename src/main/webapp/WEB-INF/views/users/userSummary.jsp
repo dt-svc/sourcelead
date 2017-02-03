@@ -789,8 +789,11 @@ function getChangeRole(userId,userRoleId){
  function validateEmployeeId(id,userId) {
 	 $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");
 	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
-	 var EmployeeId = document.getElementById("EmployeeId").value; 
+	 var EmpId = document.getElementById("EmployeeId").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var con = document.getElementById("EmployeeId").value;
+	 var EmployeeId = encodeURIComponent(con);
+	 
         if(EmployeeId!=null&&EmployeeId!=""){
         	$("#update_user").attr("disabled", "disabled");
             $( "#update_user" ).addClass('button').val('Processing..');
@@ -799,9 +802,9 @@ function getChangeRole(userId,userRoleId){
 		        url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId, 
 		        success: function(data) {
 		        	if(data == true){
-						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmployeeId+" is Already Existed</span>");
+						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmpId+" is Already Existed</span>");
 						  document.getElementById("EmployeeId").setAttribute('record-exist','yes');
-						  document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmployeeId+' is Already Existed'); 
+						  document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmpId+' is Already Existed'); 
 		        	}
 		        	else{
 		        		 $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");

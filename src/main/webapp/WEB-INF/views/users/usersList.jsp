@@ -24,8 +24,32 @@ margin-right: 15px;
 </style>
 <script type="text/javascript">
 window.onload = function () {
-	getUsersList('manual');
+	usersListCheck("${searchValue}","${searchResult}");
  };
+</script>
+
+<script type="text/javascript">
+function usersListCheck(searchValue,searchResult){
+	if(searchResult == 'searchresult'){
+		getUsersSearchResult(searchValue);
+	}else{
+		getUsersList('manual');
+	}
+}
+</script>
+
+<script>
+function getUsersSearchResult(searchValue){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+        type : "GET",
+         url: sourceleadUrl+"/getUniversalSearchUsersList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
+         success :function(data) {
+        	 prepareUsersList(data);
+        },
+         
+    }); 
+}
 </script>
 
 <script>
@@ -50,7 +74,7 @@ window.onload = function () {
 			</div>
 	     </c:if>
       <div class="pull-left">
-        <h2>Users List</h2>
+        <h2>Users </h2>
       </div>
       
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Users List </div>

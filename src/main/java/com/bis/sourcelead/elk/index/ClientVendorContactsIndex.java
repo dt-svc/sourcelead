@@ -63,6 +63,10 @@ public class ClientVendorContactsIndex implements Serializable {
 	
 	private String responderType;
 	
+	//dummy
+	private Long spocLocationId;
+	
+	
 	
 	public Long getId() {
 		return id;
@@ -288,6 +292,14 @@ public class ClientVendorContactsIndex implements Serializable {
 
 	public void setResponderType(String responderType) {
 		this.responderType = responderType;
+	}
+
+	public Long getSpocLocationId() {
+		return spocLocationId;
+	}
+
+	public void setSpocLocationId(Long spocLocationId) {
+		this.spocLocationId = spocLocationId;
 	}
 
 	

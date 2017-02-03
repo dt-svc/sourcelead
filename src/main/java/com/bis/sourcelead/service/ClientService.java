@@ -25,6 +25,10 @@ public interface ClientService {
 
 	void saveOrUpdateClientVendorElkDocument(Org org,OrgLocations clientOrgLocations, String responderType, OrgSpoc orgSpoc,
 			OrgRelations orgRelationsList, SubmissionTemplate submissionTemplate) throws Exception;
+	
+	public void sendAcceptEmailToClientOrVendor(OrgSpoc orgSpoc,User loginUser,OrgLocations orgLocations)throws Exception;
+
+	public void sendRejectEmailToClientOrVendor(OrgSpoc orgSpoc, User loginUser, OrgLocations orgLocations)throws Exception;
 
 	
 }
