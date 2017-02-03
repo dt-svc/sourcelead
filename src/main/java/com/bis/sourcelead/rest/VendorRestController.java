@@ -869,7 +869,7 @@ public class VendorRestController {
 					if(createdByArray != null && !createdByArray.isEmpty()){
 						BoolQueryBuilder createdByBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : createdByArray){
-							createdByBoolQueryBuilder.should(QueryBuilders.matchQuery("createdBy", keywd));
+							createdByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("createdBy", keywd));
 						}
 						boolQueryBuilder.must(createdByBoolQueryBuilder);
 					}
@@ -898,7 +898,8 @@ public class VendorRestController {
 									
 									if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 										
-										clientVendor.setWebsite("www."+clientVendor.getResponderWebSite());
+									    StringBuilder website=new StringBuilder();
+									    clientVendor.setWebsite(website.append("www.").append(clientVendor.getResponderWebSite()).toString());
 										clientVendor.setOrgName(clientVendor.getResponderOrgName());
 										clientVendor.setCountry(clientVendor.getResponderCountry());
 										clientVendor.setState(clientVendor.getResponderState());
@@ -910,7 +911,8 @@ public class VendorRestController {
 									}
 								  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
 									 
-									  clientVendor.setWebsite("www."+clientVendor.getInitiatorWebSite());
+									  StringBuilder website=new StringBuilder();
+									  clientVendor.setWebsite(website.append("www.").append(clientVendor.getInitiatorWebSite()).toString());
 									  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
 									  clientVendor.setCountry(clientVendor.getInitiatorCountry());
 									  clientVendor.setState(clientVendor.getInitiatorState());
@@ -990,6 +992,7 @@ public class VendorRestController {
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserFirstName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserLastName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserPhNo", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("ownerUserPhNo", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserEmail", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("ownerUserEmail", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("responderOrgName", keywd));
@@ -1139,8 +1142,8 @@ public class VendorRestController {
 					if(contactEmailNameArray != null && !contactEmailNameArray.isEmpty()){
 						BoolQueryBuilder contactEmailBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : contactEmailNameArray){
-							contactEmailBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("ownerUserEmail", keywd));
 							contactEmailBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocUserEmail", keywd));
+							contactEmailBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("ownerUserEmail", keywd));
 						}
 						boolQueryBuilder.must(contactEmailBoolQueryBuilder);
 					}
@@ -1151,6 +1154,7 @@ public class VendorRestController {
 						BoolQueryBuilder phoneNumberBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : phoneNumberNameArray){
 							phoneNumberBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocUserPhNo", keywd));
+							phoneNumberBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("ownerUserPhNo", keywd));
 						}
 						boolQueryBuilder.must(phoneNumberBoolQueryBuilder);
 					}
@@ -1400,7 +1404,8 @@ public class VendorRestController {
 						
 						if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 							
-							clientVendor.setWebsite("www."+clientVendor.getResponderWebSite());
+							StringBuilder website=new StringBuilder();
+							clientVendor.setWebsite(website.append("www.").append(clientVendor.getResponderWebSite()).toString());
 							clientVendor.setOrgName(clientVendor.getResponderOrgName());
 							clientVendor.setCountry(clientVendor.getResponderCountry());
 							clientVendor.setState(clientVendor.getResponderState());
@@ -1411,7 +1416,8 @@ public class VendorRestController {
 						}
 					  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
 						 
-						  clientVendor.setWebsite("www."+clientVendor.getInitiatorWebSite());
+						  StringBuilder website=new StringBuilder();
+						  clientVendor.setWebsite(website.append("www.").append(clientVendor.getInitiatorWebSite()).toString());
 						  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
 						  clientVendor.setCountry(clientVendor.getInitiatorCountry());
 						  clientVendor.setState(clientVendor.getInitiatorState());

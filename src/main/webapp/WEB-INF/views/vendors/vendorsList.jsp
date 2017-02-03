@@ -1718,9 +1718,9 @@ function pagination1(){
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Vendor City:</strong>';
-							if(json.city != null && json.city !='' && json.city !='undefined'){
-								result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
+							result = result + '<strong>Vendor Country:</strong>';
+							if(json.country != null && json.country !='' && json.country !='undefined'){
+								result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
 							}else{
 								result = result + '<span>No Data</span><div class="clearfix"></div>';
 							}
@@ -1736,9 +1736,9 @@ function pagination1(){
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Vendor Country:</strong>';
-							if(json.country != null && json.country !='' && json.country !='undefined'){
-								result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
+							result = result + '<strong>Vendor City:</strong>';
+							if(json.city != null && json.city !='' && json.city !='undefined'){
+								result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
 							}else{
 								result = result + '<span>No Data</span><div class="clearfix"></div>';
 							}
