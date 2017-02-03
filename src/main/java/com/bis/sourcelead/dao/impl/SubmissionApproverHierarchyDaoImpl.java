@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -828,7 +829,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(Long projectMemberId, Date startDate, Date endDate) throws Exception {
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectMemberId, Date startDate, Date endDate) throws Exception {
 			
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = null;
@@ -842,25 +843,34 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		}
 		
 		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user "
-				+ " where  pm.id = :projectMemberId and (ts.startDate between :startDate and :endDate or ts.startDate = :startDate)";
+				+ " where  pm.id = :projectMemberId and (ts.startDate between :startDate and :endDate OR ts.startDate = :startDate)"
+				+ "  and ( "
+				/*
+				*  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
+				*/
+				+ "  hierarchy.approverUserId.id = :userId "
+				/*
+				 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
+				 */
+				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.projectMembers.id = pm.id and (subsah.submissionId.startDate between :startDate and :endDate OR subsah.submissionId.startDate = :startDate)) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+") "
+				+ "   ) ";
 		@SuppressWarnings("unchecked")
-		List<SubmissionApproverHierarchy> submissionApproverHierarchyList =session.createQuery(query.toString()).setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list(); 
+		List<SubmissionApproverHierarchy> submissionApproverHierarchyList =session.createQuery(query.toString()).setLong("userId", approverUserId).setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list(); 
 		Boolean isRejected = false; 
 	    Boolean isAPPROVED = false; 
 	    Boolean isSUBMITTED = false; 
 	    Boolean isNEW = false;
 	    Boolean isREOPENED = false;
 	    SubmissionApproverHierarchy submissionApproverHierarchy = null;
-	    Float totalHours = 0f;
 	    LinkedHashMap<Date, Float> weekTotalsMap = new LinkedHashMap<>();
 	    if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
 	    	for(SubmissionApproverHierarchy sah : submissionApproverHierarchyList){
-			     weekTotalsMap.put(sah.getSubmissionId().getStartDate(), sah.getTotalHours());
-			     if(sah.getTotalHours()!= null){
-			    	 totalHours = totalHours+sah.getTotalHours();
-			     }
+	    		 if(StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())){
+	    			 float weekTotalHours =Float.parseFloat(sah.getSubmissionId().getTotalHours());
+	    			 weekTotalsMap.put(sah.getSubmissionId().getStartDate(),weekTotalHours);
+	    		 }
 			     else{
-			    	 totalHours = totalHours+0;
+			    	 weekTotalsMap.put(sah.getSubmissionId().getStartDate(),0f);
 			     }
 			    
 				if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
@@ -886,7 +896,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				}
 		
 	     }
-	    	submissionApproverHierarchy.setTotalHours(totalHours);
 			submissionApproverHierarchy.setWeekTotals(weekTotalsMap);
 	    }
 	    else{
