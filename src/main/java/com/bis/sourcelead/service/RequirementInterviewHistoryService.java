@@ -30,5 +30,7 @@ public interface RequirementInterviewHistoryService {
 	 * To get dashboard interviews
 	 */
 	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception;
+	
+	Integer getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 
 }

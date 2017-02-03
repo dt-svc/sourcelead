@@ -165,7 +165,12 @@ overflow-x: auto;
 		                <div class="col-md-4">
 		                  <label>Project Manager</label>
 		                  <div class="clearfix">
-		                  <input type="text" class="form-control input-sm" placeholder="Project manager" id="projectManagerAdvanced" name="projectManagerAdvanced">
+		                  		<!-- <input type="text" class="form-control input-sm" placeholder="Project manager" value = "" id="projectManagerAdvanced" name="projectManagerAdvanced"> -->
+						  		<select class="chosen-select form-control input-sm" multiple data-placeholder="Project manager" id="projectManagerAdvanced" name="projectManagerAdvanced">
+                                    <c:forEach var="report" items="${add_projectManagersList}">
+				                    	<option value="${report.fullName}">${report.fullName}</option>
+			                		</c:forEach>
+                                </select>
 		                  </div>
 		                </div>
 					  
@@ -196,10 +201,10 @@ overflow-x: auto;
 		                  <label>Status</label>
 		                  <div class="clearfix">
 		                     <select class="chosen-select" id="statusAdvanced" name="statusAdvanced" data-placeholder="Status" multiple>
-										 <option value="Started">Started</option>
-										 <option value="In-Progress">In-Progress</option>
-										 <option value="Completed">Completed</option>
-										 <option value="On-Hold">On-Hold</option>
+										 <option value="STARTED">Started</option>
+										 <option value="INPROGRESS">In-Progress</option>
+										 <option value="COMPLETED">Completed</option>
+										 <option value="ONHOLD">On-Hold</option>
 				             </select>
 		                  </div>
 		                </div>
@@ -215,14 +220,24 @@ overflow-x: auto;
 		                <div class="col-md-4">
 		                  <label>Employee Name</label>
 		                  <div class="clearfix">
-		                  	<input type="text" class="form-control input-sm" placeholder="Employee Name" id="employeeNameAdvanced" name="employeeNameAdvanced">
+		                  	<!-- <input type="text" class="form-control input-sm" placeholder="Employee Name" id="employeeNameAdvanced" name="employeeNameAdvanced"> -->
+		                  	<select class="chosen-select form-control input-sm" multiple data-placeholder="Employee Name" id="employeeNameAdvanced" name="employeeNameAdvanced">
+                                    <c:forEach var="report" items="${add_projectMembersList}">
+				                    	<option value="${report.empName}">${report.empName}</option>
+			                		</c:forEach>
+                            </select>
 		                  </div>
 		                </div>
 		                
 		                <div class="col-md-4">
 		                  <label>Employee Email</label>
 		                  <div class="clearfix">
-		                  	<input type="text" class="form-control input-sm" placeholder="Employee Email" id="employeeEmailAdvanced" name="employeeEmailAdvanced">
+		                  	<!-- <input type="text" class="form-control input-sm" placeholder="Employee Email" id="employeeEmailAdvanced" name="employeeEmailAdvanced"> -->
+		                  	<select class="chosen-select form-control input-sm" multiple data-placeholder="Employee Email" id="employeeEmailAdvanced" name="employeeEmailAdvanced">
+                                    <c:forEach var="report" items="${add_projectMembersList}">
+				                    	<option value="${report.empEmail}">${report.empEmail}</option>
+			                		</c:forEach>
+                            </select>
 		                  </div>
 		                </div>
 		                </div>
@@ -307,9 +322,10 @@ overflow-x: auto;
 	
 <script type="text/javascript">
 window.onload = function () {
+	searchProject();
 	$('input[name=projectStatus]').attr('checked',false);
 	$('input[name=clientNameById]').attr('checked',false);
-	filter();
+	//filter();
  };
 </script>
 
@@ -666,10 +682,28 @@ $(document).ready(function() {
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
+	    $("#projectIdAdvanced").val('').trigger("chosen:updated");
+	    $("#projectNameAdvanced").val('').trigger("chosen:updated");
+	    $("#projectStartDateAdvanced").val('').trigger("chosen:updated");
+	   /*  $("#projectManagerAdvanced").val('').trigger("chosen:updated");
+	    $("#invoiceFrequencyAdvanced").val('').trigger("chosen:updated");
+	    $("#clientsAdvanced").val('').trigger("chosen:updated");
+	    $("#statusAdvanced").val('').trigger("chosen:updated");
+	    $("#employeeNameAdvanced").val('').trigger("chosen:updated");
+	    $("#employeeEmailAdvanced").val('').trigger("chosen:updated"); */
 	    
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
 	    $("#excludeKeyWord").empty();
+	    $("#projectIdAdvanced").empty();
+	    $("#projectNameAdvanced").empty();
+	    $("#projectStartDateAdvanced").empty();
+	    /* $("#projectManagerAdvanced").empty();
+	    $("#invoiceFrequencyAdvanced").empty();
+	    $("#clientsAdvanced").empty();
+	    $("#statusAdvanced").empty();
+	    $("#employeeNameAdvanced").empty();
+	    $("#employeeEmailAdvanced").empty(); */
 	}
 </script>
 	
@@ -745,6 +779,182 @@ $(document).ready(function() {
 	        		
 		        }
 		    });
+		    
+		    
+		    var selectthree, chosenthree;
+		    selectthree = $("#projectIdAdvanced");
+		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenthree = selectthree.data('chosen');
+		    chosenthree.search_field.on('keyup', function(e2)
+		    {
+		    	var projectIdAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (projectIdAdvanced != null  && projectIdAdvanced != '' && projectIdAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(projectIdAdvanced).text(projectIdAdvanced);
+		            selectthree.append(option);
+		            selectthree.find(option).prop('selected', true);
+                    $("#projectIdAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#projectIdAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectfour, chosenthree;
+		    selectfour = $("#projectNameAdvanced");
+		    selectfour.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenthree = selectfour.data('chosen');
+		    chosenthree.search_field.on('keyup', function(e2)
+		    {
+		    	var projectNameAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (projectNameAdvanced != null  && projectNameAdvanced != '' && projectNameAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(projectNameAdvanced).text(projectNameAdvanced);
+		            selectfour.append(option);
+		            selectfour.find(option).prop('selected', true);
+                    $("#projectNameAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#projectNameAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    /* var selectfive, chosenfive;
+		    selectfive = $("#projectManagerAdvanced");
+		    selectfive.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenfive = selectfive.data('chosen');
+		    chosenfive.search_field.on('keyup', function(e2)
+		    {
+		    	var projectManagerAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (projectManagerAdvanced != null  && projectManagerAdvanced != '' && projectManagerAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(projectManagerAdvanced).text(projectManagerAdvanced);
+		            selectfive.append(option);
+		            selectfive.find(option).prop('selected', true);
+                    $("#projectManagerAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#projectManagerAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectsix, chosensix;
+		    selectsix = $("#invoiceFrequencyAdvanced");
+		    selectsix.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosensix = selectsix.data('chosen');
+		    chosensix.search_field.on('keyup', function(e2)
+		    {
+		    	var invoiceFrequencyAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (invoiceFrequencyAdvanced != null  && invoiceFrequencyAdvanced != '' && invoiceFrequencyAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(invoiceFrequencyAdvanced).text(invoiceFrequencyAdvanced);
+		            selectsix.append(option);
+		            selectsix.find(option).prop('selected', true);
+                    $("#invoiceFrequencyAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#invoiceFrequencyAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectseven, chosenseven;
+		    selectseven = $("#clientsAdvanced");
+		    selectseven.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenseven = selectseven.data('chosen');
+		    chosenseven.search_field.on('keyup', function(e2)
+		    {
+		    	var clientsAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (clientsAdvanced != null  && clientsAdvanced != '' && clientsAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(clientsAdvanced).text(clientsAdvanced);
+		            selectseven.append(option);
+		            selectseven.find(option).prop('selected', true);
+                    $("#clientsAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#clientsAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selecteight, choseneight;
+		    selecteight = $("#statusAdvanced");
+		    selecteight.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    choseneight = selecteight.data('chosen');
+		    choseneight.search_field.on('keyup', function(e2)
+		    {
+		    	var statusAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (statusAdvanced != null  && statusAdvanced != '' && statusAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(statusAdvanced).text(statusAdvanced);
+		            selecteight.append(option);
+		            selecteight.find(option).prop('selected', true);
+                    $("#statusAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#statusAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectnine, chosennine;
+		    selectnine = $("#employeeNameAdvanced");
+		    selectnine.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosennine = selectnine.data('chosen');
+		    chosennine.search_field.on('keyup', function(e2)
+		    {
+		    	var employeeNameAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (employeeNameAdvanced != null  && employeeNameAdvanced != '' && employeeNameAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(employeeNameAdvanced).text(employeeNameAdvanced);
+		            selectnine.append(option);
+		            selectnine.find(option).prop('selected', true);
+                    $("#employeeNameAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#employeeNameAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
+		    
+		    var selectten, chosenten;
+		    selectten = $("#employeeEmailAdvanced");
+		    selectten.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenten = selectten.data('chosen');
+		    chosenten.search_field.on('keyup', function(e2)
+		    {
+		    	var employeeEmailAdvanced = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (employeeEmailAdvanced != null  && employeeEmailAdvanced != '' && employeeEmailAdvanced != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(employeeEmailAdvanced).text(employeeEmailAdvanced);
+		            selectten.append(option);
+		            selectten.find(option).prop('selected', true);
+                    $("#employeeEmailAdvanced option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#employeeEmailAdvanced").trigger("chosen:updated");
+	        		
+		        }
+		    }); */
 		    
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
@@ -910,15 +1120,16 @@ $(document).ready(function() {
 	    	    $("#example").append(result);
 	    	    pagination();
 	  }else{
-     	 $("#candidateList").removeAttr("style");
+     	 $("#example").removeAttr("style");
 	         var result ="";
 			 result = result+"			<div class='blank-pages'>";
 			 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-			 result = result+"			        <p>No Candidates Found</p>";
+			 result = result+"			        <p>No Projects Found</p>";
 			 result = result+"			 </div>";
-			$("#noCandidates").val("nocandidate");
-			$("#candidateList").empty();
-		    $("#candidateList").append(result); 
+			$("#example").empty();
+		    $("#example").append(result); 
+		    $(".dataTables_info").empty();
+		    $(".dataTables_paginate").empty();
       }
   }
 </script>
