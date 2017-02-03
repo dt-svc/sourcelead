@@ -676,13 +676,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 		employeesService.addEmployee(employees);
 		
 		if(null == orgLocations.getUser()){
+			Org org = orgLocations.getOrg();
 			if(roles.getRoleName().equalsIgnoreCase("ROLE_ADMIN")){
 				orgLocations.setUser(orgUser);
 				orgLocationService.updateOrgLocations(orgLocations);
-				Org org = orgLocations.getOrg();
 				org.setUser(orgUser);
-				orgService.addOrganization(org);
 			}	
+			
+			if(org.getOrgType().equalsIgnoreCase("Guest")){
+				org.setOrgType("Company");
+				org.setStatus(Status.ACTIVE);
+			}
+			orgService.addOrganization(org);
 		}
 		
 		

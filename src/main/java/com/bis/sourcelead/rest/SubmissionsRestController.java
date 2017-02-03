@@ -295,7 +295,6 @@ public class SubmissionsRestController {
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
 
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
-			CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
 					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 			if (requirementSubmissionTemplateFields.getLastName() != null) {
@@ -322,10 +321,6 @@ public class SubmissionsRestController {
 				requirementSubmission
 						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 			}
-			User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-			StringBuilder userNameSB = new StringBuilder();
-			requirementSubmission.setUserName(userNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
-			requirementSubmission.setResumeName(candidateResumes.getFileName());
 			candidatesList.add(requirementSubmission);
 		}
 		resultJson = toJSON(candidatesList);
@@ -346,8 +341,7 @@ public class SubmissionsRestController {
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
 
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
-			CandidateResumes candidateResumes = candidateResumesService
-					.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+			
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
 					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 			if (requirementSubmissionTemplateFields.getLastName() != null) {
@@ -376,10 +370,6 @@ public class SubmissionsRestController {
 				requirementSubmission
 						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 			}
-			User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-			StringBuilder userNameSB = new StringBuilder();
-			requirementSubmission.setUserName(userNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
-			requirementSubmission.setResumeName(candidateResumes.getFileName());
 			candidatesList.add(requirementSubmission);
 		}
 		resultJson = toJSON(candidatesList);

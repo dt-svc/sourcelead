@@ -600,12 +600,13 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return userRoleList;
 	}
 
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId) {
+	public List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId,Long loginUserId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserRole userRole left join fetch userRole.user user  where userRole.orgLocations.id IN (select responderLocationId from OrgRelations orl where orl.locationId.id =:orgLocationId) OR (userRole.orgLocations.id =:orgLocationId) ";
-		List<UserRole> usersList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "from UserRole userRole left join fetch userRole.user user  where (userRole.user.id IN (select spocUser.id from OrgSpoc os where os.ownerUser =:loginUserId and  os.responderLocationId.id = userRole.orgLocations.id ) and userRole.orgLocations.id IN (select responderLocationId from OrgRelations orl where orl.locationId.id =:orgLocationId)) OR (userRole.orgLocations.id =:orgLocationId) GROUP BY user.id ";
+		List<UserRole> usersList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).setLong( "loginUserId", loginUserId).setCacheable(true).list();
 		return usersList;
 	}
 

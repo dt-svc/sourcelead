@@ -7,6 +7,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -154,6 +155,8 @@ public interface UserService  {
 	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId,Long userId,Long tabId) throws Exception;
 	
 	public List<User> getUsersListByOrglocationId(Long orgLocationId) throws Exception;
+
+	List<UserIndex> getAllUniversalSearchUsersList(OrgLocations orgLocations, String searchValue, User user)throws Exception;
 	
 }	
 		

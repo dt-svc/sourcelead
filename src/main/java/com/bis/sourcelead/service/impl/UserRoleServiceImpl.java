@@ -169,8 +169,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getUsersCountByOrgLocationID(orgLocationId);
 	}
 	@Override
-	public List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId) {
-		return userRoleDao.getAllUsersListByOrgLocationId(orgLocationId);
+	public List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId,Long loginUserId)throws Exception {
+		return userRoleDao.getAllUsersListByOrgLocationId(orgLocationId,loginUserId);
 	}
 	
 	

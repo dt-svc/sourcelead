@@ -6,6 +6,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
+<script src="resources/js/bootstrap-select.min.js"></script>
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -13,6 +14,7 @@
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> 
 <!-- end files for autocomplete with tagit -->
+
 
 
 <jsp:include page="requirementDetails.jsp"></jsp:include>
@@ -244,7 +246,7 @@ $(document).ready(function () {
 <section class="content-wraper">
   <section class="content-header clearfix">
      <div class="pull-left">
-      <h2>Requirement Details</h2>
+      <h2>Add Requirement</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Add Requirement </div>
   </section>
@@ -254,7 +256,7 @@ $(document).ready(function () {
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
         <div class="col-lg-12">
-          <h3>Add Requirement Details</h3>
+          <h3>Requirement Details</h3>
         </div>
 	       <div class="col-md-12 clearfix">
         	  <div class="col-md-12">
@@ -659,7 +661,7 @@ $(document).ready(function () {
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Bill Rate / Salary</label>
+                <label class="col-md-3">Bill Rate / Salary ${currencyCode};</label>
               <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
@@ -697,12 +699,12 @@ $(document).ready(function () {
 	             <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
 		         
 		          <c:if test="${empty requirement.id}">
-	                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-	                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-	                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-	                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
-	                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-	                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+	                <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
                  </c:if>
                  
                  <c:if test="${! empty requirement.id}">
@@ -796,14 +798,14 @@ $(document).ready(function () {
                 <div  class="ml pull-left apprverReq" style="display:none;">
                 <label class="rad" id="parallel">
                 <input type="radio" name="approver" id="parallelapprovers" checked="checked" onClick="approvalType('Parallel');">
-                <i class="fa fa-align-center" data-placement="top" data-toggle="tooltip"  title="Parallel"></i>
+                <i class="fa fa-align-center" title="Parallel"></i>
                 </label>
                 <label class="rad" id="sequential">
                 <input type="radio" name="approver" id="seqentialApprovers"  onClick="approvalType('Sequential');">
-                <i class="fa fa-retweet" data-placement="top" data-toggle="tooltip" title="Sequential"></i>
+                <i class="fa fa-retweet" title="Sequential"></i>
                 </label>
                 
-                 <i data-placement="top" data-toggle="tooltip" class="glyphicon glyphicon-info-sign text-info ml" title="info"></i>
+                 <i class="glyphicon glyphicon-info-sign text-info ml" title="Sequential approval mechanism is hierarchy based Parallel approval mechanism is any approver can approve requirement"></i>
                 </div>
                 <!-- Radio buttons for Sequential or Parallel function -->
                
@@ -1168,7 +1170,8 @@ function storeTeam(){
 					type : "POST",
 					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success :function(data) { 
-						$('#addTeam').modal('hide');
+						$('#addTeam').hide();
+						$('.modal-backdrop').hide();
 				      }, 
 		    });  
 			return true; 
@@ -1465,6 +1468,7 @@ function getTemplateVal(){
 </script>
 <script>
 function getRequirementAndLookUpSkills(requirementid){
+	alert("dd");
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
    	type: "POST",
@@ -1475,6 +1479,7 @@ function getRequirementAndLookUpSkills(requirementid){
 	    		var output = "";
 	    		for (var i = 0; i < json.length; i++) { 
                	    var skill = json[i];
+               
 	        		output = output + "<option value='" +skill+ "'>"+skill+"</option>";
 	    		}
 	            $("#skills").empty();
@@ -1493,13 +1498,11 @@ function setTemplateValues(){
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
 		
 		getRequirementAndLookUpSkills(requirementId);
-	
 	$.ajax({
 	   	type: "POST",
 	   	
 	    url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
 		    success: function(data) {
-		    	
 		    	
 		    	if(data != null && data != 'undefined' && data !='' ){ 
 		    		
@@ -1511,7 +1514,9 @@ function setTemplateValues(){
 		    		
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
+			    	
 			    	$("#jobOtherType").val(json.otherJobType);
+			    	alert("json"+json.jobType);
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#jobId").val(json.jobId);
 			    	$("#positions").val(json.positions);

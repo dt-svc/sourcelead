@@ -130,7 +130,7 @@ public class CandidateController {
 	
 	@RequestMapping(value = "/candidatesList")
 	public ModelAndView usersList(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,@RequestParam(value="searchResult", required=false)String  searchResult
-			,@RequestParam(value="serachValue", required=false)String serachValue,HttpServletRequest request) throws Exception {
+			,@RequestParam(value="searchValue", required=false)String searchValue,HttpServletRequest request) throws Exception {
 		logger.debug("--------candidatesList------");
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -142,7 +142,7 @@ public class CandidateController {
 		
 		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalCanddateList")){
 		    model.addObject("universalCanddateList", "universalCanddateList");
-		    model.addObject("serachValue",serachValue);
+		    model.addObject("serachValue",searchValue);
 		}
 		
 		List<Countries> countryList = countriesService.getAllCountries();

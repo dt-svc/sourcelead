@@ -349,6 +349,8 @@ public class AddElkRequirement {
 		 }catch(Exception e){
 			 e.printStackTrace();
 		 }finally{
+			 ps.close();
+		     conn.close();	 
 		 }
 	     return rs;
 	}

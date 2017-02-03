@@ -6,6 +6,14 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
  
  <style type="text/css">
  .overflow-data {
@@ -614,26 +622,26 @@ function sideBar(requirementId){
 					    result = result+'<li><i class="fa fa-black-tie"></i><span>Experience : --</span></li>';
 				        }
 				        
-				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '')
+				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined')
 				    	   {
 				        result = result+' <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
 				    	   }
-				       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
+				       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
 					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
-				       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
+				       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
 					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
 				       }
-				       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
+				       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
 					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
    
 				       }
-				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
+				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
 					   result = result+'<li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
    
 				       }
-				       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
+				       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
 					   result = result+'<li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
   
 				       }
@@ -731,8 +739,11 @@ function sideBar(requirementId){
 						    result = result +'<div id="status-div"></div>';
 							result = result +'<div id="status-data"></div>';
 						   
-						    result = result+'<div id="tab-3" class="project_tabs_inn">';
+						    result = result+'<div id="tab-3" class="project_tabs_inn overflow-data">';
+						    
 						    result = result+'</div> ';
+						    result = result +'<div id="recommendationsLoading"></div>'; 
+						    
 					    result = result+'</div>';
 					    result = result+'</div>';
 					    
@@ -1465,14 +1476,14 @@ function requirementPipeline(requirementId,submissionType){
 						        	   if(submissionType != 'SUBMIT_TO_CLIENT'){
 								           if(report.vendorLocationId != null && report.sourceSubmission != null){
 								        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-									        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
+									        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 										           }
 										       else{
 										        	result = result + '         <td><div><span>--</span></div></td>';
 									    	     }
 								           }else{
 								        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-									        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop" id="ratepop"></div></td>';
+									        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 										           }
 										       else{
 										        	result = result + '         <td><div><span>--</span></div></td>';
@@ -1483,14 +1494,14 @@ function requirementPipeline(requirementId,submissionType){
 							    	   if(clientSubmissions == 'Y'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 							        	   }else{
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							           }else{
 // 							        	   if(clientSubmissions == 'Y'){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 							        	   }else{
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
@@ -1719,6 +1730,7 @@ function documentpagination(){
 }
 </script>
 <div id="popUp"></div>
+<div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
 	var selectBox = $('#rejectApplicantSelect'+submissionId).val();
@@ -1901,7 +1913,8 @@ function assignedMemberList(requirementId){
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
 	  var sourceleadUrl = '${sourceleadUrl}';
-	  $.ajax({
+	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
     type : "POST",
      url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
      success :function(data) {
@@ -1917,160 +1930,13 @@ function requirementRecommendations(requirementId){
 			 result = result +'</div>';
     	    
     	    //--------------------------------
-    	    result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
+    	    //result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
+    	    result = result +'<div class="clearfix">';
 		    result = result +'<div class="rec_head">';
 
-		    result = result +'		    	    <div class="pull-left cand-advsrch">																							';
-		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop()">Customize Score </a>            ';
-		    result = result +'		          <div class="cand-advsrch-popup customizescore-pop">                                                                               ';
-		    result = result +'		            <div class="row clearfix">                                                                                                      ';
-		    result = result +'		                <div class="clearfix mb10">                                                                                                 ';
-		    result = result +'		                <div class="col-md-9">                                                                                                      ';
-		    result = result +'		                    <select class="chosen-select" data-placeholder="Skills" multiple>                                                       ';
-		    result = result +'		                      <option disabled>Skills</option>                                                                                      ';
-		    result = result +'		                      <option>Skill1</option>                                                                                               ';
-		    result = result +'		                      <option>Skill2</option>                                                                                               ';
-		    result = result +'		                      <option>Skill3</option>                                                                                               ';
-		    result = result +'		                      <option>Skill1</option>                                                                                               ';
-		    result = result +'		                      <option>Skill2</option>                                                                                               ';
-		    result = result +'		                      <option>Skill3</option>                                                                                               ';
-		    result = result +'		                    </select>                                                                                                               ';
-		    result = result +'		                  </div>                                                                                                                    ';
-		    result = result +'		                   <div class="col-md-3">                                                                                                   ';
-		    result = result +'		                    <select class="chosen-select" data-placeholder="Skills">                                                                ';
-		    result = result +'		                      <option disabled>Skills</option>                                                                                      ';
-		    result = result +'		                      <option>10%</option>                                                                                                  ';
-		    result = result +'		                      <option>20%</option>                                                                                                  ';
-		    result = result +'		                      <option>30%</option>                                                                                                  ';
-		    result = result +'		                      <option>40%</option>                                                                                                  ';
-		    result = result +'		                      <option>50%</option>                                                                                                  ';
-		    result = result +'		                      <option>60%</option>                                                                                                  ';
-		    result = result +'		                      <option>70%</option>                                                                                                  ';
-		    result = result +'		                      <option>80%</option>                                                                                                  ';
-		    result = result +'		                      <option>90%</option>                                                                                                  ';
-		    result = result +'		                      <option>100%</option>                                                                                                 ';
-		    result = result +'		                    </select>                                                                                                               ';
-		    result = result +'		                  </div>                                                                                                                    ';
-		    result = result +'		                </div>                                                                                                                      ';
-		    result = result +'		                <div class="clearfix mb10">                                                                                                 ';
-		    result = result +'		                  <div class="col-md-9">                                                                                                    ';
-		    result = result +'		                    <input type="text" placeholder="Experience" class="form-control">                                                       ';
-		    result = result +'		                    </div>                                                                                                                  ';
-		    result = result +'		                    <div class="col-md-3">                                                                                                  ';
-		    result = result +'		                    <select class="chosen-select" data-placeholder="Experience">                                                            ';
-		    result = result +'		                      <option>10%</option>                                                                                                  ';
-		    result = result +'		                      <option>20%</option>                                                                                                  ';
-		    result = result +'		                      <option>30%</option>                                                                                                  ';
-		    result = result +'		                      <option>40%</option>                                                                                                  ';
-		    result = result +'		                      <option>50%</option>                                                                                                  ';
-		    result = result +'		                      <option>60%</option>                                                                                                  ';
-		    result = result +'		                      <option>70%</option>                                                                                                  ';
-		    result = result +'		                      <option>80%</option>                                                                                                  ';
-		    result = result +'		                      <option>90%</option>                                                                                                  ';
-		    result = result +'		                      <option>100%</option>                                                                                                 ';
-		    result = result +'		                    </select>                                                                                                               ';
-		    result = result +'		                  </div>                                                                                                                    ';
-		    result = result +'		                </div>                                                                                                                      ';
-		    result = result +'		           <div class="clearfix mb10">                                                                                                      ';
-		    result = result +'		                  <div class="col-md-9">                                                                                                    ';
-		    result = result +'		                    <input type="text" placeholder="Rate" class="form-control">                                                             ';
-		    result = result +'		                    </div>                                                                                                                  ';
-		    result = result +'		                    <div class="col-md-3">                                                                                                  ';
-		    result = result +'		                    <select class="chosen-select" data-placeholder="Rate">                                                                  ';
-		    result = result +'		                      <option>10%</option>                                                                                                  ';
-		    result = result +'		                      <option>20%</option>                                                                                                  ';
-		    result = result +'		                      <option>30%</option>                                                                                                  ';
-		    result = result +'		                      <option>40%</option>                                                                                                  ';
-		    result = result +'		                      <option>50%</option>                                                                                                  ';
-		    result = result +'		                      <option>60%</option>                                                                                                  ';
-		    result = result +'		                      <option>70%</option>                                                                                                  ';
-		    result = result +'		                      <option>80%</option>                                                                                                  ';
-		    result = result +'		                      <option>90%</option>                                                                                                  ';
-		    result = result +'		                      <option>100%</option>                                                                                                 ';
-		    result = result +'		                    </select>                                                                                                               ';
-		    result = result +'		                  </div>                                                                                                                    ';
-		    result = result +'		                </div>                                                                                                                      ';
-		    result = result +'				        <div class="clearfix mb10">                                                                                                 ';
-		    result = result +'		                  <div class="col-md-9">                                                                                                    ';
-		    result = result +'		                      <select class="chosen-select" data-placeholder="Notice" multiple>                                                     ';
-		    result = result +'		                      <option disabled>Notice</option>                                                                                      ';
-		    result = result +'		                      <option>Notice</option>                                                                                               ';
-		    result = result +'		                      <option>Notice</option>                                                                                               ';
-		    result = result +'		                      <option>Notice</option>                                                                                               ';
-		    result = result +'		                    </select>                                                                                                               ';
-		    result = result +'		                                                                                                                                            ';
-		    result = result +'		                    </div>                                                                                                                  ';
-		    result = result +'		                    <div class="col-md-3">                                                                                                  ';
-		    result = result +'		                    <select class="chosen-select" data-placeholder="Rate">                                                                  ';
-		    result = result +'		                      <option>10%</option>                                                                                                  ';
-		    result = result +'		                      <option>20%</option>                                                                                                  ';
-		    result = result +'		                      <option>30%</option>                                                                                                  ';
-		    result = result +'		                      <option>40%</option>                                                                                                  ';
-		    result = result +'		                      <option>50%</option>                                                                                                  ';
-		    result = result +'		                      <option>60%</option>                                                                                                  ';
-		    result = result +'		                      <option>70%</option>                                                                                                  ';
-		    result = result +'		                      <option>80%</option>                                                                                                  ';
-		    result = result +'		                      <option>90%</option>                                                                                                  ';
-		    result = result +'		                      <option>100%</option>                                                                                                 ';
-		    result = result +'		                    </select>                                                                                                               ';
-		    result = result +'		                  </div>                                                                                                                    ';
-		    result = result +'		                </div>                                                                                                                      ';
-		    result = result +'		                                                                                                                                            ';
-		    result = result +'		                                <div class="clearfix mb10">                                                                                 ';
-		    result = result +'		                  <div class="col-md-9">                                                                                                    ';
-		    result = result +'		                    <input type="text" placeholder="Keywords" class="form-control">                                                         ';
-		    result = result +'		                    </div>                                                                                                                  ';
-		    result = result +'		                    <div class="col-md-3">                                                                                                  ';
-		    result = result +'		                    <select class="chosen-select" data-placeholder="Experience">                                                            ';
-		    result = result +'		                      <option>10%</option>                                                                                                  ';
-		    result = result +'		                      <option>20%</option>                                                                                                  ';
-		    result = result +'		                      <option>30%</option>                                                                                                  ';
-		    result = result +'		                      <option>40%</option>                                                                                                  ';
-		    result = result +'		                      <option>50%</option>                                                                                                  ';
-		    result = result +'		                      <option>60%</option>                                                                                                  ';
-		    result = result +'		                      <option>70%</option>                                                                                                  ';
-		    result = result +'		                      <option>80%</option>                                                                                                  ';
-		    result = result +'		                      <option>90%</option>                                                                                                  ';
-		    result = result +'		                      <option>100%</option>                                                                                                 ';
-		    result = result +'		                    </select>                                                                                                               ';
-		    result = result +'		                  </div>                                                                                                                    ';
-		    result = result +'		                </div>                                                                                                                      ';
-		    result = result +'		                                                                                                                                            ';
-		    result = result +'		                                                                                                                                            ';
-		    result = result +'		                <div class="clearfix mb10">                                                                                                 ';
-		    result = result +'		                  <div class="col-md-3">                                                                                                    ';
-		    result = result +'		                    <select class="chosen-select" data-placeholder="Location">                                                              ';
-		    result = result +'		                      <option selected disabled>Location</option>                                                                           ';
-		    result = result +'		                        <option>10%</option>                                                                                                ';
-		    result = result +'		                      <option>20%</option>                                                                                                  ';
-		    result = result +'		                    </select>                                                                                                               ';
-		    result = result +'		                  </div>                                                                                                                    ';
-		    result = result +'		                  <div class="col-md-3">                                                                                                    ';
-		    result = result +'		                    <select class="chosen-select" data-placeholder="City">                                                                  ';
-		    result = result +'		                      <option selected disabled>City</option>                                                                               ';
-		    result = result +'		                        <option>10%</option>                                                                                                ';
-		    result = result +'		                      <option>20%</option>                                                                                                  ';
-		    result = result +'		                    </select>                                                                                                               ';
-		    result = result +'		                  </div>                                                                                                                    ';
-		    result = result +'		                    <div class="col-md-3">                                                                                                  ';
-		    result = result +'		                    <select class="chosen-select" data-placeholder="State">                                                                 ';
-		    result = result +'		                      <option selected disabled>State</option>                                                                              ';
-		    result = result +'		                        <option>10%</option>                                                                                                ';
-		    result = result +'		                      <option>20%</option>                                                                                                  ';
-		    result = result +'		                    </select>                                                                                                               ';
-		    result = result +'		                  </div>                  <div class="col-md-3">                                                                            ';
-		    result = result +'		                    <select class="chosen-select" data-placeholder="Location">                                                              ';
-		    result = result +'		                      <option>10%</option>                                                                                                  ';
-		    result = result +'		                      <option>20%</option>                                                                                                  ';
-		    result = result +'		                    </select>                                                                                                               ';
-		    result = result +'		                  </div>                                                                                                                    ';
-		    result = result +'		                </div>                                                                                                                      ';
-		    result = result +'		              </div>                                                                                                                        ';
-		    result = result +'		                                                                                                                                            ';
-		    result = result +'		            <div class="row form-footer mt10">                                                                                              ';
-		    result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Customize</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> </div>';
-		    result = result +'		            </div>';
-		    result = result +'		          </div>';
+		    result = result +'		   <div class="pull-left cand-advsrch">																							';
+		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop('+requirementId+')">Customize Score </a>            ';
+		    result = result +'                   <div id="customizeScoreDiv"></div>';
 		    result = result +'		        </div>';
 
 		    
@@ -2084,7 +1950,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<tr>';
 		    result = result +'<th>Name</th>';
 		    result = result +'<th>Ph. No</th>';
-		    result = result +'<th>Resume</th>';
+		    result = result +'<th style="width:50px;">Resume</th>';
 		    result = result +'<th>Number of req</th>';
 		    result = result +'<th>Score</th>';
 		    result = result +'<th>Action</th>';
@@ -2095,20 +1961,20 @@ function requirementRecommendations(requirementId){
 			{
 		    var report = json[i];
 		    result = result +'<tr>';
-		    result = result + '<td><div onclick="clientSideBar('+report.id+');" class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    result = result + '<td><div onclick="clientSideBar('+report.id+');" class="proj_show"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
 		    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
-		    	result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
+		    	result = result +'<td class="text-center"><div><span>'+report.mobilePhone+'</span></div></td>';
 		    }else{
 		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
 		    
-		    if(report.candidateResume != null && report.candidateResume !='' && report.candidateResume !='undefined' ){
-		    result = result +'<td><div><span><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;'+report.candidateResume+'</a></span></div></td>';
-			}else{
+		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
+		  	   result = result +'<td class="text-center"><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"></a></span></div></td>';
+			  }else{
 				result = result +'<td><div><span>--</span></div></td>';
-			}
-		    result = result +'<td><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
+			} 
+		   result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
 		    if(report.requirementSubmisstions.length > 0){
 		    	result = result +'<div class="tooltip_div">';
 			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
@@ -2128,7 +1994,73 @@ function requirementRecommendations(requirementId){
 			    result = result +' </div>'; 
 		    }
 		    result = result +' </div></td>';
-		    result = result +'<td><div><span>'+report.candidateScore+'%</span></div></td>';
+		    result = result +'<td class="text-center"><div class="show_scroe"><span>'+report.candidateScore+'%</span>';
+		    result = result +'<div class="scroe">';
+		    
+		    result = result +'<div class="clearfix row">';
+		    
+		    result = result +'<div class="col-md-6 paddingRight">';
+		    result = result +'<label>Skills</label>';
+		    result = result +'<div class="progress">';
+		    result = result +'<div class="progress-bar progress-bar-success" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.skillPercentage+'%"> '+report.skillPercentage+'%';
+   	        result = result +'</div>';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    
+		    result = result +'<div class="col-md-6 paddingLeft">';
+		    result = result +'<label>Location</label>';
+		    result = result +'<div class="progress">';
+		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.locationPercentage+'%"> '+report.locationPercentage+'% ';
+		    result = result +'</div>';
+		    result = result +'</div>';
+		    result = result +' </div>';
+		    
+		    result = result +' </div>';
+		    
+		    
+		    result = result +'<div class="clearfix row">';
+		    
+		    result = result +'<div class="col-md-6 paddingRight">';
+		    result = result +'<label>Experience</label>';
+		    result = result +'<div class="progress">';
+		    result = result +'<div class="progress-bar progress-bar-info" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.expPercentage+'%"> '+report.expPercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +'<div class="col-md-6 paddingLeft">';
+		    result = result +'<label>Rate</label>';
+		    result = result +'<div class="progress">';
+		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.ratePercentage+'%"> '+report.ratePercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +' </div>';
+		    
+		    result = result +'<div class="clearfix row">';
+		    
+		    result = result +'<div class="col-md-6 paddingRight">';
+		    result = result +'<label>NoticePeriod</label>';
+		    result = result +'<div class="progress">';
+		    result = result +'<div class="progress-bar progress-bar-danger" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.noticePeriodPercentage+'%"> '+report.noticePeriodPercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +'<div class="col-md-6 paddingLeft">';
+		    result = result +'<label>KeyWord</label>';
+		    result = result +'<div class="progress">';
+		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.totalKeyWordPerPercentage+'%"> '+report.totalKeyWordPerPercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +' </div>';
+		  
+		   
+		    result = result +'</div>';		    
+		    result = result +'</div></td>';
 		    result = result +'<td><div><span>';
 		    if(report.isCandidateAdedd == true){
 		    	result = result +'<input type="button" value="Added" class="btn btn-primary btn-sm">';
@@ -2154,26 +2086,10 @@ function requirementRecommendations(requirementId){
 		    $("#tab-1").empty();
 			$("#tab-2").empty(); 
 		    $("#tab-3").empty();
+		    $("#recommendationsLoading").removeAttr("style");
 		    $("#status-div").empty();
 		    $("#status-data").empty();
 			$("#tab-3").append(result);
-			
-			var config = {
-					  '.chosen-select'           : {},
-					  '.chosen-select-deselect'  : {allow_single_deselect:true},
-					  '.chosen-select-no-single' : {disable_search_threshold:10},
-					  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-					  '.chosen-select-width'     : {width:"95%"}
-					}
-					for (var selector in config) {
-					  $(selector).chosen(config[selector]);
-					}
-					$('.chosen-select').each(function() {
-						var $this = $(this);
-						$this.next().css({'width': '100%'});
-
-		});
-			
 			
 			recommendationpagination();
 			$("#tab-3").show();
@@ -2510,7 +2426,7 @@ function requirementStatusBar(requirementId){
          result = result + '      </a><span class="label label-warning" id="rejectedCount">0</span></li>';
          
          result = result + '   </ul>';
-         result = result +' <div> <i class="ratepop" id="ratepop"></div>';
+         result = result +' <div> <i class="ratepop rate_pop" id="ratepop"></div>';
          result = result + ' </div>';
        $("#status-div").empty();
       $("#status-div").prepend(result);
@@ -2891,9 +2807,10 @@ function exportPipelineToPdf(requirementId,submissionType){
 	// Close Advanced Search
 		function closePop(){
 			$("div.cand-advsrch-popup").hide();
+			$("#customizeScoreDiv").hide();
 		}
-		function openPop(){
-			$("div.cand-advsrch-popup").toggle();
+		function openPop(requirementId){
+			customizeScore(requirementId);
 		}
 	</script>  
 
@@ -2903,6 +2820,537 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
+
+<script type="text/javascript">
+function customizeScore(requirementId){
+	$("#customizeScoreDiv").show();
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+		   	type: "GET",
+		    url: sourceleadUrl+"/getCustomizeScore?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
+		    success: function(data) {
+		    	var json = JSON.parse(data);
+		    	if(json.customizeMinExperience != null && json.customizeMinExperience != '' && json.customizeMinExperience != 'undefiend'){
+		    		customizeMinExperience = json.customizeMinExperience;
+		    	}else{
+		    		customizeMinExperience = "";
+		    	}
+		    	
+		    	if(json.customizeMaxExperience != null && json.customizeMaxExperience != '' && json.customizeMaxExperience != 'undefiend'){
+		    		customizeMaxExperience = json.customizeMaxExperience;
+		    	}else{
+		    		customizeMaxExperience = "";
+		    	}
+		    	
+		    	if(json.customizeRate != null && json.customizeRate != '' && json.customizeRate != 'undefiend'){
+		    		customizeRate = json.customizeRate;
+		    	}else{
+		    		customizeRate = "";
+		    	}
+		    	
+		    	if(json.customizeCountry != null && json.customizeCountry !='' && json.customizeCountry !='undefined'){
+		    		var customizeCountry = json.customizeCountry;
+				}
+		    	
+				if(json.customizeState != null && json.customizeState !='' && json.customizeState !='undefined'){
+					var customizeState = json.customizeState;
+				}
+				if(json.customizeCity != null && json.customizeCity !='' && json.customizeCity !='undefined'){
+					var customizeCity = json.customizeCity;
+				}
+		    	
+		    	//lookupDB skills
+		    	var lookupSkills = json.dbSkills;
+		    	var dbskills = new Array();
+		    	dbskills = lookupSkills.split(",");
+		    	
+		    	
+		    	var result = "";
+		    	result = result +'		          <div class="cand-advsrch-popup customizescore-pop customscorePop">  ';
+		    	result = result	+ ' <form id="updateCustomize_form"  name="updateCustomize_form" method="post">';
+		    	result = result +'		            <div class="row clearfix"> ';
+		        result = result +'		                <div class="clearfix mb10">  ';
+		        
+		        result = result +'		                <div class="col-md-10">    ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Skills" multiple id="customizeSkills" name="customizeSkills"> ';
+		        
+		      //requitrement skills
+		    	if(json.customizeSkills != null  && json.customizeSkills != '' && json.customizeSkills != 'undefiend'){
+		    		var requirmentSkills = json.customizeSkills;
+			    	var customizeSkills = new Array();
+			    	customizeSkills = requirmentSkills.split(",");
+			        for (var i = 0; i < customizeSkills.length; i++) { 
+			        	 var customSkill = customizeSkills[i];
+			        	 result = result +'	<option selected value='+customSkill+'>'+customSkill+'</option> ';
+			        }
+		    	}
+		         for (var i = 0; i < dbskills.length; i++) { 
+		        	 var skill1 = dbskills[i];
+		        	 result = result +'	<option  value='+skill1+'>'+skill1+'</option> ';
+		        } 
+		        result = result +'		                    </select> ';
+		        result = result +'		                  </div>   ';
+		        
+		        result = result +'		                   <div class="col-md-2">';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Skills" id="skillScore" name="skillScore"> ';
+		        result = result +'		                      <option disabled>Skills</option>  ';
+		        result = result  +'                           <option selected>'+json.customizeSkillScore+'</option>';
+		        result = result +'		                      <option value="10">10%</option> ';
+		        result = result +'		                      <option value="20">20%</option> ';
+		        result = result +'		                      <option value="30">30%</option> ';
+		        result = result +'		                      <option value="40">40%</option> ';
+		        result = result +'		                      <option value="50">50%</option> ';
+		        result = result +'		                      <option value="60">60%</option> ';
+		        result = result +'		                      <option value="70">70%</option> ';
+		        result = result +'		                      <option value="80">80%</option> ';
+		        result = result +'		                      <option value="90">90%</option> ';
+		        result = result +'		                      <option value="100">100%</option>';
+		        result = result +'		                    </select>              ';
+		        result = result +'		                  </div>                   ';
+		        result = result +'		                </div> ';
+		        
+		        result = result +'		                <div class="clearfix mb10">   ';
+		        result = result +'		                  <div class="col-md-3 paddingRight">    ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Country" id="country" name="customizeCountry" value="'+customizeCountry+'" readonly="readonly"> ';
+		        result = result +'		                    </select>                ';
+		        result = result + '                        <input type="hidden"  id="existingCountry" value="'+customizeCountry+'" >';
+		        result = result +'		                  </div>                     ';
+		        
+		        
+		        result = result +'		                    <div class="col-md-4 paddingLeft paddingRight">   ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="State" name="customizeState" id="state" value="'+customizeState+'" readonly="readonly">';
+		        result = result +'		                    </select>                    ';
+		        result = result + '                         <input type="hidden"  id="existingState" value="'+customizeState+'" >';
+		        result = result +'		                  </div>  ';
+		        
+		        
+		        result = result +'		                  <div class="col-md-3 paddingLeft">         ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="City" name="customizedCity" id="city" value="'+customizeCity+'" readonly="readonly">    ';
+		        result = result +'		                    </select>                  ';
+		        result = result +'                           <input type="hidden"  id="existingCity" value="'+customizeCity+'" >';
+		        result = result +'		                  </div>                       ';
+		        
+		       
+		        result = result +'                      <div class="col-md-2"> ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Location" id="locationScore" name="locationScore">';
+		        result = result  +'                           <option selected>'+json.customizeLocationScore+'</option>';
+		        result = result +'		                      <option value="10">10%</option> ';
+		        result = result +'		                      <option value="20">20%</option> ';
+		        result = result +'		                      <option value="30">30%</option> ';
+		        result = result +'		                      <option value="40">40%</option> ';
+		        result = result +'		                      <option value="50">50%</option> ';
+		        result = result +'		                      <option value="60">60%</option> ';
+		        result = result +'		                      <option value="70">70%</option> ';
+		        result = result +'		                      <option value="80">80%</option> ';
+		        result = result +'		                      <option value="90">90%</option> ';
+		        result = result +'		                      <option value="100">100%</option>';
+		        result = result +'		                    </select>                 ';
+		        result = result +'		                  </div>                      ';
+		        
+		        result = result +'		                </div>                        ';
+		        
+		        
+		        result = result +'		                <div class="clearfix mb10">';
+		        result = result +'		                  <div class="col-md-5"> ';
+		        result = result +'		                    <input type="text" placeholder="Min Experience" id="minExperience" name="minExperience" class="form-control" value="'+customizeMinExperience+'">';
+		        result = result +'		                    </div> ';
+		        
+		        result = result +'		                  <div class="col-md-5"> ';
+		        result = result +'		                    <input type="text" placeholder="Max Experience" id="maxExperience" name="maxExperience" class="form-control" value="'+customizeMaxExperience+'">';
+		        result = result +'		                    </div>  ';
+		        
+		        result = result +'		                    <div class="col-md-2"> ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Experience" id="experienceScore" name="experienceScore"> ';
+		        result = result  +'                           <option selected>'+json.customizeExperienceScore+'</option>';
+		        result = result +'		                      <option value="10">10%</option> ';
+		        result = result +'		                      <option value="20">20%</option> ';
+		        result = result +'		                      <option value="30">30%</option> ';
+		        result = result +'		                      <option value="40">40%</option> ';
+		        result = result +'		                      <option value="50">50%</option> ';
+		        result = result +'		                      <option value="60">60%</option> ';
+		        result = result +'		                      <option value="70">70%</option> ';
+		        result = result +'		                      <option value="80">80%</option> ';
+		        result = result +'		                      <option value="90">90%</option> ';
+		        result = result +'		                      <option value="100">100%</option>';
+		        result = result +'		                    </select>              ';
+		        result = result +'		                  </div>                   ';
+		        result = result +'		                </div>                     ';
+		        result = result +'		           <div class="clearfix mb10">     ';
+		        result = result +'		                  <div class="col-md-10">   ';
+		        result = result +'		                    <input type="text" placeholder="Rate" class="form-control" value="'+customizeRate+'" id="customizeRate" name="customizeRate">  ';
+		        result = result +'		                    </div>   ';
+		        result = result +'		                    <div class="col-md-2">      ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="rateScore" name="rateScore"> ';
+		        result = result  +'                           <option selected>'+json.customizeRateScore+'</option>';
+		        result = result +'		                      <option value="10" >10%</option>  ';
+		        result = result +'		                      <option value="20" >20%</option>  ';
+		        result = result +'		                      <option value="30" >30%</option>  ';
+		        result = result +'		                      <option value="40" >40%</option>  ';
+		        result = result +'		                      <option value="50" >50%</option>  ';
+		        result = result +'		                      <option value="60" >60%</option>  ';
+		        result = result +'		                      <option value="70" >70%</option>  ';
+		        result = result +'		                      <option value="80" >80%</option>  ';
+		        result = result +'		                      <option value="90" >90%</option>  ';
+		        result = result +'		                      <option value="100">100%</option> ';
+		        result = result +'		                    </select>               ';
+		        result = result +'		                  </div>                    ';
+		        result = result +'		                </div>                      ';
+		        result = result +'				        <div class="clearfix mb10"> ';
+		        result = result +'		                  <div class="col-md-10">    ';
+		        result = result +'		                      <select class="chosen-select" data-placeholder="Notice" multiple id="noticeperiod" name="noticeperiod">';
+		      //split the noticeperiod
+		    	if(json.customizeNoticeperiod != null && json.customizeNoticeperiod != '' && json.customizeNoticeperiod != 'undefined'){
+		    		var customizeNoticeperiod = json.customizeNoticeperiod;
+			    	var noticeperiod = new Array();
+			    	noticeperiod =  customizeNoticeperiod.split(",");
+			        for (var j = 0; j < noticeperiod.length; j++) { 
+			        	var customnoticeperiods = noticeperiod[j];
+			        	 result = result  +' <option value="Immediately available" '+(customnoticeperiods == "Immediately" ? "selected" : '') +'>Immediately available</option>';
+			        	 result = result  +' <option value="15 Days" '+(customnoticeperiods == "15 Days" ? "selected" : '') +'>15 Days</option>';
+			        	 result = result  +' <option value="1 Month" '+(customnoticeperiods == "1 Month" ? "selected" : '') +'>1 Month</option>';
+			        	 result = result  +' <option value="2 Month" '+(customnoticeperiods == "2 Month" ? "selected" : '') +'>2 Month</option>';
+			        	 result = result  +' <option value="3 Month" '+(customnoticeperiods == "3 Month" ? "selected" : '') +'>3 Month</option>';
+			        } 
+		    	}else{
+		    		result = result  +' <option value="Immediately available" >Immediately available</option>';
+		        	 result = result  +' <option value="15 Days" >15 Days</option>';
+		        	 result = result  +' <option value="1 Month" >1 Month</option>';
+		        	 result = result  +' <option value="2 Month" >2 Month</option>';
+		        	 result = result  +' <option value="3 Month" >3 Month</option>';
+		    	}
+		        result = result +'		                    </select> ';
+		        result = result +'		                    </div>  ';
+		        
+		        result = result +'		                    <div class="col-md-2">  ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="noticeperiodScore" name="noticeperiodScore">';
+		        result = result  +'                           <option selected>'+json.customizeNoticeperiodScore+'</option>';
+		        result = result +'		                      <option value="10">10%</option>  ';
+		        result = result +'		                      <option value="20">20%</option>  ';
+		        result = result +'		                      <option value="30">30%</option>  ';
+		        result = result +'		                      <option value="40">40%</option>  ';
+		        result = result +'		                      <option value="50">50%</option>  ';
+		        result = result +'		                      <option value="60">60%</option>  ';
+		        result = result +'		                      <option value="70">70%</option>  ';
+		        result = result +'		                      <option value="80">80%</option>  ';
+		        result = result +'		                      <option value="90">90%</option>  ';
+		        result = result +'		                      <option value="100">100%</option> ';
+		        result = result +'		                    </select>               ';
+		        result = result +'		                  </div>                    ';
+		        result = result +'		                </div>                      ';
+		        result = result +'		                                            ';
+		        result = result +'		                  <div class="clearfix mb10"> ';
+		        result = result +'		                  <div class="col-md-10">   ';
+		        result = result +'		                     <select class="chosen-select" data-placeholder="Keywords" multiple id="anyKeyWord" name="anyKeyWord">';
+		      //Split the keyWords
+		    	if(json.customizeKeywords != null && json.customizeKeywords != '' && json.customizeKeywords != 'undefined'){
+		    		var customizeKeywords = json.customizeKeywords;
+			    	var Keywords = new Array();
+			    	Keywords =  customizeKeywords.split(",");
+			        for (var i = 0; i < Keywords.length; i++) { 
+			        	 var customKeywords = Keywords[i];
+			        	 result = result +'	<option selected value='+customKeywords+'>'+customKeywords+'</option> ';
+			        }
+		    	}
+		        result = result +'		                    </select> ';
+		        result = result +'		                    </div>  ';
+		        result = result +'		                    <div class="col-md-2">  ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="KeyWords" id="keywordScore" name="keywordScore" > ';
+		        result = result  +'                           <option selected>'+json.customizeKeywordsScore+'</option>';
+		        result = result +'		                      <option value="10">10%</option>   ';
+		        result = result +'		                      <option value="20">20%</option>   ';
+		        result = result +'		                      <option value="30">30%</option>   ';
+		        result = result +'		                      <option value="40">40%</option>   ';
+		        result = result +'		                      <option value="50">50%</option>   ';
+		        result = result +'		                      <option value="60">60%</option>   ';
+		        result = result +'		                      <option value="70">70%</option>   ';
+		        result = result +'		                      <option value="80">80%</option>   ';
+		        result = result +'		                      <option value="90">90%</option>   ';
+		        result = result +'		                      <option value="100">100%</option>  ';
+		        result = result +'		                    </select> ';
+		        result = result +'		                  </div>  ';
+		        result = result +'		                </div>  ';
+		      
+		      
+		        result = result +'		              </div>                          ';
+		        
+		        result = result +'		            <div class="row form-footer mt10">                                              ';
+		        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Customize</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closePop();">Cancel</a> </div>';
+		        result = result +'		            </div>'; 
+		        result = result	+ '               <form>';
+		        result = result +'		            </div>'; 
+		        
+		        $("#customizeScoreDiv").empty();
+		    	$("#customizeScoreDiv").append(result);
+		    	var config = {
+		    			  '.chosen-select'           : {},
+		    			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+		    			  '.chosen-select-no-single' : {disable_search_threshold:10},
+		    			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+		    			  '.chosen-select-width'     : {width:"95%"}
+		    			}
+		    			for (var selector in config) {
+		    			  $(selector).chosen(config[selector]);
+		    			}
+		    	    $("#country").chosen();
+		            $("#state").chosen();
+		            $("#city").chosen();
+		            
+		            $("#country").on('change', function (e) {
+		         	   getStates();
+		            });
+		           
+		            $("#state").on('change', function (e) {
+		         	   getCities();
+		            });
+		    			$('.chosen-select').each(function() {
+		    				var $this = $(this);
+		    				$this.next().css({'width': '100%'});
+		    		   });
+		    			
+		    			
+		    			   //Adding Customized Skills to the list
+		    	        var select, chosen;
+		    		    select = $("#customizeSkills");
+		    		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+		    		    chosen = select.data('chosen');
+		    		    chosen.search_field.on('keyup', function(e)
+		    		    {
+		    		    	var newSkill = this.value.replace(",","");
+		    		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		    		        {
+		    		        	var par = this.parent;
+		    		            var option = $("<option>").val(newSkill).text(newSkill);
+		    		            select.append(option);
+		    		            select.find(option).prop('selected', true);
+		    		          //to doesn't allow duplicates
+		                        $("#customizeSkills option").each(function(){
+		                              $(this).siblings("[value='"+ this.value+"']").remove();
+		                        });
+		                        //end
+		    	        		$("#customizeSkills").trigger("chosen:updated");
+		    	        		
+		    		        }
+		    		    });
+		    		    //Adding Customized Skills to the list
+		    		    
+		    		    
+		    		  //Adding Customized Any Of Keyword to the list 
+		    		    var select, chosen;
+		    		    select = $("#anyKeyWord");
+		    		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    		    chosen = select.data('chosen');
+		    		    chosen.search_field.on('keyup', function(e)
+		    		    {
+		    		    	var anyofKeyword = this.value.replace(",","");
+		    		        if ((e.which == 13 || e.which == 188) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
+		    		        {
+		    		        	var par = this.parent;
+		    		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
+		    		            select.append(option);
+		    		            select.find(option).prop('selected', true);
+		                        $("#anyKeyWord option").each(function(){
+		                              $(this).siblings("[value='"+ this.value+"']").remove();
+		                        });
+		    	        		$("#anyKeyWord").trigger("chosen:updated");
+		    	        		
+		    		        }
+		    		    });
+		    }
+	 });
+	 getAllCountries();
+}
+</script>
+
+<script type="text/javascript">
+function getAllCountries(){
+    setTimeout(function(){ 
+		var countryName = $("#existingCountry").val();
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#country').empty();
+	        	$('#country').append('<option value="">---select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	if(json[i] == countryName){
+	            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}else if(json[i] == '${loginCountryName}'){
+	            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}
+	            	else{ 
+	            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	} 
+	            	
+	            }
+	            
+	            $('#country').trigger("chosen:updated");
+	            getStates();
+	        },
+	        error: function(e){
+	        }
+	    });
+    }, 100);
+} 
+</script>
+
+
+<script>
+function getStates(){
+	var countryName = $("#country").val();
+	
+	//to set existing state value(Auto populate)
+	var stateName = $("#state").val();
+	if(stateName == null || stateName == 'undefined' || stateName == ''){
+		stateName = document.getElementById("existingState").value;
+	}
+	//end state Auto populate
+	
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').empty();
+	        	$('#state').append('<option value="">---select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	if(json[i] == stateName){
+	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}
+	            	else{ 
+	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	} 
+	            }
+	            $('#state').trigger("chosen:updated");
+	            getCities();
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#state').empty();
+    	$('#state').append('<option value="">---select---</option>');
+    	$('#state').trigger("chosen:updated");
+    	$('#city').empty();
+    	$('#city').append('<option value="">---select---</option>');
+        $('#city').trigger("chosen:updated");
+	}
+}
+</script> 
+
+
+<script>
+function getCities(){
+	var countryName = $("#country").val();
+	var stateName = $("#state").val();
+	
+	//to set existing city value(Auto populate)
+	var cityName = $("#city").val();
+	if(cityName == null || cityName == 'undefined' || cityName == ''){
+		cityName = document.getElementById("existingCity").value;
+	}
+	//end city Auto populate
+	
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#city').empty();
+	        	$('#city').append('<option value="">---select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	if(json[i] == cityName){
+	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}
+	            	else{ 
+	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	} 
+	            }
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#city').empty();
+    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').trigger("chosen:updated");
+	}
+}
+</script>
+
+<script>
+function updateCutomize(requirementId){
+    var skillPerc = parseInt($("#skillScore").val());
+    var expPerc = parseInt($("#experienceScore").val());
+    var ratePerc = parseInt($("#rateScore").val());
+    var noticePerc = parseInt($("#noticeperiodScore").val());
+    var kewordsPerc = parseInt($("#keywordScore").val());
+    var locationScore = parseInt($("#locationScore").val());
+    var totalscore = (skillPerc+expPerc+noticePerc+ratePerc+locationScore+kewordsPerc);
+    var sourceleadUrl = '${sourceleadUrl}';
+    
+    if(totalscore>100){
+        var result = "";
+		//result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='greater_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Score is greater than 100</p>";
+		result = result +"		<p><strong>Score must be equal to 100</strong></p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b><input type='button' value='Ok' onclick='cancelCustomize();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelCustomize();'></b>";
+		result = result +"	</div>";
+		$("#customizePopUp").append(result);
+		$("#customizePopUp").show();
+		$("#greater_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+		
+        }else if(totalscore<100){
+        	var result = "";
+    		//result = result +"	<div class='project_inn_mask'></div>";
+    		result = result +"	   <div id='less_user_pop' class='remove_user_pop remove_user_pop_a'>";
+    		result = result +"		<p>Score is less than 100</p>";
+    		result = result +"		<p><strong>Score must be equal to 100</strong></p>";
+    		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+    		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelCustomize();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelCustomize();'></b>";
+    		result = result +"	</div>";
+    		$("#customizePopUp").append(result);
+    		$("#customizePopUp").show();
+    		$("#less_user_pop").slideDown(200);
+    		$(".project_inn_mask").fadeIn(200);
+        }else if(totalscore=100){
+        	var frm = $('#updateCustomize_form').serializeFormJSON();
+    		var con = JSON.stringify(frm);
+    		con = con.replace(/[{}]/g, "");
+    		
+    		//It will escape all the special characters
+    		var jsonData = encodeURIComponent(con);
+    		 $.ajax({
+    					type : "POST",
+    					url : sourceleadUrl + "/updateCustomizeScore?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&requirementId=" + requirementId,
+    					success : function(data) {
+    						if(data == "success"){
+    							$("div.cand-advsrch-popup").hide();
+    							requirementRecommendations(requirementId);	
+    						}
+    					}
+    				}); 
+    		return true;
+       } 
+	
+}
+
+</script>
+<script>
+function cancelCustomize(){
+	$("#customizePopUp").hide();
+}
+</script>
+
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
 <jsp:include page="submitToClient.jsp" />
