@@ -2,7 +2,6 @@ package com.bis.sourcelead.elk.index;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class CandidateIndex implements Serializable {
 
@@ -39,8 +38,10 @@ public class CandidateIndex implements Serializable {
 	private String designation;
 
 	private String designationType;
+	
+	private String designationOtherType;
 
-	private Float currentRate;
+	private String currentRate;
 
 	private String currentRateType;
 
@@ -70,11 +71,11 @@ public class CandidateIndex implements Serializable {
 
 	private Integer status;
 
-	private Date createdDate;
+	private String createdDate;
 
 	private String createdBy;
 
-	private Date updatedDate;
+	private String updatedDate;
 
 	private String updatedBy;
 	
@@ -220,11 +221,20 @@ public class CandidateIndex implements Serializable {
 		this.designationType = designationType;
 	}
 
-	public Float getCurrentRate() {
+
+	public String getDesignationOtherType() {
+		return designationOtherType;
+	}
+
+	public void setDesignationOtherType(String designationOtherType) {
+		this.designationOtherType = designationOtherType;
+	}
+
+	public String getCurrentRate() {
 		return currentRate;
 	}
 
-	public void setCurrentRate(Float currentRate) {
+	public void setCurrentRate(String currentRate) {
 		this.currentRate = currentRate;
 	}
 
@@ -340,11 +350,12 @@ public class CandidateIndex implements Serializable {
 		this.status = status;
 	}
 
-	public Date getCreatedDate() {
+
+	public String getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
 	}
 
@@ -356,11 +367,11 @@ public class CandidateIndex implements Serializable {
 		this.createdBy = createdBy;
 	}
 
-	public Date getUpdatedDate() {
+	public String getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
