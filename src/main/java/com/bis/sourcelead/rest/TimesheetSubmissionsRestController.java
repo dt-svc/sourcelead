@@ -190,11 +190,9 @@ public class TimesheetSubmissionsRestController {
                                                 @RequestParam(value="endDate", required=false) String endDate,
                                                 @RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
                                                  
-        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-         String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         Date sDate  =  Constants.DMY.parse(startDate);
-        Date eDate  =  Constants.DMY.parse(startDate);
+        Date eDate  =  Constants.DMY.parse(endDate);
         submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, user.getId(), sDate,eDate,approvalStatus, rejectedReason);
         
        // sendEmailToEmployeeTimesheetApprovalStatus(employeeId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
