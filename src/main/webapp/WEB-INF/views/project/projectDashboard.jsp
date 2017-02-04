@@ -9,11 +9,13 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-<link rel="stylesheet" href="resources/css/chosen.min.css">
+<!-- <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/chosen.jquery.min.js"></script> 
-
 <script src="resources/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>  -->
+
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -21,11 +23,6 @@
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
-
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
-
 
  <style>
  
@@ -112,7 +109,7 @@ overflow-x: auto;
 			  <i class="fa fa-search"></i>
 			  </a> 
 			    <div class="cand-advsrch-popup" >
-			  <form:form id="projectlist_form" name="projectlist_form"  enctype='multipart/form-data' >
+			  <form:form id="projectlist_form" name="projectlist_form" >
 				
 					  <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
 					  <div class="row">
@@ -317,36 +314,19 @@ overflow-x: auto;
                <jsp:include page="projectDetails.jsp" />
                <jsp:include page="projectTasks.jsp" />
 <jsp:include page="../masterFooter.jsp" />	
-
+	
+	
 	
 <script type="text/javascript">
 window.onload = function () {
-	projectsList("${searchValue}","${searchResult}");
-// 	searchProject();
+	searchProject();
 	$('input[name=projectStatus]').attr('checked',false);
 	$('input[name=clientNameById]').attr('checked',false);
 	//filter();
  };
 </script>
 
-<script type="text/javascript">
-function projectsList(searchValue,searchresult){ 
-	if(searchresult=="universalProjectsList")	 {
-		var sourceleadUrl ='${sourceleadUrl}';
-		 $.ajax({
-	         type : "POST",
-	          url: sourceleadUrl+"/getUniversalProjectsListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
-	          success :function(data) {
-	        	  prepareProjectsList(data);
-	         },
-	          
-	     }); 
-	  }
-	else{
-		searchProject();
-		}
-}
-</script>
+
 
 <script>
 //project side bar
@@ -701,7 +681,6 @@ $(document).ready(function() {
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
 	    $("#projectIdAdvanced").val('').trigger("chosen:updated");
 	    $("#projectNameAdvanced").val('').trigger("chosen:updated");
-	    $("#projectStartDateAdvanced").val('').trigger("chosen:updated");
 	   /*  $("#projectManagerAdvanced").val('').trigger("chosen:updated");
 	    $("#invoiceFrequencyAdvanced").val('').trigger("chosen:updated");
 	    $("#clientsAdvanced").val('').trigger("chosen:updated");
@@ -714,7 +693,6 @@ $(document).ready(function() {
 	    $("#excludeKeyWord").empty();
 	    $("#projectIdAdvanced").empty();
 	    $("#projectNameAdvanced").empty();
-	    $("#projectStartDateAdvanced").empty();
 	    /* $("#projectManagerAdvanced").empty();
 	    $("#invoiceFrequencyAdvanced").empty();
 	    $("#clientsAdvanced").empty();
@@ -983,7 +961,8 @@ $(document).ready(function() {
 </script>
 <script>
 	$('#projectStartDateAdvanced').datepicker({
-		dateFormat : 'yy-mm-dd',
+		//dateFormat : 'yy-mm-dd',
+		dateFormat : 'dd-mm-yy',
 	      changeMonth: true,
 	      changeYear: true,
 		onSelect : function(selected) {
@@ -991,6 +970,7 @@ $(document).ready(function() {
 			dt.setDate(dt.getDate() + 1);
 		}
 	});
+	$('#projectStartDateAdvanced').attr('readonly', true);
 </script> 
 <script type="text/javascript">
 	function searchProject() {
@@ -1015,14 +995,8 @@ $(document).ready(function() {
 			$("#search_project").addClass('button').val('Processing..');
 
 			$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/searchProject?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						type : "GET",
+						url : sourceleadUrl+"/searchProject?json="+jsonData,
 						success : function(data) {
 							$("#search_project").addClass('button').val('Search');
 							$("#search_project").removeAttr("disabled");

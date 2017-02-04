@@ -937,15 +937,24 @@ public class ClientServiceImpl implements ClientService{
 					 StringBuilder loginBuilder = new StringBuilder();
 					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			}
+
 			 /*//setting the Recipient information
 			 StringBuilder recipientbuilder = new StringBuilder();
+
+			 //setting the Recipient information
+			 /*StringBuilder recipientbuilder = new StringBuilder();
+
 			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 			 EmailRecipient emailRecipient = new EmailRecipient();
 			 emailRecipient.setEmail(emailMessage.getToEmail());
 			 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 			 emailRecipientList.add(emailRecipient);*/
 			 
+
 			 //setting the Recipient information
+
+			 // changed the logic of adding to emails in InetAddress Array
+
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1004,15 +1013,23 @@ public class ClientServiceImpl implements ClientService{
 					 globalVarsMap.put("clientLastName",loginUser.getLastName());
 					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
 				}
+
 			 /*//setting the Recipient information
 			 StringBuilder recipientbuilder = new StringBuilder();
+
+			 //setting the Recipient information
+			 /*StringBuilder recipientbuilder = new StringBuilder();
+
 			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 			 EmailRecipient emailRecipient = new EmailRecipient();
 			 emailRecipient.setEmail(emailMessage.getToEmail());
 			 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 			 emailRecipientList.add(emailRecipient);*/
 			 
+
 			 //setting the Recipient information
+
+			 // changed the logic of adding to emails in InetAddress Array
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type

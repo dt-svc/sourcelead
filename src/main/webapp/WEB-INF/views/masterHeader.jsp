@@ -30,7 +30,6 @@
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
 </head>
-
 <script src="resources/js/jquery-1.11.1.min.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script>
 <script src="resources/js/jquery-ui.js"></script>
@@ -39,8 +38,6 @@
 <script src="resources/js/jquery.timepicker.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/bootstrap-select.min.js"></script>
-
-
 <style>
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;

@@ -115,7 +115,7 @@
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_Space validate_length length1-100" data-validation-optional="true" value="">
+           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true" value="">
           </div>
         </div>
         <div class="form-group" id="emailDiv">
@@ -182,13 +182,13 @@
         <div class="form-group">
          <label class="col-md-3">Employment type</label>
          <div class="col-md-9">
-             <select class="selectpicker form-control" id="designationType" name="designationType">
-                <option value=""><a href="#">Select</a></option>
-                 <option><a href="#">C2C</a></option>
-                 <option><a href="#">W-2</a></option>
-                 <option><a href="#">Part Time</a></option>
-                 <option><a href="#">Full Time</a></option>
-                 <option><a href="#">Other</a></option>
+              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
+                <option value="">Select</option>
+                 <option>C2C</option>
+                 <option>W-2</option>
+                 <option>Part Time</option>
+                 <option>Full Time</option>
+                 <option>Other</option>
              </select>
          </div>
        </div>
@@ -219,7 +219,12 @@
           </div>
         </div>
        
-       
+        <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
+            <label class="col-md-3">Employment Type</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" id="designationOtherType" name="designationOtherType" value="${candidate.designationOtherType}"  field-name="Job Type" value="">
+            </div>
+          </div>
        
        
        <div class="form-group">
@@ -841,3 +846,22 @@ function getCities(){
  
 </script>
 <!-- Experience Years and Months validation Script End here -->
+
+
+<script>
+function getDesignationType(designationType){
+	var existingDesignationType = '${requirement.designationType}';
+	if(designationType.value == 'Other'){
+		 document.getElementById("designationTypeDiv").style.display="block";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+	}else{
+		document.getElementById("designationTypeDiv").style.display="none";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
+		  if(existingDesignationType ==null || existingDesignationType == "" || existingDesignationType == "undefined" || existingDesignationType != 'Other'){
+			  $("#designationOtherType").val('');
+		  }
+	}
+}
+</script>
