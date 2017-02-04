@@ -621,7 +621,6 @@ function loadProjects(){
 	var searchResult = "universalProjectsList";
 	var searchValue = "${searchValue}";
 	var sourceleadUrl = '${sourceleadUrl}';
-	alert("hiii"+searchResult+"     searchValue "+searchValue)
 	window.location.href = sourceleadUrl + "/projectDashboard?&searchResult="+searchResult+"&searchValue="+searchValue;
 }
 </script>

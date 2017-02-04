@@ -321,9 +321,7 @@ overflow-x: auto;
 	
 <script type="text/javascript">
 window.onload = function () {
-	alert("${searchValue}");
 	projectsList("${searchValue}","${searchResult}");
-	alert("test123");
 // 	searchProject();
 	$('input[name=projectStatus]').attr('checked',false);
 	$('input[name=clientNameById]').attr('checked',false);
@@ -334,7 +332,6 @@ window.onload = function () {
 <script type="text/javascript">
 function projectsList(searchValue,searchresult){ 
 	if(searchresult=="universalProjectsList")	 {
-		alert("hii")
 		var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 	         type : "POST",
