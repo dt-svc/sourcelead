@@ -2314,12 +2314,11 @@ function numberOfContactsByOrgRelationId(orgRelationId){
 
 <script>
 function vendorListCheck(searchValue,universalvendorSearchList,searchType){
-	alert(searchValue);
-if(universalvendorSearchList=="universalVendorList")	 {
+    if(universalvendorSearchList=="universalVendorList")	 {
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
          type : "POST",
-          url: sourceleadUrl+"/getUniversalvendorListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&searchType="+searchType,   
+          url: sourceleadUrl+"/getUniversalSearchVendorList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&searchType="+searchType,   
           success :function(data) {
               	// prepareCandidateList(data);
          },

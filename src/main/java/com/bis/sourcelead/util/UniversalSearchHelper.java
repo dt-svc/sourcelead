@@ -1,6 +1,7 @@
 package com.bis.sourcelead.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -123,5 +124,12 @@ public class UniversalSearchHelper {
 
 		return matchQueryBuilderList;
 	}
-
+	 public ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
+		 ArrayList<String> keyWordList = null;
+		 if(searchValue !=null && !"".equalsIgnoreCase(searchValue)){
+			 String searchKeywordString = searchValue.replaceAll("\\[", "").replaceAll("\\]","");
+		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+		 }
+        return keyWordList;
+	}
 }

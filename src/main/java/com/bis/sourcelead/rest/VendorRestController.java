@@ -1653,8 +1653,8 @@ public class VendorRestController {
 		 }
 		 
 		
-		 @RequestMapping(value = "/getUniversalvendorListByOrgLocationID")
-		 public String getUniversalvendorListByOrgLocationID(@RequestParam(value="searchValue", required=false) String  searchValue,@RequestParam(value="searchType", required=false) String  searchType,
+		 @RequestMapping(value = "/getUniversalSearchVendorList")
+		 public String getUniversalSearchVendorList(@RequestParam(value="searchValue", required=false) String  searchValue,@RequestParam(value="searchType", required=false) String  searchType,
 				 HttpServletRequest request) throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			String resultJson;
