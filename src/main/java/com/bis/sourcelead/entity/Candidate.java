@@ -94,6 +94,9 @@ public class Candidate implements Serializable{
 	@Column(name = "DESIGNATION_TYPE")
 	private String designationType;
 	
+	@Column(name = "DESIGNATION_OTHER_TYPE")
+	private String designationOtherType;
+	
 	@Column(name = "CURRENT_RATE")
 	private String currentRate;
 	
@@ -397,6 +400,16 @@ public class Candidate implements Serializable{
 
 	public void setDesignationType(String designationType) {
 		this.designationType = designationType;
+	}
+
+	
+	public String getDesignationOtherType() {
+		return designationOtherType;
+	}
+
+
+	public void setDesignationOtherType(String designationOtherType) {
+		this.designationOtherType = designationOtherType;
 	}
 
 

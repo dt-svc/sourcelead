@@ -189,6 +189,13 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("designation") && jsonObj.getString("designation") !=null){
 		candidate.setDesignation(jsonObj.getString("designation"));
 		}
+		
+		if(jsonObj.has("designationOtherType") && jsonObj.has("designationType") && "Other".equalsIgnoreCase(jsonObj.getString("designationType"))){
+			candidate.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+		}else{
+			candidate.setDesignationOtherType(null);
+		}
+		
 		if(jsonObj.has("expectedRate") && jsonObj.getString("expectedRate") !=null ){
 		candidate.setExpectedRate(jsonObj.getString("expectedRate"));
 		}
@@ -559,7 +566,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			    		mapper.setDateFormat(df);
 			    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
 			    	    if(candidateIndex.getUpdatedDate() != null){
-			    	    	candidateIndex.setCandidateUpdateDateToString(Constants.DF_YMD.format(candidateIndex.getUpdatedDate()));
+			    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
 			   			}
 			    	    searchList.add(candidateIndex);
 			    	} 

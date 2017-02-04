@@ -105,4 +105,5 @@ public interface RequirementSubmissionDao {
 	
 	List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception;
 
+	Integer getRequirementPerCandidateCount(Long candudateId)throws Exception;
 }

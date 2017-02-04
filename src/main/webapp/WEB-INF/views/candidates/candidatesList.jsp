@@ -160,12 +160,14 @@ else{
 	         	 var address="";
 	         	 var isFavourite = "";
 	         	 var isFavClass = "";
+	         	 var designationType = "";
 	         	 var candidateUpdateDateToString ="";
 	         	        if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
 	         		       mobilePhone = opt.mobilePhone;
 		            	}else{
 		            		mobilePhone = "----";
 		            	}
+	         	        
 		            	if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
 		            		designation = opt.designation;
 		            	}else{
@@ -227,7 +229,6 @@ else{
 	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
 	              '</sec:authorize>';
-	
 	              result = result +"  <td><div><span title="+designation+">"+designation+"</span></div></td>";
 	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 	             	 {

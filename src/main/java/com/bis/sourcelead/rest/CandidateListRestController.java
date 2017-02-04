@@ -603,8 +603,9 @@ public class CandidateListRestController {
 	   */
 	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
-			String resultJson;
+			String resultJson ="" ;
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+			if(null != can){
 			StringBuilder skillsList = new StringBuilder();
 			List<CandidateSkills> candidateSkills = candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
 			int i = 0;
@@ -619,6 +620,7 @@ public class CandidateListRestController {
 			}
 			can.setSkillsList(skillsList.toString());
 			resultJson = commonUtil.toJSON(can);
+			}
 			return resultJson;
      }
 			 

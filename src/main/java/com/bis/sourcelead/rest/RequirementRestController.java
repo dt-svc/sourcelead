@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
@@ -31,6 +32,7 @@ import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
@@ -45,6 +47,7 @@ import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.TeamService;
@@ -114,6 +117,9 @@ public class RequirementRestController {
 
 	 @Autowired
 	 RecommendedCustomizeScoreService recommendedCustomizeScoreService;
+	 
+	 @Autowired
+	 RequirementSubmissionService requirementSubmissionService;
 	 
 	/**
 	 * @author prasad k
@@ -621,10 +627,13 @@ public class RequirementRestController {
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
        // List<Candidate> candidateList = recommendationsService.getAllCandidatesByLocation(orgLocation.getId());
-		
+		List<CandidateIndex> candidateListCopy = null;
 		//Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
-	    RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
-	    List<Candidate> candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);
+	    
+		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
+	    if(null != recommendedCustomizeScore){ 
+		candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);
+	    }
 		//List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScoreByUsingElk(orgLocation.getId(),requirement);
 		
 		/*Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
@@ -714,21 +723,34 @@ public class RequirementRestController {
 	    @RequestMapping(value = "/getRequirementAndLookUpSkills",  method = RequestMethod.POST)
 	    public @ResponseBody String getRequirementAndLookUpSkills(@RequestParam(value="requirementid", required=false) Long requirementid) throws Exception {
 	    	
-	    	List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirementid.toString());		
+	    	List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirementid);		
 		  	List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
-		  	
-		  	if(allReqSkills != null){
-		  		String[] skills = allReqSkills.get(0).split(","); 
-			    for(String skill : skills){ 
-			    	if(!skillsList.contains(skill)){
-			    		    skillsList.add(skill);
-			    	}
-			    }  
-		  	}
-		  	
+			if(null != allReqSkills  && !allReqSkills.isEmpty() && !allReqSkills.contains(null) && !allReqSkills.contains("")){
+						String[] skills = allReqSkills.get(0).split(","); 
+						for(String skill : skills){ 
+							if(!skillsList.contains(skill)){
+									skillsList.add(skill);
+							}
+						}  
+					}
+ 	
 	    	String resultJson; 
 		  	resultJson = commonUtil.toJSON(skillsList);
 			return resultJson;
 		    }
 
+	    
+	    @RequestMapping(value = "/getCandidateHistoryList", method = RequestMethod.POST)
+		public @ResponseBody String getCandidateHistoryList(
+				@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
+				throws Exception {
+			String resultJson = null;
+			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateId);
+			for(RequirementSubmission reqSubmission : reqList){
+				reqSubmission.setRequirementName(reqSubmission.getRequirement().getJobTitle());
+				reqSubmission.setRequirementStage(reqSubmission.getSubmissionStatus());
+			}
+			resultJson = toJSON(reqList);
+			return resultJson;
+		}
 }
