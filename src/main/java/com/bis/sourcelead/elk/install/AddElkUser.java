@@ -42,7 +42,7 @@ public class AddElkUser {
 	 private TransportClient client;
 	public void addElkUser() throws IOException, SQLException {
 		ArrayList<UserIndex> elkUserList = getElkUsers();
-		if(elkUserList != null && !elkUserList.isEmpty()){
+		if(null != elkUserList && !elkUserList.isEmpty()){
 			for (UserIndex userIndex :elkUserList) {
 				saveOrUpdateElkDocument(userIndex,Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,userIndex.getUserId().toString());
 			}
@@ -69,13 +69,13 @@ public class AddElkUser {
 					userIndex.setReportingManagerId(rs.getLong("REPORTING_MANAGER_ID"));
 					Timestamp createdDateTimestamp = rs.getTimestamp("CREATED_DATE");
 					DateFormat StringDate = new SimpleDateFormat("dd-MM-yyyy"); 
-				    if (createdDateTimestamp != null){
+				    if (null != createdDateTimestamp){
 						String createdDate  = StringDate.format(new java.util.Date(createdDateTimestamp.getTime()));
 					  userIndex.setCreatedDate(createdDate);
 				    }
 				    userIndex.setCreatedBy(rs.getString("CREATED_BY"));   
 					Timestamp updatedDateTimestamp = rs.getTimestamp("UPDATED_DATE");
-					if (updatedDateTimestamp != null){
+					if (null != updatedDateTimestamp){
 						String updatedDate  = StringDate.format(new java.util.Date(updatedDateTimestamp.getTime()));
 						userIndex.setUpdatedDate(updatedDate);
 				    }
@@ -86,7 +86,7 @@ public class AddElkUser {
 				    Long userId = rs.getLong("USER_ID");
 				    Long orgLocationId = rs.getLong("ORG_LOCATIONS_ID");
 				    Long userRoleId =rs.getLong("ROLE_ID");
-		    	    if(userId != null && userId != 0){
+		    	    if(null != userId && userId != 0){
 		    	    	    String sql1 = "SELECT * FROM sourcelead.USER user where user.ID = '"+ userId+"' ";
 							Statement stmt1 = conn.createStatement();
 							ResultSet rs1 = stmt1.executeQuery(sql1);
