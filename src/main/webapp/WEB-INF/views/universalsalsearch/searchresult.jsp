@@ -620,9 +620,8 @@ function loadUsers(){
 <script>
 function loadVendor(){
 	var searchResult = "universalVendorList";
-	alert(searchResult);
 	var searchValue = "${searchValue}";
-	alert(searchValue);
+	var searchType = "${searchType}";
 	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/vendorsList?&searchResult="+searchResult+"&searchValue="+searchValue+"&searchType="+searchType;
 
