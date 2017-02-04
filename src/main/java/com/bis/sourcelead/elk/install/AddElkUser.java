@@ -66,7 +66,9 @@ public class AddElkUser {
 					userIndex.setUserType(rs.getString("USER_TYPE"));
 					userIndex.setStatus(rs.getString("STATUS"));
 					userIndex.setTerminateReason(rs.getString("TERMINATE_REASON"));
-					userIndex.setReportingManagerId(rs.getLong("REPORTING_MANAGER_ID"));
+					if(0 != rs.getLong("REPORTING_MANAGER_ID") && !"".equals(rs.getLong("REPORTING_MANAGER_ID"))){
+						userIndex.setReportingManagerId(rs.getLong("REPORTING_MANAGER_ID"));
+					}
 					Timestamp createdDateTimestamp = rs.getTimestamp("CREATED_DATE");
 					DateFormat StringDate = new SimpleDateFormat("dd-MM-yyyy"); 
 				    if (null != createdDateTimestamp){
@@ -110,7 +112,9 @@ public class AddElkUser {
 									userIndex.setEmployeeId(rs2.getString("EMPLOYEE_ID"));
 									userIndex.setRate(rs2.getString("RATE"));
 									userIndex.setRatePer(rs2.getString("RATE_PER"));
+									if(null != rs2.getString("HIRE_DATE") && !"".equals(rs2.getString("HIRE_DATE"))){
 									userIndex.setHireDate(rs2.getString("HIRE_DATE"));
+									}
 
 							    }
 							   

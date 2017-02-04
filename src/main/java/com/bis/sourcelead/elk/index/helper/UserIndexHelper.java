@@ -37,7 +37,7 @@ public class UserIndexHelper {
 			userIndex.setUserStatus(userRole.getUserState().toString());
 			userIndex.setUserType(userRole.getUserType());
 			
-			if(null != userRole.getReportingManager()){
+			if(null != userRole.getReportingManager() && !"".equals(userRole.getReportingManager())){
 			userIndex.setReportingManagerId(userRole.getReportingManager().getId());
 			}
 			userIndex.setStatus(userRole.getUser().getStatus());
@@ -46,7 +46,7 @@ public class UserIndexHelper {
 			userIndex.setRate(employee.getRate());
 			userIndex.setRatePer(employee.getRatePer());
 			DateFormat StringDate = new SimpleDateFormat("dd-MM-yyyy"); 
-			if(null != employee.getHireDate()){
+			if(null != employee.getHireDate() && !"".equals(employee.getHireDate())){
 			String hireDate  = StringDate.format(employee.getHireDate());
 			userIndex.setHireDate(hireDate);
 			}
