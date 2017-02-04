@@ -559,7 +559,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			    		mapper.setDateFormat(df);
 			    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
 			    	    if(candidateIndex.getUpdatedDate() != null){
-			    	    	candidateIndex.setCandidateUpdateDateToString(Constants.DF_YMD.format(candidateIndex.getUpdatedDate()));
+			    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
 			   			}
 			    	    searchList.add(candidateIndex);
 			    	} 
