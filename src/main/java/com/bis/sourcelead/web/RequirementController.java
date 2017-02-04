@@ -221,14 +221,15 @@ public class RequirementController {
         
 		
 		if(requirement != null && requirement.getId() != null){
-			List<String> totskils;
-			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId().toString());		  	
-		  	List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 
-		  	if(!allReqSkills.contains(null)){
-		  	 totskils = ListUtils.sum(skillsList,allReqSkills);
-		  	model.addObject("skillsList", totskils);
-		  	}
+			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId().toString());
+				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				List<String> totSkils = new ArrayList<String>();
+				if(!allReqSkills.contains(null)){
+					totSkils.addAll(skillsList);
+					totSkils.addAll(allReqSkills);
+					model.addObject("skillsList", totSkils);
+				}
 
 		}else{
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
