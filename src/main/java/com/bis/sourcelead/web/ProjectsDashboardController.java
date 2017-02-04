@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -58,7 +59,8 @@ public class ProjectsDashboardController {
 	 */
 	
 	@RequestMapping(value = "/projectDashboard")
-	public ModelAndView projectDashboard(HttpServletRequest request) throws Exception {
+	public ModelAndView projectDashboard(@RequestParam(value="searchResult", required=false) String searchResult,
+			@RequestParam(value="searchValue", required=false) String searchValue,HttpServletRequest request) throws Exception {
            logger.debug("projectDashboard");
            
 		ModelAndView model = new ModelAndView();
@@ -80,9 +82,16 @@ public class ProjectsDashboardController {
         model.addObject("add_client", orgClientList);
         model.addObject(orgClientList);
         
+        if(null != searchResult && null != searchValue){
+        	model.addObject("searchValue", searchValue);
+        	model.addObject("searchResult", searchResult);
+        }
+        
         List<Long> projectIds = projectsService.getProjectIdsByOrgLocationsId(loginOrgLocations.getId());
         
-        if(null != projectIds){
+
+        if(null != projectIds && !projectIds.isEmpty()){
+
         	List<ProjectApproverHierarchy> projectManagersList = projectApproverHierarchyService.getAllApproverUsersByProjectIdList(projectIds);
             for(ProjectApproverHierarchy projectManager:projectManagersList){
             	if(null != projectManager.getApproverUserId() && null != projectManager.getApproverUserId().getLastName()){
@@ -93,17 +102,20 @@ public class ProjectsDashboardController {
             }
             model.addObject("add_projectManagersList", projectManagersList);
             
-            
-            List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdsList(projectIds);
-            for(ProjectMembers projectMembers:projectMembersList){
-            	if(null != projectMembers.getEmployee() && null != projectMembers.getEmployee().getUser() && null != projectMembers.getEmployee().getUser().getLastName()){
-            		projectMembers.setEmpName(projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName());
-            	}else{
-            		projectMembers.setEmpName(projectMembers.getEmployee().getUser().getFirstName());
-            	}
-            	projectMembers.setEmpEmail(projectMembers.getEmployee().getUser().getEmail());
+            if(null != projectIds  && !projectIds.isEmpty()){
+            	  List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdsList(projectIds);
+                  for(ProjectMembers projectMembers:projectMembersList){
+                  	if(null != projectMembers.getEmployee() && null != projectMembers.getEmployee().getUser() && null != projectMembers.getEmployee().getUser().getLastName()){
+                  		projectMembers.setEmpName(projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName());
+                  	}else{
+                  		projectMembers.setEmpName(projectMembers.getEmployee().getUser().getFirstName());
+                  	}
+                  	projectMembers.setEmpEmail(projectMembers.getEmployee().getUser().getEmail());
+                  }
+                  model.addObject("add_projectMembersList", projectMembersList);
+                  
             }
-            model.addObject("add_projectMembersList", projectMembersList);
+          
         }
         
         

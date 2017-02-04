@@ -96,7 +96,16 @@ public class CandidateIndex implements Serializable {
 	
 	private Integer isFavourite;
 	
+	private String candidateName;
+	
 	private String candidateUpdateDateToString;
+	
+
+	private String totalExp;
+	
+	private String skillSet;
+	
+	private String searchType;
 	
 	private String candidateScore;
 	
@@ -117,9 +126,19 @@ public class CandidateIndex implements Serializable {
 	private String reqSubmissionId;
 	
 	private boolean isCandidateAdedd;
-	 
+
 	private List<RequirementSubmission> requirementSubmisstions;
 	
+		
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+
+
 	public Long getCandidateId() {
 		return candidateId;
 	}
@@ -472,6 +491,30 @@ public class CandidateIndex implements Serializable {
 		this.candidateUpdateDateToString = candidateUpdateDateToString;
 	}
 
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getTotalExp() {
+		return totalExp;
+	}
+
+	public void setTotalExp(String totalExp) {
+		this.totalExp = totalExp;
+	}
+
+	public String getSkillSet() {
+		return skillSet;
+	}
+
+	public void setSkillSet(String skillSet) {
+		this.skillSet = skillSet;
+	}
 	public String getCandidateScore() {
 		return candidateScore;
 	}
@@ -554,13 +597,7 @@ public class CandidateIndex implements Serializable {
 	
 	public void setCandidateAdedd(boolean isCandidateAdedd) {
 		this.isCandidateAdedd = isCandidateAdedd;
+
 	}
 
-	public List<RequirementSubmission> getRequirementSubmisstions() {
-		return requirementSubmisstions;
-	}
-
-	public void setRequirementSubmisstions(List<RequirementSubmission> requirementSubmisstions) {
-		this.requirementSubmisstions = requirementSubmisstions;
-	}
 }
