@@ -122,7 +122,7 @@ public class TimesheetApprovalRestController {
 		timesheetApprovalDiv.append("		<div class='timesheet_appr_wrap'>");
 		timesheetApprovalDiv.append("			<div class='timesheetNewHead'>");
 		
-                  timesheetApprovalDiv.append("				<div class='timeNewSe addicon'>");
+                  timesheetApprovalDiv.append("				<div class='timeNewSe timeNewSe_month addicon'>");
 								       timesheetApprovalDiv.append("		                <select id='frequencyMonth' name='frequencyMonth' class='form-control chosen-select' onchange='timesheetApprovalDiv(\"month\");'  >");
 										for (String dateStr : datesList) {
 											    StringBuilder isSelected = new StringBuilder("");
@@ -144,7 +144,7 @@ public class TimesheetApprovalRestController {
 		             if(StringUtils.isEmpty(timesheetFrequency)){
 		            	 timesheetFrequency = "Weekly";
 		             }
-		             timesheetApprovalDiv.append(" <div id='timesheetFrequencyDiv' class='timeNewSe'>");
+		             timesheetApprovalDiv.append(" <div id='timesheetFrequencyDiv' class='timeNewSe timeNewSe_week'>");
 					        timesheetApprovalDiv.append(" <select id='timesheetFrequency' class='form-control chosen-select' onchange='timesheetApprovalDiv(\"frequency\");'>");
 					             timesheetApprovalDiv.append(" <option ").append(StringUtils.isNotEmpty(timesheetFrequency) ? (timesheetFrequency.equalsIgnoreCase("Monthly") ? "selected='selected'" : "") : "").append("  value='Monthly'>Monthly</option>");
 							     timesheetApprovalDiv.append(" <option ").append(StringUtils.isNotEmpty(timesheetFrequency) ? (timesheetFrequency.equalsIgnoreCase("Semi-monthly") ? "selected='selected'" : "") : "").append("  value='Semi-monthly'>Semi-monthly</option>");
@@ -278,7 +278,7 @@ public class TimesheetApprovalRestController {
 		
 		   Map<StringBuilder,Map<String,Date>> weekFrequencyBuilder = new LinkedHashMap<>();
 		    StringBuilder timesheetApprovalDiv = new StringBuilder(""); 
-	    	 timesheetApprovalDiv.append("					<div class='timeNewSe timeNewSe_a addicon'>");    
+	    	 timesheetApprovalDiv.append("					<div class='timeNewSe timeNewSe_week_date addicon'>");    
 			    timesheetApprovalDiv.append("<select id='weekFrequency' class='form-control chosen-select' onchange='timesheetApprovalDiv( \"weekfrequency\");' >");
 			    if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 			    	int  count = 1;
@@ -337,7 +337,7 @@ public class TimesheetApprovalRestController {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 List<Projects> projectsList = projectsService.getProjectBasedClientsByOrgLocationsIdAndApproverUserId(orgLocations.getId(), user.getId());
 		 StringBuilder timesheetApprovalDiv = new StringBuilder(""); 
-		 timesheetApprovalDiv.append("					<div class='timeNewSe timeNewSe_a'>");  
+		 timesheetApprovalDiv.append("					<div class='timeNewSe timeNewSe_client'>");  
 		  timesheetApprovalDiv.append("<select id='client' onChange='timesheetApprovalDiv(\"client\");' class='form-control chosen-select'>");
 		         if(StringUtils.isEmpty(client)){
 		        	 timesheetApprovalDiv.append(" <option selected='selected' value=''>Select Client</option>");
@@ -385,7 +385,7 @@ public class TimesheetApprovalRestController {
 		   if(StringUtils.isEmpty(stage)){
 			   stage = "All";
 		   }
-		   timesheetApprovalDiv.append("				<div class='timeNewSe'>");
+		   timesheetApprovalDiv.append("				<div class='timeNewSe timeNewSe_stage'>");
 			timesheetApprovalDiv.append("	                <select id='stage' class='form-control chosen-select' onChange='timesheetApprovalDiv(\"stage\");'>");
 			     timesheetApprovalDiv.append(" <option      ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("All") ? "selected='selected'" : "") : "").append("  value='All'>All</option>");
 			     timesheetApprovalDiv.append(" <option      ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("NEW") ? "selected='selected'" : "") : "").append("  value='NEW'>NEW</option>");
@@ -421,12 +421,12 @@ public class TimesheetApprovalRestController {
 		        
 		        List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, actualStartDate, actualEndDate, clientId, stage, orgLocations.getId(), user.getId());
 		        if(projectMembers != null && !projectMembers.isEmpty()){ 
-		        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Monthly")){
+		        	//if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Monthly")){
 		        		timesheetApprovalDiv.append("			<div class='timesheet_appr_table overflow_Visible'>");
-		        	}
+		        	/*}
 		        	else{
 			    	  timesheetApprovalDiv.append("			<div class='timesheet_appr_table overflowVisible'>");
-		        	}
+		        	}*/
 					timesheetApprovalDiv.append("	    	<table id='example'>");
 					timesheetApprovalDiv.append("				<thead>");   
 			        
