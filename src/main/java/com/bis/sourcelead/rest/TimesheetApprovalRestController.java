@@ -423,7 +423,6 @@ public class TimesheetApprovalRestController {
 		        if(projectMembers != null && !projectMembers.isEmpty()){  
 			    	timesheetApprovalDiv.append("			<div class='timesheet_appr_table'>");
 					timesheetApprovalDiv.append("	    	<table id='example'>");
-					timesheetApprovalDiv.append("	        	<tbody>");
 					timesheetApprovalDiv.append("				<thead>");   
 			        
 					timesheetApprovalDiv.append("	            	<tr>");
@@ -456,7 +455,8 @@ public class TimesheetApprovalRestController {
 					timesheetApprovalDiv.append("	                    <th>Action</th>             ");
 					
 					timesheetApprovalDiv.append("	                </tr>");
-					timesheetApprovalDiv.append("				</thead>");	
+					timesheetApprovalDiv.append("				</thead>");
+					timesheetApprovalDiv.append("	        	<tbody>");
 					for (ProjectMembers projectMember : projectMembers)
 					{
 						 timesheetApprovalDiv.append("<tr id='row").append(projectMember.getId()).append("'>");

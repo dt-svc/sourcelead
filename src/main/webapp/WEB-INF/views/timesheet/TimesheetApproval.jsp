@@ -41,20 +41,7 @@ top:0px !important;
 }
 </style>
 
-<script>
-function pagination(){ 
-    $('#example').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-    		"sSearch": ""
-    	}
-    } );
-}
-</script>
+
 
 <%-- <jsp:include page="TimesheetScripts.jsp" /> --%>
 
@@ -771,6 +758,7 @@ $(document).ready(function() {
         		    	    $("#timesheetApprovalDiv").empty();
         		    	  	$("#timesheetApprovalDiv").append(result);
         		    	  	prepareChosenScripts();
+        		    	  	pagination();
         		      }
         	    }); 
 	}
@@ -1077,6 +1065,21 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate){
 		    	 
 		    }
 	    });   
+}
+</script>
+
+<script>
+function pagination(){ 
+    $('#example').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+    		"sSearch": ""
+    	}
+    } );
 }
 </script>
 
