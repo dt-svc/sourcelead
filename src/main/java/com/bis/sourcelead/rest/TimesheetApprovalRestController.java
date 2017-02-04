@@ -420,8 +420,13 @@ public class TimesheetApprovalRestController {
 		        }
 		        
 		        List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, actualStartDate, actualEndDate, clientId, stage, orgLocations.getId(), user.getId());
-		        if(projectMembers != null && !projectMembers.isEmpty()){  
-			    	timesheetApprovalDiv.append("			<div class='timesheet_appr_table'>");
+		        if(projectMembers != null && !projectMembers.isEmpty()){ 
+		        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Monthly")){
+		        		timesheetApprovalDiv.append("			<div class='timesheet_appr_table overflow_Visible'>");
+		        	}
+		        	else{
+			    	  timesheetApprovalDiv.append("			<div class='timesheet_appr_table overflowVisible'>");
+		        	}
 					timesheetApprovalDiv.append("	    	<table id='example'>");
 					timesheetApprovalDiv.append("				<thead>");   
 			        

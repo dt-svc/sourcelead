@@ -39,6 +39,14 @@ width:100%;
 position: relative !important;
 top:0px !important;
 }
+.timesheet_appr_table.overflowVisible {
+overflow: visible !important;
+margin-top: 45px;
+}
+.timesheet_appr_table.overflow_Visible {
+overflow: visible !important;
+margin-top: 3px;
+}
 </style>
 
 
@@ -1072,6 +1080,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate){
 function pagination(){ 
     $('#example').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
