@@ -100,7 +100,6 @@ public class CandidateIndex implements Serializable {
 	
 	private String candidateUpdateDateToString;
 	
-
 	private String totalExp;
 	
 	private String skillSet;
@@ -491,7 +490,6 @@ public class CandidateIndex implements Serializable {
 		this.candidateUpdateDateToString = candidateUpdateDateToString;
 	}
 
-
 	public String getCandidateName() {
 		return candidateName;
 	}
@@ -597,7 +595,8 @@ public class CandidateIndex implements Serializable {
 	
 	public void setCandidateAdedd(boolean isCandidateAdedd) {
 		this.isCandidateAdedd = isCandidateAdedd;
+	}
 
 	}
 
-}
+
