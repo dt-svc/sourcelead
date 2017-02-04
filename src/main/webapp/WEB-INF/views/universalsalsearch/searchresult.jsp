@@ -90,7 +90,10 @@ function getSearchResults(searchType,searchValue){
 	   			    	result = result+'          <label>'+location+'</label>';
 	   			    	
 	   			    	result = result+'          </p>';
-	   			    	result = result+'          <p><label><strong>'+report.clientName+'</strong></label></p>';
+	   			    	if(report.clientName !=null && report.clientName != '' && report.clientName !='undefined'){
+	   			    		result = result+'          <p><label><strong>'+report.clientName+'</strong></label></p>';	
+	   			    	}
+	   			    	
 	   			    	if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined"){
 	   			    		exp = exp + report.minExp;
 	   			    	}
@@ -103,7 +106,7 @@ function getSearchResults(searchType,searchValue){
 	   			    	}
 	   			    	result = result+'          <p><label>'+exp+'</label></p>';
 	   			    	if(report.skills !=null && report.skills != '' && report.skills != 'undefined'){
-	   			    		result = result+'          <p><label>'+report.skills+'</label></p>';
+	   			    		result = result+'<p><label>'+report.skills+'</label></p>';
 	   			    	}
 	   			    	result = result+'<span href="javascript:void(0)" class="reqstatus-btn">'+report.requirementSubmissionStatus+'</span>';
 	   			    	result = result+'      </div>';
