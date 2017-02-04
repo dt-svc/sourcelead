@@ -728,7 +728,7 @@ overflow-x: auto;
 <script> 
 $(document).ready(function(){
 	//getVendorContactLists();
-	getVendorContactListsELK();
+	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}");
     listChange("listbyContact");
 	document.getElementById('listOfVendors').value = 'listbyContact';
 });
@@ -2306,11 +2306,6 @@ function numberOfContactsByOrgRelationId(orgRelationId){
 	}
 </script>      
 
-<script>
- window.onload = function() {
-	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}");
-};
-</script>
 
 <script>
 function vendorListCheck(searchValue,universalvendorSearchList,searchType){
@@ -2320,14 +2315,13 @@ function vendorListCheck(searchValue,universalvendorSearchList,searchType){
          type : "POST",
           url: sourceleadUrl+"/getUniversalSearchVendorList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&searchType="+searchType,   
           success :function(data) {
-              	// prepareCandidateList(data);
+        	  preparedVendorsListFromElk(data);
          },
           
      }); 
   }
 else{
-	candidateList();
-	 	$("#upcandidateStatus").val('');
+	getVendorContactListsELK();
 	}
   }
   </script>
