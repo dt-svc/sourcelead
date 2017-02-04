@@ -885,7 +885,6 @@ $(document).ready(function() {
 
 
 </section>
-
       
 </div>
 
@@ -993,16 +992,16 @@ $(document).ready(function() {
 function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate){
 	
 	 var msg = $("#reject"+projectMemberId+"message").val(); 
-    var sourceleadUrl ='${sourceleadUrl}';
-    var rowHtmlContent =  $("#row"+userId).html();
+     var sourceleadUrl ='${sourceleadUrl}';
+     var rowHtmlContent =  $("#row"+projectMemberId).html();
 	 $("#row"+projectMemberId).empty();
 	 $("#row"+projectMemberId).html("<td colspan='5'  id='loading"+projectMemberId+"'></td>");
-    $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
+     $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
    /*  
     $("#timesheetApprList").empty(); 
     $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');   */
     $(".mask_time").fadeOut(200);
-    $("#reject"+local+"panel").slideUp(200);
+    $("#reject"+projectMemberId+"panel").slideUp(200);
     $.ajax({
     type: "POST",
     url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
@@ -1018,7 +1017,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
  	    	  $("#row"+projectMemberId).html(rowHtmlContent);
  	    	  $("#status"+projectMemberId).html("REJECTED");
  	    	  $("#action"+projectMemberId).empty();
- 	    	  $("#action"+projectMemberId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+local+"' onclick='rejectedMessage(\"rejectedMessage"+local+"\");'><div class='app_error_mes' id='rejectedMessage"+local+"'>"+msg+"</div></i></div>");  
+ 	    	  $("#action"+projectMemberId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i></div>");  
    	   }
    	  pagination();
       }
@@ -1026,18 +1025,25 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
     
 }
 
-
-function cancelRejectSubmission(local){
-		 $(".mask_time").fadeOut(200);
-		 $("#reject"+local+"panel").slideUp(200);
+function rejectedMessage(local){ 
+    $("#"+local).slideToggle(200);
+    $(".timesheet_appr_table .glyphicon strong, .timesheet_appr_table .glyphicon").click(function(e) {
+        e.stopPropagation();
+    });	
+    
 }
 
-function rejecteSubmission(projectMemberId,startDate,endDate){  
+function cancelRejectSubmission(projectMemberId){
+		 $(".mask_time").fadeOut(200);
+		 $("#reject"+projectMemberId+"panel").slideUp(200);
+}
+
+function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate){  
         
         var result = "";
         result = result +'<div class="time_appr_rejct_pop" id="reject'+projectMemberId+'panel" >';
 		result = result +'<textarea placeholder="Enter comment here" id="reject'+projectMemberId+'message" ></textarea>';
-		result = result +'<a href="#" onClick="saveRejectSubmission(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+local+'\');">Cancel</a>';
+		result = result +'<a href="#" onClick="saveRejectSubmissionByProjectMemberId(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+projectMemberId+'\');">Cancel</a>';
 		result = result +'</div>';
 		 
 		$("#rejectedPopup").append(result);
@@ -1046,9 +1052,9 @@ function rejecteSubmission(projectMemberId,startDate,endDate){
 }
 function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate){
 		//$("#timesheetApprList").empty();
-		var rowHtmlContent =  $("#row"+userId).html();
+		var rowHtmlContent =  $("#row"+projectMemberId).html();
 		$("#row"+projectMemberId).empty();
-		$("#row"+projectMemberId).html("<td colspan='5'  id='loading"+userId+"'></td>");
+		$("#row"+projectMemberId).html("<td colspan='5'  id='loading"+projectMemberId+"'></td>");
 	    $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
 	    var rejectedReason;
         var sourceleadUrl ='${sourceleadUrl}';
@@ -1057,16 +1063,16 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate){
 	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 		    success: function(data) {
 		    	 var uniqueSepartor = startDate.replace('-','').replace('-','');
-	        	 if(userId.indexOf(uniqueSepartor) >= 0){
+	        	 if(projectMemberId.indexOf(uniqueSepartor) >= 0){
 			    	 var table = $('#example').DataTable();
-	        		 table.row('#row'+userId+'').remove().draw( false );
+	        		 table.row('#row'+projectMemberId+'').remove().draw( false );
 	        		   
 	        	 }
 	        	 else{
-	        		 $("#row"+userId).empty();
-			    	 $("#row"+userId).html(rowHtmlContent);
-			    	 $("#status"+userId).html("APPROVED");
-			    	 $("#action"+userId).html("<div><h3>Approved</h3></div>"); 
+	        		 $("#row"+projectMemberId).empty();
+			    	 $("#row"+projectMemberId).html(rowHtmlContent);
+			    	 $("#status"+projectMemberId).html("APPROVED");
+			    	 $("#action"+projectMemberId).html("<div><h3>Approved</h3></div>"); 
 	        	   }
 		    	 
 		    }
