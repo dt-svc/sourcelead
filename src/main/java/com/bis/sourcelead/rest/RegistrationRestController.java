@@ -386,7 +386,8 @@ public class RegistrationRestController {
 				
 				if("" != orgModules){
 					orgModules = orgModules.substring(0, orgModules.length()-1);
-					orgModules = org.getModulesId()+","+orgModules;
+					StringBuilder orgModulesstr = new StringBuilder();
+					orgModules = orgModulesstr.append(org.getModulesId()).append(" , ").append(orgModules).toString();
 					org.setModulesId(orgModules);
 				}
 			    orgService.addOrganization(org);
