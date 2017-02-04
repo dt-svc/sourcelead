@@ -61,7 +61,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			SubmissionApproverHierarchy submissionApproverHierarchy) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			session.save(submissionApproverHierarchy);
+			session.saveOrUpdate(submissionApproverHierarchy);
 		}
 		catch(Exception exception)	{
 			   StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"SUBMISSION_APPROVE_HIERARCHY"));
