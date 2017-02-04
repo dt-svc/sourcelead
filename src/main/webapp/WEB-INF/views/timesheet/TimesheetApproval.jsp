@@ -66,7 +66,6 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
 	   	type: "POST",
 	    url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from=timesheetApproval", 	   
 	    success: function(data) {
-	    	     alert("data"+data);
 	    		 //$("#timesheetPopUp").removeAttr("style");
  	    	     $("#timesheetPopUp").empty();
 			     $("#timesheetPopUp").append(data);
@@ -306,6 +305,20 @@ function removeTimeSheetRow(rowId) {
 		
 </script>
 
+<script type="text/javascript">
+function timesheetComment(local){ 
+	$('.teskcomment').each(function() {
+	    var currentId = this.id;
+	    var localId = local;
+	    if(localId.trim() == currentId.trim()){
+       	 		$("#"+local).slideToggle(200); 
+        }else{
+       	    $("#"+currentId).slideUp(200); 
+        }
+	});
+} 
+</script>	
+
 
 <!-- this script is for save Timesheet -->               
 <script type="text/javascript">
@@ -409,9 +422,12 @@ function deleteSubmissionDocument(submissionDocumentId){
 	   
 }
 </script>
-
-
-<!-- addrow divs -->
+	
+	
+	<!-- Content Area Ends--> 
+	<div class="time_pop" id="timeSheetErrorMsg"></div>
+	
+	<!-- addrow divs -->
 	 <div id="divadttTd1" style="display:none;" >   
 	      <div> 
 	       <select id="REPLACEROWIDtaskId" name="REPLACEROWIDtaskId" class="existedProjectTaskIdprojectId" onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
@@ -552,7 +568,7 @@ function checkHours(){
 }   
 	if(result != "" && result != null && result != 'undefined'){   
 		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
-		$("#timeSheetErrorMsg").attr('style','display:block;');
+		$("#timeSheetErrorMsg").attr('style','display:block;z-index: 10000000;top: 5px !important;');
 		$("#timeSheetErrorMsg").empty();
 		$("#timeSheetErrorMsg").append(outPut);
 		var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
@@ -869,6 +885,7 @@ $(document).ready(function() {
 
 
 </section>
+
       
 </div>
 
