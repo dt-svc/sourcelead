@@ -2,8 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png"
-	href="resources/images/fav.png" />
+<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
 <link href="resources/css/register-style.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="resources/css/register-style.css" rel="stylesheet">
@@ -63,52 +62,56 @@ function getSearchResults(searchType,searchValue){
 	    	result = result+'<div class="search-result-widget clearfix">';
 	    	/* All,Users,Requirement,Candidate,Clients,Vendors,Projects*/
 	    	if(searchType == 'Requirement'){
-	    	result = result+'   <h4>Requirement</h4>';
-	    	 for (var i = 0; i < checkSize; i++) {
-	             var report= json[i];
-	             var location = "";
-	             var exp = "";
-			    	result = result+'  <div class="srchresult clearfix row">';
-			    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
-			    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
-			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
-			    	}else{
-			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label>';	
-			    	}
-			    	if(report.city !=null && report.city != '' && report.city !="undefined"){
-			    		location = location + report.city;
-			    	}
-			    	if(report.state !=null && report.state != '' && report.state !="undefined"){
-			    		location = location + report.state;
-			    	}
-			    	if(report.country !=null && report.country != '' && report.country !="undefined"){
-			    		location = location + report.country;
-			    	}
-			    	result = result+'          <label>'+location+'</label>';
-			    	
-			    	result = result+'          </p>';
-			    	result = result+'          <p><label><strong>'+report.clientName+'</strong></label></p>';
-			    	if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined"){
-			    		exp = exp + report.minExp;
-			    	}
-			    	if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined" && report.maxExp !=null && report.maxExp != '' && report.maxExp !="undefined"){
-			    		exp = exp + "-";
-			    	}
-			    	
-			    	if(report.maxExp !=null && report.maxExp != '' && report.maxExp !="undefined"){
-			    		exp = exp + report.maxExp;
-			    	}
-			    	result = result+'          <p><label>'+exp+'</label></p>';
-			    	if(report.skills !=null && report.skills != '' && report.skills != 'undefined'){
-			    		result = result+'          <p><label>'+report.skills+'</label></p>';
-			    	}
-			    	result = result+'<span href="javascript:void(0)" class="reqstatus-btn">'+report.requirementSubmissionStatus+'</span>';
-			    	result = result+'      </div>';
-			    	result = result+'  </div>';
-	    	 }
-	    	    result = result+'  <div class="clearfix">';
-		    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadRequirement();">View More</a>';
-		    	result = result+'  </div>';
+	    		if(checkSize > 0){
+	    			result = result+'   <h4>Requirement</h4>';
+	   	    	 for (var i = 0; i < checkSize; i++) {
+	   	             var report= json[i];
+	   	             var location = "";
+	   	             var exp = "";
+	   			    	result = result+'  <div class="srchresult clearfix row">';
+	   			    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
+	   			    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
+	   			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
+	   			    	}else{
+	   			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label>';	
+	   			    	}
+	   			    	if(report.city !=null && report.city != '' && report.city !="undefined"){
+	   			    		location = location + report.city;
+	   			    	}
+	   			    	if(report.state !=null && report.state != '' && report.state !="undefined"){
+	   			    		location = location + report.state;
+	   			    	}
+	   			    	if(report.country !=null && report.country != '' && report.country !="undefined"){
+	   			    		location = location + report.country;
+	   			    	}
+	   			    	result = result+'          <label>'+location+'</label>';
+	   			    	
+	   			    	result = result+'          </p>';
+	   			    	result = result+'          <p><label><strong>'+report.clientName+'</strong></label></p>';
+	   			    	if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined"){
+	   			    		exp = exp + report.minExp;
+	   			    	}
+	   			    	if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined" && report.maxExp !=null && report.maxExp != '' && report.maxExp !="undefined"){
+	   			    		exp = exp + "-";
+	   			    	}
+	   			    	
+	   			    	if(report.maxExp !=null && report.maxExp != '' && report.maxExp !="undefined"){
+	   			    		exp = exp + report.maxExp;
+	   			    	}
+	   			    	result = result+'          <p><label>'+exp+'</label></p>';
+	   			    	if(report.skills !=null && report.skills != '' && report.skills != 'undefined'){
+	   			    		result = result+'          <p><label>'+report.skills+'</label></p>';
+	   			    	}
+	   			    	result = result+'<span href="javascript:void(0)" class="reqstatus-btn">'+report.requirementSubmissionStatus+'</span>';
+	   			    	result = result+'      </div>';
+	   			    	result = result+'  </div>';
+	   	    	 }
+	   	    	    result = result+'  <div class="clearfix">';
+	   		    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadRequirement();">View More</a>';
+	   		    	result = result+'  </div>';
+	    		}else{
+	    			result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';
+	    		}
 	    	}else if(searchType == 'Candidate'){
 	    		result = result+'   <h4>Candidate</h4>';
 		    	 for (var i = 0; i < checkSize; i++) {
