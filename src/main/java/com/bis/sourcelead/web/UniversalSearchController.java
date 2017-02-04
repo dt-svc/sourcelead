@@ -33,7 +33,7 @@ public class UniversalSearchController {
 			ModelAndView model = new ModelAndView();
 			model.addObject("searchType", searchType);
 			model.addObject("searchValue", searchValue);
-			model.setViewName("universalsalsearch/searchresult");
+			model.setViewName("universalsearch/searchresult");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 
