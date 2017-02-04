@@ -121,6 +121,7 @@ public class Constants {
 	
 	public static String loginUserAsAdminForProjects =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = projects.orgLocationsId.id)";
 	
+	
 	/** projectMember  constants**/
 	public static String MEMBER_ACTIVE = "1";
 	public static String  MEMBER_IN_ACTIVE= "0";
