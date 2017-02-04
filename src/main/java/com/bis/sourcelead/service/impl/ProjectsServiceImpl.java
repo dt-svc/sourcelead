@@ -78,6 +78,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -156,6 +157,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 private SourceleadELKBaseIndexer<ProjectsIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 private UniversalSearchHelper universalSearchHelper;
 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
@@ -1798,12 +1802,12 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				 Integer maxResults = getProjectCountByOrgLocationId(orgLocation.getId());
 					
 					//All Keywords
-				 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				 ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
 					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : allKeyWordArray){
 							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getProjectsMatchQueryBuilderList(keywd);
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getProjectsMatchQueryBuilderList(keywd);
 							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
 									allBoolSubQueryBuilder.should(matchQueryBuilder);
@@ -1828,27 +1832,6 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				
 				return searchList;
 			}
-			
-			private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
-				 ArrayList<String> keyWordList = null;
-				 if(searchValue !=null && !"".equalsIgnoreCase(searchValue)){
-					 String searchKeywordString = searchValue.replaceAll("\\[", "").replaceAll("\\]","");
-				     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
-				 }
-		         return keyWordList;
-			}
-			
-			private ArrayList<MatchQueryBuilder> getProjectsMatchQueryBuilderList(String keywd) {
-				 ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-				    //Project Search
-				    matchQueryBuilderList.add(QueryBuilders.matchQuery("projectName", keywd));
-					matchQueryBuilderList.add(QueryBuilders.matchQuery("level1ManagerName", keywd));
-					matchQueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
-					matchQueryBuilderList.add(QueryBuilders.matchQuery("startDate", keywd));
-					matchQueryBuilderList.add(QueryBuilders.matchQuery("clientName", keywd));
-					matchQueryBuilderList.add(QueryBuilders.matchQuery("projectStatus", keywd));
-					matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMemberEmail", keywd));
-					return matchQueryBuilderList; 
-			}
+
 
 }
