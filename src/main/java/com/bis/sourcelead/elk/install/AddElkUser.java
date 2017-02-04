@@ -112,10 +112,16 @@ public class AddElkUser {
 									userIndex.setEmployeeId(rs2.getString("EMPLOYEE_ID"));
 									userIndex.setRate(rs2.getString("RATE"));
 									userIndex.setRatePer(rs2.getString("RATE_PER"));
-									if(null != rs2.getString("HIRE_DATE") && !"".equals(rs2.getString("HIRE_DATE"))){
-									userIndex.setHireDate(rs2.getString("HIRE_DATE"));
+									
+									if(!"".equalsIgnoreCase(rs2.getString("HIRE_DATE"))){
+										Timestamp hiredate = rs2.getTimestamp("HIRE_DATE");
+										if (null != hiredate){
+											String updatedHireDate  = StringDate.format(new java.util.Date(hiredate.getTime()));
+											userIndex.setHireDate(updatedHireDate);
+									    }
+										
 									}
-
+									
 							    }
 							   
 		    	           }
