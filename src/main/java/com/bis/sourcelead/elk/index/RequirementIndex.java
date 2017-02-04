@@ -1,6 +1,7 @@
 package com.bis.sourcelead.elk.index;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
@@ -58,9 +59,100 @@ public class RequirementIndex {
 	
 	private String manager;
 	
+	private String managerUserId;
+	
 	private String priority; 
 
+   private String reqCreatedDate;
+
+	private String reqCreatedBy;
+
+	private String reqUpdatedDate;
+
+	private String reqUpdatedBy;
 	
+	private String isTemplate;
+	
+	private String[] reqLevel1ApproverUserId;
+	
+	
+	private String[] reqLevel2ApproverUserId;
+	
+	
+	private String[] teamOwnerUserId;
+	
+	private String[] teamAssignUserId;
+	
+	
+	
+	public String getManagerUserId() {
+		return managerUserId;
+	}
+
+	public void setManagerUserId(String managerUserId) {
+		this.managerUserId = managerUserId;
+	}
+
+	public String getIsTemplate() {
+		return isTemplate;
+	}
+
+	public void setIsTemplate(String isTemplate) {
+		this.isTemplate = isTemplate;
+	}
+	
+
+	public String[] getReqLevel1ApproverUserId() {
+		return reqLevel1ApproverUserId;
+	}
+
+	public void setReqLevel1ApproverUserId(String[] reqLevel1ApproverUserId) {
+		this.reqLevel1ApproverUserId = reqLevel1ApproverUserId;
+	}
+
+	public String[] getReqLevel2ApproverUserId() {
+		return reqLevel2ApproverUserId;
+	}
+
+	public void setReqLevel2ApproverUserId(String[] reqLevel2ApproverUserId) {
+		this.reqLevel2ApproverUserId = reqLevel2ApproverUserId;
+	}
+
+	public String[] getTeamAssignUserId() {
+		return teamAssignUserId;
+	}
+
+	public void setTeamAssignUserId(String[] teamAssignUserId) {
+		this.teamAssignUserId = teamAssignUserId;
+	}
+
+	
+	public String[] getTeamOwnerUserId() {
+		return teamOwnerUserId;
+	}
+
+	public void setTeamOwnerUserId(String[] teamOwnerUserId) {
+		this.teamOwnerUserId = teamOwnerUserId;
+	}
+
+	
+
+	public String getReqCreatedBy() {
+		return reqCreatedBy;
+	}
+
+	public void setReqCreatedBy(String reqCreatedBy) {
+		this.reqCreatedBy = reqCreatedBy;
+	}
+
+	
+	public String getReqUpdatedBy() {
+		return reqUpdatedBy;
+	}
+
+	public void setReqUpdatedBy(String reqUpdatedBy) {
+		this.reqUpdatedBy = reqUpdatedBy;
+	}
 
 	public Long getRequirementId() {
 		return requirementId;
@@ -252,4 +344,22 @@ public class RequirementIndex {
 		this.numberOfApplicants = numberOfApplicants;
 	}
 
+	public String getReqCreatedDate() {
+		return reqCreatedDate;
+	}
+
+	public void setReqCreatedDate(String reqCreatedDate) {
+		this.reqCreatedDate = reqCreatedDate;
+	}
+
+	public String getReqUpdatedDate() {
+		return reqUpdatedDate;
+	}
+
+	public void setReqUpdatedDate(String reqUpdatedDate) {
+		this.reqUpdatedDate = reqUpdatedDate;
+	}
+
+	
+	
 }

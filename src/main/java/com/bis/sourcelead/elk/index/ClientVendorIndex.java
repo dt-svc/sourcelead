@@ -1,6 +1,7 @@
 package com.bis.sourcelead.elk.index;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class ClientVendorIndex implements Serializable {
 
@@ -46,6 +47,8 @@ public class ClientVendorIndex implements Serializable {
 	
 	private String createdBy;
 	
+	private String searchType;
+	
 	private String createdByUserCode;
 	
 	private String responderWebSite;
@@ -60,7 +63,17 @@ public class ClientVendorIndex implements Serializable {
 	
 	private String country;
 	
+	private Date UpdatedDate;
 
+	private String updateDateToString;
+	
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -281,6 +294,22 @@ public class ClientVendorIndex implements Serializable {
 
 	public void setCountry(String country) {
 		this.country = country;
+	}
+
+	public Date getUpdatedDate() {
+		return UpdatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		UpdatedDate = updatedDate;
+	}
+
+	public String getUpdateDateToString() {
+		return updateDateToString;
+	}
+
+	public void setUpdateDateToString(String updateDateToString) {
+		this.updateDateToString = updateDateToString;
 	}
 	
 
