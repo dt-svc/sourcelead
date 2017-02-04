@@ -491,10 +491,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		
 		if(jsonObj.has("level1Manager")){
 	    	if(jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
-	    		String levelManager = jsonObj.getString("level1Manager");
-	    		Boolean isAdmin = userRoleService.isUserAdmin(Long.parseLong(levelManager));
+	    		String levelManager[] = jsonObj.getString("level1Manager").split(",");
+	    		Boolean isAdmin = userRoleService.isUserAdmin(Long.parseLong(levelManager[0]));
 				if(!isAdmin){
-					projectMemberList.add(saveManagersAsProjectMembers(jsonObj, projects, user, levelManager));
+					projectMemberList.add(saveManagersAsProjectMembers(jsonObj, projects, user, levelManager[0]));
 				}
 	    	}
     	}

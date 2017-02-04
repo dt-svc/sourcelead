@@ -144,6 +144,7 @@
 													<tr id="divTsRow0">
 														<th><input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />Task Name</th>
 														<th>Description</th>
+														<th>Billable Type</th>
 														<th class="tblminwidth-75">Action</th>
 													</tr>
 												  </table>
@@ -163,6 +164,17 @@
 																<textarea class="form-control" placeholder="Enter Task Description" id="taskDescription" name="taskDescription"></textarea>
 															</div>
 														</div>
+														
+														<div class="form-group">
+															<label class="col-md-3">Billable</label>
+															<div class="col-md-9">
+																<select id="taskBillableType" name="taskBillableType">
+																  <option value="Billable">Billable</option>
+																  <option value="Non-Billable">Non-Billable</option>
+																</select>
+															</div>
+														</div>
+														
 													</div>
 													<div class="col-xs-12 col-lg-5">
 														<a href="javascript:void(0)" class="btn btn-primary" id="save_task" onclick="addTasks();" data-target="addTask"> <i class="fa fa-plus"></i><span id="addTaskText"> Add Task</span></a>
@@ -218,24 +230,19 @@
 									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
 										<option value="">-- Select Manager --</option>
 										<c:forEach var="option" items="${user_List}">
-											<option value="${option.id}">${option.firstName}
+											<option value="${option.id},${option.userType}">${option.firstName}
 												${option.lastName}</option>
 										</c:forEach>
-									</select> <span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add
+									</select> <span class="btn btn-default formic1 addLevel" id="level2Toggle" onclick="getLevel2Approvers();">Add
 										Level-II</span>
 								</div>
 								<span class="hidden">Select Project Manager</span>
 							</div>
 						</div>
-						<div class="form-group level-second">
+						<div class="form-group level-second" id="level2Div">
 							<label class="col-md-3" for="Level-II">Level-II</label>
 							<div class="col-md-9">
 								<select class="form-control chosen-select" name="level2Manager" id="level2Manager">
-									<%-- <option value=''>-- Select Manager --</option>
-									<c:forEach var="option" items="${user_List}">
-										<option value="${option.id}">${option.firstName}
-											${option.lastName}</option>
-									</c:forEach> --%>
 								</select>
 							</div>
 						</div>
@@ -403,7 +410,14 @@ function getStatus(){
 		name="REPLACEROWIDtaskDescription" value="TASKDESCRIPTIONVALUE" /><span
 		id="REPLACEROWIDtaskDescriptionValue">TASKDESCRIPTIONVALUE</span>
 </div>
+
 <div id="divTaskTd3" style="display: none; float: left;">
+	<input type="hidden" id="REPLACEROWIDtaskBillableType"
+		name="REPLACEROWIDtaskBillableType" value="TASKBILLABLETYPEVALUE" /><span
+		id="REPLACEROWIDtaskBillableTypeValue">TASKBILLABLETYPEVALUE</span>
+</div>
+
+<div id="divTaskTd4" style="display: none; float: left;">
 	    <span><a title="Edit" href="javascript:void(0)" onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
 	    <span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
 </div>
@@ -436,6 +450,7 @@ function getStatus(){
 
 		var taskName = $('#taskName').val();
 		var taskDescription = $('#taskDescription').val();
+		var taskBillableType = $('#taskBillableType').val();
 
 		var cell0 = row.insertCell(0);
 		var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
@@ -449,11 +464,18 @@ function getStatus(){
 		divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g,
 				(taskDescription));
 		cell1.innerHTML = divTsTd2Str;
-
+		
 		var cell2 = row.insertCell(2);
 		var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
 		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd3Str = divTsTd3Str.replace(/TASKBILLABLETYPEVALUE/g,
+				(taskBillableType));
 		cell2.innerHTML = divTsTd3Str;
+
+		var cell3 = row.insertCell(3);
+		var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+		divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+		cell3.innerHTML = divTsTd4Str;
 
 		$("#taskName").val('');
 		$("#taskDescription").val('');
@@ -475,11 +497,14 @@ function getStatus(){
 	function editTask(rowId) {
 		var updateTaskName = $("#" + rowId + "taskName").val();
 		var updateTaskDescription = $("#" + rowId + "taskDescription").val();
+		var updateTaskBillableType = $("#" + rowId + "taskBillableType").val();
 		$("#taskName").val('');
 		$("#taskDescription").val('');
+		$("#taskBillableType").val('Billable');
 		$("#addTaskText").html('Update Task');
 		$("#taskName").val(updateTaskName);
 		$("#taskDescription").val(updateTaskDescription);
+		$('#taskBillableType').val(updateTaskBillableType);
 		$("#taskId").val(rowId);
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'updateTask(' + rowId + ');');
@@ -490,11 +515,15 @@ function getStatus(){
 	function updateTask(rowId) {
 		$("#" + rowId + "taskName").val($("#taskName").val());
 		$("#" + rowId + "taskDescription").val($("#taskDescription").val());
+		$("#" + rowId + "taskBillableType").val($("#taskBillableType").val());
+		
 		$("#" + rowId + "taskNameValue").html($("#taskName").val());
-		$("#" + rowId + "taskDescriptionValue").html(
-				$("#taskDescription").val());
+		$("#" + rowId + "taskDescriptionValue").html($("#taskDescription").val());
+		$("#" + rowId + "taskBillableTypeValue").html($("#taskBillableType").val());
+		
 		$("#taskName").val('');
 		$("#taskDescription").val('');
+		$("#taskBillableType").val('Billable');
 		$("#addTaskText").html('Add Task');
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'addTasks();');
@@ -546,11 +575,17 @@ function getStatus(){
 								divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (opt.Id));
 								divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g,(opt.description));
 								cell1.innerHTML = divTsTd2Str;
-
+								
 								var cell2 = row.insertCell(2);
 								var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
 								divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (opt.Id));
+								divTsTd3Str = divTsTd3Str.replace(/TASKBILLABLETYPEVALUE/g,(opt.billableType));
 								cell2.innerHTML = divTsTd3Str;
+
+								var cell3 = row.insertCell(3);
+								var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+								divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (opt.Id));
+								cell3.innerHTML = divTsTd4Str;
 
 							}
 
@@ -953,6 +988,9 @@ function assignEmployeespagination(){
 <script type="text/javascript">
 function getLevel2Approvers(){
 	var currentApproverId = document.getElementById("level1Manager").value;
+	var currentUser = currentApproverId.split(',');
+	var currentUserId = currentUser[0];
+	var currentUserType = currentUser[1];
 	var count = 1;
 	$(".myCheckbox").each(
 					function() {
@@ -960,7 +998,18 @@ function getLevel2Approvers(){
 						document.getElementById(localId).checked = false; 
 	});
 	$(".myCheckbox").val('');
-	getChildLevel1Approvers(currentApproverId);
+	
+	$("#level2Manager").empty();    
+	$('#level2Manager').val('').trigger('chosen:updated');
+	if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
+	    $("#level2Toggle").show();
+		getChildLevel1Approvers(currentUserId);
+	}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
+	    $("#level2Toggle").hide();   
+	    $("#level2Div").removeClass("level-second-active");
+	}
+	
+	
 } 
 </script>
 <script type="text/javascript">

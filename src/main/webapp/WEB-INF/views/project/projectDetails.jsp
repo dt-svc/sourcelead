@@ -301,7 +301,9 @@
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '	<label>Manager 1 <span class="text-danger">*</span></label>';
 						result = result + '<div class="row">';
-						 if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {  
+						 if ((json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") ||
+								 (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" 
+								 &&  json.managerLevel1UserType == "Admin")) {  
 							result = result + '<div class="col-md-12" id="levelone-select">';
 						 }else{
 							result = result + '<div class="col-md-9" id="levelone-select">';	
@@ -311,46 +313,35 @@
 							var manager = json.managersList[j];
 							if (json.manager1 == manager.id) {
 								selected = 'selected';
-								result = result	+ "<option value="+manager.id+" "+selected+" >"	+ manager.firstName + " "+ manager.lastName + "</option>";
+								result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >"	+ manager.firstName + " "+ manager.lastName + "</option>";
 							} else {
-								result = result	+ "<option value="+manager.id+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
+								result = result	+ "<option value="+manager.id+","+manager.userType+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
 							}
 						}
 						result = result + '</select>';
 						result = result + '</div>';
 						
-					 	if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
-						result = result + '<div class="col-md-2" id="leveltwo-btn" style="display:none">';
-						result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add Level-II</span>';
-						result = result + '</div>';
-						}else{
-							result = result + '<div class="col-md-2" id="leveltwo-btn" style="display:block">';
-							result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add Level-II</span>';
-							result = result + '</div>';
-						} 
+						if (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" &&  json.managerLevel1UserType != "Admin") { 
+							if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
+								result = result + '<div class="col-md-2" id="level2Toggle" style="display:none">';
+								result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
+								result = result + '</div>';
+								}else{
+									result = result + '<div class="col-md-2" id="level2Toggle" style="display:block">';
+									result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
+									result = result + '</div>';
+								} 
+						}
+					 	
 						result = result + '</div>';
 						
 						result = result + '</div>';
 
-						 if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
-							result = result+ '<div class="user_summary_edit_cta">';
-							result = result + '<label> Manager 2 </label>';
-							result = result	+ '<select id="level2Manager" name="level2Manager">';
-							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
-								var manager = json.managersListwithoutManager1[j];
-								if (json.manager2 == manager.id) {
-									selected = 'selected';
-									result = result	+ "<option value="+manager.id+" "+selected+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
-								} else {
-
-									result = result	+ "<option value="+manager.id+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
-								}
-							}
-							result = result + '</select>';
-							result = result + '</div>';
-
-						} else{
+						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
+							result = result+ '<div class="user_summary_edit_cta" >';
+						}else{
 							result = result+ '<div class="user_summary_edit_cta" style="display:none;" id="demo">';
+						}
 							result = result + '<label> Manager 2 </label>';
 							result = result	+ '<select id="level2Manager" name="level2Manager">';
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
@@ -365,8 +356,6 @@
 							}
 							result = result + '</select>';
 							result = result + '</div>';
-
-						} 
 
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '	<label>Client</label>';
@@ -682,16 +671,35 @@ function projectStatus(){
 	}
 </script>
 
+<script type="text/javascript">
+function showLevel2Div(){
+	$("#demo").toggle();
+}
+
+</script>
 
 <script type="text/javascript">
 	function getLevel2Approvers(manager2) {
-		$("#demo").toggle();
+		//$("#demo").toggle();
 		var currentApproverId = document.getElementById("level1Manager").value;
-		getChildLevel1Approvers(currentApproverId, manager2);
+		var currentUser = currentApproverId.split(',');
+		var currentUserId = currentUser[0];
+		var currentUserType = currentUser[1];
+		$("#level2Manager").empty();    
+		$('#level2Manager').val('');
+		if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
+		    $("#level2Toggle").show();
+		    //$("#demo").addClass("level-second-active");
+		    getChildLevel1Approvers(currentUserId, manager2);
+		}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
+		    $("#level2Toggle").hide();   
+		   // $("#demo").hide();
+		    //$("#demo").removeClass("level-second-active");
+		}
 	}
 </script>
 <script type="text/javascript">
-	function getChildLevel1Approvers(currentApproverId, manager2) {
+	function getChildLevel1Approvers(currentApproverId, manager2) {alert("hiii");
 		var sourceleadUrl = '${sourceleadUrl}';
 		if (currentApproverId == manager2) {
 			if (currentApproverId != null && currentApproverId != ''
