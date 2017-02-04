@@ -222,7 +222,7 @@ public class RequirementController {
 		
 		if(requirement != null && requirement.getId() != null){
 
-			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId().toString());
+			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
 				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 				List<String> totSkils = new ArrayList<String>();
 				if(!allReqSkills.contains(null)){
