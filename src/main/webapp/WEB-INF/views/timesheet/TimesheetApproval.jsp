@@ -885,7 +885,6 @@ $(document).ready(function() {
 
 
 </section>
-
       
 </div>
 
@@ -1026,18 +1025,25 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
     
 }
 
+function rejectedMessage(local){ 
+    $("#"+local).slideToggle(200);
+    $(".timesheet_appr_table .glyphicon strong, .timesheet_appr_table .glyphicon").click(function(e) {
+        e.stopPropagation();
+    });	
+    
+}
 
 function cancelRejectSubmission(projectMemberId){
 		 $(".mask_time").fadeOut(200);
 		 $("#reject"+projectMemberId+"panel").slideUp(200);
 }
 
-function rejecteSubmission(projectMemberId,startDate,endDate){  
+function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate){  
         
         var result = "";
         result = result +'<div class="time_appr_rejct_pop" id="reject'+projectMemberId+'panel" >';
 		result = result +'<textarea placeholder="Enter comment here" id="reject'+projectMemberId+'message" ></textarea>';
-		result = result +'<a href="#" onClick="saveRejectSubmission(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+projectMemberId+'\');">Cancel</a>';
+		result = result +'<a href="#" onClick="saveRejectSubmissionByProjectMemberId(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+projectMemberId+'\');">Cancel</a>';
 		result = result +'</div>';
 		 
 		$("#rejectedPopup").append(result);

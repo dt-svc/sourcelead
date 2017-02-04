@@ -490,13 +490,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    		if(status!=null && status.equalsIgnoreCase("REJECTED")){
             	 	sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
             	 	sah.setSubmissionStatus(Submission_Status.REJECTED);
-            	 	sah.setActionPerformedBy("Rejected By "+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
+            	 	sah.setActionPerformedBy(""+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
             	 	sah.setRejectedReason(rejectedReason);
             	 	
 	             }else if(status!=null && status.equalsIgnoreCase("APPROVED")){
 	            	 sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	 sah.setSubmissionStatus(Submission_Status.APPROVED);
-	            	 sah.setActionPerformedBy("Approved By "+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
+	            	 sah.setActionPerformedBy(""+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
 	             }
 	    		 try {
 					updateSubmissionApproverHierarchy(sah);
@@ -519,13 +519,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		                			if(status!=null && status.equalsIgnoreCase("REJECTED")){
 		                				approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
 		                				approver.setSubmissionStatus(Submission_Status.REJECTED);
-		                				approver.setActionPerformedBy("Rejected By "+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
+		                				approver.setActionPerformedBy(""+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
 		                				approver.setRejectedReason(rejectedReason);
 		                        	 	
 		            	             }else if(status!=null && status.equalsIgnoreCase("APPROVED")){
 		            	            	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 		            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
-		            	            	 approver.setActionPerformedBy("Approved By "+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
+		            	            	 approver.setActionPerformedBy(""+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
 		            	             }
 	                		 }
 	                	      //if logged in user is low level approver then record will be submitted to high level approver
