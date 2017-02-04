@@ -126,7 +126,7 @@ public class CandidateIndex implements Serializable {
 	private String reqSubmissionId;
 	
 	private boolean isCandidateAdedd;
-	 
+
 	private List<RequirementSubmission> requirementSubmisstions;
 	
 		
@@ -137,6 +137,7 @@ public class CandidateIndex implements Serializable {
 	public void setSearchType(String searchType) {
 		this.searchType = searchType;
 	}
+
 
 	public Long getCandidateId() {
 		return candidateId;
@@ -490,7 +491,7 @@ public class CandidateIndex implements Serializable {
 		this.candidateUpdateDateToString = candidateUpdateDateToString;
 	}
 
-<<<<<<< HEAD
+
 	public String getCandidateName() {
 		return candidateName;
 	}
@@ -513,7 +514,7 @@ public class CandidateIndex implements Serializable {
 
 	public void setSkillSet(String skillSet) {
 		this.skillSet = skillSet;
-=======
+	}
 	public String getCandidateScore() {
 		return candidateScore;
 	}
@@ -596,14 +597,7 @@ public class CandidateIndex implements Serializable {
 	
 	public void setCandidateAdedd(boolean isCandidateAdedd) {
 		this.isCandidateAdedd = isCandidateAdedd;
->>>>>>> da3dc2d9c40da014efa3fc45e0d581f928494906
+
 	}
 
-	public List<RequirementSubmission> getRequirementSubmisstions() {
-		return requirementSubmisstions;
-	}
-
-	public void setRequirementSubmisstions(List<RequirementSubmission> requirementSubmisstions) {
-		this.requirementSubmisstions = requirementSubmisstions;
-	}
 }
