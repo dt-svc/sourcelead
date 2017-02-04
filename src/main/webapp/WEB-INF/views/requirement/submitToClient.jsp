@@ -34,12 +34,14 @@ function submitToClient(requirementId){
 	    	url: sourceleadUrl+"/getShortListedCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
 	    			
 	    	success: function(data) {
+	    		
+	    		if(data != null && data != 'undefined' && data != "" && data != '[]'){
 		       
 	    	   var json = JSON.parse(data);
 		        
 	           result = result + '     <div class="clearfix"></div>';
 	           result = result + '   </div>';
-	           result = result + '   <div class="require_wrap_table">';
+	           result = result + '   <div class="require_wrap_table scroll_table">';
 	           result = result + '     <table id="shortlistedPagination"  class="display" cellspacing="0" width="100%">';
 	           result = result + '       <thead>';
 	           result = result + '         <tr>';
@@ -52,7 +54,7 @@ function submitToClient(requirementId){
 	           result = result + '           <th>Rate</th>';
 	           result = result + '           <th>Submission Rate</th>';
 	           result = result + '           <th>Source</th>';
-	           result = result + '           <th>Experince</th>';
+	           result = result + '           <th>Experience</th>';
 	           result = result + '         </tr>';
 	           result = result + '       </thead>';
 	           result = result + '       <tbody>';
@@ -131,15 +133,17 @@ function submitToClient(requirementId){
 			    	     }
 			           
 			           result = result + '       </tr>';
-			           
+		    		}
+		    		
+
 			           result = result + '       </tbody>';
+			           result = result + '       </table>';
 			           result = result + '</div><div id="loading">';
 			           result = result + '</div><div id="popUp">';
 		    			
 		    			$("#submitToClientDiv").empty();
 		    			$("#submitToClientDiv").append(result);
-		    			
-		    		}
+		   		}
 		   		}else{
 		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Shortlisted List is Empty</h3></div>";
 		    		$('#submitToClientDiv').empty();

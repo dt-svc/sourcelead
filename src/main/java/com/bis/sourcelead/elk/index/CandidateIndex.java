@@ -2,6 +2,11 @@ package com.bis.sourcelead.elk.index;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Transient;
+
+import com.bis.sourcelead.entity.RequirementSubmission;
 
 public class CandidateIndex implements Serializable {
 
@@ -38,6 +43,8 @@ public class CandidateIndex implements Serializable {
 	private String designation;
 
 	private String designationType;
+	
+	private String designationOtherType;
 
 	private String currentRate;
 
@@ -90,6 +97,28 @@ public class CandidateIndex implements Serializable {
 	private Integer isFavourite;
 	
 	private String candidateUpdateDateToString;
+	
+	private String candidateScore;
+	
+	private float skillPercentage;
+	 
+	private float expPercentage;
+	 
+	private float locationPercentage;
+	 
+	private float ratePercentage;
+	 
+	private float noticePeriodPercentage;
+	 
+	private float totalKeyWordPerPercentage;
+	
+	private int noOfReq;
+	
+	private String reqSubmissionId;
+	
+	private boolean isCandidateAdedd;
+	 
+	private List<RequirementSubmission> requirementSubmisstions;
 	
 	public Long getCandidateId() {
 		return candidateId;
@@ -219,7 +248,14 @@ public class CandidateIndex implements Serializable {
 		this.designationType = designationType;
 	}
 
-	
+
+	public String getDesignationOtherType() {
+		return designationOtherType;
+	}
+
+	public void setDesignationOtherType(String designationOtherType) {
+		this.designationOtherType = designationOtherType;
+	}
 
 	public String getCurrentRate() {
 		return currentRate;
@@ -435,10 +471,96 @@ public class CandidateIndex implements Serializable {
 	public void setCandidateUpdateDateToString(String candidateUpdateDateToString) {
 		this.candidateUpdateDateToString = candidateUpdateDateToString;
 	}
-	
 
-	
+	public String getCandidateScore() {
+		return candidateScore;
+	}
 
-	
+	public void setCandidateScore(String candidateScore) {
+		this.candidateScore = candidateScore;
+	}
 
+	public float getSkillPercentage() {
+		return skillPercentage;
+	}
+
+	public void setSkillPercentage(float skillPercentage) {
+		this.skillPercentage = skillPercentage;
+	}
+
+	public float getExpPercentage() {
+		return expPercentage;
+	}
+
+	public void setExpPercentage(float expPercentage) {
+		this.expPercentage = expPercentage;
+	}
+
+	public float getLocationPercentage() {
+		return locationPercentage;
+	}
+
+	public void setLocationPercentage(float locationPercentage) {
+		this.locationPercentage = locationPercentage;
+	}
+
+	public float getRatePercentage() {
+		return ratePercentage;
+	}
+
+	public void setRatePercentage(float ratePercentage) {
+		this.ratePercentage = ratePercentage;
+	}
+
+	public float getNoticePeriodPercentage() {
+		return noticePeriodPercentage;
+	}
+
+	public void setNoticePeriodPercentage(float noticePeriodPercentage) {
+		this.noticePeriodPercentage = noticePeriodPercentage;
+	}
+
+	public float getTotalKeyWordPerPercentage() {
+		return totalKeyWordPerPercentage;
+	}
+
+	public void setTotalKeyWordPerPercentage(float totalKeyWordPerPercentage) {
+		this.totalKeyWordPerPercentage = totalKeyWordPerPercentage;
+	}
+
+	public int getNoOfReq() {
+		return noOfReq;
+	}
+
+	public void setNoOfReq(int noOfReq) {
+		this.noOfReq = noOfReq;
+	}
+
+	public String getReqSubmissionId() {
+		return reqSubmissionId;
+	}
+
+	public void setReqSubmissionId(String reqSubmissionId) {
+		this.reqSubmissionId = reqSubmissionId;
+	}
+
+	public boolean getIsCandidateAdedd() {
+		return isCandidateAdedd;
+	}
+
+	public void setIsCandidateAdedd(boolean isCandidateAdedd) {
+		this.isCandidateAdedd = isCandidateAdedd;
+	}
+	
+	public void setCandidateAdedd(boolean isCandidateAdedd) {
+		this.isCandidateAdedd = isCandidateAdedd;
+	}
+
+	public List<RequirementSubmission> getRequirementSubmisstions() {
+		return requirementSubmisstions;
+	}
+
+	public void setRequirementSubmisstions(List<RequirementSubmission> requirementSubmisstions) {
+		this.requirementSubmisstions = requirementSubmisstions;
+	}
 }
