@@ -396,13 +396,9 @@ overflow-x: auto;
 
 <script type="text/javascript">
 window.onload = function () {
-	alert("hi");
-	alert("${clientSearchResult}"+"hello");
-	
 	if("${clientSearchResult}"=="clientSearchResult"){
 		getClientUniversalSearchList("${searchValue}");
 	}
-	
 	/* getVendorContactLists(); */
 	else{
 		getVendorContactListsELK();
@@ -419,8 +415,7 @@ function getClientUniversalSearchList(searchValue){
         type : "POST",
          url: sourceleadUrl+"/getUniversalClientList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
          success :function(data) {
-        	 alert("data"+data);
-        		 preparedClientDetails(data);
+        	 preparedClientListFromElk(data);
         },
     }); 
 }
@@ -716,7 +711,6 @@ function getClientUniversalSearchList(searchValue){
 
 <<script type="text/javascript">
  function preparedClientDetails(data){
-	 
 	 var json = JSON.parse(data);
     	var result = "";
     	/* if(json.length != null && json.length != ''){ */
