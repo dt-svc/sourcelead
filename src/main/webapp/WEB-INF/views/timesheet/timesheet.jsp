@@ -165,6 +165,7 @@ $(document).ready(function() {
 		    	  	   $("#timesheetDivByTab").append(result);
 		    	  	   
 		    	  	   maskme();
+		    	  	   $("html").trigger('click');
 		    	  	   
 			    	   $("#tab-1").show();
 	 		    	   $(".project-tabs-menu a").click(function(event) {
@@ -678,13 +679,15 @@ function addAttachment(){
         <div class="loadTime" id="loadTime"></div>    
         
         <div id="timesheetEntriesDiv"> 
-        	<div id="timesheetEntriesDivByProjectMemberId">
+        </div>
+        
+        
+        <!-- <div id="timesheetEntriesDivByProjectMemberId">
         		 <div id="timesheetDivByFrequency">
         			 <div id="timesheetDivByTab">
         			 </div>
         		  </div>
-        	</div>
-        </div>
+        	</div> -->
         
         <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
 				         <div id="divadttTd1" style="display:none;" >   
