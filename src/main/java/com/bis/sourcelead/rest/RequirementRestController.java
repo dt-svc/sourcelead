@@ -725,16 +725,15 @@ public class RequirementRestController {
 	    	
 	    	List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirementid);		
 		  	List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
-		  	
-		  	if(null != allReqSkills && !allReqSkills.isEmpty()){
-		  		String[] skills = allReqSkills.get(0).split(","); 
-			    for(String skill : skills){ 
-			    	if(!skillsList.contains(skill)){
-			    		    skillsList.add(skill);
-			    	}
-			    }  
-		  	}
-		  	
+			if(null != allReqSkills  && !allReqSkills.isEmpty() && !allReqSkills.contains(null) && !allReqSkills.contains("")){
+						String[] skills = allReqSkills.get(0).split(","); 
+						for(String skill : skills){ 
+							if(!skillsList.contains(skill)){
+									skillsList.add(skill);
+							}
+						}  
+					}
+ 	
 	    	String resultJson; 
 		  	resultJson = commonUtil.toJSON(skillsList);
 			return resultJson;
