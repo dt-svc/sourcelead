@@ -20,7 +20,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -207,7 +206,7 @@ public class RegistrationServiceImpl implements RegistrationService{
  		}
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
-		
+		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		userService.sendEmail(user, loginUser, password,orgLocationsId);
 	
 	}
