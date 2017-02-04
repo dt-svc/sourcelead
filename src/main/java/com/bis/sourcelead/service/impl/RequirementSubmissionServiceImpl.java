@@ -2608,6 +2608,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getSubmittedCandidateIdsByRequirementId(requirementId);
 	}
 
+	@Override
+	public Integer getRequirementPerCandidateCount(Long candudateId) throws Exception {
+		return requirementSubmissionDao.getRequirementPerCandidateCount(candudateId);
+	}
+
 
 }
 

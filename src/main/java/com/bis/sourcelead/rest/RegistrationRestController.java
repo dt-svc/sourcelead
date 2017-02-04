@@ -384,10 +384,11 @@ public class RegistrationRestController {
 					}
 				}
 				
-				
-				orgModules = orgModules.substring(0, orgModules.length()-1);
-				orgModules = org.getModulesId()+","+orgModules;
-				org.setModulesId(orgModules);
+				if("" != orgModules){
+					orgModules = orgModules.substring(0, orgModules.length()-1);
+					orgModules = org.getModulesId()+","+orgModules;
+					org.setModulesId(orgModules);
+				}
 			    orgService.addOrganization(org);
 		   
 		return "success";

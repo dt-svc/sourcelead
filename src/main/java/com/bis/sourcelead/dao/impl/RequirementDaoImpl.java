@@ -741,10 +741,10 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<String> getAllRequirementSkillsByRequirementI(String requirementId) throws Exception {
+	public List<String> getAllRequirementSkillsByRequirementI(Long requirementId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select req.skills from Requirement req where req.id =:requirementId";
-	    List<String> skillNames = session.createQuery(query).setString( "requirementId", requirementId).setCacheable(true).list();
+	    List<String> skillNames = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
         return skillNames;
 	}
 

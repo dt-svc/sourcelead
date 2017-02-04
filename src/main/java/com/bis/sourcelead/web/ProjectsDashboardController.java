@@ -82,7 +82,7 @@ public class ProjectsDashboardController {
         
         List<Long> projectIds = projectsService.getProjectIdsByOrgLocationsId(loginOrgLocations.getId());
         
-        if(null != projectIds){
+        if(null != projectIds && projectIds.size() > 0){
         	List<ProjectApproverHierarchy> projectManagersList = projectApproverHierarchyService.getAllApproverUsersByProjectIdList(projectIds);
             for(ProjectApproverHierarchy projectManager:projectManagersList){
             	if(null != projectManager.getApproverUserId() && null != projectManager.getApproverUserId().getLastName()){

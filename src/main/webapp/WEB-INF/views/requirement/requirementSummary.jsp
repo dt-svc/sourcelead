@@ -3283,7 +3283,7 @@ function requirementRecommendations(requirementId){
 				result = result +'<td class="text-center"><div><span>--</span></div></td>';
 			} 
 		   result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
-		    if(report.requirementSubmisstions.length > 0){
+		   /*  if(report.requirementSubmisstions.length > 0){
 		    	result = result +'<div class="tooltip_div">';
 			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
 			    result = result +' <thead><tr><th>Requirement Name</th> <th>Stage</th></tr></thead>';
@@ -3300,7 +3300,7 @@ function requirementRecommendations(requirementId){
 			    result = result +'</tbody>';
 			    result = result +' </table>';
 			    result = result +' </div>'; 
-		    }
+		    } */
 		    result = result +' </div></td>';
 		    result = result +'<td class="text-center"><div class="show_scroe"><span>'+report.candidateScore+'%</span>';
 		    result = result +'<div class="scroe">';
