@@ -100,11 +100,6 @@ public class CandidateIndex implements Serializable {
 	
 	private String candidateUpdateDateToString;
 	
-
-	private String totalExp;
-	
-	private String skillSet;
-
 	private String totalExp;
 	
 	private String skillSet;
@@ -604,4 +599,4 @@ public class CandidateIndex implements Serializable {
 
 	}
 
-}
+
