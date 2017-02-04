@@ -731,7 +731,7 @@ overflow-x: auto;
 <script> 
 $(document).ready(function(){
 	//getVendorContactLists();
-	getVendorContactListsELK();
+	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}");
     listChange("listbyContact");
 	document.getElementById('listOfVendors').value = 'listbyContact';
 });
@@ -1086,31 +1086,7 @@ function preparedVendorContactListFromElk(data){
 		   	for (var i=0; i<json.length; i++)
 				{  
 		   		var report = json[i];
-		   		var selected1 = '';
-					var selected2 = '';
-					var selected3 = '';
-					var selected4 = '';
-					var selected5 = '';
 		   		
-		   		if(report.spocStatus == 'Active'){
-					selected1 = 'selected';
-				} 
-			
-				if(report.spocStatus == 'In-Active'){
-						selected2 = 'selected';
-					} 
-				
-				if(report.spocStatus == 'New'){
-						selected3 = 'selected';
-					}
-				
-				if(report.spocStatus == 'Negotiation'){
-						selected4 = 'selected';
-					} 
-				
-				if(report.spocStatus == 'Contracted'){
-					selected5 = 'selected';
-				} 
 		   		
 		   		result = result +'<tr>';
 		   		
@@ -1136,14 +1112,18 @@ function preparedVendorContactListFromElk(data){
 		   		
 		   		
 		   		result = result + ' <td><div>';
-				result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
-				result = result + ' <option '+selected1+'>Active</option>';
-				result = result + ' <option '+selected2+'>In-Active</option>';
-				result = result + ' <option '+selected3+'>New</option>';
-				result = result + ' <option '+selected4+'>Negotiation</option>';
-				result = result + ' <option '+selected5+'>Contracted</option>';
-				result = result + ' </select>';
-				result = result + ' </div></td>';
+   	        		if(report.invitationStatus == 'Rejected'){
+   	        			result = result + '<span>'+report.spocStatus+'</span>';
+   	        		}else{
+   	        			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
+   						result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
+   						result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
+   						result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
+   						result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
+   						result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
+   						result = result + ' </select>';
+   	        		}
+   	        		result = result + ' </div></td>';
 		   			
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
 		   		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
@@ -1225,32 +1205,6 @@ function preparedVendorContactList(data){
 		   	for (var i=0; i<json.length; i++)
 				{  
 		   		var report = json[i];
-		   		var selected1 = '';
-					var selected2 = '';
-					var selected3 = '';
-					var selected4 = '';
-					var selected5 = '';
-		   		
-		   		if(report.spocStatus == 'Active'){
-					selected1 = 'selected';
-				} 
-			
-				if(report.spocStatus == 'In-Active'){
-						selected2 = 'selected';
-					} 
-				
-				if(report.spocStatus == 'New'){
-						selected3 = 'selected';
-					}
-				
-				if(report.spocStatus == 'Negotiation'){
-						selected4 = 'selected';
-					} 
-				
-				if(report.spocStatus == 'Contracted'){
-					selected5 = 'selected';
-				} 
-		   		
 		   		result = result +'<tr>';
 		   		
 		   		
@@ -1275,14 +1229,18 @@ function preparedVendorContactList(data){
 		   		
 		   		
 		   		result = result + ' <td><div>';
-				result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
-				result = result + ' <option '+selected1+'>Active</option>';
-				result = result + ' <option '+selected2+'>In-Active</option>';
-				result = result + ' <option '+selected3+'>New</option>';
-				result = result + ' <option '+selected4+'>Negotiation</option>';
-				result = result + ' <option '+selected5+'>Contracted</option>';
-				result = result + ' </select>';
-				result = result + ' </div></td>';
+	        		if(report.invitationStatus == 'Rejected'){
+	        			result = result + '<span>'+report.spocStatus+'</span>';
+	        		}else{
+	        			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
+						result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
+						result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
+						result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
+						result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
+						result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
+						result = result + ' </select>';
+	        		}
+	        		result = result + ' </div></td>';
 		   			
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
 		   		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
@@ -2227,8 +2185,6 @@ function exportVendorContactToExcel(){
     };
 </script> 
 
-  
-
 <script>
 function getStates(){
 	var countryName = $("#country").val();
@@ -2263,7 +2219,6 @@ function getStates(){
 	}
 }
 </script> 
-
 
 <script>
 function getCities(){
@@ -2336,7 +2291,6 @@ function numberOfContactsByOrgRelationId(orgRelationId){
 }
 </script>
 
-
 <script type="text/javascript">	
 	function loadChosenScripts(){
 		
@@ -2367,3 +2321,23 @@ function numberOfContactsByOrgRelationId(orgRelationId){
 	    $("#excludeKeyWord").empty();
 	}
 </script>      
+
+
+<script>
+function vendorListCheck(searchValue,universalvendorSearchList,searchType){
+    if(universalvendorSearchList=="universalVendorList")	 {
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/getUniversalSearchVendorList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&searchType="+searchType,   
+          success :function(data) {
+        	  preparedVendorsListFromElk(data);
+         },
+          
+     }); 
+  }
+else{
+	getVendorContactListsELK();
+	}
+  }
+  </script>

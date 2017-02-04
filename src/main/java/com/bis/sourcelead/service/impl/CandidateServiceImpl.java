@@ -5,16 +5,27 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.xmlbeans.impl.regex.RegularExpression;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +53,8 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
@@ -52,6 +65,7 @@ import com.bis.sourcelead.util.PdfUtil;
 
 @Service
 public class CandidateServiceImpl implements CandidateService {
+	
 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateServiceImpl.class);
 
@@ -79,8 +93,12 @@ public class CandidateServiceImpl implements CandidateService {
 	@Autowired
 	CandidateIndexHelper candidateIndexHelper;
 	
+	
 	@Autowired
     private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	private UniversalSearchHelper universalSearchHelper;
 	/**
 	 * @author prasad k
 	 * @since  aug 26 2016
@@ -171,6 +189,13 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("designation") && jsonObj.getString("designation") !=null){
 		candidate.setDesignation(jsonObj.getString("designation"));
 		}
+		
+		if(jsonObj.has("designationOtherType") && jsonObj.has("designationType") && "Other".equalsIgnoreCase(jsonObj.getString("designationType"))){
+			candidate.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+		}else{
+			candidate.setDesignationOtherType(null);
+		}
+		
 		if(jsonObj.has("expectedRate") && jsonObj.getString("expectedRate") !=null ){
 		candidate.setExpectedRate(jsonObj.getString("expectedRate"));
 		}
@@ -508,4 +533,103 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			throws Exception {
 		return candidateDao.getAllCandidatesForHotListingWhoAreTerminating(orgLocationId,datRange);
 	}
+	
+	@Override
+	public List<Object> getAllUniversalSearchCandidateList(OrgLocations orgLocation,String searchValue)throws Exception {
+		List<Object>   searchList = new ArrayList<>();
+		 Long maxResults = getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
+		 ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
+			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();;
+			if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+				 for(String keywd : allKeyWordArray){
+					 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
+					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+							allBoolSubQueryBuilder.should(matchQueryBuilder);
+						}
+						allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+					}
+				}
+				 boolQueryBuilder.must(allBoolQueryBuilder);
+			}
+			
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			df.setTimeZone(TimeZone.getTimeZone("GMT"));
+			
+			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+			    if(null != searchHits && searchHits.length >0){
+			    	ObjectMapper mapper = new ObjectMapper();
+			    	for (SearchHit hit : searchHits) {
+			    		String json = hit.getSourceAsString();
+			    		mapper.setDateFormat(df);
+			    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+			    	    if(candidateIndex.getUpdatedDate() != null){
+			    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
+			   			}
+			    	    searchList.add(candidateIndex);
+			    	} 
+			    	
+			    }
+		return searchList;
+			
+	}
+//	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForAll(String keywd) {
+//		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+//	    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+//	    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchQuery("address", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchQuery("designation", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateType", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateCurrency", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rateType", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRateCurrencey", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchQuery("noticePriod", keywd));
+//		//matchQueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchQuery("resumeContent", keywd));
+//		
+//		
+//		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+//		if(matcher.find()){
+//			Float expYears = Float.valueOf(matcher.group());
+//			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
+//			//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths", keywd));
+//			
+//			String regex = "^(\\+[9]\\d|[1]\\d{2})$";
+//			RegularExpression regExp = new RegularExpression(regex);
+//			String mobileKeywd =matcher.group().replaceAll(regExp.toString(), "");
+//			matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
+//			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+//		}
+//		if(StringUtils.isNumeric(keywd)){
+//			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
+//			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRate", keywd));
+//		}
+//		
+//			
+//		return matchQueryBuilderList; 
+//
+//	}
+
+//	private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
+//		 ArrayList<String> keyWordList = null;
+//		 if(searchValue !=null && !"".equalsIgnoreCase(searchValue)){
+//			 String searchKeywordString = searchValue.replaceAll("\\[", "").replaceAll("\\]","");
+//		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+//		 }
+//        return keyWordList;
+//	}
 }

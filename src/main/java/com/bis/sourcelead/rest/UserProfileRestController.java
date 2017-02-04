@@ -156,7 +156,9 @@ public class UserProfileRestController {
 					InputStream in = new ByteArrayInputStream(user.getDocFile());
 					BufferedImage bi = ImageIO.read(in);
 					OutputStream out = response.getOutputStream();
-					ImageIO.write(bi, "jpg", out);
+					if(null != bi){
+						ImageIO.write(bi, "jpg", out);	
+					}
 					out.close();
 					
 				/*	try {
