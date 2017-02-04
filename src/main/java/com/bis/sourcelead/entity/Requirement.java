@@ -76,7 +76,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "RATE")
 	private String rate;
 	
-	@Column(name = "RATE_TYPE")
+	@Column(name = "RATE_TYPE") 
 	private String rateType;
 	
 	@Column(name = "COUNTRY")
@@ -200,6 +200,8 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
 	
+	@Transient
+	private String searchType;;
 	
 	@Transient
 	private String clientName;
@@ -304,6 +306,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String[] requirementAssignedToUsersId;
 	
 	
+
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
