@@ -1136,17 +1136,25 @@ public class ClientServiceImpl implements ClientService{
 			return searchList;
 		}
 
-		public List<Object> getAllUniversalSearchClientList(OrgLocations orgLocations, String serachValue)throws Exception {
+		public List<Object> getAllUniversalSearchClientList(OrgLocations orgLocations, String serachValue,String searchType)throws Exception {
 				List<Object>   searchList = new ArrayList<>();
 //				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocations.getId(),"Client");
-				 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(serachValue);
+				
+				String responderType = null;
+				if("Vendor".equalsIgnoreCase(searchType)){
+					 responderType = "Client";
+				 }else if("Client".equalsIgnoreCase(searchType)){
+					 responderType = "Vendor"; 
+				 }
+				
+				ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(serachValue);
 					BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();;
 					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : allKeyWordArray){
 							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
 							 // need to change for setters 
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForAll(keywd);
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
 							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
 									allBoolSubQueryBuilder.should(matchQueryBuilder);
@@ -1163,46 +1171,52 @@ public class ClientServiceImpl implements ClientService{
 					
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 					    if(null != searchHits && searchHits.length >0){
-					    	ObjectMapper mapper = new ObjectMapper();
-					    	for (SearchHit hit : searchHits) {
-					    		String json = hit.getSourceAsString();
-					    		mapper.setDateFormat(df);
-					    		ClientVendorIndex clientVendorIndex = mapper.readValue(json, ClientVendorIndex.class);
-					    	    if(clientVendorIndex.getUpdatedDate() != null){
-					    	    	clientVendorIndex.setUpdateDateToString(Constants.DF_YMD.format(clientVendorIndex.getUpdatedDate()));
-					   			}
-					    	    searchList.add(clientVendorIndex);
-					    	} 
-					    	
-					    }
+							ObjectMapper mapper = new ObjectMapper();
+							for (SearchHit hit : searchHits) {
+										String json = hit.getSourceAsString();
+										mapper.setDateFormat(df);
+										ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
+										
+										if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == orgLocations.getId().longValue()){
+											
+										    StringBuilder website=new StringBuilder();
+										    clientVendor.setWebsite(website.append("www.").append(clientVendor.getResponderWebSite()).toString());
+											clientVendor.setOrgName(clientVendor.getResponderOrgName());
+											clientVendor.setCountry(clientVendor.getResponderCountry());
+											clientVendor.setState(clientVendor.getResponderState());
+											clientVendor.setCity(clientVendor.getResponderCity());
+											
+											if(clientVendor.getInitiatorLevel()!=null){
+												clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
+											}
+										}
+									  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == orgLocations.getId().longValue()){
+										 
+										  StringBuilder website=new StringBuilder();
+										  clientVendor.setWebsite(website.append("www.").append(clientVendor.getInitiatorWebSite()).toString());
+										  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
+										  clientVendor.setCountry(clientVendor.getInitiatorCountry());
+										  clientVendor.setState(clientVendor.getInitiatorState());
+										  clientVendor.setCity(clientVendor.getInitiatorCity());
+										  
+										  if(clientVendor.getResponderLevel()!=null){
+											  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
+										  }
+										}
+									  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
+										  if(!clientVendor.getCreatedBy().isEmpty()){
+											  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
+										  }
+										 
+									  }
+									  
+									  searchList.add(clientVendor);
+							}	
+						}
 				return searchList;
 		}
 
 
-		private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForAll(String keywd) {
-			ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-			/*matchQueryBuilderList.add(QueryBuilders.matchQuery("orgName", keywd));*/
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorLevel", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("createdByAdvanced", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-			return matchQueryBuilderList; 
-		}
-
-
-		private ArrayList<String> getSearchValuesFromChosenSelectField(String serachValue) {
-			 ArrayList<String> keyWordList = null;
-			 if(serachValue !=null && !"".equalsIgnoreCase(serachValue)){
-				 String searchKeywordString = serachValue.replaceAll("\\[", "").replaceAll("\\]","");
-			     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
-			 }
-	         return keyWordList;
-		}
-
-	
 		
 	
 }

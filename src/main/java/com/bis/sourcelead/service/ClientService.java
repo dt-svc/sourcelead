@@ -34,5 +34,5 @@ public interface ClientService {
 
 	List<Object> getAllUniversalSearchVendorList(OrgLocations orgLocation, String searchValue, String searchType) throws Exception;
 	
-	List<Object> getAllUniversalSearchClientList(OrgLocations orgLocations, String serachValue) throws Exception;
+	List<Object> getAllUniversalSearchClientList(OrgLocations orgLocations, String serachValue, String searchType) throws Exception;
 }

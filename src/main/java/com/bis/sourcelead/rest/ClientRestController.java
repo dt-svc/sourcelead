@@ -1054,10 +1054,10 @@ public class ClientRestController {
 	 @RequestMapping(value = "/getUniversalClientList")
 	 @ResponseBody
 	 public String getUniversalClientList(@RequestParam(value="searchValue", required=false) String  searchValue,
-			 HttpServletRequest request) throws Exception {
+			 @RequestParam(value="searchType", required=false) String  searchType,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson;
-		List<Object> uniClientList = clientService.getAllUniversalSearchClientList(orgLocations, searchValue);
+		List<Object> uniClientList = clientService.getAllUniversalSearchClientList(orgLocations, searchValue,searchType);
 		resultJson = commonUtil.toJSON(uniClientList);
 		return resultJson;
 	 }
