@@ -720,8 +720,8 @@ public class RequirementRestController {
 	    	
 	    	List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirementid.toString());		
 		  	List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
-		  	
-		  	if(allReqSkills != null){
+		  	System.out.println(allReqSkills.size());
+		  	if(allReqSkills != null && !allReqSkills.isEmpty() && !allReqSkills.contains(null) && !allReqSkills.contains("")){
 		  		String[] skills = allReqSkills.get(0).split(","); 
 			    for(String skill : skills){ 
 			    	if(!skillsList.contains(skill)){
