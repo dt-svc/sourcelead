@@ -1,5 +1,8 @@
 package com.bis.sourcelead.service;
 
+import java.text.DateFormat;
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +32,9 @@ public interface ClientService {
 	public void sendAcceptEmailToClientOrVendor(OrgSpoc orgSpoc,User loginUser,OrgLocations orgLocations)throws Exception;
 
 	public void sendRejectEmailToClientOrVendor(OrgSpoc orgSpoc, User loginUser, OrgLocations orgLocations)throws Exception;
+
+	List<Object> getAllUniversalSearchClientList(OrgLocations orgLocations, String serachValue) throws Exception;
+
 
 	
 }

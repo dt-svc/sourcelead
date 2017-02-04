@@ -396,13 +396,35 @@ overflow-x: auto;
 
 <script type="text/javascript">
 window.onload = function () {
+	alert("hi");
+	alert("${clientSearchResult}"+"hello");
+	
+	if("${clientSearchResult}"=="clientSearchResult"){
+		getClientUniversalSearchList("${searchValue}");
+	}
+	
 	/* getVendorContactLists(); */
-	getVendorContactListsELK();
+	else{
+		getVendorContactListsELK();
+	}
 	 listChange("listbyContact");
 	document.getElementById('listOfVendors').value = 'listbyContact';
  };
 </script>
 
+<script type="text/javascript">
+function getClientUniversalSearchList(searchValue){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getUniversalClientList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
+         success :function(data) {
+        	 alert("data"+data);
+        		 preparedClientDetails(data);
+        },
+    }); 
+}
+</script>
 
 
 <script type="text/javascript">

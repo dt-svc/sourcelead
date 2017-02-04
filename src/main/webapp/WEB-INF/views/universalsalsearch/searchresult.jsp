@@ -188,7 +188,7 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'  </div>';
 	    	}
 		    	    result = result+'  <div class="clearfix">';
-			    	result = result+'      <a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+			    	result = result+'      <a href="javascript:void(0)" onclick="loadClient();" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
 			    	result = result+'  </div>';
 	    	}else if(searchType == 'Vendor'){
 	    		result = result+'   <h4>Vendors</h4>';
@@ -530,7 +530,7 @@ function getSearchResultsForAll(searchType,searchValue){
 					    	
 					    	if(opt.length>5 && j==4){
 				                result = result+'  <div class="clearfix">';
-						    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+						    	result = result+'      <a href="#" title="View More" onclick="loadClient();" class="pull-right btn btn-sm btn-default">View More</a>';
 						    	result = result+'  </div>';
 				             }
 	            	 }
@@ -615,6 +615,17 @@ function loadUsers(){
 	window.location.href = sourceleadUrl + "/usersList?&searchResult="+searchResult+"&searchValue="+searchValue;
 }
 </script>
+
+<script>
+function loadClient(){
+	alert("hi");
+	var searchResult = "clientSearchResult";
+	var searchValue = "${searchValue}";
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/clientDashboard?&searchResult="+searchResult+"&searchValue="+searchValue;
+}
+</script>
+
 
 <jsp:include page="../masterFooter.jsp" />
 
