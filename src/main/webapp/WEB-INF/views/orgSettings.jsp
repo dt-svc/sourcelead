@@ -715,9 +715,10 @@ function loadSignature(){
 								
 							}
 							
+							
 							else if(opt.labelName == 'Company Name'){
-								if('${SourceLeadWeb_orgName}' != null){
-									labelText = '${SourceLeadWeb_orgName}';
+								if("${SourceLeadWeb_orgName}" != null){
+									labelText = "${SourceLeadWeb_orgName}";
 								}
 								
 							}

@@ -418,7 +418,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 	
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reason="+reason, 	   
+		    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&projectId="+projectId+"&reason="+reason,
    		    success: function(data) {
    		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -628,7 +628,16 @@ function assignEmployee(){
 		            }
 				})
 	        }
+	        
     	}); 
+	    
+	    $.ajax({
+        	type: "POST",
+            url: sourceleadUrl+"/storeAssignEmployeeIntoELK?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 
+            success: function(data) {
+            }
+		})
+	    
 }
 </script>
 
