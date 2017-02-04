@@ -627,5 +627,14 @@ public class ProjectsDashboardRestController {
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMemberEmail", keywd));
 			return matchQueryBuilderList; 
 	 }
+	 
+	 @RequestMapping(value = "/getUniversalProjectsListByOrgLocationID")
+	 public String getUniversalProjectsListByOrgLocationID(@RequestParam(value="searchValue", required=false) String searchValue,HttpServletRequest request) throws Exception{
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String resultJson;
+			List<Object> uniProjectsList =	projectsService.getAllUniversalSearchProjectsList(orgLocations, searchValue);
+			resultJson = commonUtil.toJSON(uniProjectsList);
+			return resultJson;
+	 }
 	
 }

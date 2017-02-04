@@ -301,7 +301,7 @@ function getSearchResults(searchType,searchValue){
 		    	        }
 		    	 		if(checkSize>5 && i==4 ){
 					    	result = result+'<div class="clearfix">';
-					    	result = result+'<a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+					    result = result+'<a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadProjects();">View More</a>';
 					    	result = result+'</div>';
 		    	 		}
 	    		}else{
@@ -515,7 +515,7 @@ function getSearchResultsForAll(searchType,searchValue){
 				  				    	
 				  				    	if(opt.length>5 && j==4){
 							                result = result+'  <div class="ccountlearfix">';
-									    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+								result = result+'<a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadProjects();">View More</a>';
 									    	result = result+'  </div>';
 							             }
 				            	 }
@@ -720,9 +720,20 @@ function loadClient(){
 	var searchResult = "clientSearchResult";
 	var searchValue = "${searchValue}";
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/clientDashboard?&searchResult="+searchResult+"&searchValue="+searchValue;
+	var searchType = "${searchType}";
+	window.location.href = sourceleadUrl + "/clientDashboard?&searchResult="+searchResult+"&searchValue="+searchValue+"&searchType="+searchType;
 }
 </script>
+
+<script>
+function loadProjects(){
+	var searchResult = "universalProjectsList";
+	var searchValue = "${searchValue}";
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/projectDashboard?&searchResult="+searchResult+"&searchValue="+searchValue;
+}
+</script>
+
 <jsp:include page="../masterFooter.jsp" />
 
 
