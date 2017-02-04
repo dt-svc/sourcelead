@@ -111,13 +111,14 @@ function getSearchResults(searchType,searchValue){
 	   			    	result = result+'<span href="javascript:void(0)" class="reqstatus-btn">'+report.requirementSubmissionStatus+'</span>';
 	   			    	result = result+'      </div>';
 	   			    	result = result+'  </div>';
+	   			     
+	   	   	    	 if(checkSize>=5 && i==4 ){
+	   	   	    	    result = result+'  <div class="clearfix">';
+	   	   		    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadRequirement();">View More</a>';
+	   	   		    	result = result+'  </div>';
+	   	   	    	 }
 	   	    	 }
-	   	    	 
-	   	    	 if(checkSize>5 && i==4 ){
-	   	    	    result = result+'  <div class="clearfix">';
-	   		    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadRequirement();">View More</a>';
-	   		    	result = result+'  </div>';
-	   	    	 }
+	   	    	
 	    		}else{
 	    			result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';
 	    		}
@@ -174,12 +175,13 @@ function getSearchResults(searchType,searchValue){
 				    	}
 				    	result = result+'      </div>';
 				    	result = result+'  </div>';
+				    	if(checkSize>=5 && i==4 ){
+				    	    result = result+'  <div class="clearfix">';
+					    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadCandidate();">View More</a>';
+					    	result = result+'  </div>';
+				    	  }
 	            	}
-		    	 if(checkSize>5 && i==4 ){
-		    	    result = result+'  <div class="clearfix">';
-			    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadCandidate();">View More</a>';
-			    	result = result+'  </div>';
-		    	  }
+		    	 
 	    		}else{
 	    			result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';
 	    		}
@@ -215,12 +217,13 @@ function getSearchResults(searchType,searchValue){
 				    	}
 				    	result = result+'      </div>';
 				    	result = result+'  </div>';
+				    	if(checkSize>=5 && i==4 ){
+				    	    result = result+'  <div class="clearfix">';
+					    	result = result+'      <a href="javascript:void(0)" onclick="loadClient();" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+					    	result = result+'  </div>';
+			    		}
 	    			}
-		    		if(checkSize>5 && i==4 ){
-			    	    result = result+'  <div class="clearfix">';
-				    	result = result+'      <a href="javascript:void(0)" onclick="loadClient();" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
-				    	result = result+'  </div>';
-		    		}
+		    		
 	    		}else{
 	    			result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';
 	    		}
@@ -256,12 +259,13 @@ function getSearchResults(searchType,searchValue){
 				    	}
 				    	result = result+'      </div>';
 				    	result = result+'  </div>';
+				    	 if(checkSize>=5 && i==4 ){
+					    	    result = result+'  <div class="clearfix">';
+						    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadVendor();">View More</a>';
+						    	result = result+'  </div>';
+				    		 }
 	    		}
-	    		 if(checkSize>5 && i==4 ){
-		    	    result = result+'  <div class="clearfix">';
-			    	result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadVendor();">View More</a>';
-			    	result = result+'  </div>';
-	    		 }
+	    		
 	    		}else{
 	    			result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';
 	    		}
@@ -301,12 +305,13 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'<span href="javascript:void(0)" class="reqstatus-btn">'+report.projectStatus+'</span>';
 				    	result = result+'</div>';
 				    	result = result+'</div>';
-		    	        }
-		    	 		if(checkSize>5 && i==4 ){
+				    	if(checkSize>=5 && i==4 ){
 					    	result = result+'<div class="clearfix">';
 					    	result = result+'<a href="javascript:void(0)" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadProjects();">View More</a>';
 					    	result = result+'</div>';
 		    	 		}
+		    	        }
+		    	 		
 	    		}else{
 	    			result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';
 	    		}
@@ -338,12 +343,13 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'<span href="javascript:void(0)" class="reqstatus-btn">'+report.userStatus+'</span>';
 				    	result = result+'</div>';
 				    	result = result+'</div>';
+				    	if(i==4&& checkSize>=5){
+					    	 result = result+'  <div class="clearfix">';
+			                 result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadUsers();">View More</a>';
+			                 result = result+'  </div>';
+			    		 }
 		    	        }
-		    		 if(checkSize>5 && i==4 ){
-				    	 result = result+'  <div class="clearfix">';
-		                 result = result+'      <a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadUsers();">View More</a>';
-		                 result = result+'  </div>';
-		    		 }
+		    		 
 	    		}else{
 	    			result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';
 	    		}
