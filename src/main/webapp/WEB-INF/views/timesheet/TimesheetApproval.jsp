@@ -1,6 +1,5 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<jsp:include page="TimesheetScripts.jsp" />
 
 
 <!-- this is for mask -->
@@ -8,7 +7,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<!-- <link href="resources/css/jquery-ui.css" rel="stylesheet"> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
 <script src="resources/js/bootstrap.min.js"></script>
@@ -55,6 +54,448 @@ function pagination(){
     	}
     } );
 }
+</script>
+
+<%-- <jsp:include page="TimesheetScripts.jsp" /> --%>
+
+<!-- this script is for Timesheet Approval popup -->
+<script>
+function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	    $.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from=timesheetApproval", 	   
+	    success: function(data) {
+	    	     alert("data"+data);
+	    		 //$("#timesheetPopUp").removeAttr("style");
+ 	    	     $("#timesheetPopUp").empty();
+			     $("#timesheetPopUp").append(data);
+			     maskme();
+			     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
+			     $(".side_mask").fadeIn(200); 
+			     $("body").css('overflow-y', 'hidden');
+			     
+			     
+			     $("html").trigger('click');
+	    	  	 $("#tab-1").show();
+		    	 $(".project-tabs-menu a").click(function(event) {
+		    	        event.preventDefault();
+		    	        $(this).parent().addClass("current");
+		    	        $(this).parent().siblings().removeClass("current");
+		    	        var tab = $(this).attr("href");
+		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+		    	        $(tab).fadeIn();
+		    	  });
+		    	     
+			    /*  maskme();  
+			     $("html").trigger('click'); */
+	    }
+	    });
+} 
+</script>	
+
+ <!-- this script is for save Timesheet -->               
+ 
+
+
+<!-- this script is for save Timesheet -->               
+<script type="text/javascript">
+function newSaveTimesheet(status,savingType){ 
+	 checkHours();
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	 }; 
+	 if ($('#timesheet_form').validate(false, validationSettings)){ 
+				 
+		  		
+               var frm = $('#timesheet_form').serializeFormJSON();
+               
+               var sourceleadUrl ='${sourceleadUrl}';
+               var startdate;
+           	   var navigation;
+               
+       		   var mydata = JSON.stringify(frm);
+       		   mydata = mydata.replace(/[{}]/g, "");
+       		   mydata = encodeURIComponent(mydata);
+       		
+       		   var form = $('#timesheet_form')[0];
+       		   var formData = new FormData(form); 
+       		   var submissionIds = $("#submissionId").val();
+       		   $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
+        	   $.ajax({
+	      	          type : "POST",
+	          	      data: formData,
+	          	      contentType : 'application/json; charset=utf-8',
+	          	      enctype: 'multipart/form-data',
+	      	          processData: false,
+	      	          contentType:false,
+	          	      dataType : 'json',
+        	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
+        		      success :function(result) {
+        		    	  
+        		    	 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+     		    		 $(".side_mask").fadeOut(200); 
+     	        		 $("body").css('overflow-y', 'scrool');
+     	        		 $("#dynamic").removeAttr('style');
+     	        		 
+        		    	  /* $("#loadTime").removeAttr("style");  */
+        		    	  
+        		      }
+        	      	  
+        	    }); 
+        	   return true;
+	 	}else{ 
+			return false;
+	 } 
+}
+
+$('body').on('blur', '#timesheet_form', function() {
+	$("#timesheet_form").showHelpOnFocus();
+	$("#timesheet_form").validateOnBlur(false, validationSettings);  
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script> 
+
+
+<!-- this script is for delete document -->
+<script type="text/javascript">
+function deleteSubmissionDocument(submissionDocumentId){  
+    var sourceleadUrl ='${sourceleadUrl}';
+    /*  var startdate; */
+	var navigation;
+    $.ajax({
+          type : "POST",
+      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
+	      success :function(result) {
+	    	  $("#"+submissionDocumentId+"document").remove();
+	      }
+      	  
+    }); 
+	   
+}
+</script>
+
+
+<!-- addrow divs -->
+	 <div id="divadttTd1" style="display:none;" >   
+	      <div> 
+	       <select id="REPLACEROWIDtaskId" name="REPLACEROWIDtaskId" class="existedProjectTaskIdprojectId" onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
+	                   <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
+	                       	<option value="${task.id}">${task.taskName}</option>
+	                    </c:forEach> --%>
+	      </select>
+	      <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="addtaskfield removetaskfield"/>
+	      </div>
+	      
+	 </div>
+	 <div id="divadttTd2" style="display:none;">
+	  <input type="text" onblur='checkHours()'  id="REPLACEROWIDtimeSheetDay1Id" name="REPLACEROWIDtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
+	        <div class="timesheet_comm">
+	         <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment1Id');"></i>
+	           <span class="teskcomment" id="REPLACEROWIDcomment1Id" ><textarea name="REPLACEROWIDcomment1Id" id="REPLACEROWIDtextArea1Id" ></textarea></span>
+	          </div>
+	</div>
+	<div id="divadttTd3" style="display:none;">
+	<input type="text" onblur='checkHours()'  id="REPLACEROWIDtimeSheetDay2Id" name="REPLACEROWIDtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
+	           <div class="timesheet_comm">
+	               <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment2Id');"></i>
+	           <span class="teskcomment" id="REPLACEROWIDcomment2Id" ><textarea name="REPLACEROWIDcomment2Id" id="REPLACEROWIDtextArea2Id" ></textarea></span></div>
+	 </div>
+ 	<div id="divadttTd4" style="display:none;">
+		<input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay3Id" name="REPLACEROWIDtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
+	           <div class="timesheet_comm">
+	           <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment3Id');"></i>
+	           <span class="teskcomment" id="REPLACEROWIDcomment3Id" ><textarea name="REPLACEROWIDcomment3Id" id="REPLACEROWIDtextArea3Id"></textarea></span></div>
+	 </div>
+	 <div id="divadttTd5" style="display:none;">
+	<input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay4Id" name="REPLACEROWIDtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
+	           <div class="timesheet_comm">
+	           <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment4Id');"></i>
+	           <span class="teskcomment" id="REPLACEROWIDcomment4Id" ><textarea name="REPLACEROWIDcomment4Id" id="REPLACEROWIDtextArea4Id"></textarea></span></div>           
+	 </div>
+	 <div id="divadttTd6" style="display:none;">
+	<input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay5Id" name="REPLACEROWIDtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
+	           <div class="timesheet_comm">
+	           <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment5Id');"></i>
+	            <span class="teskcomment" id="REPLACEROWIDcomment5Id" ><textarea name="REPLACEROWIDcomment5Id" id="REPLACEROWIDtextArea5Id"></textarea></span></div>  
+	</div>
+	<div id="divadttTd7" style="display:none;">
+	   <input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay6Id" name="REPLACEROWIDtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
+	          <div class="timesheet_comm">
+	          <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment6Id');"></i>
+	          <span class="teskcomment" id="REPLACEROWIDcomment6Id" ><textarea name="REPLACEROWIDcomment6Id" id="REPLACEROWIDtextArea6Id"></textarea></span></div>
+	</div>
+	<div id="divadttTd8" style="display:none;">
+		<input type="text" onblur='checkHours()'  id="REPLACEROWIDtimeSheetDay7Id" name="REPLACEROWIDtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
+	          <div class="timesheet_comm">
+	          <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment7Id');"></i>
+	           <span class="teskcomment" id="REPLACEROWIDcomment7Id" ><textarea name="REPLACEROWIDcomment7Id" id="REPLACEROWIDtextArea7Id"></textarea></span></div>            
+	</div>
+	<!-- #### this div is for dummy timesheets entries ( useful for add rows ) above  ####-->  
+	
+	<div id="divAttachmentTd1" style="display: none; float: left;">
+	<div id='REPLACEROWIDdocFileuploadFileGroup'>
+				<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation"> 
+				<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
+		</div>
+	</div>
+ 
+ 
+ 
+ 
+ <!-- this script is for clear timesheet -->
+<script>
+function clearTimesheet(){ 
+	for (var i = 1; i < 8; i++){
+		 for (var j = 1; j < 50; j++){
+			    $("#"+j+"timeSheetDay"+i+"Id").val("00:00");
+			    $("#"+j+"textArea"+i+"Id").val("");  
+		 }
+	}
+	$("#weekComment").val('');
+}
+</script>
+
+<!-- this script is for validation of 24 hours -->
+<script>
+function checkHours(){ 
+	 var result = "";		
+	 var total; 
+	 for (var i = 1; i < 8; i++){
+		 var bsum = 0;
+		 var nbsum = 0;
+		 var total = 0;
+		 for (var j = 1; j < 50; j++){  
+			    var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
+			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
+			    	 var hours = btemp;
+			    	 var split = hours.split(':');
+			    	 var first = split[0];
+			    	 var second = split[1];
+					 
+					 var minute = first * 60;
+					 var minute1 = second;
+					 var finalmin = parseInt(minute) + parseInt(minute1);
+			    	 
+				     bsum = parseFloat(bsum) + parseInt(finalmin);
+				}
+			    
+		 }
+	    var t = bsum; 
+		var hours = Math.floor(t / 60); 
+		var minutes = t % 60;
+		total = hours +":"+ minutes;
+	 var time = total.split(':'); 
+	 if(!isNaN(time[0])){
+	 if(time.length === 2 && parseInt(time[0],10)>=0 && parseInt(time[0],10)<=23  && parseInt(time[1],10)>=0  && parseInt(time[1],10)<=59){
+	    	 
+	 }else{
+	    	if(i == '1'){
+	    		result = result+"MonDay ,";
+	    	}
+	    	if(i == '2'){  
+	    		result = result+"TuesDay ,";
+	    	}
+	    	if(i == '3'){  
+	    		result = result+"Wednesday ,";
+	    	}
+	    	if(i == '4'){  
+	    		result = result+"Thursday ,";
+	    	}
+	    	if(i == '5'){
+	    		result = result+"Friday ,";
+	    	}
+	    	if(i == '6'){
+	    		result = result+"Saturday ,";
+	    	}
+	    	if(i == '7'){
+	    		result = result+"Sunday ,";
+	    	}
+	    	
+	 }
+   }
+}   
+	if(result != "" && result != null && result != 'undefined'){   
+		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
+		$("#timeSheetErrorMsg").attr('style','display:block;');
+		$("#timeSheetErrorMsg").empty();
+		$("#timeSheetErrorMsg").append(outPut);
+		var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
+		$("#hideError").empty();
+		$("#hideError").append(error);
+	 }else{
+		$("#timeSheetErrorMsg").empty();
+		$("#hideError").empty();
+	} 
+	
+	$(".time_pop b").click(function(){
+		$("#timeSheetErrorMsg").attr('style','display:none;');
+	    $("#timeSheetErrorMsg").empty();
+	}); 
+	
+}
+</script>
+
+<script>
+/* this script is for calculate total hours */
+$(document).click(function(){ 
+	 var total;
+	 for (var i = 1; i < 8; i++){
+		 var bsum = 0;
+		 var nbsum = 0;
+		 var total = 0;
+		 for (var j = 1; j < 50; j++){
+			    var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
+			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
+			    	 var hours = btemp;
+			    	 var split = hours.split(':');
+			    	 var first = split[0];
+			    	 var second = split[1];
+					 
+					 var minute = first * 60;
+					 var minute1 = second;
+					 var finalmin = parseInt(minute) + parseInt(minute1);
+			    	 
+				     bsum = parseFloat(bsum) + parseInt(finalmin);
+				}
+			    
+		 }
+		 
+	    var t = bsum; 
+		var hours = Math.floor(t / 60); 
+		var minutes = t % 60;
+		
+		if (minutes < 10) {
+			minutes = '0' + minutes;
+		}
+		if (hours < 10) {
+			hours = '0' + hours;
+		}
+		if(!isNaN(hours) && !isNaN(minutes)){
+			total = hours +":"+ minutes;
+		}else{
+			total =  "00:00";
+		}
+	 $("#rowTotal"+i+"Id").val(total);
+}	
+	
+	 grandTotal();		
+});
+
+function grandTotal(){
+    var total;
+    var bsum = 0;
+    for(var i=1 ;i<8;i++){
+   	 var hours = $("#rowTotal"+i+"Id").val();
+
+   	 var split = hours.split(':');
+   	 var first = split[0];
+   	 var second = split[1];
+		 
+		 var minute = first * 60;
+		 var minute1 = second;
+		 var finalmin = parseInt(minute) + parseInt(minute1);
+   	 
+	     bsum = parseFloat(bsum) + parseInt(finalmin);
+   	 
+    }
+    var t = bsum; 
+	 var hours = Math.floor(t / 60); 
+	 var minutes = t % 60;
+	 if (minutes < 10) {
+		minutes = '0' + minutes;
+	 }
+	 if (hours < 10) {
+		hours = '0' + hours;
+	 }
+	 if(!isNaN(hours) && !isNaN(minutes)){
+		 total = hours +":"+ minutes;
+	 }else{
+		 total = "00:00"; 
+	 }
+	
+	 $("#grandTotal").val(total);
+    
+}
+
+</script>
+
+<!-- this script is for mask for each entity  -->	
+<script>
+function maskme(){
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $(".inline_field").mask("Hh:Mm"); 
+}
+</script>
+
+
+
+<script>
+function addAttachment(){  
+			var checkMaxTsRowNum = $("#attcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("attachmentTable");
+			var maxRowNum = parseInt($("input[name = 'attcahmentMaxRowNumber']").val());
+			$("input[name = 'attcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentTsRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			/* timesheetAttachmentValidationFun(); */
+			
+}			
+</script>
+
+<script type="text/javascript">
+	function removeAttachmentRow(rowId) {
+		var rowNum = $("#divAttachmentTsRow"+rowId).val();
+		var maxRowNum = parseInt(rowNum);
+		 document.getElementById("divAttachmentTsRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentTsRow"+rowId).value= '';
+		 var  rId = "divAttachmentTsRow"+rowId;
+		  var r = document.getElementById("attachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+	}
 </script>
 
 

@@ -35,7 +35,7 @@ $(document).ready(function() {
 	        	   $.ajax({
 		      	          type : "POST",
 		          	      dataType : 'json',
-	        	      	  url: sourceleadUrl+"/timesheetEntries?${_csrf.parameterName}=${_csrf.token}",		
+	        	      	  url: sourceleadUrl+"/timesheetEntries?${_csrf.parameterName}=${_csrf.token}&from=timesheet",		
 	        		      success :function(data) {
 	        		    	   if(data != '' && data != 'undefined' && data != null){ 
 		        		    	    $("#timesheetEntriesDiv").removeAttr("style");
@@ -89,7 +89,7 @@ $(document).ready(function() {
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
-   	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,		
+   	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&from=timesheet",		
    		          success :function(result) {
    		        	 $("#timesheetEntriesDivByProjectMemberId").removeAttr("style");
    		        	 $("#timesheetEntriesDivByProjectMemberId").empty();
@@ -122,7 +122,7 @@ $(document).ready(function() {
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
-   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId,		
+   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from=timesheet",		
    		          success :function(result) {
    		        	  		
    		        	      $("#timesheetDivByFrequency").removeAttr("style");
@@ -157,7 +157,7 @@ $(document).ready(function() {
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
-  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus,		
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=timesheet",		
   		          success :function(result) {
   		    	       
   		        	   $("#timesheetDivByTab").removeAttr("style");

@@ -132,10 +132,11 @@ public class TimesheetRestController {
 	
 	@RequestMapping(value = "/timesheetEntriesDivByProjectMemberId", method = RequestMethod.POST ) 
 	public @ResponseBody String timesheetEntriesDivByProjectMemberId(HttpServletRequest request,
-			@RequestParam(value="projectMemberId", required=false) String projectMemberId) throws Exception {
+			@RequestParam(value="projectMemberId", required=false) String projectMemberId,
+			@RequestParam(value="from", required=false) String from) throws Exception {
 	    	StringBuilder projectDiv = new StringBuilder("");
 		    if(StringUtils.isNotEmpty(projectMemberId)){
-		    	 projectDiv = timesheetEntriesDivByProjectMemberId(projectMemberId);
+		    	 projectDiv = timesheetEntriesDivByProjectMemberId(projectMemberId,from);
 		    }
 		    return projectDiv.toString();
 	}
@@ -143,13 +144,14 @@ public class TimesheetRestController {
 	@RequestMapping(value = "/timesheetDivByFrequency", method = RequestMethod.POST ) 
 	public @ResponseBody String timesheetDivByFrequency(HttpServletRequest request,
 			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
-			@RequestParam(value="projectMemberId", required=false) Long projectMemberId) throws Exception {
+			@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+			@RequestParam(value="from", required=false) String from) throws Exception {
 		StringBuilder frequencyBasedDiv = new StringBuilder();
 		if(StringUtils.isNotEmpty(timesheetFrequency)){
 		 	 String[] frequency = timesheetFrequency.split("To");
 		 	 String weekStartDate = frequency[0].trim();
 		  	 String weekEndDate = frequency[1].trim();
-			 frequencyBasedDiv = timesheetEntriesDivByFrequnecy(weekStartDate,weekEndDate,projectMemberId);
+			 frequencyBasedDiv = timesheetEntriesDivByFrequnecy(weekStartDate,weekEndDate,projectMemberId,from);
 		}
 		
 		return frequencyBasedDiv.toString();
@@ -176,8 +178,9 @@ public class TimesheetRestController {
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
 	public @ResponseBody String timesheetEntries(HttpServletRequest request,
 			@RequestParam(value="weekStartDate", required=false) String weekStartDate,
-			@RequestParam(value="weekEndDate", required=false) String weekEndDate) throws Exception {
-		
+			@RequestParam(value="weekEndDate", required=false) String weekEndDate,
+			@RequestParam(value="from", required=false) String from) throws Exception {
+			 
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLoc.getId(),loginUser.getId());
@@ -187,7 +190,6 @@ public class TimesheetRestController {
 			StringBuilder timesheetEntriesDiv = new StringBuilder();
 			timesheetEntriesDiv.append("");
 			
-			timesheetEntriesDiv.append("<form id='timesheet_form' name='timesheet_form' enctype='multipart/form-data' >");
 			
 			timesheetEntriesDiv.append("		<div class='timesheet_out'> ");
 			timesheetEntriesDiv.append("		<div class='timesheet_wrap' id='timesheet_wrap'>");
@@ -213,12 +215,11 @@ public class TimesheetRestController {
 			timesheetEntriesDiv.append("		            </div>");
 			
 			if(initialProjectMemberId != null){
-				 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(initialProjectMemberId.toString());
+				 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(initialProjectMemberId.toString(),from);
 				 timesheetEntriesDiv.append(projectDiv);		 
 			}
 			timesheetEntriesDiv.append("		    </div>");	
 			timesheetEntriesDiv.append("		</div>  ");	
-			timesheetEntriesDiv.append("		 </form> 	");	
 			
 			return timesheetEntriesDiv.toString();
 		}else{
@@ -226,7 +227,7 @@ public class TimesheetRestController {
 		}
 	}
 	
-	public StringBuilder timesheetEntriesDivByProjectMemberId(String projectMemberId) throws Exception{
+	public StringBuilder timesheetEntriesDivByProjectMemberId(String projectMemberId,String from) throws Exception{
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
 		if(StringUtils.isNotEmpty(projectMemberId)){
 			ProjectMembers projectMember = projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
@@ -255,7 +256,7 @@ public class TimesheetRestController {
 				}
 				timesheetEntriesDiv.append("		                </select>");
 				timesheetEntriesDiv.append("		            </div> ");
-				StringBuilder frequencyBasedDiv = timesheetEntriesDivByFrequnecy(selectedStartDate.toString(),selectedEndDate.toString(),projectMember.getId());
+				StringBuilder frequencyBasedDiv = timesheetEntriesDivByFrequnecy(selectedStartDate.toString(),selectedEndDate.toString(),projectMember.getId(),from);
 				timesheetEntriesDiv.append(frequencyBasedDiv);
 				
 				timesheetEntriesDiv.append("</div>  ");
@@ -267,7 +268,7 @@ public class TimesheetRestController {
 		
 	}
 	
-	public StringBuilder timesheetEntriesDivByFrequnecy(String weekStartDate,String weekEndDate,Long projectMemberId) throws Exception{
+	public StringBuilder timesheetEntriesDivByFrequnecy(String weekStartDate,String weekEndDate,Long projectMemberId,String from) throws Exception{
 		
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
 		DateFormat format = Constants.DF_DMY;
@@ -278,27 +279,35 @@ public class TimesheetRestController {
 		Submission_Status submissionStatus = sah.getSubmissionStatus();
 		String submissionStatusStr = submissionStatus.getValue();
 		
+		timesheetEntriesDiv.append("<form id='timesheet_form' name='timesheet_form' enctype='multipart/form-data' >");
+		
+		
+		timesheetEntriesDiv.append("<input type='hidden' name='projectMemberId'  id='projectMemberId' value='"+projectMemberId+"' >");
+		
 		timesheetEntriesDiv.append("			<div id='timesheetDivByFrequency'> ");
 		
 		timesheetEntriesDiv.append("					<div class='timeNewSe'>");
 		
-	    if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
-	    	timesheetEntriesDiv.append("<b>").append(submissionStatus).append("</b>");
-        }
-        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
-        	timesheetEntriesDiv.append("<b class='proj_draft'>").append(submissionStatus).append("</b>");
-        }
-        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-        	timesheetEntriesDiv.append("<b class='proj_process'>").append(submissionStatus).append("</b></div> </td>");
-        }
-        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
-        	timesheetEntriesDiv.append("<b class='proj_active'>").append(submissionStatus).append("</b></div> </td>");
-        }
-        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
-        	timesheetEntriesDiv.append("<b class='proj_closed'>").append(submissionStatus).append("</b></div> </td>");
-        }
-		
-/*		timesheetEntriesDiv.append("						<b class='proj_active'>Active</b><i class='glyphicon glyphicon-comment com_active' >");
+		if(from != null && !from.isEmpty() && from.equalsIgnoreCase("timesheet")){
+		    
+			if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+		    	timesheetEntriesDiv.append("<b>").append(submissionStatus).append("</b>");
+	        }
+	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
+	        	timesheetEntriesDiv.append("<b class='proj_draft'>").append(submissionStatus).append("</b>");
+	        }
+	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
+	        	timesheetEntriesDiv.append("<b class='proj_process'>").append(submissionStatus).append("</b></div> </td>");
+	        }
+	        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
+	        	timesheetEntriesDiv.append("<b class='proj_active'>").append(submissionStatus).append("</b></div> </td>");
+	        }
+	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
+	        	timesheetEntriesDiv.append("<b class='proj_closed'>").append(submissionStatus).append("</b></div> </td>");
+	        }
+	        
+		}	
+		/*timesheetEntriesDiv.append("						<b class='proj_active'>Active</b><i class='glyphicon glyphicon-comment com_active' >");
 		timesheetEntriesDiv.append("							<div class='timeNewSeMess'><p>Rejected message here Rejected message here Rejected message here</p></div>");
 		timesheetEntriesDiv.append("						</i>");*/
 		timesheetEntriesDiv.append("					</div>");
@@ -384,6 +393,8 @@ public class TimesheetRestController {
 		timesheetEntriesDiv.append("					</div>");   
 		
 		timesheetEntriesDiv.append("</div>");   
+		
+		timesheetEntriesDiv.append("		 </form> 	");	
 		
 		return timesheetEntriesDiv;
 		
