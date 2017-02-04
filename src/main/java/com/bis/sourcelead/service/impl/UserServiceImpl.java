@@ -61,6 +61,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.UniversalSearchHelper;
 
 /**
  * This Service Class is used to get User Object
@@ -118,7 +119,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	OrgLocationsDao orglocationsDao;
 	
-
+	@Autowired
+	private UniversalSearchHelper universalSearchHelper;	
+	
 	@Override
 	public User findByUserName(String username) {
 		logger.debug("In UserService class...");
@@ -897,12 +900,12 @@ public class UserServiceImpl implements UserService {
 		 
 			//All Keywords
 //			ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
-			ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+			ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
 			if(null != allKeyWordArray && !allKeyWordArray.isEmpty()){
 				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 				 for(String keywd : allKeyWordArray){
 					 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-					ArrayList<MatchQueryBuilder> matchQueryBuilderList = getUsersMatchQueryBuilderList(keywd);
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getUsersMatchQueryBuilderList(keywd);
 					if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
 						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
 							allBoolSubQueryBuilder.should(matchQueryBuilder);
@@ -928,38 +931,6 @@ public class UserServiceImpl implements UserService {
 			}
 		
 		return usersList;
-	}
-	
-	private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
-		 ArrayList<String> keyWordList = null;
-		 if(searchValue !=null && !"".equalsIgnoreCase(searchValue)){
-			 String searchKeywordString = searchValue.replaceAll("\\[", "").replaceAll("\\]","");
-		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
-		 }
-        return keyWordList;
-	}
-	
-	private ArrayList<MatchQueryBuilder> getUsersMatchQueryBuilderList(String keywd) {
-		 ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("ratePer", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
-
-			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
-			
-			if(matcher.find()){
-				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
-				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
-				String mobileKeywd =matcher.group().replaceAll("[+91]", "");
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
-			}
-			
-			return matchQueryBuilderList; 
 	}
 	
 }
