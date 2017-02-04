@@ -2229,7 +2229,7 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public List<String> getAllRequirementSkillsByRequirementI(String requirementId) throws Exception {
+	public List<String> getAllRequirementSkillsByRequirementI(Long requirementId) throws Exception {
 		return requirementDao.getAllRequirementSkillsByRequirementI(requirementId);
 	}
 	

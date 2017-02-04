@@ -118,8 +118,6 @@ public class CandidateIndex implements Serializable {
 	
 	private boolean isCandidateAdedd;
 	 
-	private List<RequirementSubmission> requirementSubmisstions;
-	
 	public Long getCandidateId() {
 		return candidateId;
 	}
@@ -556,11 +554,4 @@ public class CandidateIndex implements Serializable {
 		this.isCandidateAdedd = isCandidateAdedd;
 	}
 
-	public List<RequirementSubmission> getRequirementSubmisstions() {
-		return requirementSubmisstions;
-	}
-
-	public void setRequirementSubmisstions(List<RequirementSubmission> requirementSubmisstions) {
-		this.requirementSubmisstions = requirementSubmisstions;
-	}
 }
