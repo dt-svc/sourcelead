@@ -161,8 +161,8 @@ width: 11.5%;
 			<option value="Users">Users</option>
 			<option value="Requirement">Requirement</option>
 			<option value="Candidate">Candidate</option>
-			<option value="Clients">Clients</option>
-			<option value="Vendors">Vendors</option>
+			<option value="Client">Clients</option>
+			<option value="Vendor">Vendors</option>
 			<option value="Projects">Projects</option>
 			</select>
 			</div>

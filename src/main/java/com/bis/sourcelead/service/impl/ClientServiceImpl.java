@@ -2,30 +2,46 @@ package com.bis.sourcelead.service.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 import javax.mail.internet.InternetAddress;
+import javax.servlet.http.HttpServletRequest;
 
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -59,6 +75,11 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.UniversalSearchHelper;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
@@ -127,6 +148,8 @@ public class ClientServiceImpl implements ClientService{
 	@Autowired
     private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
 	
+	@Autowired
+	private UniversalSearchHelper universalSearchHelper;
 	
 	
 	@Value("${SourceLead.100}")
@@ -914,15 +937,24 @@ public class ClientServiceImpl implements ClientService{
 					 StringBuilder loginBuilder = new StringBuilder();
 					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			}
+
+			 /*//setting the Recipient information
+			 StringBuilder recipientbuilder = new StringBuilder();
+
 			 //setting the Recipient information
 			 /*StringBuilder recipientbuilder = new StringBuilder();
+
 			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 			 EmailRecipient emailRecipient = new EmailRecipient();
 			 emailRecipient.setEmail(emailMessage.getToEmail());
 			 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 			 emailRecipientList.add(emailRecipient);*/
 			 
+
+			 //setting the Recipient information
+
 			 // changed the logic of adding to emails in InetAddress Array
+
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -981,14 +1013,22 @@ public class ClientServiceImpl implements ClientService{
 					 globalVarsMap.put("clientLastName",loginUser.getLastName());
 					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
 				}
+
+			 /*//setting the Recipient information
+			 StringBuilder recipientbuilder = new StringBuilder();
+
 			 //setting the Recipient information
 			 /*StringBuilder recipientbuilder = new StringBuilder();
+
 			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 			 EmailRecipient emailRecipient = new EmailRecipient();
 			 emailRecipient.setEmail(emailMessage.getToEmail());
 			 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 			 emailRecipientList.add(emailRecipient);*/
 			 
+
+			 //setting the Recipient information
+
 			 // changed the logic of adding to emails in InetAddress Array
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
@@ -1016,6 +1056,184 @@ public class ClientServiceImpl implements ClientService{
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		}
-		
 
+
+		@Override
+		public List<Object> getAllUniversalSearchVendorList(OrgLocations orgLocation, String searchValue,String searchType)
+				throws Exception {
+
+			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+			String responderType = null;
+			if("Vendor".equalsIgnoreCase(searchType)){
+				 responderType = "Client";
+			 }else if("Client".equalsIgnoreCase(searchType)){
+				 responderType = "Vendor"; 
+			 }
+			 
+			 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
+			 
+			 BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
+			 initiatorQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorType", responderType));
+			 
+			 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
+			 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", orgLocation.getId()));
+			 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
+			 
+			 combinedQueryBuilder.should(initiatorQueryBuilder);
+			 combinedQueryBuilder.should(responderQueryBuilder);
+			 
+			 boolQueryBuilder.must(combinedQueryBuilder);
+			
+			 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocation.getId(),responderType);
+				//All Keywords
+			 ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
+				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(allBoolQueryBuilder);
+				}
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				List<Object>   searchList = new ArrayList<>();
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				if(searchHits != null && searchHits.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHits) {
+								String json = hit.getSourceAsString();
+								mapper.setDateFormat(df);
+								ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
+								
+								if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == orgLocation.getId().longValue()){
+									
+								    StringBuilder website=new StringBuilder();
+								    clientVendor.setWebsite(website.append("www.").append(clientVendor.getResponderWebSite()).toString());
+									clientVendor.setOrgName(clientVendor.getResponderOrgName());
+									clientVendor.setCountry(clientVendor.getResponderCountry());
+									clientVendor.setState(clientVendor.getResponderState());
+									clientVendor.setCity(clientVendor.getResponderCity());
+									
+									if(clientVendor.getInitiatorLevel()!=null){
+										clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
+									}
+								}
+							  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == orgLocation.getId().longValue()){
+								 
+								  StringBuilder website=new StringBuilder();
+								  clientVendor.setWebsite(website.append("www.").append(clientVendor.getInitiatorWebSite()).toString());
+								  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
+								  clientVendor.setCountry(clientVendor.getInitiatorCountry());
+								  clientVendor.setState(clientVendor.getInitiatorState());
+								  clientVendor.setCity(clientVendor.getInitiatorCity());
+								  
+								  if(clientVendor.getResponderLevel()!=null){
+									  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
+								  }
+								}
+							  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
+								  if(!clientVendor.getCreatedBy().isEmpty()){
+									  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
+								  }
+								 
+							  }
+							  
+							  searchList.add(clientVendor);
+					}	
+				}
+			
+			return searchList;
+		}
+
+		public List<Object> getAllUniversalSearchClientList(OrgLocations orgLocations, String serachValue,String searchType)throws Exception {
+				List<Object>   searchList = new ArrayList<>();
+//				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocations.getId(),"Client");
+				
+				String responderType = null;
+				if("Vendor".equalsIgnoreCase(searchType)){
+					 responderType = "Client";
+				 }else if("Client".equalsIgnoreCase(searchType)){
+					 responderType = "Vendor"; 
+				 }
+				
+				ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(serachValue);
+					BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();;
+					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : allKeyWordArray){
+							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							 // need to change for setters 
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									allBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(allBoolQueryBuilder);
+					}
+					
+					Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilder).getTotalHits();
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					df.setTimeZone(TimeZone.getTimeZone("GMT"));
+					
+					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+					    if(null != searchHits && searchHits.length >0){
+							ObjectMapper mapper = new ObjectMapper();
+							for (SearchHit hit : searchHits) {
+										String json = hit.getSourceAsString();
+										mapper.setDateFormat(df);
+										ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
+										
+										if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == orgLocations.getId().longValue()){
+											
+										    StringBuilder website=new StringBuilder();
+										    clientVendor.setWebsite(website.append("www.").append(clientVendor.getResponderWebSite()).toString());
+											clientVendor.setOrgName(clientVendor.getResponderOrgName());
+											clientVendor.setCountry(clientVendor.getResponderCountry());
+											clientVendor.setState(clientVendor.getResponderState());
+											clientVendor.setCity(clientVendor.getResponderCity());
+											
+											if(clientVendor.getInitiatorLevel()!=null){
+												clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
+											}
+										}
+									  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == orgLocations.getId().longValue()){
+										 
+										  StringBuilder website=new StringBuilder();
+										  clientVendor.setWebsite(website.append("www.").append(clientVendor.getInitiatorWebSite()).toString());
+										  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
+										  clientVendor.setCountry(clientVendor.getInitiatorCountry());
+										  clientVendor.setState(clientVendor.getInitiatorState());
+										  clientVendor.setCity(clientVendor.getInitiatorCity());
+										  
+										  if(clientVendor.getResponderLevel()!=null){
+											  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
+										  }
+										}
+									  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
+										  if(!clientVendor.getCreatedBy().isEmpty()){
+											  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
+										  }
+										 
+									  }
+									  
+									  searchList.add(clientVendor);
+							}	
+						}
+				return searchList;
+		}
+
+
+		
+	
 }

@@ -26,7 +26,32 @@ margin-right: 15px;
 window.onload = function () {
 //getUsersList('manual');
 	searchUser("manual");
+	usersListCheck("${searchValue}","${searchResult}");
  };
+</script>
+
+<script type="text/javascript">
+function usersListCheck(searchValue,searchResult){
+	if(searchResult == 'searchresult'){
+		getUsersSearchResult(searchValue);
+	}else{
+		getUsersList('manual');
+	}
+}
+</script>
+
+<script>
+function getUsersSearchResult(searchValue){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+        type : "GET",
+         url: sourceleadUrl+"/getUniversalSearchUsersList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
+         success :function(data) {
+        	 prepareUsersList(data);
+        },
+         
+    }); 
+}
 </script>
 
 <script>

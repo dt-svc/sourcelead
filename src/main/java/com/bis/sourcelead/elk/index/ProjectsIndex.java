@@ -38,7 +38,17 @@ public class ProjectsIndex implements Serializable{
 	
     private String status;
 
+    private String searchType;
     
+    
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+
 	public Long getId() {
 		return id;
 	}

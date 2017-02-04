@@ -421,8 +421,6 @@ public class Constants {
     
     public static String REQ_SEARCHTYPE = "Requirement";
 
-
-
     public static String ONE_DAY_AGO ="1 Day Ago";
     public static String THREE_DAY_AGO ="3 Days Ago";
     public static String ONE_WEEK_AGO ="1 Week Ago";
@@ -431,9 +429,7 @@ public class Constants {
     public static String THREE_MONTH_AGO ="3 Months Ago";
     public static String ALL_RECORDS ="All";
     
-    
-    
-    
+
     public static String SCORE_20 = "20";
     public static String SCORE_10 = "10";
     
@@ -450,7 +446,6 @@ public class Constants {
     public static String RATE_TYPE_MONTHLY = "Monthly";
     public static String RATE_TYPE_BI_MONTHLY = "Bi-Monthly";
    
-   
-  
+
    
 }

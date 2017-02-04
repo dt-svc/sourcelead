@@ -728,7 +728,7 @@ overflow-x: auto;
 <script> 
 $(document).ready(function(){
 	//getVendorContactLists();
-	getVendorContactListsELK();
+	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}");
     listChange("listbyContact");
 	document.getElementById('listOfVendors').value = 'listbyContact';
 });
@@ -2170,8 +2170,6 @@ function exportVendorContactToExcel(){
     };
 </script> 
 
-  
-
 <script>
 function getStates(){
 	var countryName = $("#country").val();
@@ -2277,7 +2275,6 @@ function numberOfContactsByOrgRelationId(orgRelationId){
 }
 </script>
 
-
 <script type="text/javascript">	
 	function loadChosenScripts(){
 		
@@ -2308,3 +2305,23 @@ function numberOfContactsByOrgRelationId(orgRelationId){
 	    $("#excludeKeyWord").empty();
 	}
 </script>      
+
+
+<script>
+function vendorListCheck(searchValue,universalvendorSearchList,searchType){
+    if(universalvendorSearchList=="universalVendorList")	 {
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/getUniversalSearchVendorList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&searchType="+searchType,   
+          success :function(data) {
+        	  preparedVendorsListFromElk(data);
+         },
+          
+     }); 
+  }
+else{
+	getVendorContactListsELK();
+	}
+  }
+  </script>

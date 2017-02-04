@@ -356,6 +356,9 @@ public class ProjectsDashboardRestController {
 			 
 				return storeAssignEmployee;
 		}
+	 
+	 
+	 
 	 /**
 	  * @author Rajashekar
 	  * 
@@ -402,7 +405,7 @@ public class ProjectsDashboardRestController {
 	   * 
 	   * @throws NullPointer
 	   */
-	 @RequestMapping(value = "/searchProject", method = RequestMethod.POST)
+	 @RequestMapping(value = "/searchProject", method = RequestMethod.GET)
 	 public String searchProject(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception {
 
 			String jsonc = "{" + json + "}";
@@ -494,20 +497,21 @@ public class ProjectsDashboardRestController {
 					BoolQueryBuilder projectManagerBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectManagerArray){
 						projectManagerBoolQueryBuilder.should(QueryBuilders.matchQuery("level1ManagerName", keywd));
+						projectManagerBoolQueryBuilder.should(QueryBuilders.matchQuery("level2ManagerName", keywd));
 					}
-					boolQueryBuilder.should(projectManagerBoolQueryBuilder);
+					boolQueryBuilder.must(projectManagerBoolQueryBuilder);
 				}
 				
 				
 				//project Manager2
-				ArrayList<String> projectManager2Array = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
+				/*ArrayList<String> projectManager2Array = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
 				if(projectManager2Array != null && !projectManager2Array.isEmpty()){
 					BoolQueryBuilder projectManager2BoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectManager2Array){
 						projectManager2BoolQueryBuilder.should(QueryBuilders.matchQuery("level2ManagerName", keywd));
 					}
-					boolQueryBuilder.should(projectManager2BoolQueryBuilder);
-				}
+					boolQueryBuilder.must(projectManager2BoolQueryBuilder);
+				}*/
 				
 				//invoice Frequency
 				ArrayList<String> invoiceFrequencyArray = getSearchKeywordsFromChosenSelectField(jsonObj, "invoiceFrequencyAdvanced");
@@ -626,6 +630,15 @@ public class ProjectsDashboardRestController {
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMembers", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMemberEmail", keywd));
 			return matchQueryBuilderList; 
+	 }
+	 
+	 @RequestMapping(value = "/getUniversalProjectsListByOrgLocationID")
+	 public String getUniversalProjectsListByOrgLocationID(@RequestParam(value="searchValue", required=false) String searchValue,HttpServletRequest request) throws Exception{
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String resultJson;
+			List<Object> uniProjectsList =	projectsService.getAllUniversalSearchProjectsList(orgLocations, searchValue);
+			resultJson = commonUtil.toJSON(uniProjectsList);
+			return resultJson;
 	 }
 	
 }

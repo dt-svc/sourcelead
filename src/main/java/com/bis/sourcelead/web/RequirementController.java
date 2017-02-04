@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -55,7 +56,7 @@ import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import org.apache.commons.collections.ListUtils;
+//import org.apache.commons.collections.ListUtils;
 
 @Controller
 public class RequirementController {
@@ -112,6 +113,7 @@ public class RequirementController {
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
+	@SuppressWarnings("unchecked")
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
@@ -219,10 +221,16 @@ public class RequirementController {
         
 		
 		if(requirement != null && requirement.getId() != null){
-			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId().toString());		  	
-		  	List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
-		  	List<String> totskils = ListUtils.sum(skillsList,allReqSkills);
-		  	model.addObject("skillsList", totskils);
+
+			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
+				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				List<String> totSkils = new ArrayList<String>();
+				if(!allReqSkills.contains(null)){
+					totSkils.addAll(skillsList);
+					totSkils.addAll(allReqSkills);
+					model.addObject("skillsList", totSkils);
+				}
+
 		}else{
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillsList", skillsList);

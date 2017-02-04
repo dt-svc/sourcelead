@@ -47,17 +47,15 @@ public class ProjectsIndexHelper {
 			if(projectApproverHierarchyList.size()>0){
 				for(ProjectApproverHierarchy projectApproverHierarchy : projectApproverHierarchyList){
 					if(projectApproverHierarchy.getLevel() == 1){
-						if(null != projectApproverHierarchy.getApproverUserId() && !isNullOrEmpty(projectApproverHierarchy.getApproverUserId().getLastName())){
-							projectsIndex.setLevel1ManagerName(projectApproverHierarchy.getApproverUserId().getFirstName()+" "+projectApproverHierarchy.getApproverUserId().getLastName());
-						}else{
-							projectsIndex.setLevel1ManagerName(projectApproverHierarchy.getApproverUserId().getFirstName());
+						if(null != projectApproverHierarchy.getApproverUserId()){
+							StringBuilder manager1Name = new StringBuilder();
+							projectsIndex.setLevel1ManagerName(manager1Name.append(projectApproverHierarchy.getApproverUserId().getFirstName()).append(" ").append(projectApproverHierarchy.getApproverUserId().getLastName()).toString());
 						}
 					}
 					if(projectApproverHierarchy.getLevel() == 2){
-						if(null != projectApproverHierarchy.getApproverUserId() && !isNullOrEmpty(projectApproverHierarchy.getApproverUserId().getLastName())){
-							projectsIndex.setLevel2ManagerName(projectApproverHierarchy.getApproverUserId().getFirstName()+" "+projectApproverHierarchy.getApproverUserId().getLastName());
-						}else{
-							projectsIndex.setLevel2ManagerName(projectApproverHierarchy.getApproverUserId().getFirstName());
+						if(null != projectApproverHierarchy.getApproverUserId()){
+							StringBuilder manager2Name = new StringBuilder();
+							projectsIndex.setLevel2ManagerName(manager2Name.append(projectApproverHierarchy.getApproverUserId().getFirstName()).append(" ").append(projectApproverHierarchy.getApproverUserId().getLastName()).toString());
 						}
 					}
 				}
@@ -68,10 +66,9 @@ public class ProjectsIndexHelper {
 				ArrayList<String> projectMemberEmail = new ArrayList<>();
 				for(ProjectMembers member : projectMembersList){
 					if(null != member.getEmployee() && null != member.getEmployee().getUser()){
-						if(!isNullOrEmpty(member.getEmployee().getUser().getLastName())){
-							projectMembers.add(member.getEmployee().getUser().getFirstName()+" "+member.getEmployee().getUser().getLastName());
-						}else{
-							projectMembers.add(member.getEmployee().getUser().getFirstName());
+						if(null != member.getEmployee().getUser()){
+							StringBuilder memberName = new StringBuilder();
+							projectMembers.add(memberName.append(member.getEmployee().getUser().getFirstName()).append(" ").append(member.getEmployee().getUser().getLastName()).toString());
 						}
 						projectMemberEmail.add(member.getEmployee().getUser().getEmail());
 					}

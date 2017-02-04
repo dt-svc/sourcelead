@@ -1,16 +1,26 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -51,6 +61,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.UniversalSearchHelper;
 
 /**
  * This Service Class is used to get User Object
@@ -108,7 +119,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	OrgLocationsDao orglocationsDao;
 	
-
+	@Autowired
+	private UniversalSearchHelper universalSearchHelper;	
+	
 	@Override
 	public User findByUserName(String username) {
 		logger.debug("In UserService class...");
@@ -876,6 +889,48 @@ public class UserServiceImpl implements UserService {
 		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,userRole.getId().toString());
 		
 	}
-	
+
+	@Override
+	public List<UserIndex> getAllUniversalSearchUsersList(OrgLocations orgLocation, String searchValue, User user)
+			throws Exception {
+		 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+		 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
+		 Long maxResults = userRoleService.getUsersCountByOrgLocationID(orgLocation.getId());
+		 
+			//All Keywords
+//			ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+			ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
+			if(null != allKeyWordArray && !allKeyWordArray.isEmpty()){
+				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+				 for(String keywd : allKeyWordArray){
+					 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getUsersMatchQueryBuilderList(keywd);
+					if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
+						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+							allBoolSubQueryBuilder.should(matchQueryBuilder);
+						}
+						allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+					}
+				}
+				 boolQueryBuilder.must(allBoolQueryBuilder);
+			}
+		
+			List<UserIndex> usersList = new ArrayList<UserIndex>();
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			df.setTimeZone(TimeZone.getTimeZone("GMT"));
+			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+			if(null != searchHits && searchHits.length >0){
+				ObjectMapper mapper = new ObjectMapper();
+				for (SearchHit hit : searchHits) {
+					String json = hit.getSourceAsString();
+					mapper.setDateFormat(df);
+					UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+					usersList.add(userIndex);
+				}
+			}
+		
+		return usersList;
+	}
 	
 }
