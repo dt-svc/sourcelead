@@ -429,7 +429,7 @@ public class Constants {
     public static String THREE_MONTH_AGO ="3 Months Ago";
     public static String ALL_RECORDS ="All";
     
-    
+
     public static String SCORE_20 = "20";
     public static String SCORE_10 = "10";
     
