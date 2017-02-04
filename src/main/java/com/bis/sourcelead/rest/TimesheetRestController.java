@@ -344,11 +344,11 @@ public class TimesheetRestController {
 			    	}
 			    	if(startDate.equals(endDate)){
 			    	   timesheetEntriesDiv.append("<input type='hidden' name='tabDates'  id='tabDates' value='"+key+"To"+value+"' >");
-			    	   timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='newSaveTimesheet(\"Draft\",\"user\");timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\");'>"+shortormat.format(startDate)+"</a></li> ");
+			    	   timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\");'>"+shortormat.format(startDate)+"</a></li> ");
 			    	}
 			    	else{
 			    	  timesheetEntriesDiv.append("<input type='hidden' name='tabDates'  id='tabDates' value='"+key+"To"+value+"' >");	
-			    	  timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#' onClick='newSaveTimesheet(\"Draft\",\"user\");timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\")'>"+shortormat.format(startDate)+" To "+shortormat.format(endDate)+"</a></li> ");	
+			    	  timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#' onClick='timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\")'>"+shortormat.format(startDate)+" To "+shortormat.format(endDate)+"</a></li> ");	
 			    	}
 			    }
 			    else{
@@ -363,10 +363,10 @@ public class TimesheetRestController {
 				    	}
 				    	if(startDate.equals(endDate)){
 				    		timesheetEntriesDiv.append("<input type='hidden' name='tabDates'  id='tabDates' value='"+key+"To"+value+"' >");
-				    		timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='newSaveTimesheet(\"Draft\",\"user\");timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\")'>"+shortormat.format(startDate)+"</a></li> ");
+				    		timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\")'>"+shortormat.format(startDate)+"</a></li> ");
 				    	}else { 
 				    		 timesheetEntriesDiv.append("<input type='hidden' name='tabDates'  id='tabDates' value='"+key+"To"+value+"' >");
-				    		 timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='newSaveTimesheet(\"Draft\",\"user\");timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\")'>"+shortormat.format(startDate)+" To "+shortormat.format(endDate)+"</a></li> ");
+				    		 timesheetEntriesDiv.append("			        <li "+isActive.toString()+"><a href='#'  onClick='timesheetDivByTab(\""+key+"\",\""+value+"\",\""+submissionStatusStr+"\")'>"+shortormat.format(startDate)+" To "+shortormat.format(endDate)+"</a></li> ");
 				    	}
 			    }
 			    count++;
