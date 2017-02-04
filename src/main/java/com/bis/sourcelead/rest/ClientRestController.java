@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -1049,7 +1051,16 @@ public class ClientRestController {
 			}
 	 }
 	
-	
+	 @RequestMapping(value = "/getUniversalClientList")
+	 @ResponseBody
+	 public String getUniversalClientList(@RequestParam(value="searchValue", required=false) String  searchValue,
+			 HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson;
+		List<Object> uniClientList = clientService.getAllUniversalSearchClientList(orgLocations, searchValue);
+		resultJson = commonUtil.toJSON(uniClientList);
+		return resultJson;
+	 }
 	 
 	/**
 	 * check given string empty or null

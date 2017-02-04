@@ -15,6 +15,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
@@ -71,8 +75,10 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -1128,7 +1134,72 @@ public class ClientServiceImpl implements ClientService{
 				}
 			
 			return searchList;
-		
+		}
+
+		public List<Object> getAllUniversalSearchClientList(OrgLocations orgLocations, String serachValue)throws Exception {
+				List<Object>   searchList = new ArrayList<>();
+//				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocations.getId(),"Client");
+				 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(serachValue);
+					BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();;
+					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : allKeyWordArray){
+							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							 // need to change for setters 
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForAll(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									allBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(allBoolQueryBuilder);
+					}
+					
+					Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilder).getTotalHits();
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					df.setTimeZone(TimeZone.getTimeZone("GMT"));
+					
+					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+					    if(null != searchHits && searchHits.length >0){
+					    	ObjectMapper mapper = new ObjectMapper();
+					    	for (SearchHit hit : searchHits) {
+					    		String json = hit.getSourceAsString();
+					    		mapper.setDateFormat(df);
+					    		ClientVendorIndex clientVendorIndex = mapper.readValue(json, ClientVendorIndex.class);
+					    	    if(clientVendorIndex.getUpdatedDate() != null){
+					    	    	clientVendorIndex.setUpdateDateToString(Constants.DF_YMD.format(clientVendorIndex.getUpdatedDate()));
+					   			}
+					    	    searchList.add(clientVendorIndex);
+					    	} 
+					    	
+					    }
+				return searchList;
+		}
+
+
+		private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForAll(String keywd) {
+			ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+			/*matchQueryBuilderList.add(QueryBuilders.matchQuery("orgName", keywd));*/
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorLevel", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("createdByAdvanced", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			return matchQueryBuilderList; 
+		}
+
+
+		private ArrayList<String> getSearchValuesFromChosenSelectField(String serachValue) {
+			 ArrayList<String> keyWordList = null;
+			 if(serachValue !=null && !"".equalsIgnoreCase(serachValue)){
+				 String searchKeywordString = serachValue.replaceAll("\\[", "").replaceAll("\\]","");
+			     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+			 }
+	         return keyWordList;
 		}
 
 	

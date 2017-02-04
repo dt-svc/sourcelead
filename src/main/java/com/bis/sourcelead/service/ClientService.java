@@ -33,5 +33,6 @@ public interface ClientService {
 	public void sendRejectEmailToClientOrVendor(OrgSpoc orgSpoc, User loginUser, OrgLocations orgLocations)throws Exception;
 
 	List<Object> getAllUniversalSearchVendorList(OrgLocations orgLocation, String searchValue, String searchType) throws Exception;
-
+	
+	List<Object> getAllUniversalSearchClientList(OrgLocations orgLocations, String serachValue) throws Exception;
 }
