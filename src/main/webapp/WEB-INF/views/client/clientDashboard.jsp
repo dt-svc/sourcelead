@@ -65,10 +65,11 @@ overflow-x: auto;
 		</section>
 
 		<!-- Project -->
-		<div class="timesheet_out timesheet_background">
+		
 			
 			<!-- Advanced Search -->
-  <div class="pull-left cand-advsrch">
+  <div class="timesheet_bg">
+  <div class="cand-advsrch">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
             <form:form id="clientlist_form" name="clientlist_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -267,9 +268,12 @@ overflow-x: auto;
           </div>
           </form:form>
         </div>
+        </div>
 		<!-- Advanced Search Ends -->
+		</div>
 		<div class="clearfix"></div>
-		<div class="clients_wrap vendor_wrap_shadownone" style="overflow-x: auto;">
+		<div class="timesheet_out">
+		<div class="clients_wrap vendor_wrap_shadownone">
 				<div class="timesheet_head datatbl-filters customtimesheet-head">
 					<ul>
 		                  <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>|
@@ -860,6 +864,7 @@ function getClientDetailsELK(){
 function pagination(){  
     $('#clientList').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1404,6 +1409,7 @@ function resendClientSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 function pagination1(){ 
     $('#vendorContactList').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
