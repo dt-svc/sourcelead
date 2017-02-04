@@ -1,3 +1,4 @@
+
 ﻿cd /home/Sourcelead_Db_Scripts
 PROPERTYLOCATION="-DpropertyLocation=file:/home/properties/app.properties"
 export PROPERTYLOCATION 
