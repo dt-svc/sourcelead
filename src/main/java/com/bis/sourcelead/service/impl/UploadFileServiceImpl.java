@@ -448,6 +448,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType(role.getDisplayName());
 		userRole.setCreatedDate(new Date());
+		userRole.setCreatedBy(loginUser.getUserCode());
 		userRole.setOrgLocations(orgLocations);
 		employee.setEmployeeId(userImport.getEmployeeId());
 		employee.setRate(userImport.getRate());
@@ -464,6 +465,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			user.setEmail(userImport.getEmailId());
 			user.setMobilePhone(userImport.getMobileNumber());
 			user.setCreatedDate(new Date());
+			user.setCreatedBy(loginUser.getUserCode());
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			user.setUserName(userImport.getEmailId());
 			
@@ -491,7 +493,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				userService.sendEmail(user1, loginUser, password,orgLocations.getId());
 			}
 		}
-
+		userService.saveOrUpdateUserElkDocument(userRole,employee,loginUser.getUserCode());
 	}
 /**
  * write excel sheet when validation fails

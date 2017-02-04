@@ -73,7 +73,7 @@ public class VendorController {
 
 	/* This method is used for landing page of vendors tab. So, who has vendors tab access they can see vendors list. No preAuthorize for this method */
 	@RequestMapping(value = "/vendorsList")
-	public ModelAndView vendorsList(HttpServletRequest request) throws Exception {
+	public ModelAndView vendorsList(HttpServletRequest request,@RequestParam(value="searchResult", required=false)String searchResult,@RequestParam(value="searchValue", required=false)String searchValue,@RequestParam(value="searchType", required=false)String searchType) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -92,6 +92,12 @@ public class VendorController {
 		model.setViewName("vendors/vendorsList");
 		List<Countries> countryList = countriesService.getAllCountries();
 		model.addObject("countryList", countryList);
+		
+		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalVendorList")){
+		    model.addObject("universalVendorList", "universalVendorList");
+		    model.addObject("searchValue",searchValue);
+		    model.addObject("searchType",searchType);
+		}
 		
 		if(null != orgLoc && StringUtils.isNotEmpty(orgLoc.getCountry())){
 		

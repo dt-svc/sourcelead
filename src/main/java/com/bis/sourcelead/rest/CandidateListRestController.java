@@ -209,6 +209,17 @@ public class CandidateListRestController {
 	 }
 	 
 	 
+	 
+	 @RequestMapping(value = "/getUniversalCandidatesListByOrgLocationID")
+	 public String getUniversalCandidatesListByOrgLocationID(@RequestParam(value="serachValue", required=false) String  serachValue,
+			 HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson;
+		List<Object> uniCandidateList =	candidateService.getAllUniversalSearchCandidateList(orgLocations, serachValue);
+		resultJson = commonUtil.toJSON(uniCandidateList);
+		return resultJson;
+	 }
+	 
 	  /**
 	   * @author Naresh Bolisetty
 	   * @since  Dec 28 2016
