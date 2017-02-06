@@ -743,6 +743,7 @@ function getUserSummary(userId){
 		      	$("#noUsers").val("nousers")
 		    	$('#loadMoreDiv').empty(); 
 		    	$("#loading").removeAttr("style");
+		    	var result ="";
 		     	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No More Records..</div>';
 		     	$('#loadMoreDiv').append(result);
 		    }
