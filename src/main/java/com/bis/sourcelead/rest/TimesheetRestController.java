@@ -1241,10 +1241,10 @@ public class TimesheetRestController {
 						timesheetSubmissions.setTotalHours(actualTimeString);
 						timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
 					}
-					String pattern = "dd-MM-yyyy";
+					/*String pattern = "dd-MM-yyyy";
 			        format = new SimpleDateFormat(pattern);
 			        String startDateStr = format.format(startDate);
-					return startDateStr;
+					return startDateStr;*/
 	    	}
 			if(status != null &&  status.equalsIgnoreCase("Submitted")){
 				if (jsonObj.has("tabDates")){

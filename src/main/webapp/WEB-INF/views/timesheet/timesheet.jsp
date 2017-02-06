@@ -795,7 +795,6 @@ function newSaveTimesheet(status,savingType){
                var sourceleadUrl ='${sourceleadUrl}';
                var startdate;
            	   var navigation;
-               
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
        		   mydata = encodeURIComponent(mydata);
@@ -815,7 +814,7 @@ function newSaveTimesheet(status,savingType){
         	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
         		    	  $("#loadTime").removeAttr("style"); 
-        		    	  timesheetEntriesDiv();
+        		    	  timesheetDivByFrequency();
         		    	  $("html").trigger('click');
         		    	  maskme();
         		    	 /*  timesheetEntriesDiv(); */
