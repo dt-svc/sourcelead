@@ -131,7 +131,11 @@
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
 							result = result+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'taskName\');"  id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '"  class="project_inline_field"></div><div style="display:none">'+ opt.taskName+' </div></td>';
 							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" class="project_inline_field"></div><div style="display:none">'+ opt.description+' </div></td>';
-							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'billableType\');" id="billableType'+ opt.Id+ '" value="'+ opt.billableType+ '" class="project_inline_field"></div><div style="display:none">'+ opt.billableType+' </div></td>';
+							result = result	+ '<td><div><select id="billableType'+opt.Id+'" name="billableType" onChange="updateTakBillableType(\''+opt.Id+'\');">';
+							result = result  +' <option '+(opt.billableType == "Billable" ? "selected" : '') +'>Billable</option>';
+				            result = result  +'	<option '+(opt.billableType == "Non-Billable" ? "selected" : '') +'>Non-Billable</option>';
+							result = result + ' </select>';
+							result = result + ' </div></td>';
 							'</sec:authorize>'; 
 							
 							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
@@ -170,9 +174,23 @@
 	}
 </script>
 
+<script>
+function updateTakBillableType(taskId){
+    var billableType = $('#billableType'+taskId).val();
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/updateTakBillableType?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId+"&billableType="+billableType,	    	   
+	    success: function(data) {
+	    	//projectTask();
+	    }
+   });
+}
+</script>
 
 <script type="text/javascript">
 	function flushTasks() {
+		$("#taskBillableType").val('Billable');
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 		if (maxRowNum != null && maxRowNum != '' && maxRowNum != 'undefined'
 				&& maxRowNum != 'NaN') {

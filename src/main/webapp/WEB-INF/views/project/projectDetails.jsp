@@ -322,17 +322,17 @@
 						result = result + '</div>';
 						
 						if (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" &&  json.managerLevel1UserType != "Admin") { 
-							if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
-								result = result + '<div class="col-md-2" id="level2Toggle" style="display:none">';
+							if (json.manager2 == null || json.manager2 == "" || json.manager2 == "undefined") { 
+								result = result + '<div class="col-md-2" id="level2Toggle">';
 								result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
 								result = result + '</div>';
-								}else{
+								}/* else{
 									result = result + '<div class="col-md-2" id="level2Toggle" style="display:block">';
 									result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
 									result = result + '</div>';
-								} 
+								}  */
 						}
-					 	
+						result = result	+ '<input type="hidden" id="level2Div">';
 						result = result + '</div>';
 						
 						result = result + '</div>';
@@ -673,14 +673,20 @@ function projectStatus(){
 
 <script type="text/javascript">
 function showLevel2Div(){
-	$("#demo").toggle();
+	var currentApproverId = document.getElementById("level1Manager").value;
+	var currentUser = currentApproverId.split(',');
+	var currentUserType = currentUser[1];
+	if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
+	    $("#demo").show();  
+	}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
+	    $("#demo").hide();  
+	}
 }
 
 </script>
 
 <script type="text/javascript">
 	function getLevel2Approvers(manager2) {
-		//$("#demo").toggle();
 		var currentApproverId = document.getElementById("level1Manager").value;
 		var currentUser = currentApproverId.split(',');
 		var currentUserId = currentUser[0];
@@ -689,17 +695,15 @@ function showLevel2Div(){
 		$('#level2Manager').val('');
 		if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
 		    $("#level2Toggle").show();
-		    //$("#demo").addClass("level-second-active");
 		    getChildLevel1Approvers(currentUserId, manager2);
 		}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
 		    $("#level2Toggle").hide();   
-		   // $("#demo").hide();
-		    //$("#demo").removeClass("level-second-active");
+		    $("#demo").hide();  
 		}
 	}
 </script>
 <script type="text/javascript">
-	function getChildLevel1Approvers(currentApproverId, manager2) {alert("hiii");
+	function getChildLevel1Approvers(currentApproverId, manager2) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		if (currentApproverId == manager2) {
 			if (currentApproverId != null && currentApproverId != ''
