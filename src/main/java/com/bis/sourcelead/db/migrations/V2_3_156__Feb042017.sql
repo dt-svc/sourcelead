@@ -1,0 +1,9 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_TASKS','BILLABLE_TYPE','VARCHAR(100) DEFAULT NULL AFTER `DESCRIPTION`');
+UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Billable' WHERE `ID`='1';
+UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Non-Billable' WHERE `ID`='2';
+UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Non-Billable' WHERE `ID`='3';
+UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Non-Billable' WHERE `ID`='4';
+UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Billable' WHERE `ID`='5';
+UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Billable' WHERE `ID`='6';
+
+

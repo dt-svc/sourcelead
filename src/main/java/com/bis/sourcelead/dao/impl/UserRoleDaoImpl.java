@@ -502,6 +502,19 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return null;
 		}
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception {
+		logger.debug("..getUsersCountByOrgLocationID() Method Started..");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select count(*) from UserRole userRole where userRole.orgLocations.id = :orgLocationId ";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		logger.debug("..getUsersCountByOrgLocationID() Method Ended..");
+		return results.get(0);
+	}
+	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public UserRole getUserRoleByUserId(Long userId) throws Exception {
@@ -529,7 +542,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return null;
 		}
 	}
-
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {

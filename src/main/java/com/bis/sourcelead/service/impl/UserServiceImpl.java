@@ -21,6 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -86,12 +89,19 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	UserIndexHelper userIndexHelper;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<UserIndex> sourceleadELKBaseIndexer;
+	
 	 
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
 	@Autowired
-	CommonUtil commonUtil;
+	private CommonUtil commonUtil;
 	
 
 	@Override
@@ -220,7 +230,10 @@ public class UserServiceImpl implements UserService {
 			/*if(userRole != null && StringUtils.isNotEmpty(userRole.getRoles().getRoleName()) && userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
 				commonUtil.addAdminAsSecondLevelManager(orgLocations.getId(), user, loginuser);
 			}*/
-		 
+			/*
+			 * Saving USER DB data as ElasticSearch Documents
+			 */
+			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
         return user1;
 				
 		
@@ -273,6 +286,11 @@ public class UserServiceImpl implements UserService {
 
 			sendEmail(user,loginUser,password,orgLocationsId);
 		}
+		/*
+		 * Saving/Update USER DB data as ElasticSearch Documents
+		 */
+		saveOrUpdateUserElkDocument(userRole,employee,loginUser.getUserCode());
+
 		 
 	}
 	
@@ -825,7 +843,18 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
-		return userDao.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationsId, tabId);
+		
+		List<User> userList = null;
+		userList = userDao.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationsId, tabId);
+		if(null != userList && !userList.isEmpty()){
+			for (User user : userList) {
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationsId);
+				if(null != userRole){
+					user.setUserType(userRole.getUserType());
+				}
+			}
+		}
+		return userList;
 	}
 	
 	@Override
@@ -855,7 +884,14 @@ public class UserServiceImpl implements UserService {
 			throws Exception {
 		return userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocationsId, userId, tabId);
 	}
+
 	
-	
-	
+	@Override
+	public void saveOrUpdateUserElkDocument(UserRole userRole, Employees employee, String loginUserCode) throws Exception {
+		//Elastic Search Document Saving
+		UserIndex userIndex = userIndexHelper.getUserIndexFromUser(userRole,employee,loginUserCode);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,userRole.getId().toString());
+		
+	}
+
 }
