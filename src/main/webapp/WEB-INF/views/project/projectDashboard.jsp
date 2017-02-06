@@ -319,11 +319,12 @@ overflow-x: auto;
 	
 <script type="text/javascript">
 window.onload = function () {
-		projectsList("${searchValue}","${searchResult}");
+		projectsList("${searchValue}","${searchResult}","${projectKeyword}","${projectId}","${projectName}","${startDate}","${endDate}","${status}");
+		
  };
 </script>
 <script type="text/javascript">
-function projectsList(searchValue,searchresult){ 
+function projectsList(searchValue,searchresult,projectKeyword,projectId,projectName,startDate,endDate,status){ 
 	if(searchresult=="universalProjectsList")	 {
 		var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
@@ -335,6 +336,10 @@ function projectsList(searchValue,searchresult){
 	          
 	     }); 
 	  }
+	if(projectKeyword == "projectSearch"){
+		projectSideBar(projectId,projectName,startDate,endDate,status);
+		filter();
+	}
 	else{
 		searchProject();
 		$('input[name=projectStatus]').attr('checked',false);
