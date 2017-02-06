@@ -697,6 +697,9 @@ function flushProjectTasks(){
 <script type="text/javascript">
 	function getTeamMembers() {
 		var level1Manager = $("#level1Manager").val(); 
+		var level1ManagerArray = level1Manager.split(',');
+		level1Manager = level1ManagerArray[0];
+		
 		var level2Manager = $("#level2Manager").val();
 		var startDate     =    $("#StartDate").val();
 		var searchByName = $("#searchByName").val();

@@ -387,7 +387,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			User  approverUserId2  = null;
 			User  approverUserId1 = null;
 			if( null !=  jsonObj.getString("level1Manager")  && jsonObj.has("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
-				  approverUserId1 =   userService.getUserById(Long.valueOf(jsonObj.getString("level1Manager")));
+				  String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+				  approverUserId1 =   userService.getUserById(Long.valueOf(level1UserDetails[0]));
 			if(null != jsonObj.getString("level2Manager") &&jsonObj.has("level2Manager")  && !jsonObj.getString("level2Manager").isEmpty()){
 		      approverUserId2 =   userService.getUserById(Long.valueOf(jsonObj.getString("level2Manager")));
 			}
@@ -415,7 +416,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
 			if(jsonObj.has("level1Manager") && null != jsonObj.getString("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
 				User  approverUserId1 =new User();
-				approverUserId1.setId(Long.valueOf(jsonObj.getString("level1Manager")));
+				String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+				approverUserId1.setId(Long.valueOf(level1UserDetails[0]));
 				if(approverUserId1 != null && user.getId() != approverUserId1.getId()){
 					sendEmailToProjectManager(projects, user, approverUserId1, loginOrgLocation, "", loginOrgCode);
 				}
@@ -862,8 +864,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
 								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
 								 Long fieldValuelong = null;
+								     String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
 								     if(prHierarchy.getLevel() == 1 || (prHierarchy.getLevel() == 2 && projectApproverHierarchies.size() == 1))
-									  fieldValuelong = Long.valueOf(jsonObj.getString("level1Manager"));
+									  fieldValuelong = Long.valueOf(level1UserDetails[0]);
 								     
 								     if(prHierarchy.getLevel() == 2 &&  jsonObj.has("level2Manager"))
 								      fieldValuelong = Long.valueOf(jsonObj.getString("level2Manager"));
