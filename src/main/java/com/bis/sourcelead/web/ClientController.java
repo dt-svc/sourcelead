@@ -14,6 +14,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -84,7 +85,6 @@ public class ClientController {
 		 	logger.debug("Display the client page");
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
 			model.addObject("userList", userList);
 			model.setViewName("client/client");
@@ -104,12 +104,18 @@ public class ClientController {
 	
 	/* This method is used for landing page of clients tab. So, who has client tab access they can see clients list. No preAuthorize for this method */
 	 @RequestMapping(value = "/clientDashboard")
-		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
+		public ModelAndView clientDashboard(HttpServletRequest request,@RequestParam(value = "searchResult", required = false) String searchResult,@RequestParam(value = "searchValue", required = false) String searchValue) throws Exception {
 		 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
+			
+			if(null != searchResult && !searchResult.equalsIgnoreCase("") && searchResult.equals("clientSearchResult")){
+				model.addObject("clientSearchResult","clientSearchResult");
+				model.addObject("searchValue",searchValue);
+			}
+			
 			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 			for (OrgRelations orgRelation : clientsList) {
 				if(null != orgRelation.getLocationId() && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){

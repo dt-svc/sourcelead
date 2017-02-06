@@ -471,11 +471,11 @@ $(document).ready(function () {
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
                <c:forEach var="skill" items="${skillsList}">
-             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill.name)}">
-	                		  	 <option  selected value="${skill.name}">${skill.name}</option>
+             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill)}">
+	                		  	 <option  selected value="${skill}">${skill}</option>
 	                		 </c:if>
-	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill.name)}">
-	                		  	 <option  value="${skill.name}">${skill.name}</option>
+	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill)}">
+	                		  	 <option  value="${skill}">${skill}</option>
 	                		 </c:if>
                 </c:forEach>
                 </select>

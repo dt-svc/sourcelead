@@ -3335,7 +3335,7 @@ function requirementRecommendations(requirementId){
 				result = result +'<td class="text-center"><div><span>--</span></div></td>';
 			} 
 		   result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
-		    if(report.requirementSubmisstions.length > 0){
+		   /*  if(report.requirementSubmisstions.length > 0){
 		    	result = result +'<div class="tooltip_div">';
 			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
 			    result = result +' <thead><tr><th>Requirement Name</th> <th>Stage</th></tr></thead>';
@@ -3352,7 +3352,7 @@ function requirementRecommendations(requirementId){
 			    result = result +'</tbody>';
 			    result = result +' </table>';
 			    result = result +' </div>'; 
-		    }
+		    } */
 		    result = result +' </div></td>';
 		    result = result +'<td class="text-center"><div class="show_scroe"><span>'+report.candidateScore+'%</span>';
 		    result = result +'<div class="scroe">';
@@ -3667,6 +3667,7 @@ function clientSideBar(candidateId){
 			             result = result+'       <li><a href="#tab-14" onclick="candidateEducation('+candidateId+');">Education</a></li>';
 			             result = result+'       <li><a href="#tab-15" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
 			             result = result+'       <li><a href="#tab-16" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; 
+			             result = result+'       <li><a href="#history" onclick="candidateHistory('+candidateId+');">History</a></li>';
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
 			             result = result+'     <div class="project_tabs">';
@@ -3687,6 +3688,10 @@ function clientSideBar(candidateId){
 						 
 						 result = result + '<div id="tab-16" class="canreq-tabs-menu_inn">';
 						 result = result + '</div>';
+						 
+						 result = result + '<div id="history" class="canreq-tabs-menu_inn">';
+						 result = result + '</div>';
+						 
 			             result = result+'     </div>';
 			             result = result+'   </div>';
 			             
@@ -4723,4 +4728,5 @@ function cancelCustomize(){
 <jsp:include page="recommendCandidatesExperience.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesEducation.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesCertificates.jsp"></jsp:include>
+<jsp:include page="recommendCandidatesHistory.jsp"></jsp:include>
 

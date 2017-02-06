@@ -48,10 +48,11 @@
  <sec:authorize access="hasRole(\'ROLE_POST_COMMENTS\')">
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize>
+ 
+ 
 <script>
  window.onload = function() {
- 	 candidateList();
- 	 $("#upcandidateStatus").val('');
+	 candidateListCheck("${serachValue}","${universalCanddateList}");
 };
 </script>
 
@@ -63,8 +64,25 @@
     padding-right: 5px;
 }
 </style>
-
-
+<script>
+function candidateListCheck(serachValue,universalCanddateSearchList){
+if(universalCanddateSearchList=="universalCanddateList")	 {
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/getUniversalCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&serachValue="+serachValue,       
+          success :function(data) {
+              	 prepareCandidateList(data);
+         },
+          
+     }); 
+  }
+else{
+	candidateList();
+	 	$("#upcandidateStatus").val('');
+	}
+  }
+  </script>
 
 <%-- 
      @author : sarath kumar.

@@ -5,6 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -433,7 +436,11 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			    	         
 					    	 int i= 0;
 					    	 for(CandidateResumes wte : candidateResumesList){
-			    	        	  addToZipFile(wte.getDocFile(), outZip , wte.getFileName());
+					    		 StringBuilder sb = new StringBuilder();
+					    		 String st =wte.getFileName();
+					    		 String lastIndex = st.substring(0,st.lastIndexOf("."));
+					    		 String newFilename = (sb.append(lastIndex).append("-").append(i).append(st.substring(st.lastIndexOf("."))).toString());
+			    	        	 addToZipFile(wte.getDocFile(), outZip , newFilename);
 			    	        	  i++;
 			    	         }
 					    	 

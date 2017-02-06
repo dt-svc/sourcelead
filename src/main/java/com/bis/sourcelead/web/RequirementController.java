@@ -113,6 +113,7 @@ public class RequirementController {
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
+	@SuppressWarnings("unchecked")
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
@@ -220,15 +221,19 @@ public class RequirementController {
         
 		
 		if(requirement != null && requirement.getId() != null){
-			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId().toString());		  	
-		  	List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
-		  	List<String> totSkils = new ArrayList<String>();
-		  	totSkils.addAll(skillsList);
-		  	totSkils.addAll(allReqSkills);
-		  	//List<String> totskils = ListUtils.sum(skillsList,allReqSkills);
-		  	model.addObject("skillsList", totSkils);
+
+			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
+				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				List<String> totSkils = new ArrayList<String>();
+				if(!allReqSkills.contains(null)){
+					totSkils.addAll(skillsList);
+					totSkils.addAll(allReqSkills);
+					model.addObject("skillsList", totSkils);
+				}
+
 		}else{
-			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			//List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 			model.addObject("skillsList", skillsList);
 		}
 		 
