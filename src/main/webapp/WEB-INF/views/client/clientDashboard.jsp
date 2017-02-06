@@ -1259,7 +1259,7 @@ function preparedClientListFromElk(data){
 				{  
 		   		
 		   		var report = json[i];
-		   		numberOfContactsByOrgRelationId(report.id);
+		   		numberOfContactsByOrgRelationId(report.orgRelationId);
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
 		   			location = report.country+", "+report.state+", "+report.city;
@@ -1315,7 +1315,7 @@ function preparedClientListFromElk(data){
 		   	}else{
 		   		result = result +'<td><div>---</div></td>';
 		   	}
-		   	result = result +'<td><div id="noOfContactsCount'+report.id+'">---</div></td>';
+		   	result = result +'<td><div id="noOfContactsCount'+report.orgRelationId+'">---</div></td>';
 		   	
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
