@@ -8,8 +8,10 @@
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css" type="text/css" >
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
@@ -145,13 +147,32 @@ width: 11.5%;
           <div class="dropdown hidden">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"> <i class="fa fa-list-ul"></i> <span class="caret"></span></button>
             <ul class="dropdown-menu">
-              <li><a href="javascript:void(0)">Candiate</a></li>
+              <li><a href="javascript:void(0)">Candidate</a></li>
               <li><a href="javascript:void(0)">Professional</a></li>
             </ul>
           </div>
-          <div class="search-area-txt"> <i class="fa fa-search"></i>
-            <input type="text" placeholder="Search ..." class="form-control">
-          </div>
+           <div class="search-area">
+           <form:form name ="search_form" id="search_form">
+           
+			<div class="search-area-txt">
+			<div class="select-field pull-left srch-select">
+			<select id="searchType" name="searchType">
+			<option value="All">All</option>
+			<option value="Users">Users</option>
+			<option value="Requirement">Requirement</option>
+			<option value="Candidate">Candidate</option>
+			<option value="Client">Clients</option>
+			<option value="Vendor">Vendors</option>
+			<option value="Projects">Projects</option>
+			</select>
+			</div>
+			<div class="pull-left universalSrch">
+			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search"/>
+			 <button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="universalSearch();" ><i class="fa fa-search"></i></button>
+			</div>
+			</div>
+			</form:form>
+			</div> 
         </div>
         <!-- login User details -->
         <div class="login-user">
@@ -489,6 +510,8 @@ function notificationStatusAsRead(){
 								$("#closed-task, #my-task").hide();
 							    $("#other-task").show().css("opacity", "1");
 							assignedTasksList('assignedTasks');
+							tasksList('myTask');
+							assignTasksList();
 						},
 					});
 			return true;
@@ -913,6 +936,14 @@ function updateAssignTaskStatus(taskId){
 }
 </script>
 
+<script>
+function universalSearch(){
+	 var searchType = document.getElementById('searchType').value;
+	 var searchValue = document.getElementById('searchKey').value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
+}
+</script>
 
 
 <script>

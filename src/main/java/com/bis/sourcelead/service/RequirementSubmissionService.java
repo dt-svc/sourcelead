@@ -160,5 +160,7 @@ public interface RequirementSubmissionService {
 			OrgLocations loginOrgLocation,String type, String status) throws Exception;
 	
 	List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception;
+	
+	Integer getRequirementPerCandidateCount(Long candudateId) throws Exception;
 
 }

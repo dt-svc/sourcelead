@@ -639,7 +639,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					
 					int matchedSkillCount = 0;
 					ArrayList<String> candidateSkillList = candidateIndex.getSkills();
-					List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
+					//List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
+					Integer reqListCount = requirementSubmissionService.getRequirementPerCandidateCount(candidateIndex.getCandidateId());
 					
 					//get the skillPercentage method
 					skillPercentage = getSkillPercentage(candidateSkillList,percentPerSkill,matchedSkillCount,reqSkills);
@@ -674,7 +675,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
 					String candidateScore = String.valueOf(roundOff);
 					candidateIndex.setCandidateScore(candidateScore);
-					candidateIndex.setNoOfReq(reqList.size());
+					candidateIndex.setNoOfReq(reqListCount);
 					candidateIndex.setSkillPercentage(skillPercentage);
 					candidateIndex.setExpPercentage(expPercentage);
 					candidateIndex.setLocationPercentage(locationPercentage);
@@ -682,7 +683,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					candidateIndex.setNoticePeriodPercentage(noticePeriod);
 					candidateIndex.setTotalKeyWordPerPercentage(totalKeyWordPer);
 					
-					if(reqList.size() >0){
+/*					if(reqList.size() >0){
 						
 						for(RequirementSubmission reqSubmission : reqList){
 							if(recommendedCustomizeScore.getReqirementId().getId().equals(reqSubmission.getRequirement().getId())){
@@ -693,7 +694,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 							candidateIndex.setReqSubmissionId(reqSubmission.getId().toString());
 						}
 					}
-					candidateIndex.setRequirementSubmisstions(reqList);
+					candidateIndex.setRequirementSubmisstions(reqList);*/
 					candidateIndex.setIsCandidateAdedd(isCandidateAdded);
 					
 					if(skillPercentage !=0 && totalPercentage !=0 ){

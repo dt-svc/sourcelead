@@ -385,7 +385,8 @@ function editCandidate(candidateId){
 							$("#profileEditPopup").append(result); 
 							
 							updateDesignationType();
-							
+							getAllCandidateCountries();
+							 getAllCandidateStates();
 							$(".edit-details").toggleClass("edit-details-active");
 							$(".collapse-div").removeClass("edit-details-active");
 							
@@ -1514,7 +1515,7 @@ $('.selectpicker').selectpicker('refresh');
         	 $("#experienceMonths").attr("disabled", false); 
 		 }    
  }
- </script>
+</script>
   
   
   <script>

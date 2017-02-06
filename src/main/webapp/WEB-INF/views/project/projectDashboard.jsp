@@ -319,13 +319,29 @@ overflow-x: auto;
 	
 <script type="text/javascript">
 window.onload = function () {
-	searchProject();
-	$('input[name=projectStatus]').attr('checked',false);
-	$('input[name=clientNameById]').attr('checked',false);
-	//filter();
+		projectsList("${searchValue}","${searchResult}");
  };
 </script>
-
+<script type="text/javascript">
+function projectsList(searchValue,searchresult){ 
+	if(searchresult=="universalProjectsList")	 {
+		var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+	         type : "POST",
+	          url: sourceleadUrl+"/getUniversalProjectsListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
+	          success :function(data) {
+	        	  prepareProjectsList(data);
+	         },
+	          
+	     }); 
+	  }
+	else{
+		searchProject();
+		$('input[name=projectStatus]').attr('checked',false);
+		$('input[name=clientNameById]').attr('checked',false);
+		}
+}
+</script>
 
 
 <script>
