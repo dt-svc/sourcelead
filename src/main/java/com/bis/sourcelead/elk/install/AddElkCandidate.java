@@ -95,15 +95,15 @@ public class AddElkCandidate{
 					
 					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_YEARS"))){
 						if(rs.getString("EXPERIENCE_YEARS").equalsIgnoreCase("25+")){
-							candidateIndex.setExperienceYears(26);
+							candidateIndex.setExperienceYears("26");
 						}
 						else{
-							candidateIndex.setExperienceYears(Integer.parseInt(rs.getString("EXPERIENCE_YEARS")));
+							candidateIndex.setExperienceYears(rs.getString("EXPERIENCE_YEARS"));
 						}
 					}
 					
 					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_MONTHS"))){
-						candidateIndex.setExperienceMonths(Integer.parseInt(rs.getString("EXPERIENCE_MONTHS")));
+						candidateIndex.setExperienceMonths(rs.getString("EXPERIENCE_MONTHS"));
 					}
 					candidateIndex.setDesignation(rs.getString("DESIGNATION"));
 					candidateIndex.setDesignationType(rs.getString("DESIGNATION_TYPE"));
