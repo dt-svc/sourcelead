@@ -692,11 +692,11 @@ $(document).ready(function() {
 <script type="text/javascript">	
 	function loadChosenScripts(){
 
-	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	   /*  $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
 	    $("#projectIdAdvanced").val('').trigger("chosen:updated");
-	    $("#projectNameAdvanced").val('').trigger("chosen:updated");
+	    $("#projectNameAdvanced").val('').trigger("chosen:updated"); */
 	   /*  $("#projectManagerAdvanced").val('').trigger("chosen:updated");
 	    $("#invoiceFrequencyAdvanced").val('').trigger("chosen:updated");
 	    $("#clientsAdvanced").val('').trigger("chosen:updated");
@@ -704,11 +704,11 @@ $(document).ready(function() {
 	    $("#employeeNameAdvanced").val('').trigger("chosen:updated");
 	    $("#employeeEmailAdvanced").val('').trigger("chosen:updated"); */
 	    
-	    $("#anyOfKeyword").empty();
+	   /*  $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
 	    $("#excludeKeyWord").empty();
 	    $("#projectIdAdvanced").empty();
-	    $("#projectNameAdvanced").empty();
+	    $("#projectNameAdvanced").empty(); */
 	    /* $("#projectManagerAdvanced").empty();
 	    $("#invoiceFrequencyAdvanced").empty();
 	    $("#clientsAdvanced").empty();
@@ -977,8 +977,8 @@ $(document).ready(function() {
 </script>
 <script>
 	$('#projectStartDateAdvanced').datepicker({
-		//dateFormat : 'yy-mm-dd',
-		dateFormat : 'dd-mm-yy',
+		dateFormat : 'yy-mm-dd',
+		//dateFormat : 'dd-mm-yy',
 	      changeMonth: true,
 	      changeYear: true,
 		onSelect : function(selected) {
