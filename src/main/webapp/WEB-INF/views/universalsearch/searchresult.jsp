@@ -137,9 +137,9 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'  <div class="srchresult clearfix row">';
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined"){
-				    		result = result+'<p><label><strong><a href="#" onclick="candidateSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
+				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
 				    	}else{													
-				    		result = result+'<p><label><strong><a href="#" onclick="candidateSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>';	
+				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>';	
 				    	}
 				    	if(report.email !=null && report.email !='' && report.email !='undefined' && report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined' ){
 				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.email+'</a></strong></label>, <label>'+report.mobilePhone+'</label>';	
@@ -199,7 +199,9 @@ function getSearchResults(searchType,searchValue){
 		                result = result+'  <div class="srchresult clearfix row">';
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-				    		name_location = name_location + report.orgName+",";
+				    		result = result+'<label><strong><a href="#" onclick="clientSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label>';	
+
+				    		//name_location = name_location + report.orgName+",";
 				    	}
 				    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 				    		name_location = name_location + report.city;
@@ -543,9 +545,9 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	result = result+'  <div class="srchresult clearfix row">';
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined"){
-								    		result = result+'<p><label><strong><a href="#" onclick="candidateSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
+								    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
 								    	}else{													
-								    		result = result+'<p><label><strong><a href="#" onclick="candidateSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>';	
+								    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>';	
 								    	}
 								    	if(report.email !=null && report.email !='' && report.email !='undefined' && report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined' ){
 								    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>';	
@@ -750,6 +752,23 @@ function vendorSearchSideBar(responderLocationId,orgRelationId,orgName){
 	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/vendorsList?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+orgName+"&vendorKeyword="+vendorKeyword;
 
+}
+</script>
+
+
+<script>
+function clientSearchSideBar(responderLocationId,orgRelationId,orgName){
+	var clientKeyword = "clientSearch";
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/clientDashboard?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+orgName+"&clientKeyword="+clientKeyword;
+}
+</script>
+
+<script>
+function candidateSearchSideBar(candidateIdSearchId){
+	var candidateKeyword = "candidateSearch";
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/candidatesList?&candidateKeyword="+candidateKeyword+"&candidateIdSearchId="+candidateIdSearchId;
 }
 </script>
 
