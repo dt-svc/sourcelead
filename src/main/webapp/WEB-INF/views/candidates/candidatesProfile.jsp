@@ -237,7 +237,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							 
 							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
-							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+json.designationOtherType+'" placeholder="Designation Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Designation Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 							result = result + '</div>';
 						
 							result = result + '</div>';
@@ -1518,7 +1518,7 @@ $('.selectpicker').selectpicker('refresh');
 </script>
   
   
-  <script>
+<script>
 function updateDesignationType(){
 	
 	if(designationType.value == 'Other'){
