@@ -90,7 +90,7 @@ public class AddClientVendorContactsELK {
 						clientVendorContactsIndex.setInvitationStatus(rs.getString("INVITATION_STATUS"));
 						clientVendorContactsIndex.setSpocStatus(rs.getString("SPOC_STATUS"));
 						clientVendorContactsIndex.setSpocUserId(rs.getLong("SPOC_USER_ID"));
-
+						clientVendorContactsIndex.setStatus(rs.getString("STATUS"));
 						// saving responderLocationId and  Org Name
 						String sql1 = "SELECT * FROM sourcelead.ORG_LOCATIONS  responderLocationId where responderLocationId.ID = '"+responderLocationId+"' ";
 						

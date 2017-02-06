@@ -25,7 +25,6 @@ margin-right: 15px;
 <script type="text/javascript">
 window.onload = function () {
 //getUsersList('manual');
-	searchUser("manual");
 	usersListCheck("${searchValue}","${searchResult}");
  };
 </script>
@@ -35,7 +34,8 @@ function usersListCheck(searchValue,searchResult){
 	if(searchResult == 'searchresult'){
 		getUsersSearchResult(searchValue);
 	}else{
-		getUsersList('manual');
+		//getUsersList('manual');
+		searchUser("manual");
 	}
 }
 </script>
@@ -422,7 +422,7 @@ function exportToPdf(){
   </script> 
  
  <!--  David
-  Script is used search  based on search key if Enter Key is Pressed -->    
+  this script is not used -->    
 <script type="text/javascript">
 	function getUsersList(type){
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -716,8 +716,8 @@ function getUserSummary(userId){
 			       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
 			       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp;<span title='"+userRole.userType+"'> "+userRole.userType+"</span></label></p>";
 			       	        
-			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N' && userRole.userStatus != 'INACTIVE'){
-			       	    	  result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p>";
+			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N' && userRole.userStatus != 'INACTIVE' && userRole.userStatus != 'ACTIVE'){
+			       	    		result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p>";
 			 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
 			 			    		(userRole.userStatus != null && userRole.userStatus != "" && userRole.userStatus == 'NOT_LOGGEDIN') ){
 			 			    	 result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p>";
@@ -774,6 +774,7 @@ function getUserSummary(userId){
    
 
 <script>
+  $("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');
   $(document).ready(function() {
 	   $("#export-pop").click(function(){
