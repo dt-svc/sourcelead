@@ -342,7 +342,7 @@
 						result = result + '</div>';
 
 						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
-							result = result+ '<div class="user_summary_edit_cta" >';
+							result = result+ '<div class="user_summary_edit_cta" id="demo" >';
 						}else{
 							result = result+ '<div class="user_summary_edit_cta" style="display:none;" id="demo">';
 						}
@@ -698,9 +698,13 @@ function showLevel2Div(){
 		$("#level2Manager").empty();    
 		$('#level2Manager').val('');
 		if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
-		    $("#level2Toggle").show();
-		    $("#levelone-select").removeClass('col-md-12');
-		    $("#levelone-select").addClass('col-md-9');  
+		    if(manager2 == null || manager2 == "" || manager2 == "undefined"){
+		    	$("#level2Toggle").show();
+		    	$("#levelone-select").removeClass('col-md-12');
+			    $("#levelone-select").addClass('col-md-9');  
+		    }else{
+		    	$("#demo").show();
+		    }
 		    getChildLevel1Approvers(currentUserId, manager2);
 		}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
 		    $("#level2Toggle").hide();   
