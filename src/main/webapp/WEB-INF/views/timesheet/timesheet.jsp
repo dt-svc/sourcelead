@@ -165,6 +165,7 @@ $(document).ready(function() {
 		    	  	   $("#timesheetDivByTab").append(result);
 		    	  	   
 		    	  	   maskme();
+		    	  	   $("html").trigger('click');
 		    	  	   
 			    	   $("#tab-1").show();
 	 		    	   $(".project-tabs-menu a").click(function(event) {
@@ -328,7 +329,6 @@ function addTimeSheetRow(projectId) {
 	   //get project tasks 
 	   function getProjectTasks(projectTaskId,projectId){
 		   var sourceleadUrl ='${sourceleadUrl}';
-		   $("#"+projectTaskId).empty();
 		   
 		   var avilableProjectTaskIds = [];
 		   $('.existedProjectTaskId'+projectId).each(function() {
@@ -342,10 +342,11 @@ function addTimeSheetRow(projectId) {
  		      success :function(data) {
  		    	    var json = JSON.parse(data);
  		    	    $('.existedProjectTaskId'+projectId).each(function() {
- 			   			 var localId = this.id;
- 			   			 var localValue = this.value;
+ 			   				 var localId = this.id;
+ 			   				 var localValue = this.value;
+ 			   				 
 	 			   		    var result = ""; 
-	 			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){ 
+	 			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){
 	 			   			    $('option', this).not(':eq(0), :selected').remove();
 	 			   		    }else{ 
 	 			   		    	 $("#"+localId).empty();
@@ -678,18 +679,20 @@ function addAttachment(){
         <div class="loadTime" id="loadTime"></div>    
         
         <div id="timesheetEntriesDiv"> 
-        	<div id="timesheetEntriesDivByProjectMemberId">
+        </div>
+        
+        
+        <!-- <div id="timesheetEntriesDivByProjectMemberId">
         		 <div id="timesheetDivByFrequency">
         			 <div id="timesheetDivByTab">
         			 </div>
         		  </div>
-        	</div>
-        </div>
+        	</div> -->
         
         <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
 				         <div id="divadttTd1" style="display:none;" >   
 				             <div> 
-				              <select id="REPLACEROWIDtaskId" name="REPLACEROWIDtaskId" class="existedProjectTaskIdprojectId" onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
+				              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId" onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
 				                          <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 				                              	<option value="${task.id}">${task.taskName}</option>
 				                           </c:forEach> --%>
@@ -812,6 +815,9 @@ function newSaveTimesheet(status,savingType){
         	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
         		    	  $("#loadTime").removeAttr("style"); 
+        		    	  timesheetEntriesDiv();
+        		    	  $("html").trigger('click');
+        		    	  maskme();
         		    	 /*  timesheetEntriesDiv(); */
         		    	 /*  $("#loadTime").removeAttr("style"); */
         		    	  /*  dynamicTimesheet("left",result);  */
