@@ -165,7 +165,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		     Session session = this.sessionFactory.getCurrentSession();
 			
 			String query ="select count(*) from RequirementInterviewHistory rih where rih.submissionId.id = :submissionId and rih.orgLocationId.id = :orgLocationsId";
-			List<Long> interviewsCount = session.createQuery(query.toString()).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).list();
+			List<Long> interviewsCount = session.createQuery(query.toString()).setLong("submissionId", submissionId).setCacheable(true).setLong("orgLocationsId", orgLocationsId).list();
 				Integer count = 0;
 				if(interviewsCount != null && !interviewsCount.isEmpty()){
 						count = interviewsCount.get(0).intValue();
