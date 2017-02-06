@@ -1406,11 +1406,11 @@ function requirementPipeline(requirementId){
                   <div class="clearfix">
                     <select class="chosen-select"  id="skills" name="skills" multiple data-placeholder="Select Skills">
                       <c:forEach var="skill" items="${skillsList}">
-             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill.name)}">
-	                		  	 <option  selected value="${skill.name}">${skill.name}</option>
+             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill)}">
+	                		  	 <option  selected value="${skill}">${skill}</option>
 	                		 </c:if>
-	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill.name)}">
-	                		  	 <option  value="${skill.name}">${skill.name}</option>
+	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill)}">
+	                		  	 <option  value="${skill}">${skill}</option>
 	                		 </c:if>
                     </c:forEach>
                     </select>

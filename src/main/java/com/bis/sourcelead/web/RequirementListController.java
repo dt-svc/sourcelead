@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -69,8 +70,12 @@ public class RequirementListController {
 		    model.addObject("serachValue",serachValue);
 		}
 		
-		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		/*List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		model.addObject("skillsList", skillsList);*/
+		
+		List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 		model.addObject("skillsList", skillsList);
+
 		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);

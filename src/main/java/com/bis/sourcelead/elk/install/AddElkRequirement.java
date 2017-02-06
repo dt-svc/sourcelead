@@ -103,7 +103,7 @@ public class AddElkRequirement {
 				requirementIndex.setReqUpdatedDate(reqUpDatedDate);
 				requirementIndex.setIsTemplate(rs.getString("IS_Template"));
 				requirementIndex.setManagerUserId(rs.getString("MANAGER_USER_ID"));
-				ResultSet approverSet = getApproverUserDetails(Long.parseLong(rs.getString("ID")));
+				ResultSet approverSet = getApproverUserDetails(Long.parseLong(rs.getString("ID")),conn);
 				while(approverSet.next()){
 					if(approverSet.getInt("LEVEL") == 1){
 						requirementIndex.setReqLevel1ApproverUserId(approverSet.getString("APPROVER_USER_ID").split(","));
@@ -113,13 +113,13 @@ public class AddElkRequirement {
 					}
 				}
 				
-				ResultSet teamSet = getTeamDetails(Long.parseLong(rs.getString("ID")));
+				ResultSet teamSet = getTeamDetails(Long.parseLong(rs.getString("ID")),conn);
 				while(teamSet.next()){
 					requirementIndex.setTeamOwnerUserId(teamSet.getString("OWNER_USER_ID").split(","));
 					requirementIndex.setTeamAssignUserId(teamSet.getString("ASSIGN_USER_ID").split(","));
 				}
 				
-				ResultSet noOfApplicants = getNoOfApplicantDetails(Long.parseLong(rs.getString("ID")),rs.getString("ORG_LOCATION_ID"));
+				ResultSet noOfApplicants = getNoOfApplicantDetails(Long.parseLong(rs.getString("ID")),rs.getString("ORG_LOCATION_ID"),conn);
 				while(noOfApplicants.next()){
 					requirementIndex.setTeamOwnerUserId(noOfApplicants.getString(1).split(","));
 				}
@@ -129,15 +129,15 @@ public class AddElkRequirement {
 					requirementIndex.setEducation(education.split(","));
 				}
 				if(rs.getString("ORG_RELATION_ID") !=null && !"".equalsIgnoreCase(rs.getString("ORG_RELATION_ID"))){
-					ResultSet rs1 = getClientContactDetails(rs.getString("ORG_RELATION_ID"));
+					ResultSet rs1 = getClientContactDetails(rs.getString("ORG_RELATION_ID"),conn);
 					String clientName =null;;
 					while(rs1.next()){
 						String type = rs1.getString("INITIATOR_TYPE");
 						if("Client".equalsIgnoreCase(type)){
-							clientName = getClientName(rs1.getString("LOCATION_ID"));
+							clientName = getClientName(rs1.getString("LOCATION_ID"),conn);
 						}
 						else{
-							clientName = getClientName(rs1.getString("RESPONDER_LOCATION_ID"));
+							clientName = getClientName(rs1.getString("RESPONDER_LOCATION_ID"),conn);
 						}
 					}
 					requirementIndex.setClient(clientName);
@@ -153,14 +153,14 @@ public class AddElkRequirement {
 						String type = rs1.getString("INITIATOR_TYPE");
 						if("Client".equalsIgnoreCase(type)){
 							String clientContactSql = "SELECT user.FIRST_NAME,user.EMAIL FROM sourcelead.ORG_SPOC spoc INNER JOIN USER user on spoc.OWNER_USER_ID=user.ID where spoc.INITIATOR_LOCATION_ID = ?;";
-							ResultSet clientNameRs = getClientContactName(rs.getString("LOCATION_ID"),clientContactSql);
+							ResultSet clientNameRs = getClientContactName(rs.getString("LOCATION_ID"),clientContactSql,conn);
 							clientContactName = clientNameRs.getString("FIRST_NAME");
 							clientContactEmail = clientNameRs.getString("EMAIL");
 							
 						}
 						if("Vendor".equalsIgnoreCase(type)){
 							String clientContactSql = "SELECT user.FIRST_NAME,user.EMAIL FROM sourcelead.ORG_SPOC spoc INNER JOIN USER user on spoc.SPOC_USER_ID=user.ID where spoc.RESPONDER_LOCATION_ID = ?;";
-							ResultSet clientNameRs = getClientContactName(rs.getString("RESPONDER_LOCATION_ID"),clientContactSql);
+							ResultSet clientNameRs = getClientContactName(rs.getString("RESPONDER_LOCATION_ID"),clientContactSql,conn);
 							if(null != clientNameRs.getString("FIRST_NAME") && null != clientNameRs.getString("FIRST_NAME")){
 							clientContactName = clientNameRs.getString("FIRST_NAME")+" "+clientNameRs.getString("FIRST_NAME");
 							}else{
@@ -186,7 +186,6 @@ public class AddElkRequirement {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally {
-			
 			try {
 				stmt.close();
 				conn.close();
@@ -199,12 +198,10 @@ public class AddElkRequirement {
 	}
 	
 	
-	private ResultSet getTeamDetails(long requirementId) {
-		Connection conn=null;
+	private ResultSet getTeamDetails(long requirementId, Connection conn) {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		 try{
-			  logger.info("********************************8"+requirementId);  
 			 DataSource dataSource = comboPooledDataSource();
 				String sql = "select * from REQUIREMENT_ASSIGN_TO reqAssaign INNER JOIN TEAM team on reqAssaign.TEAM_ID=team.ID where reqAssaign.REQUIREMENT_ID = ? ;";
 				 conn = dataSource.getConnection();
@@ -213,17 +210,14 @@ public class AddElkRequirement {
 				 rs = ps.executeQuery();
 		 }catch(Exception e){
 			 e.printStackTrace();
-		 }finally{
 		 }
 	     return rs;
 	}
 	
-	private ResultSet getNoOfApplicantDetails(long requirementId,String orgLocationId) {
-		Connection conn=null;
+	private ResultSet getNoOfApplicantDetails(long requirementId,String orgLocationId, Connection conn) {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		 try{
-			  logger.info("*******************orgLocationId************"+orgLocationId);  
 			 DataSource dataSource = comboPooledDataSource();
 				String sql = "select count(*) from REQUIREMENT_SUBMISSION rs where rs.REQUIREMENT_ID = ? and rs.ORG_LOCATION_ID = ?;";
 				 conn = dataSource.getConnection();
@@ -233,18 +227,15 @@ public class AddElkRequirement {
 				 rs = ps.executeQuery();
 		 }catch(Exception e){
 			 e.printStackTrace();
-		 }finally{
 		 }
 	     return rs;
 	}
 
 
-	private ResultSet getApproverUserDetails(long requirementId) throws SQLException {
-		Connection conn=null;
+	private ResultSet getApproverUserDetails(long requirementId, Connection conn) throws SQLException {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		 try{
-			  logger.info("********************************team..."+requirementId);  
 			 DataSource dataSource = comboPooledDataSource();
 				String sql = "select * from REQUIREMENT_APPROVER_HIERARCHY rah where rah.REQUIREMENT_ID = ? ;";
 				 conn = dataSource.getConnection();
@@ -253,7 +244,6 @@ public class AddElkRequirement {
 				 rs = ps.executeQuery();
 		 }catch(Exception e){
 			 e.printStackTrace();
-		 }finally{
 		 }
 	     return rs;
 	}
@@ -264,13 +254,13 @@ public class AddElkRequirement {
  * read client Contact name based on orgLocId
  * @param orgLocId
  * @param clientContactSql
+ * @param conn 
  * @return ResultSet
  */
-	private ResultSet getClientContactName(String orgLocId, String clientContactSql) {
+	private ResultSet getClientContactName(String orgLocId, String clientContactSql, Connection conn) {
 		DataSource dataSource = comboPooledDataSource();
 		
 		PreparedStatement ps = null;
-		Connection conn = null;
 		ResultSet rs = null ;
 		try {
 			conn = dataSource.getConnection();
@@ -279,30 +269,23 @@ public class AddElkRequirement {
 			rs = ps.executeQuery();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}finally {
-			try {
-				conn.close();
-				ps.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 		return rs;
 	}
 
 	/**
 	 * read client  name based on location
+	 * @param conn 
 	 * @param orgLocId
 	 * @param clientContactSql
 	 * @return ResultSet
 	 */
-	private String getClientName(String location) {
+	private String getClientName(String location, Connection conn) {
 		
 		DataSource dataSource = comboPooledDataSource();
         String orgName = null;
 		String sql = "SELECT org.ORG_NAME FROM sourcelead.ORG_LOCATIONS orgloc INNER JOIN ORG org on orgloc.ORG_ID=org.ID where orgloc.ID = ?;";
 		PreparedStatement ps = null;
-		Connection conn = null;
 		try {
 			conn = dataSource.getConnection();
 			 ps = conn.prepareStatement(sql);
@@ -315,13 +298,6 @@ public class AddElkRequirement {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}finally {
-			try {
-				conn.close();
-				ps.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 		return orgName;
 		
@@ -331,15 +307,14 @@ public class AddElkRequirement {
 /**
  * Reading client details
  * @param relationId
+ * @param conn 
  * @return ResultSet
  * @throws SQLException
  */
-	private ResultSet getClientContactDetails(String relationId) throws SQLException {
-		Connection conn=null;
+	private ResultSet getClientContactDetails(String relationId, Connection conn) throws SQLException {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		 try{
-			  logger.info("********************************8"+relationId);  
 			 DataSource dataSource = comboPooledDataSource();
 				String sql = "select * from ORG_RELATIONS as orgrel where orgrel.ID = ?";
 				 conn = dataSource.getConnection();
@@ -348,9 +323,6 @@ public class AddElkRequirement {
 				 rs = ps.executeQuery();
 		 }catch(Exception e){
 			 e.printStackTrace();
-		 }finally{
-			 ps.close();
-		     conn.close();	 
 		 }
 	     return rs;
 	}
@@ -433,8 +405,7 @@ public class AddElkRequirement {
 			try {
 				AddElkRequirement addElkCandidate = new AddElkRequirement();
 				   addElkCandidate.addElkRequirement();
-			} catch (Exception e) 
-			{
+			}catch (Exception e){
 				e.printStackTrace();
 			}
 		}
