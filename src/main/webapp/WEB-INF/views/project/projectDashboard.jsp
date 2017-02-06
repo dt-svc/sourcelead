@@ -319,13 +319,29 @@ overflow-x: auto;
 	
 <script type="text/javascript">
 window.onload = function () {
-	searchProject();
-	$('input[name=projectStatus]').attr('checked',false);
-	$('input[name=clientNameById]').attr('checked',false);
-	//filter();
+		projectsList("${searchValue}","${searchResult}");
  };
 </script>
-
+<script type="text/javascript">
+function projectsList(searchValue,searchresult){ 
+	if(searchresult=="universalProjectsList")	 {
+		var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+	         type : "POST",
+	          url: sourceleadUrl+"/getUniversalProjectsListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
+	          success :function(data) {
+	        	  prepareProjectsList(data);
+	         },
+	          
+	     }); 
+	  }
+	else{
+		searchProject();
+		$('input[name=projectStatus]').attr('checked',false);
+		$('input[name=clientNameById]').attr('checked',false);
+		}
+}
+</script>
 
 
 <script>
@@ -676,11 +692,11 @@ $(document).ready(function() {
 <script type="text/javascript">	
 	function loadChosenScripts(){
 
-	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	   /*  $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
 	    $("#projectIdAdvanced").val('').trigger("chosen:updated");
-	    $("#projectNameAdvanced").val('').trigger("chosen:updated");
+	    $("#projectNameAdvanced").val('').trigger("chosen:updated"); */
 	   /*  $("#projectManagerAdvanced").val('').trigger("chosen:updated");
 	    $("#invoiceFrequencyAdvanced").val('').trigger("chosen:updated");
 	    $("#clientsAdvanced").val('').trigger("chosen:updated");
@@ -688,11 +704,11 @@ $(document).ready(function() {
 	    $("#employeeNameAdvanced").val('').trigger("chosen:updated");
 	    $("#employeeEmailAdvanced").val('').trigger("chosen:updated"); */
 	    
-	    $("#anyOfKeyword").empty();
+	   /*  $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
 	    $("#excludeKeyWord").empty();
 	    $("#projectIdAdvanced").empty();
-	    $("#projectNameAdvanced").empty();
+	    $("#projectNameAdvanced").empty(); */
 	    /* $("#projectManagerAdvanced").empty();
 	    $("#invoiceFrequencyAdvanced").empty();
 	    $("#clientsAdvanced").empty();
@@ -961,8 +977,8 @@ $(document).ready(function() {
 </script>
 <script>
 	$('#projectStartDateAdvanced').datepicker({
-		//dateFormat : 'yy-mm-dd',
-		dateFormat : 'dd-mm-yy',
+		dateFormat : 'yy-mm-dd',
+		//dateFormat : 'dd-mm-yy',
 	      changeMonth: true,
 	      changeYear: true,
 		onSelect : function(selected) {

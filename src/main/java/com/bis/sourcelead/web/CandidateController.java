@@ -29,6 +29,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -58,6 +59,9 @@ public class CandidateController {
 	
 	@Autowired
 	private TeamService teamService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	/**
 	 * Handles to display candidate jsp
@@ -125,7 +129,8 @@ public class CandidateController {
 	
 	
 	@RequestMapping(value = "/candidatesList")
-	public ModelAndView usersList(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,HttpServletRequest request) throws Exception {
+	public ModelAndView usersList(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,@RequestParam(value="searchResult", required=false)String  searchResult
+			,@RequestParam(value="searchValue", required=false)String searchValue,HttpServletRequest request) throws Exception {
 		logger.debug("--------candidatesList------");
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -133,6 +138,12 @@ public class CandidateController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("candidates/candidatesList");
+		
+		
+		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalCanddateList")){
+		    model.addObject("universalCanddateList", "universalCanddateList");
+		    model.addObject("serachValue",searchValue);
+		}
 		
 		List<Countries> countryList = countriesService.getAllCountries();
 		model.addObject("countryList", countryList);

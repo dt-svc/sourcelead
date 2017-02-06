@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -57,12 +59,23 @@ public class RequirementListController {
 	StatesService statesService;
 	
 	@RequestMapping(value = "/requirementList")
-	public ModelAndView requirementList(HttpServletRequest request) throws Exception {
+	public ModelAndView requirementList(HttpServletRequest request,@RequestParam(value="searchResult", required=false)String  searchResult
+			,@RequestParam(value="serachValue", required=false)String serachValue) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		
+		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalRequirementList")){
+		    model.addObject("universalRequirementList", "universalRequirementList");
+		    model.addObject("serachValue",serachValue);
+		}
+		
+		/*List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		model.addObject("skillsList", skillsList);*/
+		
+		List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 		model.addObject("skillsList", skillsList);
+
 		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
