@@ -56,9 +56,10 @@ overflow-x: auto;
         </section>
 		<!-- Project -->
 		 <div id="loading"></div>
-<div class="timesheet_out timesheet_background">
+
  <!-- Advanced Search -->
-  <div class="pull-left cand-advsrch">
+  <div class="timesheet_bg">
+  <div class="cand-advsrch">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
           <form:form id="vendorList_form" name="vendorList_form"  enctype='multipart/form-data' >
@@ -263,12 +264,14 @@ overflow-x: auto;
             </form:form>
           </div>
         </div>
+        </div>
 <!-- Advanced Search Ends -->
 
 
 
 <div class="clearfix"></div>
-<div class="vendor_wrap vendor_wrap_shadownone" style="overflow-x: auto;" >
+<div class="timesheet_out timesheet_background">
+<div class="vendor_wrap vendor_wrap_shadownone">
 
      
 
@@ -968,6 +971,7 @@ function pagination1(){
 	document.getElementById("vendorContactList").style.display="none";
     $('#vendorList').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1386,6 +1390,7 @@ function pagination(){
 	 document.getElementById("vendorList_paginate").style.display="none";  */
     $('#vendorContactList').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
