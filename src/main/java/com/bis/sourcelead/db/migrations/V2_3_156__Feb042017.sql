@@ -1,9 +1,13 @@
 CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_TASKS','BILLABLE_TYPE','VARCHAR(100) DEFAULT NULL AFTER `DESCRIPTION`');
-UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Billable' WHERE `ID`='1';
-UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Non-Billable' WHERE `ID`='2';
-UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Non-Billable' WHERE `ID`='3';
-UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Non-Billable' WHERE `ID`='4';
-UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Billable' WHERE `ID`='5';
-UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Billable' WHERE `ID`='6';
 
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Billable';
+
+UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Billable' WHERE `TASK_NAME`='Holiday';
+UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Non-Billable' WHERE `TASK_NAME`='Vacation Leave';
+UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Non-Billable' WHERE `TASK_NAME`='Sick Leave';
+UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Non-Billable' WHERE `TASK_NAME`='Casual Leave';
+UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Billable' WHERE `TASK_NAME`='Compensatory Leave';
+UPDATE `sourcelead`.`PROJECT_TASKS` SET `BILLABLE_TYPE`='Billable' WHERE `TASK_NAME`='Work From Home';
+SET SQL_SAFE_UPDATES = 1;
 
