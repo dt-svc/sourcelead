@@ -241,7 +241,8 @@ function getSearchResults(searchType,searchValue){
 		                result = result+'  <div class="srchresult clearfix row">';
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-				    		name_location = name_location + report.orgName+",";
+				    		result = result+'<label><strong><a href="#" onclick="vendorSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label>';	
+				    	//	name_location = name_location + report.orgName+",";
 				    	}
 				    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 				    		name_location = name_location + report.city;
@@ -742,6 +743,16 @@ function loadProjects(){
 	window.location.href = sourceleadUrl + "/projectDashboard?&searchResult="+searchResult+"&searchValue="+searchValue;
 }
 </script>
+
+<script>
+function vendorSearchSideBar(responderLocationId,orgRelationId,orgName){
+	var vendorKeyword = "vendorSearch";
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/vendorsList?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+orgName+"&vendorKeyword="+vendorKeyword;
+
+}
+</script>
+
 
 
 <jsp:include page="../masterFooter.jsp" />
