@@ -225,6 +225,7 @@ public class RegistrationRestController {
 			 String orgModules = "";
 			 StringBuilder strbul = null; 
 			 StringBuilder strbul2 = null; 
+			 StringBuilder strbul3 = null; 
 			 
 			 if(!isNullOrEmpty(submodulesList)){
 					String[] registeredSubModules =  submodulesList.split(",");
@@ -293,6 +294,7 @@ public class RegistrationRestController {
 							Long myTimeSheetTabId = (long) Constants.TAB_MY_TIMESHEET;
 							Long timeSheetApprovalTabId = (long) Constants.TAB_TIMESHEET_APPROVAL;
 							Long tabId = (long) Constants.TAB_CLIENT;
+							Long projectsTabId = (long) Constants.TAB_PROJECTS;
 							
 							actionsList = sourceleadActionsService.getSourceLeadTimeSheetActionsByModuleIdAndTabId(moduleId, myTimeSheetTabId, timeSheetApprovalTabId);
 							
@@ -320,6 +322,18 @@ public class RegistrationRestController {
 						     }
 						        strbul2.toString();
 						        
+						        strbul3 = new StringBuilder();
+							     List<Long> projectsActionsList = sourceleadActionsService.getSourceLeadActionsByTabId(projectsTabId);
+							     Iterator<Long> iter3 = projectsActionsList.iterator();
+							     while(iter3.hasNext())
+							     {
+							    	 strbul3.append(iter3.next());
+							        if(iter3.hasNext()){
+							        	strbul3.append(",");
+							        }
+							     }
+							        strbul3.toString();
+						        
 						        Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
 						        String adminids = null;
 						        List<Long> adminRoleActonList = new ArrayList<Long>();
@@ -330,9 +344,9 @@ public class RegistrationRestController {
 								 adminRoleActonList.retainAll(clientActionsList);
 								
 								 if(adminRoleActonList.size() == 0){
-									 adminids = adminrole.getActionId()+","+strbul+","+strbul2;
+									 adminids = adminrole.getActionId()+","+strbul+","+strbul3+","+strbul2;
 								 }else{
-									 adminids = adminrole.getActionId()+","+strbul;
+									 adminids = adminrole.getActionId()+","+strbul+","+strbul3;
 								 }
 						        
 								adminrole.setActionId(adminids);
@@ -349,9 +363,9 @@ public class RegistrationRestController {
 								 managerRoleActonList.retainAll(clientActionsList);
 								
 								 if(managerRoleActonList.size() == 0){
-									 managerids = managerrole.getActionId()+","+strbul+","+strbul2;
+									 managerids = managerrole.getActionId()+","+strbul+","+strbul3+","+strbul2;
 								 }else{
-									 managerids = managerrole.getActionId()+","+strbul;
+									 managerids = managerrole.getActionId()+","+strbul+","+strbul3;
 								 }
 								
 								managerrole.setActionId(managerids);
