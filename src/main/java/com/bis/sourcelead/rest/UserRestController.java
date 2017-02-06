@@ -348,6 +348,15 @@ public class UserRestController {
 	 			userService.addUser(user);
 
 	 			userService.sendEmail(user,loginUser,password,orgLocations.getId());
+	 			
+	 			/*
+				 * Update USER DB data as ElasticSearch Documents
+				 */
+	 			  UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+    			  Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
+    			  if(null != employee){
+    				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
+    			  }
 
 	 		}
 		
@@ -601,9 +610,12 @@ public class UserRestController {
         public String reActiveUser(@RequestParam(value = "userId", required = false) String userID, HttpServletRequest request) throws Exception {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(Long.parseLong(userID), orgLocations.getId());
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(userRole != null){
 					userRole.setUserState(userRole.getPreviousUserState());
 					userRole.setPreviousUserState(userRole.getUserState());
+					userRole.setUpdatedBy(user.getUserCode());
+					userRole.setUpdatedDate(commonUtil.currentDate());
 					userRoleService.addUserRole(userRole);
 					
 					//to assign primary role to another user
@@ -612,6 +624,14 @@ public class UserRestController {
 						userRole.setIsPrimary(1);
 						userRoleService.addUserRole(userRole);
 					}
+					
+					/*
+    				 * Saving USER DB data as ElasticSearch Documents
+    				 */
+        			  Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
+        			  if(null != employee){
+        				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
+        			  }
 				}
                 return "updated";
          }

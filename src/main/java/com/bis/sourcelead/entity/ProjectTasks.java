@@ -41,6 +41,9 @@ public class ProjectTasks implements Serializable{
 	@Type(type="text")
 	private String description;
 	
+	@Column(name = "BILLABLE_TYPE")
+	private String billableType;
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projectId;
@@ -84,6 +87,14 @@ public class ProjectTasks implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getBillableType() {
+		return billableType;
+	}
+
+	public void setBillableType(String billableType) {
+		this.billableType = billableType;
 	}
 
 	public Projects getProjectId() {

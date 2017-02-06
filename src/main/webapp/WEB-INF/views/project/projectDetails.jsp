@@ -86,6 +86,7 @@
 						result = result + json.projectStatus;
 						result = result + '	</i></span>';
 						result = result	+ '</div></span><div class="clearfix"></div>';
+						result = result + '<input type="hidden" name="dbProjectStatus" id="dbProjectStatus" value="'+json.projectStatus+'" >';
 
 						result = result + '<div class="clearfix"></div>';
 						result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
@@ -300,7 +301,9 @@
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '	<label>Manager 1 <span class="text-danger">*</span></label>';
 						result = result + '<div class="row">';
-						 if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {  
+						 if ((json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") ||
+								 (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" 
+								 &&  json.managerLevel1UserType == "Admin")) {  
 							result = result + '<div class="col-md-12" id="levelone-select">';
 						 }else{
 							result = result + '<div class="col-md-9" id="levelone-select">';	
@@ -310,46 +313,35 @@
 							var manager = json.managersList[j];
 							if (json.manager1 == manager.id) {
 								selected = 'selected';
-								result = result	+ "<option value="+manager.id+" "+selected+" >"	+ manager.firstName + " "+ manager.lastName + "</option>";
+								result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >"	+ manager.firstName + " "+ manager.lastName + "</option>";
 							} else {
-								result = result	+ "<option value="+manager.id+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
+								result = result	+ "<option value="+manager.id+","+manager.userType+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
 							}
 						}
 						result = result + '</select>';
 						result = result + '</div>';
 						
-					 	if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
-						result = result + '<div class="col-md-2" id="leveltwo-btn" style="display:none">';
-						result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add Level-II</span>';
-						result = result + '</div>';
-						}else{
-							result = result + '<div class="col-md-2" id="leveltwo-btn" style="display:block">';
-							result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add Level-II</span>';
-							result = result + '</div>';
-						} 
+						if (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" &&  json.managerLevel1UserType != "Admin") { 
+							if (json.manager2 == null || json.manager2 == "" || json.manager2 == "undefined") { 
+								result = result + '<div class="col-md-2" id="level2Toggle">';
+								result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
+								result = result + '</div>';
+								}/* else{
+									result = result + '<div class="col-md-2" id="level2Toggle" style="display:block">';
+									result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
+									result = result + '</div>';
+								}  */
+						}
+						result = result	+ '<input type="hidden" id="level2Div">';
 						result = result + '</div>';
 						
 						result = result + '</div>';
 
-						 if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
-							result = result+ '<div class="user_summary_edit_cta">';
-							result = result + '<label> Manager 2 </label>';
-							result = result	+ '<select id="level2Manager" name="level2Manager">';
-							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
-								var manager = json.managersListwithoutManager1[j];
-								if (json.manager2 == manager.id) {
-									selected = 'selected';
-									result = result	+ "<option value="+manager.id+" "+selected+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
-								} else {
-
-									result = result	+ "<option value="+manager.id+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
-								}
-							}
-							result = result + '</select>';
-							result = result + '</div>';
-
-						} else{
+						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
+							result = result+ '<div class="user_summary_edit_cta" >';
+						}else{
 							result = result+ '<div class="user_summary_edit_cta" style="display:none;" id="demo">';
+						}
 							result = result + '<label> Manager 2 </label>';
 							result = result	+ '<select id="level2Manager" name="level2Manager">';
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
@@ -364,8 +356,6 @@
 							}
 							result = result + '</select>';
 							result = result + '</div>';
-
-						} 
 
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '	<label>Client</label>';
@@ -409,23 +399,23 @@
 						result = result + '</div>	';
 						
 						
-						result = result + '<div class="user_summary_edit_cta">';
+						/* result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Invoice Frequency <span class="text-danger">*</span></label>';
 						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control">';
-							
 						result = result  +' <option '+(json.invoiceFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
 						result = result  +'	 <option '+(json.invoiceFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
 						result = result  +'	 <option '+(json.invoiceFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
 						result = result  +'	<option '+(json.invoiceFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
 						result = result  +'	</select>';
-											
-						result = result + '</div>';
+						result = result + '</div>'; */
+						
 						result = result + '<div class="clearfix"></div>';
 
 						result = result + '<div class="user_summary_edit_cta" id="endDateDiv">';
-						result = result + '<label>End date</label>';
+						result = result + '<label>End date <span class="text-danger" id="endDateSpan" style="display: none; ">*</span></label>';
 						result = result
 								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" field-name="End Date" >';
+						result = result + '<input type="hidden" name="dbEndDateStr" id="dbEndDateStr" value="'+endDateStr+'" >';
 						result = result + '</div>';
 						
 						
@@ -485,16 +475,21 @@
 <script>
 function projectStatus(){
 	var projectStatus = $("#projectStatusId").val();
-	var projectEnddateString = $("#endDateStr1").val();
-	if(projectStatus == "Started" || projectStatus == "In-Progress" || projectStatus == "On-Hold"){
+	var dbProjectStatus = $("#dbProjectStatus").val();
+	var dbEndDateStr = $("#dbEndDateStr").val();
+	if((projectStatus == "Started" || projectStatus == "In-Progress" || projectStatus == "On-Hold") && dbProjectStatus == "COMPLETED"){
 		 $("#endDateStr1").val('');
+	}else{
+		$("#endDateStr1").val(dbEndDateStr);
 	}
 	
 	$('#endDateDiv').find('p.jquery_form_error_message').remove(); 
 	if(projectStatus != null && projectStatus != "" && projectStatus != "undefined" && projectStatus == "Completed"){
+		 $("#endDateSpan" ).show(); 
 		 $('#endDateStr1').removeAttr('data-validation-optional');
 		 $('#endDateStr1').attr("data-validation","required"); 
 	 }else{
+		 $("#endDateSpan" ).hide();
 		 $('#endDateStr1').removeAttr('data-validation');
 		 $('#endDateStr1').attr("data-validation-optional","true"); 
 	 } 
@@ -676,12 +671,35 @@ function projectStatus(){
 	}
 </script>
 
+<script type="text/javascript">
+function showLevel2Div(){
+	var currentApproverId = document.getElementById("level1Manager").value;
+	var currentUser = currentApproverId.split(',');
+	var currentUserType = currentUser[1];
+	if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
+	    $("#demo").show();  
+	}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
+	    $("#demo").hide();  
+	}
+}
+
+</script>
 
 <script type="text/javascript">
 	function getLevel2Approvers(manager2) {
-		$("#demo").toggle();
 		var currentApproverId = document.getElementById("level1Manager").value;
-		getChildLevel1Approvers(currentApproverId, manager2);
+		var currentUser = currentApproverId.split(',');
+		var currentUserId = currentUser[0];
+		var currentUserType = currentUser[1];
+		$("#level2Manager").empty();    
+		$('#level2Manager').val('');
+		if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
+		    $("#level2Toggle").show();
+		    getChildLevel1Approvers(currentUserId, manager2);
+		}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
+		    $("#level2Toggle").hide();   
+		    $("#demo").hide();  
+		}
 	}
 </script>
 <script type="text/javascript">

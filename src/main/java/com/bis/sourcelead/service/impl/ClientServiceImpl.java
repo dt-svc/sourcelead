@@ -3,8 +3,6 @@ package com.bis.sourcelead.service.impl;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +23,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -35,21 +34,23 @@ import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -110,6 +111,11 @@ public class ClientServiceImpl implements ClientService{
 	@Autowired
 	private SourceleadRolesService sourceleadRolesService;
 	
+	@Autowired
+	private UserRoleService userRoleService;
+	
+	@Autowired
+	private EmployeesService employeesService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -677,6 +683,7 @@ public class ClientServiceImpl implements ClientService{
 				User editUser =null;
 				if(jsonObj.getString("existingSpocUserId") != null && !jsonObj.getString("existingSpocUserId").isEmpty()){
 					User existingUser = userService.getUserById(Long.parseLong(jsonObj.getString("existingSpocUserId")));
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(), orgLocation.getId());
 					if(jsonObj.getString(vendorContactFirstName) != null && !jsonObj.getString(vendorContactFirstName).isEmpty()){
 						existingUser.setFirstName(jsonObj.getString(vendorContactFirstName));
 					}else{
@@ -699,7 +706,12 @@ public class ClientServiceImpl implements ClientService{
 						existingUser.setEmail("");
 					}
 					editUser = userService.addUser(existingUser);
+					
+					Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(editUser.getId(), orgLocation.getId());
+					//Update the user details for Elk search
+					userService.saveOrUpdateUserElkDocument(userRole,employee, editUser.getUserCode());
 				}
+				
 				
 				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
 					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));

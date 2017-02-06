@@ -689,6 +689,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
 		    	if(approverHierarchy.getLevel() != null){
 		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
+		    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
+		    		if(null != userRole){
+		    			projects.setManagerLevel1UserType(userRole.getUserType());
+		    		}
 		    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
 	    	}
@@ -697,6 +701,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
 		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1){
 		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
+		    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
+		    		if(null != userRole){
+		    			projects.setManagerLevel1UserType(userRole.getUserType());
+		    		}
 		    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
 		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
@@ -1000,7 +1008,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			userService.sendEmail(user,users,password,loginOrgLocation.getId());
 
 		}
-		
+		userService.saveOrUpdateUserElkDocument(userRole,emp,users.getUserCode());
+
 		return null;
 	}
 

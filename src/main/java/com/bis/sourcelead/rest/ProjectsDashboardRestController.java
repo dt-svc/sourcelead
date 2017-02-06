@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
@@ -238,6 +239,25 @@ public class ProjectsDashboardRestController {
 			 return resultJson;
 		 	
 	 }
+	 
+	 /** update billableType of project task
+	  * @author Prasad Salina
+	  * @param taskId
+	  * @param billableType
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/updateTakBillableType", method = RequestMethod.POST)
+	 @ResponseBody String updateTakBillableType(@RequestParam(value = "taskId", required = false) String taskId,@RequestParam(value="billableType", required=false) String billableType) throws Exception{
+		    ProjectTasks projectTasks = tasksService.getTasksId(taskId);
+		    if(null != projectTasks){
+		    	projectTasks.setBillableType(billableType);
+		    	tasksService.updateTasks(projectTasks);
+		    }
+		    return "success";
+		}
+	 
+	 
 	/**
 	 * Get Employees list based on project id
 	 * @param projectId

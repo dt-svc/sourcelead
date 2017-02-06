@@ -1,17 +1,32 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,9 +36,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -33,7 +52,6 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -59,6 +77,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -123,6 +142,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	@Autowired
 	TabsService tabsService;
 	
+	@Autowired
+	SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
+	
 	/**
 	 * To get All the Users by filtering 
 	 * @param request
@@ -135,6 +157,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	
 	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
 	@RequestMapping(value = "/getUsersList")
+	@JsonInclude(value = JsonInclude.Include.NON_NULL)
 	@ResponseBody
 	public String getUsersList(HttpServletRequest request,
 			@RequestParam(value="userRole", required=false) String userRole,
@@ -146,8 +169,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	 	String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
-//		List<UserRole> rolesList = new ArrayList<UserRole>();
 		
 			Long userRoleType ;
 			
@@ -157,9 +178,41 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				 userRoleType = null;
 			}
 			
-			List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset);
+			
+			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+			
+			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+			
+			if(null != userState  && !"".equalsIgnoreCase(userState)){
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userStatus", userState));
+				}
+			if(null != userRole  && !"".equalsIgnoreCase(userRole)){
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userRoleId", userRole));
+				}
+				
+			boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
+			 
+			Integer maxResults = offset + Constants.MAX_RESULTS_TEN;
+			
+			List<UserIndex> usersList = new ArrayList<UserIndex>();
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		
+			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,offset,maxResults.intValue(),boolQueryBuilder).getHits();
+			if(searchHits != null && searchHits.length >0){
+				ObjectMapper mapper = new ObjectMapper();
+				for (SearchHit hit : searchHits) {
+					String json = hit.getSourceAsString();
+					json = hit.getSourceAsString();
+					mapper.setDateFormat(df);
+					UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+					usersList.add(userIndex);
+				}
+			}
+			
+		List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset);
 	
-			if(null != rolesList){
+		/*	if(null != rolesList){
 				for(UserRole role : rolesList){
 					StringBuilder userName = new StringBuilder();
 					role.setUserRoleName(role.getRoles().getDisplayName());
@@ -175,14 +228,216 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					role.setIsMailSent(role.getUser().getIsMailSent().toString());
 					userRolesList.add(role);
 				}
-			
-			}	
-		 resultJson = toJSON(userRolesList);
+		
+			}*/
+		 resultJson = toJSON(usersList);
 		 return resultJson;
 
 	}
 	
-	
+	 @RequestMapping(value = "/searchUser", method = RequestMethod.POST)
+	 public String searchUser(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+
+		 MultipartFile multiFile = null;
+			Iterator<String> itrator = request.getFileNames();
+			if(itrator.hasNext()){
+		        multiFile = request.getFile(itrator.next());
+			}
+			String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);
+			
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+			 
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
+				Long maxResults = userRoleService.getUsersCountByOrgLocationID(loginOrgLocation.getId());
+
+			 
+			 
+			//Exclude Keyword
+			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+			 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+				 for(String keywd : excludeKeyWordArray){
+					 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+							excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+						}
+						excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+					}
+				}
+				 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+			  }
+			 
+			 
+			//Any Keyword
+				ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : anyKeyWordArray){
+						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(anyBoolQueryBuilder);
+				}
+				//All Keywords
+				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(allBoolQueryBuilder);
+				}
+				
+				//Email
+				ArrayList<String> emailArray = getSearchKeywordsFromChosenSelectField(jsonObj, "email");
+				if(emailArray != null && !emailArray.isEmpty()){
+					BoolQueryBuilder emailBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : emailArray){
+						emailBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("email", "*"+keywd+"*"));
+					}
+					boolQueryBuilder.must(emailBoolQueryBuilder);
+				}
+				
+				
+				//Mobile Phone
+			    ArrayList<String> mobilePhoneArray = getSearchKeywordsFromChosenSelectField(jsonObj, "mobilePhone");
+				if(mobilePhoneArray != null && !mobilePhoneArray.isEmpty()){
+					BoolQueryBuilder mobilePhoneBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : mobilePhoneArray){
+						mobilePhoneBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
+					}
+					boolQueryBuilder.must(mobilePhoneBoolQueryBuilder);
+				}
+				
+				
+				//Role
+				ArrayList<String> userTypeArray = getSearchKeywordsFromChosenSelectField(jsonObj, "userType");
+				if(userTypeArray != null && !userTypeArray.isEmpty()){
+					BoolQueryBuilder userTypeBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : userTypeArray){
+						userTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("userType", keywd));
+					}
+					boolQueryBuilder.must(userTypeBoolQueryBuilder);
+				}
+				
+				
+				//Employee Id
+				ArrayList<String> employeeIdArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeId");
+				if(employeeIdArray != null && !employeeIdArray.isEmpty()){
+					BoolQueryBuilder employeeIdBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : employeeIdArray){
+						employeeIdBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("employeeId", keywd));
+					}
+					boolQueryBuilder.must(employeeIdBoolQueryBuilder);
+				}
+				
+				
+				//User State
+				ArrayList<String> userStateArray = getSearchKeywordsFromChosenSelectField(jsonObj, "userStatus");
+				if(userStateArray != null && !userStateArray.isEmpty()){
+					BoolQueryBuilder userStateBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : userStateArray){
+						userStateBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+					}
+					boolQueryBuilder.must(userStateBoolQueryBuilder);
+				}
+				
+				//Rate
+				if(jsonObj.has("rate") && StringUtils.isNotEmpty(jsonObj.getString("rate"))){
+			    	/*String minRate= jsonObj.getString("rate").replaceAll("[^0-9\\.]+", "");
+			    	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("rate").gte(new Float(minRate)));
+			    	}
+			    	catch(NumberFormatException e){}*/
+			    	
+			    	boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("rate", jsonObj.getString("rate")));
+			    }
+				
+				//Rate Per
+				if(jsonObj.has("ratePer") && StringUtils.isNotEmpty(jsonObj.getString("ratePer"))){
+					boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("ratePer", jsonObj.getString("ratePer")));
+			    }
+				
+				List<UserIndex> usersList = new ArrayList<UserIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				if(searchHits != null && searchHits.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHits) {
+						json = hit.getSourceAsString();
+						mapper.setDateFormat(df);
+						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+						usersList.add(userIndex);
+					}
+				}
+			 String resultJson;
+			 resultJson = commonUtil.toJSON(usersList);
+			 return resultJson;
+			 
+	 }
+	 private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
+		 ArrayList<String> keyWordList = null;
+		 if(jsonObj.has(param)){
+			 String searchKeywordString = null;
+			 try{
+	   		   JSONArray jsonArray = jsonObj.getJSONArray(param);
+	   		   searchKeywordString = jsonArray.toString();
+		   	  }
+		   	  catch(JSONException e){
+		   		  searchKeywordString= jsonObj.getString(param);
+		   	  }
+			 
+		     searchKeywordString = searchKeywordString.replaceAll("\\[", "").replaceAll("\\]","");
+		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+		 }
+		 else{
+			 keyWordList = new ArrayList<String>();
+		 }
+         return keyWordList;
+     }
+	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("ratePer", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+
+			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			
+			if(matcher.find()){
+				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
+				String mobileKeywd =matcher.group().replaceAll("[+91]", "");
+				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+			}
+			
+			return matchQueryBuilderList; 
+	 }
 
 	/**
 	 * Forward to user controller by using userId as request param
@@ -590,7 +845,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					userRole.setPreviousUserState(userRole.getUserState());
 					userRole.setUserState(Status.INACTIVE);
 					userRole.setTerminateReason(jsonObj.getString("reason"));
-					userRoleService.addUserRole(userRole);
+					UserRole updateUserRole = userRoleService.addUserRole(userRole);
 					
 					//to assign primary role to another user
 					UserRole existinguserRole = userRoleService.getNotPrimaryUser(userId);
@@ -598,7 +853,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 						existinguserRole.setIsPrimary(1);
 						userRoleService.addUserRole(existinguserRole);
 					}
-					
+					Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(updateUserRole.getUser().getId(), orgLocations.getId());
+					userService.saveOrUpdateUserElkDocument(updateUserRole,employee,user.getUserCode());
 				}
 			
 				return "success";
@@ -739,6 +995,13 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					userRole.setRoleChangeReason(jsonObj.getString("reason"));
 					userRoleService.addUserRole(userRole);
 					
+					/*
+    				 * Saving USER DB data as ElasticSearch Documents
+    				 */
+        			  Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
+        			  if(null != employee){
+        				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
+        			  }
 					
 				}
 			
@@ -802,7 +1065,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 						userService.sendEmail(user,loginUser,password,orgLocations.getId());
                      }
 				}
-			    Employees employees = employeesService.getEmployeeByUserId(userId);
+			    Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId,orgLocations.getId());
 			    if(employees !=  null){
 			    	employees.setEmployeeId(jsonObj.getString("EmployeeId"));
 					employees.setRate(jsonObj.getString("Rate"));
@@ -821,6 +1084,11 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					employees.setUpdatedDate(commonUtil.currentDate());
 					employeesService.updateEmployee(employees);
 			    }
+			    /*
+				 * update USER DB data as ElasticSearch Documents
+				 */
+			    userService.saveOrUpdateUserElkDocument(userRole,employees,loginUser.getUserCode());
+			    
 				return "success";
 		}
 	
