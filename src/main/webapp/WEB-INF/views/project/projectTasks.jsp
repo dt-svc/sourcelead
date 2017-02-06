@@ -27,8 +27,8 @@
 							<tr id="divTsRow0">
 								<th><input type="hidden" id="maxTsRowNum"
 									name="maxTsRowNum" value="1" />Task Name</th>
-								<th>Description</th>
 								<th>Billable Type</th>
+								<th>Description</th>
 								<th>Action</th>
 							</tr>
 						</table>
@@ -44,6 +44,16 @@
 										data-validation="required validate_length length2-250">
 								</div>
 							</div>
+							<div class="form-group" id="taskBillableTypeDiv">
+								<label class="col-md-3">Billable</label>
+								<div class="col-md-9">
+									<select id="taskBillableType" name="taskBillableType" class="form-control selectpicker">
+									  <option value="Billable">Billable</option>
+									  <option value="Non-Billable">Non-Billable</option>
+									</select>
+								</div>
+							</div>
+							
 							<div class="form-group">
 								<label class="col-md-3">Description</label>
 								<div class="col-md-9">
@@ -53,21 +63,11 @@
 								</div>
 							</div>
 							
-							<div class="form-group" id="taskBillableTypeDiv">
-								<label class="col-md-3">Billable</label>
-								<div class="col-md-9">
-									<select id="taskBillableType" name="taskBillableType">
-									  <option value="Billable">Billable</option>
-									  <option value="Non-Billable">Non-Billable</option>
-									</select>
-								</div>
-							</div>
-							
 						</div>
 						<div class="col-xs-12 col-lg-5">
 							<a href="javascript:void(0)" class="btn btn-primary"
 								id="save_task" onclick="addTasks();" data-target="addTask">
-								<i class="fa fa-plus"></i> Add Task
+								<i class="fa fa-plus"></i> <span id="addTaskText">Add Task</span>
 							</a>
 						</div>
 					</div>
@@ -120,8 +120,8 @@
 						result = result + '<thead>';
 						result = result + '<tr id="projectTaskTableId">';
 						result = result + '<th>Task name</th>';
-						result = result + '<th>Task description</th>';
 						result = result + '<th>Billable Type</th>';
+						result = result + '<th>Task description</th>';
 						result = result + '</tr>';
 						result = result + '</thead>';
 						result = result + '<tbody>';
@@ -130,18 +130,18 @@
 							result = result + '<tr>';
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
 							result = result+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'taskName\');"  id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '"  class="project_inline_field"></div><div style="display:none">'+ opt.taskName+' </div></td>';
-							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" class="project_inline_field"></div><div style="display:none">'+ opt.description+' </div></td>';
-							result = result	+ '<td><div><select id="billableType'+opt.Id+'" name="billableType" onChange="updateTakBillableType(\''+opt.Id+'\');">';
+							result = result	+ '<td><div class="select-field"><select class="form-control" id="billableType'+opt.Id+'" name="billableType" onChange="updateTakBillableType(\''+opt.Id+'\');">';
 							result = result  +' <option '+(opt.billableType == "Billable" ? "selected" : '') +'>Billable</option>';
 				            result = result  +'	<option '+(opt.billableType == "Non-Billable" ? "selected" : '') +'>Non-Billable</option>';
 							result = result + ' </select>';
 							result = result + ' </div></td>';
+							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" class="project_inline_field"></div><div style="display:none">'+ opt.description+' </div></td>';
 							'</sec:authorize>'; 
 							
 							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
 							result = result+ '<td><div><span>'+ opt.taskName+ '</span></div></td>';
-							result = result	+ '<td><div><span>'+ opt.description+ '</span></div></td>';
 							result = result	+ '<td><div><span>'+ opt.billableType+ '</span></div></td>';
+							result = result	+ '<td><div><span>'+ opt.description+ '</span></div></td>';
 							'</sec:authorize>'; 
 							result = result + '</tr>';
 
@@ -191,6 +191,7 @@ function updateTakBillableType(taskId){
 <script type="text/javascript">
 	function flushTasks() {
 		$("#taskBillableType").val('Billable');
+		$('#taskBillableType').selectpicker('refresh');
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 		if (maxRowNum != null && maxRowNum != '' && maxRowNum != 'undefined'
 				&& maxRowNum != 'NaN') {
@@ -208,16 +209,17 @@ function updateTakBillableType(taskId){
 		name="REPLACEROWIDtaskName" value="TASKNAMEVALUE" /><span
 		id="REPLACEROWIDtaskNameValue">TASKNAMEVALUE</span>
 </div>
-<div id="divTaskTd2" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDtaskDescription"
-		name="REPLACEROWIDtaskDescription" value="TASKDESCRIPTIONVALUE" /><span
-		id="REPLACEROWIDtaskDescriptionValue">TASKDESCRIPTIONVALUE</span>
-</div>
 
-<div id="divTaskTd3" style="display: none; float: left;">
+<div id="divTaskTd2" style="display: none; float: left;">
 	<input type="hidden" id="REPLACEROWIDtaskBillableType"
 		name="REPLACEROWIDtaskBillableType" value="TASKBILLABLETYPEVALUE" /><span
 		id="REPLACEROWIDtaskBillableTypeValue">TASKBILLABLETYPEVALUE</span>
+</div>
+
+<div id="divTaskTd3" style="display: none; float: left;">
+	<input type="hidden" id="REPLACEROWIDtaskDescription"
+		name="REPLACEROWIDtaskDescription" value="TASKDESCRIPTIONVALUE" /><span
+		id="REPLACEROWIDtaskDescriptionValue">TASKDESCRIPTIONVALUE</span>
 </div>
 
 <div id="divTaskTd4" style="display: none; float: left;">
@@ -248,19 +250,19 @@ function updateTakBillableType(taskId){
 			divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (taskName));
 			cell0.innerHTML = divTsTd1Str;
-
+			
 			var cell1 = row.insertCell(1);
 			var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
 			divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g,
-					(taskDescription));
+			divTsTd2Str = divTsTd2Str.replace(/TASKBILLABLETYPEVALUE/g,
+					(taskBillableType));
 			cell1.innerHTML = divTsTd2Str;
-			
+
 			var cell2 = row.insertCell(2);
 			var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
 			divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divTsTd3Str = divTsTd3Str.replace(/TASKBILLABLETYPEVALUE/g,
-					(taskBillableType));
+			divTsTd3Str = divTsTd3Str.replace(/TASKDESCRIPTIONVALUE/g,
+					(taskDescription));
 			cell2.innerHTML = divTsTd3Str;
 
 			var cell3 = row.insertCell(3);
@@ -270,6 +272,8 @@ function updateTakBillableType(taskId){
 
 			$("#taskName").val('');
 			$("#taskDescription").val('');
+			$("#taskBillableType").val('Billable');
+			$('#taskBillableType').selectpicker('refresh');
 			return true;
 		} else {
 			return false;
@@ -292,6 +296,7 @@ function updateTakBillableType(taskId){
 		$("#taskName").val(updateTaskName);
 		$("#taskDescription").val(updateTaskDescription);
 		$("#taskBillableType").val(updateTaskBillableType);
+		$('#taskBillableType').selectpicker('refresh');
 		$("#taskId").val(rowId);
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'updateTask(' + rowId + ');');
@@ -320,6 +325,7 @@ function updateTakBillableType(taskId){
 		$("#taskName").val('');
 		$("#taskDescription").val('');
 		$("#taskBillableType").val('Billable');
+		$('#taskBillableType').selectpicker('refresh');
 		$("#addTaskText").html('Add Task');
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'addTasks();');
