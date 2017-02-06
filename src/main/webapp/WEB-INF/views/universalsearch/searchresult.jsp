@@ -330,9 +330,9 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'  <div class="srchresult clearfix row">';  
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.firstName !=null && report.firstName != '' && report.firstName !="undefined" && report.lastName !=null && report.lastName !='' && report.lastName !='undefined'){
-				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.firstName+' '+report.lastName+'</a></strong></label>';
+				    		result = result+'<p><label><strong><a href="javascript:void(0)" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+' '+report.lastName+'</a></strong></label>';
 				    	}else{
-				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.firstName+'</a></strong></label>';
+				    		result = result+'<p><label><strong><a href="javascript:void(0)" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+'</a></strong></label>';
 				    	}
 				    	result = result+'</p>'; 
 				    	if(report.email !=null && report.email != '' && report.email !="undefined" && report.mobilePhone !=null && report.mobilePhone != '' && report.mobilePhone !="undefined"){
@@ -772,6 +772,12 @@ function candidateSearchSideBar(candidateIdSearchId){
 }
 </script>
 
+<script>
+function userSummaryRedirect(userId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl +"/userSummary/"+userId;
+}
+</script>
 
 
 <jsp:include page="../masterFooter.jsp" />
