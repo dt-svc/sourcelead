@@ -556,7 +556,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore) throws Exception {
+	public List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore,Long offset) throws Exception {
 		logger.info("....getRecommendationsUpdateWithScoreByUsingElk Method Started...");
 		float locationPercentage = 0; // location 10%
 		float ratePercentage = 0;    // rate 20 %
@@ -587,7 +587,10 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				}
 			}
 			boolQueryBuilder.minimumShouldMatch("1");
-			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+			
+			Long  count = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,0,boolQueryBuilder).getTotalHits();
+			
+			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,count.intValue(),boolQueryBuilder).getHits();
 			
 			if(null != searchHits && searchHits.length >0){
 				percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
