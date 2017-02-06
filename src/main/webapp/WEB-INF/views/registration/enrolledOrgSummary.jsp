@@ -84,17 +84,17 @@ z-index: 9999999999 !important;
 								
 								<div class="form-group">
 								<label class="col-md-4">Company :</label>
-								<p>${orgloc.org.orgName}</p>
+								<p class="tbldata-dotdot-me">${orgloc.org.orgName}</p>
 								</div>
 								
 								<div class="form-group">
 								<label class="col-md-4">Website :</label>
-								<p>${orgloc.org.webSite}</p>
+								<p class="tbldata-dotdot-me">${orgloc.org.webSite}</p>
 								</div>
 								
 								<div class="form-group">
 								<label class="col-md-4">Location :</label>
-								<p>${orgloc.country}</p>
+								<p class="tbldata-dotdot-me">${orgloc.country}</p>
 								</div>
 								
 								<div class="form-group">
@@ -114,13 +114,13 @@ z-index: 9999999999 !important;
 								
 								<div class="form-group">
 								<label class="col-md-4">First Name : </label>
-								<p>${orgloc.user.firstName}</p>
+								<p class="tbldata-dotdot-me">${orgloc.user.firstName}</p>
 								</div>
 								
 								<div class="form-group">
 								<label class="col-md-4">Last Name : </label>
 								<c:if test="${!empty orgloc.user.lastName}">
-									<p>${orgloc.user.lastName}</p>
+									<p class="tbldata-dotdot-me">${orgloc.user.lastName}</p>
 								</c:if>
 								<c:if test="${empty orgloc.user.lastName}">
 									<p>NO DATA</p>
@@ -130,7 +130,7 @@ z-index: 9999999999 !important;
 								
 								<div class="form-group">
 								<label class="col-md-4">Email : </label>
-								<p>${orgloc.user.email}</p>
+								<p class="tbldata-dotdot-me">${orgloc.user.email}</p>
 								</div>
 								
 								<div class="form-group">
