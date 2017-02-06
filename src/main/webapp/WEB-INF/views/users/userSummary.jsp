@@ -1122,12 +1122,12 @@ $("#editRoleDetailsList").empty();
 				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>First name<span class="text-danger">&nbsp; *</span></label>';
-					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_Space validate_length length2-100"/>';
+					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"/>';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Last name</label>';
-					result = result + ' <input type="text" value="'+lastName+'" name="LastName" data-validation="validate_Space validate_length length2-100" data-validation-optional="true">';
+					result = result + ' <input type="text" value="'+lastName+'" name="LastName" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
