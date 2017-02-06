@@ -4,8 +4,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
+
+
+ <!-- <script src="resources/js/bootstrap-select.min.js"></script> -->
+
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -13,10 +15,11 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> 
 <!-- end files for autocomplete with tagit -->
 
+
+
 <jsp:include page="requirementDetails.jsp"></jsp:include>
 <jsp:include page="requirementClientDetails.jsp"></jsp:include>
 <jsp:include page="requirementInternalDetails.jsp"></jsp:include>
-<%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core' %>
 
 
 <style type="text/css">
@@ -306,22 +309,28 @@ $(document).ready(function () {
 	             </select>
          </div>
        </div>
-		          
-          <div class="form-group" id="jobIdDiv">
+       
+       
+       <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
 			 <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}" field-name="JobId" data-validation="validate_Space validate_Alphanumeric validate_length length2-100" data-validation-optional="true" onkeyup="validateJobId();" value=""> 
 				<input type="hidden" name="requirementId" id="requirementId" value="${requirement.id}"/>
             </div>
           </div>
-           
-            <div class="form-group jobTypeDiv" id="jobTypeDiv" style="display:none">
+       
+       
+       <div class="form-group jobTypeDiv" id="jobTypeDiv" style="display:none">
             <label class="col-md-3">Employment Type</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}"  field-name="Job Type" value="">
             </div>
           </div>
           
+		          
+          
+           
+            
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
             <div class="col-md-9">
@@ -384,7 +393,7 @@ $(document).ready(function () {
           </div>
           
           <div class="form-group">
-            <label class="col-md-3">Pay Rate/Salary${SourceLeadWeb_currencyCode}</label>
+            <label class="col-md-3">Pay Rate/Salary</label>
             <div class="col-md-9">
              <div class="input-group">
                 <div class="input-group-btn selp-custom-min">
@@ -409,10 +418,6 @@ $(document).ready(function () {
 	                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  </c:if>
                 </select>
-                
-                
-               
-                
                 </div>
                 <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
@@ -466,11 +471,11 @@ $(document).ready(function () {
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
                <c:forEach var="skill" items="${skillsList}">
-             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill.name)}">
-	                		  	 <option  selected value="${skill.name}">${skill.name}</option>
+             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill)}">
+	                		  	 <option  selected value="${skill}">${skill}</option>
 	                		 </c:if>
-	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill.name)}">
-	                		  	 <option  value="${skill.name}">${skill.name}</option>
+	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill)}">
+	                		  	 <option  value="${skill}">${skill}</option>
 	                		 </c:if>
                 </c:forEach>
                 </select>
@@ -662,7 +667,7 @@ $(document).ready(function () {
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Bill Rate / Salary</label>
+                <label class="col-md-3">Bill Rate / Salary ${currencyCode};</label>
               <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
@@ -700,12 +705,12 @@ $(document).ready(function () {
 	             <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
 		         
 		          <c:if test="${empty requirement.id}">
-	                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-	                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-	                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-	                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
-	                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-	                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+	                <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
                  </c:if>
                  
                  <c:if test="${! empty requirement.id}">
@@ -799,14 +804,14 @@ $(document).ready(function () {
                 <div  class="ml pull-left apprverReq" style="display:none;">
                 <label class="rad" id="parallel">
                 <input type="radio" name="approver" id="parallelapprovers" checked="checked" onClick="approvalType('Parallel');">
-                <i class="fa fa-align-center" data-placement="top" data-toggle="tooltip"  title="Parallel"></i>
+                <i class="fa fa-align-center" title="Parallel"></i>
                 </label>
                 <label class="rad" id="sequential">
                 <input type="radio" name="approver" id="seqentialApprovers"  onClick="approvalType('Sequential');">
-                <i class="fa fa-retweet" data-placement="top" data-toggle="tooltip" title="Sequential"></i>
+                <i class="fa fa-retweet" title="Sequential"></i>
                 </label>
                 
-                 <i data-placement="top" data-toggle="tooltip" class="glyphicon glyphicon-info-sign text-info ml" title="info"></i>
+                 <i class="glyphicon glyphicon-info-sign text-info ml" title="Sequential approval mechanism is hierarchy based Parallel approval mechanism is any approver can approve requirement"></i>
                 </div>
                 <!-- Radio buttons for Sequential or Parallel function -->
                
@@ -1171,7 +1176,8 @@ function storeTeam(){
 					type : "POST",
 					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success :function(data) { 
-						$('#addTeam').modal('hide');
+						$('#addTeam').hide();
+						$('.modal-backdrop').hide();
 				      }, 
 		    });  
 			return true; 
@@ -1466,21 +1472,42 @@ function getTemplateVal(){
 }
 
 </script>
-
-
+<script>
+function getRequirementAndLookUpSkills(requirementid){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+   	type: "POST",
+    url: sourceleadUrl+"/getRequirementAndLookUpSkills?${_csrf.parameterName}=${_csrf.token}&requirementid="+requirementid, 	   
+	    success: function(data) {
+	    	if(data != null && data != 'undefined' && data !='' ){ 
+	    		var json = JSON.parse(data);
+	    		var output = "";
+	    		for (var i = 0; i < json.length; i++) { 
+               	    var skill = json[i];
+               
+	        		output = output + "<option value='" +skill+ "'>"+skill+"</option>";
+	    		}
+	            $("#skills").empty();
+	            $("#skills").append(output);
+	            $('#skills').trigger("chosen:updated");
+	            
+	    	} 
+	    }
+	});
+}
+</script>
 <script>
 function setTemplateValues(){
  var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = document.getElementById('template').value;
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
 		
-	
+		getRequirementAndLookUpSkills(requirementId);
 	$.ajax({
 	   	type: "POST",
 	   	
 	    url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
 		    success: function(data) {
-		    	
 		    	
 		    	if(data != null && data != 'undefined' && data !='' ){ 
 		    		
@@ -1492,6 +1519,7 @@ function setTemplateValues(){
 		    		
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
+			    	
 			    	$("#jobOtherType").val(json.otherJobType);
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#jobId").val(json.jobId);
@@ -1543,13 +1571,13 @@ function setTemplateValues(){
 					$('#rate').val('');
 					$('#education').val('').trigger('chosen:updated');
 					$('#skills').val('').trigger('chosen:updated');
-					
 					if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
 						var skills = [];
 			            skills = json.skills.split(",");
 			            $("#skills").val(skills);
 			            $('#skills').trigger("chosen:updated");
 					}
+
 					
 					if(json.education != null && json.education != '' && json.education != 'undefined'){
 			            var educations = [];
@@ -1557,8 +1585,6 @@ function setTemplateValues(){
 			            $("#education").val(educations);
 			            $('#education').trigger("chosen:updated");
 					}
-					
-					
 			    	
 			    	$("#description").val(json.description);
 			    	$("#rate").val(json.rate);
@@ -2358,7 +2384,7 @@ function minMaxExperience(){
     var maxExp = ($('#maxExp').val());
     var minExp = ($('#minExp').val());
     
-    if (parseFloat(maxExp) < parseFloat(minExp)){
+    if (parseFloat(maxExp) <= parseFloat(minExp)){
         $('#expId').find('p.jquery_form_error_message').remove(); 
 		$('input#expValidation').attr('class','error signin_fild');
 		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");

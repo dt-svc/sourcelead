@@ -23,7 +23,7 @@ public class ClientVendorContactsIndex implements Serializable {
 	
 	private Long orgRelationId;
 	
-	private Long orgLocationId;
+	private Long initiatorLocationId;
 	
 	private Long spocUserId;
 	
@@ -51,13 +51,21 @@ public class ClientVendorContactsIndex implements Serializable {
 	
 	private Long tempOwnerId;
 	
-	private Long spocLocationId;
+	private Long responderLocationId;
 	
 	private Long userId;
 	
 	private String  initiatorOrgName;
 	
 	private String  responderOrgName;
+    
+	private String initiatorType;
+	
+	private String responderType;
+	
+	//dummy
+	private Long spocLocationId;
+	
 	
 	
 	public Long getId() {
@@ -68,13 +76,6 @@ public class ClientVendorContactsIndex implements Serializable {
 		this.id = id;
 	}
 
-	public Long getOrgLocationId() {
-		return orgLocationId;
-	}
-
-	public void setOrgLocationId(Long orgLocationId) {
-		this.orgLocationId = orgLocationId;
-	}
 
 	public String getOrgName() {
 		return orgName;
@@ -164,13 +165,6 @@ public class ClientVendorContactsIndex implements Serializable {
 		this.tempOwnerId = tempOwnerId;
 	}
 
-	public Long getSpocLocationId() {
-		return spocLocationId;
-	}
-
-	public void setSpocLocationId(Long spocLocationId) {
-		this.spocLocationId = spocLocationId;
-	}
 
 	public Long getUserId() {
 		return userId;
@@ -268,4 +262,45 @@ public class ClientVendorContactsIndex implements Serializable {
 		this.responderOrgName = responderOrgName;
 	}
 
+	public Long getInitiatorLocationId() {
+		return initiatorLocationId;
+	}
+
+	public void setInitiatorLocationId(Long initiatorLocationId) {
+		this.initiatorLocationId = initiatorLocationId;
+	}
+
+	public Long getResponderLocationId() {
+		return responderLocationId;
+	}
+
+	public void setResponderLocationId(Long responderLocationId) {
+		this.responderLocationId = responderLocationId;
+	}
+
+	public String getInitiatorType() {
+		return initiatorType;
+	}
+
+	public void setInitiatorType(String initiatorType) {
+		this.initiatorType = initiatorType;
+	}
+
+	public String getResponderType() {
+		return responderType;
+	}
+
+	public void setResponderType(String responderType) {
+		this.responderType = responderType;
+	}
+
+	public Long getSpocLocationId() {
+		return spocLocationId;
+	}
+
+	public void setSpocLocationId(Long spocLocationId) {
+		this.spocLocationId = spocLocationId;
+	}
+
+	
 }

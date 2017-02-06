@@ -40,7 +40,7 @@ function addInterview(requirementId){
 	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
 	
 	/* result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; */
-	result = result + '<div class="add_inter_head"> <span>Add Interview</span>';
+	result = result + '<div class="add_inter_head"> <span>Add Interview</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedInterviewApplicantsCount">0</b></span>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
 	
@@ -213,9 +213,23 @@ function checkEmails(){
 }
 </script> 
 
+<script>
+function selectInterviewApplicants(){
+	var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
+	$("#selectedInterviewApplicantsCount").html(selectedInterviewApplicants);
+	
+	$('.search-choice-close').click(function() {
+		var interviewApplicants =  $('#1applicant_chosen  span').size();
+		$("#selectedInterviewApplicantsCount").html(interviewApplicants);
+	});
+}
+</script>
+
+
+
 
 <div id="divTaskTd1" style="display: none; float: left;">
-       <select multiple data-placeholder="select applicants" class="blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
+       <select  multiple data-placeholder="select applicants" onchange="selectInterviewApplicants()" class="blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
@@ -439,13 +453,13 @@ function cancelAddInterviewDiv(){
         var sourceleadUrl ='${sourceleadUrl}';
         var requirementId = '${requirementId}';
         
-        var applicant = $("#1applicant").val();
+        var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
         
-        if(applicant.length <= 30){
+        if(selectedInterviewApplicants <= 50){
 	        $("#add_interview").attr("disabled", "disabled");
 	 		$("#add_interview" ).addClass('button').val('Processing..');
 	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	   	    $.ajax({
+	   	     $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
 		        success: function(result) {
@@ -455,9 +469,9 @@ function cancelAddInterviewDiv(){
 		        		var allApplicants = 'all';
 			    		requirementPipeline(requirementId,allApplicants); 
 		        },
-		    });    
+		    });     
         }else{
-        	alertInterviewMessage("<b>Selected Applicants should not more than 30</b>");
+        	alertInterviewMessage("<b>Selected Applicants should not more than 50</b>");
         }
    	    
    	    

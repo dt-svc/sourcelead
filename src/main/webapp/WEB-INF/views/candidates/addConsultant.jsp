@@ -152,6 +152,12 @@
           </div>
         </div>
         
+         <div class="form-group">
+          <label class="col-md-3">Alternative Number</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" id="alternateMobilePhone" name="alternateMobilePhone"   field-name="Alternative Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
+          </div>
+        </div>
         
         <div class="form-group">
 				<label class="col-md-3">Country</label>
@@ -184,22 +190,24 @@
           </div>
         </div>
         
-        <div class="form-group">
+         <div class="form-group">
          <label class="col-md-3">Designation</label>
-         <div class="col-md-9">
-          <div class="input-group ratetype">
+         <div class="col-md-9 ratetype">
              <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
-             <div class="input-group-btn selp-custom-min">
-             <select class="selectpicker" id="designationType" name="designationType">
-             <option value="">--Select--</option>
-                 <option>C2C</option>
-                 <option>W-2</option>
-                 <option>Part Time</option>
-                 <option>Full Time</option>
-                 <option>Other</option>
+         </div>
+       </div>
+       
+       <div class="form-group">
+         <label class="col-md-3">Employment type</label>
+         <div class="col-md-9">
+             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
+                <option value=""><a href="#">Select</a></option>
+                 <option><a href="#">C2C</a></option>
+                 <option><a href="#">W-2</a></option>
+                 <option><a href="#">Part Time</a></option>
+                 <option><a href="#">Full Time</a></option>
+                 <option><a href="#">Other</a></option>
              </select>
-             </div>
-           </div>
          </div>
        </div>
 
@@ -229,28 +237,13 @@
           </div>
         </div>
        
-         <%-- <div class="form-group">
-         <label class="col-md-3">Current Rate</label>
-         <div class="col-md-9">
-           <div class="input-group ratetype">
-             <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
-             <div class="input-group-btn selp-custom-min">
-             <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
-                 
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
-                 
-             </select>
-             </div>
-           </div>
-         </div>
-       </div> --%>
-       
-       
+        <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
+            <label class="col-md-3">Employment Type</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" id="designationOtherType" name="designationOtherType" value="${candidate.designationOtherType}"  field-name="Job Type" value="">
+            </div>
+          </div>
+          
        <div class="form-group">
             <label class="col-md-3">Current Rate</label>
             <div class="col-md-9">
@@ -1026,3 +1019,21 @@ document.getElementById("uploadFileBtn").onchange = function () {
 
 
 <!-- Experience Years and Months validation Script End here -->
+
+<script>
+function getDesignationType(designationType){
+	var existingDesignationType = '${requirement.designationType}';
+	if(designationType.value == 'Other'){
+		 document.getElementById("designationTypeDiv").style.display="block";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+	}else{
+		document.getElementById("designationTypeDiv").style.display="none";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
+		  if(existingDesignationType ==null || existingDesignationType == "" || existingDesignationType == "undefined" || existingDesignationType != 'Other'){
+			  $("#designationOtherType").val('');
+		  }
+	}
+}
+</script>

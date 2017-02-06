@@ -356,6 +356,9 @@ public class ProjectsDashboardRestController {
 			 
 				return storeAssignEmployee;
 		}
+	 
+	 
+	 
 	 /**
 	  * @author Rajashekar
 	  * 
@@ -402,7 +405,7 @@ public class ProjectsDashboardRestController {
 	   * 
 	   * @throws NullPointer
 	   */
-	 @RequestMapping(value = "/searchProject", method = RequestMethod.POST)
+	 @RequestMapping(value = "/searchProject", method = RequestMethod.GET)
 	 public String searchProject(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception {
 
 			String jsonc = "{" + json + "}";
@@ -493,28 +496,29 @@ public class ProjectsDashboardRestController {
 				if(projectManagerArray != null && !projectManagerArray.isEmpty()){
 					BoolQueryBuilder projectManagerBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectManagerArray){
-						projectManagerBoolQueryBuilder.should(QueryBuilders.matchQuery("level1ManagerName", keywd));
+						projectManagerBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("level1ManagerName", keywd));
+						projectManagerBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("level2ManagerName", keywd));
 					}
-					boolQueryBuilder.should(projectManagerBoolQueryBuilder);
+					boolQueryBuilder.must(projectManagerBoolQueryBuilder);
 				}
 				
 				
 				//project Manager2
-				ArrayList<String> projectManager2Array = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
+				/*ArrayList<String> projectManager2Array = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
 				if(projectManager2Array != null && !projectManager2Array.isEmpty()){
 					BoolQueryBuilder projectManager2BoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectManager2Array){
 						projectManager2BoolQueryBuilder.should(QueryBuilders.matchQuery("level2ManagerName", keywd));
 					}
-					boolQueryBuilder.should(projectManager2BoolQueryBuilder);
-				}
+					boolQueryBuilder.must(projectManager2BoolQueryBuilder);
+				}*/
 				
 				//invoice Frequency
 				ArrayList<String> invoiceFrequencyArray = getSearchKeywordsFromChosenSelectField(jsonObj, "invoiceFrequencyAdvanced");
 				if(invoiceFrequencyArray != null && !invoiceFrequencyArray.isEmpty()){
 					BoolQueryBuilder invoiceFrequencyBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : invoiceFrequencyArray){
-						invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchQuery("invoiceFrequency", keywd));
+						invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("invoiceFrequency", keywd));
 					}
 					boolQueryBuilder.must(invoiceFrequencyBoolQueryBuilder);
 				}
@@ -524,7 +528,7 @@ public class ProjectsDashboardRestController {
 				if(clientsArray != null && !clientsArray.isEmpty()){
 					BoolQueryBuilder clientsBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : clientsArray){
-						clientsBoolQueryBuilder.should(QueryBuilders.matchQuery("clientName", keywd));
+						clientsBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("clientName", keywd));
 					}
 					boolQueryBuilder.must(clientsBoolQueryBuilder);
 				}
@@ -534,7 +538,7 @@ public class ProjectsDashboardRestController {
 				if(projectStatusArray != null && !projectStatusArray.isEmpty()){
 					BoolQueryBuilder projectStatusBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectStatusArray){
-						projectStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("projectStatus", keywd));
+						projectStatusBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("projectStatus", keywd));
 					}
 					boolQueryBuilder.must(projectStatusBoolQueryBuilder);
 				}
@@ -548,13 +552,19 @@ public class ProjectsDashboardRestController {
 					}
 					boolQueryBuilder.must(startDateBoolQueryBuilder);
 				}*/
+				String startDateKey = getSearchKeywordsFromTextField(jsonObj, "projectStartDateAdvanced");
+				if(startDateKey != null && !startDateKey.isEmpty()){
+					BoolQueryBuilder startDateBoolQueryBuilder = QueryBuilders.boolQuery();
+					startDateBoolQueryBuilder.must(QueryBuilders.matchPhraseQuery("startDate", startDateKey));
+					boolQueryBuilder.must(startDateBoolQueryBuilder);
+				}
 				
 				//project Members
 				ArrayList<String> projectMembersArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeNameAdvanced");
 				if(projectMembersArray != null && !projectMembersArray.isEmpty()){
 					BoolQueryBuilder projectMembersBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectMembersArray){
-						projectMembersBoolQueryBuilder.should(QueryBuilders.matchQuery("projectMembers", keywd));
+						projectMembersBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("projectMembers", keywd));
 					}
 					boolQueryBuilder.must(projectMembersBoolQueryBuilder);
 				}
@@ -564,7 +574,7 @@ public class ProjectsDashboardRestController {
 				if(projectMemberEmailArray != null && !projectMemberEmailArray.isEmpty()){
 					BoolQueryBuilder projectMemberEmailBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : projectMemberEmailArray){
-						projectMemberEmailBoolQueryBuilder.should(QueryBuilders.matchQuery("projectMemberEmail", keywd));
+						projectMemberEmailBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("projectMemberEmail", keywd));
 					}
 					boolQueryBuilder.must(projectMemberEmailBoolQueryBuilder);
 				}
@@ -587,6 +597,14 @@ public class ProjectsDashboardRestController {
 			 String resultJson;
 			 resultJson = commonUtil.toJSON(projectsList);
 			 return resultJson;
+	 }
+	 
+	 private String getSearchKeywordsFromTextField(JSONObject jsonObj,String param) throws Exception{
+		 		String startDate = "";
+		 		if(jsonObj.has(param)){
+		 			startDate = jsonObj.getString("projectStartDateAdvanced");
+		 		}
+		 		return startDate;
 	 }
 	 
 	 private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
@@ -619,13 +637,22 @@ public class ProjectsDashboardRestController {
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("projectName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("level1ManagerName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("startDate", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("invoiceFrequency", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("startDate", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("invoiceFrequency", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("clientName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectStatus", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMembers", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMemberEmail", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectMemberEmail", keywd));
 			return matchQueryBuilderList; 
+	 }
+	 
+	 @RequestMapping(value = "/getUniversalProjectsListByOrgLocationID")
+	 public String getUniversalProjectsListByOrgLocationID(@RequestParam(value="searchValue", required=false) String searchValue,HttpServletRequest request) throws Exception{
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String resultJson;
+			List<Object> uniProjectsList =	projectsService.getAllUniversalSearchProjectsList(orgLocations, searchValue);
+			resultJson = commonUtil.toJSON(uniProjectsList);
+			return resultJson;
 	 }
 	
 }

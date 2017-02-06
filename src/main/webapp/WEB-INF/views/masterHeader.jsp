@@ -8,8 +8,10 @@
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css" type="text/css" >
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
@@ -28,15 +30,14 @@
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
 </head>
-
-<script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/jquery-1.11.1.min.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script>
 <script src="resources/js/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/jquery.dataTables.min.js"></script> 
+<script src="resources/js/jquery-fun.js"></script>
+<script src="resources/js/jquery.dataTables.min.js"></script>
 <script src="resources/js/jquery.timepicker.js"></script>
 <script src="resources/js/formvalidator.js"></script>
+<script src="resources/js/bootstrap-select.min.js"></script>
 <style>
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;
@@ -146,13 +147,32 @@ width: 11.5%;
           <div class="dropdown hidden">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"> <i class="fa fa-list-ul"></i> <span class="caret"></span></button>
             <ul class="dropdown-menu">
-              <li><a href="javascript:void(0)">Candiate</a></li>
+              <li><a href="javascript:void(0)">Candidate</a></li>
               <li><a href="javascript:void(0)">Professional</a></li>
             </ul>
           </div>
-          <div class="search-area-txt"> <i class="fa fa-search"></i>
-            <input type="text" placeholder="Search ..." class="form-control">
-          </div>
+           <div class="search-area">
+           <form:form name ="search_form" id="search_form">
+           
+			<div class="search-area-txt">
+			<div class="select-field pull-left srch-select">
+			<select id="searchType" name="searchType">
+			<option value="All">All</option>
+			<option value="Users">Users</option>
+			<option value="Requirement">Requirement</option>
+			<option value="Candidate">Candidate</option>
+			<option value="Client">Clients</option>
+			<option value="Vendor">Vendors</option>
+			<option value="Projects">Projects</option>
+			</select>
+			</div>
+			<div class="pull-left universalSrch">
+			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search"/>
+			 <button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="universalSearch();" ><i class="fa fa-search"></i></button>
+			</div>
+			</div>
+			</form:form>
+			</div> 
         </div>
         <!-- login User details -->
         <div class="login-user">
@@ -334,22 +354,11 @@ function notificationStatusAsRead(){
 		      <div class="clearfix require_wrap_table dashboard-data" id="myTask">
 		        <div class="addtsk-btn"> <span class="btn btn-success btn-sm" onClick="showtaskdiv()"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Task</span> </div>
 		        <ul class="nav nav-tabs">
-		          <li class="active"><a data-toggle="tab" href="#my-task" onclick="tasksList('myTask');">My Tasks</a></li>
-		          <li><a data-toggle="tab" href="#other-task" onclick="assignedTasksList('assignedTasks');">Assigned Tasks</a></li>
-		          <li><a data-toggle="tab" href="#closed-task" onclick="closedTasksList('closedTasks');">Closed Task</a></li>
+		          <li id="myTaskDivId"><a data-toggle="tab" href="#my-task" onclick="tasksList('myTask');">My Tasks</a></li>
+		          <li id="assignedTasksDivId"><a data-toggle="tab" href="#other-task" onclick="assignedTasksList('assignedTasks');">Assigned Tasks</a></li>
+		          <li id="closedTasksDivId"><a data-toggle="tab" href="#closed-task" onclick="closedTasksList('closedTasks');">Closed Task</a></li>
 		        </ul>
 				        <div class="tab-content clearfix">
-				        <div id="other-task" class="tab-pane fade">
-							 <div class="col-md-6 clearfix newdate">
-			                    <i class="fa fa-filter"></i>
-								 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="assignedTaskDatpicker" id="assignedTaskDatpicker"  type="text" readonly="readonly" >
-								<i class="fa fa-calendar"></i></span>
-				               </div>								
-					            <div class="clearfix require_wrap_table">
-					              <div id="assignedTasksId"></div>
-					            </div>
-				          </div>
-				          
 				          <div id="my-task" class="tab-pane fade in active">
 				               <div class="col-md-6 clearfix newdate">
 				                    <i class="fa fa-filter"></i>
@@ -361,6 +370,17 @@ function notificationStatusAsRead(){
 				               <div id="myTasksId"></div>
 				              
 				            </div>
+				          </div>
+				          
+				          <div id="other-task" class="tab-pane fade">
+							 <div class="col-md-6 clearfix newdate">
+			                    <i class="fa fa-filter"></i>
+								 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="assignedTaskDatpicker" id="assignedTaskDatpicker"  type="text" readonly="readonly" >
+								<i class="fa fa-calendar"></i></span>
+				               </div>								
+					            <div class="clearfix require_wrap_table">
+					              <div id="assignedTasksId"></div>
+					            </div>
 				          </div>
 				          
 				          <div id="closed-task" class="tab-pane fade">
@@ -484,7 +504,14 @@ function notificationStatusAsRead(){
 						url : sourceleadUrl+ "/storeTasks?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 						success : function(result) {
 							taskwidget();
+							    document.getElementById("assignedTasksDivId").className = 'active'
+								document.getElementById("closedTasksDivId").removeAttribute("class")
+								document.getElementById("myTaskDivId").removeAttribute("class")
+								$("#closed-task, #my-task").hide();
+							    $("#other-task").show().css("opacity", "1");
 							assignedTasksList('assignedTasks');
+							tasksList('myTask');
+							assignTasksList();
 						},
 					});
 			return true;
@@ -574,6 +601,9 @@ $(".collpase-div").click(function(){
 	$(".newTask-widget").hide();
 	$("#myTask").show();
 	tasksList('myTask');
+		document.getElementById("myTaskDivId").className = 'active'
+		document.getElementById("closedTasksDivId").removeAttribute("class")
+		document.getElementById("assignedTasksDivId").removeAttribute("class")
  });
  
 
@@ -637,6 +667,8 @@ function assignedUserList(){
 
 <script type="text/javascript">
 function tasksList(status){
+	$("#closed-task, #other-task").hide();
+    $("#my-task").show().css("opacity", "1");
 	var sourceleadUrl ='${sourceleadUrl}';
 	var date = $("#myTaskDatpicker").val();
 	$.ajax({
@@ -716,6 +748,8 @@ function tasksList(status){
 
 <script type="text/javascript">
 function assignedTasksList(status){
+	$("#my-task, #closed-task").hide();
+    $("#other-task").show().css("opacity", "1");
 	var sourceleadUrl ='${sourceleadUrl}';
 	var date = $("#assignedTaskDatpicker").val();
 	$.ajax({
@@ -796,6 +830,8 @@ function assignedTasksList(status){
 
 <script type="text/javascript">
 function closedTasksList(status){
+	$("#my-task, #other-task").hide();
+    $("#closed-task").show().css("opacity", "1");
 	var sourceleadUrl ='${sourceleadUrl}';
 	var date = $("#closedTaskDatpicker").val();
 	$.ajax({
@@ -900,13 +936,21 @@ function updateAssignTaskStatus(taskId){
 }
 </script>
 
+<script>
+function universalSearch(){
+	 var searchType = document.getElementById('searchType').value;
+	 var searchValue = document.getElementById('searchKey').value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
+}
+</script>
 
 
 <script>
 function myTasksPagination(){
     $('#myTasksPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -921,7 +965,7 @@ function myTasksPagination(){
 function assignedTasksPagination(){
     $('#assignedTasksPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -935,7 +979,7 @@ function assignedTasksPagination(){
 function closedTasksPagination(){
     $('#closedTasksPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -964,7 +1008,7 @@ $('.taskpop-close').click(function (){
 });
 </script>
 
-<script>
+<!-- <script>
 //scroll top top fix Header
 jQuery(window).scroll(function(){
 var top = jQuery(window).scrollTop();
@@ -973,5 +1017,15 @@ jQuery('.main-header').addClass('navbar-fixed-top');
 } else {
 jQuery('.main-header').removeClass('navbar-fixed-top');}
 });
+</script> -->
+<script>
+jQuery(window).scroll(function () {
+if( jQuery(window).scrollTop() > jQuery('.main-header').offset().top + 50 && !(jQuery('.main-header').hasClass('navbar-fixed-top'))){
+jQuery('.main-header').addClass('navbar-fixed-top').animate({"top":"0%"}, 500);
+} else if (jQuery(window).scrollTop() <= 10){
+jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-13%"});
+}
+});
 </script>
+
 <!-- Task related code Ends -->

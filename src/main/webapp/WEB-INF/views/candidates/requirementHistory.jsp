@@ -134,11 +134,11 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,submis
         	var json = JSON.parse(data);
         	
         	var result = "";
-     		result = result  +'	<div class="reqPopInn">';
+     		result = result  +'	<div class="reqPopInn reqHistTitle">';
      		result = result  +'		<div class="reqClose">';
      		result = result  +'			<span><i class="fa fa-angle-double-left"></i>Go Back</span><b class="fa fa-close"></b>';
      		result = result  +'		</div>';
-     		result = result  +'		<h3><a href="'+sourceleadUrl+'/requirementSummary?requirementId='+requirementId+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
+     		result = result  +'		<h3 title="'+positionType+'"><a href="'+sourceleadUrl+'/requirementSummary?requirementId='+requirementId+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
      		result = result  +'		<ul>';
      		   
      		    var report2 = json[0];
@@ -270,6 +270,7 @@ function getRateListDiv(candidateId,submissionId){
 	                     result = result + '        <th>Rate</th>';
 	                     result = result + '        <th>Comment</th>';
 	                     result = result + '        <th>Date</th>';
+	                     result = result + '        <th>Status</th>';
 	                     result = result + '      </tr>';
 	                     result = result + '    </thead>';
 	                     result = result + '    <tbody>';
@@ -286,11 +287,44 @@ function getRateListDiv(candidateId,submissionId){
 		                    		 isLastNegotiator = "false";
 		                    	 }
 	                    	 }
-		                     result = result + '      <tr>';
-		                     result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
-		                     result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
-		                     result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
-		                     result = result + '        <td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
+		                     result = result + '<tr>';
+		                     if(report.proposeByName != null && report.proposeByName != '' && report.proposeByName != 'undefined'){
+		                     result = result + '<td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
+		                     }
+		                     else{
+		                    	 result = result + ' <td><div class="tbldata-dotdot-sm">----</div></td>'; 
+		                     }
+		                    
+		                     if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){
+		                         result = result + '<td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
+		                     } 
+		                     else{
+		                    	 result = result + ' <td><div class="tblminwidth-75">----</div></td>'; 
+		                     }
+		                     
+		                     if(report.rateReason != null && report.rateReason != '' && report.rateReason != 'undefined'){
+		                         result = result + '<td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
+		                     }
+		                     else{
+		                         result = result + '<td><div class="tbldata-dotdot">----</div></td>';
+		                     }
+		                     
+		                     if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+		                         result = result + '<td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
+		                     }
+		                     else{
+		                         result = result + '<td><div class="tblminwidth-75">----</div></td>'; 
+		                     }
+		                     
+		                     if(report.rateStage == 'ACCEPTED'){
+		                    	 result = result + ' <td><div class="tblminwidth-75">Accepted</div></td>';
+		                     	}else if(report.rateStage == 'REJECTED'){
+		                     		result = result + ' <td><div class="tblminwidth-75">Rejected</div></td>';
+		                     	}else{
+		                     		result = result + ' <td><div class="tblminwidth-75">----</div></td>';
+		                     	}
+		                     
+		                      
 		                     result = result + '      </tr>';
 			   				}
 	                     result = result + '    </tbody>';

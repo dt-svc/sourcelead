@@ -74,6 +74,13 @@ public class Constants {
 	
 	public static String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
 	public static String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
+	
+	public static String ACCEPT_CLIENT = "Accept Client";
+	public static String ACCEPT_VENDOR = "Accept Vendor";
+	
+	public static String REJECT_CLIENT = "Reject Client";
+	public static String REJECT_VENDOR = "Reject Vendor";
+	
 	public static String OFFER_MAIL_TO_VENDORS="Client to Vendor Acceptence";
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
@@ -154,6 +161,9 @@ public class Constants {
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
 	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	
+	public static String ELK_USER_INDEX = "users";
+	    
+	public static String ELK_USER_TYPE = "user";
 
 	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
 	
@@ -408,11 +418,34 @@ public class Constants {
     
     public static String All_APPLICANTS = "all";
     public static String DUPLICATE_APPLICANTS = "DUPLICATE_APPLICANTS";
+    
+    public static String REQ_SEARCHTYPE = "Requirement";
 
+    public static String ONE_DAY_AGO ="1 Day Ago";
+    public static String THREE_DAY_AGO ="3 Days Ago";
+    public static String ONE_WEEK_AGO ="1 Week Ago";
+    public static String TWO_WEEK_AGO ="2 Weeks Ago";
+    public static String ONE_MONTH_AGO ="1 Month Ago";
+    public static String THREE_MONTH_AGO ="3 Months Ago";
+    public static String ALL_RECORDS ="All";
+    
 
+    public static String SCORE_20 = "20";
+    public static String SCORE_10 = "10";
     
-    
-    
-     
+    public static String NOTICE_PERIOD_15DAYS = "15 Days";
+    public static String NOTICE_PERIOD_1MONTH = "1 Month";
+    public static String NOTICE_PERIOD_2MONTH = "2 Month";
+    public static String NOTICE_PERIOD_3MONTH = "3 Month";
+    public static String NOTICE_PERIOD_IMMEDIATELY = "Immediately available";
+   
+    public static String RATE_TYPE_HOURLY = "Hourly";
+    public static String RATE_TYPE_WEEKLY = "Weekly";
+    public static String RATE_TYPE_BI_WEEKLY = "Bi-weekly";
+    public static String RATE_TYPE_SEMI_MONTHLY = "Semi-Monthly";
+    public static String RATE_TYPE_MONTHLY = "Monthly";
+    public static String RATE_TYPE_BI_MONTHLY = "Bi-Monthly";
+   
+
    
 }

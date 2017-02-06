@@ -235,6 +235,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
 					}
 					
+					if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+						 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+					}
+					
 					if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
 					candidate.setEmail(jsonObj.getString("EmailId"));
 					}
@@ -366,6 +370,19 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 		 String score = recommendationsService.getCandidateScore(candidate,requirementSubmission.getRequirement());
 		 requirementSubmission.setCandidateScore(Integer.parseInt(score));
+		 
+		 StringBuilder userName = new StringBuilder();
+		 StringBuilder nameBuilder = new StringBuilder();
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 userName = nameBuilder.append(user.getFirstName()).append(" ").append(user.getLastName());
+	   	 }else{
+	   		 userName = nameBuilder.append(user.getFirstName());
+	   	 }
+		 
+		 requirementSubmission.setCreatedUser(userName.toString());
+		 requirementSubmission.setUpdatedUser(userName.toString());
+		 
 		 requirementSubmission = requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 		
 		 RequirementSubmissionTemplateFields templateFields = new RequirementSubmissionTemplateFields();
@@ -430,10 +447,21 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 if(jsonObj.has("CurrentCTC") && !isNullOrEmpty(jsonObj.getString("CurrentCTC"))){
 			 templateFields.setCurrentCTC(jsonObj.getString("CurrentCTC"));
+			 templateFields.setCurrentRateType(jsonObj.getString("currentCTCRateType"));
 		 }
 		 
 		 if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
 			 templateFields.setExpectedCTC(jsonObj.getString("ExpectedCTC"));
+			 templateFields.setExpectedRateType(jsonObj.getString("expectedCTCRateType"));
+		 }
+		 
+			
+		 if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
+			templateFields.setCurrentRatePer(jsonObj.getString("currentCTCRatePer"));
+		 }
+			
+		 if(jsonObj.has("expectedCTCRatePer") && !isNullOrEmpty(jsonObj.getString("expectedCTCRatePer"))){
+			 templateFields.setExpectedRatePer(jsonObj.getString("expectedCTCRatePer"));
 		 }
 		 
 		 if(jsonObj.has("NoticePeriod") && !isNullOrEmpty(jsonObj.getString("NoticePeriod"))){
@@ -1413,6 +1441,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    	Sheet createExcelsheet = createSubmissionTracker(org,fullName,submissionId,requirementName,createExcelworkbook,writeRow,dateFormat);
    	 for(int i=0; i < submissionId.length; i++){
    		 RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
+   		 RequirementSubmissionTemplateFields templateFields = requirementSubmissionTemplateFieldsDao.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submission.getId());
    		 RequirementSubmission clientSubmission = new RequirementSubmission();
    		 
    		 if(requirement.getParentRequirement() != null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
@@ -1433,7 +1462,42 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmission.setCandidateResumes(submission.getCandidateResumes());
    		 clientSubmission.setSourceSubmission(submission);
    		 clientSubmission.setSubmissionTemplateJsonString(submission.getSubmissionTemplateJsonString());
-   		 clientSubmission.setSubmissionTemplateJsonStringValue(submission.getSubmissionTemplateJsonStringValue());
+   		 
+   		 
+   		 
+   		 JSONArray array = new JSONArray(submission.getSubmissionTemplateJsonStringValue()); 
+   		 JSONArray jsonArray = new JSONArray();
+   		 
+   		 for(int j=0; j<array.length(); j++){
+   			JSONObject jsonObj = new JSONObject();
+   			jsonObj =  array.getJSONObject(j);
+   			if(jsonObj.getString("name").equalsIgnoreCase("CurrentCTC")){
+   			 jsonObj.put("value", "-----");
+   			}
+   			else if(jsonObj.getString("name").equalsIgnoreCase("ExpectedCTC")){
+   				String clientRate = clientShortlistsRate[i];
+   				if(!isNullOrEmpty(clientRate)){
+   				    StringBuilder rateBuilder = new StringBuilder();
+   				    rateBuilder = rateBuilder.append(templateFields.getExpectedRateType()).append(" ").append(clientRate).append(" / ").append(templateFields.getExpectedRatePer());
+   					jsonObj.put("value", rateBuilder.toString());
+   				}else{
+   					jsonObj.put("value", "");
+   				}
+  				
+  			 }
+   			else{
+   			   jsonObj.put("value", jsonObj.getString("value"));
+   			}
+   			
+   			jsonArray.put(jsonObj);
+   				 
+   		 }
+   		 
+   		 
+   		 clientSubmission.setSubmissionTemplateJsonStringValue(jsonArray.toString());
+   		 
+   		 
+   		 clientSubmission.setScore(submission.getScore());
    		 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
    		 clientSubmission.setVendorLocationId(loginOrgLocation);
    		 clientSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -1462,7 +1526,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 rateNegotiation.setUpdatedBy(user.getUserCode());
 		 requirementRateSubmissionNegotiationService.saveRateNegotiation(rateNegotiation);
    		 
-   		 RequirementSubmissionTemplateFields templateFields = requirementSubmissionTemplateFieldsDao.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submission.getId());
+   		
    		 
    		 RequirementSubmissionTemplateFields clientSubmissionFields = new RequirementSubmissionTemplateFields();
    		 clientSubmissionFields.setRequirementSubmission(clientSubmission);
@@ -2542,6 +2606,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception {
 		return requirementSubmissionDao.getSubmittedCandidateIdsByRequirementId(requirementId);
+	}
+
+	@Override
+	public Integer getRequirementPerCandidateCount(Long candudateId) throws Exception {
+		return requirementSubmissionDao.getRequirementPerCandidateCount(candudateId);
 	}
 
 

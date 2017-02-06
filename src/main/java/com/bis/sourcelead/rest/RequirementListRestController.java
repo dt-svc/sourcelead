@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +33,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
+import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
@@ -420,7 +425,7 @@ public class RequirementListRestController {
 						if(requirementStatusList != null){
 							for (RequirementSubmission requirementSubmission : requirementStatusList) {
 								if(requirementSubmission.getCandidateResumes() != null){
-									CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+									
 									RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 									
 									
@@ -438,10 +443,9 @@ public class RequirementListRestController {
 											}
 										}
 										
-										List<RequirementInterviewHistory> numberOfInterviews = requirementInterviewHistoryService.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
-										requirementSubmission.setTotalNoOfInterviews(numberOfInterviews.size());
-										requirementSubmission.setRequirementInterviewHistoryList(numberOfInterviews);
-									
+										
+										Integer numberOfInterviews = requirementInterviewHistoryService.getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
+										requirementSubmission.setTotalNoOfInterviews(numberOfInterviews);
 									}
 									
 									if(null != submissionType && submissionType.equalsIgnoreCase("OFFERMADE")){
@@ -488,19 +492,23 @@ public class RequirementListRestController {
 									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 									
 									
-									if(requirementSubmission.getVendorLocationId() != null){
-										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+									if(null != submissionType && submissionType.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
+										if(requirementSubmission.getVendorLocationId() != null){
+											requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+										}
+										
+										RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
+										
+										if(clientSubmission != null){
+											requirementSubmission.setClientSubmissionId(clientSubmission.getId().toString());
+											RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(clientSubmission.getId());
+											if(pastRequirementRateSubmissionNegotiation != null){
+												requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+											}
+										}
 									}
 									
-									RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
 									
-									if(clientSubmission != null){
-										requirementSubmission.setClientSubmissionId(clientSubmission.getId().toString());
-										RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(clientSubmission.getId());
-										if(pastRequirementRateSubmissionNegotiation != null){
-											requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
-										}
-									}else{
 										RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
 										if(pastRequirementRateSubmissionNegotiation != null){
 											if(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.VENDOR) || pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.CLIENT)){
@@ -510,7 +518,6 @@ public class RequirementListRestController {
 											}
 											
 										}
-									}
 									
 									if(requirementSubmission.getCreatedDate() != null){
 										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
@@ -519,20 +526,7 @@ public class RequirementListRestController {
 										requirementSubmission.setUpDatedStr(Constants.DF_YMD.format(requirementSubmission.getUpdatedDate()));
 									}
 									
-									if(null != submissionType && (submissionType.equalsIgnoreCase("REJECTED") || submissionType.equalsIgnoreCase("SHORTLIST"))){
-										User usr = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-										if(usr.getFirstName() != null && usr.getLastName() !=null){
-											StringBuilder name = new StringBuilder();
-											requirementSubmission.setSubmittedBy(name.append(usr.getFirstName()).append(" ").append(usr.getLastName()).toString());
-										}else{
-											requirementSubmission.setSubmittedBy(usr.getFirstName());
-										}
-									}
 									
-									User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-									StringBuilder userNameSB = new StringBuilder();
-									requirementSubmission.setUserName(userNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
-									requirementSubmission.setResumeName(candidateResumes.getFileName());
 									submissionList.add(requirementSubmission);
 								}
 							}
@@ -1227,13 +1221,29 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		String resultJson = "";
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
-
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Requirement> searchRequirementList = requirementService.searchRequirement(orgLocation, jsonObj,org);
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		List<Requirement> searchRequirementList = requirementService.searchRequirement(orgLocation, jsonObj,org,userRole,user);
 		resultJson = commonUtil.toJSON(searchRequirementList);
 		return resultJson;
 	    
 	    
+        }
+        
+       
+        @RequestMapping(value = "/getUniversalRequirementsListByOrgLocationID")
+   	 public String getUniversalRequirementsListByOrgLocationID(@RequestParam(value="serachValue", required=false) String  serachValue,
+   			 HttpServletRequest request) throws Exception {
+   		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+   		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+   		String resultJson;
+   		List<Object> uniRequirementList =	requirementService.getAllUniversalSearchRequirementList(orgLocations, serachValue,userRole,user);
+   		resultJson = commonUtil.toJSON(uniRequirementList);
+   		return resultJson;
+   	 }
+        
 }
-}
+

@@ -20,10 +20,12 @@ function candidateShortList(requirementId){
 	    	url: sourceleadUrl+"/getSubmissionCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,
 	    			
 	    	success: function(data) {
+	    		
+	    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	    	   var json = JSON.parse(data);
 	           result = result + '     <div class="clearfix"></div>';
 	           result = result + '   </div>';
-	           result = result + '   <div class="require_wrap_table">';
+	           result = result + '   <div class="require_wrap_table scroll_table">';
 	           result = result + '     <table id="shortlistedPagination"  class="display" cellspacing="0" width="100%">';
 	           result = result + '       <thead>';
 	           result = result + '         <tr>';
@@ -35,7 +37,7 @@ function candidateShortList(requirementId){
 	           result = result + '           <th>Applied on</th>';
 	           result = result + '           <th>Rate</th>';
 	           result = result + '           <th>Source</th>';
-	           result = result + '           <th>Experince</th>';
+	           result = result + '           <th>Experience</th>';
 	           result = result + '         </tr>';
 	           result = result + '       </thead>';
 	           result = result + '       <tbody>';
@@ -70,8 +72,8 @@ function candidateShortList(requirementId){
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
-			           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-			        	   result = result + '<td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a>'+report.resumeName+'</span></div></td>';
+			           if(report.candidateResumes != null && report.candidateResumes != '' && report.candidateResumes != 'undefined'){
+			        	   result = result + '<td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a></span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';
@@ -90,8 +92,8 @@ function candidateShortList(requirementId){
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
-			           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+			        	   result = result + '<td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
@@ -105,16 +107,16 @@ function candidateShortList(requirementId){
 			    	     }
 			           
 			           result = result + '       </tr>';
-			           
-			           result = result + '       </tbody>';
-			           
+		    		}
+		    		
+		    		   result = result + '       </tbody>';
+		    		   result = result + '       </table>';
 			           result = result + '</div><div id="popUp">';
 			           result = result + '</div><div id="loading">';
 		    			
 		    			$("#shortlistDiv").empty();
 		    			$("#shortlistDiv").append(result);
-		    			
-		    		}
+		   		}
 		   		}else{
 		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Submission List is Empty</h3></div>";
 		    		$('#shortlistDiv').empty();
@@ -137,7 +139,7 @@ function candidateShortList(requirementId){
 
 
 <script>
-function pagination(){  
+function pagination(){
     $('#shortlistedPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],

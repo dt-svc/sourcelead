@@ -48,10 +48,11 @@
  <sec:authorize access="hasRole(\'ROLE_POST_COMMENTS\')">
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize>
+ 
+ 
 <script>
  window.onload = function() {
- 	 candidateList();
- 	 $("#upcandidateStatus").val('');
+	 candidateListCheck("${serachValue}","${universalCanddateList}");
 };
 </script>
 
@@ -63,8 +64,25 @@
     padding-right: 5px;
 }
 </style>
-
-
+<script>
+function candidateListCheck(serachValue,universalCanddateSearchList){
+if(universalCanddateSearchList=="universalCanddateList")	 {
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/getUniversalCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&serachValue="+serachValue,       
+          success :function(data) {
+              	 prepareCandidateList(data);
+         },
+          
+     }); 
+  }
+else{
+	candidateList();
+	 	$("#upcandidateStatus").val('');
+	}
+  }
+  </script>
 
 <%-- 
      @author : sarath kumar.
@@ -142,12 +160,14 @@
 	         	 var address="";
 	         	 var isFavourite = "";
 	         	 var isFavClass = "";
+	         	 var designationType = "";
 	         	 var candidateUpdateDateToString ="";
 	         	        if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
 	         		       mobilePhone = opt.mobilePhone;
 		            	}else{
 		            		mobilePhone = "----";
 		            	}
+	         	        
 		            	if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
 		            		designation = opt.designation;
 		            	}else{
@@ -209,7 +229,6 @@
 	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
 	              '</sec:authorize>';
-	
 	              result = result +"  <td><div><span title="+designation+">"+designation+"</span></div></td>";
 	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 	             	 {
@@ -398,7 +417,18 @@ function candidateSideBar(candidateId){
          			 		expectedRateCurrencey = '';
          			 	}
          			 	
+         			 	if(json.alternateMobilePhone != null && json.alternateMobilePhone != '' && json.alternateMobilePhone != 'undefined'){
+         			 		alternateMobilePhone = json.alternateMobilePhone;
+         			 	}else{
+         			 		alternateMobilePhone = '';
+         			 	}
          			 	
+         			 	 if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+         			 		mobilePhone =json.mobilePhone+',';
+         			 	 }else{
+         			 		 
+         			 		mobilePhone = '';
+         			 	 }
          			 	 
 	                	 var result = "";
 	                	 
@@ -500,6 +530,8 @@ function candidateSideBar(candidateId){
 			             } 
 			             }
 			             
+			             
+			             
 			             result = result+'</ul>';
 			             
 			             result = result+'</div>';
@@ -519,12 +551,8 @@ function candidateSideBar(candidateId){
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
 			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="'+json.email+'">'+json.email+'</a></li>';
-			                                                  if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
-			                                                  }else{
+			             result = result+'<li><i class="fa fa-phone"></i>'+mobilePhone+''+alternateMobilePhone+'</li>';
 			                                                	  
-			             result = result+'<li><i class="fa fa-phone"></i>----</li>';         	  
-			                                                  }
 			             result = result+' <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
 			             
 			             result = result+'<li><i class="fa fa-money"></i><b>Current Rate:</b>';

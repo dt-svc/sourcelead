@@ -9,6 +9,8 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -41,6 +43,8 @@ public interface UserRoleService {
 	
 	public UserRole getUserByUserId(Long userId) throws Exception;
 	
+	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception;
+
 	/**To get user role by userid and locationId
 	 * @author Prasad salina
 	 * @param userId
@@ -101,6 +105,6 @@ public interface UserRoleService {
 	 
 	 UserRole getChangeRolePermissions(List<Long> userRoletabIds,Long userId,Long orgLocationId) throws Exception;
 	
-	 List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId);
-	 
+	 List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId,Long loginUserId ) throws Exception;;
+
 }

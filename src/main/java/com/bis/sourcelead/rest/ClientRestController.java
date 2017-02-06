@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -591,16 +593,19 @@ public class ClientRestController {
 	  */
 	 @RequestMapping(value = "/saveInvitationStatus", method = RequestMethod.POST)
 	 public  String saveInvitationStatus(@RequestParam(value="spocId", required=false) Long spocId,
-													@RequestParam(value="invitationStaus", required=false) String invitationStaus) throws Exception{
-										             
+													@RequestParam(value="invitationStaus", required=false) String invitationStaus,HttpServletRequest request) throws Exception{
+		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");        
 	        OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
 	        if(orgSpoc !=  null){
 	        	if(invitationStaus != null && "Accepted".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+	        		clientService.sendAcceptEmailToClientOrVendor(orgSpoc,loginUser,orgLocations);
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Success !! Accepted the invitation.");
 	        	}else if(invitationStaus != null && "Rejected".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
 	        		orgSpoc.setSpocStatus(Constants.INACTIVE);
+	        		clientService.sendRejectEmailToClientOrVendor(orgSpoc,loginUser,orgLocations);
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Rejected the invitation.");
 	        	}
 	        	orgSpocService.addOrgSpoc(orgSpoc);
@@ -1046,7 +1051,16 @@ public class ClientRestController {
 			}
 	 }
 	
-	
+	 @RequestMapping(value = "/getUniversalClientList")
+	 @ResponseBody
+	 public String getUniversalClientList(@RequestParam(value="searchValue", required=false) String  searchValue,
+			 @RequestParam(value="searchType", required=false) String  searchType,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson;
+		List<Object> uniClientList = clientService.getAllUniversalSearchClientList(orgLocations, searchValue,searchType);
+		resultJson = commonUtil.toJSON(uniClientList);
+		return resultJson;
+	 }
 	 
 	/**
 	 * check given string empty or null

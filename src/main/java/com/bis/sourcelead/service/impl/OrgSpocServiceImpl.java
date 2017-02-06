@@ -624,13 +624,18 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	}
 
 	@Override
-	public Integer getAllVendorContactsCountbyOrgLocationId(Long orgId) throws Exception {
-		return orgSpocDao.getAllVendorContactsCountbyOrgLocationId(orgId);
+	public Integer getAllVendorContactsCountbyOrgLocationId(Long orgId,String type,Long userId) throws Exception {
+		return orgSpocDao.getAllVendorContactsCountbyOrgLocationId(orgId,type,userId);
 	}
 
 	public void saveOrUpdateClientVendorContactElkDocument(OrgSpoc orgSpoc) throws Exception {
 		
 		 
 		}
+
+	@Override
+	public OrgSpoc getSpocListByResponderLocationId(Long initiatingPartyOrgLocationId,Long responderLocationId,String respondingOrgType) throws Exception {
+		return orgSpocDao.getSpocListByResponderLocationId(initiatingPartyOrgLocationId,responderLocationId,respondingOrgType);
+	}
 	
 }
