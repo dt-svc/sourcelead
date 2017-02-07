@@ -892,8 +892,13 @@ public class TimesheetRestController {
 		    tabDiv.append("		    	<div class='timesheet_button' style='min-height: 40px;'>");	
 		    
 		    
-			
 		    tabDiv.append("	<div class='totalText'>");
+		    
+		    tabDiv.append("	<span>Billable Hours : </span><input type='text' id='grandBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
+		    tabDiv.append("<div class='clearfix'></div>");
+		    tabDiv.append("	<span>Non-Billable Hours : </span><input type='text' id='grandNonBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
+		    tabDiv.append("<div class='clearfix'></div>");
+		    
 		    tabDiv.append("	<span>Total Hours : </span><input type='text' id='grandTotal' value='00:00' placeholder='HH/HH' readonly>");
 		    tabDiv.append("	</div>");
 		      
