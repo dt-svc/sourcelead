@@ -143,10 +143,10 @@ function editCandidate(candidateId){
 							
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_Space required">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="required validate_AlphaNumber validate_Space validate_length length1-100">';
 							result = result + '		          </div>';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							
@@ -154,11 +154,11 @@ function editCandidate(candidateId){
 							result = result + '		          <div class="col-md-6">';
 							
 							if(json.candidateType == 'Consultant'){
-							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email" readonly="true">';
+							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100>';
 							}
 							
 							if(json.candidateType == 'Candidate'){
-								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email">';
+								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100>';
 								}
 							result = result + '</div>';
 							
@@ -258,7 +258,7 @@ function editCandidate(candidateId){
 			                
 			                result = result + '</div>';
 							
-			                result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
+			                result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
 							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Type">';
@@ -293,7 +293,7 @@ function editCandidate(candidateId){
 			                
 			                result = result + '</div>';
 							
-							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
+							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
 							result = result + '<select class="selct-picker" id="rateType" name="rateType" field-name="Rate Type">';

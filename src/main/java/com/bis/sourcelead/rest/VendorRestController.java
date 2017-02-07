@@ -992,8 +992,8 @@ public class VendorRestController {
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserLastName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocUserPhNo", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("ownerUserPhNo", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocUserEmail", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("ownerUserEmail", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhrasePrefixQuery("spocUserEmail", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhrasePrefixQuery("ownerUserEmail", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("responderOrgName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocStatus", keywd));
 			    
