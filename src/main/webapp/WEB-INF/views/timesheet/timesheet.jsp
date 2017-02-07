@@ -499,6 +499,10 @@ function checkHours(){
 /* this script is for calculate total hours */
 $(document).click(function(){ 
 	 var total;
+	 var billableTotal;
+	 var billableSum = 0;
+	 var nonBillableTotal;
+	 var nonBillableSum = 0;
 	 for (var i = 1; i < 8; i++){
 		 var bsum = 0;
 		 var nbsum = 0;
@@ -516,6 +520,33 @@ $(document).click(function(){
 					 var finalmin = parseInt(minute) + parseInt(minute1);
 			    	 
 				     bsum = parseFloat(bsum) + parseInt(finalmin);
+				     
+				     var billableType = $("#"+j+"task1IdBillableTypeId").text();
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Billable') {
+				    	 var billableHours = btemp;
+				    	 var billableSplit = billableHours.split(':');
+				    	 var billableFirst = billableSplit[0];
+				    	 var billableSecond = billableSplit[1];
+						 
+						 var billableMinute = billableFirst * 60;
+						 var billableMinute1 = billableSecond;
+						 var billableFinalmin1 = parseInt(billableMinute) + parseInt(billableMinute1);
+				    	 
+						 billableSum = parseFloat(billableSum) + parseInt(billableFinalmin1);
+				    }
+				     
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Non-Billable') {
+				    	 var nonBillableHours = btemp;
+				    	 var nonBillableSplit = nonBillableHours.split(':');
+				    	 var nonBillableFirst = nonBillableSplit[0];
+				    	 var nonBillableSecond = nonBillableSplit[1];
+						 
+						 var nonBillableMinute = nonBillableFirst * 60;
+						 var nonBillableMinute1 = nonBillableSecond;
+						 var nonBillableFinalmin1 = parseInt(nonBillableMinute) + parseInt(nonBillableMinute1);
+				    	 
+						 nonBillableSum = parseFloat(nonBillableSum) + parseInt(nonBillableFinalmin1);
+				    }
 				}
 			    
 		 }
@@ -537,7 +568,44 @@ $(document).click(function(){
 		}
 	 $("#rowTotal"+i+"Id").val(total);
 }	
-	
+	 
+	   //for calculate billable count
+	    var t1 = billableSum; 
+		var billableHours = Math.floor(t1 / 60); 
+		var billableMinutes = t1 % 60;
+		
+		if (billableMinutes < 10) {
+			billableMinutes = '0' + billableMinutes;
+		}
+		if (billableHours < 10) {
+			billableHours = '0' + billableHours;
+		}
+		if(!isNaN(billableHours) && !isNaN(billableMinutes)){
+			billableTotal = billableHours +":"+ billableMinutes;
+		}else{
+			billableTotal =  "00:00";
+		}
+	    $("#grandBillableTotal").val(billableTotal);
+	    
+	    
+	  //for calculate non-billable count
+	    var t2 = nonBillableSum; 
+		var nonBillableHours = Math.floor(t2 / 60); 
+		var nonBillableMinutes = t2 % 60;
+		
+		if (nonBillableMinutes < 10) {
+			nonBillableMinutes = '0' + nonBillableMinutes;
+		}
+		if (nonBillableHours < 10) {
+			nonBillableHours = '0' + nonBillableHours;
+		}
+		if(!isNaN(nonBillableHours) && !isNaN(nonBillableMinutes)){
+			nonBillableTotal = nonBillableHours +":"+ nonBillableMinutes;
+		}else{
+			nonBillableTotal =  "00:00";
+		}
+	    $("#grandNonBillableTotal").val(nonBillableTotal);
+	    
 	 grandTotal();		
 });
 
