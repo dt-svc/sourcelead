@@ -122,7 +122,7 @@ public class TimesheetApprovalRestController {
 		timesheetApprovalDiv.append("		<div class='timesheet_appr_wrap'>");
 		timesheetApprovalDiv.append("			<div class='timesheetNewHead'>");
 		
-                  timesheetApprovalDiv.append("				<div class='timeNewSe addicon'>");
+                  timesheetApprovalDiv.append("				<div class='timeNewSe timeNewSe_month addicon'>");
 								       timesheetApprovalDiv.append("		                <select id='frequencyMonth' name='frequencyMonth' class='form-control chosen-select' onchange='timesheetApprovalDiv(\"month\");'  >");
 										for (String dateStr : datesList) {
 											    StringBuilder isSelected = new StringBuilder("");
@@ -144,7 +144,7 @@ public class TimesheetApprovalRestController {
 		             if(StringUtils.isEmpty(timesheetFrequency)){
 		            	 timesheetFrequency = "Weekly";
 		             }
-		             timesheetApprovalDiv.append(" <div id='timesheetFrequencyDiv' class='timeNewSe'>");
+		             timesheetApprovalDiv.append(" <div id='timesheetFrequencyDiv' class='timeNewSe timeNewSe_week'>");
 					        timesheetApprovalDiv.append(" <select id='timesheetFrequency' class='form-control chosen-select' onchange='timesheetApprovalDiv(\"frequency\");'>");
 					             timesheetApprovalDiv.append(" <option ").append(StringUtils.isNotEmpty(timesheetFrequency) ? (timesheetFrequency.equalsIgnoreCase("Monthly") ? "selected='selected'" : "") : "").append("  value='Monthly'>Monthly</option>");
 							     timesheetApprovalDiv.append(" <option ").append(StringUtils.isNotEmpty(timesheetFrequency) ? (timesheetFrequency.equalsIgnoreCase("Semi-monthly") ? "selected='selected'" : "") : "").append("  value='Semi-monthly'>Semi-monthly</option>");
@@ -278,7 +278,7 @@ public class TimesheetApprovalRestController {
 		
 		   Map<StringBuilder,Map<String,Date>> weekFrequencyBuilder = new LinkedHashMap<>();
 		    StringBuilder timesheetApprovalDiv = new StringBuilder(""); 
-	    	 timesheetApprovalDiv.append("					<div class='timeNewSe timeNewSe_a addicon'>");    
+	    	 timesheetApprovalDiv.append("					<div class='timeNewSe timeNewSe_week_date addicon'>");    
 			    timesheetApprovalDiv.append("<select id='weekFrequency' class='form-control chosen-select' onchange='timesheetApprovalDiv( \"weekfrequency\");' >");
 			    if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 			    	int  count = 1;
@@ -337,7 +337,7 @@ public class TimesheetApprovalRestController {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 List<Projects> projectsList = projectsService.getProjectBasedClientsByOrgLocationsIdAndApproverUserId(orgLocations.getId(), user.getId());
 		 StringBuilder timesheetApprovalDiv = new StringBuilder(""); 
-		 timesheetApprovalDiv.append("					<div class='timeNewSe timeNewSe_a'>");  
+		 timesheetApprovalDiv.append("					<div class='timeNewSe timeNewSe_client'>");  
 		  timesheetApprovalDiv.append("<select id='client' onChange='timesheetApprovalDiv(\"client\");' class='form-control chosen-select'>");
 		         if(StringUtils.isEmpty(client)){
 		        	 timesheetApprovalDiv.append(" <option selected='selected' value=''>Select Client</option>");
@@ -385,7 +385,7 @@ public class TimesheetApprovalRestController {
 		   if(StringUtils.isEmpty(stage)){
 			   stage = "All";
 		   }
-		   timesheetApprovalDiv.append("				<div class='timeNewSe'>");
+		   timesheetApprovalDiv.append("				<div class='timeNewSe timeNewSe_stage'>");
 			timesheetApprovalDiv.append("	                <select id='stage' class='form-control chosen-select' onChange='timesheetApprovalDiv(\"stage\");'>");
 			     timesheetApprovalDiv.append(" <option      ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("All") ? "selected='selected'" : "") : "").append("  value='All'>All</option>");
 			     timesheetApprovalDiv.append(" <option      ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("NEW") ? "selected='selected'" : "") : "").append("  value='NEW'>NEW</option>");
@@ -420,12 +420,11 @@ public class TimesheetApprovalRestController {
 		        }
 		        
 		        List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, actualStartDate, actualEndDate, clientId, stage, orgLocations.getId(), user.getId());
-		        if(projectMembers != null && !projectMembers.isEmpty()){  
-			    	timesheetApprovalDiv.append("			<div class='timesheet_appr_table'>");
-					timesheetApprovalDiv.append("	    	<table id='example'>");
-					timesheetApprovalDiv.append("	        	<tbody>");
+		        if(projectMembers != null && !projectMembers.isEmpty()){
+		        	int tdSpanLength = 6;
+		        	timesheetApprovalDiv.append("			<div class='timesheet_appr_table overflow_Visible'>");
+					timesheetApprovalDiv.append("	    	<table id='example' style='width:100%'>");
 					timesheetApprovalDiv.append("				<thead>");   
-			        
 					timesheetApprovalDiv.append("	            	<tr>");
 					timesheetApprovalDiv.append("	                	<th>Employee</th>           ");
 					timesheetApprovalDiv.append("	                    <th>Project</th>            ");
@@ -434,7 +433,10 @@ public class TimesheetApprovalRestController {
 					LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
 					Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(startDate, endDate);
 					if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
-						frequencyDropDown.forEach((k,v)->{
+						for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
+				    		 String  k = entry.getKey();
+				    		 String  v = entry.getValue();
+							tdSpanLength =tdSpanLength+1;
 	 				        Date weekStartDate;
 	 				        Date weekEndDate;
 							try {
@@ -448,7 +450,7 @@ public class TimesheetApprovalRestController {
 								 }
 			   					
 							} catch (Exception e) {}
-						});
+						}
 					}
 					
 					timesheetApprovalDiv.append("	                    <th>Total</th>              ");	
@@ -456,7 +458,8 @@ public class TimesheetApprovalRestController {
 					timesheetApprovalDiv.append("	                    <th>Action</th>             ");
 					
 					timesheetApprovalDiv.append("	                </tr>");
-					timesheetApprovalDiv.append("				</thead>");	
+					timesheetApprovalDiv.append("				</thead>");
+					timesheetApprovalDiv.append("	        	<tbody>");
 					for (ProjectMembers projectMember : projectMembers)
 					{
 						 timesheetApprovalDiv.append("<tr id='row").append(projectMember.getId()).append("'>");
@@ -477,7 +480,7 @@ public class TimesheetApprovalRestController {
 					    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
 					    	    	
 					    	    	 if(sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()){
-					    	    		 totalHours = sah.getWeekTotals().get(entry.getKey());
+					    	    		 totalHours = totalHours+sah.getWeekTotals().get(entry.getKey());
 					    	    		 timesheetApprovalDiv.append("<td><div class='sm'>").append(sah.getWeekTotals().get(entry.getKey())).append("/40</div></td>");
 					    	    	 }
 					    	    	 else{
@@ -488,7 +491,7 @@ public class TimesheetApprovalRestController {
 					     }
 					
 					    /*timesheetApprovalDiv.append("<td><div class='sm'><a href='javascript:void(0)'>").append(totalHours).append("/40</a></div></td>");*/
-					    timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\");'>"+sah.getTotalHours()+"/40</a></div></td>");
+					    timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\");'>"+totalHours+"/40</a></div></td>");
 					    timesheetApprovalDiv.append("<td><div class='sm'>").append(sah.getSubmissionApprovalStatus()).append("</div></td>");
 					    timesheetApprovalDiv.append("<td>");
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
@@ -498,11 +501,12 @@ public class TimesheetApprovalRestController {
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
 			            	 timesheetApprovalDiv.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
 			            	                     .append(projectMember.getId()).append("\",\"").append(format.format(actualStartDate)).append("\",\"").append(format.format(actualEndDate)).
-			            	                     append("\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
+			            	                     append("\",").append(tdSpanLength).append(");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
 			            	                     .append(projectMember.getId()).append("\",\"")
 			            	                      .append(format.format(actualStartDate))
 			            	                     .append("\",\"").append(format.format(actualEndDate))
-			            	                     .append("\");'></i></div>");
+			            	                 
+			            	                     .append("\",").append(tdSpanLength).append(");'></i></div>");
 			                 timesheetApprovalDiv.append("<div id='rejectedPopup'></div>");
 			             }
 					      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
