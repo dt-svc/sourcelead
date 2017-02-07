@@ -26,6 +26,16 @@ $(document).ready(function() {
 });
 </script>  
 
+<script>
+	$(document).on("mouseover", ".rejectedHover", function() { 
+		var projectMemberId = $("#projectMemberId").val();
+		$("#rejectedMessage"+projectMemberId).addClass('app_error_mes_active');
+	});	
+	$(document).on("mouseleave", ".rejectedHover", function() { 
+		  var projectMemberId = $("#projectMemberId").val();
+		  $("#rejectedMessage"+projectMemberId).removeClass('app_error_mes_active');
+	});	
+</script>
 
 <script>
 	function timesheetEntriesDiv(){ 
@@ -144,7 +154,9 @@ $(document).ready(function() {
    		          }
    	         }); 
 	}
-</script> 
+</script>
+
+ 
 
 <script>
 	/* function timesheetDivByTab(startDate,endDate) */
@@ -788,14 +800,11 @@ function newSaveTimesheet(status,savingType){
 				dateFormat : 'yyyy/mm/dd' 
 	 }; 
 	 if ($('#timesheet_form').validate(false, validationSettings)){ 
-				 
-		  		
                var frm = $('#timesheet_form').serializeFormJSON();
                
                var sourceleadUrl ='${sourceleadUrl}';
                var startdate;
            	   var navigation;
-               
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
        		   mydata = encodeURIComponent(mydata);
@@ -815,16 +824,10 @@ function newSaveTimesheet(status,savingType){
         	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
         		    	  $("#loadTime").removeAttr("style"); 
-        		    	  timesheetEntriesDiv();
+        		    	  timesheetDivByFrequency();
         		    	  $("html").trigger('click');
         		    	  maskme();
-        		    	 /*  timesheetEntriesDiv(); */
-        		    	 /*  $("#loadTime").removeAttr("style"); */
-        		    	  /*  dynamicTimesheet("left",result);  */
-        		    	   /* timesheetEntriesDiv */
-        		    	  /* dynamicTimesheet(); */
         		      }
-        	      	  
         	    }); 
         	   return true;
 	 	}else{ 

@@ -39,22 +39,17 @@ width:100%;
 position: relative !important;
 top:0px !important;
 }
+.timesheet_appr_table.overflowVisible {
+overflow: visible !important;
+margin-top: 45px;
+}
+.timesheet_appr_table.overflow_Visible {
+overflow: visible !important;
+margin-top: 3px;
+}
 </style>
 
-<script>
-function pagination(){ 
-    $('#example').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-    		"sSearch": ""
-    	}
-    } );
-}
-</script>
+
 
 <%-- <jsp:include page="TimesheetScripts.jsp" /> --%>
 
@@ -240,45 +235,45 @@ function addTimeSheetRow(projectId) {
         	$("#"+divId+" :input").attr("disabled", "disabled");
         } 
        
-	   //get project tasks 
-	   function getProjectTasks(projectTaskId,projectId){
-		   var sourceleadUrl ='${sourceleadUrl}';
-		   $("#"+projectTaskId).empty();
-		   
-		   var avilableProjectTaskIds = [];
-		   $('.existedProjectTaskId'+projectId).each(function() {
-				 var localId = this.value;
-				 avilableProjectTaskIds.push(localId);
-		   }); 
-			 
-		   $.ajax({
-   	          type : "POST",
- 	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
- 		      success :function(data) {
- 		    	    var json = JSON.parse(data);
- 		    	    $('.existedProjectTaskId'+projectId).each(function() {
- 			   			 var localId = this.id;
- 			   			 var localValue = this.value;
-	 			   		    var result = ""; 
-	 			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){ 
-	 			   			    $('option', this).not(':eq(0), :selected').remove();
-	 			   		    }else{ 
-	 			   		    	 $("#"+localId).empty();
-	 			   		   		 result = result + "<option value=''>--select option--</option>";
-	 			   		    }
-	  		    	    	for (var i=0; i<json.length; i++)
-	  					 	{
-	  			        		var opt = json[i];
-	  			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
-	  						}
- 				    	 	$("#"+localId).append(result);
- 			   	   }); 
- 		    	   
- 		      }
- 	      	  
- 	       }); 
-		   
-	   }
+      //get project tasks 
+ 	   function getProjectTasks(projectTaskId,projectId){
+ 		   var sourceleadUrl ='${sourceleadUrl}';
+ 		   
+ 		   var avilableProjectTaskIds = [];
+ 		   $('.existedProjectTaskId'+projectId).each(function() {
+ 				 var localId = this.value;
+ 				 avilableProjectTaskIds.push(localId);
+ 		   }); 
+ 			 
+ 		   $.ajax({
+    	          type : "POST",
+  	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
+  		      success :function(data) {
+  		    	    var json = JSON.parse(data);
+  		    	    $('.existedProjectTaskId'+projectId).each(function() {
+  			   				 var localId = this.id;
+  			   				 var localValue = this.value;
+  			   				 
+ 	 			   		    var result = ""; 
+ 	 			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){
+ 	 			   			    $('option', this).not(':eq(0), :selected').remove();
+ 	 			   		    }else{ 
+ 	 			   		    	 $("#"+localId).empty();
+ 	 			   		   		 result = result + "<option value=''>--select option--</option>";
+ 	 			   		    }
+ 	  		    	    	for (var i=0; i<json.length; i++)
+ 	  					 	{
+ 	  			        		var opt = json[i];
+ 	  			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+ 	  						}
+  				    	 	$("#"+localId).append(result);
+  			   	   }); 
+  		    	   
+  		      }
+  	      	  
+  	       }); 
+ 		   
+ 	   }
 
 
 	 
@@ -771,6 +766,7 @@ $(document).ready(function() {
         		    	    $("#timesheetApprovalDiv").empty();
         		    	  	$("#timesheetApprovalDiv").append(result);
         		    	  	prepareChosenScripts();
+        		    	  	pagination();
         		      }
         	    }); 
 	}
@@ -978,24 +974,21 @@ $(document).ready(function() {
         			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
         			  '.chosen-select-width'     : {width:"95%"}
         			};
+        	      
         		   for (var selector in config) {
         			  $(selector).chosen(config[selector]);
         			};
-        			$('.chosen-select').each(function() {
-        			var $this = $(this);
-        			$this.next().css({'width': '100%'});
-        			})
            };
 				
 </script> 
 <script>
-function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate){
+function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize){
 	
 	 var msg = $("#reject"+projectMemberId+"message").val(); 
      var sourceleadUrl ='${sourceleadUrl}';
      var rowHtmlContent =  $("#row"+projectMemberId).html();
 	 $("#row"+projectMemberId).empty();
-	 $("#row"+projectMemberId).html("<td colspan='5'  id='loading"+projectMemberId+"'></td>");
+	 $("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
      $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
    /*  
     $("#timesheetApprList").empty(); 
@@ -1038,23 +1031,23 @@ function cancelRejectSubmission(projectMemberId){
 		 $("#reject"+projectMemberId+"panel").slideUp(200);
 }
 
-function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate){  
+function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize){  
         
         var result = "";
         result = result +'<div class="time_appr_rejct_pop" id="reject'+projectMemberId+'panel" >';
 		result = result +'<textarea placeholder="Enter comment here" id="reject'+projectMemberId+'message" ></textarea>';
-		result = result +'<a href="#" onClick="saveRejectSubmissionByProjectMemberId(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+projectMemberId+'\');">Cancel</a>';
+		result = result +'<a href="#" onClick="saveRejectSubmissionByProjectMemberId(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\','+tdSpanSize+');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+projectMemberId+'\');">Cancel</a>';
 		result = result +'</div>';
 		 
 		$("#rejectedPopup").append(result);
 	    $(".mask_time").fadeIn(200); 
 		$("#reject"+projectMemberId+"panel").slideToggle(200);
 }
-function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate){
+function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize){
 		//$("#timesheetApprList").empty();
 		var rowHtmlContent =  $("#row"+projectMemberId).html();
 		$("#row"+projectMemberId).empty();
-		$("#row"+projectMemberId).html("<td colspan='5'  id='loading"+projectMemberId+"'></td>");
+		$("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
 	    $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
 	    var rejectedReason;
         var sourceleadUrl ='${sourceleadUrl}';
@@ -1077,6 +1070,22 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate){
 		    	 
 		    }
 	    });   
+}
+</script>
+
+<script>
+function pagination(){ 
+    $('#example').DataTable( { 
+    	"scrollCollapse": false,
+    	"scrollX": true,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+    		"sSearch": ""
+    	}
+    } );
 }
 </script>
 

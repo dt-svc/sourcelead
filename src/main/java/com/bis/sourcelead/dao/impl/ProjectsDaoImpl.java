@@ -478,7 +478,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 						 + "  hierarchy.approverUserId.id = :userId "
 						 + " OR "
 						 + Constants.loginUserAsAdminForProjects
-					  + " )";
+					  + " ) group by projects.orgRelationId";
 			List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
 			return projectsList;
 		}
