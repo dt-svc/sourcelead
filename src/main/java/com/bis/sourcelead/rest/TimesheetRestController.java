@@ -310,6 +310,11 @@ public class TimesheetRestController {
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
 	        	timesheetEntriesDiv.append("<b class='proj_closed'>").append(submissionStatus).append("</b> </td>");
+	        	timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'>");
+	        	timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getRejectedReason()).append("</div>");
+	        	timesheetEntriesDiv.append(" </i>");
+	        
+	        
 	        }
 	        
 		}	
@@ -869,7 +874,7 @@ public class TimesheetRestController {
 		    
 		    
 		    tabDiv.append("		    	<div class='clearfix'></div>");	
-		    tabDiv.append("		    	<div class='timesheet_button'>");	
+		    tabDiv.append("		    	<div class='timesheet_button' style='min-height: 40px;'>");	
 		    
 		    
 			
@@ -886,7 +891,11 @@ public class TimesheetRestController {
 					tabDiv.append("		            <input type='button' onClick='newSaveTimesheet(\"Submitted\",\"user\");'  value='Submit' class='time_btn' />");	
 				}
 				tabDiv.append("		            <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />");	
-		    }	
+		    }
+		    else{
+		    	
+		    	tabDiv.append("		       <div class='clearfix'></div>   ");
+		    }
 			
 			tabDiv.append("		        </div>   ");	     
 			tabDiv.append("		    </div>  ");	
