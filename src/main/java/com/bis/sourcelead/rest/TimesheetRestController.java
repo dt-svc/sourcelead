@@ -450,6 +450,7 @@ public class TimesheetRestController {
 		tabDiv.append("			            	<tbody>");
 		tabDiv.append("			                	<tr>");
 		tabDiv.append("			                        <th>Tasks </th>");
+		tabDiv.append("			                        <th>Billable Type </th>");
 		
 		StringBuilder disbleCondition1 = new StringBuilder("");
 		StringBuilder disbleCondition2 = new StringBuilder("");
@@ -636,6 +637,14 @@ public class TimesheetRestController {
 								              }   
 									  tabDiv.append("                      </div>");
 						              tabDiv.append("                 </td> ");
+						              
+						              //for task billable type
+						              ProjectTasks tasks = projectTasksService.getTasksId(timesheetEntries.getProjectTask().getId().toString());
+						              tabDiv.append("				<td> <div> ");   
+						              tabDiv.append("<span id='"+rowCount+"task1IdBillableTypeId'>"+tasks.getBillableType()+"</span>");
+						              tabDiv.append("				</td> </div> "); 
+						              
+						              
 									  tabDiv.append("				<td> <div> ");   
 						              tabDiv.append(" <input type='text' "+disbleCondition1+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay1Id' name='"+rowCount+"timeSheetDay1Id' class='inline_field' value='"+timesheetEntries.getMonHours()+"'  placeholder='HH:MM' />	"); 
 						              tabDiv.append(" <div class='timesheet_comm'>"); 
@@ -745,7 +754,7 @@ public class TimesheetRestController {
 	                      tabDiv.append("<option value=''>--select task--</option>");
 	                      Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(projectMember.getProjects().getId());
 	                      for(ProjectTasks pt   : ProjectTasksList){
-	                    	  tabDiv.append("<option value='"+pt.getId()+"'>").append(pt.getTaskName()).append("</option>");   
+	                    	  tabDiv.append("<option value='"+pt.getId()+","+pt.getBillableType()+"'>").append(pt.getTaskName()).append("</option>");   
 					      }
 	                      tabDiv.append(" </select>"); 
 			              tabDiv.append("<input type='button' value=''  onClick='addTimeSheetRow(\""+projectMember.getProjects().getId()+"\");'  class='addtaskfield'/>");
@@ -755,6 +764,11 @@ public class TimesheetRestController {
 				   }
 	             tabDiv.append("                      </div>");
 	             tabDiv.append("                 </td> ");
+	             
+	             tabDiv.append("				<td> <div> ");   
+	             tabDiv.append("<span id='"+rowCount+"task1IdBillableTypeId'></span>");
+	             tabDiv.append("				</td> </div> ");   
+	             
 	             tabDiv.append("				<td> <div> ");   
 	             tabDiv.append(" <input type='text'  "+disbleCondition1+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay1Id' name='"+rowCount+"timeSheetDay1Id' class='inline_field' value=''  placeholder='HH:MM' />	"); 
 		            tabDiv.append(" <div class='timesheet_comm'>");
@@ -817,6 +831,7 @@ public class TimesheetRestController {
 			
 				tabDiv.append("	  <tr class='last_child'>"); 
 		        tabDiv.append("    <td class='total_field'>Total</td>"); 
+		        tabDiv.append("    <td></td>"); 
 		        tabDiv.append("    <td> <div>"); 
 		        tabDiv.append("    <input type='text' disabled id='rowTotal1Id' name='rowTotal1Id' class='inline_field' value='HH:MM' placeholder='00:00' />"); 	
 		        tabDiv.append("    </div> </td>"); 
@@ -1108,7 +1123,8 @@ public class TimesheetRestController {
 							ProjectTasks projectTasks = new ProjectTasks();
 						   if (jsonObj.has(c+"task1Id")){
 							   if(!isNullOrEmpty(jsonObj.getString(c+"task1Id"))){
-									  projectTasks.setId(Long.parseLong(jsonObj.getString(c+"task1Id")));
+								      String taskIdDetails[] = jsonObj.getString(c+"task1Id").split(",");
+									  projectTasks.setId(Long.parseLong(taskIdDetails[0]));
 									  timesheetEntries.setProjectTask(projectTasks);
 							   }
 							 }
