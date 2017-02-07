@@ -775,6 +775,7 @@ function getUserSummary(userId){
    
 
 <script>
+  $("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');
   $(document).ready(function() {
 	   $("#export-pop").click(function(){
