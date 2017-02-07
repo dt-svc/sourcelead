@@ -167,7 +167,7 @@ width: 11.5%;
 			</select>
 			</div>
 			<div class="pull-left universalSrch">
-			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search"/>
+			<input type="text" id="searchKey" name="searchKey" class="form-control" placeholder="Search"/>
 			 <button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="universalSearch();" ><i class="fa fa-search"></i></button>
 			</div>
 			</div>
@@ -177,7 +177,7 @@ width: 11.5%;
         <!-- login User details -->
         <div class="login-user">
         <span class="image"> <img class="img-circle" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>"> </span> <span class="pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </span>
-          <div class="user-details">
+          <div class="user-details animated">
             <div class="user-media">
               <div class="logn-image">
               <img class="img-circle" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>"> </div>
@@ -211,7 +211,7 @@ width: 11.5%;
             	<li><a href="<c:url value='${sourceleadUrl}/mailBox'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </a></li>
             </sec:authorize>
             <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-            <li> <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
+            <li id="spocks_links"> <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
 	              <div id="spockLinksList" style="display: none;">
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
@@ -237,7 +237,7 @@ width: 11.5%;
 	          </li>
 	          </c:if>
          
-          <li> 
+          <li id="alert"> 
           <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
@@ -262,12 +262,12 @@ width: 11.5%;
                 </c:forEach>
                 </c:if>
               </ul>
-              <div class="headerwidget-footer"> <a href="<c:url value='/notificationsList'/>">View All</a> </div>
+              <div class="headerwidget-footer"> <a href="<c:url value='/notificationsList'/>" title="See all notifications"><strong>See all notifications&nbsp;&nbsp;<i class="fa fa-angle-right"></i></strong></strong></a> </div>
             </div>
           </li>
           
           <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS','ROLE_ORG_SUBMISSION_TEMPLATE')"> 
-	            <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
+	            <li id="settingArea"> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
