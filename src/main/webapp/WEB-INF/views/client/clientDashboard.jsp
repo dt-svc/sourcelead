@@ -400,21 +400,30 @@ overflow-x: auto;
 
 
 
-
 <script type="text/javascript">
 window.onload = function () {
-	if("${clientSearchResult}"=="clientSearchResult"){
+	clientOnLoad("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}");
+ };
+</script>
+
+<script type="text/javascript">
+function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRelationId,orgName){
+	if(clientSearchResult =="clientSearchResult"){
 		getClientUniversalSearchList("${searchValue}");
 	}
+	if(clientKeyword=="clientSearch"){
+		clientSideBar(responderLocationId,orgRelationId,orgName);
+		getVendorContactListsELK();
+	}
+	
 	/* getVendorContactLists(); */
 	else{
 		getVendorContactListsELK();
 	}
 	 listChange("listbyContact");
 	document.getElementById('listOfVendors').value = 'listbyContact';
- };
+}
 </script>
-
 <script type="text/javascript">
 function getClientUniversalSearchList(searchValue){
 	var sourceleadUrl ='${sourceleadUrl}';
