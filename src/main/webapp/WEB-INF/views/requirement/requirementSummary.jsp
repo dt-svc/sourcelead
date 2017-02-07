@@ -7,7 +7,7 @@
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
+<script src="resources/js/bootstrap-select.min.js"></script>
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -3540,17 +3540,51 @@ function clientSideBar(candidateId){
 	             			 	}else{
 	             			 		city = '';
 	             			 	}
+	         			 	
+	         			 	if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
+	         			 		currentRate = json.currentRate+',';
+	         			 	}else{
+	         			 		currentRate = '';
+	         			 	}
+	         			 	
+	         			 	if(json.rateType != null && json.rateType != '' && json.rateType != 'undefined'){
+	         			 		rateType = json.rateType;
+	         			 	}else{
+	         			 		rateType = '';
+	         			 	}
+	         			 	
+	         			 	if(json.currentRateType != null && json.currentRateType != '' && json.currentRateType != 'undefined'){
+	         			 		currentRateType = json.currentRateType;
+	         			 	}else{
+	         			 		currentRateType = '';
+	         			 	}
+	         			 	
+	         			 	if(json.currentRateCurrency != null && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefined'){
+	         			 		currentRateCurrency = json.currentRateCurrency+',';
+	         			 	}else{
+	         			 		currentRateCurrency = '';
+	         			 	}
+	         			 	
+	         			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
+	         			 		expectedRate = json.expectedRate+',';
+	         			 	}else{
+	         			 		expectedRate = '';
+	         			 	}
+
+	         			 	if(json.expectedRateCurrencey != null && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefined'){
+	         			 		expectedRateCurrencey = json.expectedRateCurrencey+',';
+	         			 	}else{
+	         			 		expectedRateCurrencey = '';
+	         			 	}
+	         			 	
+	         			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
+		                		 lastName  = json.lastName;
+		                	 }else{
+		                		 lastName = "";
+		                	 }
 			             
-	                	       var result = "";
-	                	 
-	                	 if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
-	                		 lastName  = json.lastName;
-	                	 }else{
-	                		 lastName = "";
-	                	 }
+	                	 var result = "";
 	                	 result = result+'<div id="popUp" ></div>  ';
-	                	
-	                	 
 	                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
 			             result = result+'  <div class="profile_details clearfix" style="margin-bottom:20px;">';
 			             result = result+'               <div class="col-md-6">';
@@ -3573,10 +3607,6 @@ function clientSideBar(candidateId){
 					     } 
 						 result = result+'  </div>';
 						 result = result+'  </div>';
-						 /*  result = result+'  <div class="pull-right" style="position:relative; top:10px; right:-10px;">';
-						 result = result+'  <a href="#" title="Save"><i class="fa fa-check-circle" onClick="saveCandidateImage('+candidateId+');" ></i></a>';
-						 result = result+'  <a href="#" title="Close"><i class="fa fa-close text-danger"></i></a>';
-						 result = result+'  </div>'; */
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
@@ -3584,14 +3614,6 @@ function clientSideBar(candidateId){
 						 result = result+' </div>';
 						 result = result+' </div>';
 						 result = result+'</form>';
-						  
-						  
-			             /*  result = result+'                     <div class="media-left image-parent">';
-			             result = result+'                     <div class="imageParent">'; */
-			             /* result = result+'                     	<img src="./images/24.jpg" alt="candidate" title="Candidate">'; */
-			             /* result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>"  alt="Profile Image" class="img-circle img-responsive">';
-			             result = result+'                     </div>';
-			             result = result+'                     </div>'; */
 			             result = result+'                     <div class="media-body candidate-details">';
 			             
 			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
@@ -3645,16 +3667,9 @@ function clientSideBar(candidateId){
 			                                                  
 			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
 			             
-			                                                  if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.currentRate+'/Per Hour - Current Rate / Salary</li>';
-			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-rupee"></i>----</li>';                                    
-			                                                  }
-			                                                  if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.expectedRate+'/Per Hour - Expected Rate / Salary</li>';
-			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-rupee"></i>----</li>';                                  	  
-			                                                  }
+			             result = result+'                   <li><i class="fa fa-money"></i>'+currentRateCurrency+''+currentRate+''+currentRateType+'</li>';
+			             
+			             result = result+'                   <li><i class="fa fa-money"></i>'+expectedRateCurrencey+''+expectedRate+''+rateType+'</li>';
 			             result = result+'                 </ul>';
 			             result = result+'               </div>';
 			             result = result+'			</div>';
