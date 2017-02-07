@@ -235,45 +235,45 @@ function addTimeSheetRow(projectId) {
         	$("#"+divId+" :input").attr("disabled", "disabled");
         } 
        
-	   //get project tasks 
-	   function getProjectTasks(projectTaskId,projectId){
-		   var sourceleadUrl ='${sourceleadUrl}';
-		   $("#"+projectTaskId).empty();
-		   
-		   var avilableProjectTaskIds = [];
-		   $('.existedProjectTaskId'+projectId).each(function() {
-				 var localId = this.value;
-				 avilableProjectTaskIds.push(localId);
-		   }); 
-			 
-		   $.ajax({
-   	          type : "POST",
- 	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
- 		      success :function(data) {
- 		    	    var json = JSON.parse(data);
- 		    	    $('.existedProjectTaskId'+projectId).each(function() {
- 			   			 var localId = this.id;
- 			   			 var localValue = this.value;
-	 			   		    var result = ""; 
-	 			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){ 
-	 			   			    $('option', this).not(':eq(0), :selected').remove();
-	 			   		    }else{ 
-	 			   		    	 $("#"+localId).empty();
-	 			   		   		 result = result + "<option value=''>--select option--</option>";
-	 			   		    }
-	  		    	    	for (var i=0; i<json.length; i++)
-	  					 	{
-	  			        		var opt = json[i];
-	  			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
-	  						}
- 				    	 	$("#"+localId).append(result);
- 			   	   }); 
- 		    	   
- 		      }
- 	      	  
- 	       }); 
-		   
-	   }
+      //get project tasks 
+ 	   function getProjectTasks(projectTaskId,projectId){
+ 		   var sourceleadUrl ='${sourceleadUrl}';
+ 		   
+ 		   var avilableProjectTaskIds = [];
+ 		   $('.existedProjectTaskId'+projectId).each(function() {
+ 				 var localId = this.value;
+ 				 avilableProjectTaskIds.push(localId);
+ 		   }); 
+ 			 
+ 		   $.ajax({
+    	          type : "POST",
+  	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
+  		      success :function(data) {
+  		    	    var json = JSON.parse(data);
+  		    	    $('.existedProjectTaskId'+projectId).each(function() {
+  			   				 var localId = this.id;
+  			   				 var localValue = this.value;
+  			   				 
+ 	 			   		    var result = ""; 
+ 	 			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){
+ 	 			   			    $('option', this).not(':eq(0), :selected').remove();
+ 	 			   		    }else{ 
+ 	 			   		    	 $("#"+localId).empty();
+ 	 			   		   		 result = result + "<option value=''>--select option--</option>";
+ 	 			   		    }
+ 	  		    	    	for (var i=0; i<json.length; i++)
+ 	  					 	{
+ 	  			        		var opt = json[i];
+ 	  			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+ 	  						}
+  				    	 	$("#"+localId).append(result);
+  			   	   }); 
+  		    	   
+  		      }
+  	      	  
+  	       }); 
+ 		   
+ 	   }
 
 
 	 
