@@ -216,7 +216,7 @@ width: 11.5%;
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>">
+			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
@@ -308,6 +308,15 @@ width: 11.5%;
     </nav>
   </header>
   
+  
+  <script>
+	$('.sopcSwith').each(function() {
+		var $this = $(this);
+		$this.on("contextmenu",function(e){
+			  return false;
+		});
+	})
+  </script>
   
   <script>
   function navtoggle(elementRef){

@@ -774,12 +774,12 @@ function preparedVendorsListFromElk(data){
 		   		}
 		   		
 		   		var pattern = new RegExp(/["'"]/g);
-		   		//var orgName = (report.orgName).replace(pattern, "\\'");
+		   		var orgName = (report.orgName).replace(pattern, "\\'");
 		   		
 		   		result = result +'<tr>';
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 		   			result = result +'<td>';
-		   			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+		   			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
 		   			result = result +'</div>';
 		   			result = result +'</td>';
 		   		'</sec:authorize>';
