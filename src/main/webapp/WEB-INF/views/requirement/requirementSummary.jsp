@@ -7,7 +7,7 @@
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
+<script src="resources/js/bootstrap-select.min.js"></script>
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -1304,14 +1304,6 @@ function rejectRequirementAlertMessage(status){
 </script>
 
 
-<script type="text/javascript">
-function cancelAlert(){ 
-	$("#rejectRequirementAlert").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
-</script>
-
-
 <%-- 
      @author : Venkat Kesav
      this script is for Delete Candidate alert
@@ -1488,7 +1480,17 @@ function requirementPipeline(requirementId,submissionType){
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
-					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+						           
+							          if(report.submissionStatus == 'REJECTED'){
+							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+							        	   }		  
+							           }else{
+							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+								           result = result + '</div></td>';
+							           }
+							           
 						           result = result + '</div></td>';
 							          
 						           result = result + '       </tr>';
@@ -1711,7 +1713,16 @@ function requirementPipelineDA(requirementId,submissionType){
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
-					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+						           
+							           if(report.submissionStatus == 'REJECTED'){
+							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+							        	   }		  
+							           }else{
+							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+								           result = result + '</div></td>';
+							           }
 						           result = result + '</div></td>';
 							           
 							          
@@ -1931,7 +1942,16 @@ function requirementPipelineRS(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
 						        	
-					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+							           if(report.submissionStatus == 'REJECTED'){
+							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+							        	   }		  
+							           }else{
+							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+								           result = result + '</div></td>';
+							           }
+							           
 						           result = result + '</div></td>';
 						           result = result + '       </tr>';
 			   				}
@@ -2161,7 +2181,16 @@ function requirementPipelineSL(requirementId,submissionType){
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     }
 							           
-						        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+								           if(report.submissionStatus == 'REJECTED'){
+								        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+								        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+								        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+								        	   }		  
+								           }else{
+								        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+									           result = result + '</div></td>';
+								           }
+								           
 							           result = result + '</div></td>';
 						           result = result + '       </tr>';
 			   				}
@@ -2366,10 +2395,18 @@ function requirementPipelineSC(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
 							           
-					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+							           if(report.submissionStatus == 'REJECTED'){
+							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+							        	   }		  
+							           }else{
+							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+								           result = result + '</div></td>';
+							           }
+							           
 						           result = result + '</div></td>';
 							           
-							          
 						           result = result + '       </tr>';
 			   				}
 				           
@@ -2528,7 +2565,16 @@ function requirementPipelineIN(requirementId,submissionType){
 						        	   result = result + '<td><div><span>--</span></div></td>'; 
 						           }
 
-					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+							           if(report.submissionStatus == 'REJECTED'){
+							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+							        	   }		  
+							           }else{
+							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+								           result = result + '</div></td>';
+							           }
+							           
 						           result = result + '</div></td>';
 						           result = result + '       </tr>';
 			   				}
@@ -2708,7 +2754,15 @@ function requirementPipelineOffer(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     } 
 
-					        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+							           if(report.submissionStatus == 'REJECTED'){
+							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+							        	   }		  
+							           }else{
+							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+								           result = result + '</div></td>';
+							           }
 						           result = result + '</div></td>';
 							          
 						           result = result + '       </tr>';
@@ -2901,16 +2955,14 @@ function requirementPipelineRejected(requirementId,submissionType){
 							        	   }
 							           }
 							        }
-							           
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	   } 
-
 						           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
-					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submittedBy+'</span>';
+						           result = result + '<td><div class="tblwidth-150"><span>'+report.createdUser+'</span>';
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
@@ -3207,6 +3259,25 @@ function assignedMemberList(requirementId){
 </script>
 
 
+
+<script type="text/javascript">
+function requirementRecommendations(requirementId){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/getRecommendationsCountBasedOnRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,   
+          success :function(data) {
+        	  for(var i = 0 ; i<= data ; i++){
+        		  requirementRecommendationsUsingDataTablesPagination(i,requirementId);
+        	  }
+         },
+     }); 
+	 
+	
+}
+</script>
+
+
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
 	$("#actionsDiv" ).hide();
@@ -3214,7 +3285,8 @@ function requirementRecommendations(requirementId){
 	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
     type : "POST",
-     url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+     //url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&count="+count,        
+     url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
      success :function(data) {
     	 var json = JSON.parse(data);
     	    var result = '';
@@ -3247,9 +3319,12 @@ function requirementRecommendations(requirementId){
 		    result = result +'<thead>';
 		    result = result +'<tr>';
 		    result = result +'<th>Name</th>';
+		    result = result +'<th>Email</th>';
+		    result = result +'<th>City</th>';
 		    result = result +'<th>Ph. No</th>';
 		    result = result +'<th style="width:50px;">Resume</th>';
 		    result = result +'<th>Number of req</th>';
+		    result = result +'<th>Updated Date</th>';
 		    result = result +'<th>Score</th>';
 		    //result = result +'<th>Action</th>';
 		    result = result +'</tr>';
@@ -3271,10 +3346,22 @@ function requirementRecommendations(requirementId){
 		    result = result +'<tr>';
 		    result = result + '<td><div onclick="clientSideBar('+report.candidateId+');" class="proj_show"><span>'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
-		    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
-		    	result = result +'<td class="text-center"><div><span>'+report.mobilePhone+'</span></div></td>';
+		    if(report.email != null && report.email !='' && report.email !='undefined'){
+		    	result = result +'<td><div title='+report.email+'><span>'+report.email+'</span></div></td>';
 		    }else{
-		    	result = result +'<td class="text-center"><div><span>--</span></div></td>';
+		    	result = result +'<td><div><span>--</span></div></td>';
+		    }
+		    
+		    if(report.city != null && report.city !='' && report.city !='undefined'){
+		    	result = result +'<td><div><span>'+report.city+'</span></div></td>';
+		    }else{
+		    	result = result +'<td><div><span>--</span></div></td>';
+		    }
+		    
+		    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
+		    	result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
+		    }else{
+		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
 		    
 		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
@@ -3283,25 +3370,14 @@ function requirementRecommendations(requirementId){
 				result = result +'<td class="text-center"><div><span>--</span></div></td>';
 			} 
 		   result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
-		   /*  if(report.requirementSubmisstions.length > 0){
-		    	result = result +'<div class="tooltip_div">';
-			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
-			    result = result +' <thead><tr><th>Requirement Name</th> <th>Stage</th></tr></thead>';
-			    result = result +'<tbody>';
-			    for(var j=0;j<report.requirementSubmisstions.length;j++){
-			    	 var sub = report.requirementSubmisstions[j];
-			    	 if(sub.requirementName != null && sub.requirementName !='' && sub.requirementName !='undefined' && sub.requirementStage != null && sub.requirementStage !='' && sub.requirementStage !='undefined'){
-			    		 result = result +'<tr><td><span>'+sub.requirementName+'</span></td> <td><span>'+sub.requirementStage+'</span></td></tr>'; 
-			    	 }else{
-			    		 result = result +'<tr><td><span>--</span></td> <td><span>--</span></td></tr>';
-			    	 }
-			          
-			    } 
-			    result = result +'</tbody>';
-			    result = result +' </table>';
-			    result = result +' </div>'; 
-		    } */
 		    result = result +' </div></td>';
+		    
+		    if(report.updatedDate != null && report.updatedDate !='' && report.updatedDate !='undefined'){
+		    	result = result +'<td><div><span>'+report.updatedDate+'</span></div></td>';
+		    }else{
+		    	result = result +'<td><div><span>--</span></div></td>';
+		    }
+		    
 		    result = result +'<td class="text-center"><div class="show_scroe"><span>'+report.candidateScore+'%</span>';
 		    result = result +'<div class="scroe">';
 		    
@@ -3488,17 +3564,51 @@ function clientSideBar(candidateId){
 	             			 	}else{
 	             			 		city = '';
 	             			 	}
+	         			 	
+	         			 	if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
+	         			 		currentRate = json.currentRate+',';
+	         			 	}else{
+	         			 		currentRate = '';
+	         			 	}
+	         			 	
+	         			 	if(json.rateType != null && json.rateType != '' && json.rateType != 'undefined'){
+	         			 		rateType = json.rateType;
+	         			 	}else{
+	         			 		rateType = '';
+	         			 	}
+	         			 	
+	         			 	if(json.currentRateType != null && json.currentRateType != '' && json.currentRateType != 'undefined'){
+	         			 		currentRateType = json.currentRateType;
+	         			 	}else{
+	         			 		currentRateType = '';
+	         			 	}
+	         			 	
+	         			 	if(json.currentRateCurrency != null && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefined'){
+	         			 		currentRateCurrency = json.currentRateCurrency+',';
+	         			 	}else{
+	         			 		currentRateCurrency = '';
+	         			 	}
+	         			 	
+	         			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
+	         			 		expectedRate = json.expectedRate+',';
+	         			 	}else{
+	         			 		expectedRate = '';
+	         			 	}
+
+	         			 	if(json.expectedRateCurrencey != null && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefined'){
+	         			 		expectedRateCurrencey = json.expectedRateCurrencey+',';
+	         			 	}else{
+	         			 		expectedRateCurrencey = '';
+	         			 	}
+	         			 	
+	         			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
+		                		 lastName  = json.lastName;
+		                	 }else{
+		                		 lastName = "";
+		                	 }
 			             
-	                	       var result = "";
-	                	 
-	                	 if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
-	                		 lastName  = json.lastName;
-	                	 }else{
-	                		 lastName = "";
-	                	 }
+	                	 var result = "";
 	                	 result = result+'<div id="popUp" ></div>  ';
-	                	
-	                	 
 	                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
 			             result = result+'  <div class="profile_details clearfix" style="margin-bottom:20px;">';
 			             result = result+'               <div class="col-md-6">';
@@ -3521,10 +3631,6 @@ function clientSideBar(candidateId){
 					     } 
 						 result = result+'  </div>';
 						 result = result+'  </div>';
-						 /*  result = result+'  <div class="pull-right" style="position:relative; top:10px; right:-10px;">';
-						 result = result+'  <a href="#" title="Save"><i class="fa fa-check-circle" onClick="saveCandidateImage('+candidateId+');" ></i></a>';
-						 result = result+'  <a href="#" title="Close"><i class="fa fa-close text-danger"></i></a>';
-						 result = result+'  </div>'; */
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
@@ -3532,14 +3638,6 @@ function clientSideBar(candidateId){
 						 result = result+' </div>';
 						 result = result+' </div>';
 						 result = result+'</form>';
-						  
-						  
-			             /*  result = result+'                     <div class="media-left image-parent">';
-			             result = result+'                     <div class="imageParent">'; */
-			             /* result = result+'                     	<img src="./images/24.jpg" alt="candidate" title="Candidate">'; */
-			             /* result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>"  alt="Profile Image" class="img-circle img-responsive">';
-			             result = result+'                     </div>';
-			             result = result+'                     </div>'; */
 			             result = result+'                     <div class="media-body candidate-details">';
 			             
 			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
@@ -3593,16 +3691,9 @@ function clientSideBar(candidateId){
 			                                                  
 			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
 			             
-			                                                  if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.currentRate+'/Per Hour - Current Rate / Salary</li>';
-			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-rupee"></i>----</li>';                                    
-			                                                  }
-			                                                  if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.expectedRate+'/Per Hour - Expected Rate / Salary</li>';
-			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-rupee"></i>----</li>';                                  	  
-			                                                  }
+			             result = result+'                   <li><i class="fa fa-money"></i>'+currentRateCurrency+''+currentRate+''+currentRateType+'</li>';
+			             
+			             result = result+'                   <li><i class="fa fa-money"></i>'+expectedRateCurrencey+''+expectedRate+''+rateType+'</li>';
 			             result = result+'                 </ul>';
 			             result = result+'               </div>';
 			             result = result+'			</div>';

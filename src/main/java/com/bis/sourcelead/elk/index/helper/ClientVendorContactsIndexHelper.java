@@ -30,7 +30,7 @@ public class ClientVendorContactsIndexHelper {
 			clientVendorContactsIndex.setInvitationStatus(orgSpoc.getInvitationStatus());
 			clientVendorContactsIndex.setSpocStatus(orgSpoc.getSpocStatus());
 			clientVendorContactsIndex.setSpocUserId(orgSpoc.getSpocUser().getId());
-			
+			clientVendorContactsIndex.setStatus(orgSpoc.getStatus());
 			User ownerUser = userService.getUserById(orgSpoc.getOwnerUser().getId());
 			
 			

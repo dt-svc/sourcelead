@@ -73,7 +73,13 @@ public class VendorController {
 
 	/* This method is used for landing page of vendors tab. So, who has vendors tab access they can see vendors list. No preAuthorize for this method */
 	@RequestMapping(value = "/vendorsList")
-	public ModelAndView vendorsList(HttpServletRequest request,@RequestParam(value="searchResult", required=false)String searchResult,@RequestParam(value="searchValue", required=false)String searchValue,@RequestParam(value="searchType", required=false)String searchType) throws Exception {
+	public ModelAndView vendorsList(HttpServletRequest request,@RequestParam(value="searchResult", required=false)String searchResult,
+			@RequestParam(value="searchValue", required=false)String searchValue,
+			@RequestParam(value="searchType", required=false)String searchType,
+			@RequestParam(value="responderLocationId", required=false)String responderLocationId,
+			@RequestParam(value="orgRelationId", required=false)String orgRelationId,
+			@RequestParam(value="orgName", required=false)String orgName,
+			@RequestParam(value="vendorKeyword", required=false)String vendorKeyword) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -93,6 +99,12 @@ public class VendorController {
 		List<Countries> countryList = countriesService.getAllCountries();
 		model.addObject("countryList", countryList);
 		
+		if(null != vendorKeyword && !"".equalsIgnoreCase(vendorKeyword) &&  vendorKeyword.equalsIgnoreCase("vendorSearch")){
+			model.addObject("vendorKeyword",vendorKeyword);
+			model.addObject("responderLocationId",responderLocationId);
+			model.addObject("orgRelationId",orgRelationId);
+			model.addObject("orgName",orgName);
+		}
 		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalVendorList")){
 		    model.addObject("universalVendorList", "universalVendorList");
 		    model.addObject("searchValue",searchValue);
@@ -137,6 +149,13 @@ public class VendorController {
 			model.addObject("msg", msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "vendorContactCreateMsg");
 		}
+		
+		if(msg == null){
+			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "vendorImport");
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "vendorImport");
+		}
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -278,7 +297,7 @@ public class VendorController {
 				return "upload/uploadClientForm";
 			}
 			
-			
+			SourceLeadSessionManager.setSessionAttribute(request, "vendorImport", "Success!! New vendors created ");
 			return "redirect:/vendorsList";
 			
 		}
