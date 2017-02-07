@@ -104,7 +104,11 @@ public class ClientController {
 	
 	/* This method is used for landing page of clients tab. So, who has client tab access they can see clients list. No preAuthorize for this method */
 	 @RequestMapping(value = "/clientDashboard")
-		public ModelAndView clientDashboard(HttpServletRequest request,@RequestParam(value = "searchResult", required = false) String searchResult,@RequestParam(value = "searchValue", required = false) String searchValue) throws Exception {
+		public ModelAndView clientDashboard(HttpServletRequest request,@RequestParam(value = "searchResult", required = false) String searchResult,@RequestParam(value = "searchValue", required = false) String searchValue,
+				@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
+				@RequestParam(value = "orgRelationId", required = false) String orgRelationId,
+				@RequestParam(value = "orgName", required = false) String orgName,
+				@RequestParam(value = "clientKeyword", required = false) String clientKeyword) throws Exception {
 		 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -114,6 +118,13 @@ public class ClientController {
 			if(null != searchResult && !searchResult.equalsIgnoreCase("") && searchResult.equals("clientSearchResult")){
 				model.addObject("clientSearchResult","clientSearchResult");
 				model.addObject("searchValue",searchValue);
+			}
+			
+			if(null != clientKeyword && !clientKeyword.equalsIgnoreCase("") && clientKeyword.equals("clientSearch")){
+				model.addObject("responderLocationId",responderLocationId);
+				model.addObject("clientKeyword",clientKeyword);
+				model.addObject("orgRelationId",orgRelationId);
+				model.addObject("orgName",orgName);
 			}
 			
 			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
