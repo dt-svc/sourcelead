@@ -40,8 +40,8 @@ overflow-x: auto;
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
-	     <div class="success_pop" id="selector1" style="display: none;">
- 			<i class="fa fa-check-circle"></i><span id="msgDiv1"></span>
+	     <div class="success_pop" id="venselector" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="venmsgDiv"></span>
        </div>
           <div class="pull-left">
             <h2>Vendors<span class="select-fild">
@@ -1346,9 +1346,9 @@ function saveReason1(spocId, orgRelationID){
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
 		    success: function(data) {
-		    	 $("#selector1").removeAttr("style");
-	  			 $("#selector1").css({ display: "block" });
-	  			 $("#msgDiv").html("vendor contact removed");
+		    	 $("#venselector").removeAttr("style");
+	  			 $("#venselector").css({ display: "block" });
+	  			 $("#venmsgDiv").html("vendor contact removed");
 	  			 $("#popUp").empty();
 	 			 $(".project_inn_mask").fadeOut(200);
    			    //vendorContactList(orgRelationID);
@@ -1964,9 +1964,9 @@ function acceptInvitation(spocId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
-		    	$("#selector1").removeAttr("style");
-    			$("#selector1").css({ display: "block" });
-    			$("#msgDiv1").html("Accept Invitation Successfully");
+		    	$("#venselector").removeAttr("style");
+    			$("#venselector").css({ display: "block" });
+    			$("#venmsgDiv").html("Accept Invitation Successfully");
 		    	/* getVendorContactLists(); */
 		    	 getVendorContactListsELK();
 		    	msgFadein();
@@ -1982,9 +1982,9 @@ function rejectInvitation(spocId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
-		    	$("#selector1").removeAttr("style");
-    			$("#selector1").css({ display: "block" });
-    			$("#msgDiv1").html("Reject Invitation Successfully");
+		    	$("#venselector").removeAttr("style");
+    			$("#venselector").css({ display: "block" });
+    			$("#venmsgDiv").html("Reject Invitation Successfully");
 		    	/* getVendorContactLists(); */
 		    	 getVendorContactListsELK();
 		    	msgFadein();
@@ -2156,9 +2156,9 @@ function exportVendorContactToExcel(){
 <!-- Show success message after form submission script -->
 <script>
 	function msgFadein() {
-		$("#selector1").fadeIn(200);
+		$("#venselector").fadeIn(200);
     setTimeout(function(){ 
-	    	$('#selector1').fadeOut('slow'); }, 300);
+	    	$('#venselector').fadeOut('slow'); }, 300);
 	}
 </script> 
 <!-- End -->
