@@ -3259,6 +3259,25 @@ function assignedMemberList(requirementId){
 </script>
 
 
+
+<script type="text/javascript">
+function requirementRecommendations(requirementId){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/getRecommendationsCountBasedOnRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,   
+          success :function(data) {
+        	  for(var i = 0 ; i<= data ; i++){
+        		  requirementRecommendationsUsingDataTablesPagination(i,requirementId);
+        	  }
+         },
+     }); 
+	 
+	
+}
+</script>
+
+
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
 	$("#actionsDiv" ).hide();
@@ -3266,7 +3285,8 @@ function requirementRecommendations(requirementId){
 	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
     type : "POST",
-     url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+     //url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&count="+count,        
+     url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
      success :function(data) {
     	 var json = JSON.parse(data);
     	    var result = '';
@@ -3299,9 +3319,12 @@ function requirementRecommendations(requirementId){
 		    result = result +'<thead>';
 		    result = result +'<tr>';
 		    result = result +'<th>Name</th>';
+		    result = result +'<th>Email</th>';
+		    result = result +'<th>City</th>';
 		    result = result +'<th>Ph. No</th>';
 		    result = result +'<th style="width:50px;">Resume</th>';
 		    result = result +'<th>Number of req</th>';
+		    result = result +'<th>Updated Date</th>';
 		    result = result +'<th>Score</th>';
 		    //result = result +'<th>Action</th>';
 		    result = result +'</tr>';
@@ -3323,10 +3346,22 @@ function requirementRecommendations(requirementId){
 		    result = result +'<tr>';
 		    result = result + '<td><div onclick="clientSideBar('+report.candidateId+');" class="proj_show"><span>'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
-		    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
-		    	result = result +'<td class="text-center"><div><span>'+report.mobilePhone+'</span></div></td>';
+		    if(report.email != null && report.email !='' && report.email !='undefined'){
+		    	result = result +'<td><div title='+report.email+'><span>'+report.email+'</span></div></td>';
 		    }else{
-		    	result = result +'<td class="text-center"><div><span>--</span></div></td>';
+		    	result = result +'<td><div><span>--</span></div></td>';
+		    }
+		    
+		    if(report.city != null && report.city !='' && report.city !='undefined'){
+		    	result = result +'<td><div><span>'+report.city+'</span></div></td>';
+		    }else{
+		    	result = result +'<td><div><span>--</span></div></td>';
+		    }
+		    
+		    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
+		    	result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
+		    }else{
+		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
 		    
 		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
@@ -3335,25 +3370,14 @@ function requirementRecommendations(requirementId){
 				result = result +'<td class="text-center"><div><span>--</span></div></td>';
 			} 
 		   result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
-		   /*  if(report.requirementSubmisstions.length > 0){
-		    	result = result +'<div class="tooltip_div">';
-			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
-			    result = result +' <thead><tr><th>Requirement Name</th> <th>Stage</th></tr></thead>';
-			    result = result +'<tbody>';
-			    for(var j=0;j<report.requirementSubmisstions.length;j++){
-			    	 var sub = report.requirementSubmisstions[j];
-			    	 if(sub.requirementName != null && sub.requirementName !='' && sub.requirementName !='undefined' && sub.requirementStage != null && sub.requirementStage !='' && sub.requirementStage !='undefined'){
-			    		 result = result +'<tr><td><span>'+sub.requirementName+'</span></td> <td><span>'+sub.requirementStage+'</span></td></tr>'; 
-			    	 }else{
-			    		 result = result +'<tr><td><span>--</span></td> <td><span>--</span></td></tr>';
-			    	 }
-			          
-			    } 
-			    result = result +'</tbody>';
-			    result = result +' </table>';
-			    result = result +' </div>'; 
-		    } */
 		    result = result +' </div></td>';
+		    
+		    if(report.updatedDate != null && report.updatedDate !='' && report.updatedDate !='undefined'){
+		    	result = result +'<td><div><span>'+report.updatedDate+'</span></div></td>';
+		    }else{
+		    	result = result +'<td><div><span>--</span></div></td>';
+		    }
+		    
 		    result = result +'<td class="text-center"><div class="show_scroe"><span>'+report.candidateScore+'%</span>';
 		    result = result +'<div class="scroe">';
 		    
