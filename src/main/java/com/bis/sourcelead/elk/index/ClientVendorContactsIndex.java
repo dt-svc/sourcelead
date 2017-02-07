@@ -63,6 +63,8 @@ public class ClientVendorContactsIndex implements Serializable {
 	
 	private String responderType;
 	
+	private String status;
+	
 	//dummy
 	private Long spocLocationId;
 	
@@ -292,6 +294,14 @@ public class ClientVendorContactsIndex implements Serializable {
 
 	public void setResponderType(String responderType) {
 		this.responderType = responderType;
+	}
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public Long getSpocLocationId() {

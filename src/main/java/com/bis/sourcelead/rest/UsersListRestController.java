@@ -193,9 +193,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				if(searchHits != null && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
-						String json = hit.getSourceAsString();
+						StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
 						mapper.setDateFormat(df);
-						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+						UserIndex userIndex = mapper.readValue(json1.toString(), UserIndex.class);
 						usersList.add(userIndex);
 					}
 				}
@@ -210,8 +210,17 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	}
 	
 	@RequestMapping(value = "/searchUser", method = RequestMethod.POST)
-	 public String searchUser(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+	 public String searchUser(@RequestParam(value = "json", required = false) String json,
+			 @RequestParam(value="offset", required=false) Integer offset,
+			 @RequestParam(value="userRole", required=false) String userRole,
+			 @RequestParam(value="searchByName", required=false) String searchByName,
+			 @RequestParam(value="userState", required=false) String userState,
+			 @RequestParam(value="loginUserRole", required=false) String loginUserRole,
+			 MultipartHttpServletRequest request) throws Exception {
 
+		
+				
+				
 		 MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
 			if(itrator.hasNext()){
@@ -227,10 +236,21 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			 
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
-				Long maxResults = userRoleService.getUsersCountByOrgLocationID(loginOrgLocation.getId());
+			 Integer maxResults =  Constants.MAX_RESULTS_TEN;
 
-			 
-			 
+			if(null != userState  && !"".equalsIgnoreCase(userState)){
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userStatus", userState));
+				}
+			if(null != userRole  && !"".equalsIgnoreCase(userRole)){
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userRoleId", userRole));
+				}
+			if(null != searchByName  && !"".equalsIgnoreCase(searchByName)){
+				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("email", searchByName));
+				/*boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("lastName", searchByName));
+				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("firstName", searchByName));*/
+				}
+			
+		 
 			//Exclude Keyword
 			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 			 if(null != excludeKeyWordArray && !excludeKeyWordArray.isEmpty()){
@@ -349,13 +369,13 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				List<UserIndex> usersList = new ArrayList<UserIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,offset,maxResults.intValue(),boolQueryBuilder).getHits();
 				if(null != searchHits && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
-						json = hit.getSourceAsString();
+						StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
 						mapper.setDateFormat(df);
-						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+						UserIndex userIndex = mapper.readValue(json1.toString(), UserIndex.class);
 						usersList.add(userIndex);
 					}
 				}

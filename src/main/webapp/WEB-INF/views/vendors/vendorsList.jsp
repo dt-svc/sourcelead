@@ -36,7 +36,7 @@ overflow-x: auto;
         <section class="content-header clearfix">
         <div id="msgDiv" ></div>
 		<c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector" style="display: block;">
+	        <div class="success_pop" id="selector" style="display: none;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
@@ -56,9 +56,10 @@ overflow-x: auto;
         </section>
 		<!-- Project -->
 		 <div id="loading"></div>
-<div class="timesheet_out timesheet_background">
+
  <!-- Advanced Search -->
-  <div class="pull-left cand-advsrch">
+  <div class="timesheet_bg">
+  <div class="cand-advsrch">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
           <form:form id="vendorList_form" name="vendorList_form"  enctype='multipart/form-data' >
@@ -263,12 +264,14 @@ overflow-x: auto;
             </form:form>
           </div>
         </div>
+        </div>
 <!-- Advanced Search Ends -->
 
 
 
 <div class="clearfix"></div>
-<div class="vendor_wrap vendor_wrap_shadownone" style="overflow-x: auto;" >
+<div class="timesheet_out timesheet_background">
+<div class="vendor_wrap vendor_wrap_shadownone">
 
      
 
@@ -728,7 +731,7 @@ overflow-x: auto;
 <script> 
 $(document).ready(function(){
 	//getVendorContactLists();
-	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}","${responderLocationId}","${orgRelationId}","${orgName}","${vendorKeyword}");
+	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}");
     listChange("listbyContact");
 	document.getElementById('listOfVendors').value = 'listbyContact';
 });
@@ -758,8 +761,8 @@ function preparedVendorsListFromElk(data){
 		   		
 		   		var report = json[i];
 		   		
-		   		releasedJobsCountByOrgRelationId(report.id);
-		   		numberOfContactsByOrgRelationId(report.id);
+		   		releasedJobsCountByOrgRelationId(report.orgRelationId);
+		   		numberOfContactsByOrgRelationId(report.orgRelationId);
 		   		
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
@@ -810,8 +813,8 @@ function preparedVendorsListFromElk(data){
 		   		}
 				
 		   	    result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
-				result = result +' <td><div id="releasedJobsCount'+report.id+'">---</div></td>';
-				result = result +'<td><div id="noOfContactsCount'+report.id+'">---</div></td>';
+				result = result +' <td><div id="releasedJobsCount'+report.orgRelationId+'">---</div></td>';
+				result = result +'<td><div id="noOfContactsCount'+report.orgRelationId+'">---</div></td>';
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
 				}
@@ -968,6 +971,7 @@ function pagination1(){
 	document.getElementById("vendorContactList").style.display="none";
     $('#vendorList').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1342,11 +1346,15 @@ function saveReason1(spocId, orgRelationID){
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
 		    success: function(data) {
-		    	$("#popUp").empty();
-   			 	$(".project_inn_mask").fadeOut(200);
+		    	 $("#selector1").removeAttr("style");
+	  			 $("#selector1").css({ display: "block" });
+	  			 $("#msgDiv").html("vendor contact removed");
+	  			 $("#popUp").empty();
+	 			 $(".project_inn_mask").fadeOut(200);
    			    //vendorContactList(orgRelationID);
    			    /*  getVendorContactLists(); */
    			     getVendorContactListsELK();
+   			  msgFadein();
 		    }
 	   });
 	}else{
@@ -1382,6 +1390,7 @@ function pagination(){
 	 document.getElementById("vendorList_paginate").style.display="none";  */
     $('#vendorContactList').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -2153,6 +2162,12 @@ function exportVendorContactToExcel(){
 	}
 </script> 
 <!-- End -->
+
+<script>
+  $("#selector").fadeIn(200);
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
+
 <script>
 	function editVendorMsgMsgFadein() {
 		$("#editVendorMsg").fadeIn(200);
@@ -2264,6 +2279,7 @@ function numberOfContactsByOrgRelationId(orgRelationId){
     	dataType: "json",
     	 url: '${sourceleadUrl}'+"/numberOfContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
         success: function(data) {
+        	
         	var json = JSON.parse(data);
         	$('#noOfContactsCount'+orgRelationId).empty();
         	$('#noOfContactsCount'+orgRelationId).append(data);
@@ -2308,7 +2324,7 @@ function numberOfContactsByOrgRelationId(orgRelationId){
 
 
 <script>
-function vendorListCheck(searchValue,universalvendorSearchList,searchType,responderLocationId,orgRelationId,orgName,vendorKeyword){
+function vendorListCheck(searchValue,universalvendorSearchList,searchType){
     if(universalvendorSearchList=="universalVendorList")	 {
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -2320,10 +2336,6 @@ function vendorListCheck(searchValue,universalvendorSearchList,searchType,respon
           
      }); 
   }
-    if(vendorKeyword == "vendorSearch" && vendorKeyword != null && vendorKeyword !="" && vendorKeyword != 'undefined'){
-    	vendorSideBar(responderLocationId,orgRelationId,orgName);
-    	getVendorContactListsELK();
-    }
 else{
 	getVendorContactListsELK();
 	}

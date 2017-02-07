@@ -220,6 +220,7 @@ public class Constants {
 	public static int TAB_TIMESHEET_APPROVAL = 6;
 	public static int TAB_REQUIREMENT = 8;
 	public static int TAB_USER = 2;
+	public static int TAB_PROJECTS = 3;
 	
 	public static  String Dashboard = "Dashboard";
 	public static  String Users = "Users";
@@ -429,7 +430,7 @@ public class Constants {
     public static String THREE_MONTH_AGO ="3 Months Ago";
     public static String ALL_RECORDS ="All";
     
-    
+
     public static String SCORE_20 = "20";
     public static String SCORE_10 = "10";
     
