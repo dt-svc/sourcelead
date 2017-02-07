@@ -387,7 +387,7 @@ public class Constants {
     
     public static String ELK_CAMPAIGN_ID_PREFIX = "CAMPAIGN";
     
-    public static String CANDIDATE = "Candidate";
+    public static String CANDIDATE = "Candidate"; 
     
     public static String CONSULTANT = "Consultant";
     
@@ -446,6 +446,10 @@ public class Constants {
     public static String RATE_TYPE_MONTHLY = "Monthly";
     public static String RATE_TYPE_BI_MONTHLY = "Bi-Monthly";
    
+    public static String PROJECT = "Projects";
+    public static String USER = "User"; 
+    public static String REQUIREMENT = "Requirement";
+    public static String USERS = "Users"; 
 
    
 }
