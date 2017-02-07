@@ -60,7 +60,14 @@ public class ProjectsDashboardController {
 	
 	@RequestMapping(value = "/projectDashboard")
 	public ModelAndView projectDashboard(@RequestParam(value="searchResult", required=false) String searchResult,
-			@RequestParam(value="searchValue", required=false) String searchValue,HttpServletRequest request) throws Exception {
+			@RequestParam(value="searchValue", required=false) String searchValue,
+			@RequestParam(value="projectId",required=false) Long projectId,
+			@RequestParam(value="projectName",required=false) String projectName,
+			@RequestParam(value="startDate",required=false) String startDate,
+			@RequestParam(value="endDate",required=false) String endDate,
+			@RequestParam(value="status",required=false) String status,
+			@RequestParam(value="projectKeyword",required=false) String projectKeyword,
+			HttpServletRequest request) throws Exception {
            logger.debug("projectDashboard");
            
 		ModelAndView model = new ModelAndView();
@@ -86,6 +93,16 @@ public class ProjectsDashboardController {
         	model.addObject("searchValue", searchValue);
         	model.addObject("searchResult", searchResult);
         }
+        
+        if(null != projectKeyword && !"".equalsIgnoreCase(projectKeyword) &&  projectKeyword.equalsIgnoreCase("projectSearch")){
+			model.addObject("projectKeyword",projectKeyword);
+			model.addObject("projectId",projectId);
+			model.addObject("projectName",projectName);
+			model.addObject("startDate",startDate);
+			model.addObject("endDate",endDate);
+			model.addObject("status",status);
+		}
+
         
         List<Long> projectIds = projectsService.getProjectIdsByOrgLocationsId(loginOrgLocations.getId());
         
