@@ -3365,11 +3365,11 @@ function requirementRecommendations(requirementId){
 		    }
 		    
 		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
-		  	   result = result +'<td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.candidateId+'\"></a></span></div></td>';
+		  	   result = result +'<td class="text-center"><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.candidateId+'\"></a></span></div></td>';
 			  }else{
-				result = result +'<td><div><span>--</span></div></td>';
+				result = result +'<td class="text-center"><div><span>--</span></div></td>';
 			} 
-		   result = result +'<td><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
+		   result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
 		    result = result +' </div></td>';
 		    
 		    if(report.updatedDate != null && report.updatedDate !='' && report.updatedDate !='undefined'){

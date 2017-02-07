@@ -440,7 +440,7 @@ public class Constants {
     public static String NOTICE_PERIOD_3MONTH = "3 Month";
     public static String NOTICE_PERIOD_IMMEDIATELY = "Immediately available";
     
-    public static String EXPERIENCE_YEARS = "26";
+    public static String EXPERIENCE_26YEARS = "26";
     public static String RATE_TYPE_HOURLY = "Hourly";
     public static String RATE_TYPE_WEEKLY = "Weekly";
     public static String RATE_TYPE_BI_WEEKLY = "Bi-weekly";

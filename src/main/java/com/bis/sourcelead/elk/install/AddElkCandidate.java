@@ -95,7 +95,7 @@ public class AddElkCandidate{
 					
 					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_YEARS"))){
 						if(rs.getString("EXPERIENCE_YEARS").equalsIgnoreCase("25+")){
-							candidateIndex.setExperienceYears(Constants.EXPERIENCE_YEARS);
+							candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS);
 						}
 						else{
 							candidateIndex.setExperienceYears(rs.getString("EXPERIENCE_YEARS"));
