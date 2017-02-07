@@ -66,13 +66,13 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	@Override
 	public OrgSpoc addOrgSpoc(OrgSpoc orgSpoc) throws Exception {
 		
-		OrgSpoc org = orgSpocDao.addOrgSpoc(orgSpoc);
+		OrgSpoc orgSpocElk = orgSpocDao.addOrgSpoc(orgSpoc);
 		
 		 //Elastic Search Document Saving
-		  ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
+		  ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpocElk);
 		  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
 		
-		return  org;
+		return  orgSpocElk;
 	}
 
 	/**

@@ -14,11 +14,14 @@
 text-align:left;
 }
 </style>
+
+
+<!-- Edit Recommended Candidate Script Start Here -->
+
 <script>
 function editCandidate(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var loginCountryName = '${loginCountryName}';
-	  
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -40,6 +43,58 @@ function editCandidate(candidateId){
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
             		 else{   
+            			 
+            			 var lastName = '';
+         			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
+         			 		lastName = json.lastName;            			 		
+         			 	}
+         			 	
+         			 	
+     			 	    var mobilePhone = '';
+         			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+         			 		mobilePhone = json.mobilePhone;            			 		
+         			 	}
+         			 	
+         			 	var alternateMobilePhone = '';
+         			 	if(json.alternateMobilePhone != null && json.alternateMobilePhone != '' && json.alternateMobilePhone != 'undefined'){
+         			 		alternateMobilePhone = json.alternateMobilePhone;            			 		
+         			 	}
+         			 	
+         			 	var designation = '';
+         			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+         			 		designation = json.designation;            			 		
+         			 	}
+         			 	var currentRate = '';
+         			 	if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
+         			 		currentRate = json.currentRate;            			 		
+         			 	}
+         			 	var expectedRate = '';
+         			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
+         			 		expectedRate = json.expectedRate;            			 		
+         			 	}
+         			 	var experienceYears = '';
+         			 	if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
+         			 		experienceYears = json.experienceYears;            			 		
+         			 	}
+         			 	
+         			 	var experienceMonths = '';
+         			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
+         			 		experienceMonths = json.experienceMonths;            			 		
+         			 	}else{
+         			 		experienceMonths = '';  
+         			 	 }
+         			 	
+         			 	var designationOtherType = '';
+         			 	if(json.designationOtherType != null && json.designationOtherType != '' && json.designationOtherType != 'undefined'){
+         			 		designationOtherType = json.designationOtherType;            			 		
+         			 	}else{
+         			 		designationOtherType = '';  
+         			 	 }
+         			 	
+         			 	var summary = '';
+         			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
+         			 		summary = json.summary;            			 		
+         			 	}
 							var result ='';
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
@@ -50,23 +105,47 @@ function editCandidate(candidateId){
 							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_Space required">';
 							result = result + '		          </div>';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+json.lastName+'" placeholder="Last Name">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
+							
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email">';
-							result = result + '		          </div>';
+							
+							if(json.candidateType == 'Consultant'){
+							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email" readonly="true">';
+							}
+							
+							if(json.candidateType == 'Candidate'){
+								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email">';
+								}
+							result = result + '</div>';
+							
+							
+					
 							
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+json.mobilePhone+'" placeholder="Mobile">';
+							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+mobilePhone+'" placeholder="Mobile" field-name="Mobile" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">';
 							result = result + '</div>';
 							
 							result = result + '</div>';
 							
 							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6">';
+							result = result + '<input type="text" class="form-control input-sm" name="alternateMobilePhone"  value="'+alternateMobilePhone+'" placeholder="Alternative Number" field-name="Alternative Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">';
+							result = result + '</div>';
+							
+							result = result + '<div class="col-md-6">';
+							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" placeholder="Designation">';
+							result = result + '</div>';
+							
+							result = result + '</div>';
+							
+							
+							
+							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<select class="chosen-select form-control select-bg" name="country" id="countryw" value="'+json.country+'" field-name="Country">';
+							result = result + '<select class="chosen-select form-control select-bg" name="country" id="candidateCountry" value="'+json.country+'" field-name="Country">';
 							result = result + '</select>';
 							result = result + '</div>';
 							
@@ -76,23 +155,177 @@ function editCandidate(candidateId){
 							result = result + '<input type="hidden" name="updateCity" id="updateCity" value="'+json.city+'" />';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow">';
-							result = result + '<select  class="chosen-select form-control select-bg" name="state" value="'+json.state+'" id="state" field-name="State">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="state" value="'+json.state+'" id="candidateState" field-name="State">';
 							result = result + '</select>';
 							result = result + '</div>';
 							result = result + '</div>';
 							
+							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<select  class="chosen-select form-control select-bg" name="city" id="city" value="'+json.city+'" field-name="City">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="city" id="candidateCity" value="'+json.city+'" field-name="City">';
 							result = result + '</select>';
+							result = result + '</div>';
+							
+							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
+							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
+							result = result + '<option value="">Select</option>';
+							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
+							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
+							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
+							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'>2 Months</option>';
+							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'>3 Months</option>';
+							result = result + ' </select>';
+							result = result + ' </div>';
+							
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="clearfix mb10">';
+							
+                            result = result + '<div class="col-md-6 custom-fields">';
+							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
+							result = result + '<select class="form-control" id="designationType" name="designationType" field-name="Designation Type" onchange="updateDesignationType(this);">';
+							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
+							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
+							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
+							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'>Full Time</option>';
+							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
+							result = result + ' </select>';
+							result = result + '</div>';
+							
+							result = result + '</div>';
+							 
+							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
+							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Designation Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+							result = result + '</div>';
+						
+							result = result + '</div>';
+							
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6">';
+							result = result + '<div class="input-group er ratetype">';
+							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
+			                  
+							result = result + ' <select class="selct-picker" id="currentRateCurrency" name="currentRateCurrency">';
+							result = result + ' <option '+(json.currentRateCurrency == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
+							result = result + '<option   '+(json.currentRateCurrency == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
+							result = result + ' <option  '+(json.currentRateCurrency == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
+							result = result + '  <option '+(json.currentRateCurrency == "GPB" ? "selected" : '') +'><a href="#">GPB</a></option>';
+							result = result + '  <option '+(json.currentRateCurrency == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
+							result = result + '<option   '+(json.currentRateCurrency == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
+			                result = result + ' </select>';
+			                
+			                result = result + '</div>';
+							
+			                result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
+							
+							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
+							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Type">';
+							result = result + '<option value="">Rate Per</option>';
+							result = result + ' <option '+(json.currentRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
+							result = result + '<option  '+ (json.currentRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
+							result = result + '<option  '+(json.currentRateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
+							result = result + '<option  '+(json.currentRateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+							result = result + '<option  '+(json.currentRateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
+							result = result + '<option  '+(json.currentRateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
+							result = result + '<option '+(json.currentRateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
+							result = result + ' </select>';
+							result = result + '</div>';
+							
 							result = result + '</div>';
 							result = result + '</div>';
 							
-							result = result + '<div class="clearfix mb10 mt10">';
-							result = result + '<div class="col-md-12">';
-							result = result + '<textarea class="form-control input-sm" placeholder="Summary"  name="summary" rows="2" cols="0" > '+json.summary+'</textarea>';
-							//result = result + ''+json.summary+'</textarea>';
+							
+							result = result + '<div class="col-md-6">';
+							
+							result = result + '<div class="input-group er ratetype">';
+							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
+			                  
+							result = result + ' <select class="selct-picker" id="expectedRateCurrencey" name="expectedRateCurrencey">';
+							result = result + ' <option '+(json.expectedRateCurrencey == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
+							result = result + '<option   '+(json.expectedRateCurrencey == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
+							result = result + ' <option  '+(json.expectedRateCurrencey == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
+							result = result + '  <option '+(json.expectedRateCurrencey == "GPB" ? "selected" : '') +'><a href="#">GPB</a></option>';
+							result = result + '  <option '+(json.expectedRateCurrencey == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
+							result = result + '<option   '+(json.expectedRateCurrencey == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
+			                result = result + ' </select>';
+			                
+			                result = result + '</div>';
+							
+							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
+							
+							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
+							result = result + '<select class="selct-picker" id="rateType" name="rateType" field-name="Rate Type">';
+							result = result + '<option value="">Rate Per</option>';
+							result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
+							result = result + '<option  '+ (json.rateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
+							result = result + '<option  '+(json.rateType == "Biweekly" ? "selected" : '') +'>Bi-weekly</option>';
+							result = result + '<option  '+(json.rateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+							result = result + '<option  '+(json.rateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
+							result = result + '<option  '+(json.rateType == "BiMonthly" ? "selected" : '') +'>Bi-Monthly</option>';
+							result = result + '<option '+(json.rateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
+							result = result + ' </select>';
+							result = result + '</div>';
+							
+							result = result + '</div>';
+							result = result + '</div>';
+							result = result + '</div>';
+							
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6">';
+							result = result + '<div class="row">';
+							
+							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
+							
+							result = result + '<select  class="input-sm form-control" name="experienceYears"  id="experienceYears" field-name="Experience Years" onchange="javascript:disableMonths();">';
+							result = result + '<option value="">Select Year</option>';
+							
+							<c:forEach var="i" begin="0" end="24" >
+								result = result  +'<option value="${i}" '  + (json.experienceYears == "${i}" ? "selected" : '') +  '>${i}</option>';
+							</c:forEach>
+							
+							if(json.experienceYears == "25+"){
+								result = result  +'<option value="25+" '+ (json.experienceYears == "25+" ? "selected" : '') +'>25+</option>';
+							}else{
+								result = result  +'<option>25+</option>';
+							}
+							
+							result = result + '</select>';
+							result = result + '</div>';
+							
+							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
+							if(json.experienceYears == "25+"){
+							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
+							result = result + '<option  disabled>Select Months</option>';
+							
+							<c:forEach var="i" begin="0" end="11" >
+							 	result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
+						    </c:forEach> 
+							
+							
+							result = result + '</select>';
+							}else{
+								result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
+								result = result + '<option  disabled>Select Months</option>';
+								
+								<c:forEach var="i" begin="0" end="11" >
+								 result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
+							    </c:forEach>
+								
+								result = result + '</select>';
+							}
+							
+							result = result + '</div>';
+							
+							result = result + '</div>';
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="col-md-6">';
+							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
 							result = result + ' </div>';
-							result = result + '		        </div>';
+							result = result + '</div>';
+							result = result + '</div>';
 							result = result + '		        <div class="clearfix mr">';
 							result = result + '		          <div class="pull-right">';
 							result = result + '		            <button type="button"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
@@ -110,7 +343,9 @@ function editCandidate(candidateId){
 							
 							$(".edit-details").toggleClass("edit-details-active");
 							$(".collapse-div").removeClass("edit-details-active");
-							
+							updateDesignationType();
+							getAllCandidateCountries();
+							 getAllCandidateStates();
 							
 							$(function(){
 							    var config = {
@@ -120,16 +355,17 @@ function editCandidate(candidateId){
 									  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 									  '.chosen-select-width'     : {width:"95%"}
 									}
-							    $("#countryw").chosen();
-							    $("#state").chosen();
-							    $("#city").chosen();
+							    $("#candidateCountry").chosen();
+							    $("#candidateState").chosen();
+							    $("#candidateCity").chosen();
+							   
 							    
-							    $("#countryw").on('change', function (e) {
-							 	   getStatesw();
+							    $("#candidateCountry").on('change', function (e) {
+							 	   getAllCandidateStates();
 							    });
 							   
-							    $("#state").on('change', function (e) {
-							 	   getCitiesw();
+							    $("#candidateState").on('change', function (e) {
+							 	   getCandidateCities();
 							    });
 							   
 							    $('.chosen-select').each(function() {
@@ -158,50 +394,63 @@ function editCandidate(candidateId){
                    
               }); 
 		 }
-        getAllCountriesw(); 
+ getAllCandidateCountries();
 }
 </script> 
 
+
+<!-- Edit Recommended Candidate Script Ends Here -->
+
+
 <!-- Country,State,City Script Starts Here -->
 
-<script type="text/javascript">
-function getAllCountriesw(){
+ <script type="text/javascript">
+function getAllCandidateCountries(){
 	setTimeout(function(){ 
 	var countryName = $("#updateCountry").val();
+	var loginCountryName = '${loginCountryName}';
 	$.ajax({
     	type: "POST",
     	dataType: "json",
     	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
-        	$('#countryw').empty();
-        	$('#countryw').append('<option value="">---select---</option>');
+        	$('html #candidateCountry').empty();
+        	$('html #candidateCountry').append('<option value="">---select---</option>');
             for(var i=0;i<json.length;i++){
-            	if(json[i] == '${loginCountryName}'){
-            		$('#countryw').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            	if(json[i] == countryName){
+            		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            	}else if(json[i] == '${loginCountryName}' && countryName ==null && countryName ==''){
+            		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
-            	else{
-            		$('#countryw').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
+            	else{ 
+            		$('html #candidateCountry').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            	} 
             	
             }
-            $('#countryw').trigger("chosen:updated");
-            getStatesw();
+            
+            getAllCandidateStates();
+            $('html #candidateCountry').trigger("chosen:updated");
+           
         },
         error: function(e){
         }
     });
-	}, 100);
+	}, 75);
 } 
 </script>
-
-
+ 
 <script>
-function getStatesw(){
-	var countryName = $("#updateCountry").val();
+function getAllCandidateStates(){
+	
+var countryName = $("html #candidateCountry").val();
 	
 	//to set existing state value(Auto populate)
-	var stateName = $("#updateState").val();
+	var stateName = $("html #candidateState").val();
+	
+	if(stateName == null || stateName == 'undefined' || stateName == ''){
+		stateName = document.getElementById("updateState").value;
+	}
 	
 	//end state Auto populate
 	if(countryName != null && countryName != "" && countryName !="undefined"){
@@ -211,45 +460,46 @@ function getStatesw(){
 	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select---</option>');
+	        	$('html #candidateState').empty();
+	        	$('html #candidateState').append('<option value="">---select---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
-	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            		$('html #candidateState').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
 	            	}
 	            	else{ 
-	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            		$('html #candidateState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            	} 
 	            }
-	            $('#state').trigger("chosen:updated");
-	            getCitiesw();
+	            
+	            getCandidateCities();
+	            $('html #candidateState').trigger("chosen:updated");
+	            
 	        },
 	        error: function(e){
 	        }
 	    });
 	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---select---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
-        $('#city').trigger("chosen:updated");
+		$('html #candidateState').empty();
+    	$('html #candidateState').append('<option value="">---select---</option>');
+    	$('html #candidateState').trigger("chosen:updated");
+    	$('html #candidateCity').empty();
+    	$('html #candidateCity').append('<option value="">---select---</option>');
+        $('html #candidateCity').trigger("chosen:updated");
 	}
 }
-</script> 
+</script>  
 
 
 <script>
-function getCitiesw(){
+function getCandidateCities(){
 	
-   var countryName = $("#updateCountry").val();
+	var countryName = $("html #candidateCountry").val();
+	var stateName = $("html #candidateState").val();
 	
-	//to set existing state value(Auto populate)
-	var stateName = $("#updateState").val();
-	
-	//to set existing city value(Auto populate)
-	var cityName = $("#updateCity").val();
-	//end city Auto populate
+	var cityName = $("html #candidateCity").val();
+	if(cityName == null || cityName == 'undefined' || cityName == ''){
+		cityName = document.getElementById("updateCity").value;
+	}
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
@@ -258,47 +508,31 @@ function getCitiesw(){
 	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select---</option>');
+	        	$('html #candidateCity').empty();
+	        	$('html #candidateCity').append('<option value="">---select---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
-	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            		$('html #candidateCity').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
 	            	}
 	            	else{ 
-	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            		$('html #candidateCity').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            	} 
 	            }
-	            $('#city').trigger("chosen:updated");
+	            $('html #candidateCity').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
 	    });
 	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
-    	$('#city').trigger("chosen:updated");
+		$('html #candidateCity').empty();
+    	$('html #candidateCity').append('<option value="">---select---</option>');
+    	$('html #candidateCity').trigger("chosen:updated");
 	}
 }
-</script>
-
-<!-- <script>
-function updateValues(){
-	var str_array = sequentialApprover1.split(',');
-	for (var i = 0; i < str_array.length; i++) {
-	    str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	}
-	$("#sequentialApprover1").val(str_array).trigger("chosen:updated");
-}
-</script> -->
-
-
-    	    
-
+</script> 
 
 
 <!-- Country,State,City Script Ends Here -->
-
-
 
 <%-- 
      @author : Venkat Kesav
@@ -926,6 +1160,37 @@ function removeSkillById(candidateId, skillId){
 	} 
 </script>
 
-           
-           
+<%-- 
+@author : prasad k.
+If Experience Years 25+ when months will be Disabled 
+--%>        
+<script>
+ function disableMonths() {
+	
+         if ($("#experienceYears").val() == "25+"){
+             $("#experienceMonths").attr("disabled", true);
+             $("#experienceMonths").val("disabled", true);
+         }else{
+        	 $("#experienceMonths").attr("disabled", false); 
+		 }    
+ }
+</script>
   
+ <%-- 
+@author : prasad k.
+If designationType is 'Other' when designationOtherType will be open(text box) then enter designationOtherType also.
+--%>   
+<script>
+function updateDesignationType(){
+	
+	if(designationType.value == 'Other'){
+		  document.getElementById("designationTypeDiv").style.display="block";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+	}else{
+		document.getElementById("designationTypeDiv").style.display="none";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
+	}
+}
+</script>
