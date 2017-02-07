@@ -88,7 +88,7 @@ public class TaskDaoImpl implements TaskDao{
 		}
 		if(null != date && "" != date){
 			if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)){
-				tasksList = session.createQuery(query).setLong( "userId", userId).setString("strDate", strDate).setCacheable(true).list();
+				tasksList = session.createQuery(query).setLong( "userId", userId).setString("strDate", strDate).setLong( "OrgLocationId", OrgLocationId).setCacheable(true).list();
 			}else{
 				tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setString("strDate", strDate).setCacheable(true).list();	
 			}
