@@ -154,7 +154,7 @@ function editCandidate(candidateId){
 							result = result + '		          <div class="col-md-6">';
 							
 							if(json.candidateType == 'Consultant'){
-							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100>';
+							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
 							}
 							
 							if(json.candidateType == 'Candidate'){
