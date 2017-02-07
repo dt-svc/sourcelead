@@ -322,15 +322,19 @@
 						result = result + '</div>';
 						
 						if (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" &&  json.managerLevel1UserType != "Admin") { 
-							if (json.manager2 == null || json.manager2 == "" || json.manager2 == "undefined") { 
-								result = result + '<div class="col-md-2" id="level2Toggle">';
+							if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
+								result = result + '<div class="col-md-2" id="level2Toggle" style="display:none">';
 								result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
 								result = result + '</div>';
-								}/* else{
+								} else{
 									result = result + '<div class="col-md-2" id="level2Toggle" style="display:block">';
 									result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
 									result = result + '</div>';
-								}  */
+								} 
+						}else{
+							result = result + '<div class="col-md-2" id="level2Toggle" style="display:none">';
+							result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
+							result = result + '</div>';
 						}
 						result = result	+ '<input type="hidden" id="level2Div">';
 						result = result + '</div>';
@@ -338,7 +342,7 @@
 						result = result + '</div>';
 
 						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
-							result = result+ '<div class="user_summary_edit_cta" >';
+							result = result+ '<div class="user_summary_edit_cta" id="demo" >';
 						}else{
 							result = result+ '<div class="user_summary_edit_cta" style="display:none;" id="demo">';
 						}
@@ -694,10 +698,18 @@ function showLevel2Div(){
 		$("#level2Manager").empty();    
 		$('#level2Manager').val('');
 		if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
-		    $("#level2Toggle").show();
+		    if(manager2 == null || manager2 == "" || manager2 == "undefined"){
+		    	$("#level2Toggle").show();
+		    	$("#levelone-select").removeClass('col-md-12');
+			    $("#levelone-select").addClass('col-md-9');  
+		    }else{
+		    	$("#demo").show();
+		    }
 		    getChildLevel1Approvers(currentUserId, manager2);
 		}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
 		    $("#level2Toggle").hide();   
+		    $("#levelone-select").removeClass('col-md-9');
+		    $("#levelone-select").addClass('col-md-12');  
 		    $("#demo").hide();  
 		}
 	}

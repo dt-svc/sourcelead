@@ -122,7 +122,7 @@
 											<span class="badge" id="addTaskCount">0</span>
 										</button>
 										<sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT_TASKS')"> 
-											<button class="btn btn-primary" id="david" type="button" onclick="addSourceleadTasks();flushProjectTasks();" data-toggle="modal" data-target="#addTask">
+											<button class="btn btn-primary" id="taskButton" type="button" onclick="addSourceleadTasks();flushProjectTasks();" data-toggle="modal" data-target="#addTask">
 												<i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View / Add Tasks 
 											</button>
 										</sec:authorize>
@@ -143,8 +143,8 @@
 												<table class="table table-bordered table-striped  clearfix" id="projectTaskTbl" cols="0">
 													<tr id="divTsRow0">
 														<th><input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />Task Name</th>
-														<th>Description</th>
 														<th>Billable Type</th>
+														<th>Description</th>
 														<th class="tblminwidth-75">Action</th>
 													</tr>
 												  </table>
@@ -158,23 +158,21 @@
 																<input type="text" value="" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control">
 															</div>
 														</div>
+														<div class="form-group">
+															<label class="col-md-3">Billable</label>
+															<div class="col-md-9">
+																<select id="taskBillableType" name="taskBillableType" class=" form-control selectpicker">
+																  <option value="Billable">Billable</option>
+																  <option value="Non-Billable">Non-Billable</option>
+																</select>
+															</div>
+														</div>
 														<div class="form-group" id="descriptionDiv">
 															<label class="col-md-3">Description</label>
 															<div class="col-md-9">
 																<textarea class="form-control" placeholder="Enter Task Description" id="taskDescription" name="taskDescription"></textarea>
 															</div>
 														</div>
-														
-														<div class="form-group">
-															<label class="col-md-3">Billable</label>
-															<div class="col-md-9">
-																<select id="taskBillableType" name="taskBillableType">
-																  <option value="Billable">Billable</option>
-																  <option value="Non-Billable">Non-Billable</option>
-																</select>
-															</div>
-														</div>
-														
 													</div>
 													<div class="col-xs-12 col-lg-5">
 														<a href="javascript:void(0)" class="btn btn-primary" id="save_task" onclick="addTasks();" data-target="addTask"> <i class="fa fa-plus"></i><span id="addTaskText"> Add Task</span></a>
@@ -405,16 +403,17 @@ function getStatus(){
 		name="REPLACEROWIDtaskName" value="TASKNAMEVALUE" /><span
 		id="REPLACEROWIDtaskNameValue">TASKNAMEVALUE</span>
 </div>
-<div id="divTaskTd2" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDtaskDescription"
-		name="REPLACEROWIDtaskDescription" value="TASKDESCRIPTIONVALUE" /><span
-		id="REPLACEROWIDtaskDescriptionValue">TASKDESCRIPTIONVALUE</span>
-</div>
 
-<div id="divTaskTd3" style="display: none; float: left;">
+<div id="divTaskTd2" style="display: none; float: left;">
 	<input type="hidden" id="REPLACEROWIDtaskBillableType"
 		name="REPLACEROWIDtaskBillableType" value="TASKBILLABLETYPEVALUE" /><span
 		id="REPLACEROWIDtaskBillableTypeValue">TASKBILLABLETYPEVALUE</span>
+</div>
+
+<div id="divTaskTd3" style="display: none; float: left;">
+	<input type="hidden" id="REPLACEROWIDtaskDescription"
+		name="REPLACEROWIDtaskDescription" value="TASKDESCRIPTIONVALUE" /><span
+		id="REPLACEROWIDtaskDescriptionValue">TASKDESCRIPTIONVALUE</span>
 </div>
 
 <div id="divTaskTd4" style="display: none; float: left;">
@@ -457,19 +456,19 @@ function getStatus(){
 		divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
 		divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (taskName));
 		cell0.innerHTML = divTsTd1Str;
-
+		
 		var cell1 = row.insertCell(1);
 		var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
 		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g,
-				(taskDescription));
+		divTsTd2Str = divTsTd2Str.replace(/TASKBILLABLETYPEVALUE/g,
+				(taskBillableType));
 		cell1.innerHTML = divTsTd2Str;
-		
+
 		var cell2 = row.insertCell(2);
 		var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
 		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd3Str = divTsTd3Str.replace(/TASKBILLABLETYPEVALUE/g,
-				(taskBillableType));
+		divTsTd3Str = divTsTd3Str.replace(/TASKDESCRIPTIONVALUE/g,
+				(taskDescription));
 		cell2.innerHTML = divTsTd3Str;
 
 		var cell3 = row.insertCell(3);
@@ -479,6 +478,8 @@ function getStatus(){
 
 		$("#taskName").val('');
 		$("#taskDescription").val('');
+		$("#taskBillableType").val('Billable');
+		$('#taskBillableType').selectpicker('refresh');
 		addtasksCountafterAddingTask();
 	}
 </script>
@@ -501,10 +502,12 @@ function getStatus(){
 		$("#taskName").val('');
 		$("#taskDescription").val('');
 		$("#taskBillableType").val('Billable');
+		$('#taskBillableType').selectpicker('refresh');
 		$("#addTaskText").html('Update Task');
 		$("#taskName").val(updateTaskName);
 		$("#taskDescription").val(updateTaskDescription);
 		$('#taskBillableType').val(updateTaskBillableType);
+		$('#taskBillableType').selectpicker('refresh');
 		$("#taskId").val(rowId);
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'updateTask(' + rowId + ');');
@@ -524,6 +527,7 @@ function getStatus(){
 		$("#taskName").val('');
 		$("#taskDescription").val('');
 		$("#taskBillableType").val('Billable');
+		$('#taskBillableType').selectpicker('refresh');
 		$("#addTaskText").html('Add Task');
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'addTasks();');
@@ -558,7 +562,7 @@ function getStatus(){
 							var json = JSON.parse(data);
 							var output = "";
 							for (var i = 0; i < json.length; i++) {
-								$('david[onclick]').removeAttr('onclick');
+								$('taskButton[onclick]').removeAttr('onclick');
 								var opt = json[i];
 								var row = tbl.insertRow(opt.Id);
 								row.setAttribute("id", "divTsRow" + opt.Id);
@@ -569,17 +573,17 @@ function getStatus(){
 								divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (opt.Id));
 								divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (opt.taskName));
 								cell0.innerHTML = divTsTd1Str;
-
+								
 								var cell1 = row.insertCell(1);
 								var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
 								divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (opt.Id));
-								divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g,(opt.description));
+								divTsTd2Str = divTsTd2Str.replace(/TASKBILLABLETYPEVALUE/g,(opt.billableType));
 								cell1.innerHTML = divTsTd2Str;
 								
 								var cell2 = row.insertCell(2);
 								var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
 								divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (opt.Id));
-								divTsTd3Str = divTsTd3Str.replace(/TASKBILLABLETYPEVALUE/g,(opt.billableType));
+								divTsTd3Str = divTsTd3Str.replace(/TASKDESCRIPTIONVALUE/g,(opt.description));
 								cell2.innerHTML = divTsTd3Str;
 
 								var cell3 = row.insertCell(3);
@@ -697,6 +701,9 @@ function flushProjectTasks(){
 <script type="text/javascript">
 	function getTeamMembers() {
 		var level1Manager = $("#level1Manager").val(); 
+		var level1ManagerArray = level1Manager.split(',');
+		level1Manager = level1ManagerArray[0];
+		
 		var level2Manager = $("#level2Manager").val();
 		var startDate     =    $("#StartDate").val();
 		var searchByName = $("#searchByName").val();
