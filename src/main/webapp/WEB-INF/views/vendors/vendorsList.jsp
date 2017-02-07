@@ -728,7 +728,7 @@ overflow-x: auto;
 <script> 
 $(document).ready(function(){
 	//getVendorContactLists();
-	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}");
+	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}","${responderLocationId}","${orgRelationId}","${orgName}","${vendorKeyword}");
     listChange("listbyContact");
 	document.getElementById('listOfVendors').value = 'listbyContact';
 });
@@ -2308,7 +2308,7 @@ function numberOfContactsByOrgRelationId(orgRelationId){
 
 
 <script>
-function vendorListCheck(searchValue,universalvendorSearchList,searchType){
+function vendorListCheck(searchValue,universalvendorSearchList,searchType,responderLocationId,orgRelationId,orgName,vendorKeyword){
     if(universalvendorSearchList=="universalVendorList")	 {
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -2320,6 +2320,10 @@ function vendorListCheck(searchValue,universalvendorSearchList,searchType){
           
      }); 
   }
+    if(vendorKeyword == "vendorSearch" && vendorKeyword != null && vendorKeyword !="" && vendorKeyword != 'undefined'){
+    	vendorSideBar(responderLocationId,orgRelationId,orgName);
+    	getVendorContactListsELK();
+    }
 else{
 	getVendorContactListsELK();
 	}
