@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -472,7 +473,7 @@ public class RequirementRestController {
 	    // This is made static as requirment action id is 146
 		
 		ArrayList<User> mynewList =  new ArrayList<User>();
-		List<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
+		HashSet<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
        
 		//   Commented because Team Lead not required to show in team Members List By Default he is added in to the  RequirementAssignTo
 		
