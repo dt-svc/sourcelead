@@ -640,10 +640,18 @@ public class TimesheetRestController {
 						              tabDiv.append("                 </td> ");
 						              
 						              //for task billable type
-						              ProjectTasks tasks = projectTasksService.getTasksId(timesheetEntries.getProjectTask().getId().toString());
-						              tabDiv.append("				<td> <div> ");   
-						              tabDiv.append("<span id='"+rowCount+"task1IdBillableTypeId'>"+tasks.getBillableType()+"</span>");
-						              tabDiv.append("				</td> </div> "); 
+						              if(timesheetEntries.getProjectTask() != null){
+						            	  ProjectTasks tasks = projectTasksService.getTasksId(timesheetEntries.getProjectTask().getId().toString());
+						            	  tabDiv.append("				<td> <div> ");   
+							              tabDiv.append("<span id='"+rowCount+"task1IdBillableTypeId'>"+tasks.getBillableType()+"</span>");
+							              tabDiv.append("				</td> </div> "); 
+						              }
+						              else{
+						            	  tabDiv.append("				<td> <div> ");   
+							              tabDiv.append("<span id='"+rowCount+"task1IdBillableTypeId'>Billable</span>");
+							              tabDiv.append("				</td> </div> "); 
+						              }
+						              
 						              
 						              
 									  tabDiv.append("				<td> <div> ");   
