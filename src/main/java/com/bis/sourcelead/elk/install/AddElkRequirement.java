@@ -180,6 +180,10 @@ public class AddElkRequirement {
 					requirementIndex.setManager(rs.getString("FIRST_NAME"));
 				}
 				requirementIndex.setPriority(rs.getString("PRIORITY"));
+				
+				if(null != rs.getString("RELEASED_BY") && null != rs.getString("RELEASED_BY")){
+					requirementIndex.setReleasedBy(rs.getString("RELEASED_BY"));
+				}
 				reqIndexList.add(requirementIndex);
 			}
 			

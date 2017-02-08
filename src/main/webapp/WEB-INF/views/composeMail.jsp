@@ -396,8 +396,7 @@ function getTeamsList(teamType){
 			
 			  for (var i = 0; i < json.teams.length; i++) {
 					var opt = json.teams[i];
-					var teamId = teamType.charAt(0);
-					if(teamId == opt.id){
+					if(teamType == opt.id+"role"){
 						output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
 					}else{
 						output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
@@ -406,8 +405,7 @@ function getTeamsList(teamType){
 			  
 				for (var i = 0; i < json.roles.length; i++) {
 					var opt = json.roles[i];
-					var roleId = teamType.charAt(0);
-					if(roleId == opt.id){
+					if(teamType == opt.id+"role"){
 						output = output + "<option value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
 					}else{
 						output = output + "<option value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
