@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -502,7 +503,7 @@ public class UserDaoImpl implements UserDao {
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public HashSet<User> getUsersByTeamTypeAndTabId(Long orgLocationsId, String teamType, Long tabId) throws Exception {
+	public LinkedHashSet<User> getUsersByTeamTypeAndTabId(Long orgLocationsId, String teamType, Long tabId) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
 	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).setCacheable(true).list();
@@ -525,7 +526,7 @@ public class UserDaoImpl implements UserDao {
 	    	 }
 	     }
 	     
-	     HashSet<User> userRoleList = new HashSet<User>();
+	     LinkedHashSet<User> userRoleList = new LinkedHashSet<User>();
 	     List<String> teamTypeList = Arrays.asList(teamType.split(","));
 	     for(String type : teamTypeList){
 			String subQuery = "";
