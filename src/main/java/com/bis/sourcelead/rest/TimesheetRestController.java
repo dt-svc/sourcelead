@@ -291,26 +291,31 @@ public class TimesheetRestController {
 		timesheetEntriesDiv.append("<input type='hidden' name='projectMemberId'  id='projectMemberId' value='"+projectMemberId+"' >");
 		timesheetEntriesDiv.append("<input type='hidden' name='timesheetFrequency'  id='timesheetFrequency' value='"+weekStartDate+"To"+weekEndDate+"' >");
 		
+		String pullRightClass = "pull-right";
+		if(from != null && !from.isEmpty() && from.equalsIgnoreCase("timesheet")){
+			pullRightClass = "" ;
+		}
+		
 		/*timesheetEntriesDiv.append("			<div id='timesheetDivByFrequency'> ");*/
 		
-		timesheetEntriesDiv.append("					<div class='timeNewSe'>");
+		timesheetEntriesDiv.append("					<div class='timeNewSe "+pullRightClass+"'>");
 		
-		if(from != null && !from.isEmpty() && from.equalsIgnoreCase("timesheet")){
+			
 		    
 			if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
-		    	timesheetEntriesDiv.append("<b>").append(submissionStatus).append("</b>");
+		    	timesheetEntriesDiv.append("<b class='proj_new "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
-	        	timesheetEntriesDiv.append("<b class='proj_draft'>").append(submissionStatus).append("</b>");
+	        	timesheetEntriesDiv.append("<b class='proj_draft "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-	        	timesheetEntriesDiv.append("<b class='proj_process'>").append(submissionStatus).append("</b></td>");
+	        	timesheetEntriesDiv.append("<b class='proj_process "+pullRightClass+" '>").append(submissionStatus).append("</b></td>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
-	        	timesheetEntriesDiv.append("<b class='proj_active'>").append(submissionStatus).append("</b> </td>");
+	        	timesheetEntriesDiv.append("<b class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b> </td>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
-	        	timesheetEntriesDiv.append("<b class='proj_closed'>").append(submissionStatus).append("</b> </td>");
+	        	timesheetEntriesDiv.append("<b class='proj_closed "+pullRightClass+"'>").append(submissionStatus).append("</b> </td>");
 	        	timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'>");
 	        	timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getRejectedReason()).append("</div>");
 	        	timesheetEntriesDiv.append(" </i>");
@@ -318,7 +323,6 @@ public class TimesheetRestController {
 	        
 	        }
 	        
-		}	
 		/*timesheetEntriesDiv.append("						<b class='proj_active'>Active</b><i class='glyphicon glyphicon-comment com_active' >");
 		timesheetEntriesDiv.append("							<div class='timeNewSeMess'><p>Rejected message here Rejected message here Rejected message here</p></div>");
 		timesheetEntriesDiv.append("						</i>");*/
