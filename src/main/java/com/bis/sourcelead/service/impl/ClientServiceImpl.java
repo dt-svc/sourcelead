@@ -819,9 +819,8 @@ public class ClientServiceImpl implements ClientService{
 						orgSpoc.setOwnerUser(spocUser);
 					}
 				}
-				orgSpocService.addOrgSpoc(orgSpoc);
+				OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
 				
-				orgSpocService.saveOrUpdateClientVendorContactElkDocument(orgSpoc);
 				
 				if(orgSpoc.getTempOwnerId() != null && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getOwnerUser().getId().longValue()){
 					user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));

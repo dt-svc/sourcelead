@@ -15,8 +15,6 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> 
 <!-- end files for autocomplete with tagit -->
 
-
-
 <jsp:include page="requirementDetails.jsp"></jsp:include>
 <jsp:include page="requirementClientDetails.jsp"></jsp:include>
 <jsp:include page="requirementInternalDetails.jsp"></jsp:include>
@@ -922,7 +920,9 @@ $(document).ready(function () {
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+				
+                  <input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow();">
+
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
@@ -931,10 +931,11 @@ $(document).ready(function () {
                   <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <button class="close" type="button" id="closebtnId" onclick="clearSelections();">×</button>
                         <h4 class="modal-title">Assign To</h4>
                       </div>
-                       <div id="userList"></div>
+                       <!-- <div id="userList"></div> -->
+                       <div id="popupWindow"></div>
                       
                     </div>
                   </div>
@@ -1841,15 +1842,51 @@ function approvalType(type){
 --%>
 
 <script>
+function popupWindow(){  
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#popupWindow").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $("#popupWindow").removeAttr("style");
+	  getTeamsList();
+	  getUserList();
+	  var result = '';
+	    result = result +'<div class="modal-body clearfix">';
+        result = result +' <div class="form-horizontal custom-form">';
+ 		result = result +'     <div class="row">';
+ 		
+ 		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
+ 		result = result +'         <div class="input-group">';
+ 		result = result +'           <input type="search" class="form-control" value="">';
+ 		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> ';
+ 		result = result +'			</div>';
+ 		result = result +'       </div>';
+ 		
+ 		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
+ 		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important">';
+ 		result = result +'          </select>';
+ 		result = result +'       </div>';
+ 		
+ 		result = result +'     </div>';
+ 		result = result +'  </div>';
+ 		result = result +'  <div id="usersGrid" class="modal-bodyCustom mt clearfix popupFilter">'; 
+    	
+ 		result = result +'     </div>';
+		result = result +'     </div>';
+		$("#popupWindow").empty();
+	    $("#popupWindow").append(result); 
+	    $("#rolesDiv").selectpicker("refresh");
+}
+</script>
+	  
+<script>
 function getUserList(teamType){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  /* getTeamsList(teamType); */
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
             	
-            	getTeamsList(teamType);
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
@@ -1861,25 +1898,10 @@ function getUserList(teamType){
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
 	                	    result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
-	                	    result = result +'<div class="modal-body clearfix">';
-	                		result = result +'<div class="form-horizontal custom-form">';
-	                		result = result +'     <div class="row">';
-	                		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
-	                		result = result +'         <div class="input-group">';
-	                		result = result +'           <input type="search" class="form-control" value="">';
-	                		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
-	                		result = result +'       </div>';
-	                		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
-	                		result = result +'          <select id="rolesDiv" onchange="filterTeamMembers();" class="selectpicker form-control" style="display:block !important">';
-	                		result = result +'          </select>';
-	                		result = result +'     </div>';
-	                		result = result +'     </div>';
-	                		result = result +'     </div>';
-	                		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
 	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
-	                		result = result +'             <th><input type="checkbox" id="checkAll" onclick="toggle(this);"></th>';
+	                		result = result +'             <th><input type="checkbox" id="checkAll" onclick="toggle(this); handleClick();"></th>';
 	                		result = result +'             <th>Name</th>';
 	                		result = result +'             <th>Email</th>';
 	                		result = result +'             <th>Role</th>';
@@ -1888,91 +1910,95 @@ function getUserList(teamType){
 	                		result = result +'           </thead>';
 		                    result = result +"<tbody>"; 
 		                    var json = JSON.parse(data);
-		                    for (var i = 0; i < json.length; i++) { 
+		                    var refreshIds = [];
+		                    for (var i = 0; i < json.length; i++) {
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
 		                    	 var localCheckedStatus = "";
-		                    	 $(".defaultCheckBox").each(function() { 
-		         							var localValue = this.value;
-		         							if(localValue == opt.id){
-		         								localCheckedStatus = "checked";
-		         							}  
+		                    	 $(".defaultCheckBox").each(function() {
+         							var localValue = this.value;
+         							if(localValue == opt.id){
+         								localCheckedStatus = "checked";
+         							}  
 		                    	 });
-		                    	 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    	 if(ids.indexOf(''+opt.id) > -1){
+		                    		 refreshIds.push(''+opt.id);
+		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required"></td>';
+		                    	 }else{
+		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    	 }
+		                    	 
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
 		                    	 result = result +'             <td>'+opt.userType+'</td>';
 		                    	 result = result +'             <td>'+opt.assignJobCount+'</td>';
 		                    	 result = result +'           </tr>';
-		                    	
-	                     }
+	                       }
+		                   ids =  refreshIds;
 		                    
-	                     result = result +" </tbody>";
-	                     result = result +"</table>"; 
-	                     result = result +'     </div>'; 
-	                 	 result = result +'     <div class="clearfix">';
-	                 	 /*result = result +'       <ul class="pagination pull-right pagination-sm" style="margin:0;">';
-	                 	 result = result +'         <li><a href="#">1</a></li>';
-	                 	 result = result +'         <li class="active"><a href="#">2</a></li>';
-	                 	 result = result +'         <li><a href="#">3</a></li>';
-	                 	 result = result +'         <li><a href="#">4</a></li>';
-	                 	 result = result +'         <li><a href="#">5</a></li>';
-	                 	 result = result +'       </ul>'; */
-	                 	 result = result +'       </div>'; 
-	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="assignMembers();">Assign</button>';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
-	                 	 result = result +'   </div>'; 
-	                 	 $("#userList").empty(); 
-	                     $("#userList").append(result); 
-	                     pagination(); 
-			    	} 
-                 }else{
-                	 $("#userList").removeAttr("style");
-  	    	         var result ="";
-		    	    
-  	    	       result = result +'<div class="modal-body clearfix">';
- 	    	        result = result +'<div class="form-horizontal custom-form">';
-	           		result = result +'     <div class="row">';
-	           		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
-	           		result = result +'         <div class="input-group">';
-	           		result = result +'           <input type="search" class="form-control" value="">';
-	           		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
-	           		result = result +'       </div>';
-	           		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
-	           		result = result +'          <select id="rolesDiv" onchange="filterTeamMembers();" class="selectpicker form-control" style="display:block !important">';
-	           		result = result +'          </select>';
-	           		result = result +'     </div>';
-	           		result = result +'     </div>';
-	           		result = result +'     </div>';
-	           		
-	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
-	        		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
-	        		result = result +'           <thead>';
-	        		result = result +'           <tr>';
-	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"><input type="checkbox"></th>';
-	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Name</th>';
-	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Email</th>';
-	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Role</th>';
-	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Active Jobs</th>';
-	        		result = result +'           </tr>';
-	        		result = result +'           </thead>';
-	        		result = result +'           </table>';
-	        		result = result +'     </div>';
-	        		result = result +'     </div>';
-					$("#userList").empty();
-				    $("#userList").append(result); 
-				    pagination();  
-                }
-          },
-            
-       }); 
-  } 
+	                       result = result +" </tbody>";
+	                       result = result +"</table>"; 
+	                       result = result +'   <div class="clearfix"></div>'; 
+	                 	   result = result +'   </div>'; 
+	                 	   result = result +'   <div class="modal-footer mt">';
+	                 	   result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="assignMembers();">Assign</button>';
+	                 	   result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Cancel</button>';
+	                 	   result = result +'   </div>'; 
+	                 	   $("#usersGrid").empty(); 
+	                       $("#usersGrid").append(result); 
+	                       pagination(); 
+			    		}
+                 	}else{
+                	 	$("#userList").removeAttr("style");
+  	    	        	var result ="";
+	  	    	        result = result +'<div class="modal-body clearfix">';
+	 	    	        result = result +'<div class="form-horizontal custom-form">';
+		           		result = result +'     <div class="row">';
+		           		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
+		           		result = result +'         <div class="input-group">';
+		           		result = result +'           <input type="search" class="form-control" value="">';
+		           		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
+		           		result = result +'       </div>';
+		           		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
+		           		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important">';
+		           		result = result +'          </select>';
+		           		result = result +'     </div>';
+		           		result = result +'     </div>';
+		           		result = result +'     </div>';
+		           		
+		           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+		        		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
+		        		result = result +'           <thead>';
+		        		result = result +'           <tr>';
+		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"><input type="checkbox"></th>';
+		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Name</th>';
+		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Email</th>';
+		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Role</th>';
+		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Active Jobs</th>';
+		        		result = result +'           </tr>';
+		        		result = result +'           </thead>';
+		        		result = result +'           </table>';
+		        		result = result +'     </div>';
+		        		result = result +'     </div>';
+						$("#usersGrid").empty();
+					    $("#usersGrid").append(result); 
+					    pagination();  
+                	}
+          		},
+       		}); 
+  	} 
 </script>
-
 <script>
-function getTeamsList(teamType){  
+window.ids = new Array();
+function handleClick() {
+	ids = [];
+	$("input:checkbox[name=team]:checked").each(function(){
+		ids.push($(this).val());
+	});
+}
+</script>
+<script>
+function getTeamsList(teamType){ 
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
@@ -1980,62 +2006,65 @@ function getTeamsList(teamType){
             success :function(data) {
             	var json = JSON.parse(data);
 				var output = "";
-				output = output +'          <option selected disabled>Select Role</option>';
+				/* output = output +'     <option disabled>Select Role</option>'; */
 				
-				if(teamType == 'All'){
-					output = output +'           <option value="All" selected>All</option>';
+
+				/* if(teamType == 'All'){
+					output = output +' <option value="All" selected>All</option>';
 				}else{
-					output = output +'           <option value="All">All</option>';
-				}
-				/* if(teamType == 'Admin'){
-					output = output +'           <option value="Admin" selected>Admin</option>';
-				}else{
-					output = output +'           <option value="Admin">Admin</option>';
-				}
-				if(teamType == 'Account Manager'){
-					output = output +'           <option value="Account Manager" selected>Account Manager</option>';
-				}else{
-					output = output +'           <option value="Account Manager">Account Manager</option>';
-				}if(teamType == 'Recruiter'){
-					output = output +'           <option value="Recruiter" selected>Recruiter</option>';
-				}else{
-					output = output +'           <option value="Recruiter">Recruiter</option>';
-				} if(teamType == 'HR Manager'){
-					output = output +'           <option value="HR Manager" selected>HR Manager</option>';
-				}else{
-					output = output +'           <option value="HR Manager">HR Manager</option>';
-				} 
-               if(teamType == 'Project Manager'){
-				output = output +'           <option value="Project Manager" selected>Project Manager</option>';
-			  }else{
-				output = output +'           <option value="Project Manager">Project Manager</option>';
-			  } */ 
-			  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">'; 
-			  for (var i = 0; i < json.teams.length; i++) {
-					var opt = json.teams[i];
-					if(teamType == opt.id){
-						output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
-					}else{
-						output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
+					output = output +' <option value="All">All</option>';
+				} */
+			  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">';
+			  if(json.teams.length > 0){
+				  output = output + "<optgroup label='Teams'>";
+				  for (var i = 0; i < json.teams.length; i++) {
+						var opt = json.teams[i];
+						if(teamType == opt.id){
+							output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
+						}else{
+							output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
+						}
+
 					}
-				}
+				  output = output + "</optgroup>";
+			  }
 			  '</sec:authorize>';
-			  
-				for (var i = 0; i < json.roles.length; i++) {
-					var opt = json.roles[i];
-					if(teamType == opt.id){
-						output = output + "<option value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
-					}else{
-						output = output + "<option value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
+
+			  if(json.roles.length > 0){
+				  output = output + "<optgroup label='Roles'>"; 
+					for (var i = 0; i < json.roles.length; i++) {
+						var opt = json.roles[i];
+						if(teamType == opt.id){
+							output = output + "<option value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
+						}else{
+							output = output + "<option value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
+						}
 					}
-				}
+					output = output + "</optgroup>";
+			  }
 				$("#rolesDiv").empty();
 			    $("#rolesDiv").append(output);
+			    $("#rolesDiv").selectpicker("refresh");
             	
             },
       }); 
  } 
 </script>
+
+<script type="text/javascript">
+	function filterTeamMembers(){
+		var teamType = $("#rolesDiv").val();
+		getUserList(teamType);
+	}
+</script>
+<script type="text/javascript">
+	function clearSelections(){
+		$('#cancelbtnId').attr("data-dismiss","modal");
+		$('#closebtnId').attr("data-dismiss","modal");
+		ids = [];
+	}
+</script>
+
 
 <%-- 
      @author : sarath kumar.
@@ -2255,14 +2284,6 @@ var existingValue = document.getElementById('isClientJob').value;
 </script>
 
 <script type="text/javascript">
-function filterTeamMembers(){
-	var teamType = $("#rolesDiv").val();
-	getUserList(teamType);
-}
-</script>
-
-
-<script type="text/javascript">
 function getLevel2Approvers(currentApproverId){
 	var currentApproverId = document.getElementById("sequentialApprover1").value;
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -2328,36 +2349,6 @@ function getLevel2Approvers(currentApproverId){
 			        },
 			    });
 		 }
-	 /* } *//* else{
-		jobId = document.getElementById("jobId").value; 
-	     var	specialCharacter = jobId.match(/^[A-Za-z0-9][A-Z a-z 0-9]*$/); 
-		 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
-		 var sourceleadUrl ='${sourceleadUrl}';
-		 if(jobId != null && jobId != "" && specialCharacter != null){
-			 $("#draft").attr("disabled", "disabled");
-			 $("#save").attr("disabled", "disabled");
-			 $("#submitForApproval").attr("disabled", "disabled");
-			 $.ajax({
-			    	type: "POST",
-			        url: sourceleadUrl+"/validateExistingJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId+"&requirementid="+requirementid, 
-			        success: function(data) {
-			        	if(data == true){
-							  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
-							  document.getElementById("jobId").setAttribute('record-exist','yes');
-							  document.getElementById("jobId").setAttribute('record-exist-errorMsg',jobId+' is Already Existed'); 
-			        	}
-			        	else{
-			        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
-			        		 $('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
-	                         $("#draft").removeAttr("disabled");
-	                         $("#save").removeAttr("disabled", "disabled");
-	                		 $("#submitForApproval").removeAttr("disabled", "disabled");
-			        	}
-			        },
-			    });
-		 }
-	 } */
-	
  }
  </script>     
  

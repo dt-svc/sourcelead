@@ -16,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadActions;
@@ -23,6 +24,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginAttempts;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.UserLoginAttemptsService;
@@ -55,6 +57,9 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
 	
 	@Autowired 
 	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private EmployeesService employeesService;
   
     /*@param
      * 
@@ -104,6 +109,13 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
 					  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
 	        			  userRole.setUserState(Status.ACTIVE);
 	        			  userRoleService.addUserRole(userRole);
+	        			  /*
+                           * Update USER DB data as ElasticSearch Documents
+                           */
+                          Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
+                          if(null != employee){
+                              userService.saveOrUpdateUserElkDocument(userRole,employee,userRole.getCreatedBy());
+                          }
 	        		  }
 				   } catch (Exception e) {
 					  e.printStackTrace();
