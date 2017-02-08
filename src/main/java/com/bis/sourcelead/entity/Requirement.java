@@ -26,6 +26,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
@@ -164,6 +165,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="PARENT_REQUIREMENT_ID")        
     private Requirement parentRequirement;
+	
+	@Column(name="RELEASED_BY")
+	@Type(type="text")
+	private String releasedBy;
 	
 	@Column(name="PRIORITY")
 	private String priority;
@@ -304,6 +309,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String[] requirementAssignedToUsersId;
+	
+	@Transient
+	private String isRequirementReleasedByuser;
 	
 	
 
@@ -975,6 +983,22 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setRequirementAssignedToUsersId(String[] requirementAssignedToUsersId) {
 		this.requirementAssignedToUsersId = requirementAssignedToUsersId;
+	}
+
+	public String getReleasedBy() {
+		return releasedBy;
+	}
+
+	public void setReleasedBy(String releasedBy) {
+		this.releasedBy = releasedBy;
+	}
+
+	public String getIsRequirementReleasedByuser() {
+		return isRequirementReleasedByuser;
+	}
+
+	public void setIsRequirementReleasedByuser(String isRequirementReleasedByuser) {
+		this.isRequirementReleasedByuser = isRequirementReleasedByuser;
 	}
 	
 }
