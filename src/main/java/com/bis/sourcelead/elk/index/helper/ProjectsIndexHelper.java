@@ -32,6 +32,7 @@ public class ProjectsIndexHelper {
 			}
 			projectsIndex.setProjectName(projects.getProjectName());
 			projectsIndex.setOrgLocationId(projects.getOrgLocationsId().getId());
+
 			if(null != projects.getStartDate()){
 				projectsIndex.setStartDate(Constants.DF_YMD.format(projects.getStartDate()));
 			}
