@@ -289,6 +289,7 @@ public class TimesheetRestController {
 		
 		
 		timesheetEntriesDiv.append("<input type='hidden' name='projectMemberId'  id='projectMemberId' value='"+projectMemberId+"' >");
+		timesheetEntriesDiv.append("<input type='hidden' name='timesheetFrequency'  id='timesheetFrequency' value='"+weekStartDate+"To"+weekEndDate+"' >");
 		
 		/*timesheetEntriesDiv.append("			<div id='timesheetDivByFrequency'> ");*/
 		
@@ -630,7 +631,7 @@ public class TimesheetRestController {
 						              tabDiv.append(" </select>"); 
 								              if(isFillMyTimeSheet){
 									              if(rowCount == 1){
-									            	  tabDiv.append("<input type='button' value='' onClick='addTimeSheetRow(1)' class='addtaskfield'/>");
+									            	  tabDiv.append("<input type='button' value='' onClick='addTimeSheetRow("+ts.getProjectMembers().getProjects().getId()+")' class='addtaskfield'/>");
 									              }else{
 									            	  tabDiv.append("<input type='button' value=''  onClick='removeTimeSheetRow(\""+rowCount+"\",\""+ts.getId()+"\");'  class='addtaskfield removetaskfield'/>");
 									              }
@@ -758,7 +759,7 @@ public class TimesheetRestController {
             }
 			 else{
             	  if((isFillMyTimeSheet )){
-            		  tabDiv.append("     <select  id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' class='existedProjectTaskId"+projectMember.getProjects().getId()+"' onChange='getProjectTasks(\""+rowCount+"task1Id\",\""+projectMember.getProjects().getId()+"\")' >");
+            		  tabDiv.append("     <select  id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' data-validation='required' field-name='Task' class='existedProjectTaskId"+projectMember.getProjects().getId()+"' onChange='getProjectTasks(\""+rowCount+"task1Id\",\""+projectMember.getProjects().getId()+"\")' >");
 	                      tabDiv.append("<option value=''>--select task--</option>");
 	                      Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(projectMember.getProjects().getId());
 	                      for(ProjectTasks pt   : ProjectTasksList){
@@ -871,11 +872,12 @@ public class TimesheetRestController {
 
 				tabDiv.append("		    <div class='timesheet_bot'>");	
 				tabDiv.append("		    	<div class='timesheet_week_comm'>");
-				if(projectMember.getProjects().getIsTimesheetAttachmentRequired() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() != 0){
-					  StringBuilder attachmentDiv = attachmentsAndComments(startDate, endDate,ts);
+				/*if(projectMember.getProjects().getIsTimesheetAttachmentRequired() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() != 0){*/
+					  StringBuilder attachmentDiv = attachmentsAndComments(startDate, endDate,ts,projectMember.getProjects().getIsTimesheetAttachmentRequired());
 					  tabDiv.append(attachmentDiv);
-				}
+				/*}*/
 			    
+					  
 			    /*tabDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");*/	
 			   
 			    
@@ -900,14 +902,23 @@ public class TimesheetRestController {
 		    tabDiv.append("		    	<div class='timesheet_button' style='min-height: 40px;'>");	
 		    
 		    
-		    tabDiv.append("	<div class='totalText'>");
+		    tabDiv.append("	<div class='totalText row'>");
 		    
-		    tabDiv.append("	<span>Billable Hours : </span><input type='text' id='grandBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
-		    tabDiv.append("<div class='clearfix'></div>");
-		    tabDiv.append("	<span>Non-Billable Hours : </span><input type='text' id='grandNonBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
-		    tabDiv.append("<div class='clearfix'></div>");
+		    tabDiv.append("	<div class='col-md-8'>");
+		    tabDiv.append("	<span class='text-primary'>Billable Hours : </span><input type='text' name='grandBillableTotal' id='grandBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
+		    tabDiv.append("	</div>");
 		    
-		    tabDiv.append("	<span>Total Hours : </span><input type='text' id='grandTotal' value='00:00' placeholder='HH/HH' readonly>");
+		    tabDiv.append("	<div class='clearfix'></div>");	
+		    
+		    tabDiv.append("	<div class='col-md-8 mt10'>");
+		    tabDiv.append("	<span class='text-danger'>Non-Billable Hours : </span><input type='text' name='grandNonBillableTotal' id='grandNonBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
+		    tabDiv.append("	</div>");
+		    
+		    tabDiv.append("	<div class='clearfix'></div>");	
+		    
+		    tabDiv.append("<div class='col-md-8 mt10 mb'>");
+		    tabDiv.append("	<span class='text-success'>Total Hours : </span><input type='text' id='grandTotal' value='00:00' placeholder='HH/HH' readonly>");
+		    tabDiv.append("	</div>");
 		    tabDiv.append("	</div>");
 		      
 		    if(!isNullOrEmpty(approvalStatus)  && !approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
@@ -944,15 +955,15 @@ public class TimesheetRestController {
 		    return tabDiv;
 	}
 	
-	public StringBuilder attachmentsAndComments(String startDate ,String endDate,TimesheetSubmissions ts) throws Exception{
+	public StringBuilder attachmentsAndComments(String startDate ,String endDate,TimesheetSubmissions ts, Integer isTimesheetAttachmentRequired) throws Exception{
 			
 			StringBuilder timesheetEntriesDiv = new StringBuilder();	
-			
+			List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = null;
 			StringBuilder documentBuffer = new StringBuilder();	
 			documentBuffer.append("<input type='hidden' name='attcahmentMaxRowNumber'  id='attcahmentMaxRowNumber' value='1' />");
 			documentBuffer.append("<div class='timesheetDocs'>"); 
 			if(ts != null){
-				List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
+				timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
 				if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
 						for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
 							if(!isNullOrEmpty(tsd.getFileName())){
@@ -977,7 +988,14 @@ public class TimesheetRestController {
 				documentBuffer.append("<span>"); 
 				documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
 						documentBuffer.append("<tr id='divAttachmentTsRow0'>");
-						documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");           
+						if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != 0 && (timesheetSubmissionsDocumentsList == null || timesheetSubmissionsDocumentsList.isEmpty())){
+							documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' data-validation='required' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");
+							documentBuffer.append("<input type='hidden' name='isTimesheetAttachmentRequired'  id='isTimesheetAttachmentRequired' value='Y' />");
+						}else{
+							documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");
+							documentBuffer.append("<input type='hidden' name='isTimesheetAttachmentRequired'  id='isTimesheetAttachmentRequired' value='N' />");
+						}
+						documentBuffer.append("<input type='hidden' name='dbIsTimesheetAttachmentRequired'  id='dbIsTimesheetAttachmentRequired' value='"+isTimesheetAttachmentRequired+"' />");         
 						documentBuffer.append("</tr>");
 				documentBuffer.append("</table>");
 				documentBuffer.append("</span>");
@@ -1277,6 +1295,17 @@ public class TimesheetRestController {
 			            String actualTimeString =  actualHours+"."+startWithZero+actualMinutes;
 			            
 						timesheetSubmissions.setTotalHours(actualTimeString);
+						
+						if(jsonObj.getString("grandBillableTotal") != null && jsonObj.getString("grandBillableTotal") != "" && jsonObj.getString("grandBillableTotal") != "undefined"){
+							String grandBillableTotal = jsonObj.getString("grandBillableTotal").replaceAll(":", ".");
+							timesheetSubmissions.setBillableHours(grandBillableTotal);
+						}
+						
+						if(jsonObj.has("grandNonBillableTotal") && jsonObj.getString("grandNonBillableTotal") != null && jsonObj.getString("grandNonBillableTotal") != "" && jsonObj.getString("grandNonBillableTotal") != "undefined"){
+							String grandNonBillableTotal = jsonObj.getString("grandNonBillableTotal").replaceAll(":", ".");
+							timesheetSubmissions.setNonBillableHours(grandNonBillableTotal);
+						}
+						
 						timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
 					}
 					/*String pattern = "dd-MM-yyyy";
