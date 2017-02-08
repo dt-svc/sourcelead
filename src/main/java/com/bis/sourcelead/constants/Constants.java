@@ -220,6 +220,7 @@ public class Constants {
 	public static int TAB_TIMESHEET_APPROVAL = 6;
 	public static int TAB_REQUIREMENT = 8;
 	public static int TAB_USER = 2;
+	public static int TAB_PROJECTS = 3;
 	
 	public static  String Dashboard = "Dashboard";
 	public static  String Users = "Users";
@@ -387,7 +388,7 @@ public class Constants {
     
     public static String ELK_CAMPAIGN_ID_PREFIX = "CAMPAIGN";
     
-    public static String CANDIDATE = "Candidate";
+    public static String CANDIDATE = "Candidate"; 
     
     public static String CONSULTANT = "Consultant";
     
@@ -438,7 +439,8 @@ public class Constants {
     public static String NOTICE_PERIOD_2MONTH = "2 Month";
     public static String NOTICE_PERIOD_3MONTH = "3 Month";
     public static String NOTICE_PERIOD_IMMEDIATELY = "Immediately available";
-   
+    
+    public static String EXPERIENCE_26YEARS = "26";
     public static String RATE_TYPE_HOURLY = "Hourly";
     public static String RATE_TYPE_WEEKLY = "Weekly";
     public static String RATE_TYPE_BI_WEEKLY = "Bi-weekly";
@@ -446,6 +448,10 @@ public class Constants {
     public static String RATE_TYPE_MONTHLY = "Monthly";
     public static String RATE_TYPE_BI_MONTHLY = "Bi-Monthly";
    
+    public static String PROJECT = "Projects";
+    public static String USER = "User"; 
+    public static String REQUIREMENT = "Requirement";
+    public static String USERS = "Users"; 
 
    
 }

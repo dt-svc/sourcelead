@@ -355,6 +355,7 @@ public class DashboardRestController {
 				 List<RequirementApproverHierarchy>  rahlist = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
 			                if(rahlist !=null ){
 									 for(RequirementApproverHierarchy rah :rahlist ){
+										  requirement.setRequirementApproverHierarchyStatus(rah.getRequirementApproverStatus().toString());
 						            	  if("APPROVED".equalsIgnoreCase(rah.getRequirementApproverStatus().toString()) || "REJECTED".equalsIgnoreCase(rah.getRequirementApproverStatus().toString())  || "OPEN".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
 						            		  User approvedUser = userService.getUserByUserCode(rah.getUpdatedBy());
 						            		  if(approvedUser !=null ){

@@ -400,21 +400,30 @@ overflow-x: auto;
 
 
 
-
 <script type="text/javascript">
 window.onload = function () {
-	if("${clientSearchResult}"=="clientSearchResult"){
+	clientOnLoad("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}");
+ };
+</script>
+
+<script type="text/javascript">
+function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRelationId,orgName){
+	if(clientSearchResult =="clientSearchResult"){
 		getClientUniversalSearchList("${searchValue}");
 	}
+	if(clientKeyword=="clientSearch"){
+		clientSideBar(responderLocationId,orgRelationId,orgName);
+		getVendorContactListsELK();
+	}
+	
 	/* getVendorContactLists(); */
 	else{
 		getVendorContactListsELK();
 	}
 	 listChange("listbyContact");
 	document.getElementById('listOfVendors').value = 'listbyContact';
- };
+}
 </script>
-
 <script type="text/javascript">
 function getClientUniversalSearchList(searchValue){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1270,12 +1279,12 @@ function preparedClientListFromElk(data){
 		   		}
 		   		
 		   		var pattern = new RegExp(/["'"]/g);
-		   		//var orgName = (report.orgName).replace(pattern, "\\'");
+		   		var orgName = (report.orgName).replace(pattern, "\\'");
 		   		
 		   		result = result +'<tr>';
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 		   			result = result +'<td>';
-		   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+		   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
 		   			result = result +'</div>';
 		   			result = result +'</td>';
 		   		'</sec:authorize>';
@@ -1315,7 +1324,9 @@ function preparedClientListFromElk(data){
 		   	}else{
 		   		result = result +'<td><div>---</div></td>';
 		   	}
+
 		   	result = result +'<td><div id="noOfContactsCount'+report.orgRelationId+'">---</div></td>';
+
 		   	
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';

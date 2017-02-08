@@ -129,8 +129,12 @@ public class CandidateController {
 	
 	
 	@RequestMapping(value = "/candidatesList")
-	public ModelAndView usersList(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,@RequestParam(value="searchResult", required=false)String  searchResult
-			,@RequestParam(value="searchValue", required=false)String searchValue,HttpServletRequest request) throws Exception {
+	public ModelAndView usersList(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,
+			@RequestParam(value="searchResult", required=false)String  searchResult
+			,@RequestParam(value="searchValue", required=false)String searchValue,
+			HttpServletRequest request,
+			@RequestParam(value="candidateKeyword", required=false)String candidateKeyword,
+			@RequestParam(value="candidateIdSearchId", required=false)String candidateIdSearchId) throws Exception {
 		logger.debug("--------candidatesList------");
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -139,6 +143,10 @@ public class CandidateController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("candidates/candidatesList");
 		
+		if(candidateKeyword != null && !candidateKeyword.equalsIgnoreCase("undefined") && candidateKeyword.equalsIgnoreCase("candidateSearch")){
+		    model.addObject("candidateKeyword", candidateKeyword);
+		    model.addObject("candidateIdSearchId",candidateIdSearchId);
+		}
 		
 		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalCanddateList")){
 		    model.addObject("universalCanddateList", "universalCanddateList");
@@ -233,14 +241,10 @@ public class CandidateController {
 		model.setViewName("candidates/addConsultant");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("type", type);
-	
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
-        model.addObject("currencyCode", countries.getCurrency());
 		}
-		
-		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
 		{

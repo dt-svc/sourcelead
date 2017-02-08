@@ -98,8 +98,8 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 	
-		// Elk for Requirement search
-		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&"Requirement".equalsIgnoreCase(searchType))
+		// Elk for Requirement search                              
+		if(searchType !=null && !"".equalsIgnoreCase(searchType) && Constants.REQUIREMENT.equalsIgnoreCase(searchType))
 		{
 			 Long maxResults = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
 			//All Keyword
@@ -173,7 +173,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			return searchList;
 		}
 		// ELK list for the user
-		if(searchType != null && !"".equalsIgnoreCase(searchType)&&"Users".equalsIgnoreCase(searchType))
+		if(searchType != null && !"".equalsIgnoreCase(searchType) && Constants.USERS.equalsIgnoreCase(searchType))
 		{
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
@@ -210,13 +210,13 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			return searchList;
 		}
 		// ELK list for the Clients and Vendors
-		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&("Client".equalsIgnoreCase(searchType)||"Vendor".equalsIgnoreCase(searchType)))
+		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&(Constants.CLIENT.equalsIgnoreCase(searchType)||Constants.VENDOR.equalsIgnoreCase(searchType)))
 		{
 			String responderType = null;
-			if("Vendor".equalsIgnoreCase(searchType)){
-				 responderType = "Client";
-			 }else if("Client".equalsIgnoreCase(searchType)){
-				 responderType = "Vendor"; 
+			if(Constants.VENDOR.equalsIgnoreCase(searchType)){
+				 responderType = Constants.CLIENT;
+			 }else if(Constants.CLIENT.equalsIgnoreCase(searchType)){
+				 responderType = Constants.VENDOR; 
 			 }
 			 
 			 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
@@ -301,7 +301,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			return searchList;
 		}
 		// ELK list for the projects
-		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&"Projects".equalsIgnoreCase(searchType))
+		if(searchType !=null && !"".equalsIgnoreCase(searchType) && Constants.PROJECT.equalsIgnoreCase(searchType))
 		{
                 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 			    Integer maxResults = projectsService.getProjectCountByOrgLocationId(orgLocation.getId());
@@ -337,7 +337,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			return searchList;
 		}
 		/// ELK list for the Candidate
-		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&"Candidate".equalsIgnoreCase(searchType))
+		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&Constants.CANDIDATE.equalsIgnoreCase(searchType))
 		{
 			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
 				//All Keywords
@@ -416,7 +416,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
      	requirement.setCountry(requirementIndex.getCountry());
      	requirement.setState(requirementIndex.getState());
      	requirement.setCity(requirementIndex.getCity());
-     	requirement.setSearchType("Requirement");
+     	requirement.setSearchType(Constants.REQUIREMENT);
      	requirement.setPositions(requirementIndex.getNumberOfPositions());
      	requirement.setNoOfApplicants(requirementIndex.getNumberOfApplicants());
      	requirement.setManager(requirementIndex.getManager());
@@ -569,17 +569,17 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 						String json = hit.getSourceAsString();
 						mapper.setDateFormat(df);
 						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
-						userIndex.setSearchType("User");
+						userIndex.setSearchType(Constants.USER);
 						searchListForUsers.add(userIndex);
 					}
 				}
 			
 		
 			// ELK list for the Clients and Vendors
-				String responderTypeAsVendor = "Vendor"; 
+				String responderTypeAsVendor = Constants.VENDOR; 
 				 searchListForClient =	getSearchListForClientsVendors(searchType,orgLocation,df,searchListForClient,searchValue,responderTypeAsVendor);
 				 
-				 String responderTypeAsClient = "Client";
+				 String responderTypeAsClient = Constants.CLIENT;
 				 
 				 searchListForVendor =  getSearchListForClientsVendors(searchType,orgLocation,df,searchListForVendor,searchValue,responderTypeAsClient);
 				
@@ -617,7 +617,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 						String json = hit.getSourceAsString();
 						mapper.setDateFormat(df);
 						ProjectsIndex projectsIndex = mapper.readValue(json, ProjectsIndex.class);
-						projectsIndex.setSearchType("Projects");
+						projectsIndex.setSearchType(Constants.PROJECT);
 						searchListForProjects.add(projectsIndex);
 					}
 				}
@@ -669,7 +669,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 				    		   String skills = getReqSkills(skillArray);
 				    		   candidateIndex.setSkillSet(skills);
 				    	   }
-				    	   candidateIndex.setSearchType("Candidate");
+				    	   candidateIndex.setSearchType(Constants.CANDIDATE);
 				    	    searchListForCandidates.add(candidateIndex);
 				    	}
 				    	
@@ -742,10 +742,10 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 								String json = hit.getSourceAsString();
 								mapper.setDateFormat(df);
 								ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
-							if("Vendor".equalsIgnoreCase(responderType)){
-								clientVendor.setSearchType("Client");	
-							}if("Client".equalsIgnoreCase(responderType)){
-								clientVendor.setSearchType("Vendor");	
+							if(Constants.VENDOR.equalsIgnoreCase(responderType)){
+								clientVendor.setSearchType(Constants.CLIENT);	
+							}if(Constants.CLIENT.equalsIgnoreCase(responderType)){
+								clientVendor.setSearchType(Constants.VENDOR);	
 							}
 								if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 									
