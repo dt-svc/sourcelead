@@ -1268,7 +1268,6 @@ function preparedClientListFromElk(data){
 				{  
 		   		
 		   		var report = json[i];
-		   		numberOfContactsByOrgRelationId(report.orgRelationId);
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
 		   			location = report.country+", "+report.state+", "+report.city;
@@ -1325,7 +1324,7 @@ function preparedClientListFromElk(data){
 		   		result = result +'<td><div>---</div></td>';
 		   	}
 
-		   	result = result +'<td><div id="noOfContactsCount'+report.orgRelationId+'">---</div></td>';
+		   	result = result +'<td><div >'+report.noContacts+'</div></td>';
 
 		   	
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
@@ -2180,27 +2179,6 @@ $('#selector').delay(2000).fadeOut('slow');
 	});
 </script>
  -->
-
-
-<script type="text/javascript">	
-function numberOfContactsByOrgRelationId(orgRelationId){
-	
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/numberOfContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#noOfContactsCount'+orgRelationId).empty();
-        	$('#noOfContactsCount'+orgRelationId).append(data);
-        	
-        },
-        error: function(e){
-        }
-    });
-}
-</script>
-
 
 <script type="text/javascript">
 	function searchClient() {
