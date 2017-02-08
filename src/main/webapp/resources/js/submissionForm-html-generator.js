@@ -287,8 +287,11 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         			 else if(label == 'Current CTC' || label == 'Expected CTC'){
             			 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
             		 }
-        			 else if(label == 'Designation' || label == 'Education'){
+        			 else if(label == 'Designation'){
             			 datavalidation = 'data-validation="required validate_Space validate_Name validate_length length2-250"';
+            		 }
+        			 else if(label == 'Education'){
+            			 datavalidation = 'data-validation="required validate_Space validate_Name"';
             		 }
         			 else if(label == 'First Name' || label == 'Last Name'){
         				 datavalidation = 'data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"';
@@ -305,9 +308,13 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         			 else if(label == 'Current CTC' || label == 'Expected CTC'){
         				 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
             		 }
-        			 else if(label == 'Designation' || label == 'Education'){
+        			 else if(label == 'Designation'){
             			 datavalidation = 'data-validation="validate_Space validate_Name validate_length length2-250"';
-            		 }else if(label == 'Last Name'){
+            		 }
+        			 else if(label == 'Education'){
+            			 datavalidation = 'data-validation="validate_Space validate_Name"';
+            		 }
+        			 else if(label == 'Last Name'){
         				 datavalidation = 'data-validation="validate_Space validate_AlphaNumber validate_length length1-100"';
         			 }else{
         				 datavalidation = 'data-validation="validate_Space validate_length length1-100"';
