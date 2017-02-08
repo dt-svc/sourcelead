@@ -920,7 +920,11 @@ $(document).ready(function () {
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
+				
                   <input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow();">
+
+                  /*<input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList('All');">*/
+
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
@@ -2006,6 +2010,7 @@ function getTeamsList(teamType){
 				var output = "";
 				/* output = output +'     <option disabled>Select Role</option>'; */
 				
+
 				/* if(teamType == 'All'){
 					output = output +' <option value="All" selected>All</option>';
 				}else{
@@ -2021,10 +2026,12 @@ function getTeamsList(teamType){
 						}else{
 							output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
 						}
+
 					}
 				  output = output + "</optgroup>";
 			  }
 			  '</sec:authorize>';
+
 			  if(json.roles.length > 0){
 				  output = output + "<optgroup label='Roles'>"; 
 					for (var i = 0; i < json.roles.length; i++) {

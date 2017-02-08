@@ -833,15 +833,12 @@ public class VendorRestController {
 					if(vendorNameArray != null && !vendorNameArray.isEmpty()){
 						BoolQueryBuilder vendorNameBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : vendorNameArray){
-							vendorNameBoolQueryBuilder.should(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+							vendorNameBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorOrgName", keywd));
 							vendorNameBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderOrgName", keywd));
 						}
 						boolQueryBuilder.must(vendorNameBoolQueryBuilder);
 					}
 					
-					/* matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
-					    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
-					*/
 					 //Country
 					if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
 						boolQueryBuilder.should(QueryBuilders.matchQuery("responderCountry", jsonObj.getString("country")));
@@ -883,8 +880,8 @@ public class VendorRestController {
 					if(tierAdvancedByArray != null && !tierAdvancedByArray.isEmpty()){
 						BoolQueryBuilder tierAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : tierAdvancedByArray){
-							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorLevel", keywd));
-							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderLevel", keywd));
+							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
+							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
 						}
 						boolQueryBuilder.must(tierAdvancedBoolQueryBuilder);
 					}
@@ -902,8 +899,7 @@ public class VendorRestController {
 									
 									if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 										
-									    StringBuilder website=new StringBuilder();
-									    clientVendor.setWebsite(website.append("www.").append(clientVendor.getResponderWebSite()).toString());
+									    clientVendor.setWebsite(clientVendor.getResponderWebSite());
 										clientVendor.setOrgName(clientVendor.getResponderOrgName());
 										clientVendor.setCountry(clientVendor.getResponderCountry());
 										clientVendor.setState(clientVendor.getResponderState());
@@ -915,8 +911,7 @@ public class VendorRestController {
 									}
 								  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
 									 
-									  StringBuilder website=new StringBuilder();
-									  clientVendor.setWebsite(website.append("www.").append(clientVendor.getInitiatorWebSite()).toString());
+									  clientVendor.setWebsite(clientVendor.getInitiatorWebSite());
 									  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
 									  clientVendor.setCountry(clientVendor.getInitiatorCountry());
 									  clientVendor.setState(clientVendor.getInitiatorState());
@@ -970,9 +965,9 @@ public class VendorRestController {
 			    //Vendor Search 
 			    matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
 			    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
-			    matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorLevel", keywd));
-			    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderLevel", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("createdBy", keywd));
+			    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
+			    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
 				
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
@@ -981,8 +976,8 @@ public class VendorRestController {
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
 				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
 				
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderWebSite", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorWebSite", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderWebSite", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorWebSite", keywd));
 				
 				return matchQueryBuilderList; 
 		 }
@@ -995,14 +990,18 @@ public class VendorRestController {
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("ownerUserLastName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserFirstName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserLastName", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserPhNo", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("ownerUserPhNo", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserEmail", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("ownerUserEmail", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocUserPhNo", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("ownerUserPhNo", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhrasePrefixQuery("spocUserEmail", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhrasePrefixQuery("ownerUserEmail", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("responderOrgName", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocStatus", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocStatus", keywd));
 			    
+			    if(keywd.equalsIgnoreCase("Resend") || keywd.equalsIgnoreCase("resend") ){
+			    	matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", "Sent"));
+			    }else{
+			    	matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", keywd));
+			    }
 				return matchQueryBuilderListForContacts; 
 		 }
 		 
@@ -1057,7 +1056,14 @@ public class VendorRestController {
 				 combinedQueryBuilder.should(initiatorQueryBuilder);
 				 combinedQueryBuilder.should(responderQueryBuilder);
 				 
+				 
+				 BoolQueryBuilder statusQueryBuilder = QueryBuilders.boolQuery();
+				 statusQueryBuilder.must(QueryBuilders.matchQuery("status", "1"));
+				 
+				 
+				 boolQueryBuilder.must(statusQueryBuilder);
 				 boolQueryBuilder.must(combinedQueryBuilder);
+				
 				 
 				 //  this condition is if Login user is Owner or SpocUserId
 				 if(!isadmin){
@@ -1146,8 +1152,8 @@ public class VendorRestController {
 					if(contactEmailNameArray != null && !contactEmailNameArray.isEmpty()){
 						BoolQueryBuilder contactEmailBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : contactEmailNameArray){
-							contactEmailBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocUserEmail", keywd));
-							contactEmailBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("ownerUserEmail", keywd));
+							contactEmailBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocUserEmail", keywd));
+							contactEmailBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("ownerUserEmail", keywd));
 						}
 						boolQueryBuilder.must(contactEmailBoolQueryBuilder);
 					}
@@ -1189,8 +1195,12 @@ public class VendorRestController {
 					if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty()){
 						BoolQueryBuilder statusAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : statusAdvancedArray){
-							statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("spocStatus", "*"+keywd+"*"));
-						
+								if(keywd.equalsIgnoreCase("Active")){
+									statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "Active"));
+									statusAdvancedBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "In-Active"));
+								}else{
+									  statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", keywd));
+								}
 						}
 						boolQueryBuilder.must(statusAdvancedBoolQueryBuilder);
 					}
@@ -1205,13 +1215,8 @@ public class VendorRestController {
 						}
 						boolQueryBuilder.must(invitationAdvancedBoolQueryBuilder);
 					}
-										
-					
 					
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-
-
-					
 					
 					List<ClientVendorContactsIndex> clientVendorContactsList = new ArrayList<ClientVendorContactsIndex>();
 					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -1247,8 +1252,6 @@ public class VendorRestController {
 								}
 								clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getOwnerUserEmail());
 								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getOwnerUserPhNo());
-			    				 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-			    				 //orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 								
 								 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getSpocUserId());
 			    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getOwnerUserId());
@@ -1270,8 +1273,6 @@ public class VendorRestController {
 								}
 								clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getSpocUserEmail());
 								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
-									 //orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-									 //orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
 								
 								 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getOwnerUserId());
 			    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getSpocUserId());
@@ -1296,9 +1297,6 @@ public class VendorRestController {
 								}
 								clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getSpocUserEmail());
 								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
-								 //orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-								 //orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-								
 
 								 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getOwnerUserId());
 			    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getSpocUserId());
@@ -1408,8 +1406,7 @@ public class VendorRestController {
 						
 						if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 							
-							StringBuilder website=new StringBuilder();
-							clientVendor.setWebsite(website.append("www.").append(clientVendor.getResponderWebSite()).toString());
+							clientVendor.setWebsite(clientVendor.getResponderWebSite());
 							clientVendor.setOrgName(clientVendor.getResponderOrgName());
 							clientVendor.setCountry(clientVendor.getResponderCountry());
 							clientVendor.setState(clientVendor.getResponderState());
@@ -1420,8 +1417,7 @@ public class VendorRestController {
 						}
 					  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
 						 
-						  StringBuilder website=new StringBuilder();
-						  clientVendor.setWebsite(website.append("www.").append(clientVendor.getInitiatorWebSite()).toString());
+						  clientVendor.setWebsite(clientVendor.getInitiatorWebSite());
 						  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
 						  clientVendor.setCountry(clientVendor.getInitiatorCountry());
 						  clientVendor.setState(clientVendor.getInitiatorState());
@@ -1489,10 +1485,14 @@ public class VendorRestController {
 				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", loginOrgLocation.getId()));
 				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
 				 
+				 BoolQueryBuilder statusQueryBuilder = QueryBuilders.boolQuery();
+				 statusQueryBuilder.must(QueryBuilders.matchQuery("status", "1"));
+				 
 				 combinedQueryBuilder.should(initiatorQueryBuilder);
 				 combinedQueryBuilder.should(responderQueryBuilder);
 				 
 				 boolQueryBuilder.must(combinedQueryBuilder);
+				 boolQueryBuilder.must(statusQueryBuilder);
 				 
 				 //  this condition is if Login user is Owner or SpocUserId
 				 if(!isadmin){
@@ -1548,8 +1548,6 @@ public class VendorRestController {
 									}
 									clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getOwnerUserEmail());
 									clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getOwnerUserPhNo());
-				    				 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-				    				 //orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 									
 									 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getSpocUserId());
 				    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getOwnerUserId());
@@ -1571,8 +1569,6 @@ public class VendorRestController {
 									}
 									clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getSpocUserEmail());
 									clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
-										 //orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-										 //orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
 									
 									 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getOwnerUserId());
 				    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getSpocUserId());
@@ -1597,9 +1593,6 @@ public class VendorRestController {
 									}
 									clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getSpocUserEmail());
 									clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getSpocUserPhNo());
-									 //orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-									 //orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-									
 
 									 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getOwnerUserId());
 				    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getSpocUserId());
@@ -1621,9 +1614,6 @@ public class VendorRestController {
 									}
 									clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getOwnerUserEmail());
 									clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getOwnerUserPhNo());
-								 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-								 //orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
-									
 
 									 clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getSpocUserId());
 				    				 clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getOwnerUserId());

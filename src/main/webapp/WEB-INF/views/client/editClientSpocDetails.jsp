@@ -135,7 +135,11 @@
 						}else{
 							spocMobilePhone = "";
 						}
-						
+						if(null != json.spocLastName && json.spocLastName != '' && json.spocLastName != 'undefined'){
+							spocLastName = json.spocLastName;
+						}else{
+							spocLastName = "";
+						}
 						if(json.spocStatus == 'Active'){
 							selected1 = 'selected';
 						} 
@@ -165,7 +169,7 @@
 							
 							result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
 							result = result + '<label>Last Name:</label>';
-							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name" readonly="readonly">';
+							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+spocLastName+'" placeholder="Last name" field-name="Last name" readonly="readonly">';
 							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
@@ -187,7 +191,7 @@
 							
 							result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
 							result = result + '<label>Last Name:</label>';
-							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name">';
+							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+spocLastName+'" placeholder="Last name" field-name="Last name">';
 							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';

@@ -92,6 +92,7 @@ public class ClientVendorIndexHelper {
 			clientVendorIndex.setOrgLocationId(orgRelationsList.getLocationId().getId());
 			clientVendorIndex.setInitiatorLevel(orgRelationsList.getInitiatorLevel());
 			clientVendorIndex.setResponderLevel(orgRelationsList.getResponderLevel());
+			
 			clientVendorIndex.setStatus(orgRelationsList.getStatus());
 			clientVendorIndex.setCreatedByUserCode(orgRelationsList.getCreatedBy());
 			

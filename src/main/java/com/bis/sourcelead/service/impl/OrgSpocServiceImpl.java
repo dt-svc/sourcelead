@@ -66,13 +66,13 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	@Override
 	public OrgSpoc addOrgSpoc(OrgSpoc orgSpoc) throws Exception {
 		
-		OrgSpoc org = orgSpocDao.addOrgSpoc(orgSpoc);
+		OrgSpoc orgSpocElk = orgSpocDao.addOrgSpoc(orgSpoc);
 		
 		 //Elastic Search Document Saving
-		  ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
+		  ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpocElk);
 		  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
 		
-		return  org;
+		return  orgSpocElk;
 	}
 
 	/**
@@ -426,7 +426,11 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
    	     orgSpoc.setOwnerName(spocNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());  
 	     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
-	     orgSpoc.setSpocName(ownerNameSB.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+	     if(null != orgSpoc.getSpocUser().getLastName()){
+	    	 orgSpoc.setSpocName(ownerNameSB.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+	     }else{
+	    	 orgSpoc.setSpocName(ownerNameSB.append(orgSpoc.getSpocUser().getFirstName()).toString());
+	     }
 	     orgSpoc.setSpocFirstName(orgSpoc.getSpocUser().getFirstName());
 	     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
 	     orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());

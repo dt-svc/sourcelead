@@ -42,13 +42,16 @@ public class UserIndexHelper {
 			}
 			userIndex.setStatus(userRole.getUser().getStatus());
 			userIndex.setTerminateReason(userRole.getTerminateReason());
-			userIndex.setEmployeeId(employee.getEmployeeId());
-			userIndex.setRate(employee.getRate());
-			userIndex.setRatePer(employee.getRatePer());
-			DateFormat StringDate = new SimpleDateFormat("dd-MM-yyyy"); 
-			if(null != employee.getHireDate()){
-			String hireDate  = StringDate.format(employee.getHireDate());
-			userIndex.setHireDate(hireDate);
+			DateFormat StringDate = new SimpleDateFormat("dd-MM-yyyy");
+				if(null != employee){
+					userIndex.setEmployeeId(employee.getEmployeeId());
+					userIndex.setRate(employee.getRate());
+					userIndex.setRatePer(employee.getRatePer());
+					 
+					if(null != employee.getHireDate()){
+					String hireDate  = StringDate.format(employee.getHireDate());
+					userIndex.setHireDate(hireDate);
+				}
 			}
 			userIndex.setUserCode(user.getUserCode());
 			userIndex.setUserRoleId(userRole.getRoles().getId().toString());
