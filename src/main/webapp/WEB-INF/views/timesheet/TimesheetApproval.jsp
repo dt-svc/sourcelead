@@ -49,6 +49,42 @@ margin-top: 3px;
 }
 </style>
 
+<script>
+	/* function timesheetDivByTab(startDate,endDate) */
+	function timesheetDivByTab(startDate,endDate,approvalStatus){ 
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         var projectMemberId = $("[name='projectMemberId']").val();
+	         var timesheetFrequency = $("[name='timesheetFrequency']").val();
+		     
+	         $("#timesheetDivByTab").empty();
+	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+    	          type : "POST",
+        	      dataType : 'json',
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=timesheet",		
+  		          success :function(result) {
+  		    	       
+  		        	   $("#timesheetDivByTab").removeAttr("style");
+  		    	       $("#timesheetDivByTab").empty();
+		    	  	   $("#timesheetDivByTab").append(result);
+		    	  	   
+		    	  	   maskme();
+		    	  	   $("html").trigger('click');
+		    	  	   
+			    	   $("#tab-1").show();
+	 		    	   $(".project-tabs-menu a").click(function(event) {
+	 		    	        event.preventDefault();
+	 		    	        $(this).parent().addClass("current");
+	 		    	        $(this).parent().siblings().removeClass("current");
+	 		    	        var tab = $(this).attr("href");
+	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+	 		    	        $(tab).fadeIn();
+	 		    	   });
+		    	  	   
+  		          }
+  	         }); 
+	}
+</script>
 
 
 <%-- <jsp:include page="TimesheetScripts.jsp" /> --%>
@@ -330,6 +366,11 @@ function timesheetComment(local){
 <script type="text/javascript">
 function newSaveTimesheet(status,savingType){ 
 	 checkHours();
+	 var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
+	 if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
+		 $('#0docFile').removeAttr('data-validation-optional');
+		 $('#0docFile').attr("data-validation","required"); 
+	 }
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -415,6 +456,7 @@ $('body').on('blur', '#timesheet_form', function() {
 <script type="text/javascript">
 function deleteSubmissionDocument(submissionDocumentId){  
     var sourceleadUrl ='${sourceleadUrl}';
+    var projectExistingValue = $("#dbIsTimesheetAttachmentRequired").val();
     /*  var startdate; */
 	var navigation;
     $.ajax({
@@ -422,6 +464,9 @@ function deleteSubmissionDocument(submissionDocumentId){
       	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
 	      success :function(result) {
 	    	  $("#"+submissionDocumentId+"document").remove();
+	    	  if(projectExistingValue != null && projectExistingValue != "" && projectExistingValue !="undefined" && projectExistingValue == "1"){
+	    		  $("#isTimesheetAttachmentRequired").val('Y');
+	    	  }
 	      }
       	  
     }); 
@@ -436,7 +481,7 @@ function deleteSubmissionDocument(submissionDocumentId){
 	<!-- addrow divs -->
 	 <div id="divadttTd1" style="display:none;" >   
 	      <div> 
-	       <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId" onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
+	       <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId" data-validation="required" field-name="Task"  onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
 	                   <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 	                       	<option value="${task.id}">${task.taskName}</option>
 	                    </c:forEach> --%>
@@ -601,6 +646,10 @@ function checkHours(){
 /* this script is for calculate total hours */
 $(document).click(function(){ 
 	 var total;
+	 var billableTotal;
+	 var billableSum = 0;
+	 var nonBillableTotal;
+	 var nonBillableSum = 0;
 	 for (var i = 1; i < 8; i++){
 		 var bsum = 0;
 		 var nbsum = 0;
@@ -618,6 +667,34 @@ $(document).click(function(){
 					 var finalmin = parseInt(minute) + parseInt(minute1);
 			    	 
 				     bsum = parseFloat(bsum) + parseInt(finalmin);
+				     
+				     
+				     var billableType = $("#"+j+"task1IdBillableTypeId").text();
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Billable') {
+				    	 var billableHours = btemp;
+				    	 var billableSplit = billableHours.split(':');
+				    	 var billableFirst = billableSplit[0];
+				    	 var billableSecond = billableSplit[1];
+						 
+						 var billableMinute = billableFirst * 60;
+						 var billableMinute1 = billableSecond;
+						 var billableFinalmin1 = parseInt(billableMinute) + parseInt(billableMinute1);
+				    	 
+						 billableSum = parseFloat(billableSum) + parseInt(billableFinalmin1);
+				    }
+				     
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Non-Billable') {
+				    	 var nonBillableHours = btemp;
+				    	 var nonBillableSplit = nonBillableHours.split(':');
+				    	 var nonBillableFirst = nonBillableSplit[0];
+				    	 var nonBillableSecond = nonBillableSplit[1];
+						 
+						 var nonBillableMinute = nonBillableFirst * 60;
+						 var nonBillableMinute1 = nonBillableSecond;
+						 var nonBillableFinalmin1 = parseInt(nonBillableMinute) + parseInt(nonBillableMinute1);
+				    	 
+						 nonBillableSum = parseFloat(nonBillableSum) + parseInt(nonBillableFinalmin1);
+				    }
 				}
 			    
 		 }
@@ -639,6 +716,43 @@ $(document).click(function(){
 		}
 	 $("#rowTotal"+i+"Id").val(total);
 }	
+	 
+	//for calculate billable count
+	    var t1 = billableSum; 
+		var billableHours = Math.floor(t1 / 60); 
+		var billableMinutes = t1 % 60;
+		
+		if (billableMinutes < 10) {
+			billableMinutes = '0' + billableMinutes;
+		}
+		if (billableHours < 10) {
+			billableHours = '0' + billableHours;
+		}
+		if(!isNaN(billableHours) && !isNaN(billableMinutes)){
+			billableTotal = billableHours +":"+ billableMinutes;
+		}else{
+			billableTotal =  "00:00";
+		}
+	    $("#grandBillableTotal").val(billableTotal);
+	    
+	    
+	  //for calculate non-billable count
+	    var t2 = nonBillableSum; 
+		var nonBillableHours = Math.floor(t2 / 60); 
+		var nonBillableMinutes = t2 % 60;
+		
+		if (nonBillableMinutes < 10) {
+			nonBillableMinutes = '0' + nonBillableMinutes;
+		}
+		if (nonBillableHours < 10) {
+			nonBillableHours = '0' + nonBillableHours;
+		}
+		if(!isNaN(nonBillableHours) && !isNaN(nonBillableMinutes)){
+			nonBillableTotal = nonBillableHours +":"+ nonBillableMinutes;
+		}else{
+			nonBillableTotal =  "00:00";
+		}
+	    $("#grandNonBillableTotal").val(nonBillableTotal);
 	
 	 grandTotal();		
 });
