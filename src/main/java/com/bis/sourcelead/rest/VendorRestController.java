@@ -1184,8 +1184,8 @@ public class VendorRestController {
 					if(ownerAdvancedNameArray != null && !ownerAdvancedNameArray.isEmpty()){
 						BoolQueryBuilder ownerAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : ownerAdvancedNameArray){
-							ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("ownerUserFirstName", keywd));
-							ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("ownerUserLastName", keywd));
+							ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("ownerUserFirstName", keywd));
+							ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("ownerUserLastName", keywd));
 						}
 						boolQueryBuilder.must(ownerAdvancedBoolQueryBuilder);
 					}

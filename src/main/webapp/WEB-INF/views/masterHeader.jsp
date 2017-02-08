@@ -519,8 +519,6 @@ function notificationStatusAsRead(){
 								$("#closed-task, #my-task").hide();
 							    $("#other-task").show().css("opacity", "1");
 							assignedTasksList('assignedTasks');
-							tasksList('myTask');
-							assignTasksList();
 						},
 					});
 			return true;
@@ -767,8 +765,6 @@ function assignedTasksList(status){
         success: function(data) {
         	 var json = JSON.parse(data);
         	 var result = "";
-        	 
-       		 
        		result = result + '	 <table id="assignedTasksPagination">'; 
         	result = result + '     <thead>';
         	result = result + '       <tr>';
@@ -825,12 +821,9 @@ function assignedTasksList(status){
 			}
         	result = result + '</tbody>';
         	result = result + '</table>';
-        	
        		 $("#assignedTasksId").empty();
            	 $("#assignedTasksId").append(result); 
            	 assignedTasksPagination();
-        	
-        	 
         }
 	});
 	 

@@ -823,7 +823,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId) throws Exception {
+	public HashSet<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId) throws Exception {
 		return userDao.getUsersByTeamTypeAndTabId(id,teamType,tabId);
 	}
 
