@@ -233,10 +233,14 @@ public class CandidateController {
 		model.setViewName("candidates/addConsultant");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("type", type);
+	
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
 		}
+		
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
 		{

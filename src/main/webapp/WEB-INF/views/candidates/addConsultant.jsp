@@ -201,12 +201,12 @@
          <label class="col-md-3">Employment type</label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
-                <option value=""><a href="#">Select</a></option>
-                 <option><a href="#">C2C</a></option>
-                 <option><a href="#">W-2</a></option>
-                 <option><a href="#">Part Time</a></option>
-                 <option><a href="#">Full Time</a></option>
-                 <option><a href="#">Other</a></option>
+                <option value="">Select</option>
+                 <option>C2C</option>
+                 <option>W-2</option>
+                 <option>Part Time</option>
+                 <option>Full Time</option>
+                 <option>Other</option>
              </select>
          </div>
        </div>
