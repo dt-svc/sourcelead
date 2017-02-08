@@ -492,7 +492,7 @@ public class TimesheetApprovalRestController {
 					
 					    /*timesheetApprovalDiv.append("<td><div class='sm'><a href='javascript:void(0)'>").append(totalHours).append("/40</a></div></td>");*/
 					    timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\");'>"+totalHours+"/40</a></div></td>");
-					    timesheetApprovalDiv.append("<td><div class='sm'>").append(sah.getSubmissionApprovalStatus()).append("</div></td>");
+					    timesheetApprovalDiv.append("<td><div class='sm' id='status").append(projectMember.getId()).append("'>").append(sah.getSubmissionApprovalStatus()).append("</div></td>");
 					    timesheetApprovalDiv.append("<td>");
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
 					    	 timesheetApprovalDiv.append("<div class='sm text-center'>--</div>");
@@ -512,7 +512,7 @@ public class TimesheetApprovalRestController {
 					      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 			            	 timesheetApprovalDiv.append(" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>");
 			            	 timesheetApprovalDiv.append(" <i class='glyphicon glyphicon-comment' id='").append(projectMember.getId()).append("' onclick='rejectedMessage(\"rejectedMessage").append(projectMember.getId()).append("\");'>");
-			            	 timesheetApprovalDiv.append(" <div class='app_error_mes' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getSubmissionId().getRejectedReason()).append("</div>");
+			            	 timesheetApprovalDiv.append(" <div class='ts_app_error_mes' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getRejectedReason()).append("</div>");
 			            	 timesheetApprovalDiv.append(" </i>");
 			            	 timesheetApprovalDiv.append(" </div>");
 			            }
