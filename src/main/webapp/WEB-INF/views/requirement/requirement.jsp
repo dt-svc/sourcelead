@@ -922,7 +922,7 @@ $(document).ready(function () {
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  <input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList('All');">
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
@@ -1987,33 +1987,12 @@ function getTeamsList(teamType){
 				}else{
 					output = output +'           <option value="All">All</option>';
 				}
-				/* if(teamType == 'Admin'){
-					output = output +'           <option value="Admin" selected>Admin</option>';
-				}else{
-					output = output +'           <option value="Admin">Admin</option>';
-				}
-				if(teamType == 'Account Manager'){
-					output = output +'           <option value="Account Manager" selected>Account Manager</option>';
-				}else{
-					output = output +'           <option value="Account Manager">Account Manager</option>';
-				}if(teamType == 'Recruiter'){
-					output = output +'           <option value="Recruiter" selected>Recruiter</option>';
-				}else{
-					output = output +'           <option value="Recruiter">Recruiter</option>';
-				} if(teamType == 'HR Manager'){
-					output = output +'           <option value="HR Manager" selected>HR Manager</option>';
-				}else{
-					output = output +'           <option value="HR Manager">HR Manager</option>';
-				} 
-               if(teamType == 'Project Manager'){
-				output = output +'           <option value="Project Manager" selected>Project Manager</option>';
-			  }else{
-				output = output +'           <option value="Project Manager">Project Manager</option>';
-			  } */ 
+				
 			  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">'; 
 			  for (var i = 0; i < json.teams.length; i++) {
 					var opt = json.teams[i];
-					if(teamType == opt.id){
+					var teamId = teamType.charAt(0);
+					if(teamId == opt.id){
 						output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
 					}else{
 						output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
@@ -2023,7 +2002,8 @@ function getTeamsList(teamType){
 			  
 				for (var i = 0; i < json.roles.length; i++) {
 					var opt = json.roles[i];
-					if(teamType == opt.id){
+					var roleId = teamType.charAt(0);
+					if(roleId == opt.id){
 						output = output + "<option value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
 					}else{
 						output = output + "<option value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
