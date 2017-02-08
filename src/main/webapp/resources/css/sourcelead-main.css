@@ -5798,6 +5798,10 @@ background-color: #fff;
  background-color: #fff;
  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 }
+
+.fa-bullhorn.success {
+	color:green !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

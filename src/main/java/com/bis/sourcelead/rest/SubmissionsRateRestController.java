@@ -114,6 +114,8 @@ public class SubmissionsRateRestController {
 				requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(requirementSubmission.getCandidate().getOrgLocationId());
 				requirementRateSubmissionNegotiation.setCurrentRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 				requirementRateSubmissionNegotiation.setCurrentRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
+				requirementRateSubmissionNegotiation.setExpectedRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+				requirementRateSubmissionNegotiation.setExpectedRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
 				requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.REJECTED);
 				requirementRateSubmissionNegotiation.setRateReason(rejectreason);
 				if("user".equalsIgnoreCase(type)){
