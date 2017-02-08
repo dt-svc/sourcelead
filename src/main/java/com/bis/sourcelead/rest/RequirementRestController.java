@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
@@ -121,6 +124,9 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 RequirementSubmissionService requirementSubmissionService;
+	 
+	 @Autowired
+	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	 
 	/**
 	 * @author prasad k
@@ -623,29 +629,41 @@ public class RequirementRestController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getRequirementRecommendationsByRequirementId", method = RequestMethod.POST)
 	public @ResponseBody String getRequirementRecommendationsByRequirementId(
-			@RequestParam(value = "requirementId", required = false) Long requirementId, HttpServletRequest request)
+			@RequestParam(value = "requirementId", required = false) Long requirementId,@RequestParam(value = "count", required = false) Long offset, HttpServletRequest request)
 			throws Exception {
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-       // List<Candidate> candidateList = recommendationsService.getAllCandidatesByLocation(orgLocation.getId());
 		List<CandidateIndex> candidateListCopy = null;
-		//Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
-	    
 		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
 	    if(null != recommendedCustomizeScore){ 
-		candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);
+		//candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore,offset);
+	    	candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);
 	    }
-		//List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScoreByUsingElk(orgLocation.getId(),requirement);
-		
-		/*Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
-		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScore.getScore(requirementId.getId());
-			
-		List<Candidate> candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);*/
 		resultJson = commonUtil.toJSON(candidateListCopy);
 		return resultJson;
 
 	}
 
+	
+	@PreAuthorize("hasAnyRole('ROLE_RECOMMENDATIONS')")
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/getRecommendationsCountBasedOnRequirementId", method = RequestMethod.POST)
+	public @ResponseBody String getRecommendationsCountBasedOnRequirementId(
+			@RequestParam(value = "requirementId", required = false) Long requirementId, HttpServletRequest request)
+			throws Exception {
+		 String resultJson;
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
+		 BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
+		 Long counts = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getTotalHits();
+		resultJson = commonUtil.toJSON(counts);
+		return resultJson;
+
+	}
+	
+	
 	/**
 	 * @David Raju Sammeta
 	 * 

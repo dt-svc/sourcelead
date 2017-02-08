@@ -52,7 +52,7 @@
  
 <script>
  window.onload = function() {
-	 candidateListCheck("${serachValue}","${universalCanddateList}");
+	 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
 };
 </script>
 
@@ -65,7 +65,7 @@
 }
 </style>
 <script>
-function candidateListCheck(serachValue,universalCanddateSearchList){
+function candidateListCheck(serachValue,universalCanddateSearchList,candidateKeyword,candidateIdSearchId){
 if(universalCanddateSearchList=="universalCanddateList")	 {
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -76,6 +76,11 @@ if(universalCanddateSearchList=="universalCanddateList")	 {
          },
           
      }); 
+  }
+  if(candidateKeyword == "candidateSearch"){
+	  candidateSideBar(candidateIdSearchId);
+	  candidateList();
+	  $("#upcandidateStatus").val('');
   }
 else{
 	candidateList();

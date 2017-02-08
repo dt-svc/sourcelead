@@ -137,9 +137,9 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'  <div class="srchresult clearfix row">';
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined"){
-				    		result = result+'<p><label><strong><a href="#" onclick="candidateSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
+				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
 				    	}else{													
-				    		result = result+'<p><label><strong><a href="#" onclick="candidateSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>';	
+				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>';	
 				    	}
 				    	if(report.email !=null && report.email !='' && report.email !='undefined' && report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined' ){
 				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.email+'</a></strong></label>, <label>'+report.mobilePhone+'</label>';	
@@ -199,7 +199,9 @@ function getSearchResults(searchType,searchValue){
 		                result = result+'  <div class="srchresult clearfix row">';
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-				    		name_location = name_location + report.orgName+",";
+				    		result = result+'<label><strong><a href="#" onclick="clientSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label>';	
+
+				    		//name_location = name_location + report.orgName+",";
 				    	}
 				    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 				    		name_location = name_location + report.city;
@@ -241,7 +243,8 @@ function getSearchResults(searchType,searchValue){
 		                result = result+'  <div class="srchresult clearfix row">';
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-				    		name_location = name_location + report.orgName+",";
+				    		result = result+'<label><strong><a href="#" onclick="vendorSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label>';	
+				    	//	name_location = name_location + report.orgName+",";
 				    	}
 				    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 				    		name_location = name_location + report.city;
@@ -283,9 +286,9 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'  <div class="srchresult clearfix row">';
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.projectName !=null && report.projectName != '' && report.projectName !="undefined" && report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
-				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.projectName+'</a></strong></label>, <label>'+report.invoiceFrequency+'</label>';
+				    		result = result+'<p><label><strong><a href="javascript:void(0)" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\');">'+report.projectName+'</a></strong></label>, <label>'+report.invoiceFrequency+'</label>';
 				    	}else{
-				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.projectName+'</a></strong></label>';
+				    		result = result+'<p><label><strong><a href="javascript:void(0)" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\');">'+report.projectName+'</a></strong></label>';
 				    	}
 				    	result = result+'</p>';
 				    	if(report.clientName !=null && report.clientName != '' && report.clientName !="undefined"){
@@ -327,9 +330,9 @@ function getSearchResults(searchType,searchValue){
 				    	result = result+'  <div class="srchresult clearfix row">';  
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.firstName !=null && report.firstName != '' && report.firstName !="undefined" && report.lastName !=null && report.lastName !='' && report.lastName !='undefined'){
-				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.firstName+' '+report.lastName+'</a></strong></label>';
+				    		result = result+'<p><label><strong><a href="javascript:void(0)" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+' '+report.lastName+'</a></strong></label>';
 				    	}else{
-				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.firstName+'</a></strong></label>';
+				    		result = result+'<p><label><strong><a href="javascript:void(0)" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+'</a></strong></label>';
 				    	}
 				    	result = result+'</p>'; 
 				    	if(report.email !=null && report.email != '' && report.email !="undefined" && report.mobilePhone !=null && report.mobilePhone != '' && report.mobilePhone !="undefined"){
@@ -463,9 +466,9 @@ function getSearchResultsForAll(searchType,searchValue){
 				            			result = result+'  <div class="srchresult clearfix row">';  
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	if(report.firstName !=null && report.firstName != '' && report.firstName !="undefined" && report.lastName !=null && report.lastName !='' && report.lastName !='undefined'){
-								    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.firstName+' '+report.lastName+'</a></strong></label>';
+								    		result = result+'<p><label><strong><a href="javascript:void(0)" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+' '+report.lastName+'</a></strong></label>';
 								    	}else{
-								    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.firstName+'</a></strong></label>';
+								    		result = result+'<p><label><strong><a href="javascript:void(0)" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+'</a></strong></label>';
 								    	}
 								    	result = result+'</p>'; 
 								    	if(report.email !=null && report.email != '' && report.email !="undefined" && report.mobilePhone !=null && report.mobilePhone != '' && report.mobilePhone !="undefined"){
@@ -499,9 +502,10 @@ function getSearchResultsForAll(searchType,searchValue){
 				  				    	result = result+'  <div class="srchresult clearfix row">';
 				  				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				  				    	if(report.projectName !=null && report.projectName != '' && report.projectName !="undefined" && report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
-				  				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.projectName+'</a></strong></label>, <label>'+report.invoiceFrequency+'</label>';
+								    		result = result+'<p><label><strong><a href="javascript:void(0)" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\');">'+report.projectName+'</a></strong></label>';
+								    		result = result+'<label>'+report.invoiceFrequency+'</label>';
 				  				    	}else{
-				  				    		result = result+'<p><label><strong><a href="javascript:void(0)">'+report.projectName+'</a></strong></label>';
+				  				    		result = result+'<p><label><strong><a href="javascript:void(0)" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\');">'+report.projectName+'</a></strong></label>';
 				  				    	}
 				  				    	result = result+'</p>';
 				  				    	if(report.clientName !=null && report.clientName != '' && report.clientName !="undefined"){
@@ -542,9 +546,9 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	result = result+'  <div class="srchresult clearfix row">';
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined"){
-								    		result = result+'<p><label><strong><a href="#" onclick="candidateSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
+								    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
 								    	}else{													
-								    		result = result+'<p><label><strong><a href="#" onclick="candidateSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>';	
+								    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>';	
 								    	}
 								    	if(report.email !=null && report.email !='' && report.email !='undefined' && report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined' ){
 								    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>';	
@@ -600,7 +604,8 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	result = result+'  <div class="srchresult clearfix row">';
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-								    		name_location = name_location + report.orgName+",";
+								    		result = result+'<label><strong><a href="#" onclick="clientSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label>';
+								    		//name_location = name_location + report.orgName+",";
 								    	}
 								    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 								    		name_location = name_location + report.city;
@@ -638,7 +643,8 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	result = result+'  <div class="srchresult clearfix row">';
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-								    		name_location = name_location + report.orgName+",";
+								    		result = result+'<label><strong><a href="#" onclick="vendorSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label>';
+								    		//name_location = name_location + report.orgName+",";
 								    	}
 								    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 								    		name_location = name_location + report.city;
@@ -743,6 +749,46 @@ function loadProjects(){
 }
 </script>
 
+<script>
+function vendorSearchSideBar(responderLocationId,orgRelationId,orgName){
+	var vendorKeyword = "vendorSearch";
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/vendorsList?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+orgName+"&vendorKeyword="+vendorKeyword;
+
+}
+</script>
+
+
+<script>
+function clientSearchSideBar(responderLocationId,orgRelationId,orgName){
+	var clientKeyword = "clientSearch";
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/clientDashboard?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+orgName+"&clientKeyword="+clientKeyword;
+}
+</script>
+
+<script>
+function candidateSearchSideBar(candidateIdSearchId){
+	var candidateKeyword = "candidateSearch";
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/candidatesList?&candidateKeyword="+candidateKeyword+"&candidateIdSearchId="+candidateIdSearchId;
+}
+</script>
+
+<script>
+function userSummaryRedirect(userId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl +"/userSummary/"+userId;
+}
+</script>
+
+<script>
+function projectSearchSideBar(projectId,projectName,startDate,endDate, status){
+	var projectKeyword = "projectSearch";
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/projectDashboard?&projectId="+projectId+"&projectName="+projectName+"&startDate="+startDate+"&endDate="+endDate+"&status="+status+"&projectKeyword="+projectKeyword;
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
 

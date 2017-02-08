@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
@@ -78,7 +79,7 @@ public class RequirementHelper {
 			User ownerUser = userService.getUserById(userId);
 			StringBuilder sbilder = new StringBuilder();
 			if(ownerUser != null && ownerUser.getFirstName() != null && ownerUser.getLastName()!= null ){
-			requirementIndex.setManager(sbilder.append((ownerUser.getFirstName())).append(ownerUser.getLastName()).toString());
+			requirementIndex.setManager(sbilder.append((ownerUser.getFirstName())).append(" ").append(ownerUser.getLastName()).toString());
 			}else{
 			requirementIndex.setManager(sbilder.append((ownerUser.getFirstName())).toString());
 			}
@@ -143,12 +144,11 @@ public class RequirementHelper {
 			if (requirement.getClientId() != null) {
 				Requirement requirement1 = requirementService.getRequirementByRequirementId(requirement.getId());
 				StringBuilder sb = new StringBuilder();
-				if ("Client".equalsIgnoreCase(requirement1.getClientId().getResponderType())) {
+				if (Constants.CLIENT.equalsIgnoreCase(requirement1.getClientId().getResponderType())) {
 					if (requirement1.getClientId().getResponderLocationId() !=null) {
 						requirementIndex
 								.setClient(requirement1.getClientId().getResponderLocationId().getOrg().getOrgName());
-						if (requirement1.getSpocId().getSpocUser().getFirstName()
-								!=null &&requirement1.getSpocId().getSpocUser().getLastName() !=null) {
+						if (requirement1.getSpocId().getSpocUser() !=null &&requirement1.getSpocId().getSpocUser() !=null) {
 							sb.append(requirement1.getSpocId().getSpocUser().getFirstName()).append(" ")
 									.append(requirement1.getSpocId().getSpocUser().getLastName());
 						} else {
@@ -158,10 +158,9 @@ public class RequirementHelper {
 						requirementIndex.setClientContactEmail(requirement1.getSpocId().getSpocUser().getEmail());
 					}
 				}
-				if (("Vendor").equalsIgnoreCase(requirement1.getClientId().getResponderType())) {
+				if (Constants.VENDOR.equalsIgnoreCase(requirement1.getClientId().getResponderType())) {
 					requirementIndex.setClient(requirement1.getClientId().getLocationId().getOrg().getOrgName());
-					if (requirement1.getSpocId().getSpocUser().getFirstName()
-							!=null && requirement1.getSpocId().getSpocUser().getLastName()!=null) {
+					if (requirement1.getSpocId().getSpocUser() !=null && requirement1.getSpocId().getSpocUser()!=null) {
 						sb.append(requirement1.getSpocId().getSpocUser().getFirstName()).append(" ")
 								.append(requirement1.getSpocId().getSpocUser().getLastName());
 					} else {
