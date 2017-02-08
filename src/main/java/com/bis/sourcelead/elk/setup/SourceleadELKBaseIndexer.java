@@ -41,7 +41,6 @@ public  class SourceleadELKBaseIndexer<T> {
 	 * @param id
 	 * @purpose : For To Save/Update  Elk Document Based On id
 	 */
-	@Async
 	public void saveOrUpdateElkDocument(T entityClass,String index,String type,String id) {
 		String entityInJson = null;
 		try {

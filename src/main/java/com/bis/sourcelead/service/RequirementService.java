@@ -105,7 +105,8 @@ public interface RequirementService {
 
 	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org, String userRole, User user)throws Exception;
 
-
+	public Long getRequirementsListById(Long requirementId) throws Exception;
+	
 	public List<Object> getAllUniversalSearchRequirementList(OrgLocations orgLocations, String serachValue,String userRole, User user) throws Exception;
 
 }

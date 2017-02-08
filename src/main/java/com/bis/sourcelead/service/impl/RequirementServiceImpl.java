@@ -2707,5 +2707,10 @@ public class RequirementServiceImpl implements RequirementService {
 		return searchList;
 	
 	}
+
+	@Override
+	public Long getRequirementsListById(Long orgLocationId) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationID(orgLocationId);
+	}
 }
 

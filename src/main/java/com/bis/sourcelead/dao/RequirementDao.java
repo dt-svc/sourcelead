@@ -61,7 +61,7 @@ public interface RequirementDao {
 	
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
 
-	public Long getRequirementListByOrgLocationID(Long orgLocationId);
+	public Long getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;
 	
 	List<String> getAllRequirementSkillsByRequirementI(Long requirementId) throws Exception;
 }

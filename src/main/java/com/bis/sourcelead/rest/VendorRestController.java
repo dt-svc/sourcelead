@@ -992,12 +992,16 @@ public class VendorRestController {
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserLastName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocUserPhNo", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("ownerUserPhNo", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocUserEmail", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("ownerUserEmail", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhrasePrefixQuery("spocUserEmail", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhrasePrefixQuery("ownerUserEmail", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("responderOrgName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocStatus", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", keywd));
 			    
+			    if(keywd.equalsIgnoreCase("Resend") || keywd.equalsIgnoreCase("resend") ){
+			    	matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", "Sent"));
+			    }else{
+			    	matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", keywd));
+			    }
 				return matchQueryBuilderListForContacts; 
 		 }
 		 
@@ -1191,8 +1195,12 @@ public class VendorRestController {
 					if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty()){
 						BoolQueryBuilder statusAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : statusAdvancedArray){
-							statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocStatus", "*"+keywd+"*"));
-						
+								if(keywd.equalsIgnoreCase("Active")){
+									statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "Active"));
+									statusAdvancedBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "In-Active"));
+								}else{
+									  statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", keywd));
+								}
 						}
 						boolQueryBuilder.must(statusAdvancedBoolQueryBuilder);
 					}
