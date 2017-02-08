@@ -133,7 +133,7 @@
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_Space validate_length length1-100" data-validation-optional="true" value="">
+           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true" value="">
           </div>
         </div>
         
@@ -217,7 +217,7 @@
             <div class="row">
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
-             		  <option selected disabled>Years</option>
+             		  <option selected >Years</option>
              		  <c:forEach begin="0" end="24" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -227,7 +227,7 @@
              
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
-             		<option selected disabled>Months</option>
+             		<option selected >Months</option>
              		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -771,14 +771,19 @@ function getCities(){
  
  <!-- Experience Years and Months validation Script years greater than  20 the months dropdown disabled script here -->
  <script type="text/javascript">
+ 
  function disableMonths() {
      $("#experienceYears").change(function() {
-    	 
-         if ($(this).val() == '25+'){
-             $("#experienceMonths").attr("disabled", true);
-             $("#experienceMonths").val("disabled", true);
-         }else
+         if ($("#experienceYears").val() == '25+'){
+        	 $("#experienceMonths").val('');  
+        	 $('#experienceMonths').selectpicker('refresh');
+        	 $('#experienceMonths').attr("disabled", true);
+             $('#experienceMonths').val("disabled", true);
+         }else{
+        	 $("#experienceMonths").val('');  
+        	 $('#experienceMonths').selectpicker('refresh');
         	 $("#experienceMonths").attr("disabled", false); 
+         }
      });
  }
 	      var selectedFile = document.getElementById("uploadBtn");
