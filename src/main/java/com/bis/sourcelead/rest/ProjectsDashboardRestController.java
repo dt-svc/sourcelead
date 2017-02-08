@@ -518,7 +518,16 @@ public class ProjectsDashboardRestController {
 				if(invoiceFrequencyArray != null && !invoiceFrequencyArray.isEmpty()){
 					BoolQueryBuilder invoiceFrequencyBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : invoiceFrequencyArray){
-						invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("invoiceFrequency", keywd));
+						if(keywd.equalsIgnoreCase("Weekly")){
+							invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Weekly"));
+							invoiceFrequencyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Bi-Weekly"));
+						}else if(keywd.equalsIgnoreCase("Monthly")){
+							invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Monthly"));
+							invoiceFrequencyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Semi-Monthly"));
+						}
+						else{
+							invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", keywd));
+						}
 					}
 					boolQueryBuilder.must(invoiceFrequencyBoolQueryBuilder);
 				}
