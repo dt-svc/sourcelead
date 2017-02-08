@@ -28,7 +28,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.xmlbeans.impl.regex.RegularExpression;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
@@ -49,7 +48,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
-import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.RequirementHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -70,6 +68,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -89,6 +88,7 @@ import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -183,6 +183,9 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private RecommendedCustomizeScoreService recommendedCustomizeScoreService;
+	
+	@Autowired
+	private TeamMembersService teamMembersService;
 	
 	/**
 	 * @author prasad k
@@ -622,7 +625,79 @@ public class RequirementServiceImpl implements RequirementService {
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
-				        Long teamId = 0L;
+				
+				/*String assignedTeamAndRoleIds = jsonObj.getString("assignedTeamId");*/
+				
+				String [] assignedTeamAndRoleIds = jsonObj.getString("assignedTeamId").split(",");
+				ArrayList<String> assignedTeamId = new ArrayList<String>();
+				int teamCount = 0;
+				for(String assignedTeamOrRoleId : assignedTeamAndRoleIds){
+					if(!assignedTeamOrRoleId.contains("role") && !assignedTeamOrRoleId.contains("All")){
+						assignedTeamId.add(assignedTeamOrRoleId);
+						teamCount++;
+			    	}
+				}
+		    	
+				
+				
+				if(StringUtils.isNotEmpty(assignedToMaxCount)){
+					int MaxCount = Integer.parseInt(assignedToMaxCount);
+						for (int c = 1; c < MaxCount; c++) {
+							RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+							User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+							
+							Team team = new Team();
+							Long teamId = 0L;
+							int teamReady = 0;
+							for(int count = teamCount; count > 0; count--){
+								teamId = Long.valueOf(assignedTeamId.get(count-1));
+								Boolean isUserHasInTeam;
+								if(teamReady == 0){
+									isUserHasInTeam = teamMembersService.isUserBelongsCurrentTeamByUserIdAndTeamId(assUser.getId(), teamId);
+									
+									if(isUserHasInTeam){
+										team.setId(teamId);
+										requirementAssignTo.setTeamId(team);
+										teamReady++;
+									}
+								}
+								
+							}
+							
+							
+							/*if(requirement.getId() !=null){
+								 requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(), assUser.getId());
+								if(requirementAssignTo == null){
+									requirementAssignTo = new RequirementAssignTo();
+									requirementAssignTo.setTeamId(team);
+								}
+							}else{
+								requirementAssignTo = new RequirementAssignTo();
+								requirementAssignTo.setTeamId(team);
+							}*/
+							requirementAssignTo.setAssignUserId(assUser);
+							
+							requirementAssignTo.setRequirementId(requirement);
+							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
+							requirementAssignTo.setRoleId(userRole.getRoles());
+							requirementAssignTo.setCreatedDate(commonUtil.currentDate());
+							requirementAssignTo.setCreatedBy(user.getUserCode());
+							requirementAssignTo.setUpdatedBy(user.getUserCode());
+							requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
+							requirementAssignToList.add(requirementAssignTo);
+	
+						}
+					}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				        /*Long teamId = 0L;
 						Team team = null;
 						if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
 							String assignedTeamId = jsonObj.getString("assignedTeamId");
@@ -656,10 +731,6 @@ public class RequirementServiceImpl implements RequirementService {
 									requirementAssignTo = new RequirementAssignTo();
 									requirementAssignTo.setTeamId(team);
 								}
-								
-								
-		//						User assUser = new User();
-		//						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
 								requirementAssignTo.setAssignUserId(assUser);
 								
 								requirementAssignTo.setRequirementId(requirement);
@@ -668,7 +739,7 @@ public class RequirementServiceImpl implements RequirementService {
 								requirementAssignToList.add(requirementAssignTo);
 		
 							}
-						}
+						}*/
 			}
 			requirement.setRequirementAssignTo(requirementAssignToList);
 			
