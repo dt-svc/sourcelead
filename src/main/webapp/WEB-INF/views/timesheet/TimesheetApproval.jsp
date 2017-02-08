@@ -972,10 +972,10 @@ $(document).ready(function() {
 
 $(document).ready(function() {
     $(".glyphicon-comment").mouseenter(function(){
-		$(".app_error_mes").addClass("app_error_mes_active");
+		$(".ts_app_error_mes").addClass("ts_app_error_mes_active");
 	});
     $(".glyphicon-comment").mouseleave(function(){
-		$(".app_error_mes").removeClass("app_error_mes_active");
+		$(".ts_app_error_mes").removeClass("ts_app_error_mes_active");
 	});	
 });
 
@@ -1025,7 +1025,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
  	    	  $("#row"+projectMemberId).html(rowHtmlContent);
  	    	  $("#status"+projectMemberId).html("REJECTED");
  	    	  $("#action"+projectMemberId).empty();
- 	    	  $("#action"+projectMemberId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i></div>");  
+ 	    	  $("#action"+projectMemberId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='ts_app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i></div>");  
    	   }
    	  pagination();
       }
@@ -1049,7 +1049,7 @@ function cancelRejectSubmission(projectMemberId){
 function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize){  
         
         var result = "";
-        result = result +'<div class="time_appr_rejct_pop" id="reject'+projectMemberId+'panel" >';
+        result = result +'<div class="time_appr_rejct_pop" id="reject'+projectMemberId+'panel" style="top:8%">';
 		result = result +'<textarea placeholder="Enter comment here" id="reject'+projectMemberId+'message" ></textarea>';
 		result = result +'<a href="#" onClick="saveRejectSubmissionByProjectMemberId(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\','+tdSpanSize+');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+projectMemberId+'\');">Cancel</a>';
 		result = result +'</div>';
