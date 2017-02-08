@@ -105,7 +105,6 @@ public class VendorController {
 			model.addObject("orgRelationId",orgRelationId);
 			model.addObject("orgName",orgName);
 		}
-		
 		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalVendorList")){
 		    model.addObject("universalVendorList", "universalVendorList");
 		    model.addObject("searchValue",searchValue);
@@ -150,6 +149,13 @@ public class VendorController {
 			model.addObject("msg", msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "vendorContactCreateMsg");
 		}
+		
+		if(msg == null){
+			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "vendorImport");
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "vendorImport");
+		}
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -291,7 +297,7 @@ public class VendorController {
 				return "upload/uploadClientForm";
 			}
 			
-			
+			SourceLeadSessionManager.setSessionAttribute(request, "vendorImport", "Success!! New vendors created ");
 			return "redirect:/vendorsList";
 			
 		}

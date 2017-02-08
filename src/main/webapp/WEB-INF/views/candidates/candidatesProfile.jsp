@@ -143,10 +143,10 @@ function editCandidate(candidateId){
 							
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_Space required">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="required validate_AlphaNumber validate_Space validate_length length1-100">';
 							result = result + '		          </div>';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							
@@ -154,11 +154,11 @@ function editCandidate(candidateId){
 							result = result + '		          <div class="col-md-6">';
 							
 							if(json.candidateType == 'Consultant'){
-							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email" readonly="true">';
+							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
 							}
 							
 							if(json.candidateType == 'Candidate'){
-								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email">';
+								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100>';
 								}
 							result = result + '</div>';
 							
@@ -237,7 +237,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							 
 							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
-							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+json.designationOtherType+'" placeholder="Designation Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Designation Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 							result = result + '</div>';
 						
 							result = result + '</div>';
@@ -258,7 +258,7 @@ function editCandidate(candidateId){
 			                
 			                result = result + '</div>';
 							
-			                result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
+			                result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
 							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Type">';
@@ -293,7 +293,7 @@ function editCandidate(candidateId){
 			                
 			                result = result + '</div>';
 							
-							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
+							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
 							result = result + '<select class="selct-picker" id="rateType" name="rateType" field-name="Rate Type">';
@@ -728,11 +728,11 @@ function candidateProfile(candidateId){
 
 							
 							if(window.candidateStatusGlobal == '0'){
-								result = result +'		              <div class="addSkills"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
+								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
 								result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
 
 							}else{
-								result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
+								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
 							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
 							}
 							result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
@@ -753,6 +753,9 @@ function candidateProfile(candidateId){
 							result = result +'		                  </div>                                                                                                                      ';
 							result = result +'		                </div>                                                                                                                        ';
 							result = result +'		              </div>                                                                                                                          ';
+							
+							
+							result = result + '<div class="clearfix"></div> ';
 							
 							result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> ';
 							
@@ -782,43 +785,6 @@ function candidateProfile(candidateId){
 							result = result +'		    </div>                                                                                                                                    ';
 							result = result +'		  </div>                                                                                                                                      ';
 							result = result +'		</div>';
-							
-							
-							
-							
-							
-							
-							
-							
-							/* result = result +'		<h2>Skills:</h2>';
-							
-							result = result + '	<div class="row select-skills">';
-							result = result + '    <div class="divskill col-md-8"> ';
-							result = result + '      <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills"> <i class="fa fa-code"></i>Add Skills </a>';
-							result = result + '        <div class="col-md-7 add-skills" style="display:none;"> <i class="fa fa-close close-div" onClick ="removeSkillPopUp('+candidateId+');"></i>';
-							result = result + '          <div class="form-horizontal clearfix">';
-							result = result + '            <div class="clearfix div-padding">';
-							result = result + '              <div class="col-md-10">';
-							
-							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
-			                <c:forEach var="skill" items="${skillsList}">
-			                
-			              			  result = result + ' <option value="${skill.name}">${skill.name}</option>';
-			                </c:forEach>
-			                result = result + '</select>';
-							result = result + '              </div>';
-							result = result + '              <div class="col-md-2">';
-							result = result + '                <button class="btn btn-sm btn-primary pull-right" type="submit" onClick="saveSkils('+candidateId+');" >Add</button>';   
-							result = result + '              </div>';
-							result = result + '            </div>';
-							result = result + '          </div>';
-							result = result + '        </div>';
-							result = result + '      </div>';
-							
-							
-							result = result + '<div id="candidateSkillList"></div> '; */
-							
-							/* result = result + '      <a href="javascript:void(0)">more <i class="fa fa-angle-right"></i></a>'; */
 							result = result + '    </div>';
 							result = result + '  </div>';
 							$("#tab-1").empty();
@@ -1095,13 +1061,13 @@ function candidateSkillsList(candidateId){
 		                		 if(window.candidateStatusGlobal == '0'){ 
 		                			 result = result + '<td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
 				                	 if(opt.totalExperience == 'undefined'|| opt.totalExperience==null || opt.totalExperience== 0){
-			                			 result = result + ' <option selected=""disabled="">select</option>'; 
+			                			 result = result + ' <option selected="">select</option>'; 
 				                	 }else{
-		                			 result = result + '<option selected="" value="'+opt.totalExperience+'" disabled="">'+opt.totalExperience+'</option>'; 
+		                			 result = result + '<option selected="" value="'+opt.totalExperience+'" >'+opt.totalExperience+'</option>'; 
 		                		 }
 				                }else{
 		                		result = result + '<td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
-		                		result = result + '<option selected="" disabled="">Select</option>';
+		                		result = result + '<option selected="" >Select</option>';
 		                		if(opt.totalExperience == "0"){
 		                			result = result + '<option selected>0</option>';   
 		                		}else{
@@ -1518,7 +1484,7 @@ $('.selectpicker').selectpicker('refresh');
 </script>
   
   
-  <script>
+<script>
 function updateDesignationType(){
 	
 	if(designationType.value == 'Other'){

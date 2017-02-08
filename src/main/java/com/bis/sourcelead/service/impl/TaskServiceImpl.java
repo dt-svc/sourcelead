@@ -86,7 +86,7 @@ public class TaskServiceImpl implements TaskService{
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
-	 	String pattern = "dd-mm-yy";
+	 	String pattern = "dd-MM-yy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
        

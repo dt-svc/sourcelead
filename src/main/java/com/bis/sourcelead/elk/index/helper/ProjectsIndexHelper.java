@@ -27,16 +27,24 @@ public class ProjectsIndexHelper {
 			projectsIndex = new ProjectsIndex();
 			
 			projectsIndex.setId(projects.getId());
-			projectsIndex.setProjectSequeneNumber(projects.getProjectSequeneNumber());
+			if(!isNullOrEmpty(projects.getProjectSequeneNumber())){
+				projectsIndex.setProjectSequeneNumber(projects.getProjectSequeneNumber());
+			}
 			projectsIndex.setProjectName(projects.getProjectName());
 			projectsIndex.setOrgLocationId(projects.getOrgLocationsId().getId());
-			projectsIndex.setStartDate(Constants.DF_DMY.format(projects.getStartDate()));
-			if(projects.getEndDate() !=null){
-				projectsIndex.setEndDate(Constants.DF_DMY.format(projects.getEndDate()));
+
+			if(null != projects.getStartDate()){
+				projectsIndex.setStartDate(Constants.DF_YMD.format(projects.getStartDate()));
 			}
-			
-			projectsIndex.setInvoiceFrequency(projects.getInvoiceFrequency());
-			projectsIndex.setProjectStatus(projects.getProjectStatus().toString());
+			if(null != projects.getEndDate()){
+				projectsIndex.setEndDate(Constants.DF_YMD.format(projects.getEndDate()));
+			}
+			if(!isNullOrEmpty(projects.getInvoiceFrequency())){
+				projectsIndex.setInvoiceFrequency(projects.getInvoiceFrequency());
+			}
+			if(!isNullOrEmpty(projects.getProjectStatus().toString())){
+				projectsIndex.setProjectStatus(projects.getProjectStatus().toString());
+			}
 			
 			if(null != projects.getOrgRelationId() && projects.getOrgRelationId().getLocationId().getId() == projects.getOrgLocationsId().getId()){
 				projectsIndex.setClientName(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());

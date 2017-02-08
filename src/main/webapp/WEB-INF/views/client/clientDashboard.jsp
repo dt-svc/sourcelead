@@ -65,10 +65,11 @@ overflow-x: auto;
 		</section>
 
 		<!-- Project -->
-		<div class="timesheet_out timesheet_background">
+		
 			
 			<!-- Advanced Search -->
-  <div class="pull-left cand-advsrch">
+  <div class="timesheet_bg">
+  <div class="cand-advsrch">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
             <form:form id="clientlist_form" name="clientlist_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -267,9 +268,12 @@ overflow-x: auto;
           </div>
           </form:form>
         </div>
+        </div>
 		<!-- Advanced Search Ends -->
+		</div>
 		<div class="clearfix"></div>
-		<div class="clients_wrap vendor_wrap_shadownone" style="overflow-x: auto;">
+		<div class="timesheet_out">
+		<div class="clients_wrap vendor_wrap_shadownone">
 				<div class="timesheet_head datatbl-filters customtimesheet-head">
 					<ul>
 		                  <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>|
@@ -394,6 +398,8 @@ overflow-x: auto;
 	</section>
 </body>
 
+
+
 <script type="text/javascript">
 window.onload = function () {
 	clientOnLoad("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}");
@@ -418,9 +424,6 @@ function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRe
 	document.getElementById('listOfVendors').value = 'listbyContact';
 }
 </script>
-
-
-
 <script type="text/javascript">
 function getClientUniversalSearchList(searchValue){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -431,8 +434,10 @@ function getClientUniversalSearchList(searchValue){
         	 preparedClientListFromElk(data);
         },
     }); 
+
 }
 </script>
+
 
 
 <script type="text/javascript">
@@ -724,6 +729,7 @@ function getClientUniversalSearchList(searchValue){
 
 <<script type="text/javascript">
  function preparedClientDetails(data){
+	 
 	 var json = JSON.parse(data);
     	var result = "";
     	/* if(json.length != null && json.length != ''){ */
@@ -889,6 +895,7 @@ function getClientDetailsELK(){
 function pagination(){  
     $('#clientList').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -987,7 +994,31 @@ function preparedClientContacts(data){
 		   	for (var i=0; i<json.length; i++)
 				{  
 		   		var report = json[i];
+		   		var selected1 = '';
+					var selected2 = '';
+					var selected3 = '';
+					var selected4 = '';
+					var selected5 = '';
 		   		
+		   		if(report.spocStatus == 'Active'){
+					selected1 = 'selected';
+				} 
+			
+				if(report.spocStatus == 'In-Active'){
+						selected2 = 'selected';
+					} 
+				
+				if(report.spocStatus == 'New'){
+						selected3 = 'selected';
+					}
+				
+				if(report.spocStatus == 'Negotiation'){
+						selected4 = 'selected';
+					} 
+				
+				if(report.spocStatus == 'Contracted'){
+					selected5 = 'selected';
+				} 
 		   		
 		   		result = result +'<tr>';
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
@@ -1008,18 +1039,14 @@ function preparedClientContacts(data){
 		   		result = result +'<td><div><span title='+report.orgName+'>'+report.orgName+'</span></div></td>';
 		   		
 		   		result = result + ' <td><div>';
-   	        		if(report.invitationStatus == 'Rejected'){
-   	        			result = result + '<span>'+report.spocStatus+'</span>';
-   	        		}else{
-   	        			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
-   	        			result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
-   						result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
-   						result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
-   						result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-   						result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
-   						result = result + ' </select>';
-   	        		}
-					result = result + ' </div></td>';
+				result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
+				result = result + ' <option '+selected1+'>Active</option>';
+				result = result + ' <option '+selected2+'>In-Active</option>';
+				result = result + ' <option '+selected3+'>New</option>';
+				result = result + ' <option '+selected4+'>Negotiation</option>';
+				result = result + ' <option '+selected5+'>Contracted</option>';
+				result = result + ' </select>';
+				result = result + ' </div></td>';
 				
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
 		     		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
@@ -1101,6 +1128,31 @@ function preparedClientContactListFromElk(data){
 		   	for (var i=0; i<json.length; i++)
 				{  
 		   		var report = json[i];
+		   		var selected1 = '';
+					var selected2 = '';
+					var selected3 = '';
+					var selected4 = '';
+					var selected5 = '';
+		   		
+		   		if(report.spocStatus == 'Active'){
+					selected1 = 'selected';
+				} 
+			
+				if(report.spocStatus == 'In-Active'){
+						selected2 = 'selected';
+					} 
+				
+				if(report.spocStatus == 'New'){
+						selected3 = 'selected';
+					}
+				
+				if(report.spocStatus == 'Negotiation'){
+						selected4 = 'selected';
+					} 
+				
+				if(report.spocStatus == 'Contracted'){
+					selected5 = 'selected';
+				} 
 		   		
 		   		result = result +'<tr>';
 		   		
@@ -1126,18 +1178,14 @@ function preparedClientContactListFromElk(data){
 		   		
 		   		
 		   		result = result + ' <td><div>';
-		   		if(report.invitationStatus == 'Rejected'){
-	        			result = result + '<span>'+report.spocStatus+'</span>';
-	        		}else{
-	        			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
-	        			result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
-						result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
-						result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
-						result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-						result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
-						result = result + ' </select>';
-	        			}
-		   				result = result + ' </div></td>';
+				result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
+				result = result + ' <option '+selected1+'>Active</option>';
+				result = result + ' <option '+selected2+'>In-Active</option>';
+				result = result + ' <option '+selected3+'>New</option>';
+				result = result + ' <option '+selected4+'>Negotiation</option>';
+				result = result + ' <option '+selected5+'>Contracted</option>';
+				result = result + ' </select>';
+				result = result + ' </div></td>';
 		   			
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
 		   		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
@@ -1220,7 +1268,7 @@ function preparedClientListFromElk(data){
 				{  
 		   		
 		   		var report = json[i];
-		   		numberOfContactsByOrgRelationId(report.id);
+		   		numberOfContactsByOrgRelationId(report.orgRelationId);
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
 		   			location = report.country+", "+report.state+", "+report.city;
@@ -1231,12 +1279,12 @@ function preparedClientListFromElk(data){
 		   		}
 		   		
 		   		var pattern = new RegExp(/["'"]/g);
-		   		//var orgName = (report.orgName).replace(pattern, "\\'");
+		   		var orgName = (report.orgName).replace(pattern, "\\'");
 		   		
 		   		result = result +'<tr>';
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 		   			result = result +'<td>';
-		   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+		   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
 		   			result = result +'</div>';
 		   			result = result +'</td>';
 		   		'</sec:authorize>';
@@ -1274,10 +1322,12 @@ function preparedClientListFromElk(data){
 		   	if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
 				result = result +' <td><div>'+report.createdBy+'</div></td>';
 		   	}else{
-		   		result = result +'<td><div>=====</div></td>';
+		   		result = result +'<td><div>---</div></td>';
 		   	}
-		   
-		   	result = result +'<td><div id="noOfContactsCount'+report.id+'">---</div></td>';
+
+		   	result = result +'<td><div id="noOfContactsCount'+report.orgRelationId+'">---</div></td>';
+
+		   	
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
 				}
@@ -1392,6 +1442,7 @@ function resendClientSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 function pagination1(){ 
     $('#vendorContactList').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1841,10 +1892,15 @@ function saveReason1(spocId, orgRelationID){
 		   	type: "POST",
 		   url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
 		    success: function(data) {
-		    	$("#popUp").empty();
-   			 	$(".project_inn_mask").fadeOut(200);
-   			   /*  getVendorContactLists(); */
-   			     getVendorContactListsELK();
+   			   
+   			 $("#selector1").removeAttr("style");
+  			 $("#selector1").css({ display: "block" });
+  			 $("#msgDiv").html("Client contact removed");
+  			 $("#popUp").empty();
+ 			 $(".project_inn_mask").fadeOut(200);
+			   /*  getVendorContactLists(); */
+			     getVendorContactListsELK();
+			 	 msgFadein();
 		    }
 	   });
 	}else{
