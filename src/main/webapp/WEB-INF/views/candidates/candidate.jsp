@@ -199,7 +199,7 @@
             <div class="row exp-drop">
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
-             		  <option selected disabled>Years</option>
+             		  <option selected >Years</option>
              		  <c:forEach begin="0" end="24" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -209,7 +209,7 @@
              
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
-             		<option selected disabled>Months</option>
+             		<option selected >Months</option>
              		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -737,12 +737,16 @@ function getCities(){
  <script type="text/javascript">
  function disableMonths() {
      $("#experienceYears").change(function() {
-    	 
-         if ($(this).val() == '25+'){
-             $("#experienceMonths").attr("disabled", true);
-             $("#experienceMonths").val("disabled", true);
-         }else
+         if ($("#experienceYears").val() == '25+'){
+        	 $("#experienceMonths").val('');  
+        	 $('#experienceMonths').selectpicker('refresh');
+        	 $('#experienceMonths').attr("disabled", true);
+             $('#experienceMonths').val("disabled", true);
+         }else{
+        	 $("#experienceMonths").val('');  
+        	 $('#experienceMonths').selectpicker('refresh');
         	 $("#experienceMonths").attr("disabled", false); 
+         }
      });
  }
 	      var selectedFile = document.getElementById("uploadBtn");
