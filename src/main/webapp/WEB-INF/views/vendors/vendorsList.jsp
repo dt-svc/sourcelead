@@ -1106,7 +1106,14 @@ function preparedVendorContactListFromElk(data){
 		   		}else{
 		   			result = result +'<td><div>--</div></td>';
 		   		}
-		   		result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+		   		// from ELK ownerNames
+		   		if(report.ownerNames != null && report.ownerNames  != '' && report.ownerNames  != 'undefined'){
+		   			result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
+		   		}
+		   		//from db ownerName
+		   		else if(report.ownerName != null && report.ownerName  != '' && report.ownerName  != 'undefined'){
+		   			result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+		   		}
 		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		
