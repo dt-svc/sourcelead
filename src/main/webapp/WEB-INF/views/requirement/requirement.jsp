@@ -1835,10 +1835,11 @@ function approvalType(type){
 
 <%-- 
      @author : sarath kumar.
-     this script is for get candidate list.
+     this script is for get model dialog box.
      1.usage     : onload.
      2.parameter : csrf token .
      3.ajax url implementation in requirementListRestController.
+     AssignedTo model dialog box
 --%>
 
 <script>
@@ -1876,12 +1877,19 @@ function popupWindow(){
 	    $("#rolesDiv").selectpicker("refresh");
 }
 </script>
-	  
+
+<%-- 
+     @author : venkat kesav
+     this script is for get users list.
+     1.usage     : onload.
+     2.parameter : csrf token .
+     3.ajax url implementation in requirementListRestController.
+     append Users list to AssignedTo model dialog box
+--%>
 <script>
 function getUserList(teamType){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	  /* getTeamsList(teamType); */
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
@@ -1988,6 +1996,13 @@ function getUserList(teamType){
        		}); 
   	} 
 </script>
+
+<%-- 
+     @author : venkat kesav
+     this script is for get checked users.
+     1.usage     : onload.
+     declared 'ids' as a global variable for keep all checked user ids
+--%>
 <script>
 window.ids = new Array();
 function handleClick() {
@@ -1997,6 +2012,16 @@ function handleClick() {
 	});
 }
 </script>
+
+
+<%-- 
+     @author : venkat kesav
+     this script is for get Roles and Teams list.
+     1.usage     : onload.
+     2.parameter : csrf token .
+     3.ajax url implementation in requirementListRestController.
+     append Roles and Teams list to AssignedTo model dialog box
+--%>
 <script>
 function getTeamsList(teamType){ 
 	  var sourceleadUrl ='${sourceleadUrl}';
@@ -2057,6 +2082,13 @@ function getTeamsList(teamType){
 		getUserList(teamType);
 	}
 </script>
+
+<%-- 
+     @author : venkat kesav
+     this script is for clear uncheck all users.
+     1.usage     : onload.
+     clear all checked users when click on cancel and close buttons of AssignedTo model dialog
+--%>
 <script type="text/javascript">
 	function clearSelections(){
 		$('#cancelbtnId').attr("data-dismiss","modal");

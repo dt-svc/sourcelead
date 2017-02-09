@@ -618,84 +618,64 @@ public class RequirementServiceImpl implements RequirementService {
 				  requirement.setPriority(jsonObj.getString("priority"));
 			} 
 			
-			
-			/*if(requirement.getId() != null){
-				requirementAssignToService.deleteRequirementAssignToByRequirementId(requirement.getId());
-			}*/
+			//storing assigned team START (Venkat Kesav)
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
-				
-				/*String assignedTeamAndRoleIds = jsonObj.getString("assignedTeamId");*/
-				
-				String [] assignedTeamAndRoleIds = jsonObj.getString("assignedTeamId").split(",");
-				ArrayList<String> assignedTeamId = new ArrayList<String>();
 				int teamCount = 0;
-				for(String assignedTeamOrRoleId : assignedTeamAndRoleIds){
-					if(!assignedTeamOrRoleId.contains("role") && !assignedTeamOrRoleId.contains("All")){
-						assignedTeamId.add(assignedTeamOrRoleId);
-						teamCount++;
-			    	}
+				ArrayList<String> assignedTeamId = new ArrayList<String>();
+				if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
+					String [] assignedTeamAndRoleIds = jsonObj.getString("assignedTeamId").split(",");
+					for(String assignedTeamOrRoleId : assignedTeamAndRoleIds){
+						if(!assignedTeamOrRoleId.contains("role") && !assignedTeamOrRoleId.contains("All")){
+							assignedTeamId.add(assignedTeamOrRoleId);
+							teamCount++;
+				    	}
+					}
 				}
-		    	
-				
 				
 				if(StringUtils.isNotEmpty(assignedToMaxCount)){
 					int MaxCount = Integer.parseInt(assignedToMaxCount);
 						for (int c = 1; c < MaxCount; c++) {
-							RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+							RequirementAssignTo  requirementAssignTo;
 							User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
-							
-							Team team = new Team();
-							Long teamId = 0L;
-							int teamReady = 0;
-							for(int count = teamCount; count > 0; count--){
-								teamId = Long.valueOf(assignedTeamId.get(count-1));
-								Boolean isUserHasInTeam;
-								if(teamReady == 0){
-									isUserHasInTeam = teamMembersService.isUserBelongsCurrentTeamByUserIdAndTeamId(assUser.getId(), teamId);
-									
-									if(isUserHasInTeam){
-										team.setId(teamId);
-										requirementAssignTo.setTeamId(team);
-										teamReady++;
-									}
-								}
-								
-							}
-							
-							
-							/*if(requirement.getId() !=null){
+							if(requirement.getId() !=null){
 								 requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(), assUser.getId());
 								if(requirementAssignTo == null){
 									requirementAssignTo = new RequirementAssignTo();
-									requirementAssignTo.setTeamId(team);
 								}
 							}else{
 								requirementAssignTo = new RequirementAssignTo();
-								requirementAssignTo.setTeamId(team);
-							}*/
-							requirementAssignTo.setAssignUserId(assUser);
+							}
 							
-							requirementAssignTo.setRequirementId(requirement);
-							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
-							requirementAssignTo.setRoleId(userRole.getRoles());
-							requirementAssignTo.setCreatedDate(commonUtil.currentDate());
-							requirementAssignTo.setCreatedBy(user.getUserCode());
-							requirementAssignTo.setUpdatedBy(user.getUserCode());
-							requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
-							requirementAssignToList.add(requirementAssignTo);
-	
+								Team team = new Team();
+								Long teamId = 0L;
+								int teamReady = 0;
+								for(int count = teamCount; count > 0; count--){
+									teamId = Long.valueOf(assignedTeamId.get(count-1));
+									Boolean isUserHasInTeam;
+									if(teamReady == 0){
+										isUserHasInTeam = teamMembersService.isUserBelongsCurrentTeamByUserIdAndTeamId(assUser.getId(), teamId);
+										
+										if(isUserHasInTeam){
+											team.setId(teamId);
+											requirementAssignTo.setTeamId(team);
+											teamReady++;
+										}
+									}
+								}
+								
+								requirementAssignTo.setAssignUserId(assUser);
+								requirementAssignTo.setRequirementId(requirement);
+								UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
+								requirementAssignTo.setRoleId(userRole.getRoles());
+								requirementAssignTo.setCreatedDate(commonUtil.currentDate());
+								requirementAssignTo.setCreatedBy(user.getUserCode());
+								requirementAssignTo.setUpdatedBy(user.getUserCode());
+								requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
+								requirementAssignToList.add(requirementAssignTo);
+							}
 						}
-					}
-				
-				
-				
-				
-				
-				
-				
-				
 				
 				        /*Long teamId = 0L;
 						Team team = null;
@@ -742,7 +722,7 @@ public class RequirementServiceImpl implements RequirementService {
 						}*/
 			}
 			requirement.setRequirementAssignTo(requirementAssignToList);
-			
+			//storing assigned team END
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		
