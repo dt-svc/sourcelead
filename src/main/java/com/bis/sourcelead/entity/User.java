@@ -375,7 +375,7 @@ public class User implements Serializable{
 				fullName = lastName;
 			}
 			else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
-				fullName = firstName+lastName;
+				fullName = firstName+" "+lastName;
 			}
 			return fullName;
 		}

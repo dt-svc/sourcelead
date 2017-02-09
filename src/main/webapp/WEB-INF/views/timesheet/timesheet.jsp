@@ -914,7 +914,7 @@ function newSaveTimesheet(status,savingType){
         	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
         		    	  $("#loadTime").removeAttr("style"); 
-        		    	  timesheetEntriesDiv();
+        		    	  timesheetDivByFrequency();
         		    	  $("html").trigger('click');
         		    	  maskme();
         		    	 /*  timesheetEntriesDiv(); */
