@@ -454,7 +454,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	 				 */
 					+ " and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE')  "
 					+ " and ( "
-					+  "      (  projects.id IN ( select sah.hierarchyId.projectId.id from SubmissionApproverHierarchy sah  where sah.hierarchyId.approverUserId.id =:userId "+statusQuery+" ))"
+					+  "      (  projects.id IN ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId  ))"
 					 + "       OR "+statusQueryForAdmin+""
 					+ "     ) ";
 		
