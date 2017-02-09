@@ -416,9 +416,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String statusQuery = "";
 		String statusQueryForAdmin = "";
 		if(startDate != null && endDate != null){
-	    	 /*
-				 * startdate and enddate comparison with projectmemberhistory table
-				 */
+	    	 
+				 //startdate and enddate comparison with projectmemberhistory table
+				 
 			   dateQuery =  " and pm.id IN ( "
                 + "    select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  "
                 + "    ( pmh.projectTerminationDate IS NOT NULL and :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
@@ -430,18 +430,20 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			clientQuery = " and projects.orgRelationId.id = :clientId ";
 		}
 		
-	   if(StringUtils.isNotEmpty(status) && !status.equalsIgnoreCase("null")){
+	  /* if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
 			statusQuery = " and  sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.getNameByValue(status)+"'";
 		}
-		if(StringUtils.isNotEmpty(status)&& !status.equalsIgnoreCase("null") && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
+	   
+	    //Status Query For Admin
+		if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
 			statusQueryForAdmin = " projects.id IN ( "
-					             + "select subsah.hierarchyId.projectId.id from SubmissionApproverHierarchy subsah "
+					             + " select subsah.hierarchyId.projectId.id from SubmissionApproverHierarchy subsah "
 					             + " where   subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.getNameByValue(status)+"'  and subsah.submissionId.startDate between :startDate and :endDate "
 					             		+ " and (subsah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id)))  ";
 		}
-		else{
+		else{*/
 			statusQueryForAdmin = Constants.loginUserAsAdminForProjects;
-		}
+		//}
 		
 		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.employee emp left join fetch emp.user  user "
 				+ " where projects.invoiceFrequency = :timesheetFrequency and projects.orgLocationsId.id = :locationsId  "
