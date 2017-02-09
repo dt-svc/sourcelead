@@ -12,11 +12,11 @@ display: none;
 }
 </style>
 
-<script>
+<!-- <script>
  window.onload = function() {
 	 getTeamsList('All');
 };
-</script>
+</script> -->
 
 
 <section class="content-wraper">
@@ -46,7 +46,7 @@ display: none;
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
             <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) To Add New Email" id="emailsList" name="Toemails">
             </select>
-            <span class="select-multiple" data-target="#multiplemail" onclick="getUserList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
+            <span class="select-multiple" data-target="#multiplemail" onclick="getUserList('All');" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="multiplemail" class="modal fade">
               <div class="modal-dialog modal-lg">
@@ -396,7 +396,7 @@ function getTeamsList(teamType){
 			
 			  for (var i = 0; i < json.teams.length; i++) {
 					var opt = json.teams[i];
-					if(teamType == opt.id){
+					if(teamType == opt.id+"role"){
 						output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
 					}else{
 						output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
@@ -405,7 +405,7 @@ function getTeamsList(teamType){
 			  
 				for (var i = 0; i < json.roles.length; i++) {
 					var opt = json.roles[i];
-					if(teamType == opt.id){
+					if(teamType == opt.id+"role"){
 						output = output + "<option value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
 					}else{
 						output = output + "<option value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
@@ -423,6 +423,7 @@ function getTeamsList(teamType){
 function filterTeamMembers(){
 	var teamType = $("#rolesDiv").val();
 	getUserList(teamType);
+	
 }
 </script>
 

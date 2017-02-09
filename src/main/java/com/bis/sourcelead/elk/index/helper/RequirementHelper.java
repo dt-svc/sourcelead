@@ -79,7 +79,7 @@ public class RequirementHelper {
 			User ownerUser = userService.getUserById(userId);
 			StringBuilder sbilder = new StringBuilder();
 			if(ownerUser != null && ownerUser.getFirstName() != null && ownerUser.getLastName()!= null ){
-			requirementIndex.setManager(sbilder.append((ownerUser.getFirstName())).append(ownerUser.getLastName()).toString());
+			requirementIndex.setManager(sbilder.append((ownerUser.getFirstName())).append(" ").append(ownerUser.getLastName()).toString());
 			}else{
 			requirementIndex.setManager(sbilder.append((ownerUser.getFirstName())).toString());
 			}
@@ -184,6 +184,7 @@ public class RequirementHelper {
 			requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());
 			requirementIndex.setNumberOfPositions(requirement.getPositions());
 			requirementIndex.setNumberOfApplicants(requirement.getNoOfApplicants());
+			requirementIndex.setReleasedBy(requirement.getReleasedBy());
 
 		}
 		return requirementIndex;

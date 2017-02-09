@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
@@ -90,11 +89,9 @@ public class VendorRestController {
 	@Autowired
 	private ClientVendorExport clientVendorExport;
 	
-
 	@Autowired
 	private UserRoleDao userRoleDao;
-	
-	
+
 
 	@Autowired
 	private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
@@ -992,8 +989,8 @@ public class VendorRestController {
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("spocUserLastName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocUserPhNo", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("ownerUserPhNo", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocUserEmail", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("ownerUserEmail", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhrasePrefixQuery("spocUserEmail", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhrasePrefixQuery("ownerUserEmail", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("responderOrgName", keywd));
 			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocStatus", keywd));
 			    
@@ -1140,8 +1137,8 @@ public class VendorRestController {
 					if(contactNameArray != null && !contactNameArray.isEmpty()){
 						BoolQueryBuilder contactNameBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : contactNameArray){
-							contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("spocUserFirstName", keywd));
-							contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("spocUserLastName", keywd));
+							contactNameBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocUserFirstName", keywd));
+							contactNameBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocUserLastName", keywd));
 						}
 						boolQueryBuilder.must(contactNameBoolQueryBuilder);
 					}
@@ -1184,8 +1181,8 @@ public class VendorRestController {
 					if(ownerAdvancedNameArray != null && !ownerAdvancedNameArray.isEmpty()){
 						BoolQueryBuilder ownerAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : ownerAdvancedNameArray){
-							ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("ownerUserFirstName", keywd));
-							ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("ownerUserLastName", keywd));
+							ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("ownerUserFirstName", keywd));
+							ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("ownerUserLastName", keywd));
 						}
 						boolQueryBuilder.must(ownerAdvancedBoolQueryBuilder);
 					}
@@ -1388,9 +1385,7 @@ public class VendorRestController {
 				 
 				 boolQueryBuilder.must(combinedQueryBuilder);
 				 
-				 
-			   
-				 // to   get the number of Vendor/Clients 
+     			 // to   get the number of Vendor/Clients 
 				Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilder).getTotalHits();
 				 
 				List<ClientVendorIndex> clientVendorList = new ArrayList<ClientVendorIndex>();
@@ -1404,6 +1399,13 @@ public class VendorRestController {
 						mapper.setDateFormat(df);
 						ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
 						
+						//  This is to get the number of Contacts based  on Org Relation Id
+						 BoolQueryBuilder forNumberOfContacts= QueryBuilders.boolQuery();
+						 forNumberOfContacts.must(QueryBuilders.matchQuery("orgRelationId", clientVendor.getOrgRelationId()));
+						 
+						 Long numberOfContacts = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,0,forNumberOfContacts).getTotalHits();
+						 clientVendor.setNoContacts(numberOfContacts);
+						 
 						if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 							
 							clientVendor.setWebsite(clientVendor.getResponderWebSite());

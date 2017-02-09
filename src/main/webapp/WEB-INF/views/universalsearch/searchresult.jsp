@@ -14,10 +14,10 @@
 
 <script>
 $(document).ready(function(){
+	
    var searchType = "${searchType}";
    var searchValue = "${searchValue}";
-   
-   
+   $("#searchKey").val(searchValue);
    if(searchType=="All"){
 	   getSearchResultsForAll(searchType,searchValue);
    }
@@ -25,6 +25,13 @@ $(document).ready(function(){
 	   getSearchResults(searchType,searchValue);
    }
 });
+</script>
+
+
+<script>
+function getSelectedSearchType(){
+	alert("hi");
+}
 </script>
 
 
@@ -71,12 +78,17 @@ function getSearchResults(searchType,searchValue){
 	   	             var report= json[i];
 	   	             var location = "";
 	   	             var exp = "";
-	   			    	result = result+'  <div class="srchresult clearfix row">';
+	   			    	result = result+'  <div class="srchresult clearfix">';
+	   			    	
+		                result = result+' <figure class="image_parent">';
+				    	result = result+' <i class="fa fa-briefcase fa-2x"></i>';
+				    	result = result+' </figure>';
+	   			    	
 	   			    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 	   			    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
 	   			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
 	   			    	}else{
-	   			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label>';	
+	   			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label></p>';	
 	   			    	}
 	   			    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 	   			    		location = location + report.city;
@@ -87,7 +99,7 @@ function getSearchResults(searchType,searchValue){
 	   			    	if(report.country !=null && report.country != '' && report.country !="undefined"){
 	   			    		location = location + report.country;
 	   			    	}
-	   			    	result = result+'          <label>'+location+'</label>';
+	   			    	result = result+'          <p><label>'+location+'</label>';
 	   			    	
 	   			    	result = result+'          </p>';
 	   			    	if(report.clientName !=null && report.clientName != '' && report.clientName !='undefined'){
@@ -134,7 +146,13 @@ function getSearchResults(searchType,searchValue){
 		             var report= json[i];
 		             var location = "";
 		             var experience = "";
-				    	result = result+'  <div class="srchresult clearfix row">';
+				    	result = result+'  <div class="srchresult clearfix">';
+				    	
+				    	
+		                result = result+' <figure class="image_parent">';
+				    	result = result+' <i class="fa fa-user-circle fa-2x"></i>';
+				    	result = result+' </figure>';
+				    	
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined"){
 				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
@@ -196,10 +214,16 @@ function getSearchResults(searchType,searchValue){
 	    		for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
 		             var name_location = "";
-		                result = result+'  <div class="srchresult clearfix row">';
+		                result = result+'  <div class="srchresult clearfix">';
+		                
+		                
+		                result = result+' <figure class="image_parent">';
+				    	result = result+' <i class="fa fa-user-plus fa-2x"></i>';
+				    	result = result+' </figure>';
+		                
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-				    		result = result+'<label><strong><a href="#" onclick="clientSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label>';	
+				    		result = result+'<p><label><strong><a href="#" onclick="clientSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label></p>';	
 
 				    		//name_location = name_location + report.orgName+",";
 				    	}
@@ -212,7 +236,7 @@ function getSearchResults(searchType,searchValue){
 				    	if(report.country !=null && report.country != '' && report.country !="undefined"){
 				    		name_location = name_location + report.country;
 				    	}
-				    	result = result+'          <label>'+name_location+'</label>';
+				    	result = result+'          <p><label>'+name_location+'</label>';
 				    	result = result+'          </p>';
 				    	if(report.createdBy !=null && report.createdBy != '' && report.createdBy !="undefined"){
 				    		result = result+'          <p><label>'+report.createdBy+'</label></p>';
@@ -240,10 +264,15 @@ function getSearchResults(searchType,searchValue){
 	    		for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
 		             var name_location = "";
-		                result = result+'  <div class="srchresult clearfix row">';
+		                result = result+'  <div class="srchresult clearfix">';
+		                
+		                result = result+' <figure class="image_parent">';
+				    	result = result+' <i class="fa fa-suitcase fa-2x"></i>';
+				    	result = result+' </figure>';
+		                
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-				    		result = result+'<label><strong><a href="#" onclick="vendorSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label>';	
+				    		result = result+'<p><label><strong><a href="#" onclick="vendorSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label></p>';	
 				    	//	name_location = name_location + report.orgName+",";
 				    	}
 				    	if(report.city !=null && report.city != '' && report.city !="undefined"){
@@ -255,7 +284,7 @@ function getSearchResults(searchType,searchValue){
 				    	if(report.country !=null && report.country != '' && report.country !="undefined"){
 				    		name_location = name_location + report.country;
 				    	}
-				    	result = result+'          <label>'+name_location+'</label>';
+				    	result = result+'  <p><label>'+name_location+'</label>';
 				    	result = result+'          </p>';
 				    	if(report.createdBy !=null && report.createdBy != '' && report.createdBy !="undefined"){
 				    		result = result+'          <p><label>'+report.createdBy+'</label></p>';
@@ -283,7 +312,12 @@ function getSearchResults(searchType,searchValue){
 		             var report= json[i];
 		             var manager = "";
 		             var date = "";
-				    	result = result+'  <div class="srchresult clearfix row">';
+				    	result = result+'  <div class="srchresult clearfix">';
+				    	
+				    	result = result+' <figure class="image_parent">';
+				    	result = result+' <i class="fa fa-bar-chart fa-2x"></i>';
+				    	result = result+' </figure>';
+				    	
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.projectName !=null && report.projectName != '' && report.projectName !="undefined" && report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
 				    		result = result+'<p><label><strong><a href="javascript:void(0)" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\');">'+report.projectName+'</a></strong></label>, <label>'+report.invoiceFrequency+'</label>';
@@ -327,7 +361,13 @@ function getSearchResults(searchType,searchValue){
 	    		result = result+'   <h4>Users</h4>';
 		    	 for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
-				    	result = result+'  <div class="srchresult clearfix row">';  
+				    	result = result+'  <div class="srchresult clearfix">';
+				    	
+				    	result = result+' <figure class="image_parent">';
+				    	result = result+' <i class="fa fa-user-o fa-2x"></i>';
+				    	result = result+' </figure>';
+				    	
+				    	
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.firstName !=null && report.firstName != '' && report.firstName !="undefined" && report.lastName !=null && report.lastName !='' && report.lastName !='undefined'){
 				    		result = result+'<p><label><strong><a href="javascript:void(0)" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+' '+report.lastName+'</a></strong></label>';
@@ -405,7 +445,13 @@ function getSearchResultsForAll(searchType,searchValue){
 						            	   		result = result+'   <h4>Requirement</h4>';
 						            	   	 result = result+' </div>';
 						            	 }
-						            	 result = result+'  <div class="srchresult clearfix row">';
+						            	 result = result+'  <div class="srchresult clearfix">';
+						            	 
+						            	 
+							                result = result+' <figure class="image_parent">';
+									    	result = result+' <i class="fa fa-briefcase fa-2x"></i>';
+									    	result = result+' </figure>';
+						            	 
 									    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 									    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
 									    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
@@ -421,7 +467,11 @@ function getSearchResultsForAll(searchType,searchValue){
 									    	if(report.country !=null && report.country != '' && report.country !="undefined"){
 									    		location = location + report.country;
 									    	}
-									    	result = result+'          <label>'+location+'</label>';
+									    	result = result+'          </p>';
+									    	
+									    	result = result+'  <p><label>'+location+'</label>';
+									    	
+									    	
 									    	
 									    	result = result+'          </p>';
 									    	if(report.clientName !=null && report.clientName !='' && report.clientName !='undefined'){
@@ -463,7 +513,14 @@ function getSearchResultsForAll(searchType,searchValue){
 						            		 result = result+'   <h4>User</h4>';
 						            		result = result+'  </div>'; 
 						            	 }
-				            			result = result+'  <div class="srchresult clearfix row">';  
+				            			result = result+'  <div class="srchresult clearfix">';
+				            			
+				            			
+				            			
+						                result = result+' <figure class="image_parent">';
+								    	result = result+' <i class="fa fa-users fa-2x"></i>';
+								    	result = result+' </figure>';
+				            			
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	if(report.firstName !=null && report.firstName != '' && report.firstName !="undefined" && report.lastName !=null && report.lastName !='' && report.lastName !='undefined'){
 								    		result = result+'<p><label><strong><a href="javascript:void(0)" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+' '+report.lastName+'</a></strong></label>';
@@ -499,7 +556,13 @@ function getSearchResultsForAll(searchType,searchValue){
 					            	 }
 				            		   var manager = "";
 				  		             	var date = "";
-				  				    	result = result+'  <div class="srchresult clearfix row">';
+				  				    	result = result+'  <div class="srchresult clearfix">';
+				  				    	
+						                result = result+' <figure class="image_parent">';
+								    	result = result+' <i class="fa fa-bar-chart fa-2x"></i>';
+								    	result = result+' </figure>';
+				  				    	
+				  				    	
 				  				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				  				    	if(report.projectName !=null && report.projectName != '' && report.projectName !="undefined" && report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
 								    		result = result+'<p><label><strong><a href="javascript:void(0)" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\');">'+report.projectName+'</a></strong></label>';
@@ -543,7 +606,14 @@ function getSearchResultsForAll(searchType,searchValue){
 						            		 result = result+'   <h4>Candidate</h4>';
 						            	 result = result+'  </div>';
 						            	 }
-								    	result = result+'  <div class="srchresult clearfix row">';
+								    	result = result+'  <div class="srchresult clearfix">';
+								    	
+						                result = result+' <figure class="image_parent">';
+								    	result = result+' <i class="fa fa-user-circle fa-2x"></i>';
+								    	result = result+' </figure>';
+								    	
+								    	
+								    	
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined"){
 								    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
@@ -597,14 +667,20 @@ function getSearchResultsForAll(searchType,searchValue){
 								 if(report.searchType=="Client"){
 									 if((report.searchType=="Client") && j == 0){
 										 result = result+'  <div class="clearfix">';
-										 result = result+'   <h4>Client</h4>';
+										 result = result+'   <h4>Clients</h4>';
 										 result = result+'  </div>';
 						            	 }
 									 var name_location = "";
-								    	result = result+'  <div class="srchresult clearfix row">';
+								    	result = result+'  <div class="srchresult clearfix">';
+								    	
+						                result = result+' <figure class="image_parent">';
+								    	result = result+' <i class="fa fa-user-plus fa-2x"></i>';
+								    	result = result+' </figure>';
+								    	
+								    	
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-								    		result = result+'<label><strong><a href="#" onclick="clientSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label>';
+								    		result = result+'<p><label><strong><a href="#" onclick="clientSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label></p>';
 								    		//name_location = name_location + report.orgName+",";
 								    	}
 								    	if(report.city !=null && report.city != '' && report.city !="undefined"){
@@ -616,7 +692,7 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	if(report.country !=null && report.country != '' && report.country !="undefined"){
 								    		name_location = name_location + report.country;
 								    	}
-								    	result = result+'          <label>'+name_location+'</label>';
+								    	result = result+'         <p><label>'+name_location+'</label>';
 								    	result = result+'          </p>';
 								    	if(report.createdBy !=null && report.createdBy != '' && report.createdBy !="undefined"){
 								    		result = result+'          <p><label>'+report.createdBy+'</label></p>';
@@ -640,10 +716,16 @@ function getSearchResultsForAll(searchType,searchValue){
 										 result = result+'  </div>';
 						            	 }
 									 var name_location = "";
-								    	result = result+'  <div class="srchresult clearfix row">';
+								    	result = result+'  <div class="srchresult clearfix">';
+								    	
+								    	
+						                result = result+' <figure class="image_parent">';
+								    	result = result+' <i class="fa fa-suitcase fa-2x"></i>';
+								    	result = result+' </figure>';
+								    	
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-								    		result = result+'<label><strong><a href="#" onclick="vendorSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label>';
+								    		result = result+'<p><label><strong><a href="#" onclick="vendorSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label></p>';
 								    		//name_location = name_location + report.orgName+",";
 								    	}
 								    	if(report.city !=null && report.city != '' && report.city !="undefined"){
@@ -655,7 +737,7 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	if(report.country !=null && report.country != '' && report.country !="undefined"){
 								    		name_location = name_location + report.country;
 								    	}
-								    	result = result+'          <label>'+name_location+'</label>';
+								    	result = result+'          <p><label>'+name_location+'</label>';
 								    	result = result+'          </p>';
 								    	if(report.createdBy !=null && report.createdBy != '' && report.createdBy !="undefined"){
 								    		result = result+'          <p><label>'+report.createdBy+'</label></p>';
@@ -789,6 +871,11 @@ function projectSearchSideBar(projectId,projectName,startDate,endDate, status){
 	window.location.href = sourceleadUrl + "/projectDashboard?&projectId="+projectId+"&projectName="+projectName+"&startDate="+startDate+"&endDate="+endDate+"&status="+status+"&projectKeyword="+projectKeyword;
 }
 </script>
+
+<!-- <script>
+//$(".uasrch-selectpicker .dropdown-menu ul li").css('backgroundColor','red');
+$(".uasrch-selectpicker .dropdown-menu ul li").attr('id','srinu');
+</script> -->
 
 <jsp:include page="../masterFooter.jsp" />
 

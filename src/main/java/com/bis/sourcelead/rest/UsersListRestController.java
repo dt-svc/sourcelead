@@ -152,7 +152,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	 * @return
 	 */
 	
-	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
+	/* this method is not at used */
 	@RequestMapping(value = "/getUsersList")
 	@JsonInclude(value = JsonInclude.Include.NON_NULL)
 	@ResponseBody
@@ -208,7 +208,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		 return resultJson;
 
 	}
-	
+	/* This method is used for landing page and advanced search for user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
 	@RequestMapping(value = "/searchUser", method = RequestMethod.POST)
 	 public String searchUser(@RequestParam(value = "json", required = false) String json,
 			 @RequestParam(value="offset", required=false) Integer offset,
