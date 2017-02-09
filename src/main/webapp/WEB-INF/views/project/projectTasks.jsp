@@ -129,7 +129,7 @@
 							var opt = json[i];
 							result = result + '<tr>';
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
-							result = result+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'taskName\');"  id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '"  class="project_inline_field"></div><div style="display:none">'+ opt.taskName+' </div></td>';
+							result = result+ '<td><div id="taskNameDiv'+ opt.Id+ '"><input type="text" onBlur="inlineEditForProjectsTaskName('+ opt.Id+ ',\'taskName\');" data-validation="required validate_length length2-250" id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '"  class="project_inline_field"></div><div style="display:none">'+ opt.taskName+' </div></td>';
 							result = result	+ '<td><div class="select-field"><select class="form-control" id="billableType'+opt.Id+'" name="billableType" onChange="updateTakBillableType(\''+opt.Id+'\');">';
 							result = result  +' <option '+(opt.billableType == "Billable" ? "selected" : '') +'>Billable</option>';
 				            result = result  +'	<option '+(opt.billableType == "Non-Billable" ? "selected" : '') +'>Non-Billable</option>';
@@ -356,6 +356,33 @@ function updateTakBillableType(taskId){
 
 					}
 				});
+	}
+</script>
+
+<script>
+	function inlineEditForProjectsTaskName(taskId, localFieldName) {
+		var fieldName = localFieldName;
+		var fieldValue = $("#" + localFieldName + "" + taskId).val();
+		var sourceleadUrl = '${sourceleadUrl}';
+		$('#taskNameDiv'+ taskId).find('p.jquery_form_error_message').remove();
+		if(fieldName != null && fieldName != "" && fieldName != "undefined" && fieldName == "taskName"){
+			if (fieldValue.trim().match(/^\S*$/) == '' || fieldValue == null || fieldValue == "" || fieldValue == "undefined") {
+					$("#" + localFieldName + "" + taskId).after("<p class='jquery_form_error_message'>Task Name is Required</span>");
+			}else if(fieldValue.length > 100){
+			   $("#" + localFieldName + "" + taskId).after( "<p class='jquery_form_error_message'>The values Entered must be between2-100 characters</span>");
+			}else{
+				$.ajax({
+					type : "POST",
+					url : sourceleadUrl
+							+ "/updateProjectTaskById?${_csrf.parameterName}=${_csrf.token}&taskId="
+							+ taskId + "&fieldName=" + fieldName
+							+ "&fieldValue=" + fieldValue,
+					success : function(data) {
+
+					}
+				});
+			}
+		}
 	}
 </script>
 
