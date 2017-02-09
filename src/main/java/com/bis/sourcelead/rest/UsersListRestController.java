@@ -413,6 +413,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("ratePer", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
+
 
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			
