@@ -568,27 +568,27 @@ function getSpocUserDetails(){
  
    <script type="text/javascript">
 function validateClientName(){
-	var clientName = document.getElementById("orgName").value;
+	var clientName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
+	var client = encodeURIComponent(clientName);
+	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
-	if(clientName.match(/^[^\s-](.*)*$/) != null){
+	if(client.match(/^[^\s-](.*)*$/) != null){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
-	if (clientName != null && clientName != '') {
-		
+	if (client != null && client != '') {
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Client",
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+client+"&responderType=Client",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
 					//duplicate client
 					$("#save_client").removeAttr("disabled");
 			        $("#save_client").attr("disabled", "disabled");
-					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as client</span>");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + client + " is already existed as client</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as client");
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', client +"  already existed as client");
 					$('input#orgName').removeAttr( "record-exist record-exist-errorMsg");
 					
 				}else {

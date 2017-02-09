@@ -16,7 +16,12 @@ text-align: center;
 font-size: 18px;
 font-weight: bold;
 vertical-align: middle;
-padding: 30px 15px;
+padding: 20px 15px;
+clear: both;
+display: inline-block;
+margin: auto;
+width: 100%;
+
 }
 #loadMoreDiv .fa-spinner{
 margin-right: 15px;
@@ -743,6 +748,7 @@ function getUserSummary(userId){
 		      	$("#noUsers").val("nousers")
 		    	$('#loadMoreDiv').empty(); 
 		    	$("#loading").removeAttr("style");
+		    	var result ="";
 		     	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No More Records..</div>';
 		     	$('#loadMoreDiv').append(result);
 		    }

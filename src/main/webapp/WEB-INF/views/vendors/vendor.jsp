@@ -565,27 +565,29 @@ function getSpocUserDetails(){
    <script type="text/javascript">
 function validateClientName(){
 	
-	var clientName = document.getElementById("orgName").value;
+	var vendorName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
+	var vendor = encodeURIComponent(clientName);
+	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
-	if(clientName.match(/^[^\s-](.*)*$/) != null){
+	if(vendor.match(/^[^\s-](.*)*$/) != null){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
-	if (clientName != null && clientName != '') {
+	if (vendor != null && vendor != '') {
 		
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Vendor",
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+vendor+"&responderType=Vendor",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
 					//duplicate client
 					$("#save_client").removeAttr("disabled");
 			        $("#save_client").attr("disabled", "disabled");
-					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as vendor</span>");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + vendor + " is already existed as vendor</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as vendor");
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', vendor +"  already existed as vendor");
 					$('input#orgName').removeAttr( "record-exist record-exist-errorMsg");
 					
 				}else {

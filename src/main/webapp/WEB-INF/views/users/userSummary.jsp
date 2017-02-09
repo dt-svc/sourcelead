@@ -77,6 +77,9 @@ $(document).ready(function(){
 	 
 	 result = result + ' <div class="user_summ_wrap">';
 	 result = result + '<div class="project_side_wrap_inn_tabs">';
+	 result  = result + '<div class="success_pop" id="selectoruser" style="display: none;">';
+	 result  = result + '<i class="fa fa-check-circle"></i><span id="userMsgDiv"></span>';
+	 result  = result + '</div>';
 	 result = result + '    <ul class="project-tabs-menu">';
 	 result = result + '       <li class="current"><a href="#tab-1" onClick="userDetails('+userId+');" >Details</a></li>';
 	/*  if(timesheet == 'Y' && (loginUserRole == 'ROLE_ADMIN' || loginUserRole == 'SOURCELEAD_ADMIN')){
@@ -122,8 +125,14 @@ $(document).ready(function(){
 	  	userDetails(userId);
  }
 </script>
+<script>
+	function userMsgFadein() {
+		$("#selectoruser").fadeIn(200);
+        $('#selectoruser').delay(2000).fadeOut('slow');
+	}
+</script> 
 
-		<script>
+<script>
  function userDetails(userId){    
 	
 	 var isTimeSheetEnrolled = '${SourceLeadWeb_timesheet}';
@@ -860,7 +869,11 @@ function getChangeRole(userId,userRoleId){
                             type: "POST",
                             url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
                             success: function(result) {
-                                userDetails(userId);
+                            	 $("#selectoruser").removeAttr("style");
+	                       		  $("#selectoruser").css({ display: "block" });
+	                       		  $("#userMsgDiv").html("Success!! User Details Updated");
+                               userDetails(userId);
+                               userMsgFadein();
                                 
                             },
                         });
@@ -893,7 +906,11 @@ function getChangeRole(userId,userRoleId){
                                   type: "POST",
                                   url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
                                   success: function(result) {
+                                	  $("#selectoruser").removeAttr("style");
+                            		  $("#selectoruser").css({ display: "block" });
+                            		  $("#userMsgDiv").html("Success!! User Details Updated");
                                       userDetails(userId);
+                                      userMsgFadein();
                                       
                                   },
                               });
@@ -915,7 +932,11 @@ function getChangeRole(userId,userRoleId){
                       type: "POST",
                       url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
                       success: function(result) {
+                    	  $("#selectoruser").removeAttr("style");
+                		  $("#selectoruser").css({ display: "block" });
+                		  $("#userMsgDiv").html("Success!! User Details Updated");
                           userDetails(userId);
+                          userMsgFadein();
                           
                       },
                   });
@@ -962,7 +983,11 @@ function getChangeRole(userId,userRoleId){
              url: sourceleadUrl+"/terminateUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&json="+jsonData,
              success: function(data) {
                  if(data == "success"){
-                	 location.replace(sourceleadUrl+"/usersList");
+                	 $("#selectoruser").removeAttr("style");
+          			 $("#selectoruser").css({ display: "block" });
+          			 $("#userMsgDiv").html("Success!! User Terminated");
+                 	 location.replace(sourceleadUrl+"/usersList");
+                 	 userMsgFadein();
                  }
                  
              }
@@ -1009,7 +1034,11 @@ function getChangeRole(userId,userRoleId){
              url: sourceleadUrl+"/editUserRole?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&json="+jsonData,
              success: function(data) {
                  if(data == "success"){
-                	 location.replace(sourceleadUrl+"/usersList");
+                	 $("#selectoruser").removeAttr("style");
+           			 $("#selectoruser").css({ display: "block" });
+           			 $("#userMsgDiv").html("Success!! Updated User Role");
+                 	 location.replace(sourceleadUrl+"/usersList");
+                 	 userMsgFadein();
                  }
                  
              }
