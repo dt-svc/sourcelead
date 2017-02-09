@@ -34,12 +34,14 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -61,6 +63,9 @@ public class TimesheetSubmissionsRestController {
 	
 	@Autowired
 	private EmployeesService employeesService;
+	
+	@Autowired
+	private ProjectMembersService projectMembersService;
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
@@ -191,11 +196,13 @@ public class TimesheetSubmissionsRestController {
                                                 @RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
                                                  
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
         Date sDate  =  Constants.DMY.parse(startDate);
         Date eDate  =  Constants.DMY.parse(endDate);
         submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, user.getId(), sDate,eDate,approvalStatus, rejectedReason);
         
-       // sendEmailToEmployeeTimesheetApprovalStatus(employeeId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
+       sendEmailToEmployeeTimesheetApprovalStatus(projectMemberId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
         
         return "success";
     }
@@ -214,14 +221,16 @@ public class TimesheetSubmissionsRestController {
             return "success";
     }*/
 	
-	private void sendEmailToEmployeeTimesheetApprovalStatus(Long empId, User loginUser, String startDate, String endDate, String status, String rejectedReason, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
+	private void sendEmailToEmployeeTimesheetApprovalStatus(Long pmId, User loginUser, String startDate, String endDate, String status, String rejectedReason, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 		
-			 Employees emp = employeesService.getEmployee(empId.toString());
+			 //Employees emp = employeesService.getEmployee(empId.toString());
+			 
+			 ProjectMembers projectMembers = projectMembersService.getProjectMemberById(pmId);
 		
 	     	 EmailMessage emailMessage = new EmailMessage();
-	     	 emailMessage.setFirstName(emp.getUser().getFirstName());
-		 	 emailMessage.setLastName(emp.getUser().getLastName());
-		 	 emailMessage.setToEmail(emp.getUser().getEmail());
+	     	 emailMessage.setFirstName(projectMembers.getEmployee().getUser().getFirstName());
+		 	 emailMessage.setLastName(projectMembers.getEmployee().getUser().getLastName());
+		 	 emailMessage.setToEmail(projectMembers.getEmployee().getUser().getEmail());
 		 	 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 	 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 	 
@@ -232,8 +241,8 @@ public class TimesheetSubmissionsRestController {
 			 Map<String, String> globalVarsMap = new HashMap<>();
 			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
 			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
-			 globalVarsMap.put("employeeFirstName",emp.getUser().getFirstName());
-			 globalVarsMap.put("employeeLastName",emp.getUser().getLastName());
+			 globalVarsMap.put("employeeFirstName",projectMembers.getEmployee().getUser().getFirstName());
+			 globalVarsMap.put("employeeLastName",projectMembers.getEmployee().getUser().getLastName());
 			 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
 			 
 			 StringBuilder timeFrequencySB = new StringBuilder();
@@ -289,7 +298,7 @@ public class TimesheetSubmissionsRestController {
 			notificationScenario.setBody(notificationBody);
 			notificationScenario.setOrgCode(loginOrgCode);
 			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getEmployee().getUser(), loginOrgLocation, notificationScenario);
 	}
 	
 	public static boolean isNullOrEmpty(String str) {
