@@ -54,6 +54,12 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Enumerated(EnumType.STRING)
 	private Submission_ApprovalStatus submissionApprovalStatus;
 	
+	@Column(name = "FREQUENCY_START_DATE")
+    private Date frequencyStartDate;
+	
+	@Column(name = "FREQUENCY_END_DATE")
+    private Date frequencyEndDate;
+	
 	@Column(name = "MECHANISM_TYPE")
 	@Enumerated(EnumType.STRING)
 	private Approval_Mechanism_Type mechanismType;
@@ -144,6 +150,22 @@ public class SubmissionApproverHierarchy implements  Serializable{
 
 	public void setSubmissionApprovalStatus(Submission_ApprovalStatus submissionApprovalStatus) {
 		this.submissionApprovalStatus = submissionApprovalStatus;
+	}
+	
+	public Date getFrequencyStartDate() {
+		return frequencyStartDate;
+	}
+
+	public void setFrequencyStartDate(Date frequencyStartDate) {
+		this.frequencyStartDate = frequencyStartDate;
+	}
+
+	public Date getFrequencyEndDate() {
+		return frequencyEndDate;
+	}
+
+	public void setFrequencyEndDate(Date frequencyEndDate) {
+		this.frequencyEndDate = frequencyEndDate;
 	}
 
 	public Approval_Mechanism_Type getMechanismType() {
