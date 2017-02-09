@@ -835,6 +835,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					userRole.setPreviousUserState(userRole.getUserState());
 					userRole.setUserState(Status.INACTIVE);
 					userRole.setTerminateReason(jsonObj.getString("reason"));
+					userRole.setUpdatedBy(user.getUserCode());
+					userRole.setUpdatedDate(commonUtil.currentDate());
 					UserRole updateUserRole = userRoleService.addUserRole(userRole);
 					
 					//to assign primary role to another user
@@ -984,6 +986,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					}
 					
 					userRole.setRoleChangeReason(jsonObj.getString("reason"));
+					userRole.setUpdatedBy(user.getUserCode());
+					userRole.setUpdatedDate(commonUtil.currentDate());
 					userRoleService.addUserRole(userRole);
 					
 					/*
@@ -1048,7 +1052,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					}
 					user.setUpdatedBy(loginUser.getUserCode());
 					user.setUpdatedDate(commonUtil.currentDate());
-					
+					userRole.setUpdatedBy(loginUser.getUserCode());
+					userRole.setUpdatedDate(commonUtil.currentDate());
 					userService.addUser(user);
 					userRoleService.addUserRole(userRole);
 					
