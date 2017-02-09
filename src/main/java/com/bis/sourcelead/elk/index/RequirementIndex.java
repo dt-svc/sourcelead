@@ -83,6 +83,8 @@ public class RequirementIndex {
 	
 	private String[] teamAssignUserId;
 	
+	private String releasedBy;
+	
 	
 	
 	public String getManagerUserId() {
@@ -358,6 +360,14 @@ public class RequirementIndex {
 
 	public void setReqUpdatedDate(String reqUpdatedDate) {
 		this.reqUpdatedDate = reqUpdatedDate;
+	}
+
+	public String getReleasedBy() {
+		return releasedBy;
+	}
+
+	public void setReleasedBy(String releasedBy) {
+		this.releasedBy = releasedBy;
 	}
 
 	
