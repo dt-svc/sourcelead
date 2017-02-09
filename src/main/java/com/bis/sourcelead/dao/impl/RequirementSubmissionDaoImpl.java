@@ -78,7 +78,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		Session session = this.sessionFactory.getCurrentSession();	
 		String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes   where rs.id = :submissionId";
 		List<RequirementSubmission>  submission = session.createQuery(query).setLong( "submissionId", submissionId).setCacheable(true).list();
-		logger.info("RequirementSubmission loaded successfully, RequirementSubmission details="+submission);
+		logger.info("RequirementSubmission loaded successfully !!!");
 		return submission.get(0);
 	}
 	
@@ -646,7 +646,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		Session session = this.sessionFactory.getCurrentSession();	
 		String query = "from RequirementRateSubmissionNegotiation rs where rs.createdDate IN( select max(rs1.createdDate) from  RequirementRateSubmissionNegotiation rs1 where rs1.requirementsubmissionId.id = :submissionId  )";
 		List<RequirementRateSubmissionNegotiation>  submission = session.createQuery(query).setLong( "submissionId", submissionId).setCacheable(true).list();
-		logger.info("RequirementRateSubmission loaded successfully, RequirementRateSubmission details="+submission);
+		logger.info("RequirementRateSubmission loaded successfully !!!");
 		return submission.get(0);
 		
 	}
