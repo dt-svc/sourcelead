@@ -1311,12 +1311,14 @@ function requirementPipeline(requirementId){
                   <label>Requirement status </label>
                   <div class="clearfix">
                     <select id="requirementStatu" name="requirementStatus" class="chosen-select" data-placeholder="Requirement status " multiple>
-                      <option>New</option> 
-                      <option>Draft</option>
-                      <option>Submitted</option>
-                      <option>Open</option>
-                      <option>cancel</option>
-                      <option>On Hold</option>
+                      <option>NEW</option> 
+                      <option>DRAFT</option>
+                      <option>SUBMITTED</option>
+                      <option>OPEN</option>
+                      <option>CANCEL</option>
+                      <option>ONHOLD</option>
+                      <option>FILLEDCLOSED</option>
+                      <option>UNFILLEDCLOSED</option>
                     </select>
                   </div>
                 </div>
