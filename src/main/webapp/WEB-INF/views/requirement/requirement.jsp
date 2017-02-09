@@ -1894,7 +1894,6 @@ function getUserList(teamType){
            type : "POST",
            url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
-            	
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
@@ -1903,7 +1902,7 @@ function getUserList(teamType){
                			 location.replace(sourceleadUrl+"/errorPage");
                		 }
                		 else{
-			    	     $("#userList").removeAttr("style");
+			    	     $("#usersGrid").removeAttr("style");
 	                	    var result = '';
 	                	    result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
 	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
@@ -1957,28 +1956,12 @@ function getUserList(teamType){
 	                       pagination(); 
 			    		}
                  	}else{
-                	 	$("#userList").removeAttr("style");
+                	 	$("#usersGrid").removeAttr("style");
   	    	        	var result ="";
-	  	    	        result = result +'<div class="modal-body clearfix">';
-	 	    	        result = result +'<div class="form-horizontal custom-form">';
-		           		result = result +'     <div class="row">';
-		           		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
-		           		result = result +'         <div class="input-group">';
-		           		result = result +'           <input type="search" class="form-control" value="">';
-		           		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
-		           		result = result +'       </div>';
-		           		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
-		           		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important">';
-		           		result = result +'          </select>';
-		           		result = result +'     </div>';
-		           		result = result +'     </div>';
-		           		result = result +'     </div>';
-		           		
-		           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
 		        		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 		        		result = result +'           <thead>';
 		        		result = result +'           <tr>';
-		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"><input type="checkbox"></th>';
+		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"></th>';
 		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Name</th>';
 		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Email</th>';
 		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Role</th>';
@@ -1986,11 +1969,15 @@ function getUserList(teamType){
 		        		result = result +'           </tr>';
 		        		result = result +'           </thead>';
 		        		result = result +'           </table>';
-		        		result = result +'     </div>';
-		        		result = result +'     </div>';
+		        		var refreshIds = [];
+		        		ids =  refreshIds;
+		        		
+                 	    result = result +'   <div class="modal-footer mt">';
+                 	    result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Cancel</button>';
+                 	    result = result +'   </div>'; 
 						$("#usersGrid").empty();
 					    $("#usersGrid").append(result); 
-					    pagination();  
+					    pagination(); 
                 	}
           		},
        		}); 
