@@ -468,6 +468,22 @@ public class RequirementReleaseRestController {
 				}
 			}
 			
+			if(null == parentRequirement.getReleasedBy()){
+				parentRequirement.setReleasedBy(loginUser.getId().toString());
+			}else{
+				List<Long> userId = new ArrayList<Long>();
+				for (String s : parentRequirement.getReleasedBy().split(",")){
+					userId.add(Long.parseLong(s));
+				 }
+				boolean flag = userId.contains(loginUser.getId());
+         		if(flag == false){
+         			StringBuilder releasedUser = new StringBuilder();
+    				releasedUser = releasedUser.append(",").append(loginUser.getId().toString());
+    				parentRequirement.setReleasedBy(parentRequirement.getReleasedBy()+releasedUser.toString());
+         		}
+			}
+			requirementService.addRequirement(parentRequirement);
+			
 			return "vendorsList";
 	}
 
