@@ -676,8 +676,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage+noticePeriod+totalKeyWordPer;
 					
 					double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
-					String candidateScore = String.valueOf(roundOff);
-					candidateIndex.setCandidateScore(candidateScore);
+					candidateIndex.setFinalScore(roundOff);
 					candidateIndex.setNoOfReq(reqListCount);
 					candidateIndex.setSkillPercentage(skillPercentage);
 					candidateIndex.setExpPercentage(expPercentage);
@@ -685,19 +684,6 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					candidateIndex.setRatePercentage(ratePercentage);
 					candidateIndex.setNoticePeriodPercentage(noticePeriod);
 					candidateIndex.setTotalKeyWordPerPercentage(totalKeyWordPer);
-					
-/*					if(reqList.size() >0){
-						
-						for(RequirementSubmission reqSubmission : reqList){
-							if(recommendedCustomizeScore.getReqirementId().getId().equals(reqSubmission.getRequirement().getId())){
-								isCandidateAdded = true;
-							}
-							reqSubmission.setRequirementName(reqSubmission.getRequirement().getJobTitle());
-							reqSubmission.setRequirementStage(reqSubmission.getSubmissionStatus());
-							candidateIndex.setReqSubmissionId(reqSubmission.getId().toString());
-						}
-					}
-					candidateIndex.setRequirementSubmisstions(reqList);*/
 					candidateIndex.setIsCandidateAdedd(isCandidateAdded);
 					
 					if(skillPercentage !=0 && totalPercentage !=0 ){
@@ -709,10 +695,11 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		            public int compare(Object obj1, Object obj2) {  
 		            	CandidateIndex candidate1 = (CandidateIndex)obj1;  
 		            	CandidateIndex candidate2 = (CandidateIndex)obj2; 
-		            	return candidate2.getCandidateScore().compareToIgnoreCase(candidate1.getCandidateScore());  
+		            	if (candidate2.getFinalScore() < candidate1.getFinalScore()) return -1;
+		                if (candidate2.getFinalScore() > candidate1.getFinalScore()) return 1;
+		                return 0;
 		            }  
 		        });
-//			return CandidateListcopy;
 			 }
 		 }
 		logger.info("....getRecommendationsWithScoreByUsingElk Method Ended...");
