@@ -388,11 +388,11 @@ public class TimesheetApprovalRestController {
 		   timesheetApprovalDiv.append("				<div class='timeNewSe timeNewSe_stage'>");
 			timesheetApprovalDiv.append("	                <select id='stage' class='form-control chosen-select' onChange='timesheetApprovalDiv(\"stage\");'>");
 			     timesheetApprovalDiv.append(" <option      ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("All") ? "selected='selected'" : "") : "").append("  value='All'>All</option>");
-			     timesheetApprovalDiv.append(" <option      ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("NEW") ? "selected='selected'" : "") : "").append("  value='NEW'>NEW</option>");
-				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("SUBMITTEDFORAPPROVAL") ? "selected='selected'" : "") : "").append("  value='SUBMITTEDFORAPPROVAL'>SUBMITTED FOR APPROVAL");
-				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("APPROVED") ? "selected='selected'" : "") : "").append("  value='APPROVED'>APPROVED</option>");
-				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("REJECTED") ? "selected='selected'" : "") : "").append("  value='REJECTED'>REJECTED</option>");
-				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("REOPENED") ? "selected='selected'" : "") : "").append("  value='REOPENED'>REOPENED</option>");
+			     timesheetApprovalDiv.append(" <option      ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("new") ? "selected='selected'" : "") : "").append("  value='new'>NEW</option>");
+				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("submitted for approval") ? "selected='selected'" : "") : "").append("  value='submitted for approval'>SUBMITTED FOR APPROVAL");
+				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("approved") ? "selected='selected'" : "") : "").append("  value='approved'>APPROVED</option>");
+				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("rejected") ? "selected='selected'" : "") : "").append("  value='rejected'>REJECTED</option>");
+				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("reopened") ? "selected='selected'" : "") : "").append("  value='reopened'>REOPENED</option>");
 			timesheetApprovalDiv.append("	                </select>");
 			timesheetApprovalDiv.append("	            </div>   ");  
 			selectedStage.append(stage);
