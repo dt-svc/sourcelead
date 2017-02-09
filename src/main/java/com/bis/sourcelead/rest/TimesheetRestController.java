@@ -1056,7 +1056,6 @@ public class TimesheetRestController {
 		            if(!isNullOrEmpty(submissionId)){
 		            	 timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
 		            }else{
-		            	
 		            	timesheetSubmissions = new TimesheetSubmissions();
 		            	timesheetSubmissions.setStartDate(startDate);
 		     	    	timesheetSubmissions.setEndDate(endDate);
@@ -1090,11 +1089,6 @@ public class TimesheetRestController {
 		    			timesheetSubmissionsList.add(timesheetSubmissions);
 		    			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 		            }
-			    	
-			    	
-			    	
-					/*timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);*/
-			    	
 			    	//save  mutliple attachment in timesheet submissison attachment.
 					if ((jsonObj.has("attcahmentMaxRowNumber"))){
 				    	String attcahmentMaxRowNumber = jsonObj.getString("attcahmentMaxRowNumber");
@@ -1116,7 +1110,6 @@ public class TimesheetRestController {
 			                       if(multiFile.getContentType()!=null){
 			                    	   tsd.setFileContentType(multiFile.getContentType());
 			                       }
-			                       
 			                       tsd.setStatus(Constants.CANDIDATE_ACTIVE);
 				                   tsd.setCreatedDate(CommonUtil.currentDate());
 				                   tsd.setCreatedBy(loginUser.getUserCode());
@@ -1129,7 +1122,6 @@ public class TimesheetRestController {
 			                 
 				    	}
 					}
-					
 					String maxAdminTimeTypeRowNum = jsonObj.getString("maxRowNumber");
 					int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 					int rowNum = 0;

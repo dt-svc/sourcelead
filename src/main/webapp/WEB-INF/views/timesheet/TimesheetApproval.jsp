@@ -52,6 +52,7 @@ margin-top: 3px;
 <script>
 	/* function timesheetDivByTab(startDate,endDate) */
 	function timesheetDivByTab(startDate,endDate,approvalStatus){ 
+		alert("entereddddd");
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("[name='projectMemberId']").val();
 	         var timesheetFrequency = $("[name='timesheetFrequency']").val();
@@ -362,10 +363,35 @@ function timesheetComment(local){
 </script>	
 
 
+<script type="text/javascript">
+function timesheetApprovalTableRowByProjectMemberId(){ 
+	        var sourceleadUrl ='${sourceleadUrl}';
+            var projectMemberId = $("[name='projectMemberId']").val();
+            var timesheetFrequency = $("[name='timesheetFrequency']").val();
+			var sourceleadUrl ='${sourceleadUrl}';  
+			$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/timesheetApprovalTableRowByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency, 	   
+				    success: function(data) {
+					    	 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+	     		    		 $(".side_mask").fadeOut(200); 
+	     	        		 $("body").css('overflow-y', 'scrool');
+	     	        		 $("#dynamic").removeAttr('style');
+				    		 $("#row"+projectMemberId).empty();
+					         $("#row"+projectMemberId).html(data);
+					        /* pagination(); */
+				        
+				    }
+		    });
+}
+</script>
+
 <!-- this script is for save Timesheet -->               
 <script type="text/javascript">
 function newSaveTimesheet(status,savingType){ 
 	 checkHours();
+	 var projectMemberId = $("[name='projectMemberId']").val();
+     var timesheetFrequency = $("[name='timesheetFrequency']").val();
 	 var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
 	 if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
 		 $('#0docFile').removeAttr('data-validation-optional');
@@ -404,14 +430,13 @@ function newSaveTimesheet(status,savingType){
 	          	      dataType : 'json',
         	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
-        		    	  
-        		    	 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
-     		    		 $(".side_mask").fadeOut(200); 
-     	        		 $("body").css('overflow-y', 'scrool');
-     	        		 $("#dynamic").removeAttr('style');
-     	        		 
-        		    	  /* $("#loadTime").removeAttr("style");  */
-        		    	  
+        		    	  if(status != null && status != 'undefined' && status != '' && status != 'Draft'){
+        		    		  timesheetApprovalTableRowByProjectMemberId();
+        		    	  }
+        		    	  else{
+        		    		  timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId);
+        		    	  }
+     	        		  
         		      }
         	      	  
         	    }); 
