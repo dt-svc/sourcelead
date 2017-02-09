@@ -25,7 +25,16 @@ $(document).ready(function() {
 	timesheetEntriesDiv();
 });
 </script>  
-
+<script>
+	$(document).on("mouseover", ".rejectedHover", function() { 
+		var projectMemberId = $("#projectMemberId").val();
+		$("#rejectedMessage"+projectMemberId).addClass('app_error_mes_active');
+	});	
+	$(document).on("mouseleave", ".rejectedHover", function() { 
+		 var projectMemberId = $("#projectMemberId").val();
+		  $("#rejectedMessage"+projectMemberId).removeClass('app_error_mes_active');
+	});	
+</script>
 
 <script>
 	function timesheetEntriesDiv(){ 
