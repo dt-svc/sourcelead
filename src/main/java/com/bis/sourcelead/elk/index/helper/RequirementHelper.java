@@ -184,6 +184,7 @@ public class RequirementHelper {
 			requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());
 			requirementIndex.setNumberOfPositions(requirement.getPositions());
 			requirementIndex.setNumberOfApplicants(requirement.getNoOfApplicants());
+			requirementIndex.setReleasedBy(requirement.getReleasedBy());
 
 		}
 		return requirementIndex;
