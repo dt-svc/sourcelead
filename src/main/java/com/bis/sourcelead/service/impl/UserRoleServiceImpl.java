@@ -135,6 +135,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.isUserActive(userId);
 	}
 	
+	@Override
+	public Boolean isUserAdmin(Long userId) {
+		return userRoleDao.isUserAdmin(userId);
+	}
+	
 	/*@Override
 	public List<UserRole> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
 		return userRoleDao.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
@@ -172,7 +177,6 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId,Long loginUserId)throws Exception {
 		return userRoleDao.getAllUsersListByOrgLocationId(orgLocationId,loginUserId);
 	}
-	
 	
 	public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, List<UserRole> activeList,
 			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,String userState)

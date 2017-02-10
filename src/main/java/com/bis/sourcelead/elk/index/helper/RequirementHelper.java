@@ -108,7 +108,7 @@ public class RequirementHelper {
 				 requirementIndex.setReqLevel2ApproverUserId(sequentialApprovers2.split(","));
 			 }
 			 
-				if (jsonObj.has("assignedToMaxCount")){
+			 	if (jsonObj.has("assignedToMaxCount")&& !"".equalsIgnoreCase(jsonObj.getString("assignedToMaxCount"))){
 					String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
 							if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
 								String assignedTeamId = jsonObj.getString("assignedTeamId");
@@ -178,12 +178,10 @@ public class RequirementHelper {
 				requirementIndex.setSkills(skills);
 			}
 			requirementIndex.setJobId(requirement.getJobId());
-			// requirementIndex.setClientContactName(requirement.getClientContactName());
-			// requirementIndex.setClientContactEmail(requirement.getClientContactName());
 			requirementIndex.setPriority(requirement.getPriority());
 			requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());
 			requirementIndex.setNumberOfPositions(requirement.getPositions());
-			requirementIndex.setNumberOfApplicants(requirement.getNoOfApplicants());
+			requirementIndex.setNumberOfApplicants(requirement.getTotalApplicantsForRequirement().toString());
 			requirementIndex.setReleasedBy(requirement.getReleasedBy());
 
 		}
