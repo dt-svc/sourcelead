@@ -843,6 +843,21 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			return count;
 		}
 
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public Integer getNumberOfApplicantsForRequirement(Long orgLocationId, Long requirementId) throws Exception {
+			 Session session = this.sessionFactory.getCurrentSession();
+		        
+		        
+		    		String query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.requirement.id =:requirementId";
+		    		
+		    		List<Long> reqSubmsCount  = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).setLong("requirementId", requirementId).setCacheable(true).list();
+		    		Integer count = 0;
+					if(reqSubmsCount != null && !reqSubmsCount.isEmpty()){
+							count = reqSubmsCount.get(0).intValue();
+					}
+					return count;
+		}
 
   }
 

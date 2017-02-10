@@ -184,7 +184,10 @@ public class AddElkRequirement {
 				if(null != rs.getString("RELEASED_BY") && null != rs.getString("RELEASED_BY")){
 					requirementIndex.setReleasedBy(rs.getString("RELEASED_BY"));
 				}
+				Integer numberOfApplicants = getNumberOfApplicants(rs.getString("ID"),conn,rs.getString("ORG_LOCATION_ID"));
+				requirementIndex.setNumberOfApplicants(numberOfApplicants.toString());
 				reqIndexList.add(requirementIndex);
+				
 			}
 			
 		}catch(Exception e){
@@ -202,6 +205,28 @@ public class AddElkRequirement {
 	}
 	
 	
+	private Integer getNumberOfApplicants(String requirementId, Connection conn, String orgLocationId) {
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		 Integer numberOfApplicant =0;
+		 try{
+			 String sql ="select count(*) from REQUIREMENT_SUBMISSION rs where rs.ORG_LOCATION_ID = ? and rs.REQUIREMENT_ID =?";
+				 ps = conn.prepareStatement(sql);
+				 ps.setLong(1, Long.parseLong(orgLocationId));
+				 ps.setLong(2, Long.parseLong(requirementId));
+				 rs = ps.executeQuery();
+				 while(rs.next()){
+					 numberOfApplicant = Integer.parseInt(rs.getString(1));
+				 }
+		 }catch(Exception e){
+			 e.printStackTrace();
+		 }
+//	     return rs;
+		return numberOfApplicant;
+		
+	}
+
+
 	private ResultSet getTeamDetails(long requirementId, Connection conn) {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
