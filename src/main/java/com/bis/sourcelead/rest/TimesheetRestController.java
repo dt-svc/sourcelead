@@ -1127,7 +1127,7 @@ public class TimesheetRestController {
 		    						saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
 		    						saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
 		    						saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
-		    						saHierarchy.setFrequencyEndDate(frequencyStartDate);
+		    						saHierarchy.setFrequencyStartDate(frequencyStartDate);
 		    						saHierarchy.setFrequencyEndDate(frequencyEndDate);
 		    						saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
 		    						saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
