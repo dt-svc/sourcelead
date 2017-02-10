@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -40,7 +41,6 @@ public  class SourceleadELKBaseIndexer<T> {
 	 * @param id
 	 * @purpose : For To Save/Update  Elk Document Based On id
 	 */
-	@Async
 	public void saveOrUpdateElkDocument(T entityClass,String index,String type,String id) {
 		String entityInJson = null;
 		try {
@@ -90,6 +90,8 @@ public  class SourceleadELKBaseIndexer<T> {
 		 return response.getHits();
 
   }
+	
+	
 	public  SearchHits searchDocument(String index,String type,BoolQueryBuilder query){
 		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type).setQuery(query)
 	                             .execute()

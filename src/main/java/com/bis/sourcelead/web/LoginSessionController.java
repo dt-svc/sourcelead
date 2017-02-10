@@ -150,6 +150,7 @@ public class LoginSessionController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("dashboard");
 		
+		
 		Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
 		model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
 	   
@@ -195,7 +196,6 @@ public class LoginSessionController {
 			
 			String userName = (String) authentication.getPrincipal();
 			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
-			System.out.println(authentication.getAuthorities());
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			setLoginSession(request, authentication,user,userRole);
 			model.addObject("sourceleadUrl", sourceleadUrl);
@@ -264,20 +264,22 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 			
 			List<Long> tabIds = tabsService.getTabsIdsListByUserRoleIdAndOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
-			for(Long tabId : tabIds){
-				if(tabId.equals(Long.valueOf(Constants.TAB_REQUIREMENT))){
-					SourceLeadSessionManager.setSessionAttribute(request, "REQUIREMENT_TAB", "Y");
-				}
-				
-				else if(tabId.equals(Long.valueOf(Constants.TAB_MY_TIMESHEET))){
-					SourceLeadSessionManager.setSessionAttribute(request, "MY_TIMESHEET_TAB", "Y");
-				}
-				
-				else if(tabId.equals(Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL))){
-					SourceLeadSessionManager.setSessionAttribute(request, "IMESHEET_APPROVAL_TAB", "Y");
+			if(null != tabIds){
+				for(Long tabId : tabIds){
+					if(tabId.equals(Long.valueOf(Constants.TAB_REQUIREMENT))){
+						SourceLeadSessionManager.setSessionAttribute(request, "REQUIREMENT_TAB", "Y");
+					}
+					
+					else if(tabId.equals(Long.valueOf(Constants.TAB_MY_TIMESHEET))){
+						SourceLeadSessionManager.setSessionAttribute(request, "MY_TIMESHEET_TAB", "Y");
+					}
+					
+					else if(tabId.equals(Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL))){
+						SourceLeadSessionManager.setSessionAttribute(request, "IMESHEET_APPROVAL_TAB", "Y");
+					}
 				}
 			}
-			
+		
 			
 		} catch (Exception e) {
 			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
@@ -361,7 +363,12 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "userCode", user.getUserCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
 		StringBuilder userNameSB = new StringBuilder();
-		SourceLeadSessionManager.setSessionAttribute(request, "userName", userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		if(null != user.getLastName()){
+			SourceLeadSessionManager.setSessionAttribute(request, "userName", userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		}else{
+			SourceLeadSessionManager.setSessionAttribute(request, "userName", userNameSB.append(user.getFirstName()).toString());
+		}
+
 		
 	}
 	

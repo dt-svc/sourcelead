@@ -246,7 +246,7 @@ public class RequirementReleaseRestController {
 					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgIdAndInvitationStatusAndSpocStatus(orgRelation.getId(),"Accepted","Active");
-					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active",null,"Accepted");
+					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active",orgRelation.getId().toString(),"Accepted");
 					int nonAssignedCount = 0;
 					orgRelation.setNoOfContatcs(0); 
 					if(!contactsList.isEmpty()){
@@ -279,7 +279,7 @@ public class RequirementReleaseRestController {
 					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgIdAndInvitationStatusAndSpocStatus(orgRelation.getId(),"Accepted","Active");
-					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active",null,"Accepted");
+					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active",orgRelation.getId().toString(),"Accepted");
 					int nonAssignedCount = 0;
 					orgRelation.setNoOfContatcs(0); 
 					if(!contactsList.isEmpty()){
@@ -467,6 +467,22 @@ public class RequirementReleaseRestController {
 					}
 				}
 			}
+			
+			if(null == parentRequirement.getReleasedBy()){
+				parentRequirement.setReleasedBy(loginUser.getId().toString());
+			}else{
+				List<Long> userId = new ArrayList<Long>();
+				for (String s : parentRequirement.getReleasedBy().split(",")){
+					userId.add(Long.parseLong(s));
+				 }
+				boolean flag = userId.contains(loginUser.getId());
+         		if(flag == false){
+         			StringBuilder releasedUser = new StringBuilder();
+    				releasedUser = releasedUser.append(",").append(loginUser.getId().toString());
+    				parentRequirement.setReleasedBy(parentRequirement.getReleasedBy()+releasedUser.toString());
+         		}
+			}
+			requirementService.addRequirement(parentRequirement);
 			
 			return "vendorsList";
 	}

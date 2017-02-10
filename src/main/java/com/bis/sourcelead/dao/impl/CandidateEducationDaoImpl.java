@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.entity.CandidateEducation;
 
@@ -164,6 +165,15 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao{
 		}else{
 			return flag;
 		}
+	}
+
+	@Override
+	@Transactional
+	public List<String> getCandidateEducationNamesByCandidateId(Long candidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select edu.name from CandidateEducation edu where edu.candidateId.id =:candidateId and edu.status = '1'";
+	    List<String> educationNames = session.createQuery(query).setLong( "candidateId", candidateId).setCacheable(true).list();
+        return educationNames;
 	}
 
 }

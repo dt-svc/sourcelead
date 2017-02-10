@@ -2,7 +2,11 @@ package com.bis.sourcelead.elk.index;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Transient;
+
+import com.bis.sourcelead.entity.RequirementSubmission;
 
 public class CandidateIndex implements Serializable {
 
@@ -32,15 +36,17 @@ public class CandidateIndex implements Serializable {
 
 	private String address;
 
-	private Integer experienceYears;
+	private String experienceYears;
 
-	private Integer experienceMonths;
+	private String experienceMonths;
 
 	private String designation;
 
 	private String designationType;
+	
+	private String designationOtherType;
 
-	private Float currentRate;
+	private String currentRate;
 
 	private String currentRateType;
 
@@ -70,11 +76,11 @@ public class CandidateIndex implements Serializable {
 
 	private Integer status;
 
-	private Date createdDate;
+	private String createdDate;
 
 	private String createdBy;
 
-	private Date updatedDate;
+	private String updatedDate;
 
 	private String updatedBy;
 	
@@ -85,6 +91,53 @@ public class CandidateIndex implements Serializable {
 	private String currentResumeName;
 	
 	private String resumeContent;
+
+	private Long teamId;
+	
+	private Integer isFavourite;
+	
+	private String candidateName;
+	
+	private String candidateUpdateDateToString;
+	
+	private String totalExp;
+	
+	private String skillSet;
+	
+	private String searchType;
+	
+	private String candidateScore;
+	
+	private float skillPercentage;
+	 
+	private float expPercentage;
+	 
+	private float locationPercentage;
+	 
+	private float ratePercentage;
+	 
+	private float noticePeriodPercentage;
+	 
+	private float totalKeyWordPerPercentage;
+	
+	private int noOfReq;
+	
+	private String reqSubmissionId;
+	
+	private boolean isCandidateAdedd;
+
+	
+	private double finalScore;
+	
+		
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+
 
 	public Long getCandidateId() {
 		return candidateId;
@@ -182,19 +235,19 @@ public class CandidateIndex implements Serializable {
 		this.address = address;
 	}
 
-	public Integer getExperienceYears() {
+	public String getExperienceYears() {
 		return experienceYears;
 	}
 
-	public void setExperienceYears(Integer experienceYears) {
+	public void setExperienceYears(String experienceYears) {
 		this.experienceYears = experienceYears;
 	}
 
-	public Integer getExperienceMonths() {
+	public String getExperienceMonths() {
 		return experienceMonths;
 	}
 
-	public void setExperienceMonths(Integer experienceMonths) {
+	public void setExperienceMonths(String experienceMonths) {
 		this.experienceMonths = experienceMonths;
 	}
 
@@ -214,11 +267,20 @@ public class CandidateIndex implements Serializable {
 		this.designationType = designationType;
 	}
 
-	public Float getCurrentRate() {
+
+	public String getDesignationOtherType() {
+		return designationOtherType;
+	}
+
+	public void setDesignationOtherType(String designationOtherType) {
+		this.designationOtherType = designationOtherType;
+	}
+
+	public String getCurrentRate() {
 		return currentRate;
 	}
 
-	public void setCurrentRate(Float currentRate) {
+	public void setCurrentRate(String currentRate) {
 		this.currentRate = currentRate;
 	}
 
@@ -334,11 +396,12 @@ public class CandidateIndex implements Serializable {
 		this.status = status;
 	}
 
-	public Date getCreatedDate() {
+
+	public String getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
 	}
 
@@ -350,11 +413,11 @@ public class CandidateIndex implements Serializable {
 		this.createdBy = createdBy;
 	}
 
-	public Date getUpdatedDate() {
+	public String getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
@@ -401,10 +464,149 @@ public class CandidateIndex implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
 
 	
 
-	
+	public Long getTeamId() {
+		return teamId;
+	}
 
-}
+	public void setTeamId(Long teamId) {
+		this.teamId = teamId;
+	}
+
+	public Integer getIsFavourite() {
+		return isFavourite;
+	}
+
+	public void setIsFavourite(Integer isFavourite) {
+		this.isFavourite = isFavourite;
+	}
+
+	public String getCandidateUpdateDateToString() {
+		return candidateUpdateDateToString;
+	}
+
+	public void setCandidateUpdateDateToString(String candidateUpdateDateToString) {
+		this.candidateUpdateDateToString = candidateUpdateDateToString;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getTotalExp() {
+		return totalExp;
+	}
+
+	public void setTotalExp(String totalExp) {
+		this.totalExp = totalExp;
+	}
+
+	public String getSkillSet() {
+		return skillSet;
+	}
+
+	public void setSkillSet(String skillSet) {
+		this.skillSet = skillSet;
+	}
+	public String getCandidateScore() {
+		return candidateScore;
+	}
+
+	public void setCandidateScore(String candidateScore) {
+		this.candidateScore = candidateScore;
+	}
+
+	public float getSkillPercentage() {
+		return skillPercentage;
+	}
+
+	public void setSkillPercentage(float skillPercentage) {
+		this.skillPercentage = skillPercentage;
+	}
+
+	public float getExpPercentage() {
+		return expPercentage;
+	}
+
+	public void setExpPercentage(float expPercentage) {
+		this.expPercentage = expPercentage;
+	}
+
+	public float getLocationPercentage() {
+		return locationPercentage;
+	}
+
+	public void setLocationPercentage(float locationPercentage) {
+		this.locationPercentage = locationPercentage;
+	}
+
+	public float getRatePercentage() {
+		return ratePercentage;
+	}
+
+	public void setRatePercentage(float ratePercentage) {
+		this.ratePercentage = ratePercentage;
+	}
+
+	public float getNoticePeriodPercentage() {
+		return noticePeriodPercentage;
+	}
+
+	public void setNoticePeriodPercentage(float noticePeriodPercentage) {
+		this.noticePeriodPercentage = noticePeriodPercentage;
+	}
+
+	public float getTotalKeyWordPerPercentage() {
+		return totalKeyWordPerPercentage;
+	}
+
+	public void setTotalKeyWordPerPercentage(float totalKeyWordPerPercentage) {
+		this.totalKeyWordPerPercentage = totalKeyWordPerPercentage;
+	}
+
+	public int getNoOfReq() {
+		return noOfReq;
+	}
+
+	public void setNoOfReq(int noOfReq) {
+		this.noOfReq = noOfReq;
+	}
+
+	public String getReqSubmissionId() {
+		return reqSubmissionId;
+	}
+
+	public void setReqSubmissionId(String reqSubmissionId) {
+		this.reqSubmissionId = reqSubmissionId;
+	}
+
+	public boolean getIsCandidateAdedd() {
+		return isCandidateAdedd;
+	}
+
+	public void setIsCandidateAdedd(boolean isCandidateAdedd) {
+		this.isCandidateAdedd = isCandidateAdedd;
+	}
+	
+	public void setCandidateAdedd(boolean isCandidateAdedd) {
+		this.isCandidateAdedd = isCandidateAdedd;
+	}
+
+	public double getFinalScore() {
+		return finalScore;
+	}
+
+	public void setFinalScore(double finalScore) {
+		this.finalScore = finalScore;
+	}
+
+	
+	}
+
+

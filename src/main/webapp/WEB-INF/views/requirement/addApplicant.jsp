@@ -4,9 +4,11 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link rel="stylesheet" href="resources/css/jquery-ui.css" type="text/css" >
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/chosen.jquery.min.js"></script> 
 
 <script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
@@ -52,9 +54,9 @@ function getAddApplicant(requirementId){
 	result = result + '</div>';
 	
 	result = result + '<div class="clearfix"></div>';
-	result = result + '<div class="col-md-6">';
+	result = result + '<div class="col-md-6 mt10">';
 	result = result + '<div id="selectCandidateDiv" style="display: block;">';
-	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" name="candidateId" id="candidateId" data-validation="required" field-name="Applicant" class="form-control  block mt10">';
+	result = result + '<select class="form-control chosen-select" onchange="getCandidateDetails(); getCandidateResumes();"  name="candidateId" id="candidateId" data-validation="required" field-name="Applicant" class="form-control  block mt10">';
 	result = result + '<option value="">--Select Candidate--</option>';
 	result = result + '</select>';
 	result = result + '</div>';	
@@ -80,6 +82,19 @@ function getAddApplicant(requirementId){
 	
                         
 	result = result + '</div>';
+	result = result + '<div class="row">';
+    result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" style="display: none;">';
+	result = result + '<label class="col-md-4">Skills</label>';
+	result = result + '<div class="col-md-8">';
+	result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
+	result = result + '<c:forEach var="skill" items="${skillsList}">';
+	result = result + '<option value="${skill.name}">${skill.name}</option>';
+	result = result + ' </c:forEach>';
+	result = result + '</select>';
+	result = result + '		 </div>';
+	result = result + '	 </div>';
+	result = result + '	 </div>';
+	
 	result = result + '<div class="row">';
 	result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
 	result = result + '<label class="col-md-4">Add Resume &nbsp;*</label>';
@@ -116,6 +131,24 @@ function getAddApplicant(requirementId){
 	$("#addApplicantDiv").empty();
 	$("#addApplicantDiv").append(result);
 	
+	   var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
+				for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+					var $this = $(this);
+					$this.next().css({'width': '100%'});
+					})
+			
+			
+	$("#candSkills").val('').trigger("chosen:updated");
+	
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
@@ -145,6 +178,9 @@ function getAddApplicant(requirementId){
 	
 }
 </script>
+
+
+
 
 <script type="text/javascript">
 function ApplicantPermit(){
@@ -184,7 +220,7 @@ function ApplicantPermit(){
 				        		if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
 				        			lastName = opt.lastName;
 				        		}
-				        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+lastName+"</option>";
+				        		output = output + "<option value='" +opt.candidateId+ "'>"+opt.firstName+" "+lastName+"</option>";
 						}
 			        	$("#candidateId").empty();
 				        $("#candidateId").append(output);
@@ -219,6 +255,7 @@ function ApplicantPermit(){
 			 $('#uploadFile').attr("data-validation","required validatedoc "); 
 			 
 			 document.getElementById("newResumeDiv").style.display="none";
+			 document.getElementById("skillsDiv").style.display="";
 			 $('#newUploadFile').removeAttr('data-validation');
 			 $('#newUploadFile').attr("data-validation-optional","true"); 
 	     }else if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'New'){
@@ -227,6 +264,7 @@ function ApplicantPermit(){
 			 $('#uploadFile').attr("data-validation-optional","true"); 
 	    	 
 	    	 document.getElementById("newResumeDiv").style.display="";
+	    	 document.getElementById("skillsDiv").style.display="";
 			 $('#newUploadFile').removeAttr('data-validation-optional');
 			 $("#newUploadFile").attr("data-validation", "required validatedoc");
 			 
@@ -245,11 +283,10 @@ function ApplicantPermit(){
 	 
 	 $("input[name=PhoneNumber]").val('');
 	 $("input[name=Designation]").val('');
-	 //$("select[name=country]").val('');
 	 $("select[name=state]").val('');
 	 $("select[name=city]").val('');
 	 $("select[name=NoticePeriod]").val('');
-	 $("select[name=WorkExperience]").val('');
+	 $("select[name=WorkExperience]").val(0);
 	 $("input[name=ExpectedCTC]").val('');
 	 $("input[name=CurrentCTC]").val('');
 	 $("input[name=Education]").val('');
@@ -337,6 +374,43 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     		 name = $this.find('select').attr('name');
 	     		 id = $this.find('select').attr('id');
      	      }
+	     	  
+	     	  if(name == "WorkExperience"){
+	     		 var monthExp = document.getElementById("monthExp").value; 
+	     		  if(null != inputValue){
+	     			  if(inputValue == "25+"){
+	     				 inputValue = inputValue+" Years";
+	     			  }else{
+	     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;
+	     			  }
+	     			 
+	     		  }
+	     		  
+	     		  if(null == inputValue && monthExp != '0'){
+	     			 inputValue = monthExp+" Months" ;
+	     		  }
+	     	  }
+	     	  
+	     	  
+	     	 if(name == "CurrentCTC"){
+	     		 inputValue = $this.find('input').val();
+	     		 if(inputValue){
+	     			 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value; 
+	     			 var currentCTCRateType = document.getElementById("currentCTCRateType").value; 
+	     			 inputValue = currentCTCRateType+" "+inputValue+" /"+" "+currentCTCRatePer ;
+	     		  }
+	     	  }
+	     	 
+	     	if(name == "ExpectedCTC"){
+	     		 inputValue = $this.find('input').val();
+	     		  if(inputValue){
+	     			 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value; 
+	     			 var expectedCTCRateType = document.getElementById("expectedCTCRateType").value; 
+	     			 inputValue = expectedCTCRateType+" "+inputValue+" /"+" "+expectedCTCRatePer ;
+	     		  }
+	     	  }
+	     	  
+	     	  
       	  fields.push({
                 label: fieldLabel,
                 id :id,
@@ -454,6 +528,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 				        $("#candidateResumesList").append(output);
 				        
 				        document.getElementById("newResumeDiv").style.display="none";
+				        document.getElementById("skillsDiv").style.display="none";
 				        $('#newUploadFile').removeAttr('data-validation');
 		        		$('#newUploadFile').attr("data-validation-optional","true"); 
 		        		
@@ -469,6 +544,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 		        		 document.getElementById("orConditionDiv").style.display="none";
 		        		
 		        		 document.getElementById("newResumeDiv").style.display="";
+		        		 document.getElementById("skillsDiv").style.display="";
 		        		 $('#newUploadFile').removeAttr('data-validation-optional');
 		        		 $("#newUploadFile").attr("data-validation", "required validatedoc");
 		        		 
@@ -496,7 +572,6 @@ $('body').on('submit', '#addApplicant_form', function(e){
 
 <script type="text/javascript">
 function getCandidateDetails(){
-	
 	var candidateId = document.getElementById("candidateId").value
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
@@ -559,8 +634,19 @@ function getCandidateDetails(){
 		        	 
 		        	 if(json['experienceYears'] != null && json['experienceYears'] != "" && json['experienceYears'] != 'undefined'){
 		        		 $("select[name=WorkExperience]").val(json['experienceYears']);
+		        		 if(json['experienceYears'] == "25+"){
+		        			 $("#monthExp").attr("disabled", "disabled");
+		        		 }else{
+		        			 $("#monthExp").removeAttr("disabled");
+		        		 }
 		        	 }else{
-		        		 $("select[name=WorkExperience]").val('');
+		        		 $("select[name=WorkExperience]").val(0);
+		        	 }
+		        	 
+		        	 if(json['experienceMonths'] != null && json['experienceMonths'] != "" && json['experienceMonths'] != 'undefined'){
+		        		 $("select[name=monthExp]").val(json['experienceMonths']);
+		        	 }else{
+		        		 $("select[name=monthExp]").val(0);
 		        	 }
 		        	 
 		        	 if(json['expectedRate'] != null && json['expectedRate'] != "" && json['expectedRate'] != 'undefined'){
@@ -569,10 +655,35 @@ function getCandidateDetails(){
 		        		 $("input[name=ExpectedCTC]").val(''); 
 		        	 }
 		        	 
+		        	 
+		        	 if(json['rateType'] != null && json['rateType'] != "" && json['rateType'] != 'undefined'){
+		        		 $("select[name=expectedCTCRatePer]").val(json['rateType']);
+		        	 }else{
+		        		 $("select[name=expectedCTCRatePer]").val('');
+		        	 }
+		        	 
+		        	 if(json['expectedRateCurrencey'] != null && json['expectedRateCurrencey'] != "" && json['expectedRateCurrencey'] != 'undefined'){
+		        		 $("select[name=expectedCTCRateType]").val(json['expectedRateCurrencey']);
+		        	 }
+		        	 
 		        	 if(json['currentRate'] != null && json['currentRate'] != "" && json['currentRate'] != 'undefined'){
 		        		 $("input[name=CurrentCTC]").val(json['currentRate']);
+		        		 validateCurrentCTC();
 		        	 }else{
 		        		 $("input[name=CurrentCTC]").val(''); 
+		        		 validateCurrentCTC();
+		        	 }
+		        	 
+		        	 if(json['currentRateType'] != null && json['currentRateType'] != "" && json['currentRateType'] != 'undefined'){
+		        		 $("select[name=currentCTCRatePer]").val(json['currentRateType']);
+		        		 validateExpectedCTC();
+		        	 }else{
+		        		 $("select[name=currentCTCRatePer]").val(''); 
+		        		 validateExpectedCTC();
+		        	 }
+		        	 
+		        	 if(json['currentRateCurrency'] != null && json['currentRateCurrency'] != "" && json['currentRateCurrency'] != 'undefined'){
+		        		 $("select[name=currentCTCRateType]").val(json['currentRateCurrency']);
 		        	 }
 		        	 
 		        },
@@ -598,7 +709,16 @@ function getCandidateDetails(){
 }
 </script>
 
-
+<script>
+function getExpYears(){
+	var expYears = $("select[name=WorkExperience]").val();
+	 if(expYears == "25+"){
+		 $("#monthExp").attr("disabled", "disabled");
+	 }else{
+		 $("#monthExp").removeAttr("disabled");
+	 }
+}
+</script>
 
 
 <script type="text/javascript">
@@ -771,6 +891,24 @@ function init(){
 			        	 $("input[name=LastName]").val(lastName);
 			        	 $("input[name=EmailId]").val(json.email);
 			        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
+			        	 
+			        	 $("#candidateSkills").empty();
+			        	 var internalOutput = "";
+ 						 <c:forEach var="skill" items="${skillsList}">
+ 						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+ 	                     </c:forEach>
+ 						var skills = json.skills;
+ 						if(skills != null && skills != 'undefined' && skills != ''){
+ 							var str_array = skills.split(',');
+ 							for(var i = 0; i < str_array.length; i++) {
+ 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+ 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+ 							}
+ 						}
+ 						$("#candidateSkills").append(internalOutput);
+ 		        		$("#candidateSkills").trigger("chosen:updated");
+  						
+			        	 
 						 validateCandidateEmail();
 						 $("#loading").removeAttr("style");
 					},
@@ -808,13 +946,12 @@ function validate_fileupload(fileName)
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#requirementId").val();
 	 if(email != null && email != ""){
-		
+		 $("#save_button").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateRequirementCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
 		        success: function(data) {
 		         	if(data == 'true'){
-		         		  $("#save_button").attr("disabled", "disabled");
 			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
 			        	  $('.jquery_form_error_message').remove();
 		        		  $("input[name=EmailId]").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
@@ -832,3 +969,58 @@ function validate_fileupload(fileName)
 	 }
  }
  </script>   
+ 
+ 
+ <script>
+ function validateCurrentCTC(){
+	 var currentCTC = $("input[name=CurrentCTC]").val();
+	 if(currentCTC){
+		 $("#currentCTCRatePer").removeAttr("data-validation-optional");
+		 $("#currentCTCRatePer").attr("data-validation", "required");
+	 }else{
+		 $("#currentCTCRatePer").removeAttr("data-validation");
+		 $("#currentCTCRatePer").attr("data-validation-optional", "true");
+	 }
+ }
+ </script>
+ 
+  <script>
+ function validateExpectedCTC(){
+	 var expectedCTC = $("input[name=ExpectedCTC]").val();
+	 if(expectedCTC){
+		 $("#expectedCTCRatePer").removeAttr("data-validation-optional");
+		 $("#expectedCTCRatePer").attr("data-validation", "required");
+	 }else{
+		 $("#expectedCTCRatePer").removeAttr("data-validation");
+		 $("#expectedCTCRatePer").attr("data-validation-optional", "true");
+	 }
+ }
+ </script>
+ 
+ <script>
+ function changeRateLabels(){
+	 
+	 var currentRate = document.getElementById("currentRate").textContent;
+	 var currentstringLength = currentRate.length; 
+	 var currentRatelastChar = currentRate.charAt(currentstringLength - 1);
+	 
+	 if(currentRatelastChar == "*"){
+		 $("#currentRate").html("Current Rate *"); 
+	 }else{
+		 $("#currentRate").html("Current Rate");
+	 }
+	 
+	 var expectedRate = document.getElementById("expectedRate").textContent;
+	 var expectedstringLength = expectedRate.length; 
+	 var expectedRatelastChar = expectedRate.charAt(expectedstringLength - 1);
+	 
+	 if(expectedRatelastChar == "*"){
+		 $("#expectedRate").html("Expected Rate *"); 
+	 }else{
+		 $("#expectedRate").html("Expected Rate");
+	 }
+	 
+	 
+	 
+ }
+ </script>

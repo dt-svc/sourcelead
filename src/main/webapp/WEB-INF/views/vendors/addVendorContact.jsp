@@ -2,15 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <!-- these files for autocomplete with tagit -->
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -85,7 +77,7 @@
       <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>Vendor Contact Details</h2>
+            <h2>Add Vendor Contact</h2>
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/vendorsList'/>"> Vendor List</a> &raquo; Vendor Contact</div>
         </section>
@@ -321,7 +313,7 @@ function getOrgDetails()
 </script>
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -336,7 +328,7 @@ function getOrgDetails()
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-</script> 
+</script>  -->
 
 
 <script type="text/javascript">
@@ -411,7 +403,7 @@ function getOrgDetails()
  }
  </script>
  
- <script type="text/javascript">
+<!--  <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -426,7 +418,7 @@ function getOrgDetails()
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-</script> 
+</script>  -->
 
 <script type="text/javascript">
         var validationSettings = {

@@ -3,16 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -110,7 +100,7 @@
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_Space validate_length length1-100" data-validation-optional="true" value="">
+           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true" value="">
           </div>
         </div>
         <div class="form-group" id="emailDiv">
@@ -125,6 +115,13 @@
           <label class="col-md-3">Mobile</label>
           <div class="col-md-9">
             <input type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="${phone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">Alternative Number</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" id="alternateMobilePhone" name="alternateMobilePhone"   field-name="Alternative Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
           </div>
         </div>
         
@@ -152,6 +149,8 @@
                  </select>
 			</div>
 		</div>
+		
+		
         
         <div class="form-group">
           <label class="col-md-3">Address</label>
@@ -170,13 +169,13 @@
        <div class="form-group">
          <label class="col-md-3">Employment type</label>
          <div class="col-md-9">
-             <select class="selectpicker form-control" id="designationType" name="designationType">
-                <option value=""><a href="#">Select</a></option>
-                 <option><a href="#">C2C</a></option>
-                 <option><a href="#">W-2</a></option>
-                 <option><a href="#">Part Time</a></option>
-                 <option><a href="#">Full Time</a></option>
-                 <option><a href="#">Other</a></option>
+             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
+                <option value="">Select</option>
+                 <option>C2C</option>
+                 <option>W-2</option>
+                 <option>Part Time</option>
+                 <option>Full Time</option>
+                 <option>Other</option>
              </select>
          </div>
        </div>
@@ -187,17 +186,16 @@
             <div class="row exp-drop">
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
-             		  <option selected disabled>Years</option>
+             		  <option value="" selected disabled>Years</option>
              		  <c:forEach begin="0" end="24" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
              		     <option>25+</option>
              		</select>
              </div>
-             
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
-             		<option selected disabled>Months</option>
+             		<option value="" selected disabled>Months</option>
              		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -207,7 +205,12 @@
           </div>
         </div>
        
-       
+       <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
+            <label class="col-md-3">Employment Type</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" id="designationOtherType" name="designationOtherType" value="${candidate.designationOtherType}"  field-name="Job Type" value="">
+            </div>
+          </div>
        
        
        <div class="form-group">
@@ -218,12 +221,12 @@
                   
                   <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
                  
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
                 </select>
                 
@@ -256,12 +259,12 @@
                   
                   <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
                  
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
                 </select>
                 
@@ -316,7 +319,19 @@
               </div>
             </div>
         
-        <div class="form-group">
+         <div class="form-group">
+            <label class="col-md-3">Add Resume</label>
+            <div class="col-md-9">
+			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
+               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
+                 </span> </label>
+                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+           </div>
+         </div>
+        </div>
+        
+         <div class="form-group">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
@@ -327,36 +342,24 @@
          <label class="col-md-3">Notice Period</label>
           <div class="col-md-9">
                <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
-                <option value=""><a href="#">Select</a></option>
-                 <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}><a href="#">Immediately available</a></option>
-                 <option ${noticePeriod  == '15 Days' ? 'selected' : ''}><a href="#">15 Days</a></option>
-                 <option ${noticePeriod  == '1 Month' ? 'selected' : ''}><a href="#">1 Month</a></option>
-                 <option ${noticePeriod  == '2 Months' ? 'selected' : ''}><a href="#">2 Months</a></option>
-                 <option ${noticePeriod  == '3 Months' ? 'selected' : ''}><a href="#">3 Months</a></option>
+                <option value="">Select</option>
+                 <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately available</option>
+                 <option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
+                 <option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1 Month</option>
+                 <option ${noticePeriod  == '2 Months' ? 'selected' : ''}>2 Months</option>
+                 <option ${noticePeriod  == '3 Months' ? 'selected' : ''}>3 Months</option>
                 </select>
              
            </div>
          </div>
-           <div class="form-group">
-            <label class="col-md-3">Add Resume</label>
-            <div class="col-md-9">
-			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
-               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
-                 </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
-           </div>
-           <!-- <div class="clearfix mt10 text-muted"><i class="fa fa-question-circle text-info"></i>&nbsp; Upload .doc, .pdf, .txt formats only...</div> -->
-         </div>
-        </div>
+         
+          <div class="clearfix"></div>
+          
         <div class="form-group">
           <label class="col-md-3"></label>
-         <!--  <div class="col-md-9 checkbox checkBox">
-            <label>
-              <input type="checkbox" value="">
-              Send Invitation </label>
-          </div> -->
         </div> 
+        
+        
         <div class="clearfix"></div>
       </div> 
     </div>
@@ -729,15 +732,20 @@ function getCities(){
  <script type="text/javascript">
  function disableMonths() {
      $("#experienceYears").change(function() {
-    	 
-         if ($(this).val() == '25+'){
-             $("#experienceMonths").attr("disabled", true);
-             $("#experienceMonths").val("disabled", true);
-         }else
+         if ($("#experienceYears").val() == '25+'){
+        	 $("#experienceMonths").val('');  
+        	 $('#experienceMonths').selectpicker('refresh');
+        	 $('#experienceMonths').attr("disabled", true);
+             $('#experienceMonths').val("disabled", true);
+         }else{
+        	 $("#experienceMonths").val('');  
+        	 $('#experienceMonths').selectpicker('refresh');
         	 $("#experienceMonths").attr("disabled", false); 
+         }
      });
  }
-	      var selectedFile = document.getElementById("uploadBtn");
+ 
+ var selectedFile = document.getElementById("uploadBtn");
 	      selectedFile.addEventListener("change", function() {
 	      	 $("#uploadFile").focus();
 	      	 if(validate_fileupload(this.value)){
@@ -766,3 +774,21 @@ function getCities(){
  
 </script>
 <!-- Experience Years and Months validation Script End here -->
+
+<script>
+function getDesignationType(designationType){
+	var existingDesignationType = '${requirement.designationType}';
+	if(designationType.value == 'Other'){
+		 document.getElementById("designationTypeDiv").style.display="block";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+	}else{
+		document.getElementById("designationTypeDiv").style.display="none";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
+		  if(existingDesignationType ==null || existingDesignationType == "" || existingDesignationType == "undefined" || existingDesignationType != 'Other'){
+			  $("#designationOtherType").val('');
+		  }
+	}
+}
+</script>

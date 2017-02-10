@@ -49,4 +49,8 @@ public interface OrgRelationsDao {
 	
 	List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId,String type);
 
+	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception;
+
+	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception;
+
 }

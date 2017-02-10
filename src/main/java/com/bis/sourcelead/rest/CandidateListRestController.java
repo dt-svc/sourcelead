@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -27,6 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -53,7 +57,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -134,27 +137,88 @@ public class CandidateListRestController {
 			 HttpServletRequest request) throws Exception {
 
 		String resultJson;
+		
+		Integer candiStatus  =candidateStatus;
+		
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Candidate> candList = new ArrayList<Candidate>();
-		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
+		//List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
 		
-		if(null != candidatesList){
-			for(Candidate candidate : candidatesList){
-				boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
-				if(flag == true){
-					candidate.setIsFavourite(Constants.YES);
-				}else{
-					candidate.setIsFavourite(Constants.NO);
-				}
-				candList.add(candidate);
+		
+		    List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
+		    Long maxResults = null;
+		    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		    
+		    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+			
+			if(candiStatus.intValue() == (Constants.CANDIDATE_ACTIVE)){
+				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
+			}else if(candiStatus.intValue() ==(Constants.CANDIDATE_IN_ACTIVE)){
+				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 0));
 			}
-		}
+			
+			if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
+			}
+			
+			if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("0")  && !updatedDateRange.equalsIgnoreCase("undefined")){
+				
+				// This Code is for  getting the sql enddate based on range
+		    	 Calendar c = Calendar.getInstance();
+			     c.setTime(new Date()); // Now use today date.
+			     Integer dateRange  = Integer.parseInt(updatedDateRange);
+		         c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
+		         String updatedDate = df.format(c.getTime());
+		         Date parsed = df.parse(updatedDate);
+		         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
+		         
+		         boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate));
+	   	    	
+			}
+			
+			 maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(), candidateStatus.toString());
+			 
+			try {
+				
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+			    if(null != searchHits && searchHits.length >0){
+			    	ObjectMapper mapper = new ObjectMapper();
+			    	mapper.setDateFormat(df);
+			    	for (SearchHit hit : searchHits) {
+			    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
+			    	    CandidateIndex candidateIndex = mapper.readValue(json.toString(), CandidateIndex.class);
+			    	    if(candidateIndex.getUpdatedDate() != null){
+			    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
+			   			}
+			    	    candidatesList.add(candidateIndex);
+			    	}
+			    	
+			    }
+			    
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			 
+			 
 		
-		resultJson = commonUtil.toJSON(candList);
+		resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
 	 }
 	 
+	 
+	 
+	 @RequestMapping(value = "/getUniversalCandidatesListByOrgLocationID")
+	 public String getUniversalCandidatesListByOrgLocationID(@RequestParam(value="serachValue", required=false) String  serachValue,
+			 HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson;
+		List<Object> uniCandidateList =	candidateService.getAllUniversalSearchCandidateList(orgLocations, serachValue);
+		resultJson = commonUtil.toJSON(uniCandidateList);
+		return resultJson;
+	 }
 	 
 	  /**
 	   * @author Naresh Bolisetty
@@ -167,7 +231,7 @@ public class CandidateListRestController {
 	   * @throws NullPointer
 	   */
 	 @RequestMapping(value = "/searchCandidate", method = RequestMethod.POST)
-	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateStatus", required=false)Integer  candidateStatus,MultipartHttpServletRequest request) throws Exception {
 
 		    MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
@@ -176,7 +240,7 @@ public class CandidateListRestController {
 			}
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
-			
+			 Long maxResults =null;
 			 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
@@ -184,7 +248,14 @@ public class CandidateListRestController {
 			 
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			 
-			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId());
+			 
+			 if(null != candidateStatus){
+				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),candidateStatus.toString());
+			 }else{
+				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),null);
+
+			 }
+			 
 		   	 //Exclude Keyword
 			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
@@ -406,22 +477,33 @@ public class CandidateListRestController {
 					boolQueryBuilder.must(skillBoolQueryBuilder);
 				} 
 				
+				
+				List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				
+				try {
+				
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-				ArrayList<Candidate>   candList = new ArrayList<>();
-				if(searchHits != null && searchHits.length >0){
-					for (SearchHit hit : searchHits) {
-						Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(hit.getId()));
-						boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
-						if(flag == true){
-							candidate.setIsFavourite(Constants.YES);
-						}else{
-							candidate.setIsFavourite(Constants.NO);
-						}
-						candList.add(candidate);
-					}
+				    if(null != searchHits && searchHits.length >0){
+				    	ObjectMapper mapper = new ObjectMapper();
+				    	mapper.setDateFormat(df);
+				    	for (SearchHit hit : searchHits) {
+				    		StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
+				    	    CandidateIndex candidateIndex = mapper.readValue(json1.toString(), CandidateIndex.class);
+				    	    if(candidateIndex.getUpdatedDate() != null){
+				    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
+				   			}
+				    	    candidatesList.add(candidateIndex);
+				    	}
+				    	
+				    }
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+				
 			 String resultJson;
-			 resultJson = commonUtil.toJSON(candList);
+			 resultJson = commonUtil.toJSON(candidatesList);
 			 return resultJson;
 	 }
 	 
@@ -521,8 +603,9 @@ public class CandidateListRestController {
 	   */
 	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
-			String resultJson;
+			String resultJson ="" ;
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+			if(null != can){
 			StringBuilder skillsList = new StringBuilder();
 			List<CandidateSkills> candidateSkills = candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
 			int i = 0;
@@ -537,6 +620,7 @@ public class CandidateListRestController {
 			}
 			can.setSkillsList(skillsList.toString());
 			resultJson = commonUtil.toJSON(can);
+			}
 			return resultJson;
      }
 			 
@@ -811,7 +895,10 @@ public class CandidateListRestController {
 				
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
+				candidate.setIsFavourite(0);
+				candidate.setTeamId(null);
 				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 				StringBuilder candidateRemoveMsg = new StringBuilder();
 				SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateRemoveMsg.append("").append(candidate.getFirstName()).append(" Removed").toString());
 	
@@ -828,31 +915,19 @@ public class CandidateListRestController {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Candidate candidate = new Candidate();
-			candidate.setId(candidateId);
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			
-			CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(candidateId, orgLocation.getId());
-			if(null != hotList){
-				if(hotList.getStatus().equals(1)){
-					hotList.setStatus(0);
+			if(null != candidate){
+				if(null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_ACTIVE)){
+					candidate.setIsFavourite(Constants.RECORD_INACTIVE);
 				}else{
-					hotList.setStatus(1);
+					candidate.setIsFavourite(Constants.RECORD_ACTIVE);
 				}
-				hotList.setTeamId(null);
-				hotList.setUpdatedBy(user.getUserCode());
-				hotList.setUpdatedDate(new Date());
-				candidateHotListService.saveCandidateHotList(hotList);
 				
-			}else{
-				hotList = new CandidateHotList();
-				hotList.setCandidateId(candidate);
-				hotList.setOrgLocationId(orgLocation);
-				hotList.setStatus(1);
-				hotList.setCreatedBy(user.getUserCode());
-				hotList.setCreatedDate(new Date());
-				hotList.setUpdatedBy(user.getUserCode());
-				hotList.setUpdatedDate(new Date());
-				candidateHotListService.saveCandidateHotList(hotList);
+				candidate.setTeamId(null);
+				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
+				
 			}
 			
 			
@@ -870,16 +945,15 @@ public class CandidateListRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
 			String[] candidateIds = hotlist.split(",");
-			Team team =new Team();
+			Team team = new Team();
 			team.setId(teamId);
 			
 			for(int i = 0; i < candidateIds.length; i++){
 				
-				CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(Long.valueOf(candidateIds[i]), orgLocation.getId());
-				hotList.setTeamId(team);
-				hotList.setUpdatedBy(user.getUserCode());
-				hotList.setUpdatedDate(new Date());
-				candidateHotListService.saveCandidateHotList(hotList);
+				Candidate candidate = candidateService.getCandidateByCandidateId(Long.valueOf(candidateIds[i]));
+				candidate.setTeamId(team);
+				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}
 			
 			
@@ -913,6 +987,7 @@ public class CandidateListRestController {
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}
 			return "success";
 		 }
