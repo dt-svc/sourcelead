@@ -1,7 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,11 +13,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -27,6 +36,10 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
+import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -65,6 +78,9 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -135,6 +151,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 private TimesheetSubmissionsService timesheetSubmissionsService;
+	 
+	 @Autowired
+	 private ProjectsIndexHelper projectsIndexHelper;
+	 
+	 @Autowired
+	 private SourceleadELKBaseIndexer<ProjectsIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 private UniversalSearchHelper universalSearchHelper;
 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
@@ -152,6 +177,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 	public Projects getProjectById(Long id) throws Exception {
 		logger.debug("In ProjectsServiceImpl class getProject method...");
 		return projectsDao.getProjectById(id);
+	}
+	
+	@Override
+	public List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception {
+		logger.debug("In ProjectsServiceImpl class getProjectIdsByOrgLocationsId method...");
+		return projectsDao.getProjectIdsByOrgLocationsId(orgLocationsId);
 	}
 	
 	@Override
@@ -264,8 +295,8 @@ public class ProjectsServiceImpl implements ProjectsService{
         SimpleDateFormat format = new SimpleDateFormat(pattern);
 	 	
     	Projects projects = new Projects();
-    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
-    	projects.setProjectName(jsonObj.getString("ProjectName"));
+    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber").trim());
+    	projects.setProjectName(jsonObj.getString("ProjectName").trim());
     	
     	if((jsonObj.has("ProjectDescription"))){
     	projects.setDescription(jsonObj.getString("ProjectDescription"));
@@ -346,6 +377,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projects.setProjectMembers(projectMemberList);
 		
 		Projects updatedProjects = saveProject(projects);
+		
+		/*
+		 * Saving Project DB data as ElasticSearch Documents
+		 */
+		saveOrUpdateProjectElkDocument(projects);
 		
 		/**
 		 * this block is for submissions for project member
@@ -552,12 +588,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	     tempHTML.append("</table> ");
 		 globalVarsMap.put("weekFrequency",tempHTML.toString());
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder nameSB = new StringBuilder();
-		 emailRecipient.setName(nameSB.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
@@ -574,7 +605,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,locationsId,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,locationsId,iAdressArray,new ArrayList<EmailAttachment>());
 		 sendWeeklyBaseNotiFication(user,orgLocations,projectsSet);
 	}
 
@@ -969,6 +1000,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	    		commonUtil.terminateProjectMembersWhoseAssignedDateOrTerminatedisGreaterThanProjectEndDate(projects, user);
 	    	    }
 	    	    
+
 	    	    /**
 	    	     * To use onclick parameters for emp tab and task tab
 	    	     */
@@ -976,9 +1008,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    if(projects.getEndDate() != null){
 			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
 			    }
+				
+				 /*
+	    		 * Updating Project data as ElasticSearch Documents
+	    		 */
+	    		saveOrUpdateProjectElkDocument(projects);
 	    	    
 	    	    
 		 return projects;
+
 	}
 
 	 /**
@@ -1476,12 +1514,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				 
 				 //setting the Recipient information
-				 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-				 EmailRecipient emailRecipient = new EmailRecipient();
-				 emailRecipient.setEmail(emailMessage.getToEmail());
-				 StringBuilder nameBuilder=new StringBuilder();
-				 emailRecipient.setName(nameBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-				 emailRecipientList.add(emailRecipient);
+				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				 
 				 //getting the current EmailScenario by EmailScenario unique name and entity type
 				 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER,Constants.ENTITY_TYPE_EMAIL);
@@ -1499,7 +1532,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 
 				 //calling the sendEmail method of emailScenerioUtil
 				 if(null != projects.getOrgLocationsId())
-				 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+				 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 
 				 
 				//calling the sendNotification method of emailScenerioUtil
@@ -1544,12 +1577,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 					 
 					 //setting the Recipient information
-					 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-					 EmailRecipient emailRecipient = new EmailRecipient();
-					 emailRecipient.setEmail(emailMessage.getToEmail());
-					 StringBuilder nameBuilder=new StringBuilder();
-					 emailRecipient.setName(nameBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-					 emailRecipientList.add(emailRecipient);
+					 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 					 
 					 //getting the current EmailScenario by EmailScenario unique name and entity type
 					 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS,Constants.ENTITY_TYPE_EMAIL);
@@ -1567,7 +1595,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 
 					 //calling the sendEmail method of emailScenerioUtil
 					 if(null != projects.getOrgLocationsId())
-					 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+					 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 					 
 					 
 					//calling the sendNotification method of emailScenerioUtil
@@ -1690,12 +1718,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 globalVarsMap.put("userEmailId",user.getEmail()); //
 			 globalVarsMap.put("weekFrequency",tempHTML.toString());
 			 //setting the Recipient information
-			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-			 EmailRecipient emailRecipient = new EmailRecipient();
-			 emailRecipient.setEmail(emailMessage.getToEmail());
-			 StringBuilder nameStringBuilder=new StringBuilder();
-			 emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-			 emailRecipientList.add(emailRecipient);
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_MANAGER_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
@@ -1712,7 +1735,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 emailMessage.setMessageBody(emailTemplate);
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+			emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			sendWeeklyBaseNotiFicationToAdmin(user,orgLocations); 
 	     }
 	    
@@ -1804,5 +1827,63 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				return projectsDao.getAllUserTimeSheetSubmissionStatusCurrentWeek();
 			}
 			  */
+			
+			@Override
+			public void saveOrUpdateProjectElkDocument(Projects projects) throws Exception{
+				List<ProjectApproverHierarchy> projectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectId(projects.getId());
+				Collection<ProjectMembers> projectMembers = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
+				
+				 //Elastic Search Document Saving
+				ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, projectApproverHierarchy, projectMembers);
+				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
+			}
+			
+			@Override
+			public Integer getProjectCountByOrgLocationId(Long orgLocationId)
+					throws Exception {
+				return projectsDao.getProjectCountByOrgLocationId(orgLocationId);
+			}
+
+			@Override
+			public List<Object> getAllUniversalSearchProjectsList(OrgLocations orgLocation, String searchValue) throws Exception {
+				List<Object>   searchList = new ArrayList<>();
+				BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+				boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+				 //Integer maxResults = projectsService.getAllProjects().size();
+				 
+				 Integer maxResults = getProjectCountByOrgLocationId(orgLocation.getId());
+					
+					//All Keywords
+				 ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
+					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : allKeyWordArray){
+							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getProjectsMatchQueryBuilderList(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									allBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(allBoolQueryBuilder);
+					}
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					df.setTimeZone(TimeZone.getTimeZone("GMT"));
+					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+					if(searchHits != null && searchHits.length >0){
+						ObjectMapper mapper = new ObjectMapper();
+						for (SearchHit hit : searchHits) {
+							String json = hit.getSourceAsString();
+							mapper.setDateFormat(df);
+							ProjectsIndex projectsIndex = mapper.readValue(json, ProjectsIndex.class);
+							searchList.add(projectsIndex);
+						}
+					}
+				
+				return searchList;
+			}
+
 
 }

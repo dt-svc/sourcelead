@@ -2,16 +2,18 @@ package com.bis.sourcelead.service;
 
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
@@ -135,7 +137,7 @@ public interface UserService  {
 	 */
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
 	
-	List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
+	LinkedHashSet<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
 	
 	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId)throws Exception;
 
@@ -157,6 +159,8 @@ public interface UserService  {
 	
 	public List<User> getUsersForAddAsConsultant(Org org,Long orgLocationsId) throws Exception;
 	
+	public void saveOrUpdateUserElkDocument(UserRole userRole, Employees employee, String loginUserCode) throws Exception;
+
 	
 	public List<User> getUsersForConsultantsByUserRoleIdAndOrgLocationId(Long roleId,Long orgLocationsId) throws Exception;
 	
@@ -165,6 +169,11 @@ public interface UserService  {
 	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId,Long userId,Long tabId) throws Exception;
 	
 	public void saveOrUpdateUserElkDocument(UserRole userRole, Employees employee, String loginUserCode) throws Exception;
+
+	public List<User> getUsersListByOrglocationId(Long orgLocationId) throws Exception;
+
+	List<UserIndex> getAllUniversalSearchUsersList(OrgLocations orgLocations, String searchValue, User user)throws Exception;
+
 }	
 		
 	

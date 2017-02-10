@@ -82,7 +82,7 @@ function alertMessage(message){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelOrgImg();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelOrgImg();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -715,9 +715,10 @@ function loadSignature(){
 								
 							}
 							
+							
 							else if(opt.labelName == 'Company Name'){
-								if('${SourceLeadWeb_orgName}' != null){
-									labelText = '${SourceLeadWeb_orgName}';
+								if("${SourceLeadWeb_orgName}" != null){
+									labelText = "${SourceLeadWeb_orgName}";
 								}
 								
 							}

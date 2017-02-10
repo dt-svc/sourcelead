@@ -2,23 +2,13 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <!-- these files for autocomplete with tagit -->
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
-
-
+<script src="resources/js/formvalidator.js"></script>
 
 <script type="text/javascript">
 function getOrgName(){
@@ -165,7 +155,7 @@ function getOrgDetails()
       <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>Client Contact Details</h2>
+            <h2>Add Client Contact</h2>
           </div>
               <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Client Contact Details</div>
         </section>
@@ -178,7 +168,7 @@ function getOrgDetails()
           <div class="form-group">
             <label class="col-md-3">Select Client <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
-              <div class="form-icon">
+              <div class="clearfix">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="client name" onchange="validateEmail();getSpocUserDetails();getRolesList();" data-validation="required">
                   <option value="">Select Client</option>
                    <c:forEach var="report" items="${clientContactList}">

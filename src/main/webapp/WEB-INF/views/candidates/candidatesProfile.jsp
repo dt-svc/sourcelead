@@ -1,19 +1,6 @@
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<link rel="stylesheet" href="resources/css/chosen.min.css">
+ 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%-- 
      @author : David Raju.
@@ -79,8 +66,8 @@ text-align:left;
 </style>
 <script>
 function editCandidate(candidateId){
-	$("#profileEditPopup").show();
-	 var loginCountryName = '${loginCountryName}';
+	  $("#profileEditPopup").show();
+	  var loginCountryName = '${loginCountryName}';
 	  var sourceleadUrl ='${sourceleadUrl}';
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -101,10 +88,18 @@ function editCandidate(candidateId){
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
             			 	}
-            			 	var mobilePhone = '';
+            			 	
+            			 	
+        			 	    var mobilePhone = '';
             			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
             			 		mobilePhone = json.mobilePhone;            			 		
             			 	}
+            			 	
+            			 	var alternateMobilePhone = '';
+            			 	if(json.alternateMobilePhone != null && json.alternateMobilePhone != '' && json.alternateMobilePhone != 'undefined'){
+            			 		alternateMobilePhone = json.alternateMobilePhone;            			 		
+            			 	}
+            			 	
             			 	var designation = '';
             			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
             			 		designation = json.designation;            			 		
@@ -129,6 +124,13 @@ function editCandidate(candidateId){
             			 		experienceMonths = '';  
             			 	 }
             			 	
+            			 	var designationOtherType = '';
+            			 	if(json.designationOtherType != null && json.designationOtherType != '' && json.designationOtherType != 'undefined'){
+            			 		designationOtherType = json.designationOtherType;            			 		
+            			 	}else{
+            			 		designationOtherType = '';  
+            			 	 }
+            			 	
             			 	var summary = '';
             			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
             			 		summary = json.summary;            			 		
@@ -141,10 +143,10 @@ function editCandidate(candidateId){
 							
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_Space required">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="required validate_AlphaNumber validate_Space validate_length length1-100">';
 							result = result + '		          </div>';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							
@@ -152,19 +154,35 @@ function editCandidate(candidateId){
 							result = result + '		          <div class="col-md-6">';
 							
 							if(json.candidateType == 'Consultant'){
-							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email" readonly="true">';
+							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
 							}
 							
 							if(json.candidateType == 'Candidate'){
-								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email">';
+								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100>';
 								}
 							result = result + '</div>';
 							
 							
+					
+							
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+mobilePhone+'" placeholder="Mobile">';
+							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+mobilePhone+'" placeholder="Mobile" field-name="Mobile" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">';
 							result = result + '</div>';
+							
 							result = result + '</div>';
+							
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6">';
+							result = result + '<input type="text" class="form-control input-sm" name="alternateMobilePhone"  value="'+alternateMobilePhone+'" placeholder="Alternative Number" field-name="Alternative Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">';
+							result = result + '</div>';
+							
+							result = result + '<div class="col-md-6">';
+							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" placeholder="Designation">';
+							result = result + '</div>';
+							
+							result = result + '</div>';
+							
+							
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6 custom-fields">';
@@ -189,9 +207,16 @@ function editCandidate(candidateId){
 							result = result + '</select>';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" placeholder="Designation">';
-							result = result + '</div>';
+							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
+							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
+							result = result + '<option value="">Select</option>';
+							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
+							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
+							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
+							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'>2 Months</option>';
+							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'>3 Months</option>';
+							result = result + ' </select>';
+							result = result + ' </div>';
 							
 							result = result + '</div>';
 							
@@ -200,24 +225,26 @@ function editCandidate(candidateId){
 							
                             result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="form-control" id="designationType" name="designationType" field-name="Designation Type">';
-							result = result + '<option value="">Designation Type</option>';
-							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'><a href="#">C2C</a></option>';
-							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'><a href="#">W-2</a></option>';
-							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'><a href="#">Part Time</a></option>';
-							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'><a href="#">Full Time</a></option>';
-							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'<a href="#">Other</a></option>';
+							result = result + '<select class="form-control" id="designationType" name="designationType" field-name="Designation Type" onchange="updateDesignationType(this);">';
+							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
+							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
+							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
+							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'>Full Time</option>';
+							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
 							result = result + ' </select>';
 							result = result + '</div>';
 							
-							
+							result = result + '</div>';
+							 
+							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
+							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Designation Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+							result = result + '</div>';
+						
 							result = result + '</div>';
 							
-							
+							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
-							
 							result = result + '<div class="input-group er ratetype">';
-							
 							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
 			                  
 							result = result + ' <select class="selct-picker" id="currentRateCurrency" name="currentRateCurrency">';
@@ -231,7 +258,7 @@ function editCandidate(candidateId){
 			                
 			                result = result + '</div>';
 							
-			                result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+currentRate+'" placeholder="Current Rate">';
+			                result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
 							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Type">';
@@ -248,9 +275,8 @@ function editCandidate(candidateId){
 							
 							result = result + '</div>';
 							result = result + '</div>';
-							result = result + '</div>';
 							
-							result = result + '<div class="clearfix mb10">';
+							
 							result = result + '<div class="col-md-6">';
 							
 							result = result + '<div class="input-group er ratetype">';
@@ -267,7 +293,7 @@ function editCandidate(candidateId){
 			                
 			                result = result + '</div>';
 							
-							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+expectedRate+'" placeholder="Expected Rate">';
+							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
 							result = result + '<select class="selct-picker" id="rateType" name="rateType" field-name="Rate Type">';
@@ -282,13 +308,11 @@ function editCandidate(candidateId){
 							result = result + ' </select>';
 							result = result + '</div>';
 							
-							
 							result = result + '</div>';
 							result = result + '</div>';
+							result = result + '</div>';
 							
-							
-							
-							
+							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
 							result = result + '<div class="row">';
 							
@@ -333,22 +357,9 @@ function editCandidate(candidateId){
 							}
 							
 							result = result + '</div>';
-							result = result + '</div>';
-							result = result + '</div>';
 							
 							result = result + '</div>';
-							
-							result = result + '<div class="clearfix mb10">';
-							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
-							result = result + '<option value="">Select</option>';
-							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'><a href="#">Immediately available</a></option>';
-							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'><a href="#">15 Days</a></option>';
-							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'><a href="#">1 Month</a></option>';
-							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'><a href="#">2 Months</a></option>';
-							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'<a href="#">3 Months</a></option>';
-							result = result + ' </select>';
-							result = result + ' </div>';
+							result = result + '</div>';
 							
 							
 							result = result + '<div class="col-md-6">';
@@ -373,6 +384,9 @@ function editCandidate(candidateId){
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
 							
+							updateDesignationType();
+							getAllCandidateCountries();
+							 getAllCandidateStates();
 							$(".edit-details").toggleClass("edit-details-active");
 							$(".collapse-div").removeClass("edit-details-active");
 							
@@ -442,45 +456,42 @@ function getAllCandidateCountries(){
     	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
-        	$('#candidateCountry').empty();
-        	$('#candidateCountry').append('<option value="">---select---</option>');
+        	$('html #candidateCountry').empty();
+        	$('html #candidateCountry').append('<option value="">---select---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == countryName){
-            		$('#candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}else if(json[i] == '${loginCountryName}' && countryName ==null && countryName ==''){
-            		$('#candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{ 
-            		$('#candidateCountry').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            		$('html #candidateCountry').append('<option value="'+json[i]+'">'+json[i]+'</option>');
             	} 
             	
             }
-            $('#candidateCountry').trigger("chosen:updated");
+            
             getAllCandidateStates();
+            $('html #candidateCountry').trigger("chosen:updated");
+           
         },
         error: function(e){
         }
     });
-	}, 100);
+	}, 75);
 } 
 </script>
  
 <script>
 function getAllCandidateStates(){
 	
-var countryName = $("#candidateCountry").val();
+var countryName = $("html #candidateCountry").val();
 	
 	//to set existing state value(Auto populate)
-	var stateName = $("#candidateState").val();
+	var stateName = $("html #candidateState").val();
 	
 	if(stateName == null || stateName == 'undefined' || stateName == ''){
 		stateName = document.getElementById("updateState").value;
 	}
-	
-	/* var countryName = $("#updateCountry").val();
-	
-	//to set existing state value(Auto populate)
-	var stateName = $("#updateState").val(); */
 	
 	//end state Auto populate
 	if(countryName != null && countryName != "" && countryName !="undefined"){
@@ -490,29 +501,31 @@ var countryName = $("#candidateCountry").val();
 	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#candidateState').empty();
-	        	$('#candidateState').append('<option value="">---select---</option>');
+	        	$('html #candidateState').empty();
+	        	$('html #candidateState').append('<option value="">---select---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
-	            		$('#candidateState').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            		$('html #candidateState').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
 	            	}
 	            	else{ 
-	            		$('#candidateState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            		$('html #candidateState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            	} 
 	            }
-	            $('#candidateState').trigger("chosen:updated");
+	            
 	            getCandidateCities();
+	            $('html #candidateState').trigger("chosen:updated");
+	            
 	        },
 	        error: function(e){
 	        }
 	    });
 	}else{
-		$('#candidateState').empty();
-    	$('#candidateState').append('<option value="">---select---</option>');
-    	$('#candidateState').trigger("chosen:updated");
-    	$('#candidateCity').empty();
-    	$('#candidateCity').append('<option value="">---select---</option>');
-        $('#candidateCity').trigger("chosen:updated");
+		$('html #candidateState').empty();
+    	$('html #candidateState').append('<option value="">---select---</option>');
+    	$('html #candidateState').trigger("chosen:updated");
+    	$('html #candidateCity').empty();
+    	$('html #candidateCity').append('<option value="">---select---</option>');
+        $('html #candidateCity').trigger("chosen:updated");
 	}
 }
 </script>  
@@ -521,21 +534,13 @@ var countryName = $("#candidateCountry").val();
 <script>
 function getCandidateCities(){
 	
-	var countryName = $("#candidateCountry").val();
-	var stateName = $("#candidateState").val();
+	var countryName = $("html #candidateCountry").val();
+	var stateName = $("html #candidateState").val();
 	
-	var cityName = $("#candidateCity").val();
+	var cityName = $("html #candidateCity").val();
 	if(cityName == null || cityName == 'undefined' || cityName == ''){
 		cityName = document.getElementById("updateCity").value;
 	}
-	   /* var countryName = $("#updateCountry").val();
-	
-	//to set existing state value(Auto populate)
-	var stateName = $("#updateState").val();
-	
-	//to set existing city value(Auto populate)
-	var cityName = $("#updateCity").val();
-	//end city Auto populate */
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
@@ -544,47 +549,31 @@ function getCandidateCities(){
 	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#candidateCity').empty();
-	        	$('#candidateCity').append('<option value="">---select---</option>');
+	        	$('html #candidateCity').empty();
+	        	$('html #candidateCity').append('<option value="">---select---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
-	            		$('#candidateCity').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            		$('html #candidateCity').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
 	            	}
 	            	else{ 
-	            		$('#candidateCity').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            		$('html #candidateCity').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            	} 
 	            }
-	            $('#candidateCity').trigger("chosen:updated");
+	            $('html #candidateCity').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
 	    });
 	}else{
-		$('#candidateCity').empty();
-    	$('#candidateCity').append('<option value="">---select---</option>');
-    	$('#candidateCity').trigger("chosen:updated");
+		$('html #candidateCity').empty();
+    	$('html #candidateCity').append('<option value="">---select---</option>');
+    	$('html #candidateCity').trigger("chosen:updated");
 	}
 }
 </script> 
-
- <!-- <script>
-function updateValues(){
-	var str_array = sequentialApprover1.split(',');
-	for (var i = 0; i < str_array.length; i++) {
-	    str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	}
-	$("#sequentialApprover1").val(str_array).trigger("chosen:updated");
-}
-</script> 
- -->
-
-    	    
-
 
 
 <!-- Country,State,City Script Ends Here -->
-
-
 
 <%-- 
      @author : Venkat Kesav
@@ -703,10 +692,10 @@ function candidateProfile(candidateId){
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
 							if(json.status == '0'){
 								'<sec:authorize access="hasAnyRole(\'ROLE_REACTIVATE_CANDIDATE\')">'; 
-								result = result + '<div class="project_tabs_inn_head"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> ';
+								result = result + '<div class="project_tabs_inn_head mt10"><div class="anchor-inline"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> </div>';
 								'</sec:authorize>';
 							}else{
-								   result = result + '<div class="project_tabs_inn_head "> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\')">  <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize>';
+								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\')"> <a href="#" onClick="editCandidate('+candidateId+');" onChange="updateDesignationType(this);" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize></div>';
 							}
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
@@ -739,11 +728,11 @@ function candidateProfile(candidateId){
 
 							
 							if(window.candidateStatusGlobal == '0'){
-								result = result +'		              <div class="addSkills"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
+								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
 								result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
 
 							}else{
-								result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
+								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
 							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
 							}
 							result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
@@ -764,6 +753,9 @@ function candidateProfile(candidateId){
 							result = result +'		                  </div>                                                                                                                      ';
 							result = result +'		                </div>                                                                                                                        ';
 							result = result +'		              </div>                                                                                                                          ';
+							
+							
+							result = result + '<div class="clearfix"></div> ';
 							
 							result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> ';
 							
@@ -793,43 +785,6 @@ function candidateProfile(candidateId){
 							result = result +'		    </div>                                                                                                                                    ';
 							result = result +'		  </div>                                                                                                                                      ';
 							result = result +'		</div>';
-							
-							
-							
-							
-							
-							
-							
-							
-							/* result = result +'		<h2>Skills:</h2>';
-							
-							result = result + '	<div class="row select-skills">';
-							result = result + '    <div class="divskill col-md-8"> ';
-							result = result + '      <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills"> <i class="fa fa-code"></i>Add Skills </a>';
-							result = result + '        <div class="col-md-7 add-skills" style="display:none;"> <i class="fa fa-close close-div" onClick ="removeSkillPopUp('+candidateId+');"></i>';
-							result = result + '          <div class="form-horizontal clearfix">';
-							result = result + '            <div class="clearfix div-padding">';
-							result = result + '              <div class="col-md-10">';
-							
-							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
-			                <c:forEach var="skill" items="${skillsList}">
-			                
-			              			  result = result + ' <option value="${skill.name}">${skill.name}</option>';
-			                </c:forEach>
-			                result = result + '</select>';
-							result = result + '              </div>';
-							result = result + '              <div class="col-md-2">';
-							result = result + '                <button class="btn btn-sm btn-primary pull-right" type="submit" onClick="saveSkils('+candidateId+');" >Add</button>';   
-							result = result + '              </div>';
-							result = result + '            </div>';
-							result = result + '          </div>';
-							result = result + '        </div>';
-							result = result + '      </div>';
-							
-							
-							result = result + '<div id="candidateSkillList"></div> '; */
-							
-							/* result = result + '      <a href="javascript:void(0)">more <i class="fa fa-angle-right"></i></a>'; */
 							result = result + '    </div>';
 							result = result + '  </div>';
 							$("#tab-1").empty();
@@ -937,11 +892,12 @@ function candidateProfile(candidateId){
 <script>  
  function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
+	 var jsonData = encodeURIComponent(skillName);
 	 if(skillName != null && skillName != '' && skillName !='undefined'){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({  
 	          type : "POST",
-	          url: sourceleadUrl+"/saveSkilsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+skillName,        
+	          url: sourceleadUrl+"/saveSkilsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
 	          success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            	   candidateSkillsList(candidateId);
@@ -1058,21 +1014,21 @@ function candidateSkillsList(candidateId){
                 		 result = result + '        <tbody>';
 	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) {  
-	                    	 var opt = json[i];   
-	                    	    result = result + '          <tr>';
-		                		result = result + '            <td><p class="form-control-static">'+opt.name+'</p></td>';
+	                    	 var opt = json[i]; 
+	                    	    result = result + '<tr>';
+		                		result = result + '<td><p class="form-control-static">'+opt.name+'</p></td>';
 		                		
 		                		if(window.candidateStatusGlobal == '0'){
 		                			result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
 		                			if(opt.scale == 'undefined'|| opt.scale==null || opt.scale== 0){
-			                			 result = result + '                <option selected=""disabled="">select</option>'; 
+			                			 result = result + '<option selected=""disabled="">select</option>'; 
 				                	 }else{
-		                			result = result + '                <option selected="" value="'+opt.scale+'" disabled="">'+opt.scale+'</option>';
+		                			result = result + '<option selected="" value="'+opt.scale+'" disabled="">'+opt.scale+'</option>';
 				                	 }
 		                		}else{
 		                		
-		                		result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
-		                		result = result + '                <option selected="" value="'+opt.scale+'" disabled="">Select</option>';
+		                		result = result + '<td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
+		                		result = result + '<option selected="" value="'+opt.scale+'" disabled="">Select</option>';
 		                		
 		                		if(opt.scale == "Beginner"){
 		                			result = result + '<option selected>Beginner</option>';
@@ -1103,15 +1059,15 @@ function candidateSkillsList(candidateId){
 		                		result = result + '              </select></td>';
 		                		
 		                		 if(window.candidateStatusGlobal == '0'){ 
-		                			 result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
+		                			 result = result + '<td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
 				                	 if(opt.totalExperience == 'undefined'|| opt.totalExperience==null || opt.totalExperience== 0){
-			                			 result = result + '                <option selected=""disabled="">select</option>'; 
+			                			 result = result + ' <option selected="">select</option>'; 
 				                	 }else{
-		                			 result = result + '                <option selected="" value="'+opt.totalExperience+'" disabled="">'+opt.totalExperience+'</option>'; 
+		                			 result = result + '<option selected="" value="'+opt.totalExperience+'" >'+opt.totalExperience+'</option>'; 
 		                		 }
 				                }else{
-		                		result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
-		                		result = result + '                <option selected="" disabled="">Select</option>';
+		                		result = result + '<td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
+		                		result = result + '<option selected="" >Select</option>';
 		                		if(opt.totalExperience == "0"){
 		                			result = result + '<option selected>0</option>';   
 		                		}else{
@@ -1525,5 +1481,20 @@ $('.selectpicker').selectpicker('refresh');
         	 $("#experienceMonths").attr("disabled", false); 
 		 }    
  }
- </script>
+</script>
   
+  
+<script>
+function updateDesignationType(){
+	
+	if(designationType.value == 'Other'){
+		  document.getElementById("designationTypeDiv").style.display="block";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+	}else{
+		document.getElementById("designationTypeDiv").style.display="none";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
+	}
+}
+</script>

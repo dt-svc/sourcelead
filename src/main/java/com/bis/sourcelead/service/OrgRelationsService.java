@@ -1,11 +1,8 @@
 package com.bis.sourcelead.service;
 
 
-import java.util.Collection;
-import java.util.Set;
-
 import java.util.List;
-
+import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -56,5 +53,10 @@ public interface OrgRelationsService {
 	List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId,Long loginUserId) throws Exception;
 	
 	List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId,String type);
+
+	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception;
+
 
 }

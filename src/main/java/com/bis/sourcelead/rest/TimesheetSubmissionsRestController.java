@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -258,14 +259,7 @@ public class TimesheetSubmissionsRestController {
 			 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadUrl).append("/").append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			 
 			 //setting the Recipient information
-			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<>();
-			 EmailRecipient emailRecipient = new EmailRecipient();
-			 emailRecipient.setEmail(emailMessage.getToEmail());
-			 
-			 StringBuilder nameSB = new StringBuilder();
-			 emailRecipient.setName(nameSB.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-			 
-			 emailRecipientList.add(emailRecipient);
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = null;
@@ -285,7 +279,7 @@ public class TimesheetSubmissionsRestController {
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
-			 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+			 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 EmailScenario  notificationScenario = null;
 			 if("REJECTED".equalsIgnoreCase(status)){
 				 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);

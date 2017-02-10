@@ -277,4 +277,10 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		}
 	}
 
+
+	@Override
+	public List<String> getCandidateEducationNamesByCandidateId(Long candidateId) throws Exception {
+		return candidateEducationDao.getCandidateEducationNamesByCandidateId(candidateId);
+	}
+
 }

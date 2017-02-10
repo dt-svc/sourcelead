@@ -8,7 +8,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.sql.DataSource;
 
@@ -49,6 +52,10 @@ public class AddElkCandidate{
 		  logger.info("Candidates Successfully Added To Elk");
 	}
 	
+	 protected boolean isNullOrEmpty(String str) {
+			return (str == null || "".equals(str.trim()));
+		}
+	
 	private ArrayList<CandidateIndex> getElkCandidates(){
 		 DataSource dataSource = comboPooledDataSource();
 		ArrayList<CandidateIndex> candidateIndexsList = new ArrayList<CandidateIndex>();
@@ -73,17 +80,30 @@ public class AddElkCandidate{
 					candidateIndex.setAddress(rs.getString("ADDRESS"));
 					candidateIndex.setSummary(rs.getString("SUMMARY"));
 					candidateIndex.setCandidateType(rs.getString("CANDIDATE_TYPE"));
+					
+					if(!isNullOrEmpty(rs.getString("TEAM_ID"))){
+						candidateIndex.setTeamId(rs.getLong("TEAM_ID"));
+					}else{
+						candidateIndex.setTeamId(0L);
+					}
+					
+					if(!isNullOrEmpty(rs.getString("IS_FAVOURITE"))){
+					candidateIndex.setIsFavourite(rs.getInt("IS_FAVOURITE"));
+					}else{
+						candidateIndex.setIsFavourite(0);
+					}
+					
 					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_YEARS"))){
 						if(rs.getString("EXPERIENCE_YEARS").equalsIgnoreCase("25+")){
-							candidateIndex.setExperienceYears(26);
+							candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS);
 						}
 						else{
-							candidateIndex.setExperienceYears(Integer.parseInt(rs.getString("EXPERIENCE_YEARS")));
+							candidateIndex.setExperienceYears(rs.getString("EXPERIENCE_YEARS"));
 						}
 					}
 					
 					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_MONTHS"))){
-						candidateIndex.setExperienceMonths(Integer.parseInt(rs.getString("EXPERIENCE_MONTHS")));
+						candidateIndex.setExperienceMonths(rs.getString("EXPERIENCE_MONTHS"));
 					}
 					candidateIndex.setDesignation(rs.getString("DESIGNATION"));
 					candidateIndex.setDesignationType(rs.getString("DESIGNATION_TYPE"));
@@ -92,7 +112,7 @@ public class AddElkCandidate{
 					candidateIndex.setCurrentRateCurrency(rs.getString("CURRENT_RATE_CURRENCY"));
 					
 					if(StringUtils.isNotEmpty(rs.getString("CURRENT_RATE"))){
-						candidateIndex.setCurrentRate(Float.parseFloat(rs.getString("CURRENT_RATE")));
+						candidateIndex.setCurrentRate(rs.getString("CURRENT_RATE"));
 					}
 					
 					if(StringUtils.isNotEmpty(rs.getString("EXPECTED_RATE"))){
@@ -107,12 +127,14 @@ public class AddElkCandidate{
 
 					Timestamp createdDateTimestamp = rs.getTimestamp("CREATED_DATE");
 				    if (createdDateTimestamp != null){
-					  candidateIndex.setCreatedDate(new java.util.Date(createdDateTimestamp.getTime()));
+				    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+						candidateIndex.setCreatedDate(df.format(new java.util.Date(createdDateTimestamp.getTime())));
 				    }
 				    candidateIndex.setCreatedBy(rs.getString("CREATED_BY"));   
 					Timestamp updatedDateTimestamp = rs.getTimestamp("UPDATED_DATE");
 					if (updatedDateTimestamp != null){
-						candidateIndex.setUpdatedDate(new java.util.Date(updatedDateTimestamp.getTime()));
+						DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+						candidateIndex.setUpdatedDate(df.format(new java.util.Date(updatedDateTimestamp.getTime())));
 				    }
 					candidateIndex.setUpdatedBy(rs.getString("UPDATED_BY"));
 				    

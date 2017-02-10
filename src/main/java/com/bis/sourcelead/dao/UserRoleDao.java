@@ -30,6 +30,7 @@ public interface UserRoleDao {
 
 	public List<UserRole> getApproverAssignedUsers(List<Long> projectIds, String userState, String searchByName) throws Exception;
 	
+	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception;
 	public Boolean isUserAdminByOrgLocationId(Long userId, Long orgLocationId);
 	
 	public UserRole getUserDetailsByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
@@ -82,5 +83,5 @@ public interface UserRoleDao {
 
 	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 
-
+	public List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId,Long loginUserId) throws Exception;
 }

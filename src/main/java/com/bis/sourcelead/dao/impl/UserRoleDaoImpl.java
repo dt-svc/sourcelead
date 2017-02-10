@@ -371,6 +371,18 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return userRoleList;
 
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception {
+		logger.debug("..getUsersCountByOrgLocationID() Method Started..");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select count(*) from UserRole userRole where userRole.orgLocations.id = :orgLocationId ";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		logger.debug("..getUsersCountByOrgLocationID() Method Ended..");
+		return results.get(0);
+	}
+	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -468,7 +480,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select userRole.user from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.userState != 'INACTIVE' " ;
+		String query = "select userRole.user from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.userState != 'INACTIVE' and userRole.userState != 'NOT_LOGGEDIN' " ;
 	    List<Long> userIds = session.createQuery(query).setLong( "reportingManagerId", reportingManagerId).setCacheable(true).list();
         return userIds;
         
@@ -599,6 +611,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		String query = "from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.orgLocations.id = :locationId ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong( "reportingManagerId", reportingManagerId).setLong("locationId", orgLocationId).setCacheable(true).list();
 		return userRoleList;
+	}
+
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId,Long loginUserId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.user user  where (userRole.user.id IN (select spocUser.id from OrgSpoc os where os.ownerUser =:loginUserId and  os.responderLocationId.id = userRole.orgLocations.id ) and userRole.orgLocations.id IN (select responderLocationId from OrgRelations orl where orl.locationId.id =:orgLocationId)) OR (userRole.orgLocations.id =:orgLocationId) GROUP BY user.id ";
+		List<UserRole> usersList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).setLong( "loginUserId", loginUserId).setCacheable(true).list();
+		return usersList;
 	}
 
 	

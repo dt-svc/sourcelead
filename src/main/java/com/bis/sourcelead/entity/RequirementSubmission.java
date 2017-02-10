@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
@@ -122,6 +123,9 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "STATUS")
     private Integer status;
 	
+	@Column(name = "SCORE")
+    private Integer candidateScore;
+	
     @Column(name = "CREATED_DATE")
     private Date createdDate;
     
@@ -133,6 +137,16 @@ public class RequirementSubmission implements Serializable{
     
     @Column(name = "UPDATED_BY")
     private String updatedBy;
+    
+    @Column(name = "CREATED_USER")
+	@Type(type="text")
+	private String createdUser;
+	
+    
+    @Column(name = "UPDATED_USER")
+	@Type(type="text")
+	private String updatedUser;
+	
     
     @Transient
 	private String userName;
@@ -905,5 +919,29 @@ public class RequirementSubmission implements Serializable{
 	public void setRequirementSubmissionTemplateFields(
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields) {
 		this.requirementSubmissionTemplateFields = requirementSubmissionTemplateFields;
+	}
+
+	public Integer getCandidateScore() {
+		return candidateScore;
+	}
+
+	public void setCandidateScore(Integer candidateScore) {
+		this.candidateScore = candidateScore;
+	}
+
+	public String getCreatedUser() {
+		return createdUser;
+	}
+
+	public void setCreatedUser(String createdUser) {
+		this.createdUser = createdUser;
+	}
+
+	public String getUpdatedUser() {
+		return updatedUser;
+	}
+
+	public void setUpdatedUser(String updatedUser) {
+		this.updatedUser = updatedUser;
 	}
 }

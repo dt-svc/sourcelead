@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLConnection;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -87,6 +85,7 @@ public class UploadController {
 		}
 		model.addAttribute("msg", "successfully uploaded");
 		 model.addAttribute("fileName", "");
+		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
 		return "redirect:/usersList";
 	}
 /**

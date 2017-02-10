@@ -60,6 +60,9 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
 	
 	@Autowired 
 	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private EmployeesService employeesService;
   
     /*@param
      * 
@@ -109,14 +112,14 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
 					  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
 	        			  userRole.setUserState(Status.ACTIVE);
 	        			  userRoleService.addUserRole(userRole);
-	        			  
+
 	        			  /*
-	      				 * Update USER DB data as ElasticSearch Documents
-	      				 */
-	        			  Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
-	        			  if(null != employee){
-	        				  userService.saveOrUpdateUserElkDocument(userRole,employee,userRole.getCreatedBy());
-	        			  }
+                           * Update USER DB data as ElasticSearch Documents
+                           */
+                          Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
+                          if(null != employee){
+                              userService.saveOrUpdateUserElkDocument(userRole,employee,userRole.getCreatedBy());
+                          }
 	        		  }
 				   } catch (Exception e) {
 					  e.printStackTrace();

@@ -145,145 +145,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
         List<ProjectMembers> projectsMembersList = crit.setCacheable(true).list();
         return projectsMembersList;
 	}
-	
-	/**
-	 * This method for get all the project members by project id
-	 */
-	@Override
-	@Transactional(rollbackFor = { Exception.class })	
-	public Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception {
-		logger.debug("In ProjectMember getAllProjectMembersByProjectId method");
-        Session session = this.sessionFactory.getCurrentSession();
-        List<ProjectMembers> projectsMembersList = null;
-
-		/* commented by prasad salina 
-		to get userType from userrole
 		
-		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id and pm.status ='1' "
-				+ "and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.userType = 'Employee')) ");*/
-
-		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id ");
-
-		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).list();
-		return projectsMembersList;
-        
-	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :projectId and pm.isManuallyTerminated = :isManuallyTerminated " ;
-		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setParameter("isManuallyTerminated", isManuallyTerminated).setCacheable(true).list(); 
-		return pmList;  
-	}
 
 	
-	@Override
-	@Transactional(rollbackFor = { Exception.class })	
-	public List<Long> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception {
-		// TODO Auto-generated method stub
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select pm.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
-		List<Long> idsList =session.createQuery(query).setInteger("userId", userId.intValue()) 
-			    .setCacheable(true).list(); 
-		return idsList;  
-		
-        
-	}
-	
-	/**
-	 * This Method gives List Of all Projectmembers based on login user who is approver/employee to that particular project
-	 *  who did have 4 weeks prior/post submission records in DB
-	 * 
-	 */
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception {
-		
-		Session session = this.sessionFactory.getCurrentSession();
-		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
-		Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-		currentCal.setLenient(false);
-		currentCal.setTime(new Date());
-		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
-		
-		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-84);
-		Date previousMondayDate = previousMonday.getTime();
-		java.sql.Date  previousMondaySqlDate = new java.sql.Date(previousMondayDate.getTime());
-		
-		Calendar nextMonday = CalendarUtil.getDateIncrementByincrement(startMonday,84);
-		Date nextMondayDate = nextMonday.getTime();
-		java.sql.Date  nextMondaySqlDate = new java.sql.Date(nextMondayDate.getTime());
-		
-		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
-		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where "+subQueryForUserIdChecking+" and (pm.id IN(select pmh.projectMemberId.id from ProjectMembersHistory pmh where pmh.status ='OPEN' and  pmh.projectAssignedDate <= :nextMondayDate and (pmh.projectTerminationDate IS NULL OR pmh.projectTerminationDate >= :previousMonday))) and (pm.id NOT IN(select ts.projectMembers.id from TimesheetSubmissions ts where ts.status ='1' and ts.startDate = :nextMondayDate))" ;
-		List<ProjectMembers> idsList =session.createQuery(query).setInteger("userId", userId.intValue()).setParameter("previousMonday", previousMondaySqlDate).setParameter("nextMondayDate", nextMondaySqlDate) 
-			    .setCacheable(true).list(); 
-		return idsList;  
-	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ))" ;
-		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setCacheable(true) 
-			    .list();
-		return allProjectsList;
-	}
-
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Integer getAllProjectMembersCountByProjectId(Long id) {
-		
-		    Session session = this.sessionFactory.getCurrentSession();
-		    String status = Constants.MEMBER_ACTIVE;
-		    String query = "select count(*) from ProjectMembers pm  where pm.projects.id = :id and pm.status = :status";
-		    List<Long> ProjectMembersCount = (List<Long>) session.createQuery(query).setLong("id", id).setString("status", status).setCacheable(true).list();
-		    
-		    Integer count = null;
-			if(ProjectMembersCount != null && !ProjectMembersCount.isEmpty()){
-				count = ProjectMembersCount.get(0).intValue();
-			}
-			
-		    return count;
-		    
-	}
-	
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Integer updateProjectMemberDeletedReason(Long projectMemberId,String reason) {
-		Session session =  this.sessionFactory.getCurrentSession();
-		String status = Constants.MEMBER_IN_ACTIVE;
-		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status ,terminateReason =:terminateReason  where pm.id = :projectMemberId");
-		query.setLong("projectMemberId", projectMemberId);
-		query.setString("status", status);
-		query.setString("terminateReason",reason);
-		int result = query.executeUpdate();
-		return result;
-	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId))" ;
-		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setString("status",status).setCacheable(true).list(); 
-		return allProjectsList;
-	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId) {
-		Session session =  this.sessionFactory.getCurrentSession();
-		Query query = session.createQuery("update ProjectMembers pm set pm.projectEndDate =:endDate where pm.id = :projectMemberId");
-		query.setLong("projectMemberId", projectMemberId);
-		query.setDate("endDate", endDate);
-		int result = query.executeUpdate();
-		return result;
-	}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -487,7 +351,157 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		
 	}
 
+
+	/**
+	 * This method for get all the project members by project id
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception {
+		logger.debug("In ProjectMember getAllProjectMembersByProjectId method");
+        Session session = this.sessionFactory.getCurrentSession();
+        List<ProjectMembers> projectsMembersList = null;
+
+		/* commented by prasad salina 
+		to get userType from userrole
+		
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id and pm.status ='1' "
+				+ "and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.userType = 'Employee')) ");*/
+
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id ");
+
+		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).list();
+		return projectsMembersList;
+        
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :projectId and pm.isManuallyTerminated = :isManuallyTerminated " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setParameter("isManuallyTerminated", isManuallyTerminated).setCacheable(true).list(); 
+		return pmList;  
+	}
+
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Long> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception {
+		// TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select pm.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
+		List<Long> idsList =session.createQuery(query).setInteger("userId", userId.intValue()) 
+			    .setCacheable(true).list(); 
+		return idsList;  
+		
+        
+	}
+	
+	/**
+	 * This Method gives List Of all Projectmembers based on login user who is approver/employee to that particular project
+	 *  who did have 4 weeks prior/post submission records in DB
+	 * 
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+		Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		currentCal.setLenient(false);
+		currentCal.setTime(new Date());
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
+		
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-84);
+		Date previousMondayDate = previousMonday.getTime();
+		java.sql.Date  previousMondaySqlDate = new java.sql.Date(previousMondayDate.getTime());
+		
+		Calendar nextMonday = CalendarUtil.getDateIncrementByincrement(startMonday,84);
+		Date nextMondayDate = nextMonday.getTime();
+		java.sql.Date  nextMondaySqlDate = new java.sql.Date(nextMondayDate.getTime());
+		
+		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where "+subQueryForUserIdChecking+" and (pm.id IN(select pmh.projectMemberId.id from ProjectMembersHistory pmh where pmh.status ='OPEN' and  pmh.projectAssignedDate <= :nextMondayDate and (pmh.projectTerminationDate IS NULL OR pmh.projectTerminationDate >= :previousMonday))) and (pm.id NOT IN(select ts.projectMembers.id from TimesheetSubmissions ts where ts.status ='1' and ts.startDate = :nextMondayDate))" ;
+		List<ProjectMembers> idsList =session.createQuery(query).setInteger("userId", userId.intValue()).setParameter("previousMonday", previousMondaySqlDate).setParameter("nextMondayDate", nextMondaySqlDate) 
+			    .setCacheable(true).list(); 
+		return idsList;  
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ))" ;
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setCacheable(true) 
+			    .list();
+		return allProjectsList;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.employee emp left join fetch emp.user user  where pm.projects.id IN (:projectIds) GROUP BY pm.employee" ;
+		List<ProjectMembers> allProjectMembersList =session.createQuery(query).setParameterList("projectIds", projectIds).setCacheable(true) 
+			    .list();
+		return allProjectMembersList;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getAllProjectMembersCountByProjectId(Long id) {
+		
+		    Session session = this.sessionFactory.getCurrentSession();
+		    String status = Constants.MEMBER_ACTIVE;
+		    String query = "select count(*) from ProjectMembers pm  where pm.projects.id = :id and pm.status = :status";
+		    List<Long> ProjectMembersCount = (List<Long>) session.createQuery(query).setLong("id", id).setString("status", status).setCacheable(true).list();
+		    
+		    Integer count = null;
+			if(ProjectMembersCount != null && !ProjectMembersCount.isEmpty()){
+				count = ProjectMembersCount.get(0).intValue();
+			}
+			
+		    return count;
+		    
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer updateProjectMemberDeletedReason(Long projectMemberId,String reason) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String status = Constants.MEMBER_IN_ACTIVE;
+		Query query = session.createQuery("update ProjectMembers pm set pm.status =:status ,terminateReason =:terminateReason  where pm.id = :projectMemberId");
+		query.setLong("projectMemberId", projectMemberId);
+		query.setString("status", status);
+		query.setString("terminateReason",reason);
+		int result = query.executeUpdate();
+		return result;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId))" ;
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setString("status",status).setCacheable(true).list(); 
+		return allProjectsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("update ProjectMembers pm set pm.projectEndDate =:endDate where pm.id = :projectMemberId");
+		query.setLong("projectMemberId", projectMemberId);
+		query.setDate("endDate", endDate);
+		int result = query.executeUpdate();
+		return result;
+	}
 	
 	
 
 }
+
