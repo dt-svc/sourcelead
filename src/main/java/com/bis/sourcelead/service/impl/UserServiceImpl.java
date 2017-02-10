@@ -87,13 +87,6 @@ public class UserServiceImpl implements UserService {
 	private EmployeesService employeesService;
 	
 	@Autowired
-	UserIndexHelper userIndexHelper;
-	
-	@Autowired
-    private SourceleadELKBaseIndexer<UserIndex> sourceleadELKBaseIndexer;
-	
-	
-	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
 	@Autowired

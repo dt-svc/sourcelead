@@ -60,9 +60,6 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
 	
 	@Autowired 
 	private SourceleadActionsService sourceleadActionsService;
-	
-	@Autowired
-	private EmployeesService employeesService;
   
     /*@param
      * 

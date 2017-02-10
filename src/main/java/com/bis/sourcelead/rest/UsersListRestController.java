@@ -138,8 +138,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	
 	@Autowired
 	RolesService rolesService;
-	@Autowired
-	SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
+	
 	@Autowired
 	TabsService tabsService;
 	
@@ -867,7 +866,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 						userRoleService.addUserRole(existinguserRole);
 					}
 					Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(updateUserRole.getUser().getId(), orgLocations.getId());
-					userService.saveOrUpdateUserElkDocument(updateUserRole,employee,user.getUserCode()
+					userService.saveOrUpdateUserElkDocument(updateUserRole,employee,user.getUserCode());
 				}
 			
 				return "success";

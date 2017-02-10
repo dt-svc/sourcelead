@@ -159,9 +159,6 @@ public interface UserService  {
 	
 	public List<User> getUsersForAddAsConsultant(Org org,Long orgLocationsId) throws Exception;
 	
-	public void saveOrUpdateUserElkDocument(UserRole userRole, Employees employee, String loginUserCode) throws Exception;
-
-	
 	public List<User> getUsersForConsultantsByUserRoleIdAndOrgLocationId(Long roleId,Long orgLocationsId) throws Exception;
 	
 	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(Long orgLocationsId,List<Long> userIds,Long tabId) throws Exception;

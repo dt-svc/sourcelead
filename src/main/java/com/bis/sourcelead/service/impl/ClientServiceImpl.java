@@ -129,12 +129,6 @@ public class ClientServiceImpl implements ClientService{
 	RolesService rolesService;
 	
 	@Autowired
-	private UserRoleService userRoleService;
-	
-	@Autowired
-	private EmployeesService employeesService;
-	
-	@Autowired
 	RoleHierarchyService roleHierarchyService;
 	
 	@Autowired

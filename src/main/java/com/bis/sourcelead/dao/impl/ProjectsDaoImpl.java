@@ -673,7 +673,6 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 
 }*/
 
-          }
 	@Override
 	@Transactional
 	public Integer getProjectCountByOrgLocationId(Long orgLocationId) throws Exception {

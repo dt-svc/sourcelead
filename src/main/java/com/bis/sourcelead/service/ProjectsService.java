@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package com.bis.sourcelead.service;
 
 import java.util.Date;

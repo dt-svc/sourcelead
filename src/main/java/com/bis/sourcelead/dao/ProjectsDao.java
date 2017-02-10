@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package com.bis.sourcelead.dao;
 
 import java.util.Date;

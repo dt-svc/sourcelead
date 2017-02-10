@@ -169,9 +169,6 @@ public class Constants {
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
 	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	
-	public static String ELK_USER_INDEX = "users";
-	    
-	public static String ELK_USER_TYPE = "user";
 
 	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
 	

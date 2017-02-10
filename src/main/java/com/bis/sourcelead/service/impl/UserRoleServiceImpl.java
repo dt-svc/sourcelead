@@ -178,12 +178,6 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getAllUsersListByOrgLocationId(orgLocationId,loginUserId);
 	}
 	
-	
-	@Override
-	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception {
-		return userRoleDao.getUsersCountByOrgLocationID(orgLocationId);
-	}
-	
 	public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, List<UserRole> activeList,
 			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,String userState)
 			throws Exception {

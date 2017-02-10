@@ -46,6 +46,7 @@ import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -77,6 +78,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 
 	 @Autowired
 	 EmailScenarioService emailScenarioService;
+	 
+	 @Autowired
+	 UserRoleService userRoleService;
 	 
 	 @Autowired
 	 public EmployeesService employeesService;
