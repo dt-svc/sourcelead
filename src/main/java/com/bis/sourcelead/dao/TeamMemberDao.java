@@ -18,5 +18,5 @@ public interface TeamMemberDao {
 	
 	public List<TeamMembers>  getTeamMembersListByUserIdAndLocationId(Long userId,Long orgLocationId) throws Exception;
 	
-	
+	public Boolean isUserBelongsCurrentTeamByUserIdAndTeamId(Long userId,Long teamId) throws Exception;
 }

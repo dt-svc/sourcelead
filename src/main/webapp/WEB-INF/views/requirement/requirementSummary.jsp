@@ -1059,25 +1059,25 @@ function requirementDetails(requirementId){
 				            result = result +'     </div>';
 				            */
 				            if(json.parentRequirement == null || json.parentRequirement == "" || json.parentRequirement == "undefined"){
-					        	 if(json.clientCurrencyCode == 'INR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' &&  json.clientRate != '' && json.clientRate != 'undefined' && json.clientRate != null){
+					        	 if(json.clientCurrencyCode == 'INR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined' && null !=json.clientRate && null !=json.clientRateType && json.clientRateType != 'undefined' && json.clientRateType != ''){
 						        result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ' +json.clientRate+'  '+json.clientRateType+'</span>';
 							    }
-							    else if(json.clientCurrencyCode == 'EUR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+							    else if(json.clientCurrencyCode == 'EUR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined' && null !=json.clientRate && null !=json.clientRateType && json.clientRateType != 'undefined' && json.clientRateType != ''){
 
 							    result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i>' +json.clientRate+'  '+json.clientRateType+'</span>';
 								}
-							    else if(json.clientCurrencyCode == 'GBP' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+							    else if(json.clientCurrencyCode == 'GBP' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined' && null !=json.clientRate && null !=json.clientRateType && json.clientRateType != 'undefined' && json.clientRateType != ''){
 
 								result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i>' +json.clientRate+'  '+json.clientRateType+'</span>';
 								}
-							    else if(json.clientCurrencyCode  == 'USD' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+							    else if(json.clientCurrencyCode  == 'USD' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined' && null !=json.clientRate && null !=json.clientRateType && json.clientRateType != 'undefined' && json.clientRateType != ''){
 								result = result +'     <div class="require_wrap_details_cta" > <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i>' +json.clientRate+'  '+json.clientRateType+'</span>';
 								}
-							    else if(json.clientCurrencyCode  == 'AUD'  && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+							    else if(json.clientCurrencyCode  == 'AUD'  && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' &&json.clientRate != '' && json.clientRate != 'undefined' && null !=json.clientRate && null !=json.clientRateType && json.clientRateType != 'undefined' && json.clientRateType != ''){
 								result = result +'     <div class="require_wrap_details_cta" > <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i>' +json.clientRate+'  '+json.clientRateType+'</span>';
 		
 							    }
-							    else if(json.clientCurrencyCode  == 'SGD' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+							    else if(json.clientCurrencyCode  == 'SGD' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined' && null !=json.clientRate && null !=json.clientRateType && json.clientRateType != 'undefined' && json.clientRateType != ''){
 								result = result +'     <div class="require_wrap_details_cta" > <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i>' +json.clientRate+'  '+json.clientRateType+'</span>';
 		
 							    }
@@ -3378,7 +3378,7 @@ function requirementRecommendations(requirementId){
 		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
 		    
-		    result = result +'<td class="text-center"><div class="show_scroe"><span>'+report.candidateScore+'%</span>';
+		    result = result +'<td class="text-center"><div class="show_scroe"><span>'+report.finalScore+'%</span>';
 		    result = result +'<div class="scroe">';
 		    
 		    result = result +'<div class="clearfix row">';
@@ -4227,6 +4227,7 @@ function cancel(){
 
 <script type="text/javascript">
 function customizeScore(requirementId){
+	 getAllCountries();
 	$("#customizeScoreDiv").show();
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
@@ -4539,29 +4540,29 @@ function customizeScore(requirementId){
 		    		    
 		    		    
 		    		  //Adding Customized Any Of Keyword to the list 
-		    		    var select, chosen;
-		    		    select = $("#anyKeyWord");
-		    		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    		    chosen = select.data('chosen');
-		    		    chosen.search_field.on('keyup', function(e)
+		    		     var selectone, chosenone;
+		    		     selectone = $("#anyKeyWord");
+		    		     selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    		    chosenone = selectone.data('chosen');
+		    		    chosenone.search_field.on('keyup', function(e)
 		    		    {
 		    		    	var anyofKeyword = this.value.replace(",","");
 		    		        if ((e.which == 13 || e.which == 188) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
 		    		        {
 		    		        	var par = this.parent;
 		    		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
-		    		            select.append(option);
-		    		            select.find(option).prop('selected', true);
+		    		            selectone.append(option);
+		    		            selectone.find(option).prop('selected', true);
 		                        $("#anyKeyWord option").each(function(){
 		                              $(this).siblings("[value='"+ this.value+"']").remove();
 		                        });
 		    	        		$("#anyKeyWord").trigger("chosen:updated");
 		    	        		
 		    		        }
-		    		    });
+		    		    }); 
 		    }
 	 });
-	 getAllCountries();
+	
 }
 </script>
 
@@ -4588,14 +4589,13 @@ function getAllCountries(){
 	            	} 
 	            	
 	            }
-	            
-	            $('#country').trigger("chosen:updated");
 	            getStates();
+	            $('#country').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
 	    });
-    }, 100);
+    }, 75);
 } 
 </script>
 

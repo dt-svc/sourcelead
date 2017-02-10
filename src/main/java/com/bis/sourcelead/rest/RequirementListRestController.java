@@ -224,6 +224,18 @@ public class RequirementListRestController {
 			            		requirement = getData(requirementIndex);
 			            	}
 			            	
+			            	if(null != requirementIndex.getReleasedBy()){
+			            		List<Long> userId = new ArrayList<Long>();
+			            		for (String s : requirementIndex.getReleasedBy().split(",")){
+			    					userId.add(Long.parseLong(s));
+			    				 }
+			    				boolean flag = userId.contains(user.getId());
+			             		if(flag == true){
+			             			requirement.setIsRequirementReleasedByuser(Constants.YES);
+			             		}
+			            	}
+			            	
+			            	
 			            	requirementList.add(requirement);
 			            }
 					}

@@ -639,8 +639,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				}
 			}
 			
-			if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())) {
-				userImport.setReason("Required fields is not filled");
+			if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString())) {
+				userImport.setReason("Email fields is not filled");
 				return false;
 			}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validateEmail(row.getCell(3).toString())){
 				userImport.setReason("Invalid Email");

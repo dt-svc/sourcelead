@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 /**
  * @author Laxman
@@ -70,6 +71,7 @@ public class RequirementSubmissionTemplateFields implements Serializable{
 	private String designation;
 	
 	@Column(name = "EDUCATION")
+	@Type(type="text")
 	private String education;
 	
 	@Column(name = "WORK_EXPERIENCE")

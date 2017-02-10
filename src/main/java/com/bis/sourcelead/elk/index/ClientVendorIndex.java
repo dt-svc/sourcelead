@@ -67,6 +67,11 @@ public class ClientVendorIndex implements Serializable {
 
 	private String updateDateToString;
 	
+	private Long noContacts;
+	
+	private Long noOfReleasedJobs;
+	
+	
 	public String getSearchType() {
 		return searchType;
 	}
@@ -310,6 +315,22 @@ public class ClientVendorIndex implements Serializable {
 
 	public void setUpdateDateToString(String updateDateToString) {
 		this.updateDateToString = updateDateToString;
+	}
+
+	public Long getNoContacts() {
+		return noContacts;
+	}
+
+	public void setNoContacts(Long noContacts) {
+		this.noContacts = noContacts;
+	}
+
+	public Long getNoOfReleasedJobs() {
+		return noOfReleasedJobs;
+	}
+
+	public void setNoOfReleasedJobs(Long noOfReleasedJobs) {
+		this.noOfReleasedJobs = noOfReleasedJobs;
 	}
 	
 
