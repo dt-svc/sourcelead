@@ -193,10 +193,7 @@ textarea {
     margin-top: 11px;
 }
 .search-area .btn {
-    height: 32px; border-radius: 3px 0 0 3px; width: 140px !important;
-}
-.uasrch-selectpicker {
-	 width: 140px !important;
+    height: 32px; border-radius: 3px 0 0 3px; width: 140px;
 }
 search-area .btn-default{
     color: #fff;
@@ -2960,8 +2957,8 @@ a.btn-addskills:hover {
 	border-radius: 5px;
 	padding: 10px 0px;
 	position: absolute;
-	right: 33px;
-	top: 20px;
+	right: 35px;
+	top: 25px;
 	z-index: 8;
 	text-align: left;
 	margin-top: 8px;
@@ -4642,7 +4639,7 @@ import-tranhd  [class*="col-md-"]{
 .cand-advsrch-popup{
 	border: 1px solid #ccc;
 	background: #eee;
-	padding: 5px 15px 0px;
+	padding: 15px 15px 0px;
 	border-radius: 5px;
 	width: 800px;
 	position: absolute;
@@ -5014,8 +5011,6 @@ top: 0px; left: 0px;
 top: -1px; left: -2px;
 }
 /*** custom checkboxes ***/
-
-
 .hotlist-header .chosen-container-single .chosen-single {
 height: 30px !important;
 line-height: 30px !important;
@@ -5849,43 +5844,6 @@ background-color: #fff;
 .fa-bullhorn.success {
 color:#4CAF50 !important;
 }
-
-/* Customize score modified styles */
-#updateCustomize_form .form-footer {
-	background: #dddddd;
-    min-height: 35px;
-    line-height: 35px;
-    padding: 10px 0;
-}
-#updateCustomize_form .mt{
-	padding-top: 5px;
-}
-.lblup {
-	position: relative;
-}
-.lblup label{
-	position: absolute;
-    font-size: 12px;
-    padding: 1px 10px;
-    border-radius: 3px;
-    min-height: 10px;
-    z-index: 999;
-    top: -16px;
-    left: 5px;
-    font-weight:600;
-    color: rgba(000, 000, 000, 0.6);
-}
-.minDiv {
-	min-height: 100px;
-	max-height: 325px;
-	overflow-Y:scroll;
-}
-#updateCustomize_form .chosen-container-multi .chosen-choices {
-	max-height: 75px;
-	overflow-Y:scroll;
-}
-/* Customize score modified styles */
-
 /* media 320px */
 @media (max-width: 320px) {
     .universalSrch {
