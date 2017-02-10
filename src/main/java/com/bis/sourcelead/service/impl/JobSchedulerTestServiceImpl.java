@@ -10,7 +10,6 @@ public class JobSchedulerTestServiceImpl implements JobSchedulerTestService {
 	@Override
 	public String schedulerTest(String arg) {
 		String status = "Success";
-		System.out.println("Calling from Job Scheduler Test Service Implemenation "+arg);
 		return status;
 	}
 
