@@ -1928,10 +1928,10 @@ function getUserList(teamType){
 		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    	 }
 		                    	 
-		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
-		                    	 result = result +'             <td>'+opt.email+'</td>';
-		                    	 result = result +'             <td>'+opt.userType+'</td>';
-		                    	 result = result +'             <td>'+opt.assignJobCount+'</td>';
+		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+' '+opt.lastName+'">'+opt.firstName+' '+opt.lastName+'</span></td>';
+		                    	 result = result +'             <td><span class="tbldata-dotdot" title="'+opt.email+'">'+opt.email+'</span></td>';
+		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.userType+'</span></td>';
+		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.assignJobCount+'</span></td>';
 		                    	 result = result +'           </tr>';
 	                       }
 		                   ids =  refreshIds;
