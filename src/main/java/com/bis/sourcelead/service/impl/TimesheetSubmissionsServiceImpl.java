@@ -427,7 +427,6 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	        	   
 	        	   String startDate =  format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime());
 			       String endDate   =  format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime());
-				 
 	        		 		
 			       ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
 			       ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
@@ -1109,6 +1108,13 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	@Override
 	public List<TimesheetSubmissions> getTimeSheetSubmissionByProjectMemberId(Long pojectMemberId) throws Exception {
 		return timesheetSubmissionsDao.getTimeSheetSubmissionByProjectMemberId(pojectMemberId);
+	}
+
+
+	@Override
+	public TimesheetSubmissions getAllEmployeeTimesheetSubmissionsByProjectMemberId(Date startDate, Date endDate,
+			Long projectMemberId) throws Exception {
+		return timesheetSubmissionsDao.getAllEmployeeTimesheetSubmissionsByProjectMemberId(startDate, endDate, projectMemberId);
 	}
 
 

@@ -33,7 +33,7 @@ public class TimesheetSubmissionsController {
 	
 		
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')")
-	@RequestMapping(value = "/timesheetApproval")
+	@RequestMapping(value = "/oldTimesheetApproval")
 	public ModelAndView timesheetApproval(HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
 			

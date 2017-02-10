@@ -301,7 +301,11 @@ public class LoginSessionController {
 		Long notificationTo = loginUser.getId();
 		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
 		calculateDays(notificationList);
-		commonUtil.storeTimesheetSubmissionRecords(user);
+		
+		/**
+		 * commented by Prasad salina
+		 */
+		//commonUtil.storeTimesheetSubmissionRecords(user);
 		commonUtil.terminateAllProjectMembersByUser(user);
 		
 		try {

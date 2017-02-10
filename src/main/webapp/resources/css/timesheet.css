@@ -1461,7 +1461,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
     }  
 .candidate_wrap_table table tr td {
-    color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:35px;
+    color:#333; padding:0px 12px !important; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:35px;
     }  
 .candidate_wrap_table table tr td div {
     position:relative;
@@ -2744,7 +2744,7 @@ padding-right:10px;
 	font-size: 14px; font-weight: 500; color: #454545; padding: 5px !important; margin: 3px 0px 0px 0px; display: inline-block;
 }
 .openJobsHead .cand-advsrch-popup {
-	left: inherit; right: -400px; top: 38px; z-index: 200000;
+	left: inherit; right: -250px; top: 38px; z-index: 200000;
 }
 
 .noRecords {
@@ -2803,3 +2803,7 @@ padding-right:10px;
  .ts_app_error_mes.app_error_mes_active {
     display:block;
   }  
+
+.Refer {
+	font-size: 13px; font-weight: 500; color: #666;
+}
