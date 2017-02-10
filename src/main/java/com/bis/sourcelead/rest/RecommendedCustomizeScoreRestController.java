@@ -70,7 +70,11 @@ public class RecommendedCustomizeScoreRestController {
 	public @ResponseBody String getCustomizeScore(@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
-		RecommendedCustomizeScore rcs = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementIdAndOrgLocationId(requirementId, orgLocations.getId());
+		RecommendedCustomizeScore rcs = null;
+		rcs = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementIdAndOrgLocationId(requirementId, orgLocations.getId());
+		if(rcs == null){
+			 rcs = new RecommendedCustomizeScore();
+		}
 		List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 		if(null != rcs && null != rcs.getCustomizeSkills()){
 	  		String[] skills = rcs.getCustomizeSkills().split(","); 

@@ -3378,7 +3378,7 @@ function requirementRecommendations(requirementId){
 		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
 		    
-		    result = result +'<td class="text-center"><div class="show_scroe"><span>'+report.candidateScore+'%</span>';
+		    result = result +'<td class="text-center"><div class="show_scroe"><span>'+report.finalScore+'%</span>';
 		    result = result +'<div class="scroe">';
 		    
 		    result = result +'<div class="clearfix row">';
@@ -4227,6 +4227,7 @@ function cancel(){
 
 <script type="text/javascript">
 function customizeScore(requirementId){
+	 getAllCountries();
 	$("#customizeScoreDiv").show();
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
@@ -4539,29 +4540,29 @@ function customizeScore(requirementId){
 		    		    
 		    		    
 		    		  //Adding Customized Any Of Keyword to the list 
-		    		    var select, chosen;
-		    		    select = $("#anyKeyWord");
-		    		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    		    chosen = select.data('chosen');
-		    		    chosen.search_field.on('keyup', function(e)
+		    		     var selectone, chosenone;
+		    		     selectone = $("#anyKeyWord");
+		    		     selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    		    chosenone = selectone.data('chosen');
+		    		    chosenone.search_field.on('keyup', function(e)
 		    		    {
 		    		    	var anyofKeyword = this.value.replace(",","");
 		    		        if ((e.which == 13 || e.which == 188) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
 		    		        {
 		    		        	var par = this.parent;
 		    		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
-		    		            select.append(option);
-		    		            select.find(option).prop('selected', true);
+		    		            selectone.append(option);
+		    		            selectone.find(option).prop('selected', true);
 		                        $("#anyKeyWord option").each(function(){
 		                              $(this).siblings("[value='"+ this.value+"']").remove();
 		                        });
 		    	        		$("#anyKeyWord").trigger("chosen:updated");
 		    	        		
 		    		        }
-		    		    });
+		    		    }); 
 		    }
 	 });
-	 getAllCountries();
+	
 }
 </script>
 
@@ -4588,14 +4589,13 @@ function getAllCountries(){
 	            	} 
 	            	
 	            }
-	            
-	            $('#country').trigger("chosen:updated");
 	            getStates();
+	            $('#country').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
 	    });
-    }, 100);
+    }, 75);
 } 
 </script>
 

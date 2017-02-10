@@ -714,7 +714,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 try {
     		     // create the json array from String rules
     		     JSONArray jsonRules = new JSONArray(data);
-    		     System.out.println(jsonRules.length());
     		     // iterate over the rules 
     		     writeRow = createExcelsheet.createRow(i+8);
     		     for (int j=0; j<jsonRules.length();j++){
@@ -832,7 +831,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
    		 String data = submission.getSubmissionTemplateJsonStringValue();
    		 try {
    		     JSONArray jsonRules = new JSONArray(data);
-   		     System.out.println(jsonRules.length());
    		     for (int j=0; j<jsonRules.length();j++){
    		         JSONObject obj = (JSONObject) jsonRules.get(j);
    		         Cell cell = excelHeader.createCell(j);
@@ -1835,7 +1833,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	   		 String data = submission.getSubmissionTemplateJsonStringValue();
 	   		 try {
 	   		     JSONArray jsonRules = new JSONArray(data);
-	   		     System.out.println(jsonRules.length());
 	   		     for (int j=0; j<jsonRules.length();j++){
 	   		         JSONObject obj = (JSONObject) jsonRules.get(j);
 	   		         Cell cell = excelHeader.createCell(j);
