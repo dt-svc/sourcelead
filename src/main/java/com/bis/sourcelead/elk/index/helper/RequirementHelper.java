@@ -108,7 +108,7 @@ public class RequirementHelper {
 				 requirementIndex.setReqLevel2ApproverUserId(sequentialApprovers2.split(","));
 			 }
 			 
-				if (jsonObj.has("assignedToMaxCount")){
+			 	if (jsonObj.has("assignedToMaxCount")&& !"".equalsIgnoreCase(jsonObj.getString("assignedToMaxCount"))){
 					String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
 							if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
 								String assignedTeamId = jsonObj.getString("assignedTeamId");

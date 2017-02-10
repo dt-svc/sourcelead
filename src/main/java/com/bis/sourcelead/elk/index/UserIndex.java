@@ -11,6 +11,9 @@ public class UserIndex implements Serializable {
 
 	private Long userId;
 	
+	private Long userRoleTableId;
+
+	
 	private String employeeId;
 
 	private Long orgLocationId;
@@ -268,9 +271,15 @@ public class UserIndex implements Serializable {
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
 	}
-	
-	
-	
-	
+
+	public Long getUserRoleTableId() {
+		return userRoleTableId;
+	}
+
+	public void setUserRoleTableId(Long userRoleTableId) {
+		this.userRoleTableId = userRoleTableId;
+	}
+
+		
 	
 }
