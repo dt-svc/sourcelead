@@ -258,10 +258,10 @@ function editCandidate(candidateId){
 			                
 			                result = result + '</div>';
 							
-			                result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
+			                result = result + '<input type="text" class="form-control input-sm" name="currentRate" id="currentRate" value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Type">';
+							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Per">';
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(json.currentRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.currentRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
@@ -293,10 +293,10 @@ function editCandidate(candidateId){
 			                
 			                result = result + '</div>';
 							
-							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
+							result = result + '<input type="text" class="form-control input-sm" name="expectedRate" id="expectedRate" value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="selct-picker" id="rateType" name="rateType" field-name="Rate Type">';
+							result = result + '<select class="selct-picker" id="expectedRateType" name="rateType" field-name="Rate Per">';
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.rateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
@@ -371,7 +371,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
-							result = result + '<button type="button"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
+							result = result + '<button type="button" id="update_candidate" onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
 							result = result + '<button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
@@ -927,7 +927,15 @@ function removeSkillPopUp(candidateId){
 }
 </script>             
             
-   
+ <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
+  
 <%-- 
      @author : David Sammeta.
      this script is for upDate Candidate Details .
@@ -938,6 +946,24 @@ function removeSkillPopUp(candidateId){
 <script type="text/javascript">
 	function upDateCandidate(candidateId) {
 	
+		var expectedRate = document.getElementById("expectedRate").value; 
+		 if(expectedRate != null && expectedRate != ""){
+			 $('#expectedRateType').removeAttr('data-validation-optional');
+			 $('#expectedRateType').attr("data-validation","required"); 
+		 }else{
+		 $('#expectedRateType').removeAttr('data-validation');
+		 $('#expectedRateType').attr("data-validation-optional","true"); 
+		 }
+		 var currentRate = document.getElementById("currentRate").value; 
+			 if(currentRate != null && currentRate != ""){
+				
+				 $('#currentRateType').removeAttr('data-validation-optional');
+				 $('#currentRateType').attr("data-validation","required"); 
+			 }else{
+			 $('#currentRateType').removeAttr('data-validation');
+			 $('#currentRateType').attr("data-validation-optional","true"); 
+			 }
+			 
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -947,16 +973,20 @@ function removeSkillPopUp(candidateId){
 		
 		
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			 
+			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
 			
 			 var con = JSON.stringify(frm);
-				 con = con.replace(/[{}]/g, "");
-				var jsonData = encodeURIComponent(con);
-				
+			 con = con.replace(/[{}]/g, "");
 				
 			  //It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
+			var jsonData = encodeURIComponent(con);
+			
+			var form = $('#candidateProfileEdit_form')[0];
+      		var formData = new FormData(form); 
+			
+			$("#update_candidate").attr("disabled", "disabled");
+			$("#update_candidate").addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
@@ -969,12 +999,13 @@ function removeSkillPopUp(candidateId){
 		 }else{ 
 				return false;
 		 } 
+	}
 		 $('body').on('blur','#candidateProfileEdit_form',
 					function() {
 						$("#candidateProfileEdit_form").showHelpOnFocus();
 						$("#candidateProfileEdit_form").validateOnBlur(false,validationSettings);
-					});
-	} 
+			});
+	 
 </script>
 
 <script>
