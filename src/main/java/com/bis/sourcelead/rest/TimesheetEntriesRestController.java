@@ -67,7 +67,7 @@ public class TimesheetEntriesRestController {
 	TimeSheetPdfUtil timeSheetPdfUtil;
 	
 	/**
-	 * @author sarath kumar punnana
+	 * @author naresh bolisetty and sarath
 	 * @param request
 	 * @param navigation
 	 * @param startDate
@@ -83,7 +83,7 @@ public class TimesheetEntriesRestController {
 		return result;
 	}
 	/**
-	 * @author sarath kumar punnana
+	 * @author naresh bolisetty and sarath
 	 * @param request
 	 * @param employeeId
 	 * @param startDate
@@ -102,7 +102,7 @@ public class TimesheetEntriesRestController {
 		return result;
 	}
 	/**
-	 * @author sarath kumar punnana 
+	 * @author naresh bolisetty and sarath 
 	 * @param timesheetEntriesForm
 	 * @param json
 	 * @param request
@@ -122,7 +122,7 @@ public class TimesheetEntriesRestController {
 	}
 	
 	/**
-	 * @author sarath kumar punnana
+	 * @author naresh bolisetty and sarath
 	 * @param projectId
 	 * @return
 	 * @throws Exception
@@ -148,7 +148,7 @@ public class TimesheetEntriesRestController {
 		 	
 	 }
 	/**
-	 * @author sarath kumar punnana
+	 * @author naresh bolisetty and sarath
 	 * 
 	 * usage : unused method : this is default method
 	 * 
@@ -167,7 +167,7 @@ public class TimesheetEntriesRestController {
 		return savedTimesheetEntries; 
 	}
 	/**
-	 * @author sarath kumar punnana
+	 * @author naresh bolisetty and sarath
 	 * 
 	 *  usage : unused method : this is default method
 	 *  
@@ -187,7 +187,7 @@ public class TimesheetEntriesRestController {
 		return  timesheetEntriesService.updateTimesheetEntries(timesheetEntries);
 	}
 	/**
-	 * @author sarath kumar punnana
+	 * @author naresh bolisetty and sarath
 	 * @param id
 	 * @return
 	 * 
@@ -204,7 +204,7 @@ public class TimesheetEntriesRestController {
 	}
 	
 	/**
-	 * @author sarath kumar punnana 
+	 * @author naresh bolisetty and sarath 
 	 * 
 	 * usage : unused method : this is default method
 	 *  
@@ -222,7 +222,7 @@ public class TimesheetEntriesRestController {
 	}
 	
 	/**
-	 * @author sarath kumar punnana 
+	 * @author naresh bolisetty and sarath 
 	 * 
 	 *  usage : unused method : this is default method
 	 *  
@@ -240,7 +240,7 @@ public class TimesheetEntriesRestController {
 	}
 	
 	/**
-	 * @author sarath kumar punnana 
+	 * @author naresh bolisetty and sarath 
 	 * 
 	 *  usage : unused method : this is default method
 	 *  
@@ -257,7 +257,7 @@ public class TimesheetEntriesRestController {
 		  return timesheetEntriesList;
 	}
 	
-	//sarath kumar punnana : this method is for null check
+	//naresh bolisetty and sarath : this method is for null check
 	public static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}

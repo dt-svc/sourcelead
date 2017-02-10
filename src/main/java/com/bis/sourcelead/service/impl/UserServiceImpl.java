@@ -87,13 +87,6 @@ public class UserServiceImpl implements UserService {
 	private EmployeesService employeesService;
 	
 	@Autowired
-	UserIndexHelper userIndexHelper;
-	
-	@Autowired
-    private SourceleadELKBaseIndexer<UserIndex> sourceleadELKBaseIndexer;
-	
-	
-	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
 	@Autowired
@@ -107,12 +100,19 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	UserIndexHelper userIndexHelper;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<UserIndex> sourceleadELKBaseIndexer;
+	
 	 
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
 	@Autowired
-	CommonUtil commonUtil;
+	private CommonUtil commonUtil;
 	
 	@Autowired
 	OrgLocationsDao orglocationsDao;
@@ -221,7 +221,7 @@ public class UserServiceImpl implements UserService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			commonUtil.storeTimesheetSubmissionRecords(user);
+			//commonUtil.storeTimesheetSubmissionRecords(user);
 		}
 		
 		   //send mail to user
@@ -250,7 +250,7 @@ public class UserServiceImpl implements UserService {
 			 * Saving USER DB data as ElasticSearch Documents
 			 */
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
-      
+
         return user1;
 				
 		
@@ -294,7 +294,7 @@ public class UserServiceImpl implements UserService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			commonUtil.storeTimesheetSubmissionRecords(user);
+			//commonUtil.storeTimesheetSubmissionRecords(user);
 		}
 		
 		
@@ -851,7 +851,24 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
-		return userDao.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationsId, tabId);
+		
+		List<User> userList = null;
+		userList = userDao.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationsId, tabId);
+		if(null != userList && !userList.isEmpty()){
+			for (User user : userList) {
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationsId);
+				if(null != userRole){
+					user.setUserType(userRole.getUserType());
+				}
+			}
+		}
+		return userList;
+	}
+	
+	@Override
+	public List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId,
+			Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocationsId, tabId);
 	}
 
 	@Override
@@ -880,6 +897,7 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUsersListByOrglocationId(Long orgLocationId) throws Exception {
 		return userDao.getUsersListByOrglocationId(orgLocationId);
 	}
+
 	@Override
 	public void saveOrUpdateUserElkDocument(UserRole userRole, Employees employee, String loginUserCode) throws Exception {
 		//Elastic Search Document Saving
@@ -887,6 +905,7 @@ public class UserServiceImpl implements UserService {
 		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,userRole.getId().toString());
 		
 	}
+
 
 	@Override
 	public List<UserIndex> getAllUniversalSearchUsersList(OrgLocations orgLocation, String searchValue, User user)

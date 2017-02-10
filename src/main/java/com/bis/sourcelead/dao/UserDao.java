@@ -99,6 +99,17 @@ public interface UserDao {
 	
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 	
+	/**
+	 * @author Prasad salina
+	 * @param currentApproverId
+	 * @param orgLocationsId
+	 * @param tabId
+	 * @return
+	 * @throws Exception
+	 * @Purpose to get level2 managers
+	 */
+	public List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId, Long orgLocationsId,Long tabId)throws Exception;
+	
 	public List<User> getUsersForAddAsConsultant(Org org,Long orgLocationsId) throws Exception;
 	
 	public List<User> getUsersForConsultantsByUserRoleIdAndOrgLocationId(Long roleId,Long orgLocationsId) throws Exception;
