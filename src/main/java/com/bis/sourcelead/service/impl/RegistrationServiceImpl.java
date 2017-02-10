@@ -200,13 +200,21 @@ public class RegistrationServiceImpl implements RegistrationService{
 			 moduleIds.add(Integer.parseInt(s));
 		 }
 		 
+		 
+		/* 
+		  //commented by Prasad salina
 		  boolean flag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 		  if(flag == true){
 			  saveProject(registration, orgLocations, user, employee);
- 		}
+ 		  }*/
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
+		
+		/*
+		 * Saving USER DB data as ElasticSearch Documents
+		 */
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
+		
 		userService.sendEmail(user, loginUser, password,orgLocationsId);
 	
 	}

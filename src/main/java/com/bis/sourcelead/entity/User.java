@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -367,7 +368,20 @@ public class User implements Serializable{
 	}
 
 	public String getFullName() {
-		return fullName;
+		if(StringUtils.isNotEmpty(fullName))
+			return fullName;
+		else{
+			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName)){
+				fullName = firstName;
+			}
+			else if(StringUtils.isEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
+				fullName = lastName;
+			}
+			else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
+				fullName = firstName+" "+lastName;
+			}
+			return fullName;
+		}
 	}
 
 	public void setFullName(String fullName) {

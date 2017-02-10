@@ -287,8 +287,12 @@ public class UserRestController {
 			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
-			List<User> userList = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(currentApproverId,
-					orgLocations.getId());
+			/*List<User> userList = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(currentApproverId,
+					orgLocations.getId());*/
+			
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			
+			
 			resultJson = toJSON(userList);
 			return resultJson;
 		}
@@ -353,6 +357,7 @@ public class UserRestController {
 	 			userService.addUser(user);
 
 	 			userService.sendEmail(user,loginUser,password,orgLocations.getId());
+
 	 			/*
 				 * Update USER DB data as ElasticSearch Documents
 				 */
@@ -406,7 +411,7 @@ public class UserRestController {
 				ProjectMembers projectMembers = new ProjectMembers();
 				projectMembers.setEmployee(employee);
 				projectMembers.setProjects(projects);
-				projectMembers.setTimesheetFrequency("weekly");
+				//projectMembers.setTimesheetFrequency("weekly");
 				
 				User user = userService.getUserById(userId);
 				
@@ -448,7 +453,7 @@ public class UserRestController {
 				projectMembers.setMemberHistoryList(pmhList);
 				
 				projectMembersService.saveProjectMember(projectMembers);
-				commonUtil.storeTimesheetSubmissionRecords(user);
+				//commonUtil.storeTimesheetSubmissionRecords(user);
 				return "success";
 			}
 			/**
@@ -600,7 +605,7 @@ public class UserRestController {
 					  projectMembers.setStatus(status);
 					  projectMembers =  projectMembersService.saveProjectMember(projectMembers);
 					  projectMembers = projectMembersService.getProjectMemberById(projectMembers.getId());
-					  commonUtil.storeTimesheetSubmissionRecords(projectMembers.getEmployee().getUser());
+					  //commonUtil.storeTimesheetSubmissionRecords(projectMembers.getEmployee().getUser());
 			  	   }
 				
 			    } catch (Exception e) {
@@ -627,7 +632,7 @@ public class UserRestController {
 					userRole.setUserState(userRole.getPreviousUserState());
 					userRole.setPreviousUserState(userRole.getUserState());
 					userRole.setUpdatedBy(user.getUserCode());
-
+					userRole.setUpdatedDate(commonUtil.currentDate());
 					userRoleService.addUserRole(userRole);
 					
 					//to assign primary role to another user
@@ -636,6 +641,7 @@ public class UserRestController {
 						userRole.setIsPrimary(1);
 						userRoleService.addUserRole(userRole);
 					}
+
 					/*
     				 * Saving USER DB data as ElasticSearch Documents
     				 */
