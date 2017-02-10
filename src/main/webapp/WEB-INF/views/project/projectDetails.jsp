@@ -425,7 +425,7 @@
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Description </label>';
 						result = result
-								+ '<textarea class="edit_desc" placeholder="Enter Description" id="description" name="description">'
+								+ '<textarea class="edit_desc" placeholder="Enter Description" id="description" data-validation-optional="true" data-validation="required validate_Space validate_length length10-5000" name="description">'
 								+ description + '</textarea>';
 						result = result + '</div>       ';
 						result = result + '<div class="clearfix"></div>';
