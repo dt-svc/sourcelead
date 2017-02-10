@@ -584,7 +584,7 @@ public class TimesheetApprovalRestController {
 					     if(displayWeeksList != null && !displayWeeksList.isEmpty()){
 					    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
 					    	    	
-					    	    	 if(sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()){
+					    	    	 if(sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty() && sah.getWeekTotals().get(entry.getKey()) != null){
 					    	    		 totalHours = totalHours+sah.getWeekTotals().get(entry.getKey());
 					    	    		 timesheetApprovalDiv.append("<td><div class='sm'>").append(sah.getWeekTotals().get(entry.getKey())).append("/40</div></td>");
 					    	    	 }
@@ -618,7 +618,7 @@ public class TimesheetApprovalRestController {
 			            	 timesheetApprovalDiv.append(" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>");
 			            	 timesheetApprovalDiv.append(" <i class='glyphicon glyphicon-comment' id='").append(projectMember.getId()).append("' onclick='rejectedMessage(\"rejectedMessage").append(projectMember.getId()).append("\");'>");
 			            	 timesheetApprovalDiv.append(" <div class='ts_app_error_mes' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getRejectedReason()).append("</div>");
-			            	 timesheetApprovalDiv.append(" </i>");
+			            	 timesheetApprovalDiv.append(" </i><br>By : ").append(sah.getActionPerformedBy());
 			            	 timesheetApprovalDiv.append(" </div>");
 			            }
 					     if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED){
