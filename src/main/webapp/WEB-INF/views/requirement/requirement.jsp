@@ -469,19 +469,21 @@ $(document).ready(function () {
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
                <c:forEach var="skill" items="${skillsList}">
-             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill)}">
-	                		  	 <option  selected value="${skill}">${skill}</option>
-	                		 </c:if>
-	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill)}">
-	                		  	 <option  value="${skill}">${skill}</option>
-	                		 </c:if>
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedSkill" items="${requirement.reqSkillsListString}">
+					    <c:if test="${existedSkill eq skill}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${skill}">${skill}</option>
+					    </c:if>
+					</c:forEach>
+					<c:if test="${NUM == 0}">
+						<option  value="${skill}">${skill}</option>
+					</c:if>
                 </c:forEach>
                 </select>
               </div>
             </div>
             
-            
-         
           <div class="form-group">
             <input type="hidden" name="templateId" id="templateId" value="" />
             <label class="col-md-3">Attachment</label>
