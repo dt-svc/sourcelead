@@ -93,7 +93,8 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			    		ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
 				    	pah1.setProjectId(projects);
 				    	User approverUserId1 = new User();
-			    		approverUserId1.setId(Long.parseLong(jsonObj.getString("level1Manager")));
+				    	String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+			    		approverUserId1.setId(Long.parseLong(level1UserDetails[0]));
 				    	pah1.setApproverUserId(approverUserId1);
 				    	pah1.setLevel(1);
 				    	//ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);

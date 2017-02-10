@@ -63,6 +63,7 @@ public class AddElkUser {
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				UserIndex userIndex = new UserIndex();
+				userIndex.setUserRoleTableId(rs.getLong("ID"));
 				userIndex.setUserId(rs.getLong("USER_ID"));
 				userIndex.setOrgLocationId(rs.getLong("ORG_LOCATIONS_ID"));
 				userIndex.setUserStatus(rs.getString("USER_STATE"));

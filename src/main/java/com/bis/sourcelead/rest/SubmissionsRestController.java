@@ -28,6 +28,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.index.helper.RequirementHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -114,9 +117,17 @@ public class SubmissionsRestController {
 
 	@Autowired
 	RequirementInterviewService requirementInterviewService;
+	
+	@Autowired
+	RequirementHelper requirementHelper;
+	
+	 @Autowired
+	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	
 
 	@RequestMapping(value = "/getCandidateResumes")
 	public String getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
@@ -223,10 +234,20 @@ public class SubmissionsRestController {
 		requirementSubmissionHistory.setFromStage("NEW");
 //		requirementSubmission.get
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+		Requirement requirement = requirementSubmission.getRequirement();
+		Integer count = requirementSubmissionService.getNumberOfApplicantsForRequirement(orgLocations.getId(), requirement.getId());
+		requirement.setTotalApplicantsForRequirement(count);
+		saveElkRequirement(requirement,new JSONObject());
 		return "success";
 
 	}
 
+	private void saveElkRequirement(Requirement requirement, JSONObject jsonObj) throws Exception {
+		 
+		RequirementIndex requirementIndex = requirementHelper.populateRequirementIndex(requirement,jsonObj);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirement.getId().toString());
+	}
+	
 	@RequestMapping(value = "/getOrgSubmissionTemplatesList", method = RequestMethod.POST)
 	@ResponseBody
 	String getOrgSubmissionTemplatesList(HttpServletRequest request) throws Exception {

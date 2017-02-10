@@ -27,6 +27,8 @@ public class UserIndexHelper {
 		
 		if(null != userRole && null != userRole.getId()){
 			userIndex = new UserIndex();
+
+			userIndex.setUserRoleTableId(userRole.getId());
 			userIndex.setUserId(userRole.getUser().getId());
 			userIndex.setFirstName(user.getFirstName());
 			userIndex.setLastName(user.getLastName());
