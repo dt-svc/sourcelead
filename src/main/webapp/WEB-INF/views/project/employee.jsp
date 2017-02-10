@@ -425,6 +425,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
    				$("#selector3").removeAttr("style");
  				$("#selector3").css({ display: "block" });
  				$("#docMsgDiv3").html("Project deleted");
+ 				var status = $("#assignStatus").val();
    			 	projectEmployee(projectId,startDateStr,endDateStr,status);
    			 docMsgFadein3();
    		    }
@@ -607,14 +608,17 @@ function assignEmployee(){
 	 	var projectId = $("#projectId").val();
 	 	var projectStartDateStr =  $("#projectStartDateStr").val();
 	 	var projectEndDateStr =  $("#projectEndDateStr").val(); 
-	 	
+	 	var status = $("#assignStatus").val();
 	    var result = "";
 	    var mailtoMembers = "NO";
 	    if(document.getElementById('membermailCheckbox').checked) {
 	    	mailtoMembers = "YES";
 	    }
 	    var sourceleadUrl ='${sourceleadUrl}'; 
-	    $('#assignTeam').modal('hide');
+	    //$('#assignTeam').modal('hide');
+	    $('#assignTeam').hide();
+	    $('.modal-backdrop').hide();
+	    
 	    $(".myCheckbox").each(function(){
 	        var employeeId =this.id;
 	        if($(this).is(':checked')){
@@ -860,7 +864,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 		        url: sourceleadUrl+"/saveReAssignProject?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectMemberId="+projectMemberId, 
 		        success: function(data) {
 		        	if(data="success"){
-		        	 	$("#Re-AssignProject").modal('hide');
+		        	 	//$("#Re-AssignProject").modal('hide');
+		        	 	$('#Re-AssignProject').hide();
+		        	    $('.modal-backdrop').hide();
 		        	 	projectEmployee(projectId,startDateStr,endDateStr,status);
 		        	}
 		        },

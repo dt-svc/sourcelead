@@ -41,8 +41,6 @@ public interface ProjectMembersService {
 
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
 	
-	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds);
-	
 	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId,Long projectId) throws Exception;
 	
 	public ProjectMembers getProjectMemberByEmpIdAndProjectId(Long empId,Long projectId) throws Exception;
@@ -63,4 +61,15 @@ public interface ProjectMembersService {
     public Set<ProjectMembers> prepareProjectMembersListByJson(JSONObject jsonObj,HttpServletRequest request,Projects projects) throws Exception;
     
     public List<ProjectMembers> getAllProjectsAssigendToUserByIdAndStatus(Long userId, String status) throws Exception;
+    
+    public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndEmpUserId(Long locationsId, Long empUserId);
+    
+    public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Long locationsId, Long approverUserId);
+	
+	public List<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId);
+    
+    public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(String status,String startDate,String endDate,Long projectId);
+    
+	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds);
+	
 }

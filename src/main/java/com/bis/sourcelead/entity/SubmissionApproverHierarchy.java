@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +29,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 @Table(name = "SUBMISSION_APPROVER_HIERARCHY", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionApproverHeirarchy")
 public class SubmissionApproverHierarchy implements  Serializable{
-	  
+	
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -52,6 +53,12 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Column(name = "SUBMISSION_APPROVALSTATUS")
 	@Enumerated(EnumType.STRING)
 	private Submission_ApprovalStatus submissionApprovalStatus;
+	
+	@Column(name = "FREQUENCY_START_DATE")
+    private Date frequencyStartDate;
+	
+	@Column(name = "FREQUENCY_END_DATE")
+    private Date frequencyEndDate;
 	
 	@Column(name = "MECHANISM_TYPE")
 	@Enumerated(EnumType.STRING)
@@ -101,7 +108,8 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Transient
 	private Float totalHours;
 	
-	
+	@Transient
+	private LinkedHashMap<Date,Float> weekTotals;
 	
 
 	public Long getId() {
@@ -142,6 +150,22 @@ public class SubmissionApproverHierarchy implements  Serializable{
 
 	public void setSubmissionApprovalStatus(Submission_ApprovalStatus submissionApprovalStatus) {
 		this.submissionApprovalStatus = submissionApprovalStatus;
+	}
+	
+	public Date getFrequencyStartDate() {
+		return frequencyStartDate;
+	}
+
+	public void setFrequencyStartDate(Date frequencyStartDate) {
+		this.frequencyStartDate = frequencyStartDate;
+	}
+
+	public Date getFrequencyEndDate() {
+		return frequencyEndDate;
+	}
+
+	public void setFrequencyEndDate(Date frequencyEndDate) {
+		this.frequencyEndDate = frequencyEndDate;
 	}
 
 	public Approval_Mechanism_Type getMechanismType() {
@@ -270,6 +294,14 @@ public class SubmissionApproverHierarchy implements  Serializable{
 
 	public void setTotalHours(Float totalHours) {
 		this.totalHours = totalHours;
+	}
+
+	public LinkedHashMap<Date, Float> getWeekTotals() {
+		return weekTotals;
+	}
+
+	public void setWeekTotals(LinkedHashMap<Date, Float> weekTotals) {
+		this.weekTotals = weekTotals;
 	}
 	
 	
