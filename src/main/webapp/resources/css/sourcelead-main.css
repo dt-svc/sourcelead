@@ -2957,8 +2957,8 @@ a.btn-addskills:hover {
 	border-radius: 5px;
 	padding: 10px 0px;
 	position: absolute;
-	right: 33px;
-	top: 20px;
+	right: 35px;
+	top: 25px;
 	z-index: 8;
 	text-align: left;
 	margin-top: 8px;
@@ -5011,8 +5011,6 @@ top: 0px; left: 0px;
 top: -1px; left: -2px;
 }
 /*** custom checkboxes ***/
-
-
 .hotlist-header .chosen-container-single .chosen-single {
 height: 30px !important;
 line-height: 30px !important;

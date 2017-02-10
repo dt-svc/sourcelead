@@ -178,12 +178,10 @@ public class RequirementHelper {
 				requirementIndex.setSkills(skills);
 			}
 			requirementIndex.setJobId(requirement.getJobId());
-			// requirementIndex.setClientContactName(requirement.getClientContactName());
-			// requirementIndex.setClientContactEmail(requirement.getClientContactName());
 			requirementIndex.setPriority(requirement.getPriority());
 			requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());
 			requirementIndex.setNumberOfPositions(requirement.getPositions());
-			requirementIndex.setNumberOfApplicants(requirement.getNoOfApplicants());
+			requirementIndex.setNumberOfApplicants(requirement.getTotalApplicantsForRequirement().toString());
 			requirementIndex.setReleasedBy(requirement.getReleasedBy());
 
 		}
