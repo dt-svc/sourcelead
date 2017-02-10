@@ -504,7 +504,7 @@ function deleteSubmissionDocument(submissionDocumentId){
 	<!-- addrow divs -->
 	 <div id="divadttTd1" style="display:none;" >   
 	      <div> 
-	       <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId" data-validation="required" field-name="Task"  onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
+	       <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId pull-left" data-validation="required" field-name="Task"  onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
 	                   <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 	                       	<option value="${task.id}">${task.taskName}</option>
 	                    </c:forEach> --%>

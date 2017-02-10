@@ -615,7 +615,10 @@ function assignEmployee(){
 	    	mailtoMembers = "YES";
 	    }
 	    var sourceleadUrl ='${sourceleadUrl}'; 
-	    $('#assignTeam').modal('hide');
+	    //$('#assignTeam').modal('hide');
+	    $('#assignTeam').hide();
+	    $('.modal-backdrop').hide();
+	    
 	    $(".myCheckbox").each(function(){
 	        var employeeId =this.id;
 	        if($(this).is(':checked')){
@@ -861,7 +864,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 		        url: sourceleadUrl+"/saveReAssignProject?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectMemberId="+projectMemberId, 
 		        success: function(data) {
 		        	if(data="success"){
-		        	 	$("#Re-AssignProject").modal('hide');
+		        	 	//$("#Re-AssignProject").modal('hide');
+		        	 	$('#Re-AssignProject').hide();
+		        	    $('.modal-backdrop').hide();
 		        	 	projectEmployee(projectId,startDateStr,endDateStr,status);
 		        	}
 		        },
