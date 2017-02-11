@@ -1,3 +1,4 @@
+
 package com.bis.sourcelead.dao;
 
 import java.util.Collection;
@@ -43,8 +44,6 @@ public interface ProjectMembersDao {
     List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
 
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
-	
-	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds);
 
 	public Integer getAllProjectMembersCountByProjectId(Long id);
 	
@@ -54,5 +53,16 @@ public interface ProjectMembersDao {
 
 	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId);
 	
+	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds);
+	
 	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId ,Long projectId) ;
+	
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndEmpUserId(Long locationsId, Long empUserId);
+	
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Long locationsId, Long approverUserId);
+	
+	public List<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId);
+
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(String status,String startDate,String endDate,Long projectId);
+	
 }

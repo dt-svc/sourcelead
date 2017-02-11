@@ -514,6 +514,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return null;
 		}
 	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public UserRole getUserRoleByUserId(Long userId) throws Exception {
@@ -541,7 +542,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return null;
 		}
 	}
-
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {

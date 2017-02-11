@@ -46,13 +46,22 @@ public class ProjectsIndexHelper {
 				projectsIndex.setProjectStatus(projects.getProjectStatus().toString());
 			}
 			
+			if(null != projects.getCreatedDate()){
+				projectsIndex.setCreatedDate(Constants.DF_YMD.format(projects.getCreatedDate()));
+			}
+			
+			if(null != projects.getUpdatedDate()){
+				projectsIndex.setUpdatedDate(Constants.DF_YMD.format(projects.getUpdatedDate()));
+			}
+			
+			
 			if(null != projects.getOrgRelationId() && projects.getOrgRelationId().getLocationId().getId() == projects.getOrgLocationsId().getId()){
 				projectsIndex.setClientName(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
 			}else if(null != projects.getOrgRelationId() && projects.getOrgRelationId().getResponderLocationId().getId() == projects.getOrgLocationsId().getId()){
 				projectsIndex.setClientName(projects.getOrgRelationId().getLocationId().getOrg().getOrgName());
 			}
 			
-			if(projectApproverHierarchyList.size()>0){
+			if(null !=projectApproverHierarchyList && projectApproverHierarchyList.size()>0){
 				for(ProjectApproverHierarchy projectApproverHierarchy : projectApproverHierarchyList){
 					if(projectApproverHierarchy.getLevel() == 1){
 						if(null != projectApproverHierarchy.getApproverUserId()){

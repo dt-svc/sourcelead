@@ -350,6 +350,9 @@ public class RequirementListRestController {
      	requirement.setCity(requirementIndex.getCity());
      	requirement.setSearchType("Requirement");
      	requirement.setPositions(requirementIndex.getNumberOfPositions());
+     	if(requirementIndex.getNumberOfApplicants() != null){
+     		requirement.setTotalApplicantsForRequirement(Integer.parseInt(requirementIndex.getNumberOfApplicants()));	
+     	}
      	requirement.setNoOfApplicants(requirementIndex.getNumberOfApplicants());
      	requirement.setManager(requirementIndex.getManager());
      	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
