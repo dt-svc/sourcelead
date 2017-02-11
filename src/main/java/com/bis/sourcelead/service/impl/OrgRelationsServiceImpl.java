@@ -103,6 +103,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		orgRelations.setStatus("ACTIVE");
 		orgRelations.setCreatedBy(loginUserCode);
 		orgRelations.setCreatedDate(commonUtil.currentDate());
+		orgRelations.setUpdatedDate(commonUtil.currentDate());
 		
 		if(null != responderType  && !responderType.isEmpty()){
 			if("Client".equalsIgnoreCase(responderType)){
