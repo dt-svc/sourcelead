@@ -4228,7 +4228,6 @@ function cancel(){
 
 <script type="text/javascript">
 function customizeScore(requirementId){
-	 getAllCountries();
 	$("#customizeScoreDiv").show();
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
@@ -4519,6 +4518,7 @@ function customizeScore(requirementId){
 		        
 		        $("#customizeScoreDiv").empty();
 		    	$("#customizeScoreDiv").append(result);
+		    	getAllCountries();
 		    	var config = {
 		    			  '.chosen-select'           : {},
 		    			  '.chosen-select-deselect'  : {allow_single_deselect:true},
