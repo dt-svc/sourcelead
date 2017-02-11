@@ -213,7 +213,7 @@ function getUsersSearchResult(searchValue){
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           <li><i class="fa fa-filter"></i>&nbsp;
-               <select id="userState" onchange="adflushdatauser();">
+               <select id="userState" onchange="flushAdvancedData();">
 				<option value="">--Select Status--</option>
 				<option value="ACTIVE" >Active</option>
 				<option value="INACTIVE" >In Active</option>
@@ -223,7 +223,7 @@ function getUsersSearchResult(searchValue){
           </li>
           
 		   <li><i class="fa fa-filter"></i>&nbsp;
-				<select id="userRole" onchange="adflushdatauser();">
+				<select id="userRole" onchange="flushAdvancedData();">
 				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
 				<!-- <option value="All" >All Roles</option> -->
 				<c:forEach var="roles" items="${rolesList}">
@@ -311,8 +311,9 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
+<!-- script for flush advanced search form -->
 <script>
-function adflushdatauser(){
+function flushAdvancedData(){
 	 $("#user_forms")[0].reset();
 	 searchUser("manual");
 }
