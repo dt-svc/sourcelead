@@ -72,9 +72,9 @@ public class RequirementHelper {
 			requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
 			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			 String reqcreatedDate = dateFormat.format(requirement.getCreatedDate());
-			requirementIndex.setReqCreatedDate(reqcreatedDate);
+			requirementIndex.setCreatedDate(reqcreatedDate);
 			 String reqUpDatedDate = dateFormat.format(requirement.getCreatedDate());
-			requirementIndex.setReqUpdatedDate(reqUpDatedDate);
+			requirementIndex.setUpdatedDate(reqUpDatedDate);
 			Long userId = requirement.getManagerUserId().getId();
 			User ownerUser = userService.getUserById(userId);
 			StringBuilder sbilder = new StringBuilder();
@@ -181,7 +181,9 @@ public class RequirementHelper {
 			requirementIndex.setPriority(requirement.getPriority());
 			requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());
 			requirementIndex.setNumberOfPositions(requirement.getPositions());
-			requirementIndex.setNumberOfApplicants(requirement.getTotalApplicantsForRequirement().toString());
+			if(null != requirement.getTotalApplicantsForRequirement()){
+				requirementIndex.setNumberOfApplicants(requirement.getTotalApplicantsForRequirement().toString());
+			}
 			requirementIndex.setReleasedBy(requirement.getReleasedBy());
 
 		}
