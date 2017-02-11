@@ -262,11 +262,18 @@ public class TimesheetRestController {
 				timesheetEntriesDiv.append("		                <select id='timesheetFrequency' name='timesheetFrequency' class='form-control chosen-select' onChange='timesheetDivByFrequency()' >");
 				StringBuilder selectedStartDate = new StringBuilder("");
 				StringBuilder selectedEndDate =  new StringBuilder("");
+				int count = 1;
 				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
 					    String key = entry.getKey();
 					    String value =entry.getValue();
 					    StringBuilder isSelected = new StringBuilder("");
+					    if(count == 1){
+					    	selectedStartDate.append(key.replaceAll("/", "-"));
+					    	selectedEndDate.append(value.replaceAll("/", "-"));
+					    }
 					    if(isCurrentDateBetweenDateRange(key, value)){
+					    	selectedStartDate.setLength(0);
+					    	selectedEndDate.setLength(0);
 					    	isSelected.append("selected='selected'");
 					    	selectedStartDate.append(key.replaceAll("/", "-"));
 					    	selectedEndDate.append(value.replaceAll("/", "-"));
@@ -274,7 +281,7 @@ public class TimesheetRestController {
 					    timesheetEntriesDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+key.replaceAll("/", "-")+"To"+value.replaceAll("/", "-")+"'>");
 					    timesheetEntriesDiv.append(key).append(" To ").append(value);
 					    timesheetEntriesDiv.append("		                  </option>");
-				
+				count++;
 				}
 				timesheetEntriesDiv.append("		                </select>");
 				timesheetEntriesDiv.append("		            </div> ");

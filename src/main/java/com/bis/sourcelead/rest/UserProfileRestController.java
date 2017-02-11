@@ -70,19 +70,25 @@ public class UserProfileRestController {
 		    
 		    json = "{"+json+"}";
 			JSONObject jsonObj = new JSONObject(json);
+			UserRole userRoleElk  = null;
 			Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 			UserProfile userProfile =  gson.fromJson(json,UserProfile.class);
 			   try {
 				user = userService.saveUserProfile(userProfile, multiFile, user);
 				UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				userRole.setDesignation(userProfile.getDesignation());
-				userRoleService.addUserRole(userRole);
+				userRoleElk = userRoleService.addUserRole(userRole);
+				/*
+				 * Saving USER DB data as ElasticSearch Documents
+				 */
+				userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
 				
 				SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 				StringBuilder userNameSB = new StringBuilder();
 				SourceLeadSessionManager.setSessionAttribute(request, "userName", userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 				SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
-				
+			
+
 			   } catch (Exception e) {
 				e.printStackTrace();
 			} 
