@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.sql.DataSource;
@@ -91,6 +93,13 @@ public class AddClientVendorContactsELK {
 						clientVendorContactsIndex.setSpocStatus(rs.getString("SPOC_STATUS"));
 						clientVendorContactsIndex.setSpocUserId(rs.getLong("SPOC_USER_ID"));
 						clientVendorContactsIndex.setStatus(rs.getString("STATUS"));
+						
+						
+						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						clientVendorContactsIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
+						clientVendorContactsIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
+				    	
+						
 						// saving responderLocationId and  Org Name
 						String sql1 = "SELECT * FROM sourcelead.ORG_LOCATIONS  responderLocationId where responderLocationId.ID = '"+responderLocationId+"' ";
 						

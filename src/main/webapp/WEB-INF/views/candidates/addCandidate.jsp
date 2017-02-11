@@ -100,7 +100,7 @@
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_Space validate_length length1-100" data-validation-optional="true" value="">
+           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true" value="">
           </div>
         </div>
         <div class="form-group" id="emailDiv">
@@ -186,7 +186,7 @@
             <div class="row exp-drop">
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
-             		  <option selected disabled>Years</option>
+             		  <option value="" selected disabled>Years</option>
              		  <c:forEach begin="0" end="24" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -195,7 +195,7 @@
              </div>
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
-             		<option selected disabled>Months</option>
+             		<option value="" selected disabled>Months</option>
              		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -221,12 +221,12 @@
                   
                   <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
                  
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
                 </select>
                 
@@ -259,12 +259,12 @@
                   
                   <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
                  
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
                 </select>
                 
@@ -342,12 +342,12 @@
          <label class="col-md-3">Notice Period</label>
           <div class="col-md-9">
                <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
-                <option value=""><a href="#">Select</a></option>
-                 <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}><a href="#">Immediately available</a></option>
-                 <option ${noticePeriod  == '15 Days' ? 'selected' : ''}><a href="#">15 Days</a></option>
-                 <option ${noticePeriod  == '1 Month' ? 'selected' : ''}><a href="#">1 Month</a></option>
-                 <option ${noticePeriod  == '2 Months' ? 'selected' : ''}><a href="#">2 Months</a></option>
-                 <option ${noticePeriod  == '3 Months' ? 'selected' : ''}><a href="#">3 Months</a></option>
+                <option value="">Select</option>
+                 <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately available</option>
+                 <option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
+                 <option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1 Month</option>
+                 <option ${noticePeriod  == '2 Months' ? 'selected' : ''}>2 Months</option>
+                 <option ${noticePeriod  == '3 Months' ? 'selected' : ''}>3 Months</option>
                 </select>
              
            </div>
@@ -744,8 +744,6 @@ function getCities(){
          }
      });
  }
-	     
- 
  
  var selectedFile = document.getElementById("uploadBtn");
 	      selectedFile.addEventListener("change", function() {

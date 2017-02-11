@@ -170,6 +170,9 @@ public class CommonUtil {
 			pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
 			pmh = projectMembersHistoryService.updateProjectMembersHistory(pmh);
 			
+			/**
+			 * commented by Prasad salina
+			 */
 			inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId, pmh.getProjectTerminationDate());
 			
 			ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
@@ -366,14 +369,14 @@ public class CommonUtil {
 	 * @author: Naresh Bolisetty
 	 * 
 	 */
-	public void storeTimesheetSubmissionRecords(User user){
+	/*public void storeTimesheetSubmissionRecords(User user){
 		try {
 			
-			/**
+			*//**
 			 * Getting List Of all Projectmembers based on login user who is approver/employee to that particular project
 			 *  who didn't have 12 weeks prior/post submission records in DB
 			 * 
-			 */
+			 *//*
 			List<ProjectMembers> projectMembers =  projectMembersService.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(user.getId());
 			
 			if(projectMembers != null && !projectMembers.isEmpty()){
@@ -382,39 +385,39 @@ public class CommonUtil {
 					
 					ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMember.getId());
 					
-					/**
+					*//**
 					 * Getting startDate of coming week from the existing submission records
 					 *
-					 */
+					 *//*
 					Date nextMonday = timesheetSubmissionsService.getNextMondayByProjectMemberId(projectMember.getId());
 					
-					/**
+					*//**
 					 * Calculating startDate for the submission records of this particular projectmember
-					*/
+					*//*
 					Date startMondayDate = null;
 					if(nextMonday != null){
 						startMondayDate =  nextMonday;
 					}
 					else{
 						
-						/**
+						*//**
 						 * If he didn't have submission records previous for this project,then ProjectAssignedDate is taken as startDate
-						*/
+						*//*
 						startMondayDate = pmh.getProjectAssignedDate();
 						
-						/**
+						*//**
 						 * Calculating last 12th week monday date 
-						*/
+						*//*
 						Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 						currentCal.setLenient(false);
 						currentCal.setTime(new Date());
 						Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
 						Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(currentMonday,-84);
 						Date previousMondayDate = previousMonday.getTime();
-						/**
+						*//**
 						 * Checking whether projectAssignDate lesserthan last 12th week Monday date,
 						 * then last 12th week Monday date is taken as startdate
-						*/
+						*//*
 				        if(startMondayDate.before(previousMondayDate)){
 				    	   startMondayDate = previousMondayDate;
 				        }
@@ -427,23 +430,23 @@ public class CommonUtil {
 					
 					
 					
-					/**
+					*//**
 					 * Calculating endDate for the submission records of this particular projectmember
-					*/
+					*//*
 					Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 					startCal.setLenient(false);
 					startCal.setTime(new Date());
 					
-					/**
+					*//**
 					 * Calculating next 12th week mondayDate from the current week monday
-					*/
+					*//*
 					Calendar endMonday = CalendarUtil.getDateIncrementByincrement(endCal,91);
 					
 
-					/**
+					*//**
 					 * checking whether projectMemberEnddate is lesserthan next 12th week monday date then 
 					 * projectMemberEnddate is taken as enddate for the submission records
-					*/
+					*//*
 					if(pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().before(endMonday.getTime())){
 					    endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 					    endCal.setLenient(false);
@@ -458,10 +461,10 @@ public class CommonUtil {
 					Calendar tsCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 					tsCal.setLenient(false);
 					
-					/**
+					*//**
 					 * Calculating totalweeks b/w startdate and enddate
 					 * 
-					*/
+					*//*
 					totalWeeks = (int)((endMonday.getTimeInMillis()-startMonday.getTimeInMillis())/(7l * 24l * 60l * 60l * 1000l));
 					for (int week = 0; week < totalWeeks; week++) {
 						if(tsStartDate == null){
@@ -512,16 +515,16 @@ public class CommonUtil {
 					}
 				}
 			
-				/**
+				*//**
 				 * Storing all submissions b/w startdate and enddate
-				*/
+				*//*
 				timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	
 	public void highLightMenu(String menuName,HttpServletRequest request){

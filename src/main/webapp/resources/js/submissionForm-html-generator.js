@@ -284,31 +284,41 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         			 }else if(label == 'Phone Number'){
         				 datavalidation = 'data-validation="required validate_phone validate_Space validate_length length9-20"';
         			 }
-        			 else{
-        				 datavalidation = 'data-validation="required validate_Space validate_length length1-100"';
-        			 }
-        			 
-        			 if(label == 'Current CTC' || label == 'Expected CTC'){
+        			 else if(label == 'Current CTC' || label == 'Expected CTC'){
             			 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
             		 }
-            		 if(label == 'Designation' || label == 'Education'){
+        			 else if(label == 'Designation'){
             			 datavalidation = 'data-validation="required validate_Space validate_Name validate_length length2-250"';
             		 }
+        			 else if(label == 'Education'){
+            			 datavalidation = 'data-validation="required validate_Space validate_Name"';
+            		 }
+        			 else if(label == 'First Name' || label == 'Last Name'){
+        				 datavalidation = 'data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"';
+        			 }else{
+        				 datavalidation = 'data-validation="required validate_Space validate_length length1-100"';
+        			 }
         			 
         			 datavalidation2 = 'data-validation="required"';
         		 }else{
         			 if(label == 'Alternate Number'){
         				 datavalidation = 'data-validation="validate_phone validate_Space validate_length length9-20"';
+        			 }
+        			 
+        			 else if(label == 'Current CTC' || label == 'Expected CTC'){
+        				 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
+            		 }
+        			 else if(label == 'Designation'){
+            			 datavalidation = 'data-validation="validate_Space validate_Name validate_length length2-250"';
+            		 }
+        			 else if(label == 'Education'){
+            			 datavalidation = 'data-validation="validate_Space validate_Name"';
+            		 }
+        			 else if(label == 'Last Name'){
+        				 datavalidation = 'data-validation="validate_Space validate_AlphaNumber validate_length length1-100"';
         			 }else{
         				 datavalidation = 'data-validation="validate_Space validate_length length1-100"';
         			 }
-        			 
-        			 if(label == 'Current CTC' || label == 'Expected CTC'){
-        				 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
-            		 }
-            		 if(label == 'Designation' || label == 'Education'){
-            			 datavalidation = 'data-validation="validate_Space validate_Name validate_length length2-250"';
-            		 }
         			 novalidation = 'data-validation-optional="true"';
         		 }
         		 

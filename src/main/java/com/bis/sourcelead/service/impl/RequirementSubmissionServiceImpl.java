@@ -714,7 +714,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 try {
     		     // create the json array from String rules
     		     JSONArray jsonRules = new JSONArray(data);
-    		     System.out.println(jsonRules.length());
     		     // iterate over the rules 
     		     writeRow = createExcelsheet.createRow(i+8);
     		     for (int j=0; j<jsonRules.length();j++){
@@ -832,7 +831,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
    		 String data = submission.getSubmissionTemplateJsonStringValue();
    		 try {
    		     JSONArray jsonRules = new JSONArray(data);
-   		     System.out.println(jsonRules.length());
    		     for (int j=0; j<jsonRules.length();j++){
    		         JSONObject obj = (JSONObject) jsonRules.get(j);
    		         Cell cell = excelHeader.createCell(j);
@@ -1189,44 +1187,20 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("applicantName",requirementSubmissionTemplateFields.getFirstName());
 			 }
-		 if((requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null && !"".equalsIgnoreCase(requirement.getMaxExp()))){
-			 StringBuilder expBuild = new StringBuilder();
-			 globalVarsMap.put("experience", expBuild.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString()); 
-		 	 }else if(requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())){
-			 globalVarsMap.put("experience", requirement.getMinExp());
-		 	 }else{
-			 globalVarsMap.put("experience","--");
-			 }
-		 if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
-			 StringBuilder locBuild = new StringBuilder();
-			 globalVarsMap.put("location", locBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
-		 	}else if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
-		 		StringBuilder locBuild = new StringBuilder();
-			 globalVarsMap.put("location", locBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
-		 	}else{
-			globalVarsMap.put("location","--");
-			}
 		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
 			 StringBuilder rateBuild = new StringBuilder();
-			 globalVarsMap.put("requirementRate", rateBuild.append(requirement.getCurrencyCode()).append("-").append(requirement.getRate()).append("-").append(requirement.getRateType()).toString());
+			 globalVarsMap.put("requirementRate", rateBuild.append(requirement.getCurrencyCode()).append("-").append(requirementRateSubmissionNegotiation.getExpectedRate()).append("-").append(requirementRateSubmissionNegotiation.getExpectedRateType()).toString());
 			 }else{
 				 globalVarsMap.put("requirementRate","--");
 			 }
-		 if(requirement.getSkills()!= null && !"".equalsIgnoreCase(requirement.getSkills())){
-			 globalVarsMap.put("skills", requirement.getSkills());
-			 }else{
-				 globalVarsMap.put("skills","--");
-			 }
-		 if(requirement.getDescription()!= null && !"".equalsIgnoreCase(requirement.getDescription())){
-			 globalVarsMap.put("jobDescription", requirement.getDescription());
-			 }else{
-				 globalVarsMap.put("jobDescription","--");
-			 }
+		 
 		 if(rejectreason != null && !"".equalsIgnoreCase(rejectreason)){
 			 globalVarsMap.put("rejectReason",rejectreason);
 			 }else{
 				 globalVarsMap.put("rejectReason","--");
 			 }
+		 
+		 globalVarsMap.put("negotiationLink", tempHTML.toString());
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
@@ -1859,7 +1833,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	   		 String data = submission.getSubmissionTemplateJsonStringValue();
 	   		 try {
 	   		     JSONArray jsonRules = new JSONArray(data);
-	   		     System.out.println(jsonRules.length());
 	   		     for (int j=0; j<jsonRules.length();j++){
 	   		         JSONObject obj = (JSONObject) jsonRules.get(j);
 	   		         Cell cell = excelHeader.createCell(j);
@@ -2611,6 +2584,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public Integer getRequirementPerCandidateCount(Long candudateId) throws Exception {
 		return requirementSubmissionDao.getRequirementPerCandidateCount(candudateId);
+	}
+
+	@Override
+	public Integer getNumberOfApplicantsForRequirement(Long orgLocationId, Long requirementId)throws Exception {
+		return requirementSubmissionDao.getNumberOfApplicantsForRequirement(orgLocationId,requirementId);
 	}
 
 

@@ -58,7 +58,6 @@ public class EmailMessageBodyConverter {
 				int last = tests.indexOf(tests)+tests.length();
 				
 				tempStr.replace(tempStr.indexOf(tests), tempStr.indexOf(tests)+tests.length(), sb.toString());
-				System.out.println(tempStr);
 				sb.delete(first, last);
 				}
 			}
@@ -101,7 +100,6 @@ public String convertTempBodyOfEmailTemplate(String body,Map<String, String> glo
 				int last = tests.indexOf(tests)+tests.length();
 				
 				tempStr.replace(tempStr.indexOf(tests), tempStr.indexOf(tests)+tests.length(), sb.toString());
-				System.out.println(tempStr);
 				
 
 				if(test != null && test != "" && ("loginURL".equals(test) || ("userEmailId".equals(test)) || ("orgName".equals(test)) || ("password".equals(test)) ||("vendorOrgName".equals(test))||("clientOrgName".equals(test)) 

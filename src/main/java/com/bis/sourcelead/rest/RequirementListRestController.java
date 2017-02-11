@@ -224,6 +224,18 @@ public class RequirementListRestController {
 			            		requirement = getData(requirementIndex);
 			            	}
 			            	
+			            	if(null != requirementIndex.getReleasedBy()){
+			            		List<Long> userId = new ArrayList<Long>();
+			            		for (String s : requirementIndex.getReleasedBy().split(",")){
+			    					userId.add(Long.parseLong(s));
+			    				 }
+			    				boolean flag = userId.contains(user.getId());
+			             		if(flag == true){
+			             			requirement.setIsRequirementReleasedByuser(Constants.YES);
+			             		}
+			            	}
+			            	
+			            	
 			            	requirementList.add(requirement);
 			            }
 					}
@@ -338,6 +350,9 @@ public class RequirementListRestController {
      	requirement.setCity(requirementIndex.getCity());
      	requirement.setSearchType("Requirement");
      	requirement.setPositions(requirementIndex.getNumberOfPositions());
+     	if(requirementIndex.getNumberOfApplicants() != null){
+     		requirement.setTotalApplicantsForRequirement(Integer.parseInt(requirementIndex.getNumberOfApplicants()));	
+     	}
      	requirement.setNoOfApplicants(requirementIndex.getNumberOfApplicants());
      	requirement.setManager(requirementIndex.getManager());
      	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){

@@ -1,12 +1,11 @@
 package com.bis.sourcelead.dao;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 
 public interface UserDao {
@@ -92,13 +91,24 @@ public interface UserDao {
 
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
 	
-	List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
+	LinkedHashSet<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
 
 	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId);
 
 	public List<User>  getUserListExceptExistedTeamMembersList(List<Long> teamMembersId,Long orgLocationId)throws Exception;
 	
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+	
+	/**
+	 * @author Prasad salina
+	 * @param currentApproverId
+	 * @param orgLocationsId
+	 * @param tabId
+	 * @return
+	 * @throws Exception
+	 * @Purpose to get level2 managers
+	 */
+	public List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId, Long orgLocationsId,Long tabId)throws Exception;
 	
 	public List<User> getUsersForAddAsConsultant(Org org,Long orgLocationsId) throws Exception;
 	

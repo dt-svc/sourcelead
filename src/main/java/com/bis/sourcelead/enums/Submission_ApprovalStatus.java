@@ -17,7 +17,7 @@ public enum Submission_ApprovalStatus {
 	}
 	 public static Submission_ApprovalStatus getNameByValue(String scenarioId){
 	   	  for(Submission_ApprovalStatus project_Status : Submission_ApprovalStatus.values()){
-	   	    if(scenarioId == project_Status.value) 
+	   	    if(scenarioId.equalsIgnoreCase(project_Status.value)) 
 	   	    	return project_Status;
 	   	  }
 	   	  return null;

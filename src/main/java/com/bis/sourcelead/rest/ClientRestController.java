@@ -355,8 +355,8 @@ public class ClientRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		//List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
-		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllActiveSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
+		//List<OrgSpoc> orgSpocsList  = orgSpocService.getAllActiveSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
 		if(orgSpocsList != null){
 			for(OrgSpoc orgSpoc : orgSpocsList){
 				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientContactCreateMsg");
