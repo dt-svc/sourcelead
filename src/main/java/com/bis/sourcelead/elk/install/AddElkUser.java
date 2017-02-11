@@ -81,11 +81,19 @@ public class AddElkUser {
 					userIndex.setCreatedDate(createdDate);
 				}
 				userIndex.setCreatedBy(rs.getString("CREATED_BY"));
-				Timestamp updatedDateTimestamp = rs.getTimestamp("UPDATED_DATE");
-				if (null != updatedDateTimestamp) {
-					String updatedDate = StringDate.format(new java.util.Date(updatedDateTimestamp.getTime()));
-					userIndex.setUpdatedDate(updatedDate);
+				
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				if(null != rs.getDate("CREATED_DATE")){
+					userIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
 				}
+				
+				if(null != rs.getDate("UPDATED_DATE")){
+					userIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
+				}else{
+					userIndex.setUpdatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
+				}
+				
+			
 				userIndex.setUpdatedBy(rs.getString("UPDATED_BY"));
 
 				Long userId = rs.getLong("USER_ID");
