@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -385,6 +386,8 @@ public class TimesheetRestController {
 			}
 			tabData =	projectTabDataByDates(currentStartDate.toString(), currentEndDate.toString(),projectMemberId,timesheetFrequencyEndDate,submissionStatus.getValue());
 		}
+		String exportPdf = "pdf";
+		String exportExcel = "excel";
 		timesheetEntriesDiv.append("					<div class='export'> ");
 		timesheetEntriesDiv.append("						<p><i class='glyphicon glyphicon-export'></i>Export<i class='fa fa-caret-down'></i></p> ");
 		timesheetEntriesDiv.append("							<ul> ");
@@ -393,6 +396,8 @@ public class TimesheetRestController {
 		timesheetEntriesDiv.append("			                    <li>Word<i class='fa fa-file-word-o'></i></li> ");
 		timesheetEntriesDiv.append("							</ul>			 ");
 		timesheetEntriesDiv.append("					</div> ");
+		timesheetEntriesDiv.append("			                	<li onClick='timesheetEntriesExport(\""+currentStartDate.toString()+"\","+projectMemberId+",\""+exportPdf+"\");'>PDF<i class='fa fa-file-pdf-o'></i></li> ");
+		timesheetEntriesDiv.append("			                    <li onClick='timesheetEntriesExport(\""+currentStartDate.toString()+"\","+projectMemberId+",\""+exportExcel+"\");'>Excel<i class='fa fa-file-excel-o'></i></li> ");
 		timesheetEntriesDiv.append("			        <div class='clearfix'></div> ");
 		timesheetEntriesDiv.append("			    </ul> "); 
 		

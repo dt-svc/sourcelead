@@ -122,6 +122,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		Long satTotHours = 0L;
 		Long sunTotHours = 0L;
 		
+		
 		/**
 		  *calculating prior 6th week mondaydate and post 6th week sunday day for employee
 		  *
@@ -190,7 +191,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		  }
 		   String weekStartDate = format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime());
 		   String weekEndDate = format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime());
-		   sheet = getExcelSheetWithHeader(sheet, writeRow, wb,weekStartDate,weekEndDate,user);
+		  
          timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId());
          currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
          currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
@@ -215,9 +216,13 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
         ArrayList<Boolean> isThereAnyApproverApproved = null;
         int count = 9;
         int lastRow =0;
+        String projectName ="";
+        String billableHours = "";
+        String nonbillableHours = "";
+        String submissionStatusStr = "";
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
 			 int column = 0;
-			String projectName ="";
+			
 			lastRow = count;
 			isThereAnyApproverApproved = new ArrayList<Boolean>();
 			/**
@@ -244,7 +249,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		    */
 			HashSet<Date> pmhDateList =  projectMembersHistoryService.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(ts.getProjectMembers().getId(), currentStartDate, currentEndDate);
 			
-			String submissionStatusStr = submissionStatus.getValue();
+			submissionStatusStr = submissionStatus.getValue();
 			String disbleCondition1 = "";
 			 Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			 currentCal.setLenient(false);
@@ -266,90 +271,233 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 				  projectName = ts.getProjectMembers().getProjects().getProjectName(); 
 			}
 			
+			if(ts.getBillableHours() != null){
+				  billableHours = ts.getBillableHours();
+			}
+			
+			if(ts.getNonBillableHours() != null){
+				  nonbillableHours = ts.getNonBillableHours();
+			}
+			
+            StringBuilder disbleCondition = new StringBuilder("");
+    		StringBuilder disbleCondition2 = new StringBuilder("");
+    		StringBuilder disbleCondition3 = new StringBuilder("");
+    		StringBuilder disbleCondition4 = new StringBuilder("");
+    		StringBuilder disbleCondition5 = new StringBuilder("");
+    		StringBuilder disbleCondition6 = new StringBuilder("");
+    		StringBuilder disbleCondition7 = new StringBuilder("");
+    		
+    		
+            DateFormat dateFor = Constants.DF_DMY;
+    		Date actualStartDate = dateFor.parse(weekStartDate.replaceAll("/", "-"));
+    	    Date actualEndDate = format.parse(weekEndDate.replaceAll("/", "-"));
+    		int dayOfTheDateWithStartDate = CalendarUtil.getDayOfTheDate(format.parse(weekStartDate));
+    		String weekStartDate1 = weekStartDate;
+    		switch (dayOfTheDateWithStartDate) {
+    	        case 1:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(weekStartDate,6);
+    	                 disbleCondition.append("disabled");
+    	                 disbleCondition2.append("disabled");
+    	                 disbleCondition3.append("disabled");
+    	                 disbleCondition4.append("disabled");
+    	                 disbleCondition5.append("disabled");
+    	                 disbleCondition6.append("disabled");
+    	                 break;
+    	        case 2:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(weekStartDate,0);
+    	                 break;
+    	        case 3:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(weekStartDate,1);
+    	                 disbleCondition.append("disabled");
+    	             break;
+    	        case 4:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(weekStartDate,2);
+    			         disbleCondition.append("disabled");
+    		             disbleCondition2.append("disabled");
+    	            break;
+    	        case 5: weekStartDate = CalendarUtil.getPreviousDateByDecrementor(weekStartDate,3);
+    			        disbleCondition.append("disabled");
+    		            disbleCondition2.append("disabled");
+    		            disbleCondition3.append("disabled");
+    	            break;
+    	        case 6:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(weekStartDate,4);
+    			         disbleCondition.append("disabled");
+    		             disbleCondition2.append("disabled");
+    		             disbleCondition3.append("disabled");
+    		             disbleCondition4.append("disabled");
+    	              break;
+    	        case 7: weekStartDate = CalendarUtil.getPreviousDateByDecrementor(weekStartDate,5);
+    			        disbleCondition.append("disabled");
+    		            disbleCondition2.append("disabled");
+    		            disbleCondition3.append("disabled");
+    		            disbleCondition4.append("disabled");
+    		            disbleCondition5.append("disabled");
+    	             break;
+    	        default:   weekStartDate = CalendarUtil.getPreviousDateByDecrementor(weekStartDate,0);
+    	                 break;
+           }
+    		int dayOfTheDateWithEndDate = CalendarUtil.getDayOfTheDate(format.parse(weekEndDate));
+    		switch (dayOfTheDateWithEndDate) {
+    			case 2:    disbleCondition2.append("disabled");
+    	                   disbleCondition3.append("disabled");
+    	                   disbleCondition4.append("disabled");
+    	                   disbleCondition5.append("disabled");
+    	                   disbleCondition6.append("disabled");
+    	                   disbleCondition7.append("disabled");
+    	                   break;
+    	                   
+    	        case 3:  disbleCondition3.append("disabled");
+    			         disbleCondition4.append("disabled");
+    			         disbleCondition5.append("disabled");
+    			         disbleCondition6.append("disabled");
+    			         disbleCondition7.append("disabled");
+    			          break;
+    	        case 4:  disbleCondition4.append("disabled");
+    			         disbleCondition5.append("disabled");
+    			         disbleCondition6.append("disabled");
+    			         disbleCondition7.append("disabled");
+    			         break;
+    	        case 5:  disbleCondition5.append("disabled");
+    		             disbleCondition6.append("disabled");
+    		             disbleCondition7.append("disabled");
+    	                 break;
+    	        case 6:   disbleCondition6.append("disabled");
+    		             disbleCondition7.append("disabled");
+    	                 break;
+    	        case 7:  disbleCondition7.append("disabled");
+    	                 break;
+            }
+    		
+    		writeRow = sheet.createRow(column+count);
+    		Cell datecell1 = writeRow.createCell(1);
+    		datecell1.setCellValue(weekStartDate1); 
+    		
+    		String tuesDayDate =  CalendarUtil.getNextDate(weekStartDate1);
+    		Cell datecell2 = writeRow.createCell(2);
+    		datecell2.setCellValue(tuesDayDate); 
+    		
+    		String WednesDayDate =  CalendarUtil.getNextDate(tuesDayDate);
+    		Cell datecell3 = writeRow.createCell(3);
+    		datecell3.setCellValue(WednesDayDate); 
+    		
+    		String ThursDayDate =  CalendarUtil.getNextDate(WednesDayDate);
+    		Cell datecell4 = writeRow.createCell(4);
+    		datecell4.setCellValue(ThursDayDate); 
+    		
+    		String FriDayDate =  CalendarUtil.getNextDate(ThursDayDate);
+    		Cell datecell5 = writeRow.createCell(5);
+    		datecell5.setCellValue(FriDayDate); 
+    		
+    		String SaturdayDate =  CalendarUtil.getNextDate(FriDayDate);
+    		Cell datecell6 = writeRow.createCell(6);
+    		datecell6.setCellValue(SaturdayDate); 
+    		
+    		String SundayDate =  CalendarUtil.getNextDate(SaturdayDate);
+    		Cell datecell7 = writeRow.createCell(7);
+    		datecell7.setCellValue(SundayDate); 
+            
 			Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
 			Collection<TimesheetEntries>  timesheetEntriesList =   getAllTimesheetEntriesBySubmissionId(ts.getId());
 			if(timesheetEntriesList != null && !timesheetEntriesList.isEmpty()){
 						Integer maxCount = timesheetEntriesList.size();
 						maxCount = maxCount+1;
 						for(TimesheetEntries timesheetEntries   : timesheetEntriesList){
-							writeRow = sheet.createRow(column+count); 
-							writeRow.createCell(0).setCellValue(projectName);
+							  Long weekTotHours = 0L;
+							    Long monHours = 0L;
+								Long tueHours = 0L;
+								Long wedHours = 0L;
+								Long thuHours = 0L;
+								Long friHours = 0L;
+								Long satHours = 0L;
+								Long sunHours = 0L;
+							writeRow = sheet.createRow(column+count+1); 
+//							writeRow.createCell(0).setCellValue(projectName);
 							 lastRow = count+timesheetEntriesList.size();
-							 sheet.addMergedRegion(new CellRangeAddress(
+							 /*sheet.addMergedRegion(new CellRangeAddress(
 									count, //first row (0-based)
 									lastRow, //last row  (0-based)
 							        0, //first column (0-based)
 							        0  //last column  (0-based)
-							));
+							));*/
 						              
 						              if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
 						            	  if(timesheetEntries.getProjectTask() != null){
 						            	  if(timesheetEntries.getProjectTask() != null ){
-						     				 writeRow.createCell(1).setCellValue(timesheetEntries.getProjectTask().getTaskName()); 
+						     				 writeRow.createCell(0).setCellValue(timesheetEntries.getProjectTask().getTaskName()); 
 						     			}
 						            	  }
 						              }
 						              Cell cell2 = null;
 						              if(timesheetEntries.getMonHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getMonHours())){
-						            	  cell2 = writeRow.createCell(2);
+						            	  cell2 = writeRow.createCell(1);
 						            	  cell2.setCellValue(timesheetEntries.getMonHours()); 
 						            	 // monTotHours = monTotHours + Double.parseDouble(timesheetEntries.getMonHours());
 						            	  monTotHours = monTotHours + getTotalHoursFormDayHours(timesheetEntries.getMonHours());
+						            	  monHours =  monHours + getTotalHoursFormDayHours(timesheetEntries.getMonHours());
 						              }
 					            	  if(!isNullOrEmpty(timesheetEntries.getMoncomments())){
 					            		  cell2.setCellComment(getCellComment(sheet,wb,timesheetEntries.getMoncomments()));
 					            	  }
-						              Cell cell3 = writeRow.createCell(3);
+						              Cell cell3 = writeRow.createCell(2);
 						              if(timesheetEntries.getTueHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getTueHours())){
 						            	  cell3.setCellValue(timesheetEntries.getTueHours());
 						            	  tueTotHours = tueTotHours + getTotalHoursFormDayHours(timesheetEntries.getTueHours());
+						            	  tueHours = tueHours + getTotalHoursFormDayHours(timesheetEntries.getTueHours());
 						              }
 						              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
 						            	  cell3.setCellComment(getCellComment(sheet,wb,timesheetEntries.getTuecomments()));
 						              }
-						              Cell cell4 = writeRow.createCell(4);
+						              Cell cell4 = writeRow.createCell(3);
 						              if(timesheetEntries.getWedHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getWedHours())){
 						            	  cell4.setCellValue(timesheetEntries.getWedHours()); 
 						            	  wedTotHours = wedTotHours + getTotalHoursFormDayHours(timesheetEntries.getWedHours());
+						            	  wedHours = wedHours + getTotalHoursFormDayHours(timesheetEntries.getWedHours());
 						              }
 						              if(!isNullOrEmpty(timesheetEntries.getWedcomments())){
 						            	  cell4.setCellComment(getCellComment(sheet,wb,timesheetEntries.getWedcomments()));
 						              }
-						              Cell cell5 = writeRow.createCell(5);
+						              Cell cell5 = writeRow.createCell(4);
 						              if(timesheetEntries.getThuHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getThuHours())){
 						            	  cell5.setCellValue(timesheetEntries.getThuHours());   
 						            	  thuTotHours = thuTotHours + getTotalHoursFormDayHours(timesheetEntries.getThuHours());
+						            	  thuHours = thuHours + getTotalHoursFormDayHours(timesheetEntries.getThuHours());
 						              }
 					            	  if(!isNullOrEmpty(timesheetEntries.getThucomments())){
 					            		  cell5.setCellComment(getCellComment(sheet,wb,timesheetEntries.getThucomments()));
 					            	  }
-						              Cell cell6 = writeRow.createCell(6);
+						              Cell cell6 = writeRow.createCell(5);
 						              if(timesheetEntries.getFriHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getFriHours())){
 						            	  cell6.setCellValue(timesheetEntries.getFriHours()); 
 						            	  friTotHours = friTotHours + getTotalHoursFormDayHours(timesheetEntries.getFriHours());
+						            	  friHours = friHours + getTotalHoursFormDayHours(timesheetEntries.getFriHours());
 						              }
 					            	  if(!isNullOrEmpty(timesheetEntries.getFricomments())){
 					            		  cell6.setCellComment(getCellComment(sheet,wb,timesheetEntries.getFricomments()));
 					            	  }
-						              Cell cell7 = writeRow.createCell(7);
+						              Cell cell7 = writeRow.createCell(6);
 						              if(timesheetEntries.getSatHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getSatHours())){
 						            	  cell7.setCellValue(timesheetEntries.getSatHours());   
 						            	  satTotHours = satTotHours + getTotalHoursFormDayHours(timesheetEntries.getSatHours());
+						            	  satHours = satHours + getTotalHoursFormDayHours(timesheetEntries.getSatHours());
+						            	  
 						              } 
 					            	  if(!isNullOrEmpty(timesheetEntries.getSatcomments())){
 					            		  cell7.setCellComment(getCellComment(sheet,wb,timesheetEntries.getFricomments()));
 					            	  }
-						              Cell cell8 = writeRow.createCell(8);
+						              Cell cell8 = writeRow.createCell(7);
 						              if(timesheetEntries.getSunHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getSunHours())){
 						            	  cell8.setCellValue(timesheetEntries.getSunHours());   
 						            	  sunTotHours = sunTotHours + getTotalHoursFormDayHours(timesheetEntries.getSunHours());
+						            	  sunHours = sunHours + getTotalHoursFormDayHours(timesheetEntries.getSunHours());
 						              } 
 					            	  if(!isNullOrEmpty(timesheetEntries.getSuncomments())){
 					            		  cell8.setCellComment(getCellComment(sheet,wb,timesheetEntries.getFricomments()));
 					            	  }  
+					            	  
+					            	
+					            	  weekTotHours = monHours + tueHours + wedHours + thuHours + friHours + satHours + sunHours;
+					            	  Cell cell9 = writeRow.createCell(8);
+					            	  cell9.setCellValue(getTotalHours(weekTotHours)); 
+					            	  
 						              column++;
 						     }
-						                 Cell cell9 = writeRow.createCell(9);
+						                /* Cell cell9 = writeRow.createCell(8);
 						              if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
 						            	  cell9.setCellValue(submissionStatusStr); 
 						            	  CellStyle style =getCellStyle(wb,submissionStatusStr);
@@ -378,26 +526,27 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 							        	cell9.setCellValue(submissionStatusStr);
 							        	 CellStyle style =getCellStyle(wb,submissionStatusStr);
 						            	  cell9.setCellStyle(style);
-							        }
+							        }*/
 				  }
 			count = lastRow+1;
 			}
 		Long totalHours = monTotHours+tueTotHours+wedTotHours+thuTotHours+friTotHours+satTotHours+sunTotHours;
 		writeRow = sheet.createRow(count);
-		Cell cell1 = writeRow.createCell(1);
+		Cell cell1 = writeRow.createCell(0);
 		cell1.setCellValue("Total");
 		CellStyle style =getCellStyle(wb,"");
    	    cell1.setCellStyle(style);
-		writeRow.createCell(2).setCellValue(getTotalHours(monTotHours));
-		writeRow.createCell(3).setCellValue(getTotalHours(tueTotHours));
-		writeRow.createCell(4).setCellValue(getTotalHours(wedTotHours));
-		writeRow.createCell(5).setCellValue(getTotalHours(thuTotHours));
-		writeRow.createCell(6).setCellValue(getTotalHours(friTotHours));
-		writeRow.createCell(7).setCellValue(getTotalHours(satTotHours));
-		writeRow.createCell(8).setCellValue(getTotalHours(sunTotHours));
-		writeRow.createCell(9).setCellValue(getTotalHours(totalHours));
+		writeRow.createCell(1).setCellValue(getTotalHours(monTotHours));
+		writeRow.createCell(2).setCellValue(getTotalHours(tueTotHours));
+		writeRow.createCell(3).setCellValue(getTotalHours(wedTotHours));
+		writeRow.createCell(4).setCellValue(getTotalHours(thuTotHours));
+		writeRow.createCell(5).setCellValue(getTotalHours(friTotHours));
+		writeRow.createCell(6).setCellValue(getTotalHours(satTotHours));
+		writeRow.createCell(7).setCellValue(getTotalHours(sunTotHours));
+		writeRow.createCell(8).setCellValue(getTotalHours(totalHours));
 		
 		StringBuilder fileName=new StringBuilder();
+		 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,weekStartDate,weekEndDate,user,totalHours,projectName,submissionStatusStr,billableHours,nonbillableHours);
 		file = new File(fileName.append(user.getFirstName()).append("_").append(weekStartDate).append(" to ").append(weekEndDate).append(".xls").toString());
 		FileOutputStream fos = new FileOutputStream(file);
 		try {
@@ -431,7 +580,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}
 	
 
-	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, String weekStartDate, String weekEndDate, User user) {
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, String weekStartDate, String weekEndDate, User user, Long totalHours, String projectName, String submissionStatusStr, String billableHours, String nonbillableHours) {
 
 		CellStyle style = createExcelworkbook.createCellStyle();
 	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
@@ -452,6 +601,18 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		 cell2.setCellValue(user.getFirstName());
 		 cell2.setCellStyle(style);
 		 
+		 createExcelsheet.setColumnWidth(3, 10000);
+		 createExcelsheet.setColumnWidth(4, 10000);
+		 
+		 Cell cell11 = writeRow.createCell(3);
+		 cell11.setCellValue("Status :");
+		 cell11.setCellStyle(style);
+		 
+		 Cell cell21 = writeRow.createCell(4);
+		 cell21.setCellValue(submissionStatusStr);
+		 cell21.setCellStyle(style);
+		 
+		 
 		 writeRow = createExcelsheet.createRow(2);
 		 createExcelsheet.setColumnWidth(0, 10000);
 		 createExcelsheet.setColumnWidth(1, 10000);
@@ -464,18 +625,65 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		 cell4.setCellValue(user.getEmail());
 		 cell4.setCellStyle(style);
 		 
+		 createExcelsheet.setColumnWidth(3, 10000);
+		 createExcelsheet.setColumnWidth(4, 10000);
+		 
+		 Cell cell31 = writeRow.createCell(3);
+		 cell31.setCellValue("Billable Hours :");
+		 cell31.setCellStyle(style);
+		 
+		 Cell cell41 = writeRow.createCell(4);
+		 cell41.setCellValue(billableHours);
+		 cell41.setCellStyle(style);
+		 
 		 writeRow = createExcelsheet.createRow(3);
 		 createExcelsheet.setColumnWidth(0, 10000);
 		 createExcelsheet.setColumnWidth(1, 10000);
 		 
 		 Cell cell5 = writeRow.createCell(0);
-		 cell5.setCellValue("Week : ");
+		 cell5.setCellValue("Project : ");
 		 cell5.setCellStyle(style);
 		 
 		 Cell cell6 = writeRow.createCell(1);
-		 StringBuilder val=new StringBuilder();
-		 cell6.setCellValue(val.append(weekStartDate).append(" to ").append(weekEndDate).toString()); 
+//		 StringBuilder val=new StringBuilder();
+		 cell6.setCellValue(projectName); 
 		 cell6.setCellStyle(style);
+		 
+		 createExcelsheet.setColumnWidth(3, 10000);
+		 createExcelsheet.setColumnWidth(4, 10000);
+		 
+		 Cell cell51 = writeRow.createCell(3);
+		 cell51.setCellValue("Non-Billable Hours :");
+		 cell51.setCellStyle(style);
+		 
+		 Cell cell61 = writeRow.createCell(4);
+		 cell61.setCellValue(nonbillableHours); 
+		 cell61.setCellStyle(style);
+		 
+		 writeRow = createExcelsheet.createRow(4);
+		 createExcelsheet.setColumnWidth(0, 10000);
+		 createExcelsheet.setColumnWidth(1, 10000);
+		 
+		 Cell cell7 = writeRow.createCell(0);
+		 cell7.setCellValue("Frequency : ");
+		 cell7.setCellStyle(style);
+		 
+		 Cell cell8 = writeRow.createCell(1);
+		 StringBuilder val=new StringBuilder();
+		 cell8.setCellValue(val.append(weekStartDate).append(" to ").append(weekEndDate).toString()); 
+		 cell8.setCellStyle(style);
+		 
+		 createExcelsheet.setColumnWidth(3, 10000);
+		 createExcelsheet.setColumnWidth(4, 10000);
+		 
+		 Cell cell9 = writeRow.createCell(3);
+		 cell9.setCellValue("Total Hours :");
+		 cell9.setCellStyle(style);
+		 
+		 Cell cell10 = writeRow.createCell(4);
+		 cell10.setCellValue(getTotalHours(totalHours)); 
+		 cell10.setCellStyle(style);
+		 //=================================================
 		 
 		return createExcelsheet = setExcelHeader(createExcelsheet,style,createExcelworkbook);
 	}
