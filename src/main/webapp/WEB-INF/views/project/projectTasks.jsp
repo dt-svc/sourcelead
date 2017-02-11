@@ -42,7 +42,7 @@
 								</div>
 							</div>
 							<div class="form-group" id="taskBillableTypeDiv">
-								<label class="col-md-3">Billable</label>
+								<label class="col-md-3">Billable Type</label>
 								<div class="col-md-9">
 									<select id="taskBillableType" name="taskBillableType" class="form-control selectpicker">
 									  <option value="Billable">Billable</option>
