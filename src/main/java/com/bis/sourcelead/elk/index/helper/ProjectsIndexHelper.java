@@ -52,7 +52,7 @@ public class ProjectsIndexHelper {
 				projectsIndex.setClientName(projects.getOrgRelationId().getLocationId().getOrg().getOrgName());
 			}
 			
-			if(projectApproverHierarchyList.size()>0){
+			if(null !=projectApproverHierarchyList && projectApproverHierarchyList.size()>0){
 				for(ProjectApproverHierarchy projectApproverHierarchy : projectApproverHierarchyList){
 					if(projectApproverHierarchy.getLevel() == 1){
 						if(null != projectApproverHierarchy.getApproverUserId()){

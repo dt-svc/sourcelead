@@ -40,7 +40,6 @@
 								$('input#ProjectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
 							} else {
 								$('input#ProjectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
-								$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 							}
 						},
 					});
@@ -85,7 +84,7 @@
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-500"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-5000"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -151,7 +150,7 @@
 															</div>
 														</div>
 														<div class="form-group">
-															<label class="col-md-3">Billable</label>
+															<label class="col-md-3">Billable Type</label>
 															<div class="col-md-9">
 																<select id="taskBillableType" name="taskBillableType" class=" form-control selectpicker">
 																  <option value="Billable">Billable</option>
