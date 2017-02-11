@@ -453,7 +453,9 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	}
 	var sourceleadUrl ='${sourceleadUrl}';
 	var startDateStr = startDateStr;
-	var endDateStr = endDateStr;
+	if(endDateStr == null ||  endDateStr == "" || endDateStr == "undefined"){
+		endDateStr = "";
+	}
 	var searchByName = $("#searchByName").val();
 	$.ajax({
     	type: "POST",
@@ -493,7 +495,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	        		output = output +"<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='"+startDateStr+"' class='form-control clsDatePicker' readonly='readonly'>";
 	        		output = output + "</div></td>";
 	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
-	        		output = output +"<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
+	        		output = output +"<input id='endDate" + opt.id + "' value='"+endDateStr+"'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
 	        		output = output + "</div></td>";
 	        		output = output + "</tr>";
 			}
