@@ -16,7 +16,7 @@
 			</c:if>
 			<c:if test="${empty SourceLeadWeb_org.fileContentType}">
 				<div class="text-logo">
-				<span class="tbldata-dotdot">${SourceLeadWeb_orgName}</span>
+				<span class="tbldata-dotdot" title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
 				</div>
 			</c:if>
 		 </div>
@@ -69,15 +69,21 @@
 							  <c:if test="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval'}">
 							   <c:set var ="timesheetTabExist" scope="session" value="Y"/> 
 							  <ul class="collapses" style="display: block">
-							  	<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
+							        
+							        <%-- <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
+							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="My TimeSheets">TimeSheet Approval</a></li> --%>
+							  	     
+							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
 									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="TimeSheet Approval">TimeSheet Approval</a></li>
 							  </ul>
 							  </c:if>
 							  <c:if test="${sessionData.nav != 'TimeSheet' || sessionData.nav != 'TimeSheetApproval'}">
 							  <c:set var ="timesheetTabExist" scope="session" value="Y"/>
 							  <ul class="collapses" style="display: none">
-							  	<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
-									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="TimeSheet Approval">TimeSheet Approval</a></li>
+							 		<%-- <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
+							  		<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/newTimesheetApproval'/>" title="My TimeSheets">TimeSheet Approval</a></li> --%>
+							  		<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
+									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="TimeSheet Approval">TimeSheet Approval</a></li> 
 							  </ul>
 							  </c:if>
 						  </li>
