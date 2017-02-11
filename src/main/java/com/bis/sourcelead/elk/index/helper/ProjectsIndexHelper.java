@@ -46,9 +46,9 @@ public class ProjectsIndexHelper {
 				projectsIndex.setProjectStatus(projects.getProjectStatus().toString());
 			}
 			
-			if(null != projects.getOrgRelationId() && projects.getOrgRelationId().getLocationId().getId() == projects.getOrgLocationsId().getId()){
+			if(null != projects.getOrgRelationId() && null != projects.getOrgRelationId().getLocationId() && projects.getOrgRelationId().getLocationId().getId() == projects.getOrgLocationsId().getId()){
 				projectsIndex.setClientName(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
-			}else if(null != projects.getOrgRelationId() && projects.getOrgRelationId().getResponderLocationId().getId() == projects.getOrgLocationsId().getId()){
+			}else if(null != projects.getOrgRelationId() && null != projects.getOrgRelationId().getResponderLocationId() && projects.getOrgRelationId().getResponderLocationId().getId() == projects.getOrgLocationsId().getId()){
 				projectsIndex.setClientName(projects.getOrgRelationId().getLocationId().getOrg().getOrgName());
 			}
 			

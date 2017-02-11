@@ -32,7 +32,7 @@
 					</div>
 					<div class="form-horizontal row custom-form">
 						<div class="col-xs-12 col-lg-7">
-							<div class="form-group">
+							<div class="form-group" id="taskNamesDIV">
 								<label class="col-md-3">Task Name</label>
 								<div class="col-md-9">
 									<input type="text" id="taskName" name="taskName"
@@ -187,6 +187,7 @@ function updateTakBillableType(taskId){
 
 <script type="text/javascript">
 	function flushTasks() {
+		$('#taskNamesDIV').find('p.jquery_form_error_message').remove();
 		$("#taskBillableType").val('Billable');
 		$('#taskBillableType').selectpicker('refresh');
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
