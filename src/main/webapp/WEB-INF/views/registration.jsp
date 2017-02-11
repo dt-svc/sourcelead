@@ -1,7 +1,4 @@
 
-
-
-
 <!DOCTYPE html>
 
 <html>
@@ -13,120 +10,145 @@
     <title>::. Registration .::</title>
     <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="resources/css/chosen.min.css">
+    <link href="resources/css/font-awesome.min.css" rel="stylesheet">
     <link href="resources/css/bootstrap.min.css" rel="stylesheet">
     <link href="resources/css/register-style.css" rel="stylesheet">
-     <link href="resources/css/jquery-ui.css" rel="stylesheet">
+     <link href="resources/css/crowdsourcing-main.css" rel="stylesheet" type="text/css">
      <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+     <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
     <%@page session="true"%>
 </head>
 
 <body>
 <div class="regis_bg">
-	<div class="regis_logo regis_logo_a"><img src="resources/images/logo-regis.png" alt=""/></div>
-    <div class="regis_wrap regis_wrap_a">
-     <div id="loading"></div>
-    	<div class="signin_wrap" id="signin">
-        	<h1>Registration</h1>
-        
-	<div style="padding:20px 0px 0px 0px;">
-       <form:form class="login-form clearfix"  id="companyRegistration_form"  name="companyRegistration_form" method="post" >    
-                     <div id="comp-regis">  
-                 <div>
-                 <span>
-	            	<label>First Name</label>
-	                <input type="text" name="firstName"  value="${firstName}" class="signin_fild" field-name="First Name" data-validation="required validate_Space validate_length length2-100" />
-	                <b></b>
-	            </span>
-	            <span>
-	            	<label>Last Name</label>
-	                <input type="text" name="lastName"  value="${lastName}" class="signin_fild" field-name="Last Name" data-validation="required validate_Space validate_length length2-100"  />
-	                <b></b>
-	            </span>
-	               <div class="clearfix"></div>
-	            </div>
-	            
-	            <div>
-	            <span>
-	            	<label>Company Name</label>
-	                <input type="text" name="companyName"  value="${companyName}" class="signin_fild"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />
-	                <b></b>
-	            </span>
-	            <span id="companyWebsiteDiv">
-	            	<label>Company website</label>
+  <div class="container">
+      
+    <div class="outsoucing-registaion">
+        <div class="company_logo pull-left"><img src="resources/images/mail-logo.png" alt="Sourcelead Logo" class="img-responsive" width="250"></div>
+      <div class="clearfix"></div>
+      <ul class="nav nav-tabs">
+          <li class="active"><a data-toggle="tab" href="#professional"><i class="fa fa-user"></i>&nbsp;&nbsp;Professional</a></li>
+        <li><a data-toggle="tab" href="#recruiter"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
+      </ul>
+        <div class="regis_wrap_styles">
+        <div class="tab-content">
+        <div id="professional" class="tab-pane fade in active">
+            
+           <form:form class="login-form clearfix"  id="professionalRegistration_form"  name="professionalRegistration_form" method="post" >     
+            <div class="row">
+            <div class="form-group clearfix">
+                <div class="col-xs-12 col-md-6">
+                    <i class="fa fa-user-circle"></i>
+                    <label>First Name <span class="text-danger">*</span></label>
+                    <input type="text" value="" class="" field-name="First Name" data-validation="required">
+                    <b></b>
+                </div>
+                <div class="col-xs-12 col-md-6">
+                    <i class="fa fa-user-circle"></i>
+                    <label>Last Name</label>
+                    <input type="text" value="" class="" placeholder="">
+                    <b></b>
+                </div>
+                </div>
+                <div class="form-group clearfix">
+                <div class="col-xs-12 col-md-6">
+                    <i class="fa fa-envelope"></i>
+                    <label>Email <span class="text-danger">*</span></label>
+                    <input type="text" value="" class="" placeholder="">
+                    <b></b>
+                </div>
+                <div class="col-xs-12 col-md-6 select-field">
+                    <i class="fa fa-map-marker"></i>
+                    <select class="form-control chosen-select" data-placeholder="Location">
+                        <option disabled selected>Location</option>
+                        <option>Location-2</option>
+                        <option>Location-3</option>
+                        <option>Location-4</option>
+                    </select>
+                    <b></b>
+                </div>
+                </div>
+                
+            </div>
+            
+            <div class="clearfix mt25">
+                <div class="pull-left">
+                    <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a>
+                </div>
+                <div class="pull-right">
+                    <button type="submit" class="btn btn-primary btn_styles mr" title="Register">
+                        <i class="fa fa-paper-plane"></i>Register</button>
+                    <button type="button" class="btn btn-default btn_styles" title="Cancel">
+                        <i class="fa fa-times"></i>Cancel</button>
+                </div>
+            </div>
+            </form:form>
+        </div>
+        <div id="recruiter" class="tab-pane fade">
+            
+            <div class="row">
+            <div class="form-group clearfix">
+                <div class="col-xs-12 col-md-6">
+                    <i class="fa fa-user-circle"></i>
+                    <label>First Name <span class="text-danger">*</span></label>
+                    <input type="text" value="" class="">
+                    <b></b>
+                </div>
+                <div class="col-xs-12 col-md-6">
+                    <i class="fa fa-user-circle"></i>
+                    <label>Last Name</label>
+                    <input type="text" value="" class="" placeholder="">
+                    <b></b>
+                </div>
+                </div>
+                <div class="form-group clearfix">
+                <div class="col-xs-12 col-md-6">
+                    <i class="fa fa-envelope"></i>
+                    <label>Email <span class="text-danger">*</span></label>
+                    <input type="text" value="" class="" placeholder="">
+                    <b></b>
+                </div>
+                <div class="col-xs-12 col-md-6 select-field">
+                    <i class="fa fa-map-marker"></i>
+                    <select class="form-control chosen-select" data-placeholder="Location">
+                        <option disabled selected>Location</option>
+                        <option>Location-2</option>
+                        <option>Location-3</option>
+                        <option>Location-4</option>
+                    </select>
+                    <b></b>
+                </div>
+                </div>
+            </div>
+            
+            <div class="clearfix mt25">
+                                <div class="pull-left">
+                    <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a>
+                </div>
 
-	                <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();validateCompanyEmail();"  field-name="Company Website" data-validation="required validate_Space validate_domain validate_length length2-100"    class="signin_fild" />
+                <div class="pull-right">
+                    <button type="button" class="btn btn-primary btn_styles mr" title="Register">
+                        <i class="fa fa-paper-plane"></i>Register</button>
+                    <button type="button" class="btn btn-default btn_styles" title="Cancel">
+                        <i class="fa fa-times"></i>Cancel</button>
+                </div>
+            </div>
 
-	                <b></b>
-	            </span>
-	            <div class="clearfix"></div>
-	            </div>
-	            
-	            <div>
-	            <span id="emailDiv">
-	            	<label>Company email</label>
-	                <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();" field-name="Company Email" data-validation="required validate_Space validate_email validate_length length2-100" class="signin_fild"  />
-	                <b></b>
-	            </span>
-	            <span>
-	            	<label>Select Country</label>
-	                <input id="company-autocomplete" name="country" field-name="Country" data-validation="required validate_Space" value="${country}" type="text" class="signin_fild signin_fild_arrow"  />
-	                <b></b>
-	            </span>
-	             <div class="clearfix"></div>
-	            </div>            
-	            <div id=passwordDiv>
-	            <span>
-		            	<label>Password</label> 
-		                <input type="password" name="password"  field-name="Password" data-validation="required validate_Space validate_length length6-100" value="${password}" id="password" class="signin_fild"   />
-		                <b></b>
-		            </span>
-		            <span>
-		            	<label>Confirm password</label>
-		                <input type="password"  value="" field-name="Confirm Password" data-validation="required validate_Space" id="confirmPassword" class="signin_fild"  onblur="checkPass();" />
-		                <b id='confirmPasswordb'></b>
-		            </span>
-		            <div class="clearfix"></div>
-	            </div>
-	            
-		           <div class="terms_text">By Signing Up you agree to our <a href="javascript:void(0)">Terms</a> and <a href="javascript:void(0)">Privacy Policy.</a></div>                      
-		           <input type="submit" value="Register" id="register_button"  class="sign_btn" /><div class="for-pas-text">Already have an account? <a href="<c:url value='/login' />"> Sign In</a></div>   
-		    </div>
-		   
-		   </form:form>        
-        </div>            
-                       
-        </div>       
-    </div>
-</div>  
-  
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-    <script src="resources/js/bootstrap.min.js"></script>
-    <script src="resources/js/jquery-fun.js"></script> 
-    <script src="resources/js/formvalidator.js"></script>
+            
+        </div>
+      </div>
+        </div>
+      </div>
+  </div>
+</div>
+<script src="resources/js/jquery-1.11.3.min.js"></script> 
+<script src="resources/js/bootstrap.min.js"></script>
+<script src="resources/js/chosen.jquery.min.js"></script> 
+<script src="resources/js/formvalidator.js"></script>
 </body>
 
-<script>
-$(function () {
-     applyInputSlide();
-});
 
-
-function applyInputSlide() {
-    $(".signin_wrap span input").each(function (i) {
-        if ($(this).val().trim() !== "")
-            $(this).parent(".signin_wrap span").find('label').addClass('test');
-    });
-    $(".signin_wrap span input").on('focus', function () {
-        $(this).parent(".signin_wrap span").find('label').addClass('test');
-    });
-    $(".signin_wrap span input").on('blur', function () {
-        if ($(this).val().trim() === "")
-            $(this).parent(".signin_wrap span").find('label').removeClass('test');
-    });	    
-}
-</script>
 
 <script type="text/javascript">
 var validationSettings = {
@@ -135,14 +157,14 @@ var validationSettings = {
 		scrollToTopOnError : true,
 		dateFormat : 'yyyy/mm/dd' 
    };  
-         $('body').on('submit', '#companyRegistration_form', function(e){
+         $('body').on('submit', '#professionalRegistration_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
-            	var frm = $('#companyRegistration_form').serializeFormJSON();
+            	var frm = $('#professionalRegistration_form').serializeFormJSON();
             	var con = JSON.stringify(frm);
 			    con = con.replace(/[{}]/g, ""); 
          		var sourceleadUrl ='${sourceleadUrl}';
-         		$("#register_button").attr("disabled", "disabled");
+         	/* 	$("#register_button").attr("disabled", "disabled");
          		$( "#register_button" ).addClass('button').val('Processing..');
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	           	$.ajax({
@@ -158,7 +180,7 @@ var validationSettings = {
 			        	}
 			        	
 			        },  
-              }); 
+              });  */
                 
             	    return true;
             }
@@ -166,152 +188,61 @@ var validationSettings = {
             	return false;	
                }
             });
-         $('#companyRegistration_form').showHelpOnFocus();
+         $('#professionalRegistration_form').showHelpOnFocus();
             
      
 	</script>
 
+<script>
+$(function () {
+     applyInputSlide();
+});
 
-
-
-<script type="text/javascript">
-	 function checkPass() {   
-		var pass1 =$('input#password').val();  
-	    var pass2 = $('input#confirmPassword').val();
-	    if((pass1 != null && pass1 != '' && pass1 != 'undefined') && (pass2 != null && pass2 != '' && pass2 != 'undefined')){
-	    	if(pass1 == pass2){
-	    		$("#register_button").removeAttr("disabled");
-	    		$('input#confirmPassword').removeAttr( "class record-exist record-exist-errormsg");
-				$('#passwordDiv').find('p.jquery_form_error_message').remove();
-				$('input#confirmPassword').attr('class','valid signin_fild');
-				$( "#register_button" ).removeAttr("style");
-				$( "#register_button" ).addClass('sign_btn').val('Register');
-				$( "#register_button" ).click(function() {
-				 if ($(this).validate(false, validationSettings)){
-				 }
-				});
-				
-	    	}
-	    	else{
-	    		$("#register_button").attr("disabled", "disabled");
-	    		$('#passwordDiv').find('p.jquery_form_error_message').remove(); 
-	    		$('input#confirmPassword').attr('class','error signin_fild');
-	    		$("input#confirmPassword").closest('b').after("<p class='jquery_form_error_message'> Passwords Do Not Match</p>");
-				$('input#confirmPassword').attr('record-exist','yes');
-				$('input#confirmPassword').attr('record-exist-errorMsg',' Passwords Do Not Match'); 
-				$( "#register_button" ).addClass('sign_btn').val('Register');
-				$("#register_button").removeAttr("disabled");
-	    	
-	    	}
-	    }
-   }
-	
-   
-</script>
-
-<!--   Starts This Script is for validating the Company web site , to find the Duplicate values -->
-
-<script type="text/javascript">
-function validateWebsite(){
-      var website = document.getElementById("companyWebsite").value; 
-     var sourceleadUrl ='${sourceleadUrl}';
-     var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}';
-	 $('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");
-	 if(website != null && website != ''){
-		
-		 $("#register_button").attr("disabled", "disabled");
-		 $( "#register_button" ).addClass('button').val('Processing..');
-			 $.ajax({
-				    type: "GET",
-       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
-			        success: function(data) {
-			        	 var result = data;
-			        		if (result == "Website Duplicated" || result == "Invalid Website") {
-		        			//existed website
-		    	    		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove(); 
-		    	    		$('input#companyWebsite').attr('class','error signin_fild');
-		    	    		$("input#companyWebsite").closest('b').after("<p class='jquery_form_error_message'> "+website+" "+result+"</p>");
-		    				$('input#companyWebsite').attr('record-exist','yes');
-		    				$('input#companyWebsite').attr('record-exist-errorMsg',website+' '+result+''); 
-		    				$( "#register_button" ).addClass('sign_btn').val('Register');
-		    				$("#register_button").removeAttr("disabled");
-			        	}
-			        	else{
-			        		//New WebSite
-			        		$("#register_button").removeAttr("disabled");
-				    		$('input#companyWebsite').removeAttr( "class record-exist record-exist-errormsg");
-							$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-							$('input#companyWebsite').attr('class','valid signin_fild');
-							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
-							$( "#register_button" ).click(function() {
-							 if ($(this).validate(false, validationSettings)){
-							 }
-							});
-			        	}  
-			       },
-			        
-		   }); 
-	}
+function applyInputSlide() {
+    $(".regis_wrap_styles div input").each(function (i) {
+        if ($(this).val().trim() !== "")
+            $(this).parent(".regis_wrap_styles div").find('label').addClass('test');
+    });
+    $(".regis_wrap_styles div input").on('focus', function () {
+        $(this).parent(".regis_wrap_styles div").find('label').addClass('test');
+    });
+    $(".regis_wrap_styles div input").on('blur', function () {
+        if ($(this).val().trim() === "")
+            $(this).parent(".regis_wrap_styles div").find('label').removeClass('test');
+    });	    
 }
 </script>
-<!--   Ends  This Script is for validating the Company web site , to find the Duplicate values -->
-
-<!--    Starts Ends of validating the Company Email i,e removing duplicate values--->
+    
+    
 <script type="text/javascript">
-function validateCompanyEmail(){
-    var websiteValue = document.getElementById("companyWebsite").value;
-    var emailValue = document.getElementById("email").value;
-    var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}'; 
-    var sourceleadUrl ='${sourceleadUrl}';
-		if((websiteValue != null && websiteValue != '') && (emailValue != null && emailValue != '')){
-		$.ajax({
-		   	type: "GET",
-		       url: sourceleadUrl+"/ws/emailAndWebsiteRegistrationValidation?website="+websiteValue+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites+"&email="+emailValue,
-		       success: function(data) {
-		    		if(data != null && data != ''){
-					     if(data == 'Invalid Email'){
-					    	    //Invalid Email
-					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-			    	    		$('input#email').attr('class','error signin_fild');
-			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
-			    				$('input#email').attr('record-exist','yes');
-			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
-			    				$( "#register_button" ).addClass('sign_btn').val('Register');
-			    				$("#register_button").removeAttr("disabled");
-					     } 
-					     else if(data == 'Existed Email'){
-					    	   //Existed Email
-					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-			    	    		$('input#email').attr('class','error signin_fild');
-			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
-			    				$('input#email').attr('record-exist','yes');
-			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
-			    				$( "#register_button" ).addClass('sign_btn').val('Register');
-			    				$("#register_button").removeAttr("disabled");
-					    	 
-					     }
-				       	else{
-				       		//Valid Email
-				       		$("#register_button").removeAttr("disabled");
-				    		$('input#email').removeAttr( "class record-exist record-exist-errormsg");
-							$('#emailDiv').find('p.jquery_form_error_message').remove();
-							$('input#email').attr('class','valid signin_fild');
-							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
-							$( "#register_button" ).click(function() {
-							 if ($(this).validate(false, validationSettings)){
-							 }
-							});
-				       	}
-			       	}
-		    	   
-		      },
-		       
-		}); 
-	   }
+var config = {
+'.chosen-select'           : {},
+'.chosen-select-deselect'  : {allow_single_deselect:true},
+'.chosen-select-no-single' : {disable_search_threshold:10},
+'.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+'.chosen-select-width'     : {width:"95%"}
 }
+    for (var selector in config) {
+    $(selector).chosen(config[selector]);
+    }
+    $('.chosen-select').each(function() {
+    var $this = $(this);
+    $this.next().css({'width': '100%'});
+    });
+    $('#priority').trigger('chosen:updated');
 </script>
+
+<script>
+    // Close Advanced Search
+    function closePop(){
+    $("div.cand-advsrch-popup").hide();
+    };
+    function openPop(){
+    $("div.cand-advsrch-popup").toggle();
+    };
+</script> 
+
+
 <script type="text/javascript">
 (function ($) {
    $.fn.serializeFormJSON = function () {

@@ -106,6 +106,18 @@ public class HomeController {
 				return "redirect:/login";
 		 }
 	}
+	
+	
+	 @RequestMapping(value = "/register")
+	 	public ModelAndView register() {
+	 			ModelAndView model = new ModelAndView();
+	 			model.setViewName("registration");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			return model;
+	 	}
+	
+	
+	
    @RequestMapping(value = "/forgotPassword")
  	public ModelAndView forgotPassword() {
  			ModelAndView model = new ModelAndView();

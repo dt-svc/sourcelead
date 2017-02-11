@@ -168,7 +168,7 @@ a { cursor:pointer;}
     }
 .addtaskfield {
     border:0px; background-color:transparent; background-image:url(../images/addtask.png); background-repeat:no-repeat; background-position:center; margin: 0px 0px 0px 2px;
-    background-size:16px; width:23px; height:23px; position:relative; top:5px;
+    background-size:14px; width:12px; height:12px; position:relative; top:2px;
     }
 .addtaskfield.removetaskfield {
  	-moz-transform: rotate(-45deg); -webkit-transform: rotate(-45deg); -o-transform: rotate(-45deg); transform: rotate(-45deg); 
@@ -2322,7 +2322,7 @@ margin-bottom:15px !important;
     text-align:center; width:75px; margin:1.5px 0px;
     } 
 .timesheet_tableNew table select {
-	width:150px; padding: 4px 8px; border:1px solid #ccc; border-radius: 2px;
+	width:140px; padding: 4px 8px; border:1px solid #ccc; border-radius: 2px;
 }
 
 .timesheetNewHead {
