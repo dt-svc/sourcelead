@@ -205,24 +205,25 @@ public class UserProfileRestController {
 			
      }
      
-     
+   /*
+    * updating the userDetails in the Spock   
+    */
    private void updateSpockDetails( User user ,OrgLocations orgLocations) throws Exception{
     	 
-    	 try{
-	    		 List<OrgSpoc>  orgSpockList = orgSpocService.getOrgSpocByUserIdAndOrgLocationCode(user.getId(),orgLocations.getId());
-	    		  if(null != orgSpockList){
-			    		 for(OrgSpoc org :orgSpockList){
-			    			 orgSpocService.addOrgSpoc(org);
-			    			 
-			    		 } 
-	    		  }
-    	 }
-    	 catch(Exception e){
-    		 e.printStackTrace();
-    	 }
+	    	 try{
+		    		 List<OrgSpoc>  orgSpockList = orgSpocService.getOrgSpocByUserIdAndOrgLocationCode(user.getId(),orgLocations.getId());
+		    		  if(null != orgSpockList){
+				    		 for(OrgSpoc org :orgSpockList){
+				    			 orgSpocService.addOrgSpoc(org);
+				    			 
+				    		 } 
+		    		  }
+	    	 }
+	    	 catch(Exception e){
+	    		 e.printStackTrace();
+	    	 }
     	 
      }
- 
  
  
      private static BufferedImage colorImage(BufferedImage image) {
