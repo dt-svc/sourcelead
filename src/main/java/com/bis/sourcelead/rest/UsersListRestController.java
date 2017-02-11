@@ -430,7 +430,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("ratePer", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("ratePer", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
@@ -1103,11 +1103,26 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			    /*
 				 * update USER DB data as ElasticSearch Documents
 				 */
+			    commonuserupdate(user);
 			    userService.saveOrUpdateUserElkDocument(userRole,employees,loginUser.getUserCode());
 			    
 				return "success";
 		}
 	
+	 private void commonuserupdate(User user){
+		 
+		 try {
+			List<UserRole> userRole = userRoleService.getUsersListByUserId(user.getId());
+			if(null != userRole){
+				for(UserRole role :userRole){
+					 userService.saveOrUpdateUserElkDocument(role,null,user.getUserCode());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 
+	 }
 	 /**
 	 * to get the start date and end date of the particular project by projectId
 	 * @param projectId

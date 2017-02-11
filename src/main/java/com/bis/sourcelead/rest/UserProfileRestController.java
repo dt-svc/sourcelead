@@ -87,6 +87,7 @@ public class UserProfileRestController {
 				/*
 				 * Saving USER DB data as ElasticSearch Documents
 				 */
+				commonuserupdate(user);
 				userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
 				
 				
@@ -111,7 +112,22 @@ public class UserProfileRestController {
 	  
 	   
 	   }
-	   
+	   /*
+		 * Saving USER DB data as ElasticSearch Documents for common user
+		 */
+	   private void commonuserupdate(User user){
+			 
+			 try {
+				List<UserRole> userRole = userRoleService.getUsersListByUserId(user.getId());
+				if(null != userRole){
+					for(UserRole role :userRole){
+						 userService.saveOrUpdateUserElkDocument(role,null,user.getUserCode());
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	   }
 	   
 	   @RequestMapping(value = "/passwordSettings" , method = RequestMethod.POST)
 	   public String passwordSettings(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
