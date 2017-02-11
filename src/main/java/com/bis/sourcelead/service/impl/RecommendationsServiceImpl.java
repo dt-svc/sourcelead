@@ -597,12 +597,12 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				int reqMinExp = 0;
 				int reqMaxExp = 0;
 				float percentPerMonthExp = 0;
-				if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) && null !=recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
+				/*if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) && null !=recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
 					 reqMinExp = Integer.parseInt(recommendedCustomizeScore.getCustomizeMinExperience());
 					 reqMaxExp = Integer.parseInt(recommendedCustomizeScore.getCustomizeMaxExperience());
 					int reqExp = reqMaxExp *12 ;
 					 percentPerMonthExp = Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore())/(float)reqExp;
-				}
+				}*/
 				
 				String reqCity = "";
 				if(null != recommendedCustomizeScore.getCustomizeCity() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCity())){
@@ -740,13 +740,29 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	private float getExperiencePercentage(CandidateIndex candidateIndex, RecommendedCustomizeScore recommendedCustomizeScore, int reqMinExp, float expPercentage, float percentPerMonthExp, int reqMaxExp) {
 		if(null != candidateIndex.getExperienceYears()  && null != candidateIndex.getExperienceMonths() ){
 			int  candidateExpMonths = (Integer.parseInt(candidateIndex.getExperienceYears()))*12 + (Integer.parseInt(candidateIndex.getExperienceMonths()));
-			if(candidateExpMonths < reqMinExp *12){
+			
+			if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) && null != recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
+				 if(candidateExpMonths >= Integer.parseInt(recommendedCustomizeScore.getCustomizeMinExperience()) *12 && candidateExpMonths <= Integer.parseInt(recommendedCustomizeScore.getCustomizeMaxExperience()) *12){
+					 expPercentage = Float.parseFloat(recommendedCustomizeScore.getCustomizeExperienceScore());
+				 }
+			}else if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience())){
+				 if(candidateExpMonths >= Integer.parseInt(recommendedCustomizeScore.getCustomizeMinExperience()) *12){
+					 expPercentage = Float.parseFloat(recommendedCustomizeScore.getCustomizeExperienceScore());
+				 }
+			}else if(null != recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
+				 if(candidateExpMonths <= Integer.parseInt(recommendedCustomizeScore.getCustomizeMaxExperience()) *12){
+					 expPercentage = Float.parseFloat(recommendedCustomizeScore.getCustomizeExperienceScore());
+				 }
+			}else{
+				expPercentage = 0;
+			}
+			/*if(candidateExpMonths < reqMinExp *12){
 				expPercentage = 0;
 			}else if(candidateExpMonths >= reqMinExp *12 && candidateExpMonths <= reqMaxExp *12){
 				expPercentage = percentPerMonthExp*(float)candidateExpMonths;
 			}else{
 				expPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore());
-			}
+			}*/
 		}
 		return expPercentage;
 	}
