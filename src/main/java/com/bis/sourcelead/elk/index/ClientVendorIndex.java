@@ -63,7 +63,9 @@ public class ClientVendorIndex implements Serializable {
 	
 	private String country;
 	
-	private Date UpdatedDate;
+	private String updatedDate;
+	
+	private String createdDate;
 
 	private String updateDateToString;
 	
@@ -301,13 +303,7 @@ public class ClientVendorIndex implements Serializable {
 		this.country = country;
 	}
 
-	public Date getUpdatedDate() {
-		return UpdatedDate;
-	}
-
-	public void setUpdatedDate(Date updatedDate) {
-		UpdatedDate = updatedDate;
-	}
+	
 
 	public String getUpdateDateToString() {
 		return updateDateToString;
@@ -331,6 +327,22 @@ public class ClientVendorIndex implements Serializable {
 
 	public void setNoOfReleasedJobs(Long noOfReleasedJobs) {
 		this.noOfReleasedJobs = noOfReleasedJobs;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
 	}
 	
 
