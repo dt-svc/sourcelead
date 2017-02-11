@@ -2255,6 +2255,7 @@ $('#selector').delay(2000).fadeOut('slow');
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
+						document.getElementById("search_client").reset();
 						closePop();
 						preparedClientListFromElk(data);
 					},
@@ -2274,6 +2275,7 @@ $('#selector').delay(2000).fadeOut('slow');
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
+						document.getElementById("search_client").reset();
 						closePop();
 						preparedClientContactListFromElk(data);
 					},
