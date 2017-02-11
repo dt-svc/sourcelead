@@ -79,6 +79,7 @@ public class UniversalSearchHelper {
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorLevel", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("createdByAdvanced", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("createdBy", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));

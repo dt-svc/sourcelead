@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -129,6 +130,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User addUser(User user) throws Exception {
 		logger.debug("In UserService class...");
+		user.setCreatedDate(new Date());
+		user.setUpdatedDate(new Date());
 		return userDao.addUser(user);
 	}
 	
