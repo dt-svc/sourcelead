@@ -3,6 +3,7 @@ package com.bis.sourcelead.elk.index.helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -101,6 +102,9 @@ public class ClientVendorIndexHelper {
 				StringBuilder sb = new StringBuilder();
 				clientVendorIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			}
+			
+			clientVendorIndex.setCreatedDate(Constants.DF_YMD.format(orgRelationsList.getCreatedDate()));
+			clientVendorIndex.setUpdatedDate(Constants.DF_YMD.format(orgRelationsList.getUpdatedDate()));
 		}
 		return clientVendorIndex;
 	}

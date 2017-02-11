@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.sql.DataSource;
@@ -80,6 +82,11 @@ public class AddProjectsELK {
 					if(!isNullOrEmpty(rs.getString("PROJECT_STATUS"))){
 						projectsIndex.setProjectStatus(rs.getString("PROJECT_STATUS"));
 					}
+					
+					
+					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					projectsIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
+					projectsIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
 					
 					Long projectId = rs.getLong("ID");
 		    	    if(projectId != null && projectId != 0){

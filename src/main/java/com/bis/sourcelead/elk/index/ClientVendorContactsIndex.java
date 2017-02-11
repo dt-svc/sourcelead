@@ -65,6 +65,10 @@ public class ClientVendorContactsIndex implements Serializable {
 	
 	private String status;
 	
+	private String createdDate;
+	
+	private String updatedDate;
+	
 	//dummy
 	private Long spocLocationId;
 	
@@ -310,6 +314,22 @@ public class ClientVendorContactsIndex implements Serializable {
 
 	public void setSpocLocationId(Long spocLocationId) {
 		this.spocLocationId = spocLocationId;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 
 	

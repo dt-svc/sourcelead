@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.sql.DataSource;
@@ -82,6 +84,13 @@ public class AddClientVendorELK {
 			    	clientVendorIndex.setOrgLocationId(rs.getLong("LOCATION_ID"));
 			    	clientVendorIndex.setOrgRelationId(rs.getLong("ID"));
 			    	clientVendorIndex.setStatus(rs.getString("STATUS"));
+			    	
+			    	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			    	clientVendorIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
+			    	if(null != rs.getDate("UPDATED_DATE")){
+			    		clientVendorIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
+			    	}
+			    	
 			    	
 			    	String sql1 = "SELECT * FROM sourcelead.USER  user where  user.USER_CODE = '"+createdBy+"' ";
 						Statement stmt1 = conn.createStatement();
