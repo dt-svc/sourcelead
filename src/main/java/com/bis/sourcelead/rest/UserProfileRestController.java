@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -26,13 +27,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -50,6 +52,10 @@ public class UserProfileRestController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
+	
 	
 	@Autowired
     private SourceleadPasswordEncoder sourceleadPasswordEncoder;
@@ -82,6 +88,15 @@ public class UserProfileRestController {
 				 * Saving USER DB data as ElasticSearch Documents
 				 */
 				userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
+				
+				
+				/*
+				 * updating  user in  the Spock
+				 * 
+				 */
+				
+                  updateSpockDetails(user,orgLocations);
+                  
 				
 				SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 				StringBuilder userNameSB = new StringBuilder();
@@ -190,6 +205,26 @@ public class UserProfileRestController {
 			
      }
      
+     
+   private void updateSpockDetails( User user ,OrgLocations orgLocations) throws Exception{
+    	 
+    	 try{
+	    		 List<OrgSpoc>  orgSpockList = orgSpocService.getOrgSpocByUserIdAndOrgLocationCode(user.getId(),orgLocations.getId());
+	    		  if(null != orgSpockList){
+			    		 for(OrgSpoc org :orgSpockList){
+			    			 orgSpocService.addOrgSpoc(org);
+			    			 
+			    		 } 
+	    		  }
+    	 }
+    	 catch(Exception e){
+    		 e.printStackTrace();
+    	 }
+    	 
+     }
+ 
+ 
+ 
      private static BufferedImage colorImage(BufferedImage image) {
          int width = image.getWidth();
          int height = image.getHeight();
