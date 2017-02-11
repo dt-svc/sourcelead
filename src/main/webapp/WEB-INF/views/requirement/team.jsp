@@ -4,22 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<script src="resources/js/formvalidator.js"></script>
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -1177,28 +1162,28 @@ function getCandidateListForTeam(teamId,teamName){
 		                    	 var candidateMobileNumber = "";
 		                    	 var candidateType = "";
 		                    	 var candidateLocation = "";
-		                    	 if(opt.candidateFullName != null && opt.candidateFullName != 'undefined' && opt.candidateFullName != ""){
-		                    		 candidateFullName = opt.candidateFullName;
+		                    	 if(opt.candidateName != null && opt.candidateName != 'undefined' && opt.candidateName != ""){
+		                    		 candidateFullName = opt.candidateName;
 					             }else{
 					            	 candidateFullName = "----";
 					             }
-		                    	 if(opt.candidateDesignation != null && opt.candidateDesignation != 'undefined' && opt.candidateDesignation != ""){
-		                    		 candidateDesignation = opt.candidateDesignation;
+		                    	 if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
+		                    		 candidateDesignation = opt.designation;
 					             }else{
 					            	 candidateDesignation = "----";
 					             }
-		                    	 if(opt.positionType != null && opt.positionType != 'undefined' && opt.positionType != ""){
-		                    		 positionType = opt.positionType;
+		                    	 if(opt.designationType != null && opt.designationType != 'undefined' && opt.designationType != ""){
+		                    		 positionType = opt.designationType;
 					             }else{
 					            	 positionType = "----";
 					             }
-		                    	 if(opt.candidateEmail != null && opt.candidateEmail != 'undefined' && opt.candidateEmail != ""){
-		                    		 candidateEmail = opt.candidateEmail;
+		                    	 if(opt.email != null && opt.email != 'undefined' && opt.email != ""){
+		                    		 candidateEmail = opt.email;
 					             }else{
 					            	 candidateEmail = "----";
 					             }
-		                    	 if(opt.candidateMobileNumber != null && opt.candidateMobileNumber != 'undefined' && opt.candidateMobileNumber != ""){
-		                    		 candidateMobileNumber = opt.candidateMobileNumber;
+		                    	 if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
+		                    		 candidateMobileNumber = opt.mobilePhone;
 					             }else{
 					            	 candidateMobileNumber = "----";
 					             }

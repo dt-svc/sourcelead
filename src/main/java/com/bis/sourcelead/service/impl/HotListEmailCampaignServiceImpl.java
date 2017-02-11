@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.mail.internet.InternetAddress;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,10 +91,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	 String signature = "";
 	 String candidates = null;
 	 String emails = null;
-	 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-	 Set<String> recipantsList = new HashSet<String>();
 	 
-	 
+	 String otherEmails = "";
+	 InternetAddress[] iAdressArray = null;
 	   	 if(!isNullOrEmpty(user.getLastName())){
 	   		 fullName = user.getFirstName()+" "+user.getLastName();
 	   	 }else{
@@ -108,42 +109,29 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	    	  catch(JSONException e){
 	    		  emails= jsonObj.getString("Toemails");
 	    	  }
-	    	  if(emails != null){
+	    	  if(null != emails){
 	    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
 	    		  emails = emails.replaceAll("\"", "");
-		  	      String[] toEmails = emails.split(",");
-		    	  for (String toEmail : toEmails) {
-		    		  recipantsList.add(toEmail);
-		    	  } 
 	    	  }
 	    	 
 		}
 		
 		
 		if(jsonObj.has("otherEmails") && !isNullOrEmpty(jsonObj.getString("otherEmails"))){
-			 String othmails = null;
 			 try{
 	    		   JSONArray jsonArray = jsonObj.getJSONArray("otherEmails");
-	    		   othmails = jsonArray.toString();
+	    		   otherEmails = jsonArray.toString();
 	    	  }
 	    	  catch(JSONException e){
-	    		  othmails= jsonObj.getString("otherEmails");
+	    		  otherEmails= jsonObj.getString("otherEmails");
 	    	  }
-			 if(othmails != null){
-				 othmails = othmails.replaceAll("\\[", "").replaceAll("\\]","");
-				 othmails = othmails.replaceAll("\"", "");
-		  	      String[] otherEmails = othmails.split(",");
-		    	  for (String otherEmail : otherEmails) {
-		    		  recipantsList.add(otherEmail);
-		    	  }
+			 if(null != otherEmails){
+				 otherEmails = otherEmails.replaceAll("\\[", "").replaceAll("\\]","");
+				 otherEmails = otherEmails.replaceAll("\"", "");
 			 }
 		}
-		
-		for(String email : recipantsList){
-			 EmailRecipient emailRecipient = new EmailRecipient();
-			 emailRecipient.setEmail(email);
-			 emailRecipientList.add(emailRecipient);
-		}
+		StringBuilder tomaillBuilder = new StringBuilder();
+		iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).append(",").append(otherEmails).toString());
 		
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 emailMessage.setFromEmail(user.getEmail());
@@ -158,7 +146,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		    	  catch(JSONException e){
 		    		  candidates= jsonObj.getString("hotlistcandidates");
 		    	  }
-				 if(candidates != null){
+				 if(null != candidates){
 					 candidates = candidates.replaceAll("\\[", "").replaceAll("\\]","");
 					 candidates = candidates.replaceAll("\"", "");
 			  	      hotlistedCandidates = candidates.split(",");
@@ -210,26 +198,33 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,attachmentList);
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList);
 		 
-		 saveUserMailBox(user,orgLocation,emailRecipientList,candidates,subject,table,UUID,jsonObj.getString("bodytext"),signature,jsonObj.getString("namefield"),multiFile);
+		 saveUserMailBox(user,orgLocation,iAdressArray,candidates,subject,table,UUID,jsonObj.getString("bodytext"),signature,jsonObj.getString("namefield"),multiFile);
 		
 	}
 	
 	
-private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String candidates,String subject,String table,String UUID,String body,String signature,String nameFields,MultipartFile multiFile) throws Exception{
+private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[] iAdressArray,String candidates,String subject,String table,String UUID,String body,String signature,String nameFields,MultipartFile multiFile) throws Exception{
 	
 	UserMailBox userMailBox = new UserMailBox();
-	StringBuilder toEmails = new StringBuilder();
-	for (EmailRecipient recipient : emailRecipientList) {
-		toEmails.append(recipient.getEmail()).append(",");
-	 }
-	toEmails.toString();
+	
+	if(null != iAdressArray && iAdressArray.length >0){
+		StringBuilder recipients = new StringBuilder("");
+		int count = 1;
+		for(InternetAddress address :iAdressArray){
+			if(count >1){
+				recipients.append(",");
+			}
+			count++;
+			recipients.append(address.getAddress());
+		}
+		userMailBox.setToMail(recipients.toString());
+	}
 	
 	userMailBox.setUserId(user);
 	userMailBox.setOrgLocationId(orgLocation);
 	userMailBox.setFromMail(user.getEmail());
-	userMailBox.setToMail(toEmails.substring(0,toEmails.length()-1));
 	userMailBox.setMailStatus(Constants.MAIL_BOX_SENT);
 	userMailBox.setCandidateId(candidates);
 	userMailBox.setSubject(subject);
@@ -260,6 +255,8 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailR
 	
 	
 	userMailBoxService.saveUserMailBox(userMailBox);
+	
+	userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
 	
 }
 

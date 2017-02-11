@@ -1,17 +1,10 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
- 
- 
  <style type="text/css">
  table#assignEmployeePagination tr th {
  width:auto !important;
@@ -425,7 +418,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 	
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reason="+reason, 	   
+		    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&projectId="+projectId+"&reason="+reason,
    		    success: function(data) {
    		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -519,6 +512,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						if(endDateStr !=  null && endDateStr != '' && endDateStr != 'undefined'){
 							$('#startDate'+opt.id).datepicker({
 								dateFormat : 'yy-mm-dd',
+								changeMonth: true,
+								changeYear: true, 
 								minDate:startDateStr,
 								maxDate:endDateStr,
 								onSelect : function(selected) {
@@ -533,6 +528,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 
 							$('#endDate'+opt.id).datepicker({
 								dateFormat : 'yy-mm-dd',
+								changeMonth: true,
+								changeYear: true, 
 								maxDate:endDateStr,
 								minDate:startDateStr,
 								onSelect : function(selected) {
@@ -547,6 +544,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						}else{
 							$('#startDate'+opt.id).datepicker({
 								dateFormat : 'yy-mm-dd',
+								changeMonth: true,
+								changeYear: true, 
 								minDate:startDateStr,
 								onSelect : function(selected) {
 									var dt = new Date(selected);
@@ -560,6 +559,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 
 							$('#endDate'+opt.id).datepicker({
 								dateFormat : 'yy-mm-dd',
+								changeMonth: true,
+								changeYear: true, 
 								minDate:startDateStr,
 								onSelect : function(selected) {
 									var dt = new Date(selected);
@@ -614,7 +615,10 @@ function assignEmployee(){
 	    	mailtoMembers = "YES";
 	    }
 	    var sourceleadUrl ='${sourceleadUrl}'; 
-	    $('#assignTeam').modal('hide');
+	    //$('#assignTeam').modal('hide');
+	    $('#assignTeam').hide();
+	    $('.modal-backdrop').hide();
+	    
 	    $(".myCheckbox").each(function(){
 	        var employeeId =this.id;
 	        if($(this).is(':checked')){
@@ -628,7 +632,16 @@ function assignEmployee(){
 		            }
 				})
 	        }
+	        
     	}); 
+	    
+	    $.ajax({
+        	type: "POST",
+            url: sourceleadUrl+"/storeAssignEmployeeIntoELK?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId, 
+            success: function(data) {
+            }
+		})
+	    
 }
 </script>
 
@@ -769,6 +782,8 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
   if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
 	  $('#Re-StartDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 		  minDate:endDate,
 		  maxDate:projectEndDateStr,
 	      onSelect: function (selected) {
@@ -780,6 +795,8 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  
 	  $('#Re-EndDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      minDate:endDate,
 	      maxDate:projectEndDateStr,
 	        onSelect: function (selected) {
@@ -792,6 +809,8 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
   else{
 	  $('#Re-StartDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 		  minDate:endDate,
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
@@ -804,6 +823,8 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	
 	  $('#Re-EndDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      minDate:endDate,
 	      maxDate:reStatertDate,
 	        onSelect: function (selected) {
@@ -843,7 +864,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 		        url: sourceleadUrl+"/saveReAssignProject?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectMemberId="+projectMemberId, 
 		        success: function(data) {
 		        	if(data="success"){
-		        	 	$("#Re-AssignProject").modal('hide');
+		        	 	//$("#Re-AssignProject").modal('hide');
+		        	 	$('#Re-AssignProject').hide();
+		        	    $('.modal-backdrop').hide();
 		        	 	projectEmployee(projectId,startDateStr,endDateStr,status);
 		        	}
 		        },

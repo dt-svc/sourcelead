@@ -2,24 +2,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="resources/js/bootstrap-select.min.js"></script>
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script>
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
-
-
-
-
-
-
-
 
 <script>
 		$(document).ready(function() {
@@ -53,7 +37,7 @@ function addOffer(requirementId){
 				result = result + '<input type="hidden" id="isFlushCandidateRequired" name="isFlushCandidateRequired">';
 				
 				/* result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>'; */
-				result= result + '	            <div class="add_inter_head"> <span>Add Offer</span>';
+				result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedOfferApplicantsCount">0</b></span>';
 				result= result + '	              <div class="clearfix"></div>';
 				result= result + '	            </div>';
 				
@@ -96,13 +80,14 @@ function addOffer(requirementId){
 				result= result + '<div class="clearfix">';
 				result = result + '<div class="pull-right">';
 				result = result +'				  <button type="submit" id="add_offer" class="btn btn-sm btn-primary mr">Submit</button>';
-				result= result + '	              <button type="submit" class="btn btn-sm btn-danger" onclick="cancelAddOffer();" >Cancel</button>';
+				result= result + '	              <input type="button" class="btn btn-sm btn-danger" value="Cancel" onclick="cancelAddOffer();" >';
 				result= result + '	            </div>';
 				result= result + '	          </div>';
 				result= result + '</div>';
 				
 				result = result + '</form>';
-				//result = result + '<div id="loading"></div>';
+				result = result + '<div id="offerLoading"></div>';
+				result = result + '</div><div id="offerPopUp">';
 				result= result + '	          </div>';
 				
 										
@@ -139,10 +124,20 @@ function loadRemiderDiv(){
 }
 </script>
 
-
+<script>
+function selectOfferApplicants(){
+	var selectedOfferApplicants =  $('#1applicantId_chosen  span').size();
+	$("#selectedOfferApplicantsCount").html(selectedOfferApplicants);
+	
+	$('.search-choice-close').click(function() {
+		var offerApplicants =  $('#1applicantId_chosen  span').size();
+		$("#selectedOfferApplicantsCount").html(offerApplicants);
+	});
+}
+</script>
 
 <div id="divOfferTd1" style="display: none; float: left;">
-       <select multiple class="chosen-select blminwidth-50" id="REPLACEROWIDapplicantId" data-placeholder="select Apllicants" name="REPLACEROWIDapplicantId" field-name="Applicant" data-validation="required" >
+       <select multiple class="blminwidth-50"  id="REPLACEROWIDapplicantId" onchange="selectOfferApplicants()" data-placeholder="select Apllicants" name="REPLACEROWIDapplicantId" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
@@ -319,30 +314,40 @@ function cancelAddOffer(){
         var jsonData = encodeURIComponent(con);
         var sourceleadUrl ='${sourceleadUrl}'; 
         var requirementId = '${requirementId}';
-        $("#add_offer").attr("disabled", "disabled");
- 		$("#add_offer" ).addClass('button').val('Processing..'); 
+        
  		var form = $('#addOffer_form')[0];
   		var formData = new FormData(form); 
- 		
-   		//  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-    
- 			$.ajax({
+  		
+  		var selectedOfferApplicants =  $('#1applicantId_chosen  span').size();
+  	  
+  	  if(selectedOfferApplicants <= 50){
+  		$("#add_offer").attr("disabled", "disabled");
+  		$("#add_offer" ).addClass('button').val('Processing..');  
+  		
+  		 $("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$.ajax({
 	    	type: "POST",
-    	    data: formData,
-    	    contentType : 'application/json; charset=utf-8',
-    	    enctype: 'multipart/form-data',
+ 	    	data: formData,
+ 	   		contentType : 'application/json; charset=utf-8',
+ 	    	enctype: 'multipart/form-data',
 	        processData: false,
 	        contentType:false,
-    	    dataType : 'json',
+ 	    	dataType : 'json',
 	        url: sourceleadUrl+"/saveOffer?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
 	        success: function(result) {
 	        	$(".add_offer_wrap").removeClass("add_offer_wrap_active");
-        		$(".side_mask").fadeOut(200);
-        		$("body").css('overflow-y', 'auto');
-        		var allApplicants = 'all';
+     		$(".side_mask").fadeOut(200);
+     		$("body").css('overflow-y', 'auto');
+     		var allApplicants = 'all';
 	    		requirementPipeline(requirementId,allApplicants); 
 	        },
-	    });   
+	    });
+  	  }else{
+  		alertOfferMessage("<b>Selected Applicants should not more than 50</b>");
+  	  }
+  	  
+ 		
+   		   
         return true;
       }
       else{
@@ -354,6 +359,30 @@ function cancelAddOffer(){
     $('#addOffer_form').validateOnBlur(false, validationSettings);  
   
   </script>
+  
+  
+  <script type="text/javascript">
+function alertOfferMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelOfferPopup();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelInterviewPopup();'></b>";
+	result = result +"	</div>";
+	$("#offerPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancelOfferPopup(){
+	$("#offerPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
  
 <!-- <script type="text/javascript">
  function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
@@ -533,7 +562,7 @@ function NotifyToApplicant(){
 </script>
 
 
-
+<!-- 
 <script type="text/javascript">
 $(function(){
 	       var config = {
@@ -551,7 +580,7 @@ $(function(){
 		  })
 });
 </script>
-
+ -->
 
 <script>
 function myOfferFunction(){

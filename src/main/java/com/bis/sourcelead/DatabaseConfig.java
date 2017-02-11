@@ -89,7 +89,7 @@ public class DatabaseConfig {
 		hibernateProperties.setProperty("hibernate.connection.url", jdbcUrl);
 
 		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-		hibernateProperties.setProperty("hibernate.show_sql", "true");
+		hibernateProperties.setProperty("hibernate.show_sql", "false");
 		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "validate");
 		hibernateProperties.setProperty("hibernate.formate_sql", "false");
 		hibernateProperties.setProperty("hibernate.user_sql_comments", "false");

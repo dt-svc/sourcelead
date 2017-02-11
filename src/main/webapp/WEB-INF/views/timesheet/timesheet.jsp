@@ -25,7 +25,16 @@ $(document).ready(function() {
 	timesheetEntriesDiv();
 });
 </script>  
-
+<script>
+	$(document).on("mouseover", ".rejectedHover", function() { 
+		var projectMemberId = $("#projectMemberId").val();
+		$("#rejectedMessage"+projectMemberId).addClass('app_error_mes_active');
+	});	
+	$(document).on("mouseleave", ".rejectedHover", function() { 
+		 var projectMemberId = $("#projectMemberId").val();
+		  $("#rejectedMessage"+projectMemberId).removeClass('app_error_mes_active');
+	});	
+</script>
 
 <script>
 	function timesheetEntriesDiv(){ 
@@ -771,12 +780,12 @@ function addAttachment(){
         <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
 				         <div id="divadttTd1" style="display:none;" >   
 				             <div> 
-				              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId" onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
+				              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="pull-left existedProjectTaskIdprojectId" data-validation="required" field-name="Task" onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
 				                          <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 				                              	<option value="${task.id}">${task.taskName}</option>
 				                           </c:forEach> --%>
 				             </select>
-				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="addtaskfield removetaskfield"/>
+				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="pull-left addtaskfield removetaskfield"/>
 				             </div>
 				             
 				        </div>
@@ -866,6 +875,11 @@ function addAttachment(){
 <script type="text/javascript">
 function newSaveTimesheet(status,savingType){ 
 	 checkHours();
+	 var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
+	 if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
+		 $('#0docFile').removeAttr('data-validation-optional');
+		 $('#0docFile').attr("data-validation","required"); 
+	 }
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -900,7 +914,7 @@ function newSaveTimesheet(status,savingType){
         	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
         		    	  $("#loadTime").removeAttr("style"); 
-        		    	  timesheetEntriesDiv();
+        		    	  timesheetDivByFrequency();
         		    	  $("html").trigger('click');
         		    	  maskme();
         		    	 /*  timesheetEntriesDiv(); */
@@ -928,6 +942,7 @@ $('body').on('blur', '#timesheet_form', function() {
 <script type="text/javascript">
 function deleteSubmissionDocument(submissionDocumentId){  
     var sourceleadUrl ='${sourceleadUrl}';
+    var projectExistingValue = $("#dbIsTimesheetAttachmentRequired").val();
     /*  var startdate; */
 	var navigation;
     $.ajax({
@@ -935,6 +950,9 @@ function deleteSubmissionDocument(submissionDocumentId){
       	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
 	      success :function(result) {
 	    	  $("#"+submissionDocumentId+"document").remove();
+	    	  if(projectExistingValue != null && projectExistingValue != "" && projectExistingValue !="undefined" && projectExistingValue == "1"){
+	    		  $("#isTimesheetAttachmentRequired").val('Y');
+	    	  }
 	      }
       	  
     }); 

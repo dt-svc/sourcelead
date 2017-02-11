@@ -1,17 +1,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
 
 <!-- these files for autocomplete with tagit -->
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -145,6 +135,11 @@
 						}else{
 							spocMobilePhone = "";
 						}
+						if(null != json.spocLastName && json.spocLastName != '' && json.spocLastName != 'undefined'){
+							spocLastName = json.spocLastName;
+						}else{
+							spocLastName = "";
+						}
 						if(json.spocStatus == 'Active'){
 							selected1 = 'selected';
 						} 
@@ -172,7 +167,7 @@
 							
 							result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
 							result = result + '<label>Last Name:</label>';
-							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name"  readonly="readonly">';
+							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+spocLastName+'" placeholder="Last name" field-name="Last name"  readonly="readonly">';
 							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
@@ -193,7 +188,7 @@
 						
 						result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
 						result = result + '<label>Last Name:</label>';
-						result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name">';
+						result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+spocLastName+'" placeholder="Last name" field-name="Last name">';
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';

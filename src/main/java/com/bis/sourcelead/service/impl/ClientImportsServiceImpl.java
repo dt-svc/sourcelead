@@ -855,13 +855,15 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			 }
 			 org.apache.poi.ss.usermodel.Name namedCell = workbook.createName();
 			 namedCell.setNameName("hidden");
-			 namedCell.setRefersToFormula("hidden!$A$1:$A$" + vendorsList.length);
-			 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
-			 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
-			 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
-			 workbook.setSheetHidden(1, true);
-			 realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN,5,"xls"));
-			 realSheet.addValidationData(validation);
+			 if(vendorsList.length > 0){
+				 namedCell.setRefersToFormula("hidden!$A$1:$A$" + vendorsList.length);
+				 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+				 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
+				 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+				 workbook.setSheetHidden(1, true);
+				 realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN,5,"xls"));
+				 realSheet.addValidationData(validation);
+			 }
 			 File file = new File("clients_contacts_Import.xls");
 			 FileOutputStream stream = new FileOutputStream(file);
 			 workbook.write(stream);
@@ -912,13 +914,15 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			 }
 			 org.apache.poi.ss.usermodel.Name namedCell = workbook.createName();
 			 namedCell.setNameName("hidden");
-			 namedCell.setRefersToFormula("hidden!$A$1:$A$" + vendorsList.length);
-			 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
-			 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
-			 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
-			 workbook.setSheetHidden(1, true);
-			 realSheet.addValidationData(getDropDownListForCell(Constants.VENDOR_CONTACTS_STATUS_DROPDOWN,5,"xls"));
-			 realSheet.addValidationData(validation);
+			 if(vendorsList.length > 0){
+				 namedCell.setRefersToFormula("hidden!$A$1:$A$" + vendorsList.length);	 
+				 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+				 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
+				 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+				 workbook.setSheetHidden(1, true);
+				 realSheet.addValidationData(getDropDownListForCell(Constants.VENDOR_CONTACTS_STATUS_DROPDOWN,5,"xls"));
+				 realSheet.addValidationData(validation);
+			 }
 			 File file = new File("vendors_contacts_Import.xls");
 			 FileOutputStream stream = new FileOutputStream(file);
 			 workbook.write(stream);

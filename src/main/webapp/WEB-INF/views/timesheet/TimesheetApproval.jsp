@@ -49,6 +49,42 @@ margin-top: 3px;
 }
 </style>
 
+<script>
+	/* function timesheetDivByTab(startDate,endDate) */
+	function timesheetDivByTab(startDate,endDate,approvalStatus){ 
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         var projectMemberId = $("[name='projectMemberId']").val();
+	         var timesheetFrequency = $("[name='timesheetFrequency']").val();
+		     
+	         $("#timesheetDivByTab").empty();
+	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+    	          type : "POST",
+        	      dataType : 'json',
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=timesheet",		
+  		          success :function(result) {
+  		    	       
+  		        	   $("#timesheetDivByTab").removeAttr("style");
+  		    	       $("#timesheetDivByTab").empty();
+		    	  	   $("#timesheetDivByTab").append(result);
+		    	  	   
+		    	  	   maskme();
+		    	  	   $("html").trigger('click');
+		    	  	   
+			    	   $("#tab-1").show();
+	 		    	   $(".project-tabs-menu a").click(function(event) {
+	 		    	        event.preventDefault();
+	 		    	        $(this).parent().addClass("current");
+	 		    	        $(this).parent().siblings().removeClass("current");
+	 		    	        var tab = $(this).attr("href");
+	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+	 		    	        $(tab).fadeIn();
+	 		    	   });
+		    	  	   
+  		          }
+  	         }); 
+	}
+</script>
 
 
 <%-- <jsp:include page="TimesheetScripts.jsp" /> --%>
@@ -326,10 +362,37 @@ function timesheetComment(local){
 </script>	
 
 
+<script type="text/javascript">
+function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId){ 
+	        var sourceleadUrl ='${sourceleadUrl}';
+			$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/timesheetApprovalTableRowByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency, 	   
+				    success: function(data) {
+					    	 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+	     		    		 $(".side_mask").fadeOut(200); 
+	     	        		 $("body").css('overflow-y', 'scrool');
+	     	        		 $("#dynamic").removeAttr('style');
+				    		 $("#row"+projectMemberId).empty();
+					         $("#row"+projectMemberId).html(data);
+					        /* pagination(); */
+				        
+				    }
+		    }); 
+}
+</script>
+
 <!-- this script is for save Timesheet -->               
 <script type="text/javascript">
 function newSaveTimesheet(status,savingType){ 
 	 checkHours();
+	 var projectMemberId = $("[name='projectMemberId']").val();
+     var timesheetFrequency = $("[name='timesheetFrequency']").val();
+	 var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
+	 if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
+		 $('#0docFile').removeAttr('data-validation-optional');
+		 $('#0docFile').attr("data-validation","required"); 
+	 }
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -352,6 +415,8 @@ function newSaveTimesheet(status,savingType){
        		   var form = $('#timesheet_form')[0];
        		   var formData = new FormData(form); 
        		   var submissionIds = $("#submissionId").val();
+       		   $("#timesheetPopUp").empty();
+  	  	       $("#timesheetPopUp").append('<div class="loadTime" id="loadTime"></div>'); 
        		   $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
         	   $.ajax({
 	      	          type : "POST",
@@ -363,14 +428,13 @@ function newSaveTimesheet(status,savingType){
 	          	      dataType : 'json',
         	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
-        		    	  
-        		    	 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
-     		    		 $(".side_mask").fadeOut(200); 
-     	        		 $("body").css('overflow-y', 'scrool');
-     	        		 $("#dynamic").removeAttr('style');
-     	        		 
-        		    	  /* $("#loadTime").removeAttr("style");  */
-        		    	  
+        		    	  if(status != null && status != 'undefined' && status != '' && status != 'Draft'){
+        		    		  timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId);
+        		    	  }
+        		    	  else{
+        		    		  timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId);
+        		    	  }
+     	        		  
         		      }
         	      	  
         	    }); 
@@ -415,6 +479,7 @@ $('body').on('blur', '#timesheet_form', function() {
 <script type="text/javascript">
 function deleteSubmissionDocument(submissionDocumentId){  
     var sourceleadUrl ='${sourceleadUrl}';
+    var projectExistingValue = $("#dbIsTimesheetAttachmentRequired").val();
     /*  var startdate; */
 	var navigation;
     $.ajax({
@@ -422,6 +487,9 @@ function deleteSubmissionDocument(submissionDocumentId){
       	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
 	      success :function(result) {
 	    	  $("#"+submissionDocumentId+"document").remove();
+	    	  if(projectExistingValue != null && projectExistingValue != "" && projectExistingValue !="undefined" && projectExistingValue == "1"){
+	    		  $("#isTimesheetAttachmentRequired").val('Y');
+	    	  }
 	      }
       	  
     }); 
@@ -436,7 +504,7 @@ function deleteSubmissionDocument(submissionDocumentId){
 	<!-- addrow divs -->
 	 <div id="divadttTd1" style="display:none;" >   
 	      <div> 
-	       <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId" onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
+	       <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId pull-left" data-validation="required" field-name="Task"  onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
 	                   <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 	                       	<option value="${task.id}">${task.taskName}</option>
 	                    </c:forEach> --%>
@@ -601,6 +669,10 @@ function checkHours(){
 /* this script is for calculate total hours */
 $(document).click(function(){ 
 	 var total;
+	 var billableTotal;
+	 var billableSum = 0;
+	 var nonBillableTotal;
+	 var nonBillableSum = 0;
 	 for (var i = 1; i < 8; i++){
 		 var bsum = 0;
 		 var nbsum = 0;
@@ -618,6 +690,34 @@ $(document).click(function(){
 					 var finalmin = parseInt(minute) + parseInt(minute1);
 			    	 
 				     bsum = parseFloat(bsum) + parseInt(finalmin);
+				     
+				     
+				     var billableType = $("#"+j+"task1IdBillableTypeId").text();
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Billable') {
+				    	 var billableHours = btemp;
+				    	 var billableSplit = billableHours.split(':');
+				    	 var billableFirst = billableSplit[0];
+				    	 var billableSecond = billableSplit[1];
+						 
+						 var billableMinute = billableFirst * 60;
+						 var billableMinute1 = billableSecond;
+						 var billableFinalmin1 = parseInt(billableMinute) + parseInt(billableMinute1);
+				    	 
+						 billableSum = parseFloat(billableSum) + parseInt(billableFinalmin1);
+				    }
+				     
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Non-Billable') {
+				    	 var nonBillableHours = btemp;
+				    	 var nonBillableSplit = nonBillableHours.split(':');
+				    	 var nonBillableFirst = nonBillableSplit[0];
+				    	 var nonBillableSecond = nonBillableSplit[1];
+						 
+						 var nonBillableMinute = nonBillableFirst * 60;
+						 var nonBillableMinute1 = nonBillableSecond;
+						 var nonBillableFinalmin1 = parseInt(nonBillableMinute) + parseInt(nonBillableMinute1);
+				    	 
+						 nonBillableSum = parseFloat(nonBillableSum) + parseInt(nonBillableFinalmin1);
+				    }
 				}
 			    
 		 }
@@ -639,6 +739,43 @@ $(document).click(function(){
 		}
 	 $("#rowTotal"+i+"Id").val(total);
 }	
+	 
+	//for calculate billable count
+	    var t1 = billableSum; 
+		var billableHours = Math.floor(t1 / 60); 
+		var billableMinutes = t1 % 60;
+		
+		if (billableMinutes < 10) {
+			billableMinutes = '0' + billableMinutes;
+		}
+		if (billableHours < 10) {
+			billableHours = '0' + billableHours;
+		}
+		if(!isNaN(billableHours) && !isNaN(billableMinutes)){
+			billableTotal = billableHours +":"+ billableMinutes;
+		}else{
+			billableTotal =  "00:00";
+		}
+	    $("#grandBillableTotal").val(billableTotal);
+	    
+	    
+	  //for calculate non-billable count
+	    var t2 = nonBillableSum; 
+		var nonBillableHours = Math.floor(t2 / 60); 
+		var nonBillableMinutes = t2 % 60;
+		
+		if (nonBillableMinutes < 10) {
+			nonBillableMinutes = '0' + nonBillableMinutes;
+		}
+		if (nonBillableHours < 10) {
+			nonBillableHours = '0' + nonBillableHours;
+		}
+		if(!isNaN(nonBillableHours) && !isNaN(nonBillableMinutes)){
+			nonBillableTotal = nonBillableHours +":"+ nonBillableMinutes;
+		}else{
+			nonBillableTotal =  "00:00";
+		}
+	    $("#grandNonBillableTotal").val(nonBillableTotal);
 	
 	 grandTotal();		
 });
@@ -1002,14 +1139,18 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	 var msg = $("#reject"+projectMemberId+"message").val(); 
      var sourceleadUrl ='${sourceleadUrl}';
      var rowHtmlContent =  $("#row"+projectMemberId).html();
+     
+     var firstName =  '${SourceLeadWeb_user.firstName}';
+	 if(firstName == '' || firstName == 'undefined' || firstName == null ){
+		firstName = '';
+	 }
+	 var lastName = '${SourceLeadWeb_user.lastName}';
+	 if(lastName == '' || lastName == 'undefined' || lastName == null ){
+		  lastName = '';
+     }
 	 $("#row"+projectMemberId).empty();
 	 $("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
      $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
-   /*  
-    $("#timesheetApprList").empty(); 
-    $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');   */
-    $(".mask_time").fadeOut(200);
-    $("#reject"+projectMemberId+"panel").slideUp(200);
     $.ajax({
     type: "POST",
     url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
@@ -1025,9 +1166,11 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
  	    	  $("#row"+projectMemberId).html(rowHtmlContent);
  	    	  $("#status"+projectMemberId).html("REJECTED");
  	    	  $("#action"+projectMemberId).empty();
- 	    	  $("#action"+projectMemberId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='ts_app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i></div>");  
+ 	    	  $("#action"+projectMemberId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='ts_app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><br>By :"+firstName+" "+lastName+"</div>");  
    	   }
-   	  pagination();
+   	   cancelRejectSubmission(projectMemberId);
+   	    pagination();
+   	   
       }
     }); 
     
@@ -1047,20 +1190,27 @@ function cancelRejectSubmission(projectMemberId){
 }
 
 function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize){  
-        
         var result = "";
         result = result +'<div class="time_appr_rejct_pop" id="reject'+projectMemberId+'panel" style="top:8%">';
 		result = result +'<textarea placeholder="Enter comment here" id="reject'+projectMemberId+'message" ></textarea>';
 		result = result +'<a href="#" onClick="saveRejectSubmissionByProjectMemberId(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\','+tdSpanSize+');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+projectMemberId+'\');">Cancel</a>';
 		result = result +'</div>';
-		 
 		$("#rejectedPopup").append(result);
 	    $(".mask_time").fadeIn(200); 
 		$("#reject"+projectMemberId+"panel").slideToggle(200);
+		
 }
 function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize){
 		//$("#timesheetApprList").empty();
 		var rowHtmlContent =  $("#row"+projectMemberId).html();
+		 var firstName =  '${SourceLeadWeb_user.firstName}';
+		 if(firstName == '' || firstName == 'undefined' || firstName == null ){
+			firstName = '';
+		 }
+		 var lastName = '${SourceLeadWeb_user.lastName}';
+		 if(lastName == '' || lastName == 'undefined' || lastName == null ){
+			  lastName = '';
+	     }
 		$("#row"+projectMemberId).empty();
 		$("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
 	    $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
@@ -1080,7 +1230,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 	        		 $("#row"+projectMemberId).empty();
 			    	 $("#row"+projectMemberId).html(rowHtmlContent);
 			    	 $("#status"+projectMemberId).html("APPROVED");
-			    	 $("#action"+projectMemberId).html("<div><h3>Approved</h3></div>"); 
+			    	 $("#action"+projectMemberId).html("<div><h3>Approved</h3><br>By :"+firstName+" "+lastName+"</div>"); 
 	        	   }
 		    	 
 		    }

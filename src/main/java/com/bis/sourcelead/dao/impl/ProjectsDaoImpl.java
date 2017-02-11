@@ -115,6 +115,23 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		return projectsList;
 	}
 	
+	
+	/**
+	 * This method for get project Ids by orgLocationsId
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception {
+		logger.debug("In ProjectsDaoImpl class getProjectIdsByOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select project.id from Projects project where project.orgLocationsId = :orgLocationsId ";
+		List<Long> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		
+		return projectsList;
+	}
+	
+	
+	
 	/**
 	 * This method for get project by orgLocationsId And EndDate Graterthan CurrentDate
 	 */
@@ -138,7 +155,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
-		logger.debug("=========================================In ProjectsDaoImpl getPrimaryProjectByOrgLocationsId method");
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.isPrimary = '1' ";
 		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
@@ -656,5 +673,20 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 
 }*/
 
-          }
+	@Override
+	@Transactional
+	public Integer getProjectCountByOrgLocationId(Long orgLocationId) throws Exception {
+		logger.debug("getProjectCountByOrgLocationId start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(projects.id) from Projects projects where projects.orgLocationsId.id = :orgLocationId ";
+			
+			List<Long> projectsCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			Integer count = 0;
+			if(projectsCount != null && !projectsCount.isEmpty()){
+					count = projectsCount.get(0).intValue();
+			}
+			return count;
+	}
+
+}
 

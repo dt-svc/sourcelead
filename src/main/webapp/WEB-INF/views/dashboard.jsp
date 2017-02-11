@@ -1,199 +1,12 @@
-
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<%-- 
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
-<!-- Content Area -->
-  <section class="content-wraper">
-    <section class="content-header clearfix">
-    	 <c:if test="${not empty msg}">
-	        <div class="success_pop" id="selector"  style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
-			</div>
-	     </c:if>
-      <div class="pull-left">
-        <h2>Dashboard</h2>
-      </div>
-    </section>
-    <div class="content-dashboard clearfix">
-      <section class="clearfix section-action-btns hidden">
-        <ul class="pull-right list-unstyled list-inline">
-          <li><i class="fa fa-filter" aria-hidden="true"></i>&nbsp;Filers&nbsp;</a>
-			<select>
-			<option>All</option>
-				<option>This Week</option>
-				<option>Month</option>
-				<option>Year</option>
-			</select>
-		  </li>
-        </ul>
-	</section>
-        <div class="clearfix row db-widget-sm">
-
-		<!-- /.info-box Ends -->
-		<div class="col-md-3 col-sm-6 col-xs-12">
-		<div class="info-box">
-            <span class="info-box-icon bg-orange">
-				<i class="fa fa-floppy-o" aria-hidden="true"></i>
-			</span>
-            <div class="info-box-content text-center">
-              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/NEW" >Saved</a></p>
-              <p class="info-box-number"><span id="savedTimesheetsSubmissionsCount"></span></p>
-            </div>
-          </div>
-        </div>
-          <!-- /.info-box Ends -->
-
-		<!-- /.info-box Ends -->
-		<div class="col-md-3 col-sm-6 col-xs-12">
-		<div class="info-box">
-            <span class="info-box-icon bg-blue">
-				<i class="fa fa-clock-o" aria-hidden="true"></i>
-			</span>
-            <div class="info-box-content text-center">
-              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/SUBMITTED" >Waiting</a></p>
-              <p class="info-box-number"><span  id="waitingTimesheetsSubmissionsCount"></span></p>
-            </div>
-          </div>
-        </div>
-          <!-- /.info-box Ends -->
-
-		<!-- /.info-box Ends -->
-		<div class="col-md-3 col-sm-6 col-xs-12">
-		<div class="info-box">
-            <span class="info-box-icon bg-green">
-				<i class="fa fa-check-circle-o" aria-hidden="true"></i>
-			</span>
-            <div class="info-box-content text-center">
-              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/APPROVED" >Approved</a></p>
-              <p class="info-box-number"><span id="approvalTimesheetsSubmissionsCount"></span></p>
-            </div>
-          </div>
-        </div>
-          <!-- /.info-box Ends -->
-
-		<!-- /.info-box Ends -->
-		<div class="col-md-3 col-sm-6 col-xs-12">
-		<div class="info-box">
-            <span class="info-box-icon bg-red">
-				<i class="fa fa-ban" aria-hidden="true"></i>
-			</span>
-            <div class="info-box-content text-center">
-              <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/REJECTED" >Rejected</a></p>
-              <p class="info-box-number"><span id="rejectedTimesheetsSubmissionsCount"></span></p>
-            </div>
-          </div>
-        </div>
-          <!-- /.info-box Ends -->
-		  
-		</div>
-		
-		<!-- Pie chart -->
-			<!-- <div class="clearfix row">
-				<section class="clearfix">
-				 <div class="dropdown col-xs-2">
-					<button class="btn btn-primary dropdown-toggle  btn-block" type="button" data-toggle="dropdown">Select Client
-					&nbsp;&nbsp;<span class="caret"></span></button>
-					<ul class="dropdown-menu">
-					  <li><a href="#">Client</a></li>
-					  <li><a href="#">Client</a></li>
-					  <li><a href="#">Client</a></li>
-					</ul>
-				  </div>
-				  
-				 
-				  <div class="dropdown col-xs-2">
-					<button class="btn btn-success dropdown-toggle  btn-block" type="button" data-toggle="dropdown">Select Projects
-					&nbsp;&nbsp;<span class="caret"></span></button>
-					<ul class="dropdown-menu">
-					  <li><a href="#">Project-1</a></li>
-					  <li><a href="#">Project-2</a></li>
-					  <li><a href="#">Project-3</a></li>
-					</ul>
-				  </div>
-				</section>
-				Highchart
-				<div class="col-md-12">
-				<section class="clearfix piechart-area mt">
-						<h3>Timesheet Highchart</h3>
-				</section></div>
-				Highchart Ends
-			</div> -->
-				
-				
-			</div>
-		<!-- Pie chart -->
-  </section>
-  <!-- Content Area Ends-->
- 
-  
-  <script> 
-$(document).ready(function(){
-	
-	timeSheetSubmissionStatusCount();
-	
-});
-</script>
-  
-
-<script type="text/javascript">
+<!-- <link href="resources/css/jquery-ui.css" rel="stylesheet"> -->
 
 
-function timeSheetSubmissionStatusCount(){
-    var sourceleadUrl ='${sourceleadUrl}';
-		 $.ajax({
-		    	type: "GET",
-		        url: sourceleadUrl+"/getTimeSheetSubmissionStatus", 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	
-		        	var  savedTimesheetsSubmissionsCount = json.savedTimesheetSubmissionCount;
-		        	var  waitingTimesheetsSubmissionsCount =json.waitingForApprovalTimesheetSubmissionCount;
-		        	var  approvalTimesheetsSubmissionsCount =json.approvedTimesheetSubmissionCount;
-		        	var  rejectedTimesheetsSubmissionsCount = json.rejectedTimesheetSubmissionCount; 
-		        	
-		        	if(savedTimesheetsSubmissionsCount>0){
-	                      $("#savedTimesheetsSubmissionsCount").text(savedTimesheetsSubmissionsCount);
-	                  }else{
-	                      $("#savedTimesheetsSubmissionsCount").html("0");
-	                      $("#savedTimesheetsSubmissionsCount").removeAttr("href");
-	                  }
-		        	if(waitingTimesheetsSubmissionsCount>0){
-	                      $("#waitingTimesheetsSubmissionsCount").text(waitingTimesheetsSubmissionsCount);
-	                  }else{
-	                      $("#waitingTimesheetsSubmissionsCount").html("0");
-	                      $("#waitingTimesheetsSubmissionsCount").removeAttr("href");
-	                  }
-		        	if(approvalTimesheetsSubmissionsCount>0){
-	                      $("#approvalTimesheetsSubmissionsCount").text(approvalTimesheetsSubmissionsCount);
-	                  }else{
-	                      $("#approvalTimesheetsSubmissionsCount").html("0");
-	                      $("#approvalTimesheetsSubmissionsCount").removeAttr("href");
-	                  }
-		        	if(rejectedTimesheetsSubmissionsCount>0){
-	                      $("#rejectedTimesheetsSubmissionsCount").text(rejectedTimesheetsSubmissionsCount);
-	                  }else{
-	                      $("#rejectedTimesheetsSubmissionsCount").html("0");
-	                      $("#rejectedTimesheetsSubmissionsCount").removeAttr("href");
-	                  }
-		        	
-		 		}
-		  });
-		 
-	}
 
-</script>
-
-
-<script>
-  $('#selector').delay(2000).fadeOut('slow');
-</script> 
-
-<jsp:include page="masterFooter.jsp" /> --%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
 <style>
@@ -207,10 +20,10 @@ min-height: 225px !important;
 padding: 0;
 min-height: 100px;
 }
-.side-bar .side-nav ul li span {
+/* .side-bar .side-nav ul li span {
 display: inline-block !important;
 float: none !important;
-}
+} */
 .custom-datatble table{
  margin-top: 20px !important;
  }
@@ -221,9 +34,13 @@ float: none !important;
  .dashboard-datepkr{
        position:relative;
 }
-.main-header span.logo i{
+/* .main-header span.logo i{
 position: relative;
 top:10px;
+} */
+.ui-timepicker-wrapper {
+z-index: 999999;
+width: 11.5%;
 }
 /* .dashboard-datepkr input[type="text"]{
        width:115px;
@@ -235,6 +52,7 @@ top:10px;
    right: 10px;
    top: 4px;
 } */
+
 </style>
 
  <style type="text/css">
@@ -243,41 +61,37 @@ overflow-x: auto;
 }
 </style>
 
- <jsp:include page="masterHeader.jsp" />
-<jsp:include page="masterSideNav.jsp" />
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-
-
+  <script type="text/javascript">
+ $( document ).ready(function() {
+	 assignTasksList();
+	});
+</script>
+  
 <section class="content-wraper">
 	    <section class="content-header clearfix">
 	      <div class="pull-left">
 	        <h2>Dashboard</h2>
 	      </div>
-	     <!--  <div class="pull-right brud-crum">Dashboard</div> -->
 	    </section>
 	    
 	    <div class="clearfix row mb">
 	      <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
-			<%-- <c:if test = "${SourceLeadWeb_timesheet == 'Y'}">     --%>  
+			 <c:if test = "${SourceLeadWeb_timesheet == 'Y'}">       
 			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
-			<%-- </c:if> --%>
+			 </c:if> 
 	      </sec:authorize>
 			 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-			<%-- <c:if test = "${SourceLeadWeb_userType != 'Employee'}"> --%>
 				<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 					<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
 				</c:if>
-			<%-- </c:if> --%>
 		     </sec:authorize>
-	      	 <%-- <jsp:include page="dashboardTasks.jsp"></jsp:include> --%>
 	    </div>
-    	<%-- <c:if test = "${SourceLeadWeb_userType != 'Employee'}"> --%>
+	    	
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 					<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> 
 					</sec:authorize>
+					
 			    <div class="clearfix row mb"> 
 			    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 			   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
@@ -292,7 +106,6 @@ overflow-x: auto;
 		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
 		     	</c:if>
 		     </div>
-	    <%-- </c:if> --%>
 	    
 	   			 <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
 	   				  <div class='row'>
@@ -307,9 +120,129 @@ overflow-x: auto;
 					  </div> 
 				 </sec:authorize> 
 				 
+	    
+	    <div class="row clearfix">
+	    <div class="col-md-6 mb">
+        <div class="clients_wrap_table dashboard-widget ">
+          <!-- <h4 class="pull-left">Tasks &nbsp;&nbsp;
+          <b class="newdate">
+               <i class="fa fa-filter"></i>
+              <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="dasboardTaskDatpicker" id="dasboardTaskDatpicker"  type="text" readonly="readonly" >
+           <i class="fa fa-calendar"></i></span>
+           </b>
+           </h4> -->
+           <h4 class="clearfix">Tasks
+        <b class="dashboard-datepkr"><input class="input-sm" id="dasboardTaskDatpicker" readonly="readonly" type="text"><i class="fa fa-calendar"></i></b>  
+          </h4>	
+          <div class="clearfix require_wrap_table dashboard-data">
+            <div id="assignTaskList"></div>
+            
+          </div>
+        </div>
+        <!-- Pagenation Ends --> 
+      </div>
+      </div>
+	    
+	    <div class="clearfix"></div> 
 	    <div class="clearfix row mb"> 
-	   	 <%--  <jsp:include page="dashboardTimesheetsApprovals.jsp"></jsp:include> --%>
 	    </div>
+
 </section>
+
+
 <jsp:include page="masterFooter.jsp" />
+<script type="text/javascript">
+$('#dasboardTaskDatpicker').datepicker({
+	dateFormat : 'dd-mm-yy',
+	changeMonth: true,
+	changeYear: true, 
+	onSelect : function(selected) {
+		var dt = new Date(selected);
+		dt.setDate(dt.getDate() + 1);
+		$("#dasboardTaskDatpicker").datepicker("option", "minDate", dt);
+		assignTasksList();
+		
+		
+	   }
+	});
+</script>
+
+	
+<script type="text/javascript">
+	function assignTasksList() {
+		var sourceleadUrl ='${sourceleadUrl}';
+		var date = $("#dasboardTaskDatpicker").val();
+		var status =  "myTask";
+		
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getTasksList?${_csrf.parameterName}=${_csrf.token}&status="+status+"&date="+date,
+	        success: function(data) {
+	        	 var json = JSON.parse(data);
+	        	 var result = "";
+	        	 result = result + '<table id="dasboardTasksPagination">'; 
+	        	 result = result + '<thead>';
+	         	result = result + '<tr>';
+	         	result = result + '<th>Subject</th>';
+	         	result = result + '<th>Date &amp; Time</th>';
+	         	result = result + '<th>Priority</th>';
+	         	result = result + '<th>Status</th>';
+	         	result = result + ' </tr>';
+	        	result = result + ' </thead>';
+	        	result = result + ' <tbody>';
+	        	
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var report = json[i];
+	        		
+	        		if(report.taskDateStr != null && report.taskDateStr != '' && report.taskDateStr != 'undefined'){
+	        			taskDateStr = report.taskDateStr
+	        		}else{
+	        			taskDateStr = "--";
+	        		}
+	        		if(report.taskTime != null && report.taskTime != '' && report.taskTime != 'undefined'){
+	        			taskTime = report.taskTime;
+	        		}else{
+	        			taskTime = "";
+	        		}
+	        		if(report.priority != null && report.priority != '' &&  report.priority != 'undefined'){
+	        			priority = report.priority;
+	        		}else{
+	        			priority = "--";
+	        		}
+	        		
+	        		result = result + '<tr>';
+	        		result = result + ' <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
+	        		result = result + '<td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
+	        		result = result + '<td>'+priority+'</td>';
+	        		result = result + ' <td>'+report.taskStatus+'</td>';
+	        		result = result + ' </tr>';
+	               
+				}
+	        	 result = result + '     </tbody>';
+	        	 result = result + '   </table>';
+	        	 $("#assignTaskList").empty();
+	           	 $("#assignTaskList").append(result); 
+	           	dasboardTasksPagination();
+	        }
+		});
+		
+	}
+
+	</script>
+	
+	<script>
+function dasboardTasksPagination(){
+    $('#dasboardTasksPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
 

@@ -70,5 +70,6 @@ public interface ProjectMembersService {
     
     public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(String status,String startDate,String endDate,Long projectId);
     
-   
+	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds);
+	
 }

@@ -155,7 +155,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	 * @return
 	 */
 	
-	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
+	/* this method is not at used */
 	@RequestMapping(value = "/getUsersList")
 	@JsonInclude(value = JsonInclude.Include.NON_NULL)
 	@ResponseBody
@@ -171,18 +171,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 			Long userRoleType ;
-			
-			if(!"".equalsIgnoreCase(userRole)){
-				 userRoleType = Long.parseLong(userRole);
-			}else{
-				 userRoleType = null;
-			}
-			
-			
-			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-			
+
+			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();			
 			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
-			
 			if(null != userState  && !"".equalsIgnoreCase(userState)){
 				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userStatus", userState));
 				}
@@ -190,9 +181,12 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userRoleId", userRole));
 				}
 				
-			boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
-			 
+			boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));			 
 			Integer maxResults = offset + Constants.MAX_RESULTS_TEN;
+
+			if(null != searchByName  && !"".equalsIgnoreCase(searchByName)){
+				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("email", searchByName));
+				}
 			
 			List<UserIndex> usersList = new ArrayList<UserIndex>();
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -210,33 +204,22 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				}
 			}
 			
-		List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset);
-	
-		/*	if(null != rolesList){
-				for(UserRole role : rolesList){
-					StringBuilder userName = new StringBuilder();
-					role.setUserRoleName(role.getRoles().getDisplayName());
-					if(!isNullOrEmpty(role.getUser().getLastName())){
-						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
-						role.setUserName(userName.toString());
-						
-					}else{
-						role.setUserName(role.getUser().getFirstName());
-					}
-					role.setUserEmail(role.getUser().getEmail());
-					role.setUserId(role.getUser().getId());
-					role.setIsMailSent(role.getUser().getIsMailSent().toString());
-					userRolesList.add(role);
-				}
-		
-			}*/
+		/*List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset);*/
 		 resultJson = toJSON(usersList);
 		 return resultJson;
 
 	}
+
 	
-	 @RequestMapping(value = "/searchUser", method = RequestMethod.POST)
-	 public String searchUser(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+	/* This method is used for landing page and advanced search for user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
+	@RequestMapping(value = "/searchUser", method = RequestMethod.POST)
+	 public String searchUser(@RequestParam(value = "json", required = false) String json,
+			 @RequestParam(value="offset", required=false) Integer offset,
+			 @RequestParam(value="userRole", required=false) String userRole,
+			 @RequestParam(value="searchByName", required=false) String searchByName,
+			 @RequestParam(value="userState", required=false) String userState,
+			 @RequestParam(value="loginUserRole", required=false) String loginUserRole,
+			 MultipartHttpServletRequest request) throws Exception {
 
 		 MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
@@ -253,18 +236,33 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			 
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
-				Long maxResults = userRoleService.getUsersCountByOrgLocationID(loginOrgLocation.getId());
 
-			 
-			 
+			 Integer maxResults =  Constants.MAX_RESULTS_TEN;
+
+			if(null != userState  && !"".equalsIgnoreCase(userState)){
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userStatus", userState));
+				}
+			if(null != userRole  && !"".equalsIgnoreCase(userRole)){
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userRoleId", userRole));
+				}
+			if(null != searchByName  && !"".equalsIgnoreCase(searchByName)){
+				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("email", searchByName));
+				/*boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("lastName", searchByName));
+				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("firstName", searchByName));*/
+				}
+			
+		 
 			//Exclude Keyword
 			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
-			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+			 if(null != excludeKeyWordArray && !excludeKeyWordArray.isEmpty()){
+
 			 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 				 for(String keywd : excludeKeyWordArray){
 					 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
 					ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+
+					if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
+
 						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
 							excludeBoolSubQueryBuilder.should(matchQueryBuilder);
 						}
@@ -277,12 +275,15 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			 
 			//Any Keyword
 				ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
-				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+
+				if(null != anyKeyWordArray && !anyKeyWordArray.isEmpty()){
+
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : anyKeyWordArray){
 						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
 						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+
+						if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
 							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
 								anyBoolSubQueryBuilder.should(matchQueryBuilder);
 							}
@@ -293,12 +294,15 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				}
 				//All Keywords
 				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
-				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+
+				if(null != allKeyWordArray && !allKeyWordArray.isEmpty()){
+
 					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : allKeyWordArray){
 						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
 						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+
+						if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
 							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
 								allBoolSubQueryBuilder.should(matchQueryBuilder);
 							}
@@ -310,7 +314,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				
 				//Email
 				ArrayList<String> emailArray = getSearchKeywordsFromChosenSelectField(jsonObj, "email");
-				if(emailArray != null && !emailArray.isEmpty()){
+
+				if(null != emailArray && !emailArray.isEmpty()){
 					BoolQueryBuilder emailBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : emailArray){
 						emailBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("email", "*"+keywd+"*"));
@@ -321,7 +326,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				
 				//Mobile Phone
 			    ArrayList<String> mobilePhoneArray = getSearchKeywordsFromChosenSelectField(jsonObj, "mobilePhone");
-				if(mobilePhoneArray != null && !mobilePhoneArray.isEmpty()){
+
+				if(null != mobilePhoneArray && !mobilePhoneArray.isEmpty()){
 					BoolQueryBuilder mobilePhoneBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : mobilePhoneArray){
 						mobilePhoneBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
@@ -332,7 +338,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				
 				//Role
 				ArrayList<String> userTypeArray = getSearchKeywordsFromChosenSelectField(jsonObj, "userType");
-				if(userTypeArray != null && !userTypeArray.isEmpty()){
+
+				if(null != userTypeArray && !userTypeArray.isEmpty()){
 					BoolQueryBuilder userTypeBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : userTypeArray){
 						userTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("userType", keywd));
@@ -343,7 +350,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				
 				//Employee Id
 				ArrayList<String> employeeIdArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeId");
-				if(employeeIdArray != null && !employeeIdArray.isEmpty()){
+
+				if(null != employeeIdArray && !employeeIdArray.isEmpty()){
 					BoolQueryBuilder employeeIdBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : employeeIdArray){
 						employeeIdBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("employeeId", keywd));
@@ -354,7 +362,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				
 				//User State
 				ArrayList<String> userStateArray = getSearchKeywordsFromChosenSelectField(jsonObj, "userStatus");
-				if(userStateArray != null && !userStateArray.isEmpty()){
+
+				if(null != userStateArray && !userStateArray.isEmpty()){
 					BoolQueryBuilder userStateBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : userStateArray){
 						userStateBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("userStatus", keywd));
@@ -364,12 +373,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				
 				//Rate
 				if(jsonObj.has("rate") && StringUtils.isNotEmpty(jsonObj.getString("rate"))){
-			    	/*String minRate= jsonObj.getString("rate").replaceAll("[^0-9\\.]+", "");
-			    	try{
-			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("rate").gte(new Float(minRate)));
-			    	}
-			    	catch(NumberFormatException e){}*/
-			    	
+
 			    	boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("rate", jsonObj.getString("rate")));
 			    }
 				
@@ -381,13 +385,14 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				List<UserIndex> usersList = new ArrayList<UserIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-				if(searchHits != null && searchHits.length >0){
+
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,offset,maxResults.intValue(),boolQueryBuilder).getHits();
+				if(null != searchHits && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
-						json = hit.getSourceAsString();
+						StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
 						mapper.setDateFormat(df);
-						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+						UserIndex userIndex = mapper.readValue(json1.toString(), UserIndex.class);
 						usersList.add(userIndex);
 					}
 				}
@@ -396,6 +401,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			 return resultJson;
 			 
 	 }
+	 
 	 private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
 		 ArrayList<String> keyWordList = null;
 		 if(jsonObj.has(param)){
@@ -414,17 +420,20 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		 else{
 			 keyWordList = new ArrayList<String>();
 		 }
-         return keyWordList;
-     }
+
+        return keyWordList;
+    }
+
 	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
 		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("ratePer", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("ratePer", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
 
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			
@@ -845,6 +854,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					userRole.setPreviousUserState(userRole.getUserState());
 					userRole.setUserState(Status.INACTIVE);
 					userRole.setTerminateReason(jsonObj.getString("reason"));
+					userRole.setUpdatedBy(user.getUserCode());
+					userRole.setUpdatedDate(commonUtil.currentDate());
+					
 					UserRole updateUserRole = userRoleService.addUserRole(userRole);
 					
 					//to assign primary role to another user
@@ -993,6 +1005,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					}
 					
 					userRole.setRoleChangeReason(jsonObj.getString("reason"));
+					userRole.setUpdatedBy(user.getUserCode());
+					userRole.setUpdatedDate(commonUtil.currentDate());
 					userRoleService.addUserRole(userRole);
 					
 					/*
@@ -1057,7 +1071,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					}
 					user.setUpdatedBy(loginUser.getUserCode());
 					user.setUpdatedDate(commonUtil.currentDate());
-					
+					userRole.setUpdatedBy(loginUser.getUserCode());
+					userRole.setUpdatedDate(commonUtil.currentDate());
 					userService.addUser(user);
 					userRoleService.addUserRole(userRole);
 					
@@ -1066,6 +1081,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
                      }
 				}
 			    Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId,orgLocations.getId());
+
 			    if(employees !=  null){
 			    	employees.setEmployeeId(jsonObj.getString("EmployeeId"));
 					employees.setRate(jsonObj.getString("Rate"));
@@ -1113,6 +1129,25 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 
 			resultJson = toJSON(projects);
 			return resultJson;
+	   }
+	 
+	 
+		/**
+		 * Redirectin for universal users list
+		 * @param searchValue
+		 * @param request
+		 * @return json
+		 * @throws Exception
+		 */
+	 @RequestMapping(value = "/getUniversalSearchUsersList" , method = RequestMethod.GET)
+	 public @ResponseBody String getUniversalSearchUsersList(@RequestParam(value="searchValue", required=false) String searchValue,HttpServletRequest request) throws Exception {
+		    String resultJson = null;
+		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	List<UserIndex> usersList =	userService.getAllUniversalSearchUsersList(orgLocations, searchValue,user);
+			resultJson = commonUtil.toJSON(usersList);
+			return resultJson;
+		 	
 	   }
 	 
 	private String toJSON(Object obj){

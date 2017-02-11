@@ -167,4 +167,26 @@ public class OrgRelationServiceTest {
 		OrgRelations orgRelations = orgRelationsService.getRespondingPartyDetailsById(2l);
 		logger.info("getRespondingPartyDetailsById "+orgRelations.getResponderType());
 	}
+	
+	@Test
+	public void getAllClientsCountByOrgLocationId() throws Exception {
+		
+		OrgLocations orglocations = new OrgLocations();
+		orglocations.setId(3L);
+		Integer clientListCount = orgRelationsService.getAllClientsCountByOrgLocationId(orglocations.getId());
+		logger.info("getAllClientsCountByOrgLocationId "+clientListCount);
+		
+	}
+	
+	@Test
+	public void getAllVendorsCountByOrgLocationId() throws Exception {
+		
+		OrgLocations orglocations = new OrgLocations();
+		orglocations.setId(3L);
+		Integer vendorListCount = orgRelationsService.getAllVendorsCountByOrgLocationId(orglocations.getId(),null);
+		logger.info("getAllVendorsCountByOrgLocationId "+vendorListCount);
+		
+	}
+	
+	
 }

@@ -1,12 +1,9 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
 <!-- this script is for Project Details functionality at Projects screen -->
 <script>
@@ -428,7 +425,7 @@
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Description </label>';
 						result = result
-								+ '<textarea class="edit_desc" placeholder="Enter Description" id="description" name="description">'
+								+ '<textarea class="edit_desc" placeholder="Enter Description" id="description" data-validation-optional="true" data-validation="required validate_Space validate_length length10-5000" name="description">'
 								+ description + '</textarea>';
 						result = result + '</div>       ';
 						result = result + '<div class="clearfix"></div>';
@@ -462,6 +459,8 @@
 						var projectEndDate = json.endDateStr;
 						$('#endDateStr1').datepicker({
 							dateFormat : 'yy-mm-dd',
+							changeMonth: true,
+							changeYear: true, 
 							minDate : dt,
 							onClose : function() {
 							},
