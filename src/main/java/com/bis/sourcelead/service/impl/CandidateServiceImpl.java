@@ -538,6 +538,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		 Long maxResults = getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
 		 ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
 			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();;
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 			if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 				 for(String keywd : allKeyWordArray){
