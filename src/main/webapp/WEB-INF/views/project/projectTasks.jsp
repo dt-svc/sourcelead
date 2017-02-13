@@ -32,7 +32,7 @@
 					</div>
 					<div class="form-horizontal row custom-form">
 						<div class="col-xs-12 col-lg-7">
-							<div class="form-group">
+							<div class="form-group" id="taskNamesDIV">
 								<label class="col-md-3">Task Name</label>
 								<div class="col-md-9">
 									<input type="text" id="taskName" name="taskName"
@@ -42,7 +42,7 @@
 								</div>
 							</div>
 							<div class="form-group" id="taskBillableTypeDiv">
-								<label class="col-md-3">Billable</label>
+								<label class="col-md-3">Billable Type</label>
 								<div class="col-md-9">
 									<select id="taskBillableType" name="taskBillableType" class="form-control selectpicker">
 									  <option value="Billable">Billable</option>
@@ -126,19 +126,19 @@
 							var opt = json[i];
 							result = result + '<tr>';
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
-							result = result+ '<td><div id="taskNameDiv'+ opt.Id+ '"><input type="text" onBlur="inlineEditForProjectsTaskName('+ opt.Id+ ',\'taskName\');" data-validation="required validate_length length2-250" id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '"  class="project_inline_field"></div><div style="display:none">'+ opt.taskName+' </div></td>';
+							result = result+ '<td><div id="taskNameDiv'+ opt.Id+ '"><input type="text" onBlur="inlineEditForProjectsTaskName('+ opt.Id+ ',\'taskName\');" data-validation="required validate_length length2-250" id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '" title="'+ opt.taskName+ '"  class="project_inline_field"></div><div style="display:none">'+ opt.taskName+' </div></td>';
 							result = result	+ '<td><div class="select-field"><select class="form-control" id="billableType'+opt.Id+'" name="billableType" onChange="updateTakBillableType(\''+opt.Id+'\');">';
 							result = result  +' <option '+(opt.billableType == "Billable" ? "selected" : '') +'>Billable</option>';
 				            result = result  +'	<option '+(opt.billableType == "Non-Billable" ? "selected" : '') +'>Non-Billable</option>';
 							result = result + ' </select>';
 							result = result + ' </div></td>';
-							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" class="project_inline_field"></div><div style="display:none">'+ opt.description+' </div></td>';
+							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" title="'+ opt.description+ '" class="project_inline_field"></div><div style="display:none">'+ opt.description+' </div></td>';
 							'</sec:authorize>'; 
 							
 							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
-							result = result+ '<td><div><span>'+ opt.taskName+ '</span></div></td>';
+							result = result+ '<td><div><span title="'+ opt.taskName+ '" >'+ opt.taskName+ '</span></div></td>';
 							result = result	+ '<td><div><span>'+ opt.billableType+ '</span></div></td>';
-							result = result	+ '<td><div><span>'+ opt.description+ '</span></div></td>';
+							result = result	+ '<td><div><span title="'+ opt.description+ '">'+ opt.description+ '</span></div></td>';
 							'</sec:authorize>'; 
 							result = result + '</tr>';
 
@@ -187,6 +187,7 @@ function updateTakBillableType(taskId){
 
 <script type="text/javascript">
 	function flushTasks() {
+		$('#taskNamesDIV').find('p.jquery_form_error_message').remove();
 		$("#taskBillableType").val('Billable');
 		$('#taskBillableType').selectpicker('refresh');
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());

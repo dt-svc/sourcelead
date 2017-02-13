@@ -97,10 +97,8 @@ public class AddElkRequirement {
 				requirementIndex.setReqCreatedBy(rs.getString("CREATED_BY"));
 				requirementIndex.setReqUpdatedBy(rs.getString("UPDATED_BY"));
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-				String reqcreatedDate = dateFormat.format(rs.getDate("CREATED_DATE"));
-				requirementIndex.setReqCreatedDate(reqcreatedDate);
-				String reqUpDatedDate = dateFormat.format(rs.getDate("CREATED_DATE"));
-				requirementIndex.setReqUpdatedDate(reqUpDatedDate);
+				requirementIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
+				requirementIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
 				requirementIndex.setIsTemplate(rs.getString("IS_Template"));
 				requirementIndex.setManagerUserId(rs.getString("MANAGER_USER_ID"));
 				ResultSet approverSet = getApproverUserDetails(Long.parseLong(rs.getString("ID")),conn);

@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,6 +70,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 
 	@Override
 	public UserRole addUserRole(UserRole userRole) throws Exception {
+		userRole.setCreatedDate(new Date());
+		userRole.setUpdatedDate(new Date());
 		return userRoleDao.addUserRole(userRole);
 	}
 

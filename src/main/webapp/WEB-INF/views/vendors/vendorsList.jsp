@@ -432,6 +432,7 @@ overflow-x: auto;
 						$("#search_vendor").addClass('button').val('Search');
 						$("#search_vendor").removeAttr("disabled");
 						closePop();
+						document.getElementById("vendorList_form").reset();
 						//prepareCandidateList(data);
 						preparedVendorsListFromElk(data);
 					},
@@ -451,6 +452,7 @@ overflow-x: auto;
 					success : function(data) {
 						$("#search_vendor").addClass('button').val('Search');
 						$("#search_vendor").removeAttr("disabled");
+						document.getElementById("vendorList_form").reset();
 						closePop();
 						preparedVendorContactListFromElk(data);
 					},
