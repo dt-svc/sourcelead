@@ -133,6 +133,7 @@
                 <div class="row">
                   <div class="form-group clearfix toggle-button-lbl">
                     <label class="col-md-5">Public</label>
+                    <input type="hidden" id="isPublicGlobel" value="">
                     <div class="col-md-7 toggle-button">
                       <label class="switch">
                       <input type="checkbox" name="isPublic" id="isPublicId"  value="N" onclick="ispublic();">
@@ -142,6 +143,7 @@
                   </div>
                   <div class="form-group clearfix toggle-button-lbl">
                     <label class="col-md-5">Crowd Sourcing</label>
+                    <input type="hidden" id="isCrowdScourcingGlobel" value="">
                     <div class="col-md-7 toggle-button">
                       <label class="switch">
                       <input type="checkbox" name="isCrowdScourcing" value="N" id="isCrowdScourcingId" onclick="isCrowdScourcing();" >
@@ -159,7 +161,7 @@
       <div class="form-footer clearfix row mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
+            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact/Open Network selection is mandatory</span>
             <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
             	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
 			</sec:authorize>
@@ -193,7 +195,10 @@ function releaseTo(){
 	    var isPublic = $("#isPublicId").val();
 	    var isCrowdScourcing = $("#isCrowdScourcingId").val();
 	    
-	    if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y"){
+	    var isPublicGlobel = $("#isPublicGlobel").val();
+	    var isCrowdScourcingGlobel = $("#isCrowdScourcingGlobel").val();
+	    
+	    if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
 	    	$('span.jquery_form_error_message').hide();
 	    	$("#releaseBtn").prop('disabled', true);
 	    	$("#releaseCancelBtn").prop('disabled', true);
@@ -618,13 +623,19 @@ function isCrowdScourcing(){
 function opennetwork(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = '${param.requirementId}';
-	alert("hello"+sourceleadUrl);
-	alert("requirementId"+sourceleadUrl+"/getOpenNetworkStatus?requirementId="+requirementId);
 	  $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getOpenNetworkStatus?requirementId="+requirementId, 	   
    		    success: function(data) {
-   		    	
+   		    	var json = JSON.parse(data);
+   		    	if(json.isPublic == "Y"){
+   		    	 $("#isPublicId").prop('checked', true).val('Y');
+   		    	}
+   		    	if(json.isCrowdSourcing == "Y"){
+      		    	 $("#isCrowdScourcingId").prop('checked', true).val('Y');
+      		    }
+   		      $("#isPublicGlobel").val(json.isPublic);
+   		      $("#isCrowdScourcingGlobel").val(json.isCrowdSourcing);
    		    }
 	  });
 }
