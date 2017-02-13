@@ -87,7 +87,10 @@ public class AddClientVendorELK {
 			    	
 			    	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			    	clientVendorIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
-			    	clientVendorIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
+			    	if(null != rs.getDate("UPDATED_DATE")){
+			    		clientVendorIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
+			    	}
+			    	
 			    	
 			    	String sql1 = "SELECT * FROM sourcelead.USER  user where  user.USER_CODE = '"+createdBy+"' ";
 						Statement stmt1 = conn.createStatement();
