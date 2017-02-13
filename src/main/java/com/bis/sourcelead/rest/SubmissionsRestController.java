@@ -30,6 +30,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.RequirementHelper;
+import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -119,7 +120,7 @@ public class SubmissionsRestController {
 	RequirementInterviewService requirementInterviewService;
 	
 	@Autowired
-	RequirementHelper requirementHelper;
+	RequirementElkUtil requirementElkUtil;
 	
 	 @Autowired
 	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
@@ -237,17 +238,11 @@ public class SubmissionsRestController {
 		Requirement requirement = requirementSubmission.getRequirement();
 		Integer count = requirementSubmissionService.getNumberOfApplicantsForRequirement(orgLocations.getId(), requirement.getId());
 		requirement.setTotalApplicantsForRequirement(count);
-		saveElkRequirement(requirement,new JSONObject());
+		requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
 		return "success";
 
 	}
 
-	private void saveElkRequirement(Requirement requirement, JSONObject jsonObj) throws Exception {
-		 
-		RequirementIndex requirementIndex = requirementHelper.populateRequirementIndex(requirement,jsonObj);
-		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirement.getId().toString());
-	}
-	
 	@RequestMapping(value = "/getOrgSubmissionTemplatesList", method = RequestMethod.POST)
 	@ResponseBody
 	String getOrgSubmissionTemplatesList(HttpServletRequest request) throws Exception {

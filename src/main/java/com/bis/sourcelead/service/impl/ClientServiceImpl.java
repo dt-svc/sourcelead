@@ -1166,8 +1166,24 @@ public class ClientServiceImpl implements ClientService{
 					 responderType = "Vendor"; 
 				 }
 				
+				 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
+				 
+				 BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
+				 initiatorQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+				 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorType", responderType));
+				 
+				 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
+				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", orgLocations.getId()));
+				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
+				 
+				 combinedQueryBuilder.should(initiatorQueryBuilder);
+				 combinedQueryBuilder.should(responderQueryBuilder);
+				 
+				 combinedQueryBuilder.must(combinedQueryBuilder);
+				
 				ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(serachValue);
-					BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();;
+					BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+					 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
 					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : allKeyWordArray){
