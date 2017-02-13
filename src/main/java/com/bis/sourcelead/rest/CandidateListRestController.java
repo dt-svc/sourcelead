@@ -666,7 +666,7 @@ public class CandidateListRestController {
 			resultJson = commonUtil.toJSON(candidateSkillsSet);
 			return resultJson;
 			
-	   }*/
+	   }
 		 
 	   /**
 		 *  This Method is for saving Skils By candidateID

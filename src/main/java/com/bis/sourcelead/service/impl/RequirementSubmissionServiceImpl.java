@@ -274,8 +274,24 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					candidate.setUpdatedDate(new Date());
 					candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 					
+					 
 					 if(jsonObj.has("candidateSkills") && !isNullOrEmpty(jsonObj.getString("candidateSkills"))){
-						 candidate.setSkillsName(jsonObj.getString("candidateSkills"));
+						 
+						  
+						 String candidateSkills = null;
+							try{
+					    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateSkills");
+					    		   candidateSkills = jsonArray.toString();
+					    	  }
+					    	  catch(JSONException e){
+					    		  candidateSkills= jsonObj.getString("candidateSkills");
+					    	  }
+							candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+							
+						 
+						 candidate.setSkillsName(candidateSkills);
+						 
+						 
 //						 for(int i=0; i<skillsList.length; i++){
 //							  CandidateSkills candSkill = new  CandidateSkills();
 //				    		  candSkill.setName(skillsList[i]);
