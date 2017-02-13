@@ -510,4 +510,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRole;
 	}
 
+	@Override
+	public List<UserRole> getUsersListByUserId(Long userId) throws Exception {
+		return userRoleDao.getUsersListByUserId(userId);
+	}
+
 }
