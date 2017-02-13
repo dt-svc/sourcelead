@@ -103,7 +103,8 @@ public class UserProfileRestController {
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.info("--exception--"+e);
+			
 		}
 		return "home";
 

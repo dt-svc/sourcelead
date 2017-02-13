@@ -1159,7 +1159,7 @@ public class UsersListRestController {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.info("--exception--"+e);
 		}
 
 	}
