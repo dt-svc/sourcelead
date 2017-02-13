@@ -143,6 +143,7 @@ width: 11.5%;
     </a> </span>
     <nav class="header-nav navbar">
     <a href="javascript:void(0)" class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
+      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
       <div class="search-area col-md-offset-0 col-sm-offset-0 col-lg-offset-2">
            <form:form name ="search_form" id="search_form">
 			<div class="uasrch-selectpicker">
@@ -165,6 +166,7 @@ width: 11.5%;
 			</div>
 			</form:form>
 			</div> 
+     </c:if>
 <div class="custom-navbar">
         <!-- login User details -->
         <div class="login-user">
