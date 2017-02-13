@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
@@ -29,12 +28,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -438,12 +434,12 @@ public class SubmissionsRestController {
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		StringBuilder skillsList = new StringBuilder();
-		Set<CandidateSkills> candidateSkills = submission.getCandidate().getCandidateSkills();
+		String[] candidateSkills = submission.getCandidate().getSkillsName().split(",");
 		int i = 0;
-		for (CandidateSkills skilss : candidateSkills) {
+		for (String skill : candidateSkills) {
 			if (i <= 5) {
-				skillsList = skillsList.append(skilss.getName());
-				if (i != candidateSkills.size() - 1) {
+				skillsList = skillsList.append(skill);
+				if (i != candidateSkills.length - 1) {
 					skillsList = skillsList.append(",");
 				}
 			}

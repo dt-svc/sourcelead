@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,10 +51,8 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -69,7 +66,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
@@ -144,8 +140,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
 	RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 	
-	@Autowired
-	CandidateSkillsService candidateSkillsService;
+	/*@Autowired
+	CandidateSkillsService candidateSkillsService;*/
 	
 	@Autowired
 	CandidateIndexHelper candidateIndexHelper;
@@ -278,6 +274,18 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					candidate.setUpdatedDate(new Date());
 					candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 					
+					 if(jsonObj.has("candidateSkills") && !isNullOrEmpty(jsonObj.getString("candidateSkills"))){
+						 candidate.setSkillsName(jsonObj.getString("candidateSkills"));
+//						 for(int i=0; i<skillsList.length; i++){
+//							  CandidateSkills candSkill = new  CandidateSkills();
+//				    		  candSkill.setName(skillsList[i]);
+//				    		  candSkill.setCandidateId(candidate);
+//				    		  candSkill.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
+//				    		  candSkill.setOrgLocationID(orgLocations);
+//				    		  candidateSkillsService.storeCandidateSkills(candSkill);
+//						 }
+					 }
+					
 					candidateDao.storeCandidate(candidate);
 					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
@@ -314,17 +322,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 
 					 }
 					 
-					 if(jsonObj.has("candidateSkills") && !isNullOrEmpty(jsonObj.getString("candidateSkills"))){
-						 String[] skillsList = jsonObj.getString("candidateSkills").split(",");
-						 for(int i=0; i<skillsList.length; i++){
-							  CandidateSkills candSkill = new  CandidateSkills();
-				    		  candSkill.setName(skillsList[i]);
-				    		  candSkill.setCandidateId(candidate);
-				    		  candSkill.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
-				    		  candSkill.setOrgLocationID(orgLocations);
-				    		  candidateSkillsService.storeCandidateSkills(candSkill);
-						 }
-					 }
+				
 					
 		 }
 		 

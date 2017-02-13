@@ -377,8 +377,8 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 				    	    	sb.append(candidateIndex.getFirstName());
 				    	    }
 				    	    candidateIndex.setCandidateName(sb.toString());
-				    	   if(candidateIndex.getSkills() != null){
-				    		   String skillArray[] = candidateIndex.getSkills().toArray(new String[candidateIndex.getSkills().size()]);
+				    	   if(candidateIndex.getSkillsName() != null){
+				    		   String skillArray[] = candidateIndex.getSkillsName().split(",");
 				    		   String skills = getReqSkills(skillArray);
 				    		   candidateIndex.setSkillSet(skills);
 				    	   }
@@ -664,8 +664,8 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 				    	    	sb.append(candidateIndex.getFirstName());
 				    	    }
 				    	    candidateIndex.setCandidateName(sb.toString());
-				    	   if(candidateIndex.getSkills() != null){
-				    		   String skillArray[] = candidateIndex.getSkills().toArray(new String[candidateIndex.getSkills().size()]);
+				    	   if(candidateIndex.getSkillsName() != null){
+				    		   String skillArray[] = candidateIndex.getSkillsName().split(",");
 				    		   String skills = getReqSkills(skillArray);
 				    		   candidateIndex.setSkillSet(skills);
 				    	   }
