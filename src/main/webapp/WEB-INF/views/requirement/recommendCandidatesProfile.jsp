@@ -653,6 +653,7 @@ function reActivateCandidateAlertMessage(candidateId){
 function candidateProfile(candidateId){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
+	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -678,11 +679,7 @@ function candidateProfile(candidateId){
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
-							if(son.summary != null && son.summary != '' && son.summary != "undefined"){
 							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
-							}else{
-								result = result +'<textarea placeholder="Enter description" readonly>No Data</textarea>';
-							}
 							result = result +'		<h2>Skills:</h2>';
 							
 							result = result + '	<div class="row select-skills">';
@@ -694,22 +691,9 @@ function candidateProfile(candidateId){
 							result = result + '              <div class="col-md-10">';
 							
 							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
-							<c:forEach var="skill" items="${skillsList}">
-			                var existed = 0;
-			                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-				                var res = [];
-				                res = json.skillsName.split(",");
-				                res.forEach(function(item) {
-				                	if('${skill.name}' == item){
-				                		result = result + ' <option  value="${skill.name}">${skill.name}</option>';
-				                		existed = 1;
-				                	}
-				                });
-			                }
-			                if(existed == 0){
-			                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
-			                }
-	                      </c:forEach>
+			                <c:forEach var="skill" items="${skillsList}">
+			              			  result = result + ' <option value="${skill.name}">${skill.name}</option>';
+			                </c:forEach>
 			                result = result + '</select>';
 							/* result = result + '                <input type="text" id="skillName" placeholder="Skill..." value="" class="form-control input-sm">'; */
 							result = result + '              </div>';
@@ -722,19 +706,7 @@ function candidateProfile(candidateId){
 							result = result + '      </div>';
 							
 							
-							result = result +'<div class="clearfix mt"></div>';
-							result = result +'<div class="append_skill ">';  
-							result = result +'<ul class="list-inline list-unstyled">';
-							if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-								result = result + ' <li class="professinal-details"  value="${json.skillsName}">'+json.skillsName+'</li>'; 
-							}else{
-								result = result + ' <li class="professinal-details">NO DATA</li>';
-							}
-			               	
-			               
-							result = result +'</ul>'; 
-							result = result +'</div>';
-							result = result +'</div>';
+							result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> ';
 							
 							/* result = result + '      <a href="javascript:void(0)">more <i class="fa fa-angle-right"></i></a>'; */
 							result = result + '    </div>';
@@ -747,7 +719,7 @@ function candidateProfile(candidateId){
 							$("#tab-16").empty();  
 							$("#tab-11").append(result);  
 							    
-						//	candidateSkillsList(candidateId);
+							candidateSkillsList(candidateId);
 							
 							$("#tab-11").show();
 							
@@ -857,7 +829,6 @@ function candidateProfile(candidateId){
 	               if(data != null && data != 'undefined' && data != ""){
 	            	   candidateSkillsList(candidateId);
 	            	   removeSkillPopUp(candidateId);
-	            	   candidateProfile(candidateId);
 	               }
 	        },
 	          
@@ -947,6 +918,7 @@ function cancelEdit(){
 <script>
 function candidateSkillsList(candidateId){  
 	 var sourceleadUrl ='${sourceleadUrl}';
+	// getCandidatesSkillsBycandidateID
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
