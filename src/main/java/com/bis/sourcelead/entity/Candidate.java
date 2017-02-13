@@ -45,6 +45,10 @@ public class Candidate implements Serializable{
     @JoinColumn(name="CONSULTANT_USER_ID")        
     private User consultantUser;
 	
+    @ManyToOne(fetch = FetchType.EAGER)
+   	@JoinColumn(name = "ORG_ID", nullable = false)
+   	private Org orgId;
+	
 	
 	@Column(name = "CANDIDATE_TYPE")
 	private String candidateType;
@@ -891,5 +895,15 @@ public class Candidate implements Serializable{
 
 	public void setCurrentResumeId(Long currentResumeId) {
 		this.currentResumeId = currentResumeId;
+	}
+
+
+	public Org getOrgId() {
+		return orgId;
+	}
+
+
+	public void setOrgId(Org orgId) {
+		this.orgId = orgId;
 	}
 }

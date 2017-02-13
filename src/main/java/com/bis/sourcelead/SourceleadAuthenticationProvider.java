@@ -16,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -91,19 +92,31 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           }
           else{
         	  if(sourceleadPasswordEncoder.matches(password, user.getPassword())){
-        		  OrgLocations orgLocations = userRole.getOrgLocations();
-      			  Org org = orgLocations.getOrg();
-				try {
-					modulesId = modulesService.getOrgRegisteredModules(org);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-    			List<SourceleadActions> actionsList = null;
-    			try {
-					actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+        		  OrgLocations orgLocations = null;
+      			  Org org = null;
+      			  List<SourceleadActions> actionsList = null;
+      			
+        		  if(!user.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && !user.getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER)){
+        			  orgLocations = userRole.getOrgLocations();
+          			  org = orgLocations.getOrg();
+    				try {
+    					modulesId = modulesService.getOrgRegisteredModules(org);
+    				} catch (Exception e1) {
+    					e1.printStackTrace();
+    				} 
+    				try {
+    					actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+    				} catch (Exception e) {
+    					e.printStackTrace();
+    				}
+        		  }else{
+        			  try {
+      					actionsList = sourceleadActionsService.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(userRole.getRoles().getId());
+      				} catch (Exception e) {
+      					e.printStackTrace();
+      				} 
+        		  }
+    			
         		  List<GrantedAuthority> authorities = buildUserAuthority(actionsList); 
 				  try {
 					  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){

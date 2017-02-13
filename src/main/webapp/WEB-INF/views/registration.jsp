@@ -41,30 +41,33 @@
                 <div class="col-xs-12 col-md-6">
                     <i class="fa fa-user-circle"></i>
                     <label>First Name <span class="text-danger">*</span></label>
-                    <input type="text" value="" class="" field-name="First Name" data-validation="required">
+                    <input type="text" name="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-6">
                     <i class="fa fa-user-circle"></i>
                     <label>Last Name</label>
-                    <input type="text" value="" class="" placeholder="">
+                    <input type="text" name="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
                     <b></b>
                 </div>
                 </div>
                 <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-6" id="emailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
-                    <input type="text" value="" class="" placeholder="">
+                    <input type="text" name="email" field-name="Email" onblur="validateEmail('Professional');" id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-6 select-field">
                     <i class="fa fa-map-marker"></i>
-                    <select class="form-control chosen-select" data-placeholder="Location">
+                    <select class="form-control chosen-select" name="location" field-name="Location" data-validation="required">
                         <option disabled selected>Location</option>
-                        <option>Location-2</option>
-                        <option>Location-3</option>
-                        <option>Location-4</option>
+                        <option value="Australia">Australia</option>
+		                <option value="France">France</option>
+		                <option value="India">India</option>
+		                <option value="Singapore">Singapore</option>
+		                <option value="United Kingdom">United Kingdom</option>
+		                <option value="United States">United States</option>
                     </select>
                     <b></b>
                 </div>
@@ -77,7 +80,7 @@
                     <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a>
                 </div>
                 <div class="pull-right">
-                    <button type="submit" class="btn btn-primary btn_styles mr" title="Register">
+                    <button type="submit" id="register_button" class="btn btn-primary btn_styles mr" title="Register">
                         <i class="fa fa-paper-plane"></i>Register</button>
                     <button type="button" class="btn btn-default btn_styles" title="Cancel">
                         <i class="fa fa-times"></i>Cancel</button>
@@ -151,6 +154,47 @@
 
 
 <script type="text/javascript">
+function validateEmail(type){
+	
+    var email = document.getElementById("email").value;
+    
+    var sourceleadUrl ='${sourceleadUrl}';
+		if(email != null && email != ''){
+			$("#register_button").attr("disabled", "disabled");
+		$.ajax({
+		   	type: "GET",
+		       url: sourceleadUrl+"/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       success: function(data) {
+		    		if(data != null && data != ''){
+					     if(data == 'Invalid'){
+					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+			    				$('input#email').attr('record-exist','yes');
+			    				$('input#email').attr('record-exist-errorMsg',email+' is Invalid'); 
+					     } 
+					     
+				       	else{
+				       		 $("#register_button").removeAttr("disabled");
+							 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+							 $( "#register_button" ).removeAttr("style");
+							 $( "#register_button" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+				       	}
+			       	}
+		    	   
+		      },
+		       
+		}); 
+	   }
+}
+</script>
+
+
+
+<script type="text/javascript">
 var validationSettings = {
         errorMessagePosition : 'element',
        borderColorOnError : '',
@@ -161,26 +205,30 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
             	var frm = $('#professionalRegistration_form').serializeFormJSON();
-            	var con = JSON.stringify(frm);
-			    con = con.replace(/[{}]/g, ""); 
+			    
+			    var con = JSON.stringify(frm);
+		        con = con.replace(/[{}]/g, "");
+		        
+		        var jsonData = encodeURIComponent(con);
+			    
          		var sourceleadUrl ='${sourceleadUrl}';
-         	/* 	$("#register_button").attr("disabled", "disabled");
-         		$( "#register_button" ).addClass('button').val('Processing..');
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	           	$.ajax({
+         	 	$("#register_button").attr("disabled", "disabled");
+         		
+         		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+           	 
+         		$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&json="+con,
-                			  
+                	  url: sourceleadUrl+"/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
                 			  
                   	success: function(result) {
-			        	if((result == 'home')){
-			        		location.replace(sourceleadUrl+"/dashboard");  
+			        	if((result == 'success')){
+			        		location.replace(sourceleadUrl+"/resetloginCredentials");  
 			        	}
 			        	
 			        },  
-              });  */
+              }); 
                 
             	    return true;
             }

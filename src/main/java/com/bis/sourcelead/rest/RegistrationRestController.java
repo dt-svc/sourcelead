@@ -209,6 +209,40 @@ public class RegistrationRestController {
 	   }
 	
 	
+	 @RequestMapping(value = "/registerAsProfessional" , method = RequestMethod.POST)
+	 public  String registerAsProfessional(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+		 registrationService.saveProfessional(jsonObj);
+		 
+		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
+					"Verification Code sent to your mail.");
+	 	
+	 	
+		 return "success";
+	   }
+	 
+	 
+	 
+	 @RequestMapping(value = "/resetCredentials" , method = RequestMethod.POST)
+	 public  String resetCredentials(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 User user = userService.getUserByUserName(jsonObj.getString("userName"));
+		 if(null != user){
+			 user.setUserName(jsonObj.getString("resetUserName"));
+			 user.setPassword(sourceleadPasswordEncoder.encode(jsonObj.getString("password")));
+			 userService.addUser(user);
+		 }
+	 	
+	 	
+		 return "success";
+	   }
 	 
 	 
 	

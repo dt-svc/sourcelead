@@ -23,6 +23,8 @@ public interface RegistrationService {
 	public void deletePasswordResets(PasswordResets passwordResets) throws Exception;
 	
 	public void addUserBySourcelead(User user,JSONObject jsonObj) throws Exception;
+	
+	public void saveProfessional(JSONObject jsonObj) throws Exception;
 
 
 

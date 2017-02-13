@@ -119,4 +119,8 @@ public interface UserDao {
 	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId,Long userId,Long tabId) throws Exception;
 	
 	public List<User> getUsersListByOrglocationId(Long orgLocationId) throws Exception;
+	
+	User getUserByEmailAndUserType(String email,String userType) throws Exception;
+	
+	User getUserByUserName(String userName) throws Exception;
 }

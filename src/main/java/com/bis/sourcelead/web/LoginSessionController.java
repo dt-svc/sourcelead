@@ -111,48 +111,66 @@ public class LoginSessionController {
 		
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
-		
-		OrgLocations orgLocations = userRole.getOrgLocations();
-		Org org = orgLocations.getOrg();
-		List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
-		Collection<Tabs> tabsList = null;
-		if(org.getOrgType().equalsIgnoreCase("Company")){
-			tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
-		}
-		
-		SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
-		
-		
-		String[] modules = org.getModulesId().split(",");
-		for(int i = 0 ; i< modules.length ; i++){
-			if(modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)){
-				SourceLeadSessionManager.setSessionAttribute(request, "ats", "Y");
-			}
-			
-			if(modules[i].equalsIgnoreCase(Constants.MODULE_VMS_STR)){
-				SourceLeadSessionManager.setSessionAttribute(request, "vms", "Y");
-			}
-			
-			if(modules[i].equalsIgnoreCase(Constants.MODULE_TIMESHEET_STR)){
-				SourceLeadSessionManager.setSessionAttribute(request, "timesheet", "Y");
-			}
-		}
-		
-		
-		setLoginSession(request, authentication,user,userRole);
-		
 		ModelAndView model = new ModelAndView();
-		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");
-		if(null != msg && !msg.isEmpty()){
-			model.addObject("msg", msg);
-			SourceLeadSessionManager.removeSessionAttribute(request, "resetPwdMsg");
+		Collection<Tabs> tabsList = null;
+		
+		if(!user.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && !user.getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER)){
+			OrgLocations orgLocations = userRole.getOrgLocations();
+			Org org = orgLocations.getOrg();
+			List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
+			if(org.getOrgType().equalsIgnoreCase("Company")){
+				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+			}
+			
+			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
+			
+			
+			String[] modules = org.getModulesId().split(",");
+			for(int i = 0 ; i< modules.length ; i++){
+				if(modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)){
+					SourceLeadSessionManager.setSessionAttribute(request, "ats", "Y");
+				}
+				
+				if(modules[i].equalsIgnoreCase(Constants.MODULE_VMS_STR)){
+					SourceLeadSessionManager.setSessionAttribute(request, "vms", "Y");
+				}
+				
+				if(modules[i].equalsIgnoreCase(Constants.MODULE_TIMESHEET_STR)){
+					SourceLeadSessionManager.setSessionAttribute(request, "timesheet", "Y");
+				}
+			}
+			
+			
+			setLoginSession(request, authentication,user,userRole);
+			
+			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");
+			if(null != msg && !msg.isEmpty()){
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "resetPwdMsg");
+			}
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("dashboard");
+			
+			
+			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
+			model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
 		}
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("dashboard");
-		
-		
-		Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
-		model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
+		else{
+			setSessionUserAttributes(user,request,sourceleadUrl);
+			tabsList = tabsService.getCrowdSourcingTabsListByRoleId(userRole.getRoles().getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
+			
+			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
+			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRoleId", userRole.getRoles().getId());
+
+			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
+			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
+			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
+			SourceLeadSessionManager.setSessionAttribute(request, "country", user.getLocation());
+			
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("professional/professionalDashboard");
+		}
 	   
 		return model;
 		
