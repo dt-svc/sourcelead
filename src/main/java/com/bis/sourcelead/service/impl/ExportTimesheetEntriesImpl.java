@@ -656,7 +656,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	        table.setWidthPercentage(100);
 	        
 	        if(timesheetFrequency.equalsIgnoreCase("Monthly")){
-	        	 table.setWidths(new int[]{3,5,5,3,5,3,3,3,3,3,3,5});
+	        	 table.setWidths(new int[]{5,5,5,5,3,3,3,3,3,3,3,5});
 	        }else if(timesheetFrequency.equalsIgnoreCase("Semi-monthly")){
             table.setWidths(new int[]{3,5,5,3,5,3,3,3,3,5});
 	        }else if(timesheetFrequency.equalsIgnoreCase("Bi-weekly")){

@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -599,19 +600,24 @@ public class TimesheetApprovalRestController {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
-		/*if(null !=(weekFrequency) && !("undefined").equalsIgnoreCase(weekFrequency) && !("").equalsIgnoreCase(weekFrequency)){
-		String[] stdate = weekFrequency.split("To");
-		startDate = stdate[0];
-		endDate = stdate[1];
-		}*/
 		DateFormat df = Constants.DMY;
-		Date stDate = df.parse(startDate);
-		Date edDate = df.parse(endDate);
+		Date stDate = null;
+		Date edDate= null;
+		if(null !=startDate && !("undefined").equalsIgnoreCase(startDate) && null !=endDate && !("undefined").equalsIgnoreCase(endDate)){
+		 stDate = df.parse(startDate);
+		 edDate = df.parse(endDate);
+		}
 		File file = null;
-		if("pdf".equalsIgnoreCase(exportType)){
+		
+		  if(timesheetFrequency.equalsIgnoreCase("Monthly")){
+			  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthString(frequencyMonth.toString());
+			  
+			  stDate = dateList.get("STARTDATE");
+			  edDate = dateList.get("ENDDATE");
+		  }
+		 if("pdf".equalsIgnoreCase(exportType)){
 			file = exportTimesheetEntries.timeSheetApprovelExport(user, orgLocations, stDate, edDate, timesheetFrequency, client, stage,frequencyMonth,weekFrequency);
-		}else{
+	    }else{
 			file = exportTimesheetEntries.timeSheetApprovelExportExcel(user, orgLocations, stDate, edDate, timesheetFrequency, client, stage,frequencyMonth,weekFrequency);
 		}
 		

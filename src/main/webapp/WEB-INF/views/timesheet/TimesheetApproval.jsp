@@ -751,7 +751,6 @@ $(document).ready(function() {
 		
                var sourceleadUrl ='${sourceleadUrl}';
                var frequencyMonth = $("#frequencyMonth").val();
-               alert(frequencyMonth);
                if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
             	   frequencyMonth = '';
                
