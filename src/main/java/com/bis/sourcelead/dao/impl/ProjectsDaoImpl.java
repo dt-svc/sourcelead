@@ -97,8 +97,18 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public Projects getProjectById(Long id) throws Exception {
 		logger.debug("In Projects getProject method");
+		/*Session session = this.sessionFactory.getCurrentSession();
+		return (Projects) session.get(Projects.class, id);*/
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		return (Projects) session.get(Projects.class, id);
+		String query = "from Projects project left join fetch project.orgRelationId left join fetch project.orgLocationsId  where project.id = :id ";
+		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("id", id).setCacheable(true).list();
+
+		Projects projects = null;
+		if (projectsList != null && projectsList.size() > 0) {
+			projects = (Projects) projectsList.iterator().next();
+		}
+		return projects;
 	}
 	
 	/**
