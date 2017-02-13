@@ -225,6 +225,22 @@ public class RegistrationRestController {
 		 return "success";
 	   }
 	 
+	 @RequestMapping(value = "/registerAsIndividualRecruiter" , method = RequestMethod.POST)
+	 public  String registerAsIndividualRecruiter(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+		 registrationService.saveIndividualRecruiter(jsonObj);
+		 
+		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
+					"Verification Code sent to your mail.");
+	 	
+	 	
+		 return "success";
+	   }
+	 
 	 
 	 
 	 @RequestMapping(value = "/resetCredentials" , method = RequestMethod.POST)

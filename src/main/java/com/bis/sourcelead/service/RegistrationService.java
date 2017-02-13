@@ -25,6 +25,8 @@ public interface RegistrationService {
 	public void addUserBySourcelead(User user,JSONObject jsonObj) throws Exception;
 	
 	public void saveProfessional(JSONObject jsonObj) throws Exception;
+	
+	public void saveIndividualRecruiter(JSONObject jsonObj) throws Exception;
 
 
 

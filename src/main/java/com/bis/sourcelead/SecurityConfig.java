@@ -90,6 +90,7 @@ public class SecurityConfig  {
     			.antMatchers("/login").permitAll() 
     			.antMatchers("/register").permitAll() 
     			.antMatchers("/registerAsProfessional").permitAll() 
+    			.antMatchers("/registerAsIndividualRecruiter").permitAll() 
     			.antMatchers("/resetloginCredentials").permitAll() 
     			.antMatchers("/validateCrowdSourcingEmail").permitAll() 
     			.antMatchers("/validateCrowdSourcingUserName").permitAll() 

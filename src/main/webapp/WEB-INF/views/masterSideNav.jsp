@@ -35,7 +35,7 @@
         <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span>Dashboard</a></li>
         </c:if>
         
-         <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+        <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
         <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalDashboard'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span>Dashboard</a></li>
         </c:if> 
           
@@ -49,7 +49,7 @@
 	                   <li class="${sessionData.nav == 'Requirement' ? 'side-nav-active' : ''}"><a href="<c:url value='/requirementList'/>" title="Requirement"><span><i class="fa fa-briefcase"></i></span>Requirement</a></li>
 	                </c:if> 
 	                
-	                <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+	                <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER' }">
 	                 <li class="${sessionData.nav == 'Requirement' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalRequirements'/>" title="Requirement"><span><i class="fa fa-briefcase"></i></span>Requirement</a></li>
 	                </c:if>
 	                </c:if>
@@ -57,7 +57,12 @@
 	                
 	                
 	                <c:if test="${userTabs.tabName == 'Candidates'}">
+	                 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 	                   <li class="${sessionData.nav == 'Candidates' ? 'side-nav-active' : ''}"><a href="<c:url value='/candidatesList'/>" title="Candidates"><span><i class="fa fa-user"></i></span>Candidates</a></li>
+	                 </c:if>
+	                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+	                   <li class="${sessionData.nav == 'Candidates' ? 'side-nav-active' : ''}"><a href="<c:url value='/recruiterCandidates'/>" title="Candidates"><span><i class="fa fa-user"></i></span>Candidates</a></li>
+	                 </c:if>
 	                </c:if> 
                 
 	                <c:if test="${userTabs.tabName == 'Vendors'}">

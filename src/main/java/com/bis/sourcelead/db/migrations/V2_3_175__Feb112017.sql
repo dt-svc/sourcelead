@@ -35,9 +35,19 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 
 
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES 
-											('Professional Invitation','Email', 'Professional Invitation', 'Welcome to SourceLead ', 'Welcome to SourceLead','org', 'Best Regards,\nSourceLead.', 'Welcome !!!\n\n Dear Professional {{ProfessionalInvitation.professionalName}}\n\n It is great to see that you have started accessing sourcelead.\n Your Sourcelead URL : {{ProfessionalInvitation.resetLink}}\n User Name : {{ProfessionalInvitation.loginUserName}}\n I hope you will  have a wonderful time with SourceLead. If you have any questions or comments, feel free to reach out to us at info@sourcelead.com','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
+											('Professional Invitation','Email', 'Professional Invitation', 'Welcome to SourceLead ', 'Welcome to SourceLead','org', 'Best Regards,\nSourceLead.', 'Welcome !!!\n\n Dear Professional {{ProfessionalInvitation.professionalName}}\n\n It is great to see that you have started accessing sourcelead.\n User Name : {{ProfessionalInvitation.loginUserName}}\n Your Sourcelead URL : {{ProfessionalInvitation.resetLink}}\n  I hope you will  have a wonderful time with SourceLead. If you have any questions or comments, feel free to reach out to us at info@sourcelead.com','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
 									
 
 		
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('Individual Recruiter Invitation','Email');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'recruiterName', '{{RecruiterInvitation.recruiterName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'loginUserName', '{{RecruiterInvitation.loginUserName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'resetLink', '{{RecruiterInvitation.resetLink}}');
+
+
+
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES 
+											('Individual Recruiter Invitation','Email', 'Individual Recruiter Invitation', 'Welcome to SourceLead ', 'Welcome to SourceLead','org', 'Best Regards,\nSourceLead.', 'Welcome !!!\n\n Dear Recruiter {{RecruiterInvitation.recruiterName}}\n\n It is great to see that you have started accessing sourcelead.\n User Name : {{RecruiterInvitation.loginUserName}}\n Your Sourcelead URL : {{RecruiterInvitation.resetLink}}\n  I hope you will  have a wonderful time with SourceLead. If you have any questions or comments, feel free to reach out to us at info@sourcelead.com','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
+									
 
  

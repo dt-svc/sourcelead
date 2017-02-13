@@ -28,8 +28,8 @@
         <div class="company_logo pull-left"><img src="resources/images/mail-logo.png" alt="Sourcelead Logo" class="img-responsive" width="250"></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#professional"><i class="fa fa-user"></i>&nbsp;&nbsp;Professional</a></li>
-        <li><a data-toggle="tab" href="#recruiter"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
+          <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials()"><i class="fa fa-user"></i>&nbsp;&nbsp;Professional</a></li>
+        <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials()"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
       </ul>
         <div class="regis_wrap_styles">
         <div class="tab-content">
@@ -41,13 +41,13 @@
                 <div class="col-xs-12 col-md-6">
                     <i class="fa fa-user-circle"></i>
                     <label>First Name <span class="text-danger">*</span></label>
-                    <input type="text" name="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+                    <input type="text" name="firstName" field-name="First Name" id="firstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-6">
                     <i class="fa fa-user-circle"></i>
                     <label>Last Name</label>
-                    <input type="text" name="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+                    <input type="text" name="lastName" field-name="Last Name" id="lastName" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
                     <b></b>
                 </div>
                 </div>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="col-xs-12 col-md-6 select-field">
                     <i class="fa fa-map-marker"></i>
-                    <select class="form-control chosen-select" name="location" field-name="Location" data-validation="required">
+                    <select class="form-control chosen-select" name="location" id="location" field-name="Location" data-validation="required">
                         <option disabled selected>Location</option>
                         <option value="Australia">Australia</option>
 		                <option value="France">France</option>
@@ -89,36 +89,39 @@
             </form:form>
         </div>
         <div id="recruiter" class="tab-pane fade">
-            
+           <form:form class="login-form clearfix"  id="recruiterRegistration_form"  name="recruiterRegistration_form" method="post" >   
             <div class="row">
             <div class="form-group clearfix">
                 <div class="col-xs-12 col-md-6">
                     <i class="fa fa-user-circle"></i>
                     <label>First Name <span class="text-danger">*</span></label>
-                    <input type="text" value="" class="">
+                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-6">
                     <i class="fa fa-user-circle"></i>
                     <label>Last Name</label>
-                    <input type="text" value="" class="" placeholder="">
+                    <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
                     <b></b>
                 </div>
                 </div>
                 <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-6" id="recruiterEmailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
-                    <input type="text" value="" class="" placeholder="">
+                    <input type="text" name="email" field-name="Email" onblur="validateRecruiterEmail('Recruiter');" id="recruiterEmail"  data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-6 select-field">
                     <i class="fa fa-map-marker"></i>
-                    <select class="form-control chosen-select" data-placeholder="Location">
+                    <select class="form-control chosen-select" name="location" id="recruiterLocation" field-name="Location" data-validation="required">
                         <option disabled selected>Location</option>
-                        <option>Location-2</option>
-                        <option>Location-3</option>
-                        <option>Location-4</option>
+                        <option value="Australia">Australia</option>
+		                <option value="France">France</option>
+		                <option value="India">India</option>
+		                <option value="Singapore">Singapore</option>
+		                <option value="United Kingdom">United Kingdom</option>
+		                <option value="United States">United States</option>
                     </select>
                     <b></b>
                 </div>
@@ -131,14 +134,13 @@
                 </div>
 
                 <div class="pull-right">
-                    <button type="button" class="btn btn-primary btn_styles mr" title="Register">
+                    <button type="submit" class="btn btn-primary btn_styles mr" id="recruiter_register" title="Register">
                         <i class="fa fa-paper-plane"></i>Register</button>
                     <button type="button" class="btn btn-default btn_styles" title="Cancel">
                         <i class="fa fa-times"></i>Cancel</button>
                 </div>
             </div>
-
-            
+      </form:form>
         </div>
       </div>
         </div>
@@ -151,13 +153,24 @@
 <script src="resources/js/formvalidator.js"></script>
 </body>
 
-
+<script>
+function resetCredentials(){
+	$("#firstName").val('');
+	$("#lastName").val('');
+	$("#email").val('');
+	$("#location").val('');
+	
+	$("#recruiterFirstName").val('');
+	$("#recruiterLastName").val('');
+	$("#recruiterEmail").val('');
+	$("#recruiterLocation").val('');
+}
+</script>
 
 <script type="text/javascript">
 function validateEmail(type){
 	
     var email = document.getElementById("email").value;
-    
     var sourceleadUrl ='${sourceleadUrl}';
 		if(email != null && email != ''){
 			$("#register_button").attr("disabled", "disabled");
@@ -193,6 +206,45 @@ function validateEmail(type){
 </script>
 
 
+<script type="text/javascript">
+function validateRecruiterEmail(type){
+	
+    var email = document.getElementById("recruiterEmail").value;
+    var sourceleadUrl ='${sourceleadUrl}';
+		if(email != null && email != ''){
+			$("#recruiter_register").attr("disabled", "disabled");
+		$.ajax({
+		   	type: "GET",
+		       url: sourceleadUrl+"/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       success: function(data) {
+		    		if(data != null && data != ''){
+					     if(data == 'Invalid'){
+					    	    $('#recruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#recruiterEmail").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+			    				$('input#recruiterEmail').attr('record-exist','yes');
+			    				$('input#recruiterEmail').attr('record-exist-errorMsg',email+' is Invalid'); 
+					     } 
+					     
+				       	else{
+				       		 $("#recruiter_register").removeAttr("disabled");
+							 $('input#recruiterEmail').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+							 $( "#recruiter_register" ).removeAttr("style");
+							 $( "#recruiter_register" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+				       	}
+			       	}
+		    	   
+		      },
+		       
+		}); 
+	   }
+}
+</script>
+
+
 
 <script type="text/javascript">
 var validationSettings = {
@@ -214,7 +266,6 @@ var validationSettings = {
          		var sourceleadUrl ='${sourceleadUrl}';
          	 	$("#register_button").attr("disabled", "disabled");
          		
-         		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
            	 
          		$.ajax({
           	      type: "POST",
@@ -237,6 +288,55 @@ var validationSettings = {
                }
             });
          $('#professionalRegistration_form').showHelpOnFocus();
+            
+     
+	</script>
+	
+	
+	
+	<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#recruiterRegistration_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		e.preventDefault();
+            	var frm = $('#recruiterRegistration_form').serializeFormJSON();
+			    
+			    var con = JSON.stringify(frm);
+		        con = con.replace(/[{}]/g, "");
+		        
+		        var jsonData = encodeURIComponent(con);
+		        
+			    
+         		var sourceleadUrl ='${sourceleadUrl}';
+         	 	$("#recruiter_register").attr("disabled", "disabled");
+         		
+           	 
+         		$.ajax({
+          	      type: "POST",
+          	      contentType : 'application/json; charset=utf-8',
+          	      dataType : 'json',
+                	  url: sourceleadUrl+"/registerAsIndividualRecruiter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+                			  
+                  	success: function(result) {
+			        	if((result == 'success')){
+			        		location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        	}
+			        	
+			        },  
+              }); 
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+         $('#recruiterRegistration_form').showHelpOnFocus();
             
      
 	</script>

@@ -195,7 +195,7 @@ public class Constants {
 	public static String ROLE_NAME_INDEPENDENT_RECRUITER = "ROLE_CROWDSOURCING_RECRUITER";
 	
 	public static String PROFESSIONAL = "Professional";
-	public static String INDIVIDUAL_RECRUITER = "Individual Recruiter";
+	public static String INDIVIDUAL_RECRUITER = "Recruiter";
 	public static String INVITE_PROFESSIONAL = "Professional Invitation";
 	public static String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
 
