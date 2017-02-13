@@ -389,4 +389,25 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			}
 			
 		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<OrgSpoc> getOrgSpocByUserIdAndOrgLocationCode(Long loginUserId, Long orgLocationId) throws Exception {
+			
+			logger.debug("In OrgSpocDaoImpl getAllContactsbyOrgLocationIdAndUserIdForRequirement method");
+			Session session = this.sessionFactory.getCurrentSession();
+			List<OrgSpoc> spocsList;
+			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUserId,orgLocationId);
+			
+			if (isadmin) {
+	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where  spoc.spocUser.id =:loginUserId  and (orgrelation.locationId = :orgLocationId or orgrelation.responderLocationId = :orgLocationId) and spoc.status <> '0' ");
+	            spocsList = query.setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setCacheable(true).list();
+			}else{
+	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.spocUser.id =:loginUserId and (orgrelation.locationId = :orgLocationId or orgrelation.responderLocationId = :orgLocationId) and spoc.status <> '0' ");
+	            spocsList = query.setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setCacheable(true).list();
+			}
+			
+			return spocsList;
+			
+		}
 }
