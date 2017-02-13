@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.util.Date;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -8,5 +9,10 @@ import com.bis.sourcelead.entity.User;
 public interface ExportTimesheetEntries {
 
 	File exportTimesheets(User user, String navigation, String startDate, OrgLocations orgLocations) throws Exception;
+	
+	File timeSheetApprovelExport(User user, OrgLocations orgLocations,Date startDate,Date endDate,String timesheetFrequency,String client,String stage,String frequencyMonth,String weekFrequency)throws Exception;
+
+	File timeSheetApprovelExportExcel(User user,OrgLocations orgLocations,Date startDate,Date endDate,String timesheetFrequency,String client,String stage,String frequencyMonth,String weekFrequency) throws Exception;
+
 
 }

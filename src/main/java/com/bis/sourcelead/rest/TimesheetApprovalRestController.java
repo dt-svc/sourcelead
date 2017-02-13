@@ -1,4 +1,9 @@
 package com.bis.sourcelead.rest;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -10,10 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -99,6 +106,7 @@ public class TimesheetApprovalRestController {
 	
 	@Autowired
 	SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	
 	 
 	@RequestMapping(value = "/timesheetApprovalDiv", method = RequestMethod.POST )   
 	public @ResponseBody String timesheetApprovalDiv(
@@ -120,7 +128,12 @@ public class TimesheetApprovalRestController {
 		
 		timesheetApprovalDiv.append("		<div class='timesheet_out'> ");
 		timesheetApprovalDiv.append("		<div class='timesheet_appr_wrap'>");
-		timesheetApprovalDiv.append("			<div class='timesheetNewHead'>");
+		timesheetApprovalDiv.append("		<div class='timesheetNewHead'>");
+		String ExportPdf="pdf";
+		String ExportExcel="excel";
+		timesheetApprovalDiv.append("		 <li onclick='exportTimeSheetToPdfOrExcel(\""+ExportPdf+"\");'><i class='fa fa-file-pdf-o'></i>&nbsp;&nbsp; PDF</li>");
+		timesheetApprovalDiv.append("		 <li onclick='exportTimeSheetToPdfOrExcel(\""+ExportExcel+"\");'><i class='fa fa-file-pdf-o'></i>&nbsp;&nbsp; Excel</li>");
+		
 		
                   timesheetApprovalDiv.append("				<div class='timeNewSe timeNewSe_month addicon'>");
 								       timesheetApprovalDiv.append("		                <select id='frequencyMonth' name='frequencyMonth' class='form-control chosen-select' onchange='timesheetApprovalDiv(\"month\");'  >");
@@ -163,7 +176,7 @@ public class TimesheetApprovalRestController {
                     		 weekStartDate = frequency[0].trim();
                 		  	 weekEndDate = frequency[1].trim();
                     	 }
-                    	 Map<StringBuilder,Map<String,Date>> weekFrequencyDropDownMap =  getWeekFrequncyDropDown(selectedDate.toString(),selectedFrequency.toString(),dateList,weekStartDate,weekEndDate);
+                    	 Map<StringBuilder,Map<String,Date>> weekFrequencyDropDownMap = getWeekFrequncyDropDown(selectedDate.toString(),selectedFrequency.toString(),dateList,weekStartDate,weekEndDate);
                     	 weekFrequencyDropDownMap.forEach((weekFrequencyDiv,dates)->
                     	 { 
                     	    	   timesheetApprovalDiv.append(weekFrequencyDiv) ;
@@ -199,29 +212,29 @@ public class TimesheetApprovalRestController {
 		  return timesheetApprovalDiv.toString();
 	}
 	
-	private Map<StringBuilder,Map<String,Date>>  getWeekFrequncyDropDown(String selectedMonth,String selectedFrequency, Map<String,Date> dateList,String selectedStartDate,String selectedEndDate) throws Exception{
+	public Map<StringBuilder,Map<String,Date>>  getWeekFrequncyDropDown(String selectedMonth,String selectedFrequency, Map<String,Date> dateList,String selectedStartDate,String selectedEndDate) throws Exception{
 		 DateFormat format = Constants.DF_DMY;
 		 Date startDate = dateList.get("STARTDATE");
-	     Date endDate = dateList.get("ENDDATE");
-	     Date sDate = null;
-	     Date eDate = null;
-         if(StringUtils.isNotEmpty(selectedStartDate) && StringUtils.isNotEmpty(selectedEndDate))
+	    Date endDate = dateList.get("ENDDATE");
+	    Date sDate = null;
+	    Date eDate = null;
+	    if(StringUtils.isNotEmpty(selectedStartDate) && StringUtils.isNotEmpty(selectedEndDate))
 		 {
 			 sDate = format.parse(selectedStartDate.replaceAll("/", "-"));
 			 eDate = format.parse(selectedEndDate.replaceAll("/", "-"));
 		 }
 		 
-	     Map<String,String> frequencyDropDown = new LinkedHashMap<>();
-	     if(selectedFrequency.equalsIgnoreCase("Semi-monthly"))      
-        {
-	    	 HashMap<String,Date> tab1to15Frequency =  CalendarUtil.getMonthStartDateAnd15thDateByGivenDateAndMothPreference(startDate,0);
-	    	 frequencyDropDown.put(format.format(tab1to15Frequency.get("STARTDATE")), format.format(tab1to15Frequency.get("ENDDATE")));
+	    Map<String,String> frequencyDropDown = new LinkedHashMap<>();
+	    if(selectedFrequency.equalsIgnoreCase("Semi-monthly"))      
+	   {
+	   	 HashMap<String,Date> tab1to15Frequency =  CalendarUtil.getMonthStartDateAnd15thDateByGivenDateAndMothPreference(startDate,0);
+	   	 frequencyDropDown.put(format.format(tab1to15Frequency.get("STARTDATE")), format.format(tab1to15Frequency.get("ENDDATE")));
 			 
-	    	 HashMap<String,Date> tab16toEndFrequency = CalendarUtil.getMonth16thDateAndEndDateByGivenDateAndMothPreference(startDate,0);
-	    	 frequencyDropDown.put(format.format(tab16toEndFrequency.get("STARTDATE")), format.format(tab16toEndFrequency.get("ENDDATE")));
-        }
-	     else if(selectedFrequency.equalsIgnoreCase("Weekly") || selectedFrequency.equalsIgnoreCase("Bi-Weekly")){
-	    	 int dayOfTheDate = CalendarUtil.getDayOfTheDate(startDate);
+	   	 HashMap<String,Date> tab16toEndFrequency = CalendarUtil.getMonth16thDateAndEndDateByGivenDateAndMothPreference(startDate,0);
+	   	 frequencyDropDown.put(format.format(tab16toEndFrequency.get("STARTDATE")), format.format(tab16toEndFrequency.get("ENDDATE")));
+	   }
+	    else if(selectedFrequency.equalsIgnoreCase("Weekly") || selectedFrequency.equalsIgnoreCase("Bi-Weekly")){
+	   	 int dayOfTheDate = CalendarUtil.getDayOfTheDate(startDate);
 			 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			 startCal.setLenient(false);
 			 startCal.setTime(startDate);
@@ -274,11 +287,11 @@ public class TimesheetApprovalRestController {
 					    tsStartDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "MON").getTime();
 				  }
 				}
-	       }
+	      }
 		
 		   Map<StringBuilder,Map<String,Date>> weekFrequencyBuilder = new LinkedHashMap<>();
 		    StringBuilder timesheetApprovalDiv = new StringBuilder(""); 
-	    	 timesheetApprovalDiv.append("					<div class='timeNewSe timeNewSe_week_date addicon'>");    
+	   	 timesheetApprovalDiv.append("					<div class='timeNewSe timeNewSe_week_date addicon'>");    
 			    timesheetApprovalDiv.append("<select id='weekFrequency' class='form-control chosen-select' onchange='timesheetApprovalDiv( \"weekfrequency\");' >");
 			    if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 			    	int  count = 1;
@@ -289,25 +302,24 @@ public class TimesheetApprovalRestController {
 			    		 Date frequencyEndDate = format.parse(v.replaceAll("/", "-"));
 			    		 StringBuilder isSelected = new StringBuilder("");
 			    		try {
-			    			if(sDate == null && eDate == null&& count == 1
-			    				&& !isCurrentDateBetweenDateRange(format.format(startDate), format.format(endDate))){
+			    			if(sDate == null && eDate == null&& count == 1 && !isCurrentDateBetweenDateRange(format.format(startDate), format.format(endDate))){
 			    				 dateList.clear();
-                          	     dateList.put("STARTDATE", frequencyStartDate);
+	                     	     dateList.put("STARTDATE", frequencyStartDate);
 							     dateList.put("ENDDATE",frequencyEndDate);
 							     isSelected.append("selected='selected'");
 			    			}
 			    			else if(sDate == null && eDate == null
 			    					 && isCurrentDateBetweenDateRange(k, v)){
-                           	     dateList.clear();
-                           	     dateList.put("STARTDATE",frequencyStartDate);
+	                      	     dateList.clear();
+	                      	     dateList.put("STARTDATE",frequencyStartDate);
 							     dateList.put("ENDDATE", frequencyEndDate);
 							     isSelected.append("selected='selected'");
-                            }
+	                       }
 			    			else if(sDate != null && eDate != null 
 			    					&& sDate.equals(frequencyStartDate) && eDate.equals(frequencyEndDate))
 			    			{
 			    				 dateList.clear();
-                          	     dateList.put("STARTDATE",frequencyStartDate);
+	                     	     dateList.put("STARTDATE",frequencyStartDate);
 							     dateList.put("ENDDATE", frequencyEndDate);
 							     isSelected.append("selected='selected'");
 			    			}
@@ -320,11 +332,14 @@ public class TimesheetApprovalRestController {
 			    	     count++;
 			    	}
 			    } 
-               timesheetApprovalDiv.append("</select>");
-            timesheetApprovalDiv.append("		            </div> ");
-            weekFrequencyBuilder.put(timesheetApprovalDiv, dateList);
+	          timesheetApprovalDiv.append("</select>");
+	       timesheetApprovalDiv.append("		            </div> ");
+	       weekFrequencyBuilder.put(timesheetApprovalDiv, dateList);
 		    return weekFrequencyBuilder;
-	}
+		}
+		
+	
+	
 	/*
 	 * client Filter
 	 */
@@ -399,6 +414,9 @@ public class TimesheetApprovalRestController {
 			stageBuilder.put(selectedStage,timesheetApprovalDiv);
 			return stageBuilder;
 	}
+	
+	
+	
 	
 	public StringBuilder timesheetApprovalTableDiv(HttpServletRequest request,String startDate,String endDate,String timesheetFrequency,String client,String stage) throws Exception{
 		       
@@ -564,6 +582,52 @@ public class TimesheetApprovalRestController {
 		}
 		return flag;
 	}
+	
+	
+	
+	@RequestMapping(value = "/getExportTimeSheetForApprovalMechanizm")  
+	public void getExportTimeSheetForApprovalMechanizm(HttpServletRequest request,
+			@RequestParam(value="startDate", required=false) String startDate,
+			@RequestParam(value="endDate", required=false) String endDate,
+			@RequestParam(value="exportType", required=false) String exportType,
+			@RequestParam(value="client", required=false) String client,
+			@RequestParam(value="stage", required=false) String stage,
+			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
+			@RequestParam(value="frequencyMonth", required=false) String frequencyMonth,
+			@RequestParam(value="weekFrequency", required=false) String weekFrequency,
+			HttpServletResponse response) throws Exception {
 		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		/*if(null !=(weekFrequency) && !("undefined").equalsIgnoreCase(weekFrequency) && !("").equalsIgnoreCase(weekFrequency)){
+		String[] stdate = weekFrequency.split("To");
+		startDate = stdate[0];
+		endDate = stdate[1];
+		}*/
+		DateFormat df = Constants.DMY;
+		Date stDate = df.parse(startDate);
+		Date edDate = df.parse(endDate);
+		File file = null;
+		if("pdf".equalsIgnoreCase(exportType)){
+			file = exportTimesheetEntries.timeSheetApprovelExport(user, orgLocations, stDate, edDate, timesheetFrequency, client, stage,frequencyMonth,weekFrequency);
+		}else{
+			file = exportTimesheetEntries.timeSheetApprovelExportExcel(user, orgLocations, stDate, edDate, timesheetFrequency, client, stage,frequencyMonth,weekFrequency);
+		}
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+	}
 
 	}

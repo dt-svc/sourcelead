@@ -596,4 +596,5 @@ public class TimeSheetPdfUtil {
 			}
 			return actualTimeString;
 		}
+
 }
