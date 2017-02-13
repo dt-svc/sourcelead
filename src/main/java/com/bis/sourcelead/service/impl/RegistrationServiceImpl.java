@@ -809,11 +809,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 		Org org = new Org();
 		org.setId(1L);
 		
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(1L);
+				
+		
 		UserRole userRole = new UserRole();
 		Roles roles = rolesService.getRolesByRoleNameAndOrgId(Constants.ROLE_NAME_PROFESSIONAL, 1L);
 		userRole.setUser(user);
 		userRole.setRoles(roles);
 		userRole.setOrgId(org);
+		userRole.setOrgLocations(orgLocations);
 		userRole.setIsPrimary(1);
 		userRole.setCreatedBy("sladmin");
 		userRole.setCreatedDate(new Date());
@@ -825,6 +830,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		Candidate candidate = new Candidate();
 		candidate.setConsultantUser(user);
 		candidate.setOrgId(org);
+		candidate.setOrgLocationId(orgLocations);
 		candidate.setCandidateType(Constants.PROFESSIONAL);
 		
 		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
@@ -929,11 +935,15 @@ public class RegistrationServiceImpl implements RegistrationService{
 		Org org = new Org();
 		org.setId(1L);
 		
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(1L);
+		
 		UserRole userRole = new UserRole();
 		Roles roles = rolesService.getRolesByRoleNameAndOrgId(Constants.ROLE_NAME_INDEPENDENT_RECRUITER, 1L);
 		userRole.setUser(user);
 		userRole.setRoles(roles);
 		userRole.setOrgId(org);
+		userRole.setOrgLocations(orgLocations);
 		userRole.setIsPrimary(1);
 		userRole.setCreatedBy("sladmin");
 		userRole.setCreatedDate(new Date());
@@ -945,6 +955,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		Candidate candidate = new Candidate();
 		candidate.setConsultantUser(user);
 		candidate.setOrgId(org);
+		candidate.setOrgLocationId(orgLocations);
 		candidate.setCandidateType(Constants.INDIVIDUAL_RECRUITER);
 		
 		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
