@@ -771,7 +771,7 @@ public class RequirementServiceImpl implements RequirementService {
 					// this logic will execute when no approvers are selected for requirement.
 				  if(!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)){
 					Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
-					if(updatedRequirementAssignToList != null  ){
+					if(updatedRequirementAssignToList != null && savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
 						for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
 							if(requirementAssignTo.getAssignUserId() != null && !user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
 								AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
