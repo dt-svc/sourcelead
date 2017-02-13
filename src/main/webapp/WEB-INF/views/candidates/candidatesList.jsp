@@ -147,11 +147,10 @@ else{
 	         /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
 	          result = result +"    <th>&nbsp;</th>";
 	          result = result +"    <th>Name</th>"; 
-	          result = result +"    <th>Designation</th>"; 
+	          result = result +"    <th>Skills</th>"; 
 	          result = result +"    <th>Employment Type</th>"; 
 	          result = result +"    <th>Email</th>"; 
 	          result = result +"    <th>Mobile</th>"; 
-	          result = result +"    <th>Type</th>"; 
 	          result = result +"    <th>Location</th>"; 
 	          result = result +"    <th>Last Update</th>"; 
 	          result = result +"  </tr>"; 
@@ -173,11 +172,7 @@ else{
 		            		mobilePhone = "----";
 		            	}
 	         	        
-		            	if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
-		            		designation = opt.designation;
-		            	}else{
-		            		designation = "----";
-		            	}
+		            	
 		            	if(opt.address != null && opt.address != 'undefined' && opt.address != ""){
 		            		address = opt.address;
 		            	}else{
@@ -214,7 +209,6 @@ else{
 		            	
 		            	
 		            	
-		            	
 	              result = result +"<tr>";
 	              result = result +"<td style='width : 25px;'>";
 	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
@@ -234,7 +228,15 @@ else{
 	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
 	              '</sec:authorize>';
-	              result = result +"  <td><div><span title="+designation+">"+designation+"</span></div></td>";
+	            
+	              if(opt.skillsName != null && opt.skillsName != '' && opt.skillsName != "undefined"){
+	            	  result = result +"  <td><div><span title='"+opt.skillsName+"'>"+opt.skillsName+"</span></div></td>";
+	              }else{
+	            	  
+	            	  result = result +"  <td><div>----</div></td>";
+	              }
+	             
+	              
 	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 	             	 {
 	                   result = result +"  <td><div>"+opt.designationType+"</div></td>";
@@ -243,7 +245,6 @@ else{
 	             	 }
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 	              result = result +"  <td><div>"+mobilePhone+"</div></td>";
-	              result = result +"  <td><div>"+opt.candidateType+"</div></td>";
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
@@ -330,10 +331,12 @@ function candidateSideBar(candidateId){
                 	 var json = JSON.parse(data);
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
-	                	 var skillsList = json.skillsList;
-			             var skills = [];
-			             skills = skillsList.split(",");
-			             
+	                	 var skills = [];
+	                	 var skillsList ='';
+	                	 if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
+	                		 skillsList = json.skillsList;
+				             skills = skillsList.split(",");
+	                	 }
 			            var experienceMonths = '';
 			            var designationType = '';
 			            var country = '';
@@ -342,7 +345,6 @@ function candidateSideBar(candidateId){
 			            var currencyCodes = '';
 			            
 			            var currencyCode = '';
-			            
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'-'+'Months';            			 		
          			 	}else{
@@ -436,7 +438,6 @@ function candidateSideBar(candidateId){
          			 	 }
          			 	 
 	                	 var result = "";
-	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
 	                	
 	                	 

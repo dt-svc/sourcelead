@@ -54,7 +54,6 @@ import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -78,7 +77,6 @@ import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -158,8 +156,8 @@ public class RequirementServiceImpl implements RequirementService {
 	 @Autowired
 	 private  RequirementSubmissionService requirementSubmissionService;
 	 
-	 @Autowired
-	 private CandidateSkillsService candidateSkillsService;
+	 /*@Autowired
+	 private CandidateSkillsService candidateSkillsService;*/
 	 
 	 @Autowired
 	 private CandidateResumesService candidateResumeSerivce;
@@ -1251,19 +1249,27 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		for(Candidate candidate : candidateList){
 			int matchedSkillCount = 0;
-			List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
-			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
-			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
-			if(candidateSkillList != null && candidateSkillList.size() >0){
-				for(CandidateSkills candidateSkills : candidateSkillList){
-					if(candidateSkills.getName() !=null && !"".equalsIgnoreCase(candidateSkills.getName())){
-						if(reqSkills.contains(candidateSkills.getName())){
+//			List<String> candidateSkillList  = null;
+			if(null != candidate.getSkillsName()){
+				String[] skills = candidate.getSkillsName().split(",");
+				
+				for(String skillName : skills){
+					if(skillName !=null && !"".equalsIgnoreCase(skillName)){
+						if(reqSkills.contains(skillName)){
 							matchedSkillCount++;
 						}
 						
 					}
 				}
+				//candidateSkillList = new ArrayList<String>(Arrays.asList(skills));
 			}
+			
+			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
+			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
+//			if(candidateSkillList != null && candidateSkillList.size() >0){
+				
+				
+//			}
 			skillPercentage = matchedSkillCount*percentPerSkill;
 			if(candidate.getExperienceYears() != null && !"".equalsIgnoreCase(candidate.getExperienceYears()) && candidate.getExperienceMonths()!=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
 				int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
