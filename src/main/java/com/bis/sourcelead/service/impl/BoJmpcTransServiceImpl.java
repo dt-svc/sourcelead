@@ -9,12 +9,16 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.BoJmpcTransDao;
 import com.bis.sourcelead.entity.BoJmpcTrans;
 import com.bis.sourcelead.service.BoJmpcTransService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class BoJmpcTransServiceImpl implements BoJmpcTransService{
 
 	@Autowired
 	BoJmpcTransDao boJmpcTransDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Override
 	public BoJmpcTrans getBoJmpcTransById(Long Id) throws Exception {
@@ -33,6 +37,8 @@ public class BoJmpcTransServiceImpl implements BoJmpcTransService{
 
 	@Override
 	public BoJmpcTrans saveBoJmpcTrans(BoJmpcTrans boJmpcTrans) throws Exception {
+		boJmpcTrans.setCreatedDate(commonUtil.currentDate());
+		boJmpcTrans.setUpdatedDate(commonUtil.currentDate());
 		return boJmpcTransDao.saveBoJmpcTrans(boJmpcTrans);
 	}
 

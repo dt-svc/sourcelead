@@ -757,6 +757,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		 */
 		@Override
 		public TimesheetSubmissions addTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) throws Exception {
+			timesheetSubmissions.setCreatedDate(commonUtil.currentDate());
+			timesheetSubmissions.setUpdatedDate(commonUtil.currentDate());
 			return timesheetSubmissionsDao.addTimesheetSubmissions(timesheetSubmissions);
 		}
 		

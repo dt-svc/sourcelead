@@ -15,6 +15,7 @@ import com.bis.sourcelead.elk.index.helper.CampaignIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.service.UserMailBoxService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -29,7 +30,8 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 	@Autowired
     private SourceleadELKBaseIndexer<CampaignIndex> sourceleadELKBaseIndexer;
 	
-	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -37,6 +39,8 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 
 	@Override
 	public UserMailBox saveUserMailBox(UserMailBox userMailBox) throws Exception {
+		userMailBox.setCreatedDate(commonUtil.currentDate());
+		userMailBox.setUpdatedDate(commonUtil.currentDate());
 		return userMailBoxDao.saveUserMailBox(userMailBox);
 	}
 

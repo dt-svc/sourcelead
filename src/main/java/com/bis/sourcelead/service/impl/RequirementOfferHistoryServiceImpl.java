@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class RequirementOfferHistoryServiceImpl implements RequirementOfferHistoryService{
@@ -26,10 +28,15 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
     
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	public RequirementOfferHistory storeRequirementOfferHistory(RequirementOfferHistory requirementOfferHistory)
 			throws Exception {
+		requirementOfferHistory.setCreatedDate(commonUtil.currentDate());
+		requirementOfferHistory.setUpdatedDate(commonUtil.currentDate());
 		return requirementOfferHistoryDao.storeRequirementOfferHistory(requirementOfferHistory);
 	}
 	

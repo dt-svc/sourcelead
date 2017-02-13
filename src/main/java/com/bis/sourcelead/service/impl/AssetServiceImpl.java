@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class AssetServiceImpl implements AssetService{
@@ -26,8 +27,13 @@ public class AssetServiceImpl implements AssetService{
 	@Autowired
 	AssetDao assetDao;
 
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	@Override
 	public Asset saveAsset(Asset asset) throws Exception {
+		asset.setCreatedDate(commonUtil.currentDate());
+		asset.setUpdatedDate(commonUtil.currentDate());
 		return assetDao.saveAsset(asset);
 	}
 	

@@ -13,6 +13,7 @@ import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class SubmissionApproverHierarchyServiceImpl implements SubmissionApproverHierarchyService {
@@ -26,6 +27,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
 	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Autowired
     EmployeesDao  employeesDao;
@@ -33,51 +36,47 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	@Override
 	public SubmissionApproverHierarchy addSubmissionApproverHierarchy(
 			SubmissionApproverHierarchy submissionApproverHierarchy) throws Exception {
-		// TODO Auto-generated method stub
+		submissionApproverHierarchy.setCreatedDate(commonUtil.currentDate());
+		submissionApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 		return submissionApproverHierarchyDao.addSubmissionApproverHierarchy(submissionApproverHierarchy);
 	}
 
 	@Override
 	public SubmissionApproverHierarchy updateSubmissionApproverHierarchy(
 			SubmissionApproverHierarchy submissionApproverHierarchy) throws Exception {
-		// TODO Auto-generated method stub
+		submissionApproverHierarchy.setCreatedDate(commonUtil.currentDate());
+		submissionApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 		return submissionApproverHierarchyDao.updateSubmissionApproverHierarchy(submissionApproverHierarchy);
 	}
 
 	@Override
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchy(String id) throws Exception {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchy(id);
 	}
 
 	@Override
 	public Boolean deleteSubmissionApproverHierarchy(String id) throws Exception {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.deleteSubmissionApproverHierarchy(id);
 	}
 
 	@Override
 	public List<SubmissionApproverHierarchy> getAllSubmissionApproverHierarchies() throws Exception {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getAllSubmissionApproverHierarchies();
 	}
 
 	@Override
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployee(Long submissionId) {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployee(submissionId);
 	}
 	
 	@Override
 	public SubmissionApproverHierarchy getSubmissionLowLevelApproverHierarchyForEmployee(Long submissionId) {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getSubmissionLowLevelApproverHierarchyForEmployee(submissionId);
 	}
 	
 	
 	@Override
 	public List<SubmissionApproverHierarchy>getSubmissionApproverHierarchyBySubmissionId(Long submissionId) {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyBySubmissionId(submissionId);
 	}
 	
@@ -86,20 +85,17 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	@Override
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForApprover(Long submissionId,
 			Long approverUserId) {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForApprover(submissionId, approverUserId);
 	}
 
 	@Override
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForEmployeeIdAndStartDate(Long empId,
 			Long approverUserId,Long submissionId) {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(empId, approverUserId, submissionId);
 	}
 
 	@Override
 	public void updateSubmissionStatus(Long submissionId, String status) {
-		// TODO Auto-generated method stub
 		submissionApproverHierarchyDao.updateSubmissionStatus(submissionId, status);
 		
 	}
@@ -112,49 +108,42 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 
 	@Override
 	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForTheSubmission(Long submissionId,String approvalStatus) {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.isThereAnyApproverChangesStatusForTheSubmission(submissionId,approvalStatus);
 	}
 
 	@Override
 	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(Long userId, Long projectId,
 			String approvalStatus) {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId, projectId, approvalStatus);
 	}
 
 	@Override
 	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(Long userId, Long projectId,
 			String submissionStatus) {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectId, submissionStatus);
 	}
 
 	@Override
 	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(Long userId, Long projectId,
 			String approvalStatus) {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId, projectId, approvalStatus);
 	}
 
 	@Override
 	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(Long userId, Long projectId,
 			String submissionStatus) {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectId, submissionStatus);
 	}
 
 	@Override
 	public List<SubmissionApproverHierarchy> getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(
 			Long userId, Long orgLocationId, String submissionStatus) {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,submissionStatus);
 	}
 
 	@Override
 	public List<SubmissionApproverHierarchy> getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(
 			Long userId, Long orgLocationId, String submissionStatus) {
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,submissionStatus);
 
 	}
@@ -162,8 +151,6 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	@Override
 	public List<SubmissionApproverHierarchy> getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(
 			Long userId, Long orgLocationId, String submissionStatus) {
-		// TODO Auto-generated method stub
-		
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,submissionStatus);
 
 	}

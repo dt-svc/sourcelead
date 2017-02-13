@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHierarchyService {
@@ -22,10 +24,14 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	@Autowired
 	private  ProjectApproverHierarchyDao  projectApproverHierarchyDao;
 	
+	@Autowired
+	private CommonUtil commonUtil;	
 	
 	@Override
 	public ProjectApproverHierarchy saveProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy)
 			throws Exception {
+		projectApproverHierarchy.setCreatedDate(commonUtil.currentDate());
+		projectApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 		return projectApproverHierarchyDao.saveProjectApproverHierarchy(projectApproverHierarchy);
 	}
 	
@@ -33,6 +39,8 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	@Override
 	public ProjectApproverHierarchy updateProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy)
 			throws Exception {
+		projectApproverHierarchy.setCreatedDate(commonUtil.currentDate());
+		projectApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 		return projectApproverHierarchyDao.updateProjectApproverHierarchy(projectApproverHierarchy);
 	}
 

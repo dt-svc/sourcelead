@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgDocumentsService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.CommonUtil;
 
 
 /**
@@ -38,7 +39,8 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 	@Autowired
 	UserRoleService userRoleService;
 	
-	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Override
 	public void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,String docId, OrgLocations orgLocation,User user, String sourceType) throws  Exception {
@@ -205,6 +207,8 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
     @Override
     public OrgDocuments updateDocumnet(OrgDocuments orgDocument) throws Exception {
         logger.debug("In OrgDocumentsServiceImpl class updateDocumnet method...");
+        orgDocument.setCreatedDate(commonUtil.currentDate());
+        orgDocument.setUpdatedDate(commonUtil.currentDate());
         return orgDocumentsDao.updateDocumnet(orgDocument);
     }
 

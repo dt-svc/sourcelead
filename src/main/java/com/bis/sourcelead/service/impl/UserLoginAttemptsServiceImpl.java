@@ -6,15 +6,21 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.UserLoginAttemptsDao;
 import com.bis.sourcelead.entity.UserLoginAttempts;
 import com.bis.sourcelead.service.UserLoginAttemptsService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class UserLoginAttemptsServiceImpl implements UserLoginAttemptsService{
 	
 	@Autowired
 	private UserLoginAttemptsDao userLoginAttemptsDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	public UserLoginAttempts addUserLoginAttempts(UserLoginAttempts userLoginAttempts) throws Exception{
+		userLoginAttempts.setCreatedDate(commonUtil.currentDate());
+		userLoginAttempts.setUpdatedDate(commonUtil.currentDate());
 		return userLoginAttemptsDao.addUserLoginAttempts(userLoginAttempts);
 	}
 

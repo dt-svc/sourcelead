@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.EmailNotificationDao;
 import com.bis.sourcelead.entity.EmailNotification;
 import com.bis.sourcelead.service.EmailNotificationService;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * 
@@ -24,9 +25,13 @@ private static final Logger logger = LoggerFactory.getLogger(EmailNotificationSe
 	@Autowired
 	private EmailNotificationDao emailNotificationDao;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	@Override
 	public EmailNotification save(EmailNotification emailNotification) throws Exception {
 		logger.debug("In EmailNotificationServiceImpl class save method");
+		emailNotification.setCreatedDate(commonUtil.currentDate());
 		return emailNotificationDao.save(emailNotification);
 	}
 

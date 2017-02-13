@@ -40,6 +40,8 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 
 	@Override
 	public OrgRelations addOrgRelations(OrgRelations orgRelations) throws Exception {
+		orgRelations.setCreatedDate(commonUtil.currentDate());
+		orgRelations.setUpdatedDate(commonUtil.currentDate());
 		return orgRelationsDao.addOrgRelations(orgRelations);
 	}
 

@@ -197,6 +197,8 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception {
 		logger.debug("In CandidateResumeServiceImpl class updateCandidateResume method...");
+		candidateResumes.setCreatedDate(commonUtil.currentDate());
+		candidateResumes.setUpdatedDate(commonUtil.currentDate());
 		candidateResumes = candidateResumesDao.updateCandidateResume(candidateResumes);
 				
 		 /*

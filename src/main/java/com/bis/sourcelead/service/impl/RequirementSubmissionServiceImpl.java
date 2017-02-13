@@ -175,6 +175,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Override
 	public RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission) throws Exception {
 		logger.debug("In ProjectsServiceImpl class saveProject method...");
+		requirementSubmission.setCreatedDate(commonUtil.currentDate());
+		requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 		return requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 	}
 	

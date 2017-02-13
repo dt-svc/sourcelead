@@ -7,17 +7,22 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.CandidateHotListDao;
 import com.bis.sourcelead.entity.CandidateHotList;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateHotListService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class CandidateHotListServiceImpl implements CandidateHotListService{
 	
 	@Autowired
 	CandidateHotListDao candidateHotListDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	public CandidateHotList saveCandidateHotList(CandidateHotList candidateHotList) throws Exception {
+		candidateHotList.setCreatedDate(commonUtil.currentDate());
+		candidateHotList.setUpdatedDate(commonUtil.currentDate());
 		return candidateHotListDao.saveCandidateHotList(candidateHotList);
 	}
 

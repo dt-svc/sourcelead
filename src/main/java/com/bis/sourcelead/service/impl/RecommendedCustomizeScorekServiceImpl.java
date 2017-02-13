@@ -38,6 +38,8 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 	
 	@Override
 	public RecommendedCustomizeScore updateCustomizeScore(RecommendedCustomizeScore recommendedCustomizeScore) throws Exception {
+		recommendedCustomizeScore.setCreatedDate(commonUtil.currentDate());
+		recommendedCustomizeScore.setUpdatedDate(commonUtil.currentDate());
 		return recommendedCustomizeScoreDao.saveCustomizeScore(recommendedCustomizeScore);
 	}
 	

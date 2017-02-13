@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.TimesheetSubmissionsDocumentsDao;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class TimesheetSubmissionsDocumentsServiceImpl implements TimesheetSubmissionsDocumentsService {
@@ -16,9 +17,13 @@ public class TimesheetSubmissionsDocumentsServiceImpl implements TimesheetSubmis
 	@Autowired
 	TimesheetSubmissionsDocumentsDao   timesheetSubmissionsDocumentsDao;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	@Override
 	public TimesheetSubmissionsDocuments addTimesheetSubmissionsDocuments(TimesheetSubmissionsDocuments timesheetSubmissionsDocuments) throws Exception {
-		
+		timesheetSubmissionsDocuments.setCreatedDate(commonUtil.currentDate());
+		timesheetSubmissionsDocuments.setUpdatedDate(commonUtil.currentDate());
 		 return  timesheetSubmissionsDocumentsDao.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
 
 	}

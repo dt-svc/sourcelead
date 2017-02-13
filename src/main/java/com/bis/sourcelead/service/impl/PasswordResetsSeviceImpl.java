@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.PasswordResetsDao;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.service.PasswordResetsSevice;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class PasswordResetsSeviceImpl implements PasswordResetsSevice{
@@ -13,8 +14,13 @@ public class PasswordResetsSeviceImpl implements PasswordResetsSevice{
 	@Autowired
 	PasswordResetsDao passwordResetsDao;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	@Override
 	public PasswordResets savePasswordResets(PasswordResets passwordResets) throws Exception {
+		passwordResets.setCreatedDate(commonUtil.currentDate());
+		passwordResets.setUpdatedDate(commonUtil.currentDate());
 		return passwordResetsDao.savePasswordResets(passwordResets);
 	}
 
