@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Projects;
@@ -96,22 +97,18 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public Projects getProjectById(Long id) throws Exception {
 		logger.debug("In Projects getProject method");
-		Session session = this.sessionFactory.getCurrentSession();
-		return (Projects) session.get(Projects.class, id);
-	}
-	
-	/**
-	 * This method for get project Ids by orgLocationsId
-	 */
-	@Override
-	@Transactional(rollbackFor = { Exception.class })	
-	public List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception {
-		logger.debug("In ProjectsDaoImpl class getProjectIdsByOrgLocationsId method");
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select project.id from Projects project where project.orgLocationsId = :orgLocationsId ";
-		List<Long> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		/*Session session = this.sessionFactory.getCurrentSession();
+		return (Projects) session.get(Projects.class, id);*/
 		
-		return projectsList;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects project left join fetch project.orgRelationId left join fetch project.orgLocationsId  where project.id = :id ";
+		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("id", id).setCacheable(true).list();
+
+		Projects projects = null;
+		if (projectsList != null && projectsList.size() > 0) {
+			projects = (Projects) projectsList.iterator().next();
+		}
+		return projects;
 	}
 	
 	/**
@@ -127,6 +124,23 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		return projectsList;
 	}
+	
+	
+	/**
+	 * This method for get project Ids by orgLocationsId
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception {
+		logger.debug("In ProjectsDaoImpl class getProjectIdsByOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select project.id from Projects project where project.orgLocationsId = :orgLocationsId ";
+		List<Long> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		
+		return projectsList;
+	}
+	
+	
 	
 	/**
 	 * This method for get project by orgLocationsId And EndDate Graterthan CurrentDate
@@ -151,7 +165,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
-		logger.debug("=========================================In ProjectsDaoImpl getPrimaryProjectByOrgLocationsId method");
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.isPrimary = '1' ";
 		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
@@ -456,8 +470,47 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
 			return projectsList;
 		}
+		
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) {
+			logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+			Session session = this.sessionFactory.getCurrentSession();
+			Query query= session.createQuery(" from Projects projects where projects.orgLocationsId = :orgLocationsId and projects.id IN "
+					   +"("
+						 + " select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy  where  "
+						 + "  hierarchy.approverUserId.id = :userId "
+						 + " OR "
+						 + Constants.loginUserAsAdminForProjects
+					  + " )"
+					+ "");
+			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+			return projectsList;
+		}
 
-
+		
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) {
+			logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+			Session session = this.sessionFactory.getCurrentSession();   
+			String query= " from Projects projects left join fetch projects.orgRelationId orgRelation left join fetch orgRelation.responderLocationId responder left join fetch responder.org left join fetch orgRelation.locationId initiator left join fetch initiator.org  "
+					+ " where projects.orgRelationId IS NOT NULL and projects.orgLocationsId = :orgLocationsId and projects.id IN "
+					   +"("
+						 + " select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy  where  "
+						 + "  hierarchy.approverUserId.id = :userId "
+						 + " OR "
+						 + Constants.loginUserAsAdminForProjects
+					  + " ) group by projects.orgRelationId";
+			List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+			return projectsList;
+		}
+		
+		
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
 		public Projects getProjectByIdAndLoginOrgId(Long projectId, Long orgLocationId) throws Exception {
@@ -609,6 +662,7 @@ public Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId, Lon
     
 }
 
+
 /*@Override
 @Transactional(rollbackFor = { Exception.class })
 public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
@@ -628,7 +682,6 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		return userSet;
 
 }*/
-
 
 	@Override
 	@Transactional

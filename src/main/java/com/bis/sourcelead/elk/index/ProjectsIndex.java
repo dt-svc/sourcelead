@@ -40,6 +40,10 @@ public class ProjectsIndex implements Serializable{
 
     private String searchType;
     
+    private String createdDate;
+    
+    private String updatedDate;
+    
     
 	public String getSearchType() {
 		return searchType;
@@ -167,6 +171,22 @@ public class ProjectsIndex implements Serializable{
 
 	public void setProjectMemberEmail(ArrayList<String> projectMemberEmail) {
 		this.projectMemberEmail = projectMemberEmail;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
 	}
     
 }

@@ -24,6 +24,7 @@
 							<tr id="divTsRow0">
 								<th><input type="hidden" id="maxTsRowNum"
 									name="maxTsRowNum" value="1" />Task Name</th>
+								<th>Billable Type</th>
 								<th>Description</th>
 								<th>Action</th>
 							</tr>
@@ -31,7 +32,7 @@
 					</div>
 					<div class="form-horizontal row custom-form">
 						<div class="col-xs-12 col-lg-7">
-							<div class="form-group">
+							<div class="form-group" id="taskNamesDIV">
 								<label class="col-md-3">Task Name</label>
 								<div class="col-md-9">
 									<input type="text" id="taskName" name="taskName"
@@ -40,6 +41,16 @@
 										data-validation="required validate_length length2-250">
 								</div>
 							</div>
+							<div class="form-group" id="taskBillableTypeDiv">
+								<label class="col-md-3">Billable Type</label>
+								<div class="col-md-9">
+									<select id="taskBillableType" name="taskBillableType" class="form-control selectpicker">
+									  <option value="Billable">Billable</option>
+									  <option value="Non-Billable">Non-Billable</option>
+									</select>
+								</div>
+							</div>
+							
 							<div class="form-group">
 								<label class="col-md-3">Description</label>
 								<div class="col-md-9">
@@ -48,11 +59,12 @@
 										name="taskDescription" rows="2"></textarea>
 								</div>
 							</div>
+							
 						</div>
 						<div class="col-xs-12 col-lg-5">
 							<a href="javascript:void(0)" class="btn btn-primary"
 								id="save_task" onclick="addTasks();" data-target="addTask">
-								<i class="fa fa-plus"></i> Add Task
+								<i class="fa fa-plus"></i> <span id="addTaskText">Add Task</span>
 							</a>
 						</div>
 					</div>
@@ -105,6 +117,7 @@
 						result = result + '<thead>';
 						result = result + '<tr id="projectTaskTableId">';
 						result = result + '<th>Task name</th>';
+						result = result + '<th>Billable Type</th>';
 						result = result + '<th>Task description</th>';
 						result = result + '</tr>';
 						result = result + '</thead>';
@@ -112,15 +125,20 @@
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
 							result = result + '<tr>';
-							
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
-							result = result+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'taskName\');"  id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '"  class="project_inline_field"></div><div style="display:none">'+ opt.taskName+' </div></td>';
-							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" class="project_inline_field"></div><div style="display:none">'+ opt.description+' </div></td>';
+							result = result+ '<td><div id="taskNameDiv'+ opt.Id+ '"><input type="text" onBlur="inlineEditForProjectsTaskName('+ opt.Id+ ',\'taskName\');" data-validation="required validate_length length2-250" id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '" title="'+ opt.taskName+ '"  class="project_inline_field"></div><div style="display:none">'+ opt.taskName+' </div></td>';
+							result = result	+ '<td><div class="select-field"><select class="form-control" id="billableType'+opt.Id+'" name="billableType" onChange="updateTakBillableType(\''+opt.Id+'\');">';
+							result = result  +' <option '+(opt.billableType == "Billable" ? "selected" : '') +'>Billable</option>';
+				            result = result  +'	<option '+(opt.billableType == "Non-Billable" ? "selected" : '') +'>Non-Billable</option>';
+							result = result + ' </select>';
+							result = result + ' </div></td>';
+							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" title="'+ opt.description+ '" class="project_inline_field"></div><div style="display:none">'+ opt.description+' </div></td>';
 							'</sec:authorize>'; 
 							
 							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
-							result = result+ '<td><div><span>'+ opt.taskName+ '</span></div></td>';
-							result = result	+ '<td><div><span>'+ opt.description+ '</span></div></td>';
+							result = result+ '<td><div><span title="'+ opt.taskName+ '" >'+ opt.taskName+ '</span></div></td>';
+							result = result	+ '<td><div><span>'+ opt.billableType+ '</span></div></td>';
+							result = result	+ '<td><div><span title="'+ opt.description+ '">'+ opt.description+ '</span></div></td>';
 							'</sec:authorize>'; 
 							result = result + '</tr>';
 
@@ -153,9 +171,25 @@
 	}
 </script>
 
+<script>
+function updateTakBillableType(taskId){
+    var billableType = $('#billableType'+taskId).val();
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/updateTakBillableType?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId+"&billableType="+billableType,	    	   
+	    success: function(data) {
+	    	//projectTask();
+	    }
+   });
+}
+</script>
 
 <script type="text/javascript">
 	function flushTasks() {
+		$('#taskNamesDIV').find('p.jquery_form_error_message').remove();
+		$("#taskBillableType").val('Billable');
+		$('#taskBillableType').selectpicker('refresh');
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 		if (maxRowNum != null && maxRowNum != '' && maxRowNum != 'undefined'
 				&& maxRowNum != 'NaN') {
@@ -173,12 +207,20 @@
 		name="REPLACEROWIDtaskName" value="TASKNAMEVALUE" /><span
 		id="REPLACEROWIDtaskNameValue">TASKNAMEVALUE</span>
 </div>
+
 <div id="divTaskTd2" style="display: none; float: left;">
+	<input type="hidden" id="REPLACEROWIDtaskBillableType"
+		name="REPLACEROWIDtaskBillableType" value="TASKBILLABLETYPEVALUE" /><span
+		id="REPLACEROWIDtaskBillableTypeValue">TASKBILLABLETYPEVALUE</span>
+</div>
+
+<div id="divTaskTd3" style="display: none; float: left;">
 	<input type="hidden" id="REPLACEROWIDtaskDescription"
 		name="REPLACEROWIDtaskDescription" value="TASKDESCRIPTIONVALUE" /><span
 		id="REPLACEROWIDtaskDescriptionValue">TASKDESCRIPTIONVALUE</span>
 </div>
-<div id="divTaskTd3" style="display: none; float: left;">
+
+<div id="divTaskTd4" style="display: none; float: left;">
 	<span><a title="Edit" href="javascript:void(0)"
 		onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
 	<span><a title="Remove" href="javascript:void(0)"
@@ -199,27 +241,37 @@
 
 			var taskName = $('#taskName').val();
 			var taskDescription = $('#taskDescription').val();
+			var taskBillableType = $('#taskBillableType').val();
 
 			var cell0 = row.insertCell(0);
 			var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
 			divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (taskName));
 			cell0.innerHTML = divTsTd1Str;
-
+			
 			var cell1 = row.insertCell(1);
 			var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
 			divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g,
-					(taskDescription));
+			divTsTd2Str = divTsTd2Str.replace(/TASKBILLABLETYPEVALUE/g,
+					(taskBillableType));
 			cell1.innerHTML = divTsTd2Str;
 
 			var cell2 = row.insertCell(2);
 			var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
 			divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divTsTd3Str = divTsTd3Str.replace(/TASKDESCRIPTIONVALUE/g,
+					(taskDescription));
 			cell2.innerHTML = divTsTd3Str;
+
+			var cell3 = row.insertCell(3);
+			var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+			divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell3.innerHTML = divTsTd4Str;
 
 			$("#taskName").val('');
 			$("#taskDescription").val('');
+			$("#taskBillableType").val('Billable');
+			$('#taskBillableType').selectpicker('refresh');
 			return true;
 		} else {
 			return false;
@@ -235,11 +287,14 @@
 	function editTask(rowId) {
 		var updateTaskName = $("#" + rowId + "taskName").val();
 		var updateTaskDescription = $("#" + rowId + "taskDescription").val();
+		var updateTaskBillableType = $("#" + rowId + "taskBillableType").val();
 		$("#taskName").val('');
 		$("#taskDescription").val('');
 		$("#addTaskText").html('Update Task');
 		$("#taskName").val(updateTaskName);
 		$("#taskDescription").val(updateTaskDescription);
+		$("#taskBillableType").val(updateTaskBillableType);
+		$('#taskBillableType').selectpicker('refresh');
 		$("#taskId").val(rowId);
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'updateTask(' + rowId + ');');
@@ -259,11 +314,16 @@
 	function updateTask(rowId) {
 		$("#" + rowId + "taskName").val($("#taskName").val());
 		$("#" + rowId + "taskDescription").val($("#taskDescription").val());
+		$("#" + rowId + "taskBillableType").val($("#taskBillableType").val());
+		
 		$("#" + rowId + "taskNameValue").html($("#taskName").val());
-		$("#" + rowId + "taskDescriptionValue").html(
-				$("#taskDescription").val());
+		$("#" + rowId + "taskDescriptionValue").html($("#taskDescription").val());
+		$("#" + rowId + "taskBillableTypeValue").html($("#taskBillableType").val());
+		
 		$("#taskName").val('');
 		$("#taskDescription").val('');
+		$("#taskBillableType").val('Billable');
+		$('#taskBillableType').selectpicker('refresh');
 		$("#addTaskText").html('Add Task');
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'addTasks();');
@@ -297,6 +357,33 @@
 	}
 </script>
 
+<script>
+	function inlineEditForProjectsTaskName(taskId, localFieldName) {
+		var fieldName = localFieldName;
+		var fieldValue = $("#" + localFieldName + "" + taskId).val();
+		var sourceleadUrl = '${sourceleadUrl}';
+		$('#taskNameDiv'+ taskId).find('p.jquery_form_error_message').remove();
+		if(fieldName != null && fieldName != "" && fieldName != "undefined" && fieldName == "taskName"){
+			if (fieldValue.trim().match(/^\S*$/) == '' || fieldValue == null || fieldValue == "" || fieldValue == "undefined") {
+					$("#" + localFieldName + "" + taskId).after("<p class='jquery_form_error_message'>Task Name is Required</span>");
+			}else if(fieldValue.length > 100){
+			   $("#" + localFieldName + "" + taskId).after( "<p class='jquery_form_error_message'>The values Entered must be between2-100 characters</span>");
+			}else{
+				$.ajax({
+					type : "POST",
+					url : sourceleadUrl
+							+ "/updateProjectTaskById?${_csrf.parameterName}=${_csrf.token}&taskId="
+							+ taskId + "&fieldName=" + fieldName
+							+ "&fieldValue=" + fieldValue,
+					success : function(data) {
+
+					}
+				});
+			}
+		}
+	}
+</script>
+
 
 <!-- this script is for Save Tasks functionality at Projects screen -->
 <script type="text/javascript">
@@ -313,38 +400,11 @@
 					type : "POST",
 					url : sourceleadUrl + "/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&projectId=" + projectId,
 					success : function(data) {
-						var json = JSON.parse(data);
-						var result = "";
-						result = result + '<div class="project_tabs_inn_head">';
-						result = result
-								+ '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a></div>';
-						result = result
-								+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
-						result = result + '<table>';
-						result = result + '<tbody>';
-						result = result + '<tr id="projectTaskTableId">';
-						result = result + '<th>Task name</th>';
-						result = result + '<th>Task description</th>';
-						result = result + '</tr>';
-						for (var i = 0; i < json.length; i++) {
-							var opt = json[i];
-							result = result + '<tr>';
-							result = result
-									+ '<td><div><input type="text" value="'+opt.taskName+'" class="project_inline_field"></div></td>';
-							result = result
-									+ '<td><div><input type="text" value="'+opt.description+'" class="project_inline_field"></div></td>';
-							result = result + '</tr>';
-						}
-						result = result + '</tbody>';
-						result = result + '</table>   ';
-						result = result + '</div>';
-						$("#tab-3").empty();
-						$("#tab-3").append(result);
-						
+						var status = $("#projectStatus").val();
+						projectTask(projectId, status);
 					},
 				});
-		var status = $("#projectStatus").val();
-		projectTask(projectId, status);
+		
 
 	}
 </script>

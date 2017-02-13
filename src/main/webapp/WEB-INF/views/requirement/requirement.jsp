@@ -469,19 +469,21 @@ $(document).ready(function () {
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
                <c:forEach var="skill" items="${skillsList}">
-             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill)}">
-	                		  	 <option  selected value="${skill}">${skill}</option>
-	                		 </c:if>
-	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill)}">
-	                		  	 <option  value="${skill}">${skill}</option>
-	                		 </c:if>
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedSkill" items="${requirement.reqSkillsListString}">
+					    <c:if test="${existedSkill eq skill}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${skill}">${skill}</option>
+					    </c:if>
+					</c:forEach>
+					<c:if test="${NUM == 0}">
+						<option  value="${skill}">${skill}</option>
+					</c:if>
                 </c:forEach>
                 </select>
               </div>
             </div>
             
-            
-         
           <div class="form-group">
             <input type="hidden" name="templateId" id="templateId" value="" />
             <label class="col-md-3">Attachment</label>
@@ -1835,10 +1837,11 @@ function approvalType(type){
 
 <%-- 
      @author : sarath kumar.
-     this script is for get candidate list.
+     this script is for get model dialog box.
      1.usage     : onload.
      2.parameter : csrf token .
      3.ajax url implementation in requirementListRestController.
+     AssignedTo model dialog box
 --%>
 
 <script>
@@ -1876,17 +1879,23 @@ function popupWindow(){
 	    $("#rolesDiv").selectpicker("refresh");
 }
 </script>
-	  
+
+<%-- 
+     @author : venkat kesav
+     this script is for get users list.
+     1.usage     : onload.
+     2.parameter : csrf token .
+     3.ajax url implementation in requirementListRestController.
+     append Users list to AssignedTo model dialog box
+--%>
 <script>
 function getUserList(teamType){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	  /* getTeamsList(teamType); */
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
-            	
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
@@ -1895,7 +1904,7 @@ function getUserList(teamType){
                			 location.replace(sourceleadUrl+"/errorPage");
                		 }
                		 else{
-			    	     $("#userList").removeAttr("style");
+			    	     $("#usersGrid").removeAttr("style");
 	                	    var result = '';
 	                	    result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
 	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
@@ -1928,10 +1937,10 @@ function getUserList(teamType){
 		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    	 }
 		                    	 
-		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
-		                    	 result = result +'             <td>'+opt.email+'</td>';
-		                    	 result = result +'             <td>'+opt.userType+'</td>';
-		                    	 result = result +'             <td>'+opt.assignJobCount+'</td>';
+		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+' '+opt.lastName+'">'+opt.firstName+' '+opt.lastName+'</span></td>';
+		                    	 result = result +'             <td><span class="tbldata-dotdot" title="'+opt.email+'">'+opt.email+'</span></td>';
+		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.userType+'</span></td>';
+		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.assignJobCount+'</span></td>';
 		                    	 result = result +'           </tr>';
 	                       }
 		                   ids =  refreshIds;
@@ -1949,28 +1958,12 @@ function getUserList(teamType){
 	                       pagination(); 
 			    		}
                  	}else{
-                	 	$("#userList").removeAttr("style");
+                	 	$("#usersGrid").removeAttr("style");
   	    	        	var result ="";
-	  	    	        result = result +'<div class="modal-body clearfix">';
-	 	    	        result = result +'<div class="form-horizontal custom-form">';
-		           		result = result +'     <div class="row">';
-		           		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
-		           		result = result +'         <div class="input-group">';
-		           		result = result +'           <input type="search" class="form-control" value="">';
-		           		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
-		           		result = result +'       </div>';
-		           		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
-		           		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important">';
-		           		result = result +'          </select>';
-		           		result = result +'     </div>';
-		           		result = result +'     </div>';
-		           		result = result +'     </div>';
-		           		
-		           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
 		        		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 		        		result = result +'           <thead>';
 		        		result = result +'           <tr>';
-		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"><input type="checkbox"></th>';
+		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"></th>';
 		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Name</th>';
 		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Email</th>';
 		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Role</th>';
@@ -1978,16 +1971,27 @@ function getUserList(teamType){
 		        		result = result +'           </tr>';
 		        		result = result +'           </thead>';
 		        		result = result +'           </table>';
-		        		result = result +'     </div>';
-		        		result = result +'     </div>';
+		        		var refreshIds = [];
+		        		ids =  refreshIds;
+		        		
+                 	    result = result +'   <div class="modal-footer mt">';
+                 	    result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Cancel</button>';
+                 	    result = result +'   </div>'; 
 						$("#usersGrid").empty();
 					    $("#usersGrid").append(result); 
-					    pagination();  
+					    pagination(); 
                 	}
           		},
        		}); 
   	} 
 </script>
+
+<%-- 
+     @author : venkat kesav
+     this script is for get checked users.
+     1.usage     : onload.
+     declared 'ids' as a global variable for keep all checked user ids
+--%>
 <script>
 window.ids = new Array();
 function handleClick() {
@@ -1997,6 +2001,16 @@ function handleClick() {
 	});
 }
 </script>
+
+
+<%-- 
+     @author : venkat kesav
+     this script is for get Roles and Teams list.
+     1.usage     : onload.
+     2.parameter : csrf token .
+     3.ajax url implementation in requirementListRestController.
+     append Roles and Teams list to AssignedTo model dialog box
+--%>
 <script>
 function getTeamsList(teamType){ 
 	  var sourceleadUrl ='${sourceleadUrl}';
@@ -2057,6 +2071,13 @@ function getTeamsList(teamType){
 		getUserList(teamType);
 	}
 </script>
+
+<%-- 
+     @author : venkat kesav
+     this script is for clear uncheck all users.
+     1.usage     : onload.
+     clear all checked users when click on cancel and close buttons of AssignedTo model dialog
+--%>
 <script type="text/javascript">
 	function clearSelections(){
 		$('#cancelbtnId').attr("data-dismiss","modal");

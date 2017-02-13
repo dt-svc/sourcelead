@@ -27,6 +27,8 @@ public class UserIndexHelper {
 		
 		if(null != userRole && null != userRole.getId()){
 			userIndex = new UserIndex();
+
+			userIndex.setUserRoleTableId(userRole.getId());
 			userIndex.setUserId(userRole.getUser().getId());
 			userIndex.setFirstName(user.getFirstName());
 			userIndex.setLastName(user.getLastName());
@@ -55,10 +57,15 @@ public class UserIndexHelper {
 			}
 			userIndex.setUserCode(user.getUserCode());
 			userIndex.setUserRoleId(userRole.getRoles().getId().toString());
+			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			if(null != userRole.getCreatedDate()){
-				String createdDate  = StringDate.format(new Date(userRole.getCreatedDate().getTime()));
-				userIndex.setCreatedDate(createdDate);
+				userIndex.setCreatedDate(dateFormat.format(userRole.getCreatedDate()));
 			}
+			if(null != userRole.getUpdatedDate()){
+				userIndex.setUpdatedDate(dateFormat.format(userRole.getUpdatedDate()));
+			}
+			
+			
 			/*if(null == userRole.getCreatedBy() || "".equalsIgnoreCase(userRole.getCreatedBy())){
 				userIndex.setCreatedBy(loginUserCode);
 			}*/

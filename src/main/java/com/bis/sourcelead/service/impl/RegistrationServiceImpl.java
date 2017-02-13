@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -122,6 +124,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	private SourceleadRolesService sourceleadRolesService;
 	
+	@Autowired
+    private SourceleadELKBaseIndexer<UserIndex> sourceleadELKBaseIndexer;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -200,13 +205,21 @@ public class RegistrationServiceImpl implements RegistrationService{
 			 moduleIds.add(Integer.parseInt(s));
 		 }
 		 
+		 
+		/* 
+		  //commented by Prasad salina
 		  boolean flag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 		  if(flag == true){
 			  saveProject(registration, orgLocations, user, employee);
- 		}
+ 		  }*/
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
+		
+		/*
+		 * Saving USER DB data as ElasticSearch Documents
+		 */
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
+		
 		userService.sendEmail(user, loginUser, password,orgLocationsId);
 	
 	}
@@ -689,8 +702,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 			}
 			orgService.addOrganization(org);
 		}
-		
-		
+		/*
+		 * Saving USER DB data as ElasticSearch Documents
+		 */
+		userService.saveOrUpdateUserElkDocument(userRole,employees,orgUser.getUserCode());
 		sendEmail(orgUser,user,password,orgLocations.getId());
 		
 		

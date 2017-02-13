@@ -239,6 +239,24 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		
 	}
 
+	@Override
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployeeByProjectMemberId(
+			Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId) {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
+	}
+
+	@Override
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin (Long approverUserId,
+			Long projectMemberId, Date startDate, Date endDate) throws Exception{
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(approverUserId,projectMemberId, startDate, endDate);
+	}
+
+	@Override
+	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId, Long approverUserId,
+			Date startDate, Date endDate, String status, String rejectedReason) throws Exception {
+		 submissionApproverHierarchyDao.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, approverUserId, startDate, endDate, status, rejectedReason);
+	}
+
 	
 	
 	

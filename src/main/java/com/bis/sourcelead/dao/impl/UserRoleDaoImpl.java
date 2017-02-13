@@ -496,6 +496,22 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return userRoleList;
 
 	}
+	/**
+	 * this method is used for elastic search
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserRole> getUsersListByUserId(Long userId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where userRole.user.id = :userId ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+		return userRoleList;
+
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -514,6 +530,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return null;
 		}
 	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public UserRole getUserRoleByUserId(Long userId) throws Exception {
@@ -541,7 +558,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return null;
 		}
 	}
-
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {

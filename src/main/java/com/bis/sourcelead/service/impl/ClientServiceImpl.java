@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.MessageFormat;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,12 +129,6 @@ public class ClientServiceImpl implements ClientService{
 	RolesService rolesService;
 	
 	@Autowired
-	private UserRoleService userRoleService;
-	
-	@Autowired
-	private EmployeesService employeesService;
-	
-	@Autowired
 	RoleHierarchyService roleHierarchyService;
 	
 	@Autowired
@@ -142,6 +137,12 @@ public class ClientServiceImpl implements ClientService{
 	@Autowired
 	private SourceleadRolesService sourceleadRolesService;
 	
+	@Autowired
+	private UserRoleService userRoleService;
+	
+	@Autowired
+	private EmployeesService employeesService;
+
 	@Autowired
 	ClientVendorIndexHelper clientVendorIndexHelper;
 	
@@ -771,11 +772,13 @@ public class ClientServiceImpl implements ClientService{
 						existingUser.setEmail("");
 					}
 					editUser = userService.addUser(existingUser);
+
 					Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(editUser.getId(), orgLocation.getId());
 					//Update the user details for Elk search
 					userService.saveOrUpdateUserElkDocument(userRole,employee, editUser.getUserCode());
 			
 				}
+				
 				
 				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
 					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
@@ -1163,8 +1166,24 @@ public class ClientServiceImpl implements ClientService{
 					 responderType = "Vendor"; 
 				 }
 				
+				 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
+				 
+				 BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
+				 initiatorQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+				 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorType", responderType));
+				 
+				 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
+				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", orgLocations.getId()));
+				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
+				 
+				 combinedQueryBuilder.should(initiatorQueryBuilder);
+				 combinedQueryBuilder.should(responderQueryBuilder);
+				 
+				 combinedQueryBuilder.must(combinedQueryBuilder);
+				
 				ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(serachValue);
-					BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();;
+					BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+					 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
 					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : allKeyWordArray){

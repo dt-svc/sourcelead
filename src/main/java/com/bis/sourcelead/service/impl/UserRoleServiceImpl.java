@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,6 +70,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 
 	@Override
 	public UserRole addUserRole(UserRole userRole) throws Exception {
+		userRole.setCreatedDate(new Date());
+		userRole.setUpdatedDate(new Date());
 		return userRoleDao.addUserRole(userRole);
 	}
 
@@ -135,6 +138,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.isUserActive(userId);
 	}
 	
+	@Override
+	public Boolean isUserAdmin(Long userId) {
+		return userRoleDao.isUserAdmin(userId);
+	}
+	
 	/*@Override
 	public List<UserRole> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
 		return userRoleDao.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
@@ -172,7 +180,6 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId,Long loginUserId)throws Exception {
 		return userRoleDao.getAllUsersListByOrgLocationId(orgLocationId,loginUserId);
 	}
-	
 	
 	public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, List<UserRole> activeList,
 			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,String userState)
@@ -501,6 +508,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 		}
 	}
 		return userRole;
+	}
+
+	@Override
+	public List<UserRole> getUsersListByUserId(Long userId) throws Exception {
+		return userRoleDao.getUsersListByUserId(userId);
 	}
 
 }

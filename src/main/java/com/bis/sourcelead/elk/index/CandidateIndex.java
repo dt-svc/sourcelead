@@ -129,7 +129,8 @@ public class CandidateIndex implements Serializable {
 	
 	private boolean isCandidateAdedd;
 
-	private List<RequirementSubmission> requirementSubmisstions;
+	
+	private double finalScore;
 	
 		
 	public String getSearchType() {
@@ -608,6 +609,14 @@ public class CandidateIndex implements Serializable {
 		this.skillsName = skillsName;
 	}
 	
+
+	public double getFinalScore() {
+		return finalScore;
+	}
+
+	public void setFinalScore(double finalScore) {
+		this.finalScore = finalScore;
+	}
 
 	}
 

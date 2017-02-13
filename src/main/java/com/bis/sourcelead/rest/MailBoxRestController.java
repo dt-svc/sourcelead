@@ -115,8 +115,7 @@ public class MailBoxRestController {
 		emails.toString();
 		
 		 String spocEmails =  emails.substring(0,emails.length()-1);
-		 System.out.println(spocEmails);
-		
+		 
 		return commonUtil.toJSON(spocEmails);
 	}
 	

@@ -973,7 +973,6 @@ function pagination(){
 
 <script>
 function preparedClientContacts(data){
-	
 			var json = JSON.parse(data);
 		   	var result = "";
 		   	/* if(json.length != null && json.length != ''){ */
@@ -1107,7 +1106,6 @@ function preparedClientContacts(data){
 <!-- contact list preparation from ELK result -->
 <script>
 function preparedClientContactListFromElk(data){
-	  
 			var json = JSON.parse(data);
 		   	var result = "";
 		   	result = result +'<thead>';
@@ -1158,7 +1156,7 @@ function preparedClientContactListFromElk(data){
 		   		
 		   		
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
-		   				result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		   				result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
 		   		'</sec:authorize>';
 		   		
 		   		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
@@ -1173,9 +1171,17 @@ function preparedClientContactListFromElk(data){
 		   		}else{
 		   			result = result +'<td><div>--</div></td>';
 		   		}
-		   		result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
-		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
+		   
+		   		// from ELK ownerNames
+		   		if(null != report.ownerNames  &&  '' != report.ownerNames  && 'undefined' != report.ownerNames){
+					 result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
+				}
+		  		//from db ownerName
+		   		else if(null != report.ownerName && '' != report.ownerName && 'undefined' != report.ownerName){
+		   			result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+				}
 		   		
+		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		result = result + ' <td><div>';
 				result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
@@ -1244,6 +1250,29 @@ function preparedClientContactListFromElk(data){
 
 
 
+<!-- This script is for resending the invitation mail -->
+<script type="text/javascript"><%-- <jsp:include page="submissionTemplate.jsp" />	 --%>
+function resendClientSpocInvitation(spocUserId,orgSpocId,orgRelationId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(spocUserId != null && spocUserId != ""){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Client&orgRelationID="+orgRelationId, 
+			        success: function(result) {
+			        	$("#loading").removeAttr("style"); 
+			        	/* getVendorContactLists(); */
+			        	getVendorContactListsELK();
+			        	
+			        },
+			    });
+		 }
+	}
+  
+</script>
+
+
+
 
 <!-- Client list preparation from ELK result -->
 <script>
@@ -1268,7 +1297,6 @@ function preparedClientListFromElk(data){
 				{  
 		   		
 		   		var report = json[i];
-		   		numberOfContactsByOrgRelationId(report.orgRelationId);
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
 		   			location = report.country+", "+report.state+", "+report.city;
@@ -1325,7 +1353,7 @@ function preparedClientListFromElk(data){
 		   		result = result +'<td><div>---</div></td>';
 		   	}
 
-		   	result = result +'<td><div id="noOfContactsCount'+report.orgRelationId+'">---</div></td>';
+		   	result = result +'<td><div >'+report.noContacts+'</div></td>';
 
 		   	
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
@@ -2181,27 +2209,6 @@ $('#selector').delay(2000).fadeOut('slow');
 </script>
  -->
 
-
-<script type="text/javascript">	
-function numberOfContactsByOrgRelationId(orgRelationId){
-	
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/numberOfContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#noOfContactsCount'+orgRelationId).empty();
-        	$('#noOfContactsCount'+orgRelationId).append(data);
-        	
-        },
-        error: function(e){
-        }
-    });
-}
-</script>
-
-
 <script type="text/javascript">
 	function searchClient() {
 		var validationSettings = {
@@ -2246,6 +2253,7 @@ function numberOfContactsByOrgRelationId(orgRelationId){
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
+						document.getElementById("search_client").reset();
 						closePop();
 						preparedClientListFromElk(data);
 					},
@@ -2265,6 +2273,7 @@ function numberOfContactsByOrgRelationId(orgRelationId){
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
+						document.getElementById("search_client").reset();
 						closePop();
 						preparedClientContactListFromElk(data);
 					},

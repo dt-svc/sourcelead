@@ -432,6 +432,7 @@ overflow-x: auto;
 						$("#search_vendor").addClass('button').val('Search');
 						$("#search_vendor").removeAttr("disabled");
 						closePop();
+						document.getElementById("vendorList_form").reset();
 						//prepareCandidateList(data);
 						preparedVendorsListFromElk(data);
 					},
@@ -451,6 +452,7 @@ overflow-x: auto;
 					success : function(data) {
 						$("#search_vendor").addClass('button').val('Search');
 						$("#search_vendor").removeAttr("disabled");
+						document.getElementById("vendorList_form").reset();
 						closePop();
 						preparedVendorContactListFromElk(data);
 					},
@@ -762,7 +764,6 @@ function preparedVendorsListFromElk(data){
 		   		var report = json[i];
 		   		
 		   		releasedJobsCountByOrgRelationId(report.orgRelationId);
-		   		numberOfContactsByOrgRelationId(report.orgRelationId);
 		   		
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
@@ -814,7 +815,7 @@ function preparedVendorsListFromElk(data){
 				
 		   	    result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
 				result = result +' <td><div id="releasedJobsCount'+report.orgRelationId+'">---</div></td>';
-				result = result +'<td><div id="noOfContactsCount'+report.orgRelationId+'">---</div></td>';
+				result = result +'<td><div >'+report.noContacts+'</div></td>';
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
 				}
@@ -1107,7 +1108,14 @@ function preparedVendorContactListFromElk(data){
 		   		}else{
 		   			result = result +'<td><div>--</div></td>';
 		   		}
-		   		result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
+		   		// from ELK ownerNames
+		   		if(null != report.ownerNames  &&  '' != report.ownerNames  && 'undefined' != report.ownerNames){
+		   			result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
+		   		}
+		   		//from db ownerName
+		   		else if(null != report.ownerName && '' != report.ownerName && 'undefined' != report.ownerName){
+		   			result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+		   		}
 		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		
@@ -2268,28 +2276,6 @@ function releasedJobsCountByOrgRelationId(orgRelationId){
     });
 }
 </script> 
-
-<!-- ---This script is used to get the number of SpockCounts--------------------- -->
-
-<script type="text/javascript">	
-function numberOfContactsByOrgRelationId(orgRelationId){
-	
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/numberOfContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
-        success: function(data) {
-        	
-        	var json = JSON.parse(data);
-        	$('#noOfContactsCount'+orgRelationId).empty();
-        	$('#noOfContactsCount'+orgRelationId).append(data);
-        	
-        },
-        error: function(e){
-        }
-    });
-}
-</script>
 
 <script type="text/javascript">	
 	function loadChosenScripts(){

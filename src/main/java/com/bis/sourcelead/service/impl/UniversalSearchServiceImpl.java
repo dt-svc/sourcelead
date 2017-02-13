@@ -609,13 +609,13 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 					 projectBoolQueryBuilder.must(allBoolQueryBuilder);
 				}
 			//	List<ProjectsIndex> projectsList = new ArrayList<ProjectsIndex>();
-				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+//				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				SearchHit[] searchHitsForProjects = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResultsForProjects.intValue(),projectBoolQueryBuilder).getHits();
 				if(searchHitsForProjects != null && searchHitsForProjects.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHitsForProjects) {
 						String json = hit.getSourceAsString();
-						mapper.setDateFormat(df);
+//						mapper.setDateFormat(df);
 						ProjectsIndex projectsIndex = mapper.readValue(json, ProjectsIndex.class);
 						projectsIndex.setSearchType(Constants.PROJECT);
 						searchListForProjects.add(projectsIndex);

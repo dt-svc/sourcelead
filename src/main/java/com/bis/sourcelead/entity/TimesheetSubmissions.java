@@ -62,6 +62,13 @@ public class TimesheetSubmissions implements Serializable{
 	@Column(name = "TOTAL_HOURS")
 	private String totalHours;
 	
+	@Column(name = "BILLABLE_HOURS")
+	private String billableHours;
+	
+	@Column(name = "NON_BILLABLE_HOURS")
+	private String nonBillableHours;
+	
+	
 	/*@Column(name = "SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
 	private Submission_Status submissionStatus;
@@ -321,6 +328,22 @@ public class TimesheetSubmissions implements Serializable{
 
 	public void setTotalHours(String totalHours) {
 		this.totalHours = totalHours;
+	}
+
+	public String getBillableHours() {
+		return billableHours;
+	}
+
+	public void setBillableHours(String billableHours) {
+		this.billableHours = billableHours;
+	}
+
+	public String getNonBillableHours() {
+		return nonBillableHours;
+	}
+
+	public void setNonBillableHours(String nonBillableHours) {
+		this.nonBillableHours = nonBillableHours;
 	}
 
 	public String getEndDateStr() {

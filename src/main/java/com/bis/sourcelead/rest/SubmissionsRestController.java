@@ -27,6 +27,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.index.helper.RequirementHelper;
+import com.bis.sourcelead.elk.setup.RequirementElkUtil;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -110,9 +114,17 @@ public class SubmissionsRestController {
 
 	@Autowired
 	RequirementInterviewService requirementInterviewService;
+	
+	@Autowired
+	RequirementElkUtil requirementElkUtil;
+	
+	 @Autowired
+	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	
 
 	@RequestMapping(value = "/getCandidateResumes")
 	public String getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
@@ -219,6 +231,10 @@ public class SubmissionsRestController {
 		requirementSubmissionHistory.setFromStage("NEW");
 //		requirementSubmission.get
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+		Requirement requirement = requirementSubmission.getRequirement();
+		Integer count = requirementSubmissionService.getNumberOfApplicantsForRequirement(orgLocations.getId(), requirement.getId());
+		requirement.setTotalApplicantsForRequirement(count);
+		requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
 		return "success";
 
 	}
