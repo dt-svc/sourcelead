@@ -27,7 +27,6 @@ public class ActionRolesServiceImpl implements ActionRolesService{
 	@Override
 	public ActionRoles addActionRoles(ActionRoles actionRoles) throws Exception {
 		logger.debug("In ActionRolesService class...");
-		actionRoles.setCreatedDate(commonUtil.currentDate());
 		actionRoles.setUpdatedDate(commonUtil.currentDate());
 		return actionRolesDao.addActionRoles(actionRoles);
 	}

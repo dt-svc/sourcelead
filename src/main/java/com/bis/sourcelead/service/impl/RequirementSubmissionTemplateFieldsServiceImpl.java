@@ -32,7 +32,6 @@ public class RequirementSubmissionTemplateFieldsServiceImpl implements Requireme
 	public RequirementSubmissionTemplateFields storeRequirementSubmissionTemplateFields(
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields) throws Exception {
 		logger.debug("In RequirementSubmissionTemplateFieldsServiceImpl class saveProject method...");
-		requirementSubmissionTemplateFields.setCreatedDate(commonUtil.currentDate());
 		requirementSubmissionTemplateFields.setUpdatedDate(commonUtil.currentDate());
 		return requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(requirementSubmissionTemplateFields);
 	}

@@ -22,7 +22,6 @@ public class TimesheetSubmissionsDocumentsServiceImpl implements TimesheetSubmis
 	
 	@Override
 	public TimesheetSubmissionsDocuments addTimesheetSubmissionsDocuments(TimesheetSubmissionsDocuments timesheetSubmissionsDocuments) throws Exception {
-		timesheetSubmissionsDocuments.setCreatedDate(commonUtil.currentDate());
 		timesheetSubmissionsDocuments.setUpdatedDate(commonUtil.currentDate());
 		 return  timesheetSubmissionsDocumentsDao.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
 

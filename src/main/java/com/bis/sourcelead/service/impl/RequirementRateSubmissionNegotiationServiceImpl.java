@@ -38,7 +38,6 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 	
 	@Override
 	public void saveRateNegotiation(RequirementRateSubmissionNegotiation rateNegotiation) {
-		rateNegotiation.setCreatedDate(commonUtil.currentDate());
 		rateNegotiation.setUpdatedDate(commonUtil.currentDate());
 		requirementRateSubmissionNegotiationDao.saveRateNegotiation(rateNegotiation);		
 	}

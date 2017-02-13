@@ -1,7 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,6 @@ public class SubmissionXlsServiceImpl  implements SubmissionXlsService{
 
 	@Override
 	public SubmissionXls storeSubmissionXls(SubmissionXls submissionXls) throws Exception {
-		submissionXls.setCreatedDate(commonUtil.currentDate());
 		submissionXls.setUpdatedDate(commonUtil.currentDate());
 		return submissionXlsDao.storeSubmissionXls(submissionXls);
 	}

@@ -37,7 +37,6 @@ public class BoJmpcTransServiceImpl implements BoJmpcTransService{
 
 	@Override
 	public BoJmpcTrans saveBoJmpcTrans(BoJmpcTrans boJmpcTrans) throws Exception {
-		boJmpcTrans.setCreatedDate(commonUtil.currentDate());
 		boJmpcTrans.setUpdatedDate(commonUtil.currentDate());
 		return boJmpcTransDao.saveBoJmpcTrans(boJmpcTrans);
 	}

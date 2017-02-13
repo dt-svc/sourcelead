@@ -35,7 +35,6 @@ public class ProjectMembersHistoryServiceImpl implements ProjectMembersHistorySe
 	@Override
 	public ProjectMembersHistory updateProjectMembersHistory(ProjectMembersHistory projectMembersHistory)
 			throws Exception {
-		projectMembersHistory.setCreatedDate(commonUtil.currentDate());
 		projectMembersHistory.setUpdatedDate(commonUtil.currentDate());
 		return projectMembersHistoryDao.updateProjectMembersHistory(projectMembersHistory);
 	}

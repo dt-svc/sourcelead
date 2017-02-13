@@ -20,7 +20,6 @@ public class InterviewFeedbackTemplateServiceImpl implements InterviewFeedbackTe
 	@Override
 	public InterviewFeedbackTemplate addInterviewFeedbackTemplate(InterviewFeedbackTemplate interviewFeedbackTemplate)
 			throws Exception {
-		interviewFeedbackTemplate.setCreatedDate(commonUtil.currentDate());
 		interviewFeedbackTemplate.setUpdatedDate(commonUtil.currentDate());
 		return interviewFeedbackTemplateDao.addInterviewFeedbackTemplate(interviewFeedbackTemplate);
 	}

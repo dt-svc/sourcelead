@@ -70,7 +70,6 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	@Override
 	public OrgSpoc addOrgSpoc(OrgSpoc orgSpoc) throws Exception {
 		
-		orgSpoc.setCreatedDate(commonUtil.currentDate());
 		orgSpoc.setUpdatedDate(commonUtil.currentDate());
 		OrgSpoc orgSpocElk = orgSpocDao.addOrgSpoc(orgSpoc);
 		

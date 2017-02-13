@@ -48,7 +48,6 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	@Override
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception {
 		String newlist = candidateSkills.getName();
-		candidateSkills.setCreatedDate(commonUtil.currentDate());
 		candidateSkills.setUpdatedDate(commonUtil.currentDate());
 		candidateSkills = candidateSkillsDao.storeCandidateSkills(candidateSkills);
 		/*

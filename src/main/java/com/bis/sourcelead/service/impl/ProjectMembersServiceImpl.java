@@ -97,7 +97,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public ProjectMembers saveProjectMember(ProjectMembers projectMembers) throws Exception{
 		logger.debug("In ProjectMembersServiceImpl class saveProjectMember method");
-		projectMembers.setCreatedDate(commonUtil.currentDate());
 		projectMembers.setUpdatedDate(commonUtil.currentDate());
 		return projectMembersDao.saveProjectMember(projectMembers);
 	}
@@ -105,7 +104,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public ProjectMembers updateProjectMember(ProjectMembers projectMembers) throws Exception {
 		logger.debug("In ProjectMembersServiceImpl class updateProjectMember method...");
-		projectMembers.setCreatedDate(commonUtil.currentDate());
 		projectMembers.setUpdatedDate(commonUtil.currentDate());
 		return projectMembersDao.updateProjectMember(projectMembers);
 	}

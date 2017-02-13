@@ -21,7 +21,6 @@ public class CandidateHotListServiceImpl implements CandidateHotListService{
 
 	@Override
 	public CandidateHotList saveCandidateHotList(CandidateHotList candidateHotList) throws Exception {
-		candidateHotList.setCreatedDate(commonUtil.currentDate());
 		candidateHotList.setUpdatedDate(commonUtil.currentDate());
 		return candidateHotListDao.saveCandidateHotList(candidateHotList);
 	}

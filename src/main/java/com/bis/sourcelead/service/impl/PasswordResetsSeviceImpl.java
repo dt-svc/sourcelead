@@ -19,7 +19,6 @@ public class PasswordResetsSeviceImpl implements PasswordResetsSevice{
 	
 	@Override
 	public PasswordResets savePasswordResets(PasswordResets passwordResets) throws Exception {
-		passwordResets.setCreatedDate(commonUtil.currentDate());
 		passwordResets.setUpdatedDate(commonUtil.currentDate());
 		return passwordResetsDao.savePasswordResets(passwordResets);
 	}

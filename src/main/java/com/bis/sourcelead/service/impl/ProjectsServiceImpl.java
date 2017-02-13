@@ -158,7 +158,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
 		logger.debug("In ProjectsServiceImpl class saveProject method...");
-		projects.setCreatedDate(commonUtil.currentDate());
 		projects.setUpdatedDate(commonUtil.currentDate());
 		return projectsDao.saveProject(projects);
 	}
@@ -166,7 +165,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public Projects updateProject(Projects projects) throws Exception {
 		logger.debug("In ProjectsServiceImpl class updateProject method...");
-		projects.setCreatedDate(commonUtil.currentDate());
 		projects.setUpdatedDate(commonUtil.currentDate());
 		return projectsDao.updateProject(projects);
 	}

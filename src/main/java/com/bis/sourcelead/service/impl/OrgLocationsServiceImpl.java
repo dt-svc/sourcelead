@@ -35,7 +35,6 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 
 	@Override
 	public OrgLocations updateOrgLocations(OrgLocations orgLocations) throws Exception {
-		orgLocations.setCreatedDate(commonUtil.currentDate());
 		orgLocations.setUpdatedDate(commonUtil.currentDate());
 		return orgLocationsDao.updateOrgLocations(orgLocations);
 	}

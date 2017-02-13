@@ -37,7 +37,6 @@ public class BoAmexTransServiceImpl implements BoAmexTransService {
 
 	@Override
 	public BoAmexTrans saveBoAmexTrans(BoAmexTrans boAmexTrans) throws Exception {
-		boAmexTrans.setCreatedDate(commonUtil.currentDate());
 		boAmexTrans.setUpdatedDate(commonUtil.currentDate());
 		return boAmexTransDao.saveBoAmexTrans(boAmexTrans);
 	}

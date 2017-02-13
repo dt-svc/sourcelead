@@ -41,7 +41,6 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	@Override
 	public RequirementInterviewHistory storeRequirementInterviewHistory(
 			RequirementInterviewHistory requirementInterviewHistory) throws Exception {
-		requirementInterviewHistory.setCreatedDate(commonUtil.currentDate());
 		requirementInterviewHistory.setUpdatedDate(commonUtil.currentDate());
 		return requirementInterviewHistoryDao.storeRequirementInterviewHistory(requirementInterviewHistory);
 	}

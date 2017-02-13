@@ -46,7 +46,6 @@ public class RequirementApproverHierarchyServiceImpl implements RequirementAppro
 	@Override
 	public RequirementApproverHierarchy addRequirementApproverHierarchy(
 			RequirementApproverHierarchy requirementApproverHierarchy) throws Exception {
-			requirementApproverHierarchy.setCreatedDate(commonUtil.currentDate());
 			requirementApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 			return requirementApproverHierarchyDao.storeRequirementApproverHierarchy(requirementApproverHierarchy);
 	}

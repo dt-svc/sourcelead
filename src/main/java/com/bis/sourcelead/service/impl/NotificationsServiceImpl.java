@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.NotificationsDao;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.service.NotificationsService;
-import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class NotificationsServiceImpl implements NotificationsService{
@@ -17,12 +16,8 @@ public class NotificationsServiceImpl implements NotificationsService{
 	@Autowired
 	NotificationsDao  notificationDao;
 	
-	@Autowired
-	private CommonUtil commonUtil;
-
 	@Override
 	public Notifications saveNotification(Notifications notification) throws Exception{
-		notification.setCreatedDate(commonUtil.currentDate());
 		return notificationDao.saveNotification(notification);
 	}
 

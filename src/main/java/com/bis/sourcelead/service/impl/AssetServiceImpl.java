@@ -32,7 +32,6 @@ public class AssetServiceImpl implements AssetService{
 	
 	@Override
 	public Asset saveAsset(Asset asset) throws Exception {
-		asset.setCreatedDate(commonUtil.currentDate());
 		asset.setUpdatedDate(commonUtil.currentDate());
 		return assetDao.saveAsset(asset);
 	}

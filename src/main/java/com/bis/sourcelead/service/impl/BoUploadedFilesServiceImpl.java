@@ -26,7 +26,6 @@ public class BoUploadedFilesServiceImpl implements BoUploadedFilesService{
 	
 	@Override
 	public BoUploadedFiles saveBoUploadedFiles(BoUploadedFiles boUploadedFiles) throws Exception {
-		boUploadedFiles.setCreatedDate(commonUtil.currentDate());
 		boUploadedFiles.setUpdatedDate(commonUtil.currentDate());
 		return boUploadedFilesDao.saveBoUploadedFiles(boUploadedFiles);
 	}

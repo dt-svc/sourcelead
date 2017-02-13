@@ -39,7 +39,6 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 
 	@Override
 	public UserMailBox saveUserMailBox(UserMailBox userMailBox) throws Exception {
-		userMailBox.setCreatedDate(commonUtil.currentDate());
 		userMailBox.setUpdatedDate(commonUtil.currentDate());
 		return userMailBoxDao.saveUserMailBox(userMailBox);
 	}

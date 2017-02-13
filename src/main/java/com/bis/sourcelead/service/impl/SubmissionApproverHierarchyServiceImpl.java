@@ -36,7 +36,6 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	@Override
 	public SubmissionApproverHierarchy addSubmissionApproverHierarchy(
 			SubmissionApproverHierarchy submissionApproverHierarchy) throws Exception {
-		submissionApproverHierarchy.setCreatedDate(commonUtil.currentDate());
 		submissionApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 		return submissionApproverHierarchyDao.addSubmissionApproverHierarchy(submissionApproverHierarchy);
 	}
@@ -44,7 +43,6 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	@Override
 	public SubmissionApproverHierarchy updateSubmissionApproverHierarchy(
 			SubmissionApproverHierarchy submissionApproverHierarchy) throws Exception {
-		submissionApproverHierarchy.setCreatedDate(commonUtil.currentDate());
 		submissionApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 		return submissionApproverHierarchyDao.updateSubmissionApproverHierarchy(submissionApproverHierarchy);
 	}

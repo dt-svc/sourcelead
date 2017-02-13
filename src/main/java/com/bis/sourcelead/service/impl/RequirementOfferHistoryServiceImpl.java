@@ -35,7 +35,6 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 	@Override
 	public RequirementOfferHistory storeRequirementOfferHistory(RequirementOfferHistory requirementOfferHistory)
 			throws Exception {
-		requirementOfferHistory.setCreatedDate(commonUtil.currentDate());
 		requirementOfferHistory.setUpdatedDate(commonUtil.currentDate());
 		return requirementOfferHistoryDao.storeRequirementOfferHistory(requirementOfferHistory);
 	}

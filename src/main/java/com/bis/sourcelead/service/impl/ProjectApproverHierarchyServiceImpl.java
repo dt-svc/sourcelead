@@ -30,7 +30,6 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	@Override
 	public ProjectApproverHierarchy saveProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy)
 			throws Exception {
-		projectApproverHierarchy.setCreatedDate(commonUtil.currentDate());
 		projectApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 		return projectApproverHierarchyDao.saveProjectApproverHierarchy(projectApproverHierarchy);
 	}
@@ -39,7 +38,6 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	@Override
 	public ProjectApproverHierarchy updateProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy)
 			throws Exception {
-		projectApproverHierarchy.setCreatedDate(commonUtil.currentDate());
 		projectApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 		return projectApproverHierarchyDao.updateProjectApproverHierarchy(projectApproverHierarchy);
 	}

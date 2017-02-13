@@ -207,7 +207,6 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
     @Override
     public OrgDocuments updateDocumnet(OrgDocuments orgDocument) throws Exception {
         logger.debug("In OrgDocumentsServiceImpl class updateDocumnet method...");
-        orgDocument.setCreatedDate(commonUtil.currentDate());
         orgDocument.setUpdatedDate(commonUtil.currentDate());
         return orgDocumentsDao.updateDocumnet(orgDocument);
     }

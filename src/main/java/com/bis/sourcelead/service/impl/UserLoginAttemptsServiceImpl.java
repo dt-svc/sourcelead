@@ -19,7 +19,6 @@ public class UserLoginAttemptsServiceImpl implements UserLoginAttemptsService{
 
 	@Override
 	public UserLoginAttempts addUserLoginAttempts(UserLoginAttempts userLoginAttempts) throws Exception{
-		userLoginAttempts.setCreatedDate(commonUtil.currentDate());
 		userLoginAttempts.setUpdatedDate(commonUtil.currentDate());
 		return userLoginAttemptsDao.addUserLoginAttempts(userLoginAttempts);
 	}

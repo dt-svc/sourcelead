@@ -1743,7 +1743,6 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	 */
 	@Override
 	public TimesheetEntries updateTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
-		timesheetEntries.setCreatedDate(commonUtil.currentDate());
 		timesheetEntries.setUpdatedDate(commonUtil.currentDate());
 		return timesheetEntriesDao.updateTimesheetEntries(timesheetEntries);
 	}

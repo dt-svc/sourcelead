@@ -37,7 +37,6 @@ public class BoComericaTransServiceImpl implements BoComericaTransService{
 
 	@Override
 	public BoComericaTrans saveBoComericaTrans(BoComericaTrans boComericaTrans) throws Exception {
-		boComericaTrans.setCreatedDate(commonUtil.currentDate());
 		boComericaTrans.setUpdatedDate(commonUtil.currentDate());
 		return boComericaTransDao.saveBoComericaTrans(boComericaTrans);
 	}

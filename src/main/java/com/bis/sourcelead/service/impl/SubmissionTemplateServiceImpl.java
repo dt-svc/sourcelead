@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ public class SubmissionTemplateServiceImpl implements SubmissionTemplateService 
 
 	@Override
 	public SubmissionTemplate addSubmissionTemplate(SubmissionTemplate submissionTemplate) throws Exception {
-		submissionTemplate.setCreatedDate(commonUtil.currentDate());
 		submissionTemplate.setUpdatedDate(commonUtil.currentDate());
 		return submissionTemplateDao.addSubmissionTemplate(submissionTemplate);
 	}

@@ -50,7 +50,6 @@ public class SourceleadSignatureServiceImpl implements SourceleadSignatureServic
 
 	@Override
 	public SourceleadSignature saveSourceleadSignature(SourceleadSignature signature) throws Exception {
-		signature.setCreatedDate(commonUtil.currentDate());
 		signature.setUpdatedDate(commonUtil.currentDate());
 		return sourceleadSignatureDao.saveSourceleadSignature(signature);
 	}
