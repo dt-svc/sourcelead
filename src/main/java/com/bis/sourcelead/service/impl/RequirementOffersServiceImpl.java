@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONArray;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
@@ -44,6 +46,7 @@ import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -86,6 +89,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	
 	@Autowired
 	private RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	private RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 	
 	@Override
 	public void saveRequirementOffers(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,MultipartHttpServletRequest request) throws Exception {
@@ -315,12 +321,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             globalVarsMap.put("link",linkSB.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 
             // setting the Recipient information
-            ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-            EmailRecipient emailRecipient = new EmailRecipient();
-            emailRecipient.setEmail(emailMessage.getToEmail());
-            StringBuilder nameStringBuilder=new StringBuilder();
-            emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-            emailRecipientList.add(emailRecipient);
+            InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
@@ -347,7 +348,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
             try {
     			
-                emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
+                emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
                 String actionLink="";
                OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
 				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
@@ -362,11 +363,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	
 	@Override
     public void addOfferMailScenario(User loginUser,RequirementSubmission applicant,OrgLocations orgLocations,RequirementOffers requirementOffers,Candidate candidate) throws Exception {
-            
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(applicant.getId());
             EmailMessage emailMessage = new EmailMessage();
             emailMessage.setFirstName(loginUser.getFirstName());
             emailMessage.setLastName(loginUser.getLastName());
-            emailMessage.setToEmail(applicant.getCandidate().getEmail());
+            emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
             emailMessage.setFromEmail("peopleaxisindia@gmail.com");
             emailMessage.setCreatedBy(loginUser.getUserCode());
             StringBuilder attachmentBuilder=new StringBuilder();
@@ -382,17 +383,18 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             }
             
             
-            if (applicant.getCandidate().getFirstName()!= null        && !"".equalsIgnoreCase(applicant.getCandidate().getFirstName()))  {
-                    globalVarsMap.put("applicantName", applicant.getCandidate().getFirstName());
+            if (null != requirementSubmissionTemplateFields.getFirstName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && requirementSubmissionTemplateFields.getLastName()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName()))  {
+                StringBuilder sb = new StringBuilder();   
+            	globalVarsMap.put("applicantName", sb.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
             } else {
-                    globalVarsMap.put("applicantName", "--");
+                 globalVarsMap.put("applicantName", requirementSubmissionTemplateFields.getFirstName());
             }
             
             
             
             
-            if ( candidate.getDesignation() != null && !"".equalsIgnoreCase( candidate.getDesignation())) {
-                    globalVarsMap.put("designation", candidate.getDesignation());
+            if ( requirementSubmissionTemplateFields.getDesignation() != null && !"".equalsIgnoreCase( requirementSubmissionTemplateFields.getDesignation())) {
+                    globalVarsMap.put("designation", requirementSubmissionTemplateFields.getDesignation());
             } else {
                     globalVarsMap.put("designation", "--");
             }
@@ -433,12 +435,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
         }
 
             // setting the Recipient information
-            ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-            EmailRecipient emailRecipient = new EmailRecipient();
-            emailRecipient.setEmail(emailMessage.getToEmail());
-            StringBuilder nameBuilder=new StringBuilder();
-            emailRecipient.setName(nameBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-            emailRecipientList.add(emailRecipient);
+            InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
@@ -464,7 +461,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
     		try {
     			
-            emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
+            emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
     		}catch (MessagingException e) {
     			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
     		} catch (UnsupportedEncodingException e) {
@@ -487,7 +484,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 * this touser is  the user who made Offer
 		 */
 		User touser = userService.getUserByUserCode(requirementOffers.getCreatedBy());
-		
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(touser.getFirstName());
 		emailMessage.setLastName(touser.getLastName());
@@ -499,35 +496,35 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 			
-			if(requirementSubmission.getCandidate() != null){
+			if(null != requirementSubmissionTemplateFields){
 				StringBuilder applicantNameBuilder=new StringBuilder();
-				globalVarsMap.put("ApplicantName",applicantNameBuilder.append(requirementSubmission.getCandidate().getFirstName()).append("").append(requirementSubmission.getCandidate().getLastName()).toString());	
+				globalVarsMap.put("ApplicantName",applicantNameBuilder.append(requirementSubmissionTemplateFields.getFirstName()).append("").append(requirementSubmissionTemplateFields.getLastName()).toString());	
 			}
 			else{
 				globalVarsMap.put("ApplicantName", "---");	
 			}
-			if(requirementSubmission.getRequirement() != null){
+			if(null != requirementSubmission.getRequirement()){
 				globalVarsMap.put("RequirementName", requirementSubmission.getRequirement().getJobTitle());
 			}
 			else{
 				globalVarsMap.put("RequirementName", "---");
 
 			}
-			if(requirementOffers.getDateOfJoining() != null ){
+			if(null != requirementOffers.getDateOfJoining() ){
 			requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));	
 			globalVarsMap.put("JoinDate", requirementOffers.getDateOfJoiningStr());
 			}
 			else{
 			globalVarsMap.put("JoinDate", "---");
 			}
-			if(requirementOffers.getAmount() != null && !"".equalsIgnoreCase(requirementOffers.getAmount())){
+			if(null != requirementOffers.getAmount() && !"".equalsIgnoreCase(requirementOffers.getAmount())){
 			globalVarsMap.put("Rate",requirementOffers.getAmount() );
 			}
 			else{
 			globalVarsMap.put("Rate","---" );
 	
 			}
-			if(requirement.getParentRequirement()!= null ){
+			if(null!= requirement.getParentRequirement() ){
 			StringBuilder clientContactNameBuilder=new StringBuilder();
 			globalVarsMap.put("ClientContactName",clientContactNameBuilder.append(touser.getFirstName()).append(" ").append(touser.getLastName()).toString());
 
@@ -541,12 +538,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		
 		// setting the Recipient information
-		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		EmailRecipient emailRecipient = new EmailRecipient();
-		emailRecipient.setEmail(emailMessage.getToEmail());
-		StringBuilder contactsBuilder=new StringBuilder();
-		emailRecipient.setName(contactsBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		emailRecipientList.add(emailRecipient);
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
@@ -565,7 +557,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
+		emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 	}
 	
 	@Override
@@ -576,7 +568,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 * this touser is  the user who made Offer
 		 */
 		User touser = userService.getUserByUserCode(requirementOffers.getCreatedBy());
-		
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(touser.getFirstName());
 		emailMessage.setLastName(touser.getLastName());
@@ -588,36 +580,36 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		
-		if(requirementSubmission.getCandidate() != null){
+		if(null != requirementSubmissionTemplateFields){
 			StringBuilder applicantNameBuilder=new StringBuilder();
-			globalVarsMap.put("applicantName",applicantNameBuilder.append(requirementSubmission.getCandidate().getFirstName()).append("").append(requirementSubmission.getCandidate().getLastName()).toString());	
+			globalVarsMap.put("applicantName",applicantNameBuilder.append(requirementSubmissionTemplateFields.getFirstName()).append("").append(requirementSubmissionTemplateFields.getLastName()).toString());	
 		}
 		
 		else{
 			globalVarsMap.put("applicantName", "---");	
 		}
-		if(requirementSubmission.getRequirement() != null ){
+		if(null != requirementSubmission.getRequirement() ){
 			globalVarsMap.put("requirementName", requirementSubmission.getRequirement().getJobTitle());
 		}
 		else{
 			globalVarsMap.put("requirementName", "---");
 
 		}
-		if(requirementOffers.getDateOfJoining() != null ){
+		if(null != requirementOffers.getDateOfJoining() ){
 		requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));	
 		globalVarsMap.put("joinDate", requirementOffers.getDateOfJoiningStr());
 		}
 		else{
 		globalVarsMap.put("joinDate", "---");
 		}
-		if(requirementOffers.getAmount() != null && !"".equalsIgnoreCase(requirementOffers.getAmount())){
+		if(null != requirementOffers.getAmount() && !"".equalsIgnoreCase(requirementOffers.getAmount())){
 		globalVarsMap.put("rate",requirementOffers.getAmount() );
 		}
 		else{
 		globalVarsMap.put("rate","---" );
 
 		}
-		if(requirement.getParentRequirement()!= null ){
+		if(null!= requirement.getParentRequirement() ){
 			StringBuilder clientContactNameBuilder=new StringBuilder();
 			globalVarsMap.put("clientContactName", clientContactNameBuilder.append(touser.getFirstName()).append(" " ).append(touser.getLastName()).toString());
 
@@ -630,12 +622,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		
 		// setting the Recipient information
-		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		EmailRecipient emailRecipient = new EmailRecipient();
-		emailRecipient.setEmail(emailMessage.getToEmail());
-		StringBuilder nameStrBuilder=new StringBuilder();
-		emailRecipient.setName(nameStrBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		emailRecipientList.add(emailRecipient);
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
@@ -654,7 +641,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(),emailRecipientList, new ArrayList<EmailAttachment>());
+		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(),iAdressArray, new ArrayList<EmailAttachment>());
 	}
 
 

@@ -1,3 +1,4 @@
+
 package com.bis.sourcelead.dao;
 
 import java.util.Collection;
@@ -51,6 +52,8 @@ public interface ProjectMembersDao {
 	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status);
 
 	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId);
+	
+	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds);
 	
 	public Integer getEmployeeAssignedProjectsCount(Long orgRelationId, Long orgLocationId ,Long projectId) ;
 	

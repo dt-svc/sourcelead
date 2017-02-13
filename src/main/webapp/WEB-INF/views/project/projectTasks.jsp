@@ -1,14 +1,11 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 <!-- Modal -->
 <div class="modal fade" id="addTask" role="dialog">
 	<div class="modal-dialog modal-lg">
@@ -35,7 +32,7 @@
 					</div>
 					<div class="form-horizontal row custom-form">
 						<div class="col-xs-12 col-lg-7">
-							<div class="form-group">
+							<div class="form-group" id="taskNamesDIV">
 								<label class="col-md-3">Task Name</label>
 								<div class="col-md-9">
 									<input type="text" id="taskName" name="taskName"
@@ -45,7 +42,7 @@
 								</div>
 							</div>
 							<div class="form-group" id="taskBillableTypeDiv">
-								<label class="col-md-3">Billable</label>
+								<label class="col-md-3">Billable Type</label>
 								<div class="col-md-9">
 									<select id="taskBillableType" name="taskBillableType" class="form-control selectpicker">
 									  <option value="Billable">Billable</option>
@@ -129,19 +126,19 @@
 							var opt = json[i];
 							result = result + '<tr>';
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
-							result = result+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'taskName\');"  id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '"  class="project_inline_field"></div><div style="display:none">'+ opt.taskName+' </div></td>';
+							result = result+ '<td><div id="taskNameDiv'+ opt.Id+ '"><input type="text" onBlur="inlineEditForProjectsTaskName('+ opt.Id+ ',\'taskName\');" data-validation="required validate_length length2-250" id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '" title="'+ opt.taskName+ '"  class="project_inline_field"></div><div style="display:none">'+ opt.taskName+' </div></td>';
 							result = result	+ '<td><div class="select-field"><select class="form-control" id="billableType'+opt.Id+'" name="billableType" onChange="updateTakBillableType(\''+opt.Id+'\');">';
 							result = result  +' <option '+(opt.billableType == "Billable" ? "selected" : '') +'>Billable</option>';
 				            result = result  +'	<option '+(opt.billableType == "Non-Billable" ? "selected" : '') +'>Non-Billable</option>';
 							result = result + ' </select>';
 							result = result + ' </div></td>';
-							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" class="project_inline_field"></div><div style="display:none">'+ opt.description+' </div></td>';
+							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" title="'+ opt.description+ '" class="project_inline_field"></div><div style="display:none">'+ opt.description+' </div></td>';
 							'</sec:authorize>'; 
 							
 							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
-							result = result+ '<td><div><span>'+ opt.taskName+ '</span></div></td>';
+							result = result+ '<td><div><span title="'+ opt.taskName+ '" >'+ opt.taskName+ '</span></div></td>';
 							result = result	+ '<td><div><span>'+ opt.billableType+ '</span></div></td>';
-							result = result	+ '<td><div><span>'+ opt.description+ '</span></div></td>';
+							result = result	+ '<td><div><span title="'+ opt.description+ '">'+ opt.description+ '</span></div></td>';
 							'</sec:authorize>'; 
 							result = result + '</tr>';
 
@@ -190,6 +187,7 @@ function updateTakBillableType(taskId){
 
 <script type="text/javascript">
 	function flushTasks() {
+		$('#taskNamesDIV').find('p.jquery_form_error_message').remove();
 		$("#taskBillableType").val('Billable');
 		$('#taskBillableType').selectpicker('refresh');
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
@@ -356,6 +354,33 @@ function updateTakBillableType(taskId){
 
 					}
 				});
+	}
+</script>
+
+<script>
+	function inlineEditForProjectsTaskName(taskId, localFieldName) {
+		var fieldName = localFieldName;
+		var fieldValue = $("#" + localFieldName + "" + taskId).val();
+		var sourceleadUrl = '${sourceleadUrl}';
+		$('#taskNameDiv'+ taskId).find('p.jquery_form_error_message').remove();
+		if(fieldName != null && fieldName != "" && fieldName != "undefined" && fieldName == "taskName"){
+			if (fieldValue.trim().match(/^\S*$/) == '' || fieldValue == null || fieldValue == "" || fieldValue == "undefined") {
+					$("#" + localFieldName + "" + taskId).after("<p class='jquery_form_error_message'>Task Name is Required</span>");
+			}else if(fieldValue.length > 100){
+			   $("#" + localFieldName + "" + taskId).after( "<p class='jquery_form_error_message'>The values Entered must be between2-100 characters</span>");
+			}else{
+				$.ajax({
+					type : "POST",
+					url : sourceleadUrl
+							+ "/updateProjectTaskById?${_csrf.parameterName}=${_csrf.token}&taskId="
+							+ taskId + "&fieldName=" + fieldName
+							+ "&fieldValue=" + fieldValue,
+					success : function(data) {
+
+					}
+				});
+			}
+		}
 	}
 </script>
 

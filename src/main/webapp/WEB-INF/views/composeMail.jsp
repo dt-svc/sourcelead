@@ -4,13 +4,6 @@
 <link rel="stylesheet" href="resources/css/bootstrap-multiselect.css" type="text/css">
 <link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css" type="text/css">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <style>
@@ -19,11 +12,11 @@ display: none;
 }
 </style>
 
-<script>
+<!-- <script>
  window.onload = function() {
 	 getTeamsList('All');
 };
-</script>
+</script> -->
 
 
 <section class="content-wraper">
@@ -39,6 +32,7 @@ display: none;
    
     <div class="content-area clearfix">
     <div id="mailLoading"></div>
+     <div id ="popUp"></div>
       <div class="form-horizontal compose-mail col-md-10 col-md-offset-1">
        <form:form id="email_form" name="email_form"  enctype='multipart/form-data' >
         <div class="col-md-12 clearfix">
@@ -50,9 +44,9 @@ display: none;
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
-            <select class="chosen-select form-control" data-validation="required"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) To Add New Email" id="emailsList" name="Toemails">
+            <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) To Add New Email" id="emailsList" name="Toemails">
             </select>
-            <span class="select-multiple" data-target="#multiplemail" onclick="getUserList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
+            <span class="select-multiple" data-target="#multiplemail" onclick="getUserList('All');" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="multiplemail" class="modal fade">
               <div class="modal-dialog modal-lg">
@@ -178,20 +172,30 @@ $(function(){
 	    var jsonData = encodeURIComponent(con);
 	    var form = $('#email_form')[0];
   		var formData = new FormData(form)
-  		$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	 	$.ajax({
-			type : "POST",
-    	    data: formData,
-    	    contentType : 'application/json; charset=utf-8',
-    	    enctype: 'multipart/form-data',
-	        processData: false,
-	        contentType:false, 
-    	    dataType : 'json',
-			url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-			success : function(result) {
-					location.replace(sourceleadUrl+"/mailBox");
-			},
-		});  
+  		
+  		var toEmails =  $('#emailsList_chosen span').size();
+  		 
+  		if(toEmails < 1){
+   	    	
+   	    	alertMailerMsg();
+   	    }
+  		else{
+  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+  		 	$.ajax({
+  				type : "POST",
+  	    	    data: formData,
+  	    	    contentType : 'application/json; charset=utf-8',
+  	    	    enctype: 'multipart/form-data',
+  		        processData: false,
+  		        contentType:false, 
+  	    	    dataType : 'json',
+  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+  				success : function(result) {
+  						location.replace(sourceleadUrl+"/mailBox");
+  				},
+  			});
+  		}
+  		  
 		 return true
 		 
 		}else{
@@ -207,7 +211,29 @@ $(function(){
 </script>
 
 
+<script type="text/javascript">
+function alertMailerMsg(){
+	
+	var result = "";
+	result = result +"<div class='project_inn_mask'></div>";
+	result = result +"<div id='mailerPopup' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"<p><strong>Provide at least one To mail</strong></p>";
+	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"<b href='javascript:void(0)'><input type='button'  value='Ok' onclick='cancel();' style='background-color:#1ab394;width:100%'/></b>";
+	result = result +"</div>";
+	$("#popUp").append(result);
+	$("#mailerPopup").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
 
+
+<script type="text/javascript">
+function cancel(){
+	$("#mailerPopup").slideUp(200);
+	$(".project_inn_mask").hide();
+}
+</script>
 
 
 <script type="text/javascript">
@@ -287,13 +313,6 @@ function getUserList(teamType){
 		                    for (var i = 0; i < json.length; i++) { 
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
-		                    	 var localCheckedStatus = "";
-		                    	 $(".defaultCheckBox").each(function() { 
-		         							var localValue = this.value;
-		         							if(localValue == opt.id){
-		         								localCheckedStatus = "checked";
-		         							}  
-		                    	 });
 		                    	 result = result +'             <td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.email+'"  type="checkbox" name="emails[]" class="myCheckbox" ></td>';
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
@@ -377,7 +396,7 @@ function getTeamsList(teamType){
 			
 			  for (var i = 0; i < json.teams.length; i++) {
 					var opt = json.teams[i];
-					if(teamType == opt.id){
+					if(teamType == opt.id+"role"){
 						output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
 					}else{
 						output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
@@ -386,7 +405,7 @@ function getTeamsList(teamType){
 			  
 				for (var i = 0; i < json.roles.length; i++) {
 					var opt = json.roles[i];
-					if(teamType == opt.id){
+					if(teamType == opt.id+"role"){
 						output = output + "<option value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
 					}else{
 						output = output + "<option value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
@@ -404,6 +423,7 @@ function getTeamsList(teamType){
 function filterTeamMembers(){
 	var teamType = $("#rolesDiv").val();
 	getUserList(teamType);
+	
 }
 </script>
 

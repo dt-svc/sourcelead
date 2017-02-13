@@ -56,7 +56,13 @@ public interface ProjectsService {
 		List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 		
 		List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long id, Long approverUserId);
+		
+	    List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception;   
 	
+		Projects getProjectDetailsUpdateByProjectId(Long projectId,User user,JSONObject jsonObj) throws Exception ;
+		
+		List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) throws Exception;
+
 		Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
 	
 		Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
@@ -69,7 +75,6 @@ public interface ProjectsService {
 		
 		String getProjectDetailsByProjectIdAndLoginOrgId(Long projectId,User user,String loginOrgLocation) throws Exception ;
 	
-		Projects getProjectDetailsUpdateByProjectId(Long projectId,User user,JSONObject jsonObj) throws Exception ;
 	
 		String storeEmployeeInProjectDashboard(OrgLocations loginOrgLocation,User users,JSONObject jsonObj) throws Exception ;
 		 
@@ -92,8 +97,10 @@ public interface ProjectsService {
 		
 		void tereminateAsProjectApprover(JSONObject jsonObj,User user,Long userId,OrgLocations orgLocations) throws Exception;
 		
-		List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) throws Exception;
+		void saveOrUpdateProjectElkDocument(Projects projects) throws Exception;
 		
-		
+		Integer getProjectCountByOrgLocationId(Long orgLocationId)throws Exception;
+
+		List<Object> getAllUniversalSearchProjectsList(OrgLocations orgLocations, String searchValue) throws Exception;
 		
 }

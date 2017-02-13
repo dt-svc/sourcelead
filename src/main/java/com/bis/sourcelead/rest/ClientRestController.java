@@ -5,33 +5,48 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.util.FileCopyUtils;
-
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -113,6 +128,9 @@ public class ClientRestController {
 	@Autowired
 	private ClientVendorExport clientVendorExport;
 	
+  
+	@Autowired
+	private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
 	
 	/**
 	 * Handles to get Orgs
@@ -338,9 +356,64 @@ public class ClientRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
+		//List<OrgSpoc> orgSpocsList  = orgSpocService.getAllActiveSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
 		if(orgSpocsList != null){
 			for(OrgSpoc orgSpoc : orgSpocsList){
 				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientContactCreateMsg");
+				
+				if((orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getId() != null && orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()) || (orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getId() != null && orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue())){
+					//if login user is spoc
+					if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getId() != null && orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()){
+						 StringBuilder spocNameSB = new StringBuilder();
+						 StringBuilder ownerNameSB = new StringBuilder();
+	    				 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+	    				 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+					}
+					//if login user is Owner
+					else if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getId() != null && orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
+						 StringBuilder spocNameSB1 = new StringBuilder();
+						    if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+								orgSpoc.setSpocName(spocNameSB1.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+							}else{
+								orgSpoc.setSpocName(spocNameSB1.append(orgSpoc.getSpocUser().getFirstName()).toString());
+							}
+						    StringBuilder ownerNameSB1 = new StringBuilder();
+							 orgSpoc.setOwnerName(ownerNameSB1.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+						}
+					 
+				}else{
+					if(orgSpoc.getInitiatorLocationId() != null && orgSpoc.getInitiatorLocationId().getId() != null && orgSpoc.getInitiatorLocationId().getId().longValue() == loginUser.getId().longValue() ){
+						 StringBuilder spocNameSB2 = new StringBuilder();
+						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+							orgSpoc.setSpocName(spocNameSB2.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+						}else{
+							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
+						}
+						StringBuilder ownerNameSB2 = new StringBuilder();
+						 orgSpoc.setOwnerName(ownerNameSB2.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+						 
+					 }
+					if(orgSpoc.getResponderLocationId() !=  null && orgSpoc.getResponderLocationId().getId() != null && orgSpoc.getResponderLocationId().getId().longValue() == loginUser.getId().longValue()){
+						StringBuilder spocNameSB3 = new StringBuilder();
+						StringBuilder ownerNameSB3 = new StringBuilder();
+					 orgSpoc.setSpocName(spocNameSB3.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+					 orgSpoc.setOwnerName(ownerNameSB3.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+					}
+				}
+				if(orgSpoc.getResponderLocationId() != null && orgSpoc.getResponderLocationId().getId() != null && orgSpoc.getResponderLocationId().getId().longValue() == loginUser.getId().longValue()){
+					if(orgSpoc.getInitiatorLocationId() != null){
+						 orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
+						 orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+					}
+				}
+				if(orgSpoc.getInitiatorLocationId() != null && orgSpoc.getInitiatorLocationId().getId() != null && orgSpoc.getInitiatorLocationId().getId().longValue() == loginUser.getId().longValue()){
+					if(orgSpoc.getResponderLocationId() != null){
+						 orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
+						 orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
+					}
+				}
+				
+				/*
 				if(msg != null && msg != ""){
 					orgSpoc.setMsg(msg);
 					SourceLeadSessionManager.removeSessionAttribute(request, "clientContactCreateMsg");
@@ -356,7 +429,7 @@ public class ClientRestController {
 					ownerLastName = orgSpoc.getOwnerUser().getLastName();
 				}
 				StringBuilder name = new StringBuilder();
-				orgSpoc.setOwnerName(name.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(ownerLastName).toString());
+				orgSpoc.setOwnerName(name.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(ownerLastName).toString());*/
 			}
 		}
 		return commonUtil.toJSON(orgSpocsList);
@@ -520,15 +593,19 @@ public class ClientRestController {
 	  */
 	 @RequestMapping(value = "/saveInvitationStatus", method = RequestMethod.POST)
 	 public  String saveInvitationStatus(@RequestParam(value="spocId", required=false) Long spocId,
-													@RequestParam(value="invitationStaus", required=false) String invitationStaus) throws Exception{
-										             
+													@RequestParam(value="invitationStaus", required=false) String invitationStaus,HttpServletRequest request) throws Exception{
+		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");        
 	        OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
 	        if(orgSpoc !=  null){
 	        	if(invitationStaus != null && "Accepted".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+	        		clientService.sendAcceptEmailToClientOrVendor(orgSpoc,loginUser,orgLocations);
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Success !! Accepted the invitation.");
 	        	}else if(invitationStaus != null && "Rejected".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
+	        		orgSpoc.setSpocStatus(Constants.INACTIVE);
+	        		clientService.sendRejectEmailToClientOrVendor(orgSpoc,loginUser,orgLocations);
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Rejected the invitation.");
 	        	}
 	        	orgSpocService.addOrgSpoc(orgSpoc);
@@ -819,7 +896,7 @@ public class ClientRestController {
 					submissionTemplate = new SubmissionTemplate();
 				}
 			   
-			   submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
+			   submissionTemplate.setTemplateName(jsonObj.getString("templateName").trim());
 			   submissionTemplate.setDescription(jsonObj.getString("description"));
 			   OrgLocations clientOrgLocation = orgLocationService.getOrgLocations(clientLocationId);
 			   submissionTemplate.setClientLocationId(clientOrgLocation);
@@ -974,6 +1051,17 @@ public class ClientRestController {
 			}
 	 }
 	
+	 @RequestMapping(value = "/getUniversalClientList")
+	 @ResponseBody
+	 public String getUniversalClientList(@RequestParam(value="searchValue", required=false) String  searchValue,
+			 @RequestParam(value="searchType", required=false) String  searchType,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson;
+		List<Object> uniClientList = clientService.getAllUniversalSearchClientList(orgLocations, searchValue,searchType);
+		resultJson = commonUtil.toJSON(uniClientList);
+		return resultJson;
+	 }
+	 
 	/**
 	 * check given string empty or null
 	 * @param str

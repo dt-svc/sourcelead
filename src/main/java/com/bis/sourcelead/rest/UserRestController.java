@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
+import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -96,6 +99,12 @@ public class UserRestController {
 	
 	@Autowired
 	RolesService rolesService;
+	
+	@Autowired
+	 ProjectsIndexHelper projectsIndexHelper;
+	 
+	@Autowired
+	SourceleadELKBaseIndexer<ProjectsIndex> sourceleadELKBaseIndexer;
 	
 	
 	/**
@@ -348,7 +357,7 @@ public class UserRestController {
 	 			userService.addUser(user);
 
 	 			userService.sendEmail(user,loginUser,password,orgLocations.getId());
-	 			
+
 	 			/*
 				 * Update USER DB data as ElasticSearch Documents
 				 */
@@ -457,6 +466,7 @@ public class UserRestController {
 			@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
 			@ResponseBody String saveReason(
 					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
+					@RequestParam(value = "projectId", required = false) Long projectId,
 					@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request) {
 				   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				   Integer updatedCount =  0;
@@ -480,10 +490,17 @@ public class UserRestController {
 						  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
 					      updatedCount = 1;
 				  	   }
-					
+					   if(null != projectId){
+							Projects projects = projectsService.getProjectById(projectId);
+							if(null != projects){
+								Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
+								ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null, projectMembersList);
+								//Elastic Search Document Saving
+								sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
+							}
+					   }
 				    } catch (Exception e) {
 				   }
-				
 				return "success";
 			}
 		 
@@ -624,7 +641,7 @@ public class UserRestController {
 						userRole.setIsPrimary(1);
 						userRoleService.addUserRole(userRole);
 					}
-					
+
 					/*
     				 * Saving USER DB data as ElasticSearch Documents
     				 */

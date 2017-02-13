@@ -4,11 +4,15 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,13 +22,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CampaignIndex;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
@@ -67,6 +72,9 @@ public class MailBoxController {
 	@Autowired
 	UserMailBoxService userMailBoxService;
 	
+	@Autowired
+	SourceleadELKBaseIndexer<CampaignIndex> sourceleadELKBaseIndexer;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -82,6 +90,7 @@ public class MailBoxController {
 		    
 		    Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Inbox");
 			Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Requested");
+			SourceLeadSessionManager.setSessionAttribute(request, "unReadMailsCount", inboxUnreadMailsCount+requestedUnreadMailsCount);
 			
  			model.setViewName("mailBox");
  			model.addObject("sourceleadUrl", sourceleadUrl);
@@ -134,7 +143,9 @@ public class MailBoxController {
 		return resultJson;
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	
+	
+	/*@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/getUserMails")
 	public @ResponseBody String getUserMails(@RequestParam(value = "type", required = false) String type,
 			HttpServletRequest request) throws Exception {
@@ -150,6 +161,62 @@ public class MailBoxController {
 	    	mailBoxList = userMailBoxService.getUserFavouriteMailsByUserIdAndOrgLocationId(user.getId(), orgLocations.getId());
 	    }
 	     
+	    if(mailBoxList != null){
+			calculateDays(mailBoxList);
+		}
+	    resultJson = commonUtil.toJSON(mailBoxList);
+		return resultJson;
+	}*/
+	
+	
+	
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/getUserMailsFromELK")
+	public @ResponseBody String getUserMailsFromELK(@RequestParam(value = "type", required = false) String type,
+			HttpServletRequest request) throws Exception {
+
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    String resultJson;
+	    List<CampaignIndex> mailBoxList = new ArrayList<CampaignIndex>();
+	    Long maxResults = null;
+	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+	    
+	     BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("userId", user.getId()));
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("status", Constants.RECORD_ACTIVE));
+		 
+		 if(!type.equalsIgnoreCase("Starred")){
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("mailStatus", type));
+		 }else{
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", Constants.RECORD_ACTIVE));
+		 }
+		 
+		
+	     maxResults = userMailBoxService.getMailBoxCountByUserIdAndOrgLocationid(user.getId(), orgLocations.getId(), type);
+	   
+	    try {
+	    	 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResultsForCampaigns(Constants.ELK_CAMPAIGN_INDEX, Constants.ELK_CAMPAIGN_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+	 	     if(null != searchHits && searchHits.length >0){
+	 	    	ObjectMapper mapper = new ObjectMapper();
+	 	    	for (SearchHit hit : searchHits) {
+	 	    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
+	 	    		mapper.setDateFormat(df);
+	 	    	    CampaignIndex campaignIndex = mapper.readValue(json.toString(), CampaignIndex.class);
+	 	    		mailBoxList.add(campaignIndex);
+	 	    	}
+	 	    }
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	     
+	   
+	    
 	    if(mailBoxList != null){
 			calculateDays(mailBoxList);
 		}
@@ -179,48 +246,87 @@ public class MailBoxController {
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    String resultJson;
-	    List<Candidate> candList = new ArrayList<Candidate>();
-	    List<Candidate> candidatesList = null;
-	    List<Team> teamList = null;
+	    List<Long> teamIdsList = null;
 	    
+	    List<CandidateIndex> candidateList = new ArrayList<CandidateIndex>();
+	    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+		boolQueryBuilder.must(QueryBuilders.matchQuery("status", Constants.RECORD_ACTIVE));
+		Integer maxResults = 0;
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
 	    if(!isNullOrEmpty(candidatesListType)){
 	    	if(candidatesListType.equalsIgnoreCase("consultants")){
-	    		 candidatesList = candidateService.getAllActiveCandidatesForCampaignByLocation(orgLocations.getId(),"Consultant");
+	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", Constants.RECORD_INACTIVE));
+	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("teamId", Constants.RECORD_INACTIVE ));
+	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", Constants.CONSULTANT));
+	    		 maxResults = candidateService.getAllActiveCandidatesCountForCampaignByLocation(orgLocations.getId(),Constants.CONSULTANT);
+	    		 
 	    	}else if(candidatesListType.equalsIgnoreCase("candidates")){
-	    		 candidatesList = candidateService.getAllActiveCandidatesForCampaignByLocation(orgLocations.getId(),"Candidate");
+	    		
+	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", Constants.RECORD_INACTIVE));
+	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("teamId", Constants.RECORD_INACTIVE ));
+	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", Constants.CANDIDATE));
+	    		 
+	    		 maxResults = candidateService.getAllActiveCandidatesCountForCampaignByLocation(orgLocations.getId(),Constants.CANDIDATE);
+	    		 
 	    	}
 	    	else if(candidatesListType.equalsIgnoreCase("openHotlist")){
-	    		candidatesList = candidateService.getAllHotlistCandidatesAndNotAssignedToTeamByLocation(orgLocations.getId());
+	    		
+	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", Constants.RECORD_ACTIVE));
+	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("teamId", Constants.RECORD_INACTIVE ));
+	    		 maxResults = candidateService.getAllHotlistCandidatesCountNotAssignedToTeamByLocation(orgLocations.getId());
+	    		 
 	    	}
 	    	
 	    	else if(candidatesListType.equalsIgnoreCase("hotlistConsultants") || candidatesListType.equalsIgnoreCase("hotlistCandidates")){
 	    		UserRole userRole = userRoleService.getUserByUserId(user.getId());
 	    		if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN") || userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
-	    			teamList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+	    			teamIdsList = teamService.getTeamIdsListByOrgLocationID(orgLocations.getId());
 	    		}else{
-	    			teamList = teamService.getUserAssignedTeamListByOrgLocationId(user.getId(), orgLocations.getId());
+	    			teamIdsList = teamService.getUserAssignedTeamIdsListByOrgLocationId(user.getId(), orgLocations.getId());
 	    		}
-	    		if(null != teamList && teamList.size() > 0){
+	    		if(null != teamIdsList && teamIdsList.size() > 0){
+	    			BoolQueryBuilder boolSubQueryBuilder = new BoolQueryBuilder();
+	    			for(Long teamId : teamIdsList){
+	    				boolSubQueryBuilder.should(QueryBuilders.matchQuery("teamId", teamId));
+	    			}
+	    				boolQueryBuilder.must(boolSubQueryBuilder);
+	    			
 	    			if(candidatesListType.equalsIgnoreCase("hotlistConsultants")){
-		    			candidatesList = candidateService.getAllCandidatesForCampaignByTeam(teamList,"Consultant");
+	    				 boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", Constants.CONSULTANT));
+	    				 maxResults = candidateService.getAllCandidatesCountForCampaignByTeam(teamIdsList, Constants.CONSULTANT, orgLocations.getId());
 		    		}else if(candidatesListType.equalsIgnoreCase("hotlistCandidates")){
-		    			candidatesList = candidateService.getAllCandidatesForCampaignByTeam(teamList,"Candidate");
+		    			 boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", Constants.CANDIDATE));
+		    			 maxResults = candidateService.getAllCandidatesCountForCampaignByTeam(teamIdsList, Constants.CANDIDATE, orgLocations.getId());
 		    		}
 	    		}
 	    		
 	    		
 	    	}
 	    	
+	    	SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+		    if(null != searchHits && searchHits.length >0){
+		    	ObjectMapper mapper = new ObjectMapper();
+		    	mapper.setDateFormat(df);
+		    	for (SearchHit hit : searchHits) {
+		    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
+		    	    CandidateIndex candidateIndex = mapper.readValue(json.toString(), CandidateIndex.class);
+		    	    candidateList.add(candidateIndex);
+		    	}
+		    	
+		    }
+	    	
 	    }
 	    
-	    resultJson = commonUtil.toJSON(candidatesList);
+	    resultJson = commonUtil.toJSON(candidateList);
 		return resultJson;
 	}
 	
 	
 	
-	public void calculateDays(List<UserMailBox> mailBoxList) throws ParseException {
-		for (UserMailBox userMailBox : mailBoxList) {
+	public void calculateDays(List<CampaignIndex> mailBoxList) throws ParseException {
+		for (CampaignIndex userMailBox : mailBoxList) {
 			long diff = commonUtil.currentDate().getTime() - userMailBox.getCreatedDate().getTime();
 			
 		    long diffSeconds = diff / 1000 % 60;

@@ -1,5 +1,4 @@
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
+
 
 
 <script>
@@ -23,8 +22,9 @@ function candidateCommentsList(candidateId,submissionId){
          url: sourceleadUrl+urlForm,        
          success :function(data) {
         	 var result = "";
-              if(data != null && data != 'undefined' && data != ""){
+              if(data != null && data != 'undefined' && data != "" && data != '[]'){
               	 	 var json = JSON.parse(data);
+              	 		  result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
             			  result  = result + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
             	          for(var i=0;i<json.length;i++){
             	            	var report = json[i];
@@ -46,20 +46,24 @@ function candidateCommentsList(candidateId,submissionId){
             	        	    result = result+'</div>';
             	          }
 	              }else{
-	               	 	 $("#tab-7").removeAttr("style");
 	 	    	         var result ="";
-			    	     result = result+"   <div class='row'>"; 
+	 	    	         
+	 	    	        
+	 	    	       result = result+"   <div class='project_tabs_inn_head mt25'>"; 
+	 	    	        result = result+"   <div class='row'>"; 
 						 result = result+"	<div class='col-lg-12'>"; 
 						 result = result+"		<div class='content-area clearfix'>"; 
 						 result = result+"			<div class='blank-pages'>";
-						 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+						 result = result+"			        <p><i class='fa fa-5x fa fa-tasks'></i></p>";
 						 result = result+"			        <p>No Comments Found</p>";
 						 result = result+"			 </div>";
 						 result = result+"		</div>"; 
 						 result = result+"	</div>"; 
 						 result = result+"  </div> "; 
+						 result = result+"  </div> ";
 	                }
           	  result  = result + '              </div>';
+          	  result  = result + '        </div>';
           	  
               $("#tab-1").empty();
               $("#tab-2").empty(); 

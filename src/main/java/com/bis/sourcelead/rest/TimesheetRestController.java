@@ -10,10 +10,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -38,6 +40,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -50,6 +57,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -60,9 +68,11 @@ import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
@@ -122,6 +132,15 @@ public class TimesheetRestController {
 	
 	@Autowired
 	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
 	
 	@Autowired
 	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
@@ -243,11 +262,18 @@ public class TimesheetRestController {
 				timesheetEntriesDiv.append("		                <select id='timesheetFrequency' name='timesheetFrequency' class='form-control chosen-select' onChange='timesheetDivByFrequency()' >");
 				StringBuilder selectedStartDate = new StringBuilder("");
 				StringBuilder selectedEndDate =  new StringBuilder("");
+				int count = 1;
 				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
 					    String key = entry.getKey();
 					    String value =entry.getValue();
 					    StringBuilder isSelected = new StringBuilder("");
+					    if(count == 1){
+					    	selectedStartDate.append(key.replaceAll("/", "-"));
+					    	selectedEndDate.append(value.replaceAll("/", "-"));
+					    }
 					    if(isCurrentDateBetweenDateRange(key, value)){
+					    	selectedStartDate.setLength(0);
+					    	selectedEndDate.setLength(0);
 					    	isSelected.append("selected='selected'");
 					    	selectedStartDate.append(key.replaceAll("/", "-"));
 					    	selectedEndDate.append(value.replaceAll("/", "-"));
@@ -255,7 +281,7 @@ public class TimesheetRestController {
 					    timesheetEntriesDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+key.replaceAll("/", "-")+"To"+value.replaceAll("/", "-")+"'>");
 					    timesheetEntriesDiv.append(key).append(" To ").append(value);
 					    timesheetEntriesDiv.append("		                  </option>");
-				
+				count++;
 				}
 				timesheetEntriesDiv.append("		                </select>");
 				timesheetEntriesDiv.append("		            </div> ");
@@ -289,27 +315,33 @@ public class TimesheetRestController {
 		
 		
 		timesheetEntriesDiv.append("<input type='hidden' name='projectMemberId'  id='projectMemberId' value='"+projectMemberId+"' >");
+		timesheetEntriesDiv.append("<input type='hidden' name='timesheetFrequency'  id='timesheetFrequency' value='"+weekStartDate+"To"+weekEndDate+"' >");
+		
+		String pullRightClass = "pull-right";
+		if(from != null && !from.isEmpty() && from.equalsIgnoreCase("timesheet")){
+			pullRightClass = "" ;
+		}
 		
 		/*timesheetEntriesDiv.append("			<div id='timesheetDivByFrequency'> ");*/
 		
-		timesheetEntriesDiv.append("					<div class='timeNewSe'>");
+		timesheetEntriesDiv.append("					<div class='timeNewSe "+pullRightClass+"'>");
 		
-		if(from != null && !from.isEmpty() && from.equalsIgnoreCase("timesheet")){
+			
 		    
 			if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
-		    	timesheetEntriesDiv.append("<b>").append(submissionStatus).append("</b>");
+		    	timesheetEntriesDiv.append("<b class='proj_new "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
-	        	timesheetEntriesDiv.append("<b class='proj_draft'>").append(submissionStatus).append("</b>");
+	        	timesheetEntriesDiv.append("<b class='proj_draft "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-	        	timesheetEntriesDiv.append("<b class='proj_process'>").append(submissionStatus).append("</b></td>");
+	        	timesheetEntriesDiv.append("<b class='proj_process "+pullRightClass+" '>").append(submissionStatus).append("</b></td>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
-	        	timesheetEntriesDiv.append("<b class='proj_active'>").append(submissionStatus).append("</b> </td>");
+	        	timesheetEntriesDiv.append("<b class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b> </td>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
-	        	timesheetEntriesDiv.append("<b class='proj_closed'>").append(submissionStatus).append("</b> </td>");
+	        	timesheetEntriesDiv.append("<b class='proj_closed "+pullRightClass+"'>").append(submissionStatus).append("</b> </td>");
 	        	timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'>");
 	        	timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getRejectedReason()).append("</div>");
 	        	timesheetEntriesDiv.append(" </i>");
@@ -317,7 +349,6 @@ public class TimesheetRestController {
 	        
 	        }
 	        
-		}	
 		/*timesheetEntriesDiv.append("						<b class='proj_active'>Active</b><i class='glyphicon glyphicon-comment com_active' >");
 		timesheetEntriesDiv.append("							<div class='timeNewSeMess'><p>Rejected message here Rejected message here Rejected message here</p></div>");
 		timesheetEntriesDiv.append("						</i>");*/
@@ -589,7 +620,7 @@ public class TimesheetRestController {
         if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT").getTime())) || !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
         	disbleCondition6.append("disabled");
 		}
-        if((!isFillMyTimeSheet) || (!pmhDateList.contains(approvalStatus)) || !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+        if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SUN").getTime())) || !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
         	disbleCondition7.append("disabled");
 		} 
 		
@@ -630,7 +661,7 @@ public class TimesheetRestController {
 						              tabDiv.append(" </select>"); 
 								              if(isFillMyTimeSheet){
 									              if(rowCount == 1){
-									            	  tabDiv.append("<input type='button' value='' onClick='addTimeSheetRow(1)' class='addtaskfield'/>");
+									            	  tabDiv.append("<input type='button' value='' onClick='addTimeSheetRow("+ts.getProjectMembers().getProjects().getId()+")' class='addtaskfield'/>");
 									              }else{
 									            	  tabDiv.append("<input type='button' value=''  onClick='removeTimeSheetRow(\""+rowCount+"\",\""+ts.getId()+"\");'  class='addtaskfield removetaskfield'/>");
 									              }
@@ -758,7 +789,7 @@ public class TimesheetRestController {
             }
 			 else{
             	  if((isFillMyTimeSheet )){
-            		  tabDiv.append("     <select  id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' class='existedProjectTaskId"+projectMember.getProjects().getId()+"' onChange='getProjectTasks(\""+rowCount+"task1Id\",\""+projectMember.getProjects().getId()+"\")' >");
+            		  tabDiv.append("     <select  id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' data-validation='required' field-name='Task' class='existedProjectTaskId"+projectMember.getProjects().getId()+"' onChange='getProjectTasks(\""+rowCount+"task1Id\",\""+projectMember.getProjects().getId()+"\")' >");
 	                      tabDiv.append("<option value=''>--select task--</option>");
 	                      Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(projectMember.getProjects().getId());
 	                      for(ProjectTasks pt   : ProjectTasksList){
@@ -871,11 +902,12 @@ public class TimesheetRestController {
 
 				tabDiv.append("		    <div class='timesheet_bot'>");	
 				tabDiv.append("		    	<div class='timesheet_week_comm'>");
-				if(projectMember.getProjects().getIsTimesheetAttachmentRequired() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() != 0){
-					  StringBuilder attachmentDiv = attachmentsAndComments(startDate, endDate,ts);
+				/*if(projectMember.getProjects().getIsTimesheetAttachmentRequired() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() != 0){*/
+					  StringBuilder attachmentDiv = attachmentsAndComments(startDate, endDate,ts,projectMember.getProjects().getIsTimesheetAttachmentRequired());
 					  tabDiv.append(attachmentDiv);
-				}
+				/*}*/
 			    
+					  
 			    /*tabDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");*/	
 			   
 			    
@@ -900,14 +932,23 @@ public class TimesheetRestController {
 		    tabDiv.append("		    	<div class='timesheet_button' style='min-height: 40px;'>");	
 		    
 		    
-		    tabDiv.append("	<div class='totalText'>");
+		    tabDiv.append("	<div class='totalText row'>");
 		    
-		    tabDiv.append("	<span>Billable Hours : </span><input type='text' id='grandBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
-		    tabDiv.append("<div class='clearfix'></div>");
-		    tabDiv.append("	<span>Non-Billable Hours : </span><input type='text' id='grandNonBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
-		    tabDiv.append("<div class='clearfix'></div>");
+		    tabDiv.append("	<div class='col-md-8'>");
+		    tabDiv.append("	<span class='text-primary'>Billable Hours : </span><input type='text' name='grandBillableTotal' id='grandBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
+		    tabDiv.append("	</div>");
 		    
-		    tabDiv.append("	<span>Total Hours : </span><input type='text' id='grandTotal' value='00:00' placeholder='HH/HH' readonly>");
+		    tabDiv.append("	<div class='clearfix'></div>");	
+		    
+		    tabDiv.append("	<div class='col-md-8 mt10'>");
+		    tabDiv.append("	<span class='text-danger'>Non-Billable Hours : </span><input type='text' name='grandNonBillableTotal' id='grandNonBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
+		    tabDiv.append("	</div>");
+		    
+		    tabDiv.append("	<div class='clearfix'></div>");	
+		    
+		    tabDiv.append("<div class='col-md-8 mt10 mb'>");
+		    tabDiv.append("	<span class='text-success'>Total Hours : </span><input type='text' id='grandTotal' value='00:00' placeholder='HH/HH' readonly>");
+		    tabDiv.append("	</div>");
 		    tabDiv.append("	</div>");
 		      
 		    if(!isNullOrEmpty(approvalStatus)  && !approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
@@ -944,15 +985,15 @@ public class TimesheetRestController {
 		    return tabDiv;
 	}
 	
-	public StringBuilder attachmentsAndComments(String startDate ,String endDate,TimesheetSubmissions ts) throws Exception{
+	public StringBuilder attachmentsAndComments(String startDate ,String endDate,TimesheetSubmissions ts, Integer isTimesheetAttachmentRequired) throws Exception{
 			
 			StringBuilder timesheetEntriesDiv = new StringBuilder();	
-			
+			List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = null;
 			StringBuilder documentBuffer = new StringBuilder();	
 			documentBuffer.append("<input type='hidden' name='attcahmentMaxRowNumber'  id='attcahmentMaxRowNumber' value='1' />");
 			documentBuffer.append("<div class='timesheetDocs'>"); 
 			if(ts != null){
-				List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
+				timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
 				if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
 						for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
 							if(!isNullOrEmpty(tsd.getFileName())){
@@ -977,7 +1018,14 @@ public class TimesheetRestController {
 				documentBuffer.append("<span>"); 
 				documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
 						documentBuffer.append("<tr id='divAttachmentTsRow0'>");
-						documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");           
+						if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != 0 && (timesheetSubmissionsDocumentsList == null || timesheetSubmissionsDocumentsList.isEmpty())){
+							documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' data-validation='required' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");
+							documentBuffer.append("<input type='hidden' name='isTimesheetAttachmentRequired'  id='isTimesheetAttachmentRequired' value='Y' />");
+						}else{
+							documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");
+							documentBuffer.append("<input type='hidden' name='isTimesheetAttachmentRequired'  id='isTimesheetAttachmentRequired' value='N' />");
+						}
+						documentBuffer.append("<input type='hidden' name='dbIsTimesheetAttachmentRequired'  id='dbIsTimesheetAttachmentRequired' value='"+isTimesheetAttachmentRequired+"' />");         
 						documentBuffer.append("</tr>");
 				documentBuffer.append("</table>");
 				documentBuffer.append("</span>");
@@ -997,6 +1045,8 @@ public class TimesheetRestController {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+		 	
+		 	
 			
 			json = "{"+json+"}";
 			JSONObject jsonObj = new JSONObject(json);
@@ -1022,19 +1072,48 @@ public class TimesheetRestController {
 					
 					Date startDate = null;
 					Date endDate = null;
+					
+					Date frequencyStartDate = null;
+					Date frequencyEndDate = null;
 					if(jsonObj.getString("tabStartDate") != null && jsonObj.getString("tabStartDate") != "" && jsonObj.getString("tabStartDate") != "undefined"){
 			    	    startDate = format.parse(jsonObj.getString("tabStartDate"));
 			    	}
 					if(jsonObj.getString("tabEndDate") != null && jsonObj.getString("tabEndDate") != "" && jsonObj.getString("tabEndDate") != "undefined"){
 			    		 endDate = format.parse(jsonObj.getString("tabEndDate"));
 			    	}
+					
+					if(jsonObj.getString("timesheetFrequency") != null && jsonObj.getString("timesheetFrequency") != "" && jsonObj.getString("timesheetFrequency") != "undefined"){
+						 String[] frequency = jsonObj.getString("timesheetFrequency").split("To");
+			       		 String weekStartDate = frequency[0].trim();
+			       		 String  weekEndDate = frequency[1].trim();
+			       		 frequencyStartDate = format.parse(weekStartDate);
+			       		 frequencyEndDate = format.parse(weekEndDate);
+			       		
+					}
 					 
 		            Long total = 0l;
 		            TimesheetSubmissions timesheetSubmissions ;
+		            HashSet<SubmissionApproverHierarchy> freshSaHierarchyList = new HashSet<SubmissionApproverHierarchy>();
 		            if(!isNullOrEmpty(submissionId)){
 		            	 timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId);
+		            	 if(timesheetSubmissions != null){
+		            		 List<SubmissionApproverHierarchy> saHierarchyList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(timesheetSubmissions.getId());
+		            		 for(SubmissionApproverHierarchy saHierarchy : saHierarchyList){
+		            			  saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
+		            			  if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("Draft"))
+		    					  saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
+		            			  
+		            			  if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("Submitted"))
+		            			   saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("submitted for approval"));
+		    					   saHierarchy.setUpdatedDate(CommonUtil.currentDate());
+		    					   saHierarchy.setUpdatedBy(loginUser.getUserCode());
+		    						
+		            			  freshSaHierarchyList.add(saHierarchy);
+		            		 }
+		            		 submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(new ArrayList<>(freshSaHierarchyList));
+		            	 }
+		            	 
 		            }else{
-		            	
 		            	timesheetSubmissions = new TimesheetSubmissions();
 		            	timesheetSubmissions.setStartDate(startDate);
 		     	    	timesheetSubmissions.setEndDate(endDate);
@@ -1048,7 +1127,6 @@ public class TimesheetRestController {
 		     	    	
 		     	    	ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
 		    	    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projectMember.getProjects().getId());
-		    	    	HashSet<SubmissionApproverHierarchy> saHierarchyList = new HashSet<SubmissionApproverHierarchy>();
 		    	        if(hierarchyList != null && !hierarchyList.isEmpty()){
 		    					for(ProjectApproverHierarchy hierarchy : hierarchyList){
 		    						SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
@@ -1057,22 +1135,19 @@ public class TimesheetRestController {
 		    						saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
 		    						saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
 		    						saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
+		    						saHierarchy.setFrequencyStartDate(frequencyStartDate);
+		    						saHierarchy.setFrequencyEndDate(frequencyEndDate);
 		    						saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
 		    						saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
 		    						saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
 		    						saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
-		    						saHierarchyList.add(saHierarchy);
+		    						freshSaHierarchyList.add(saHierarchy);
 		    					}
-		    					timesheetSubmissions.setApproverHierarchyList(saHierarchyList);
+		    					timesheetSubmissions.setApproverHierarchyList(freshSaHierarchyList);
 		    			}
 		    			timesheetSubmissionsList.add(timesheetSubmissions);
 		    			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 		            }
-			    	
-			    	
-			    	
-					/*timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);*/
-			    	
 			    	//save  mutliple attachment in timesheet submissison attachment.
 					if ((jsonObj.has("attcahmentMaxRowNumber"))){
 				    	String attcahmentMaxRowNumber = jsonObj.getString("attcahmentMaxRowNumber");
@@ -1094,7 +1169,6 @@ public class TimesheetRestController {
 			                       if(multiFile.getContentType()!=null){
 			                    	   tsd.setFileContentType(multiFile.getContentType());
 			                       }
-			                       
 			                       tsd.setStatus(Constants.CANDIDATE_ACTIVE);
 				                   tsd.setCreatedDate(CommonUtil.currentDate());
 				                   tsd.setCreatedBy(loginUser.getUserCode());
@@ -1107,7 +1181,6 @@ public class TimesheetRestController {
 			                 
 				    	}
 					}
-					
 					String maxAdminTimeTypeRowNum = jsonObj.getString("maxRowNumber");
 					int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 					int rowNum = 0;
@@ -1277,7 +1350,25 @@ public class TimesheetRestController {
 			            String actualTimeString =  actualHours+"."+startWithZero+actualMinutes;
 			            
 						timesheetSubmissions.setTotalHours(actualTimeString);
+						
+						if(jsonObj.getString("grandBillableTotal") != null && jsonObj.getString("grandBillableTotal") != "" && jsonObj.getString("grandBillableTotal") != "undefined"){
+							String grandBillableTotal = jsonObj.getString("grandBillableTotal").replaceAll(":", ".");
+							timesheetSubmissions.setBillableHours(grandBillableTotal);
+						}
+						
+						if(jsonObj.has("grandNonBillableTotal") && jsonObj.getString("grandNonBillableTotal") != null && jsonObj.getString("grandNonBillableTotal") != "" && jsonObj.getString("grandNonBillableTotal") != "undefined"){
+							String grandNonBillableTotal = jsonObj.getString("grandNonBillableTotal").replaceAll(":", ".");
+							timesheetSubmissions.setNonBillableHours(grandNonBillableTotal);
+						}
+						
 						timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+						
+						//send mail to assigned manager at time sheet submission
+						if(!actualTimeString.equalsIgnoreCase("0.0")){
+							if(!"Draft".equalsIgnoreCase(status)){
+								sendEmailToManagerAtTimesheetSubmissions(timesheetSubmissions,loginUser,loginOrgLocation,loginOrgCode);
+							}
+						}
 					}
 					/*String pattern = "dd-MM-yyyy";
 			        format = new SimpleDateFormat(pattern);
@@ -1330,6 +1421,83 @@ public class TimesheetRestController {
 			return "";
 		}
 		
+	
+	/**
+	 * 
+	 * @param timesheetSubmissions
+	 * @param loginUser
+	 * @param loginOrgLocation
+	 * @param loginOrgCode
+	 * @throws Exception
+	 */
+	private void sendEmailToManagerAtTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions, User loginUser, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
+		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(timesheetSubmissions.getProjectMembers().getProjects().getId());
+		
+		for(ProjectApproverHierarchy approver : approverHierarchyList){
+				
+			if(!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode()) && (approver.getLevel() == Constants.LEVEL1)  ){
+				
+			 User projectManager = userService.getUserById(approver.getApproverUserId().getId());
+			 //Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());
+				
+		     EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(projectManager.getFirstName());
+			 emailMessage.setLastName(projectManager.getLastName());
+			 emailMessage.setToEmail(projectManager.getEmail());
+			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+			 
+			 String pattern = "dd-MM-yyyy";
+	         SimpleDateFormat format = new SimpleDateFormat(pattern);
+	         String startDateStr = format.format(timesheetSubmissions.getStartDate());
+	         String endDateStr = format.format(timesheetSubmissions.getEndDate());
+
+			 //setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
+			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
+			 globalVarsMap.put("managerLastName",projectManager.getLastName());
+			 //globalVarsMap.put("projectName", project.getProjectName());
+			 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
+			 globalVarsMap.put("timeFrequency",startDateStr+" to "+endDateStr);
+			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+			 
+			 //setting the Recipient information
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			 
+			//calling the sendNotification method of emailScenerioUtil
+			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
+			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			notificationScenario.setBody(notificationBody);
+			notificationScenario.setOrgCode(loginOrgCode);
+			//String url = null;
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
+			
+		}
+	}
+	}
+	
 	    @Async
 		public void insertNewTimesheetRecordByProjectMemberAndDates(ProjectMembers projectMember,Date actualStartDate,Date actualEndDate,User loginUser) throws Exception{
 				

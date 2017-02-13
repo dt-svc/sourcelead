@@ -366,7 +366,6 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 				subQuery3 = " (" + subQuery3.substring(0, subQuery3.length() - 4) + ")";
 			}
 		}
-	
 			
 		
 		
@@ -540,6 +539,41 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type )");
 			List<OrgRelations> relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setString("type", type).setCacheable(true).list();
 			return relationsList;
+	}
+
+	@Override
+	@Transactional
+	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception {
+
+		logger.debug("In OrgRelations getAllClientsCountByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+
+		Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type )");
+		List<OrgRelations> relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setString("type", "Client").setCacheable(true).list();
+		
+		Integer count = 0;
+		if(relationsList != null && !relationsList.isEmpty()){
+				count = relationsList.size();
+		}
+		return count;
+	}
+
+	@Override
+	@Transactional
+	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception {
+
+		logger.debug("In OrgRelations getAllVendorsCountByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+
+			Query vendorsListQuery= session.createQuery("select count(*) from OrgRelations orgrelation where ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type ))");
+			List<Long> relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setString("type",type).setCacheable(true).list();
+		
+		Long count = 0l;
+		if(relationsList != null && !relationsList.isEmpty()){
+				count = relationsList.get(0).longValue();
+		}
+		return count.intValue();
+
 	}
 	
 	

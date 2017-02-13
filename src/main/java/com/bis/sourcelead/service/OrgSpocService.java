@@ -35,6 +35,10 @@ public interface OrgSpocService {
 	 */
 	List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId ,Long orgLocationId) throws Exception;
 	
+	
+	List<OrgSpoc> getAllActiveSpocsByOrgRelationId(Long orgRelationId, Long userId ,Long orgLocationId) throws Exception;
+	
+	
 	/**To get OrgSpoc by ID
 	 * @author Prasad Salina
 	 * @param Id
@@ -76,7 +80,6 @@ public interface OrgSpocService {
 	 */
 	List<OrgSpoc> getAllContactsbyOrgLocationIdAndUserIdForRequirement(Long orgLocationId,Long userId,String relationType) throws Exception;
 	
-	
 	List<OrgSpoc> getAllContactsbyOrgId(Long orgId) throws Exception;
 	
 	List<OrgSpoc> getAllContactsbyOrgIdAndInvitationStatusAndSpocStatus(Long orgId, String invitationStatus, String spocStatus) throws Exception;
@@ -89,6 +92,13 @@ public interface OrgSpocService {
 	
 	List<OrgSpoc> getAllClientContactsListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 	
+	OrgSpoc getSpocListByResponderLocationId(Long initiatingPartyOrgLocationId,Long responderLocationId,String respondingOrgType) throws Exception;
+	
 	List<OrgSpoc> getOrgSpocByOrgRelationId(Long orgRelationId) throws Exception;
 	
+	Integer getAllVendorContactsCountbyOrgLocationId(Long orgId,String type,Long userId) throws Exception;
+
+	void saveOrUpdateClientVendorContactElkDocument(OrgSpoc orgSpoc) throws Exception;
+
+	List<OrgSpoc> getOrgSpocByUserIdAndOrgLocationCode(Long userId, Long orgLocationId) throws Exception;
 }

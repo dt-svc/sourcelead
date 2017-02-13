@@ -448,6 +448,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType(role.getDisplayName());
 		userRole.setCreatedDate(new Date());
+		userRole.setCreatedBy(loginUser.getUserCode());
 		userRole.setOrgLocations(orgLocations);
 		employee.setEmployeeId(userImport.getEmployeeId());
 		employee.setRate(userImport.getRate());
@@ -464,6 +465,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			user.setEmail(userImport.getEmailId());
 			user.setMobilePhone(userImport.getMobileNumber());
 			user.setCreatedDate(new Date());
+			user.setCreatedBy(loginUser.getUserCode());
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			user.setUserName(userImport.getEmailId());
 			
@@ -492,7 +494,6 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 		}
 		userService.saveOrUpdateUserElkDocument(userRole,employee,loginUser.getUserCode());
-
 
 	}
 /**
@@ -639,8 +640,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				}
 			}
 			
-			if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString()) || !validateEmail(row.getCell(3).toString())) {
-				userImport.setReason("Required fields is not filled");
+			if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString())) {
+				userImport.setReason("Email fields is not filled");
 				return false;
 			}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validateEmail(row.getCell(3).toString())){
 				userImport.setReason("Invalid Email");

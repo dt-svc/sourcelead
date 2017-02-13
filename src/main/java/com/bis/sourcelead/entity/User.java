@@ -150,6 +150,9 @@ public class User implements Serializable{
 	
 	@Transient
     private int assignJobCount;
+	
+	@Transient
+	private String role;
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -375,7 +378,7 @@ public class User implements Serializable{
 				fullName = lastName;
 			}
 			else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
-				fullName = firstName+lastName;
+				fullName = firstName+" "+lastName;
 			}
 			return fullName;
 		}
@@ -431,6 +434,14 @@ public class User implements Serializable{
 
 	public void setGooglePlus(String googlePlus) {
 		this.googlePlus = googlePlus;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 	
 }

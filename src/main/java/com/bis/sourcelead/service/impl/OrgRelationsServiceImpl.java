@@ -103,6 +103,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		orgRelations.setStatus("ACTIVE");
 		orgRelations.setCreatedBy(loginUserCode);
 		orgRelations.setCreatedDate(commonUtil.currentDate());
+		orgRelations.setUpdatedDate(commonUtil.currentDate());
 		
 		if(null != responderType  && !responderType.isEmpty()){
 			if("Client".equalsIgnoreCase(responderType)){
@@ -416,6 +417,17 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	@Override
 	public List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId, String type) {
 		return orgRelationsDao.getClientOrVendorListByOrgLocationId(orgLocationId, type);
+	}
+
+	@Override
+	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception {
+		return orgRelationsDao.getAllClientsCountByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception {
+		return orgRelationsDao.getAllVendorsCountByOrgLocationId(orgLocationId,type);
+
 	}
 	
 }

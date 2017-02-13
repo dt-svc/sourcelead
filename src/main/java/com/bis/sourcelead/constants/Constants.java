@@ -49,6 +49,7 @@ public class Constants {
 	public static final String CITY = "City";
 	public static final String LEVEL = "Tier";
 	public static final String VENDOR_NAME = "Vendor Name*";
+	public static final String JOB_OTHER = "Other";
 
 	public static final Integer RECORD_ACTIVE = 1;
 	public static final Integer RECORD_INACTIVE = 0;
@@ -77,6 +78,13 @@ public class Constants {
 	
 	public static String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
 	public static String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
+	
+	public static String ACCEPT_CLIENT = "Accept Client";
+	public static String ACCEPT_VENDOR = "Accept Vendor";
+	
+	public static String REJECT_CLIENT = "Reject Client";
+	public static String REJECT_VENDOR = "Reject Vendor";
+	
 	public static String OFFER_MAIL_TO_VENDORS="Client to Vendor Acceptence";
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
@@ -111,6 +119,15 @@ public class Constants {
 	public static String MAIL_BOX_SENT = "Sent";
 	public static String MAIL_BOX_INBOX = "Inbox";
 	
+
+	public static String TASK_STATUS_OPEN = "Open";
+	public static String TASK_STATUS_CLOSE = "Closed";
+	public static String TASK_STATUS_MYTASK = "myTask";
+	public static String TASK_STATUS_ASSIGNTASK = "assignedTasks";
+	public static String TASK_STATUS_CLOSEDTASK = "closedTasks";
+
+	public static String TASK_MECHANISM_EMAIL ="Task Mechanism";
+    public static String TASK_MECHANISM_NOTIFICATION="Task Mechanism";
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
@@ -135,6 +152,7 @@ public class Constants {
 	public static int CANDIDATE_SKILL_IN_ACTIVE= 0;
 	
 	public static String ACTIVE = "Active";
+	public static String INACTIVE = "In-Active";
 
 	/** projectMemberHistory constants**/
 	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
@@ -168,6 +186,10 @@ public class Constants {
 	public static String VENDOR_RATE_NEGOTIATION = "VendorRateNegotiation";
 	public static String USER_ACCEPT_RATE_NEGOTIATION = "UserAcceptRateNegotiation";
 	public static String USER_REJECT_RATE_NEGOTIATION = "UserRejectRateNegotiation";
+	public static String CLIENT_ACCEPT_RATE_NEGOTIATION = "ClientAcceptRateNegotiation";
+	public static String VENDOR_ACCEPT_RATE_NEGOTIATION = "VendorAcceptRateNegotiation";
+	public static String CLIENT_REJECT_RATE_NEGOTIATION = "ClientRejectRateNegotiation";
+	public static String VENDOR_REJECT_RATE_NEGOTIATION = "VendorRejectRateNegotiation";
 
 
 
@@ -203,6 +225,7 @@ public class Constants {
 	public static int TAB_TIMESHEET_APPROVAL = 6;
 	public static int TAB_REQUIREMENT = 8;
 	public static int TAB_USER = 2;
+	public static int TAB_PROJECTS = 3;
 	
 	public static  String Dashboard = "Dashboard";
 	public static  String Users = "Users";
@@ -343,6 +366,10 @@ public class Constants {
     
     public static String CLIENT = "Client";
     
+    public static String ELK_PROJECT_INDEX = "projects";
+	
+    public static String ELK_PROJECT_TYPE = "project";
+    
     public static String ELK_CANDIDATE_INDEX = "candidates";
     
     public static String ELK_USER_INDEX = "users";
@@ -350,8 +377,32 @@ public class Constants {
     public static String ELK_CANDIDATE_TYPE = "candidate";
     
     public static String ELK_USER_TYPE = "user";
+
+    public static String ELK_REQUIREMENT_INDEX = "requirement";
+	
+    public static String ELK_REQUIREMENT_TYPE = "requirement";
     
     public static String ELK_CANDIDATE_ID_PREFIX = "CND";
+    
+    public static String ELK_CLIENTVENDOR_INDEX = "clientvendor";
+        
+    public static String ELK_CLIENTVENDOR_TYPE = "clientvendors";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_INDEX = "clientvendorcontacts";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_TYPE = "clientvendorcontacts";
+
+    
+    public static String ELK_CAMPAIGN_INDEX = "campaigns";
+	
+    public static String ELK_CAMPAIGN_TYPE = "campaign";
+    
+    public static String ELK_CAMPAIGN_ID_PREFIX = "CAMPAIGN";
+    
+    public static String CANDIDATE = "Candidate"; 
+    
+    public static String CONSULTANT = "Consultant";
+    
     
     public static String MAIL_TRASH = "Trash";
     public static String MAIL_DELETE = "Deleted";
@@ -383,11 +434,39 @@ public class Constants {
     
     public static String All_APPLICANTS = "all";
     public static String DUPLICATE_APPLICANTS = "DUPLICATE_APPLICANTS";
+    
+    public static String REQ_SEARCHTYPE = "Requirement";
 
+    public static String ONE_DAY_AGO ="1 Day Ago";
+    public static String THREE_DAY_AGO ="3 Days Ago";
+    public static String ONE_WEEK_AGO ="1 Week Ago";
+    public static String TWO_WEEK_AGO ="2 Weeks Ago";
+    public static String ONE_MONTH_AGO ="1 Month Ago";
+    public static String THREE_MONTH_AGO ="3 Months Ago";
+    public static String ALL_RECORDS ="All";
+    
 
+    public static String SCORE_20 = "20";
+    public static String SCORE_10 = "10";
     
+    public static String NOTICE_PERIOD_15DAYS = "15 Days";
+    public static String NOTICE_PERIOD_1MONTH = "1 Month";
+    public static String NOTICE_PERIOD_2MONTH = "2 Month";
+    public static String NOTICE_PERIOD_3MONTH = "3 Month";
+    public static String NOTICE_PERIOD_IMMEDIATELY = "Immediately available";
     
-    
-     
+    public static String EXPERIENCE_26YEARS = "26";
+    public static String RATE_TYPE_HOURLY = "Hourly";
+    public static String RATE_TYPE_WEEKLY = "Weekly";
+    public static String RATE_TYPE_BI_WEEKLY = "Bi-weekly";
+    public static String RATE_TYPE_SEMI_MONTHLY = "Semi-Monthly";
+    public static String RATE_TYPE_MONTHLY = "Monthly";
+    public static String RATE_TYPE_BI_MONTHLY = "Bi-Monthly";
+   
+    public static String PROJECT = "Projects";
+    public static String USER = "User"; 
+    public static String REQUIREMENT = "Requirement";
+    public static String USERS = "Users"; 
+
    
 }

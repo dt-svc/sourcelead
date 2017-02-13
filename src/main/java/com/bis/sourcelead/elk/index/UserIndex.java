@@ -11,15 +11,17 @@ public class UserIndex implements Serializable {
 
 	private Long userId;
 	
+	private Long userRoleTableId;
+
 	private String employeeId;
 
 	private Long orgLocationId;
 
-	private String firstName;
+	private String firstName; 
 
 	private String lastName;
-
-	private String email;
+ 
+	private String email; 
 
 	private String mobilePhone;
 
@@ -53,7 +55,21 @@ public class UserIndex implements Serializable {
 	
 	private String userCode;
 	
+	private Long reportingManagerId;
+	
 	private String userRoleId;
+
+	private String searchType;
+	
+	
+	
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
 
 	public Long getUserId() {
 		return userId;
@@ -229,6 +245,14 @@ public class UserIndex implements Serializable {
 		this.hireDate = hireDate;
 	}
 
+	public Long getReportingManagerId() {
+		return reportingManagerId;
+	}
+
+	public void setReportingManagerId(Long reportingManagerId) {
+		this.reportingManagerId = reportingManagerId;
+	}
+
 	public String getCreatedDate() {
 		return createdDate;
 	}
@@ -244,9 +268,13 @@ public class UserIndex implements Serializable {
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
 	}
-	
-	
-	
-	
+
+	public Long getUserRoleTableId() {
+		return userRoleTableId;
+	}
+
+	public void setUserRoleTableId(Long userRoleTableId) {
+		this.userRoleTableId = userRoleTableId;
+	}
 	
 }
