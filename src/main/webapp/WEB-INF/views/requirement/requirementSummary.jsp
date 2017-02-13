@@ -1369,7 +1369,7 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<th>Resume</th>';
 				           result = result + '<th>Applied on</th>';
 					       result = result + '<th>Rate</th>';
-					         if(clientSubmissions == 'Y'){
+					         if(clientSubmissions == 'Y' && submissionType == 'SUBMIT_TO_CLIENT'){
 					           result = result + '<th>Sub. Rate</th>';
 					         }
 					       result = result + '<th>Source</th>';
@@ -1428,8 +1428,8 @@ function requirementPipeline(requirementId,submissionType){
 						    	     }
 							          
 						            if(report.vendorLocationId != null && report.sourceSubmission != null){
-						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+						        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
+						        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
@@ -1443,7 +1443,7 @@ function requirementPipeline(requirementId,submissionType){
 							    	     }
 						            }
 							          
-							      if(clientSubmissions == 'Y'){
+							      if(clientSubmissions == 'Y' && submissionType == 'SUBMIT_TO_CLIENT'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
@@ -1604,10 +1604,10 @@ function requirementPipelineDA(requirementId,submissionType){
 				           result = result + '<th>Resume</th>';
 				           result = result + '<th>Applied on</th>';
 					       result = result + '<th>Rate</th>';
-					         if(clientSubmissions == 'Y'){
+/* 					         if(clientSubmissions == 'Y'){
 					           result = result + '<th>Sub. Rate</th>';
 					         }
-					       result = result + '<th>Source</th>';
+ */					       result = result + '<th>Source</th>';
 		        		   result = result + '<th>Score</th>';
 				           result = result + '<th>Exp</th>';
 				           result = result + '<th>Status</th>';
@@ -1677,7 +1677,7 @@ function requirementPipelineDA(requirementId,submissionType){
 							    	     }
 						           }
 							          
-							     if(clientSubmissions == 'Y'){
+							     /* if(clientSubmissions == 'Y'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
@@ -1691,7 +1691,7 @@ function requirementPipelineDA(requirementId,submissionType){
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							           }
-							       }
+							       } */
 							           
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
@@ -1836,9 +1836,9 @@ function requirementPipelineRS(requirementId,submissionType){
 					           result = result + '<th>Resume</th>';
 					           result = result + '<th>Applied on</th>';
 					           result = result + '<th>Rate</th>';
-					           if(clientSubmissions == 'Y'){
+					          /*  if(clientSubmissions == 'Y'){
 						           result = result + '<th>Sub. Rate</th>';
-						       }
+						       } */
 					           result = result + '<th>Source</th>';
 			        		   result = result + '<th>Score</th>';
 					           result = result + '<th>Exp</th>';
@@ -1905,7 +1905,7 @@ function requirementPipelineRS(requirementId,submissionType){
 							    	     }
 						           }
 							          
-							    	if(clientSubmissions == 'Y'){
+							    	/* if(clientSubmissions == 'Y'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
@@ -1919,7 +1919,7 @@ function requirementPipelineRS(requirementId,submissionType){
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							           }
-							        }
+							        } */
 							           
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
@@ -2062,9 +2062,9 @@ function requirementPipelineSL(requirementId,submissionType){
 				           result = result + '<th>Resume</th>';
 			        	   result = result + '<th>Applied on</th>';
 					       result = result + '<th>Rate</th>';
-					       if(clientSubmissions == 'Y'){
+					       /* if(clientSubmissions == 'Y'){
 					           result = result + '<th>Sub. Rate</th>';
-					       }
+					       } */
 					       result = result + '<th>Source</th>';
 				           result = result + '<th>Shortlisted By</th>'; 
 		        		   result = result + '<th>Score</th>';
@@ -2137,7 +2137,7 @@ function requirementPipelineSL(requirementId,submissionType){
 							    	     }
 						           }
 							          
-							    	   if(clientSubmissions == 'Y'){
+							    	   /* if(clientSubmissions == 'Y'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
@@ -2151,7 +2151,7 @@ function requirementPipelineSL(requirementId,submissionType){
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							           }
-							           }
+							           } */
 							           
 							           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 							        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';

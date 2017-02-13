@@ -34,6 +34,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
@@ -42,10 +44,12 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -86,6 +90,10 @@ public class CommonUtil {
 	
 	@Autowired
 	private ProjectApproverHierarchyService projectApproverHierarchyService;
+	
+	@Autowired
+	private OrgSpocService orgSpocService;
+	
 	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
@@ -553,6 +561,30 @@ public class CommonUtil {
 		return date;
 	}
 	
+	
+	   /*
+	    * updating the userDetails in the Spock  if we are editing  the user
+	    *  Sammeta David 
+	    */
+	   public void updateSpockDetails( User user ,OrgLocations orgLocations) throws Exception{
+	    	 
+		    	 try{
+			    		 List<OrgSpoc>  orgSpockList = orgSpocService.getOrgSpocByUserIdAndOrgLocationCode(user.getId(),orgLocations.getId());
+			    		  if(null != orgSpockList){
+					    		 for(OrgSpoc org :orgSpockList){
+					    			 orgSpocService.addOrgSpoc(org);
+					    			 
+					    		 } 
+			    		  }
+		    	 }
+		    	 catch(Exception e){
+		    		 e.printStackTrace();
+		    	 }
+	    	 
+	     }
+	   
+	 
+	   
 	
 	 /**
 	 * this method converts list to Json String

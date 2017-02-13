@@ -1,9 +1,5 @@
 package com.bis.sourcelead.dao;
 
-import java.util.List;
-
-import com.bis.sourcelead.entity.CandidateSkills;
-
 /**
  * @author Ajith Matta
  *
@@ -15,9 +11,11 @@ public interface CandidateSkillsDao {
 	 * @return CandidateSkills
 	 * @throws Exception
 	 */
-	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception;
+	/*public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception;
 	
 	public CandidateSkills getCandidateSkillBySkillId(Long candidateSkillId) throws Exception;
+	
+	public CandidateSkills getAllCandidateSkillsByCandidateId(String candidateId) throws Exception;
 	
 	public List<CandidateSkills> getCandidateSkillsByCandidateId(String candidateId) throws Exception;
 	
@@ -27,6 +25,6 @@ public interface CandidateSkillsDao {
 	
 	public CandidateSkills getSkillsByCandidateIdSkillName(String candidateId, String skillName);
 	
-	public Boolean validateSkillName(String skillName);
+	public Boolean validateSkillName(String skillName);*/
 
 }
