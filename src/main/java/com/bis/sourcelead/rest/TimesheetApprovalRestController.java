@@ -601,7 +601,6 @@ public class TimesheetApprovalRestController {
 					    timesheetApprovalDiv.append("<td>");
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
 					    	 timesheetApprovalDiv.append("<div class='sm text-center'>--</div>");
-					    	 timesheetApprovalDiv.append("<div id='rejectedPopup'></div>");
 					     }
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
 			            	 timesheetApprovalDiv.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
@@ -612,7 +611,6 @@ public class TimesheetApprovalRestController {
 			            	                     .append("\",\"").append(format.format(actualEndDate))
 			            	                 
 			            	                     .append("\",").append(tdSpanLength).append(");'></i></div>");
-			                 timesheetApprovalDiv.append("<div id='rejectedPopup'></div>");
 			             }
 					      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 			            	 timesheetApprovalDiv.append(" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>");
@@ -631,7 +629,7 @@ public class TimesheetApprovalRestController {
 				  timesheetApprovalDiv.append("	        </tbody>");
 				  timesheetApprovalDiv.append("	     </table> ");
 			      timesheetApprovalDiv.append("	</div>");
-			    
+			      timesheetApprovalDiv.append("<div id='rejectedPopup'></div>");
 				}
 		        else{
 		        	timesheetApprovalDiv.append("   <div class='row'>"); 

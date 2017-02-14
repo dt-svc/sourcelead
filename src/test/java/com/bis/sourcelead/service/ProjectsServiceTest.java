@@ -254,7 +254,7 @@ public class ProjectsServiceTest {
 	 */
 	@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
-		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.BI_WEEKLY);
+		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+ProjectMembersList.size());
 		if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
 			for(ProjectMembers projectMember : ProjectMembersList){
@@ -278,9 +278,9 @@ public class ProjectsServiceTest {
 							Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "FRI");
 							
 				             Boolean flag = true;
-				             if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentMonday.getTime()) <-2){
+				            /* if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentMonday.getTime()) <-2){
 				            	 flag = false;
-				             }
+				             }*/
 							
 						    if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getId()) && (flag)){
 						    	finalTFMap.put(key, value);
