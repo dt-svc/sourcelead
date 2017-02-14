@@ -26,6 +26,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.index.helper.RequirementHelper;
+import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
@@ -126,6 +129,9 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 private RequirementElkUtil requirementElkUtil;
 	 
 	/**
 	 * @author prasad k
@@ -252,9 +258,6 @@ public class RequirementRestController {
 
 		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
 	    
-		
-		
-		
 		// requirement created user
 					User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
 
@@ -324,12 +327,11 @@ public class RequirementRestController {
 						}
 						
 					}
-
+					requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
 			
 					return "success";
 	}
 					
-			
 		// Old Code			
 		/*// to get  RequirementApproverHierarchy with maximum Level
 

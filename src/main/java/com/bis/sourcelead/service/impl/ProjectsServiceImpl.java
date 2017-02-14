@@ -493,9 +493,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
 			    	 projects.setEmployeeEndDateStr(Constants.DF_YMD.format(projects.getEndDate()));
 			    }
-			    if(projects.getOrgRelationId()!=null) {
-	                projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
-	            }
+			    
+			    if(null != projects.getOrgRelationId()){
+					if(null != projects.getOrgRelationId().getLocationId() && projects.getOrgRelationId().getLocationId().getId().longValue() == orgLocationsId.longValue()){
+						projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+					}if(null != projects.getOrgRelationId().getResponderLocationId() && projects.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocationsId.longValue()){
+						projects.setClient(projects.getOrgRelationId().getLocationId().getOrg().getOrgName());
+					}
+				}
+			    
 			    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
 			    	StringBuilder projectStringBuilder=new StringBuilder();
@@ -547,7 +553,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}*/
 
 	@Override
-	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,HashSet<TimesheetSubmissions> timesheetSubmissions,String level) throws Exception {
+	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,Map<String, String> timesheetFrequencyMap,Projects projects,String level) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(locationsId);
 		
 		Set<Projects> projectsSet = new HashSet<>();
@@ -570,12 +576,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 LinkedList<String> frequency = new LinkedList<>();
 		 StringBuilder tempHTML = new StringBuilder();
 		 tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
-			tempHTML.append("<tr>");
+			        tempHTML.append("<tr>");
 					tempHTML.append("<th> Project Name </th>");
 					tempHTML.append("<th> Frequency </th>");
 					tempHTML.append("</tr>");
 		
-			if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
+			/*if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
 				 for(TimesheetSubmissions ts :timesheetSubmissions){
 					 tempHTML.append("<tr>");
 					 tempHTML.append("<td>").append(ts.getProjectMembers().getProjects().getProjectName()).append("</td>").toString();
@@ -583,7 +589,20 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 tempHTML.append("</tr>");
 					 projectsSet.add(ts.getProjectMembers().getProjects());
 				 }
+			}*/
+					
+			if(timesheetFrequencyMap != null && !timesheetFrequencyMap.isEmpty()){
+				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
+					    String key = entry.getKey();
+					    String value =entry.getValue();
+				    	 tempHTML.append("<tr>");
+						 tempHTML.append("<td>").append(projects.getProjectName()).append("</td>").toString();
+						 tempHTML.append("<td>").append(key.replaceAll("/", "-")).append(" To ").append(value.replaceAll("/", "-")).append("</td>").toString();
+						 tempHTML.append("</tr>");
+						 projectsSet.add(projects);
+				}
 			}
+			
 			
 	     tempHTML.append("</table> ");
 		 globalVarsMap.put("weekFrequency",tempHTML.toString());
@@ -934,8 +953,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    					ProjectMembers pm = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUserId, projects.getId());
 				    				if(pm.getId() != null){
 				    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
-				    					projectMembersHistory.setProjectTerminationDate(currentDate);
-				    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+				    					if(projectMembersHistory != null){
+				    						projectMembersHistory.setProjectTerminationDate(currentDate);
+					    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+				    					}
 					    				commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
 				    				}
 				    				 

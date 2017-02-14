@@ -2,11 +2,15 @@ package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.time.DateUtils;
@@ -44,6 +48,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -121,7 +126,8 @@ public class EMailJobScheduler {
 	CandidateIndexHelper candidateIndexHelper;
 
 	
-	
+	@Autowired
+	SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 
 	
@@ -131,31 +137,28 @@ public class EMailJobScheduler {
 	@Autowired
 	TaskService taskService;
 	
+	
+	@Autowired
+	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
+	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
 	
 	
 	/**
-	 * @author Rajashekar
-	 * Fires on Every Firday at 6:30 PM and send mails to employees those who are not submited their timesheets
+	 * @author Rajashekar & Prasad salina
+	 * Fires on Every Firday at 11:45 PM and send mails to employees those who are not submited their timesheets
 	 */
-	@Scheduled(cron = "0 30 18 ? * FRI")
+	@Scheduled(cron = "0 45 23 ? * FRI ")
 	public void runJobSchedulerByWeekly() {
 		logger.info("******************  Notification Job Scheduler started..! **********");
 		try {
-			//HashSet<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatusCurrentWeek();
 			HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
 			if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
 				for(ProjectMembers projectMember : ProjectMembersList){
 					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
 					if("Admin".equalsIgnoreCase(userRole.getUserType()))
 						continue;
-					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId(),userRole.getUser().getId());
-					String level ="";
-					if(timesheetSubmissions !=null){
-						projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions,level);
-						logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
-					}
-						
+					    sendCronRemainderForProjectMember(projectMember,userRole,Constants.WEEKLY);
 				}
 			}
 			
@@ -164,97 +167,58 @@ public class EMailJobScheduler {
 		}
     }
 	
-	/**
-	 * @author prasanna
-	 * Fires on every 30 min on every day emailJobScheduler.job.cron.everyminute.expression
-	 * @throws Exception 
-	 */
-	@Scheduled(cron = "0 0/30 * 1/1 * ?")
 	@Async
-	public void runRemainderEmailScheduler() throws Exception {
-				logger.info("##########  E-Mail Job Scheduler started..! ##########");
-				logger.info("########## Mail Sent to: Applicant,Interviewer,Others  ##########");
-				
-				DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				
-				int addMinuteTime = 30;
-				Date targetTime = new Date(); //now
-				Date date = new Date();
-				targetTime = DateUtils.addMinutes(targetTime, addMinuteTime); 
-				
-				String triggerTimeStr = dateFormat.format(targetTime); 
-				String currentTimeStr = dateFormat.format(date); 
-				
-				
-				List<RequirementInterviewHistory> interviewList = requirementInterviewHistoryService.getAllInterviewListByCurrentDate(currentTimeStr,triggerTimeStr);
-				for (RequirementInterviewHistory interviewHistory : interviewList) {
+	private void sendCronRemainderForProjectMember(ProjectMembers projectMember,UserRole userRole,String frequency) throws Exception{
+			String level ="";
+			DateFormat format = Constants.DF_DMY;
+			Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,"scheduler");
+			LinkedHashMap<String,String> finalTFMap = new LinkedHashMap<>();
+			if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
+				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
+				    String key = entry.getKey();
+				    String value =entry.getValue();
+				    Date frequencyStartDate = format.parse(key.replaceAll("/", "-"));
+					Date frequencyEndDate = format.parse(value.replaceAll("/", "-"));
 					
-					RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(interviewHistory.getInterviewId().getId().toString());
-			 		
-					int remainderTime = -(Integer.parseInt(requirementInterview.getRemainedBefore()));
-					Date newTargetTime = DateUtils.addMinutes(requirementInterview.getStartTime(), remainderTime); 
-
+					Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+					currentCal.setLenient(false);
+					currentCal.setTime(new Date());
+					Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "FRI");
 					
-					if(newTargetTime.after(date) && newTargetTime.before(targetTime)){
-					Org org = orgService.findOrgByID(requirementInterview.getSubmissionId().getOrgLocations().getOrg().getId());
-					User user = userService.getUserByUserCode(requirementInterview.getUpdatedBy());
-					 
-					List<RequirementInterviewer> requirementInterviewerList = requirementInterviewerService.getInterviwersListByInterviewId(requirementInterview.getId());
+		             Boolean flag = true;
+		             if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentMonday.getTime()) <-2 && frequency.equalsIgnoreCase(Constants.BI_WEEKLY)){
+		            	 flag = false;
+		             }
 					
-					if (requirementInterviewerList!=null) {
-						for (RequirementInterviewer requirementInterviewer : requirementInterviewerList) {
-							requirementInterviewService.sendEmailToInterviewrs(requirementInterview.getSubmissionId().getCandidate(),requirementInterviewer.getInterviewerUser(),requirementInterview.getSubmissionId(), user, org, requirementInterview, requirementInterview.getSubmissionId().getOrgLocations());
-						}
+		             if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getId()) && (flag)){
+				    	finalTFMap.put(key, value);
 					}
-					
-					if(interviewHistory.getNotificationToApplicant().equalsIgnoreCase("Y")){
-								requirementInterviewService.sendEmailToApplicants(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId().getOrgLocations(),requirementInterview.getSubmissionId(), user, org, requirementInterview);
-					}
-					if(interviewHistory.getNotificationToSpoc().equalsIgnoreCase("Y")){
-
-						requirementInterviewService.sendEmailToVendors(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId(), user,org, requirementInterview,requirementInterview.getSubmissionId().getOrgLocations());
-
-					
-					if(requirementInterview.getNotificationToOthers().equalsIgnoreCase("Y")){
-						String[] othersEmails = requirementInterview.getNotificationToOthersEmails().split(",");
-						for (String emailId : othersEmails) {
-							User otherUser = new User();
-							otherUser.setEmail(emailId);
-							requirementInterviewService.sendEmailToInterviewrs(requirementInterview.getSubmissionId().getCandidate(),otherUser,requirementInterview.getSubmissionId(), user, org, requirementInterview, requirementInterview.getSubmissionId().getOrgLocations());
-						}
-					}
-					}
-						
-
 				}
-		}
-    }
+			}
+			if(null != finalTFMap && !finalTFMap.isEmpty()){
+				projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),finalTFMap,projectMember.getProjects(),level);	
+				logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+			}
+			
+	}
 	
 	/**
-	 * @author Rajashekar
-	 * Fires on Every 14 (Bi_Weekly) days at 7:30 PM and send mails to employees those who are not submited their timesheets
+	 * @author Rajashekar & Prasad salina
+	 * Fires on Every Firday at 11:45 PM and send mails to employees those who are not submited their timesheets
 	 */
-	@Scheduled(cron = "0 30 19 1/14 * ?")
+	@Scheduled(cron = "0 45 23 ? * FRI ")
 	public void runJobSchedulerByBi_Weekly() {
 		logger.info("******************  Notification Job Scheduler Every two weeks started..! **********");
 		try {
-			
-			//HashSet<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
 			HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.BI_WEEKLY);
 			if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
 				for(ProjectMembers projectMember : ProjectMembersList){
 					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
 					if("Admin".equalsIgnoreCase(userRole.getUserType()))
 						continue;
-					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId(),userRole.getUser().getId());
-					String level="";
-					if(timesheetSubmissions !=null){
-						projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions,level);	
-						logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
-					}
+					    sendCronRemainderForProjectMember(projectMember,userRole,Constants.BI_WEEKLY);
 				}
 			}
-			
 			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
@@ -262,7 +226,7 @@ public class EMailJobScheduler {
     }
 
 	/**
-	 * @author Rajashekar
+	 * @author Rajashekar & Prasad salina
 	 * Fires on Every 15 (semi_monthly) days at 7:30 PM and send mails to employees those who are not submited their timesheets
 	 */
 	@Scheduled(cron = "0 30 19 1/15 * ?")
@@ -275,17 +239,10 @@ public class EMailJobScheduler {
 						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
 						if("Admin".equalsIgnoreCase(userRole.getUserType()))
 							continue;
-						HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId(),userRole.getUser().getId());
-						String level ="";
-							if(timesheetSubmissions != null){
-								projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions,level);	
-								logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
-							}
+						   sendCronRemainderForProjectMember(projectMember,userRole,Constants.SEMI_MONTHLY);
 						    
 				}
 			}
-			
-			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
 		}
@@ -305,12 +262,7 @@ public class EMailJobScheduler {
 					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
 					if("Admin".equalsIgnoreCase(userRole.getUserType()))
 						continue;
-					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId(),userRole.getUser().getId());
-					String level="";
-					if(timesheetSubmissions !=null){
-						projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions,level);	
-						logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
-					}
+					sendCronRemainderForProjectMember(projectMember,userRole,Constants.MONTHLY);
 				}
 			}
 		} catch (Exception e) {
@@ -319,7 +271,6 @@ public class EMailJobScheduler {
     }
 	//======================================================End
  	
- 			
  			
 	/**
 	 * Prasanna vadla 
@@ -585,6 +536,72 @@ public class EMailJobScheduler {
 			logger.error("ERROR in " + e.getMessage());
 		}
 	}
+	
+	/**
+	 * @author prasanna
+	 * Fires on every 30 min on every day emailJobScheduler.job.cron.everyminute.expression
+	 * @throws Exception 
+	 */
+	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	@Async
+	public void runRemainderEmailScheduler() throws Exception {
+				logger.info("##########  E-Mail Job Scheduler started..! ##########");
+				logger.info("########## Mail Sent to: Applicant,Interviewer,Others  ##########");
+				
+				DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				
+				int addMinuteTime = 30;
+				Date targetTime = new Date(); //now
+				Date date = new Date();
+				targetTime = DateUtils.addMinutes(targetTime, addMinuteTime); 
+				
+				String triggerTimeStr = dateFormat.format(targetTime); 
+				String currentTimeStr = dateFormat.format(date); 
+				
+				
+				List<RequirementInterviewHistory> interviewList = requirementInterviewHistoryService.getAllInterviewListByCurrentDate(currentTimeStr,triggerTimeStr);
+				for (RequirementInterviewHistory interviewHistory : interviewList) {
+					
+					RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(interviewHistory.getInterviewId().getId().toString());
+			 		
+					int remainderTime = -(Integer.parseInt(requirementInterview.getRemainedBefore()));
+					Date newTargetTime = DateUtils.addMinutes(requirementInterview.getStartTime(), remainderTime); 
+
+					
+					if(newTargetTime.after(date) && newTargetTime.before(targetTime)){
+					Org org = orgService.findOrgByID(requirementInterview.getSubmissionId().getOrgLocations().getOrg().getId());
+					User user = userService.getUserByUserCode(requirementInterview.getUpdatedBy());
+					 
+					List<RequirementInterviewer> requirementInterviewerList = requirementInterviewerService.getInterviwersListByInterviewId(requirementInterview.getId());
+					
+					if (requirementInterviewerList!=null) {
+						for (RequirementInterviewer requirementInterviewer : requirementInterviewerList) {
+							requirementInterviewService.sendEmailToInterviewrs(requirementInterview.getSubmissionId().getCandidate(),requirementInterviewer.getInterviewerUser(),requirementInterview.getSubmissionId(), user, org, requirementInterview, requirementInterview.getSubmissionId().getOrgLocations());
+						}
+					}
+					
+					if(interviewHistory.getNotificationToApplicant().equalsIgnoreCase("Y")){
+								requirementInterviewService.sendEmailToApplicants(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId().getOrgLocations(),requirementInterview.getSubmissionId(), user, org, requirementInterview);
+					}
+					if(interviewHistory.getNotificationToSpoc().equalsIgnoreCase("Y")){
+
+						requirementInterviewService.sendEmailToVendors(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId(), user,org, requirementInterview,requirementInterview.getSubmissionId().getOrgLocations());
+
+					
+					if(requirementInterview.getNotificationToOthers().equalsIgnoreCase("Y")){
+						String[] othersEmails = requirementInterview.getNotificationToOthersEmails().split(",");
+						for (String emailId : othersEmails) {
+							User otherUser = new User();
+							otherUser.setEmail(emailId);
+							requirementInterviewService.sendEmailToInterviewrs(requirementInterview.getSubmissionId().getCandidate(),otherUser,requirementInterview.getSubmissionId(), user, org, requirementInterview, requirementInterview.getSubmissionId().getOrgLocations());
+						}
+					}
+					}
+						
+
+				}
+		}
+    }
 	
 	/**
 	 * @author David Raju

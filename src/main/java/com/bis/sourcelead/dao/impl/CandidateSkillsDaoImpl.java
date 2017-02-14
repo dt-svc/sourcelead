@@ -1,19 +1,12 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.util.List;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateSkillsDao;
-import com.bis.sourcelead.entity.CandidateSkills;
 
 /**
  * @author Ajith Matta
@@ -31,7 +24,7 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 		
 	/* 
 	 *This ADO method is used for save the candidate skills 
-	 */
+	 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception {
@@ -63,6 +56,21 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 		String query = "select cs.name from CandidateSkills cs where cs.candidateId.id =:candidateId and (cs.status =:status or cs.status is null)";
 	    List<String> skillNames = session.createQuery(query).setString( "candidateId", candidateId).setInteger( "status", status ).setCacheable(true).list();
         return skillNames;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateSkills getAllCandidateSkillsByCandidateId(String candidateId) throws Exception {
+		logger.debug("In Candidate Skill by candidateId");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from CandidateSkills candidateSkills left join fetch candidateSkills.candidateId  where candidateSkills.candidateId.id = :candidateId" ;
+		List<CandidateSkills> candidateSkillsList =session.createQuery(query).setString("candidateId", candidateId).setCacheable(true).list(); 
+		CandidateSkills candidateSkills = null;
+		if(candidateSkillsList != null && !candidateSkillsList.isEmpty()){
+			candidateSkills = candidateSkillsList.iterator().next();
+		}
+		return candidateSkills;
 	}
 
 
@@ -127,5 +135,5 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 				}
 		 }
 		return flag;
-	}
+	}*/
 } 

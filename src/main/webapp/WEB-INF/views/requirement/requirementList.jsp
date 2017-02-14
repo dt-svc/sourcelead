@@ -1316,12 +1316,14 @@ function requirementPipeline(requirementId){
                   <label>Requirement status </label>
                   <div class="clearfix">
                     <select id="requirementStatu" name="requirementStatus" class="chosen-select" data-placeholder="Requirement status " multiple>
-                      <option>New</option> 
-                      <option>Draft</option>
-                      <option>Submitted</option>
-                      <option>Open</option>
-                      <option>cancel</option>
-                      <option>On Hold</option>
+                      <option>NEW</option> 
+                      <option>DRAFT</option>
+                      <option>SUBMITTED</option>
+                      <option>OPEN</option>
+                      <option>CANCEL</option>
+                      <option>ONHOLD</option>
+                      <option>FILLEDCLOSED</option>
+                      <option>UNFILLEDCLOSED</option>
                     </select>
                   </div>
                 </div>
@@ -1442,9 +1444,9 @@ function requirementPipeline(requirementId){
                 		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="NEW"  onclick="requirementList();"><label for="c6">New<span id="newRequirementCount"></span></label></li>
 							<li><input id="c7" name="requirementStatus" type="checkbox" value ="Draft"  onclick="requirementList();"><label for="c7">Draft<span id="draftRequirementCount"></span></label></li>
 							<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="submitted"  onclick="requirementList();"><label for="c8">Submitted <span id="submittedRequirementCount"></span></label></li>
-               				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="open"  onclick="requirementList();"><label for="c8">Open <span id="openRequirementCount"></span></label></li>
-               				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="onhold"  onclick="requirementList();"><label for="c8">On Hold <span id="onHoldRequirementCount"></span></label></li>
-               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="CANCEL"  onclick="requirementList();"><label for="c8">cancel <span id="cancelRequirementCount"></span></label></li>
+               				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="open"  onclick="requirementList();"><label for="c9">Open <span id="openRequirementCount"></span></label></li>
+               				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="onhold"  onclick="requirementList();"><label for="10">On Hold <span id="onHoldRequirementCount"></span></label></li>
+               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="CANCEL"  onclick="requirementList();"><label for="c11">cancel <span id="cancelRequirementCount"></span></label></li>
 		              </ul>
 		            </div>
           </li>

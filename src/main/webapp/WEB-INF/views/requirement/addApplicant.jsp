@@ -722,37 +722,37 @@ function getExpYears(){
 
 
 <script type="text/javascript">
-function getAllCandidateCountries(){
+function getAllSubmissionCandidateCountries(){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
     	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
-        	$('#country').empty();
-        	$('#country').append('<option value="">---Select---</option>');
+        	$('#submissionCountry').empty();
+        	$('#submissionCountry').append('<option value="">---Select---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == '${SourceLeadWeb_orgLocations.country}'){
-            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            		$('#submissionCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{
-            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            		$('#submissionCountry').append('<option value="'+json[i]+'">'+json[i]+'</option>');
             	}
             	
             }
-            $('#country').trigger("chosen:updated");
+            $('#submissionCountry').trigger("chosen:updated");
             getCandidateStates();
         },
         error: function(e){
         }
-    });
+    }); 
 } 
 </script>
 
 <script>
 function getCandidateStates(){
 	
-	var countryName = $("#country").val();
+	var countryName = $("#submissionCountry").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
@@ -760,26 +760,26 @@ function getCandidateStates(){
 	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select---</option>');
+	        	$('#submissionState').empty();
+	        	$('#submissionState').append('<option value="">---Select---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	$('#submissionState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
-	            $('#state').trigger("chosen:updated");
+	            $('#submissionState').trigger("chosen:updated");
 	            
-	            $('#city').empty();
-	            $('#city').trigger("chosen:updated");
+	            $('#submissionCity').empty();
+	            $('#submissionCity').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
 	    });
 	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---Select---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---Select---</option>');
-        $('#city').trigger("chosen:updated");
+		$('#submissionState').empty();
+    	$('#submissionState').append('<option value="">---Select---</option>');
+    	$('#submissionState').trigger("chosen:updated");
+    	$('#submissionCity').empty();
+    	$('#submissionCity').append('<option value="">---Select---</option>');
+        $('#submissionCity').trigger("chosen:updated");
 	}
 }
 </script> 
@@ -788,8 +788,8 @@ function getCandidateStates(){
 <script>
 function getCandidateCities(city){
 	
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
+	var countryName = $("#submissionCountry").val();
+	var stateName = $("#submissionState").val();
 	
 	if(stateName == null || stateName == "" || stateName =="undefined"){
 		stateName = document.getElementById("state");
@@ -803,37 +803,37 @@ function getCandidateCities(city){
 	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select---</option>');
+	        	$('#submissionCity').empty();
+	        	$('#submissionCity').append('<option value="">---Select---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	var selected = '';
 	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
 	            		selected = 'selected';
 	            	}
-	            	$('#city').append('<option value="'+json[i]+'" '+selected+'>'+json[i]+'</option>');
+	            	$('#submissionCity').append('<option value="'+json[i]+'" '+selected+'>'+json[i]+'</option>');
 	            }
-	            $('#city').trigger("chosen:updated");
+	            $('#submissionCity').trigger("chosen:updated");
 	            $("#loading").removeAttr("style"); 
 	        },
 	        error: function(e){
 	        }
 	    });
 	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---Select---</option>');
-    	$('#city').trigger("chosen:updated");
+		$('#submissionCity').empty();
+    	$('#submissionCity').append('<option value="">---Select---</option>');
+    	$('#submissionCity').trigger("chosen:updated");
 	}
 }
 </script>
 <script type="text/javascript">
 function init(){
-	       getAllCandidateCountries();
+	getAllSubmissionCandidateCountries();
 	      
-	       $("#country").on('change', function (e) {
+	       $("#submissionCountry").on('change', function (e) {
 	    	   getCandidateStates();
 	    	   getCandidateCities();
 	       });
-	       $("#state").on('change', function (e) {
+	       $("#submissionState").on('change', function (e) {
 	    	   getCandidateCities();
 	       });
 	      
