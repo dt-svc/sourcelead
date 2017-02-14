@@ -23,7 +23,7 @@
 function validateTaskName(){
 		var Taskname= $("#taskName").val();
 		var checkMaxTsRowNum = $("#maxTsRowNum").val();
-		for(i = 1; i<7;i++){
+		for(i = 1; i<checkMaxTsRowNum;i++){
 			var oldTaskname = $("#" + i + "taskName").val();
 			if(oldTaskname == Taskname){
 				$("input#taskName").after("<p class='jquery_form_error_message'>"+ Taskname+ " is Already Existed</span>");

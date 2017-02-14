@@ -719,26 +719,5 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		return flag;
 	}
 
-	
-	/*@Override
-	@Transactional(rollbackFor = { Exception.class })	
-	public Boolean validateProjectSequeneNumber(String projectSequeneNumber, Long orgLocationsId) throws Exception {
-		 logger.debug("In ProjectsDaoImpl validateProjectSequeneNumber method");
-		 Session session = this.sessionFactory.getCurrentSession();
-		 boolean flag = false;
-		 if(projectSequeneNumber != null && orgLocationsId != null){
-				String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectSequeneNumber = :projectSequeneNumber ";
-				Collection<Projects> projectsList = session.createQuery(query.toString())
-						                                   .setLong("orgLocationsId", orgLocationsId)
-						                                   .setString("projectSequeneNumber", projectSequeneNumber)
-						                                   .setCacheable(true)
-						                                   .list();
-
-				if (projectsList != null && projectsList.size() > 0) {
-					flag = true;
-				}
-		 }
-		return flag;
-	}*/
 }
 
