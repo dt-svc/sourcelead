@@ -27,7 +27,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 	CommonUtil commonUtil;
 	
 	
-	public Map<String,String> getTimesheetFrequencyListFromProjectInvoiceFrequency(ProjectMembers projectMember) throws Exception{
+	public Map<String,String> getTimesheetFrequencyListFromProjectInvoiceFrequency(ProjectMembers projectMember,String frequencyFor) throws Exception{
 		Map<String,String> timesheetFrequencyList = new LinkedHashMap<String,String>();
 		if(projectMember != null && projectMember.getProjects() != null){
 			String timesheetFrequency = projectMember.getProjects().getInvoiceFrequency();
@@ -49,8 +49,14 @@ public  class TimesheetFrequencyGeneratorUtil {
 								 cal.setLenient(false);
 								 cal.setTime(commonUtil.currentDate());
 								 Date previousMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(cal.getTime(),Constants.PREVIOUS_MONTH).get("STARTDATE");
-								 Date nextMonthEndDate = CalendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.NEXT_MONTH).get("ENDDATE");
-								
+								 
+								 Date nextMonthEndDate = null;
+								 if(StringUtils.isNotEmpty(frequencyFor) && frequencyFor.equalsIgnoreCase("scheduler")){
+									 nextMonthEndDate = CalendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.CURRENT_MONTH).get("ENDDATE");
+								 }
+								 else{
+									 nextMonthEndDate = CalendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.NEXT_MONTH).get("ENDDATE");
+								 }
 								
 								 /**
 								  *calculating previous month startDate and next month endDate based on empStartDate and empEndDate
@@ -95,10 +101,22 @@ public  class TimesheetFrequencyGeneratorUtil {
 							    */
 								 Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 								 cal.setLenient(false);
-								 cal.setTime(commonUtil.currentDate());
+								 cal.setTime(CommonUtil.currentDate());
 								 Date previousMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(cal.getTime(),Constants.PREVIOUS_MONTH).get("STARTDATE");
-								 Date nextMonthEndDate = CalendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.NEXT_MONTH).get("ENDDATE");
-						   					    
+								 Date nextMonthEndDate = null;
+								 if(StringUtils.isNotEmpty(frequencyFor) && frequencyFor.equalsIgnoreCase("scheduler")){
+									 
+									 Date currentMonth15thDate = CalendarUtil.getMonth15thDateByGivenDate(empStartDate,Constants.CURRENT_MONTH).get("STARTDATE");
+									 if(currentMonth15thDate.after(CommonUtil.currentDate())){
+										 nextMonthEndDate = currentMonth15thDate;
+									 }
+									 else{
+										 nextMonthEndDate = CalendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.CURRENT_MONTH).get("ENDDATE");
+									 }
+								 }
+								 else{
+									 nextMonthEndDate = CalendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.NEXT_MONTH).get("ENDDATE");
+								 }
 								 
 								  /**
 								  *calculating previous month startDate,15thDate
@@ -181,7 +199,13 @@ public  class TimesheetFrequencyGeneratorUtil {
 								Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-(3*14));
 								Date previousMondayDate = previousMonday.getTime();
 								
-								Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,(3*14));
+								Calendar nextSunday = null;
+								if(StringUtils.isNotEmpty(frequencyFor) && frequencyFor.equalsIgnoreCase("scheduler")){
+									 nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,0);
+								}
+								else{
+								       nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,(3*14));
+								}
 								Date nextSundayDate = nextSunday.getTime();
 															
 								
@@ -266,7 +290,13 @@ public  class TimesheetFrequencyGeneratorUtil {
 								Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
 								Date previousMondayDate = previousMonday.getTime();
 								
-								Calendar nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,42);
+								Calendar nextSunday = null;
+								if(StringUtils.isNotEmpty(frequencyFor) && frequencyFor.equalsIgnoreCase("scheduler")){
+									nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,0);
+								}
+								else{
+									nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,42);
+								}
 								Date nextSundayDate = nextSunday.getTime();
 								
 								
@@ -306,7 +336,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 								 Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 								 endCal.setLenient(false);
 								 endCal.setTime(empEndDate);
-								 Calendar empEndMonday = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON");
+								 Calendar empEndMonday = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "MON");
 									
 								  int totalWeeks = 0; 
 								  Calendar tsCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
@@ -314,7 +344,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 								  
 								  Date tsStartDate = null;
 								  Date tsEndDate = null;
-									
+									System.out.println(empEndMonday.getTime());
 								  totalWeeks = (int)((empEndMonday.getTimeInMillis()-empStartMonday.getTimeInMillis())/(7l * 24l * 60l * 60l * 1000l));
 								  for (int week = 0; week < totalWeeks; week++) {
 									  
@@ -330,8 +360,6 @@ public  class TimesheetFrequencyGeneratorUtil {
 									    tsStartDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "MON").getTime();
 										tsEndDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "SUN").getTime();
 								  }
-						    	
-						    	
 						    }
 						   
 					     }

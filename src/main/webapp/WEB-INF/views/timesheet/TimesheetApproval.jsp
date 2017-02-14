@@ -1270,6 +1270,21 @@ function pagination(){
 }
 </script>
 
+<script>
+function dropDown(){
+	$("#exporrt").slideToggle();
+}
+</script>
+
+<!-- this script is for Timesheet Entries Export -->
+<script>
+function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&projectMemberId="+projectMemberId;
+}
+</script>
+ <!-- this script is for save Timesheet -->  
+
 <jsp:include page="../masterFooter.jsp" />
  
       

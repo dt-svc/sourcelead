@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.service.CandidateSkillsService;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  *@author Ajith Matta
@@ -14,6 +15,9 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 
 	/*@Autowired
 	CandidateSkillsDao candidateSkillsDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
@@ -28,6 +32,7 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	@Override
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception {
 		String newlist = candidateSkills.getName();
+		candidateSkills.setUpdatedDate(commonUtil.currentDate());
 		candidateSkills = candidateSkillsDao.storeCandidateSkills(candidateSkills);
 		
 		 * updating Candidate Skills DB data in existing candidateindex
