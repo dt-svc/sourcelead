@@ -30,12 +30,10 @@ public interface UserRoleDao {
 
 	public List<UserRole> getApproverAssignedUsers(List<Long> projectIds, String userState, String searchByName) throws Exception;
 	
-	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception;
 	public Boolean isUserAdminByOrgLocationId(Long userId, Long orgLocationId);
 	
 	public UserRole getUserDetailsByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
 	
-
 	public Boolean isUserAdmin(Long userId);
 
 
@@ -54,6 +52,8 @@ public interface UserRoleDao {
 	
 	public UserRole getUserByUserId(Long userId) throws Exception;
 	
+	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception;
+	
 	//Prasad Salina to get all the user ids baded on reportingManager userid
 	List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception;
 	
@@ -64,6 +64,16 @@ public interface UserRoleDao {
 	 * @throws Exception
 	 */
 	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception;
+	
+	
+	/**
+	 * this method is used for elastic search
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<UserRole> getUsersListByUserId(Long userId) throws Exception;
+
 
 	public UserRole getUserRoleByUserId(Long userId) throws Exception;
 	

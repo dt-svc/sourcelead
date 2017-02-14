@@ -70,7 +70,11 @@ public class RecommendedCustomizeScoreRestController {
 	public @ResponseBody String getCustomizeScore(@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
-		RecommendedCustomizeScore rcs = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementIdAndOrgLocationId(requirementId, orgLocations.getId());
+		RecommendedCustomizeScore rcs = null;
+		rcs = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementIdAndOrgLocationId(requirementId, orgLocations.getId());
+		if(rcs == null){
+			 rcs = new RecommendedCustomizeScore();
+		}
 		List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 		if(null != rcs && null != rcs.getCustomizeSkills()){
 	  		String[] skills = rcs.getCustomizeSkills().split(","); 
@@ -92,7 +96,6 @@ public class RecommendedCustomizeScoreRestController {
 			@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String resultJson = null;
 		String json1 = "{"+json+"}";
 	    JSONObject jsonObj = new JSONObject(json1);
 	    
@@ -103,7 +106,6 @@ public class RecommendedCustomizeScoreRestController {
 
 		//splits the Skills 
 		if(jsonObj.has("customizeSkills")){
-			
 			String skillId =null;
 			try{
 				JSONArray jsonArray = jsonObj.getJSONArray("customizeSkills");
@@ -118,6 +120,8 @@ public class RecommendedCustomizeScoreRestController {
 			skillId = skillId.replaceAll("\"", "");
 			rcs.setCustomizeSkills(skillId);
 		
+		}else{
+			rcs.setCustomizeSkills(null);
 		}
 		
 		
@@ -127,7 +131,10 @@ public class RecommendedCustomizeScoreRestController {
 				String noticeperiodId = jsonArray.replaceAll("\\[", "").replaceAll("\\]","").replaceAll("\"", "");
 				rcs.setCustomizeNoticeperiod(noticeperiodId);
 			
+			}else{
+				rcs.setCustomizeNoticeperiod(null);
 			}
+		
 		
 		//Split the Keywords
 				if(jsonObj.has("anyKeyWord")){
@@ -146,6 +153,8 @@ public class RecommendedCustomizeScoreRestController {
 						anyKeyWordId = anyKeyWordId.replaceAll("\"", "");
 						rcs.setCustomizeKeywords(anyKeyWordId);
 					
+					}else{
+						rcs.setCustomizeKeywords(null);
 					}
 		if(jsonObj.has("customizeCountry")){
 			rcs.setCustomizeState(jsonObj.getString("customizeCountry"));
@@ -162,7 +171,9 @@ public class RecommendedCustomizeScoreRestController {
 		if(jsonObj.has("maxExperience") && null != jsonObj.getString("maxExperience") && "" != jsonObj.getString("maxExperience")){
 			rcs.setCustomizeMaxExperience(jsonObj.getString("maxExperience"));
 		 }
-		
+		if(jsonObj.has("currentRateType") && null != jsonObj.getString("currentRateType") && "" != jsonObj.getString("currentRateType")){
+			rcs.setCustomizeRatetype(jsonObj.getString("currentRateType"));
+		 }
 		if(jsonObj.has("customizeRate") && null != jsonObj.getString("customizeRate") && "" != jsonObj.getString("customizeRate")){
 			rcs.setCustomizeRate(jsonObj.getString("customizeRate"));
 		 }

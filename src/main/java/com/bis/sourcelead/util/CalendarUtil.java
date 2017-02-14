@@ -1,13 +1,24 @@
 package com.bis.sourcelead.util;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
+import org.joda.time.DateTime;
+import org.joda.time.Weeks;
+import org.springframework.stereotype.Component;
+
+import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
+	
 	
 	
 	/*public static void main(String[] args){
@@ -177,7 +188,21 @@ public  class CalendarUtil {
         return day_offset;
 	}
 
-	
+	public static int monthsBetween(Date a, Date b) {
+	    Calendar cal = Calendar.getInstance();
+	    if (a.before(b)) {
+	        cal.setTime(a);
+	    } else {
+	        cal.setTime(b);
+	        b = a;
+	    }
+	    int c = 0;
+	    while (cal.getTime().before(b)) {
+	        cal.add(Calendar.MONTH, 1);
+	        c++;
+	    }
+	    return c - 1;
+	}
 	
 	public static Date getNextWeekDay(String day_Of_Week) {
 		int day_offset = getDayOffset(day_Of_Week);
@@ -457,6 +482,113 @@ public  class CalendarUtil {
 		}
 		return twelveHourFormatTime;
 	}
+    
+    public static HashMap<String,Date> getMonthStartDateAndEndDateByMothPreference(Date startDate,Integer monthPreference){
+  		HashMap<String,Date> dateList = new HashMap<String,Date>();
+  		Calendar calendar = Calendar.getInstance();   
+  		calendar.setTime(startDate);
+  		calendar.add(Calendar.MONTH, monthPreference);
+  		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+  		dateList.put("STARTDATE", calendar.getTime());
+  		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+  		dateList.put("ENDDATE", calendar.getTime());
+  	    return dateList;
+  	}
+    
+    public static String getMonthAndYearPatternDateByMonthPreference(Date date,Integer monthPreference){
+  		Calendar calendar = Calendar.getInstance();   
+  		calendar.setTime(date);
+  		calendar.add(Calendar.MONTH, monthPreference);
+  	    DateFormat format = Constants.MY;
+  		String dateStr = format.format(calendar.getTime());
+		return dateStr;
+  	}
+    
+    
+    public static LinkedHashMap<String,Date> getMonthStartDateAndEndDateFromGivenMonthString(String month){
+    	LinkedHashMap<String,Date> dateList = new LinkedHashMap<String,Date>();
+	    final DateFormat format = Constants.MY;
+	    final Calendar calendar = Calendar.getInstance();
+	    Date date;
+		try {
+			date = format.parse(month);
+			calendar.setTime(date);
+	  		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+	  		dateList.put("STARTDATE", calendar.getTime());
+	  		
+	  		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+	  		dateList.put("ENDDATE", calendar.getTime());
+		} catch (ParseException e) {}
+		return dateList;
+  	}
+    
+    public static HashMap<String,Date> getMonthStartDateByGivenDate(Date date,Integer monthPreference){
+  		HashMap<String,Date> dateList = new HashMap<String,Date>();
+  		Calendar calendar = Calendar.getInstance();   
+  		calendar.setTime(date);
+  		calendar.add(Calendar.MONTH, monthPreference);
+  		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+  		dateList.put("STARTDATE", calendar.getTime());
+  	    return dateList;
+  	}
+    
+    
+    public static HashMap<String,Date> getMonthEndDateByGivenDate(Date date,Integer monthPreference){
+  		HashMap<String,Date> dateList = new HashMap<String,Date>();
+  		Calendar calendar = Calendar.getInstance();   
+  		calendar.setTime(date);
+  		calendar.add(Calendar.MONTH, monthPreference);
+  		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+  		dateList.put("ENDDATE", calendar.getTime());
+  	    return dateList;
+  	}
+    
+    public static HashMap<String,Date> getMonthStartDateAnd15thDateByGivenDateAndMothPreference(Date startDate,Integer monthPreference){
+  		HashMap<String,Date> dateList = new HashMap<String,Date>();
+  		Calendar calendar = Calendar.getInstance();   
+  		calendar.setTime(startDate);
+  		calendar.add(Calendar.MONTH, monthPreference);
+  		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+  		dateList.put("STARTDATE", calendar.getTime());
+  	    calendar.set(Calendar.DAY_OF_MONTH, 15); 
+  		dateList.put("ENDDATE", calendar.getTime());
+  	    return dateList;
+  	}
+    
+    public static HashMap<String,Date> getMonth16thDateAndEndDateByGivenDateAndMothPreference(Date sixteenthDate,Integer monthPreference){
+  		HashMap<String,Date> dateList = new HashMap<String,Date>();
+  		Calendar calendar = Calendar.getInstance();   
+  		calendar.setTime(sixteenthDate);
+  		calendar.add(Calendar.MONTH, monthPreference);
+  		calendar.set(Calendar.DAY_OF_MONTH, 16); 
+  		dateList.put("STARTDATE", calendar.getTime());
+  		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+  		dateList.put("ENDDATE", calendar.getTime());
+  	    return dateList;
+  	}
+      
+
+    
+    public static HashMap<String,Date> getMonth15thDateByGivenDate(Date date,Integer monthPreference){
+  		HashMap<String,Date> dateList = new HashMap<String,Date>();
+  		Calendar calendar = Calendar.getInstance();   
+  		calendar.setTime(date);
+  		calendar.add(Calendar.MONTH, monthPreference);
+  		calendar.set(Calendar.DAY_OF_MONTH, 15); 
+  		dateList.put("STARTDATE", calendar.getTime());
+  	    return dateList;
+  	}
+    
+    
+    public static HashMap<String,Date> getMonth16thDateByGivenDate(Date date,Integer monthPreference){
+  		HashMap<String,Date> dateList = new HashMap<String,Date>();
+  		Calendar calendar = Calendar.getInstance();   
+  		calendar.setTime(date);
+  		calendar.add(Calendar.MONTH, monthPreference);
+  		calendar.set(Calendar.DAY_OF_MONTH, 16); 
+  		dateList.put("STARTDATE", calendar.getTime());
+  	    return dateList;
+  	}
 	 
 //    Calendar calendar = Calendar.getInstance();
 //	Date date = calendar.getTime();
@@ -474,6 +606,50 @@ public  class CalendarUtil {
        }
 	return null;
     }
-	 
+    public static int getNumberOfWeeks(Date date1, Date date2){
+		DateTime dateTime1 = new DateTime(date1);
+		DateTime dateTime2 = new DateTime(date2);
+
+		int weeks = Weeks.weeksBetween(dateTime1, dateTime2).getWeeks();
+		return weeks;
+	}
+	
+	public static long getNumberOfDays(Date date1, Date date2){
+		    long diff = date2.getTime() - date1.getTime();
+		    long  numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+		    return numberofDays;
+		
+	}
+	public static int getDayOfTheDate(Date date){
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+        return dayOfWeek;
+	}
+	
+	public static String getNextDate(String  curDate) throws ParseException {
+		  final DateFormat format =Constants.DF_DMY;
+		  final Date date = format.parse(curDate);
+		  final Calendar calendar = Calendar.getInstance();
+		  calendar.setTime(date);
+		  calendar.add(Calendar.DAY_OF_YEAR, 1);
+		  return format.format(calendar.getTime()); 
+	}
+	
+	public static String getShortDateFromLongDate(String  curDate) throws ParseException {
+		  final DateFormat format =Constants.DF_DMY;
+		  final Date date = format.parse(curDate);
+		  final DateFormat Short_Format =Constants.SHORT_DF_STD_DM;
+		  return Short_Format.format(date); 
+	}
+	
+	public static String getPreviousDateByDecrementor(String  curDate,int decrementor) throws ParseException {
+		  final DateFormat format =Constants.DF_DMY;
+		  final Date date = format.parse(curDate.replaceAll("/", "-"));
+		  final Calendar calendar = Calendar.getInstance();
+		  calendar.setTime(date);
+		  calendar.add(Calendar.DAY_OF_YEAR, -decrementor);
+		  return format.format(calendar.getTime()); 
+	}
 
 }

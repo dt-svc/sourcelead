@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -27,10 +26,8 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.UserRoleService;
-import com.bis.sourcelead.service.UserService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -388,11 +385,14 @@ public class PdfUtil {
 				}
 			}
 		}
-		if(candidate.getCandidateSkills() !=null && candidate.getCandidateSkills().size() >0){
+		if(candidate.getSkillsName() !=null){
 			StringBuilder skills = new StringBuilder();
-			Set<CandidateSkills> candidateSkillsList = candidate.getCandidateSkills();
-		    for(CandidateSkills candidateSkills : candidateSkillsList){
-		    	skills.append(candidateSkills.getName()).append(",");
+			
+		//	Set<CandidateSkills> candidateSkillsList = candidate.getCandidateSkills();
+			
+			String [] candidateSkillsList = candidate.getSkillsName().split(",");
+		    for(String skill : candidateSkillsList){
+		    	skills.append(skill).append(",");
 		    }
 		    candidateArray[8] = skills.toString().substring(0, skills.length()-1);
 		}else{

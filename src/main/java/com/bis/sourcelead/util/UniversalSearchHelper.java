@@ -76,12 +76,21 @@ public class UniversalSearchHelper {
 	public ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForClientVendor(String keywd) {
 		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorLevel", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("createdByAdvanced", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+	    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
+	    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
+	    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
+		
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCountry", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("status", keywd));
+		
+		matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderWebSite", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorWebSite", keywd));;
 		return matchQueryBuilderList;
 	}
 	/**
@@ -92,13 +101,16 @@ public class UniversalSearchHelper {
 	public ArrayList<MatchQueryBuilder> getProjectsMatchQueryBuilderList(String keywd) {
 		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		// Project Search
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("projectName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("projectSequeneNumber", keywd));
+	    matchQueryBuilderList.add(QueryBuilders.matchQuery("projectName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("level1ManagerName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("startDate", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("clientName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("projectStatus", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMemberEmail", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("startDate", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("invoiceFrequency", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("clientName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectStatus", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMembers", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectMemberEmail", keywd));
 		return matchQueryBuilderList;
 	}
 	/**

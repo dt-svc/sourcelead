@@ -26,7 +26,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -174,7 +173,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		  StringBuilder startDateBuilder = new StringBuilder();
 		  StringBuilder endDateBuilder = new StringBuilder();
 		 
-		 String pattern = "dd-MM-yyyy";
+		  String pattern = "dd-MM-yyyy";
           SimpleDateFormat format = new SimpleDateFormat(pattern);
           Date currentStartDate = null;
           Date currentEndDate = null;
@@ -222,7 +221,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
          sb1.append("<th>Thu<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"THU").getTime())).append("</i></th>"); 
          sb1.append("<th>Fri<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"FRI").getTime())).append("</i></th>"); 
          sb1.append("<th>Sat<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SAT").getTime())).append("</i></th>"); 
-         sb1.append("<th>Sun<i>").append(endDateBuilder).append("</i></th>"); 
+         sb1.append("<th>Sun<i>").append(endDateBuilder).append("</i></th>");
+         
+         
+         
          timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId());
          currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
          currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
@@ -1741,7 +1743,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	 */
 	@Override
 	public TimesheetEntries updateTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
-		// TODO Auto-generated method stub
+		timesheetEntries.setUpdatedDate(commonUtil.currentDate());
 		return timesheetEntriesDao.updateTimesheetEntries(timesheetEntries);
 	}
 	

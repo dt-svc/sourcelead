@@ -1,17 +1,9 @@
-
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script>
 <script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -21,8 +13,6 @@
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
-
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
 <jsp:include page="editClientSpocDetails.jsp" />
 <jsp:include page="clientDetails.jsp" />	
@@ -973,7 +963,6 @@ function pagination(){
 
 <script>
 function preparedClientContacts(data){
-	
 			var json = JSON.parse(data);
 		   	var result = "";
 		   	/* if(json.length != null && json.length != ''){ */
@@ -1107,7 +1096,6 @@ function preparedClientContacts(data){
 <!-- contact list preparation from ELK result -->
 <script>
 function preparedClientContactListFromElk(data){
-	  
 			var json = JSON.parse(data);
 		   	var result = "";
 		   	result = result +'<thead>';
@@ -1158,7 +1146,7 @@ function preparedClientContactListFromElk(data){
 		   		
 		   		
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
-		   				result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		   				result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
 		   		'</sec:authorize>';
 		   		
 		   		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
@@ -1173,9 +1161,17 @@ function preparedClientContactListFromElk(data){
 		   		}else{
 		   			result = result +'<td><div>--</div></td>';
 		   		}
-		   		result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
-		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
+		   
+		   		// from ELK ownerNames
+		   		if(null != report.ownerNames  &&  '' != report.ownerNames  && 'undefined' != report.ownerNames){
+					 result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
+				}
+		  		//from db ownerName
+		   		else if(null != report.ownerName && '' != report.ownerName && 'undefined' != report.ownerName){
+		   			result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+				}
 		   		
+		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		result = result + ' <td><div>';
 				result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
@@ -1244,6 +1240,29 @@ function preparedClientContactListFromElk(data){
 
 
 
+<!-- This script is for resending the invitation mail -->
+<script type="text/javascript"><%-- <jsp:include page="submissionTemplate.jsp" />	 --%>
+function resendClientSpocInvitation(spocUserId,orgSpocId,orgRelationId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(spocUserId != null && spocUserId != ""){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Client&orgRelationID="+orgRelationId, 
+			        success: function(result) {
+			        	$("#loading").removeAttr("style"); 
+			        	/* getVendorContactLists(); */
+			        	getVendorContactListsELK();
+			        	
+			        },
+			    });
+		 }
+	}
+  
+</script>
+
+
+
 
 <!-- Client list preparation from ELK result -->
 <script>
@@ -1268,7 +1287,6 @@ function preparedClientListFromElk(data){
 				{  
 		   		
 		   		var report = json[i];
-		   		numberOfContactsByOrgRelationId(report.orgRelationId);
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
 		   			location = report.country+", "+report.state+", "+report.city;
@@ -1279,12 +1297,12 @@ function preparedClientListFromElk(data){
 		   		}
 		   		
 		   		var pattern = new RegExp(/["'"]/g);
-		   		//var orgName = (report.orgName).replace(pattern, "\\'");
+		   		var orgName = (report.orgName).replace(pattern, "\\'");
 		   		
 		   		result = result +'<tr>';
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 		   			result = result +'<td>';
-		   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+		   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
 		   			result = result +'</div>';
 		   			result = result +'</td>';
 		   		'</sec:authorize>';
@@ -1324,7 +1342,9 @@ function preparedClientListFromElk(data){
 		   	}else{
 		   		result = result +'<td><div>---</div></td>';
 		   	}
-		   	result = result +'<td><div id="noOfContactsCount'+report.orgRelationId+'">---</div></td>';
+
+		   	result = result +'<td><div >'+report.noContacts+'</div></td>';
+
 		   	
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
@@ -2179,27 +2199,6 @@ $('#selector').delay(2000).fadeOut('slow');
 </script>
  -->
 
-
-<script type="text/javascript">	
-function numberOfContactsByOrgRelationId(orgRelationId){
-	
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/numberOfContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#noOfContactsCount'+orgRelationId).empty();
-        	$('#noOfContactsCount'+orgRelationId).append(data);
-        	
-        },
-        error: function(e){
-        }
-    });
-}
-</script>
-
-
 <script type="text/javascript">
 	function searchClient() {
 		var validationSettings = {
@@ -2244,6 +2243,7 @@ function numberOfContactsByOrgRelationId(orgRelationId){
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
+						document.getElementById("search_client").reset();
 						closePop();
 						preparedClientListFromElk(data);
 					},
@@ -2263,6 +2263,7 @@ function numberOfContactsByOrgRelationId(orgRelationId){
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
+						document.getElementById("search_client").reset();
 						closePop();
 						preparedClientContactListFromElk(data);
 					},

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHierarchyService {
@@ -22,10 +24,13 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	@Autowired
 	private  ProjectApproverHierarchyDao  projectApproverHierarchyDao;
 	
+	@Autowired
+	private CommonUtil commonUtil;	
 	
 	@Override
 	public ProjectApproverHierarchy saveProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy)
 			throws Exception {
+		projectApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 		return projectApproverHierarchyDao.saveProjectApproverHierarchy(projectApproverHierarchy);
 	}
 	
@@ -33,6 +38,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	@Override
 	public ProjectApproverHierarchy updateProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy)
 			throws Exception {
+		projectApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 		return projectApproverHierarchyDao.updateProjectApproverHierarchy(projectApproverHierarchy);
 	}
 
@@ -93,7 +99,8 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			    		ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
 				    	pah1.setProjectId(projects);
 				    	User approverUserId1 = new User();
-			    		approverUserId1.setId(Long.parseLong(jsonObj.getString("level1Manager")));
+				    	String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+			    		approverUserId1.setId(Long.parseLong(level1UserDetails[0]));
 				    	pah1.setApproverUserId(approverUserId1);
 				    	pah1.setLevel(1);
 				    	//ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);

@@ -54,12 +54,12 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
     
     @Autowired 
 	private ModulesService modulesService;
+    
+    @Autowired
+	EmployeesService employeesService;
 	
 	@Autowired 
 	private SourceleadActionsService sourceleadActionsService;
-	
-	@Autowired
-	private EmployeesService employeesService;
   
     /*@param
      * 
@@ -109,6 +109,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
 					  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
 	        			  userRole.setUserState(Status.ACTIVE);
 	        			  userRoleService.addUserRole(userRole);
+
 	        			  /*
                            * Update USER DB data as ElasticSearch Documents
                            */

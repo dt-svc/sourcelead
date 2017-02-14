@@ -97,10 +97,8 @@ public class AddElkRequirement {
 				requirementIndex.setReqCreatedBy(rs.getString("CREATED_BY"));
 				requirementIndex.setReqUpdatedBy(rs.getString("UPDATED_BY"));
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-				String reqcreatedDate = dateFormat.format(rs.getDate("CREATED_DATE"));
-				requirementIndex.setReqCreatedDate(reqcreatedDate);
-				String reqUpDatedDate = dateFormat.format(rs.getDate("CREATED_DATE"));
-				requirementIndex.setReqUpdatedDate(reqUpDatedDate);
+				requirementIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
+				requirementIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
 				requirementIndex.setIsTemplate(rs.getString("IS_Template"));
 				requirementIndex.setManagerUserId(rs.getString("MANAGER_USER_ID"));
 				ResultSet approverSet = getApproverUserDetails(Long.parseLong(rs.getString("ID")),conn);
@@ -180,7 +178,14 @@ public class AddElkRequirement {
 					requirementIndex.setManager(rs.getString("FIRST_NAME"));
 				}
 				requirementIndex.setPriority(rs.getString("PRIORITY"));
+				
+				if(null != rs.getString("RELEASED_BY") && null != rs.getString("RELEASED_BY")){
+					requirementIndex.setReleasedBy(rs.getString("RELEASED_BY"));
+				}
+				Integer numberOfApplicants = getNumberOfApplicants(rs.getString("ID"),conn,rs.getString("ORG_LOCATION_ID"));
+				requirementIndex.setNumberOfApplicants(numberOfApplicants.toString());
 				reqIndexList.add(requirementIndex);
+				
 			}
 			
 		}catch(Exception e){
@@ -198,13 +203,35 @@ public class AddElkRequirement {
 	}
 	
 	
+	private Integer getNumberOfApplicants(String requirementId, Connection conn, String orgLocationId) {
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		 Integer numberOfApplicant =0;
+		 try{
+			 String sql ="select count(*) from REQUIREMENT_SUBMISSION rs where rs.ORG_LOCATION_ID = ? and rs.REQUIREMENT_ID =?";
+				 ps = conn.prepareStatement(sql);
+				 ps.setLong(1, Long.parseLong(orgLocationId));
+				 ps.setLong(2, Long.parseLong(requirementId));
+				 rs = ps.executeQuery();
+				 while(rs.next()){
+					 numberOfApplicant = Integer.parseInt(rs.getString(1));
+				 }
+		 }catch(Exception e){
+			 e.printStackTrace();
+		 }
+//	     return rs;
+		return numberOfApplicant;
+		
+	}
+
+
 	private ResultSet getTeamDetails(long requirementId, Connection conn) {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		 try{
-			 DataSource dataSource = comboPooledDataSource();
+//			 DataSource dataSource = comboPooledDataSource();
 				String sql = "select * from REQUIREMENT_ASSIGN_TO reqAssaign INNER JOIN TEAM team on reqAssaign.TEAM_ID=team.ID where reqAssaign.REQUIREMENT_ID = ? ;";
-				 conn = dataSource.getConnection();
+//				 conn = dataSource.getConnection();
 				 ps = conn.prepareStatement(sql);
 				 ps.setLong(1, requirementId);
 				 rs = ps.executeQuery();
@@ -218,9 +245,9 @@ public class AddElkRequirement {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		 try{
-			 DataSource dataSource = comboPooledDataSource();
+//			 DataSource dataSource = comboPooledDataSource();
 				String sql = "select count(*) from REQUIREMENT_SUBMISSION rs where rs.REQUIREMENT_ID = ? and rs.ORG_LOCATION_ID = ?;";
-				 conn = dataSource.getConnection();
+//				 conn = dataSource.getConnection();
 				 ps = conn.prepareStatement(sql);
 				 ps.setLong(1, requirementId);
 				 ps.setString(2, orgLocationId);
@@ -236,9 +263,9 @@ public class AddElkRequirement {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		 try{
-			 DataSource dataSource = comboPooledDataSource();
+//			 DataSource dataSource = comboPooledDataSource();
 				String sql = "select * from REQUIREMENT_APPROVER_HIERARCHY rah where rah.REQUIREMENT_ID = ? ;";
-				 conn = dataSource.getConnection();
+//				 conn = dataSource.getConnection();
 				 ps = conn.prepareStatement(sql);
 				 ps.setLong(1, requirementId);
 				 rs = ps.executeQuery();
@@ -258,12 +285,12 @@ public class AddElkRequirement {
  * @return ResultSet
  */
 	private ResultSet getClientContactName(String orgLocId, String clientContactSql, Connection conn) {
-		DataSource dataSource = comboPooledDataSource();
+//		DataSource dataSource = comboPooledDataSource();
 		
 		PreparedStatement ps = null;
 		ResultSet rs = null ;
 		try {
-			conn = dataSource.getConnection();
+//			conn = dataSource.getConnection();
 			 ps = conn.prepareStatement(clientContactSql);
 			ps.setString(1, orgLocId);
 			rs = ps.executeQuery();
@@ -282,12 +309,12 @@ public class AddElkRequirement {
 	 */
 	private String getClientName(String location, Connection conn) {
 		
-		DataSource dataSource = comboPooledDataSource();
+//		DataSource dataSource = comboPooledDataSource();
         String orgName = null;
 		String sql = "SELECT org.ORG_NAME FROM sourcelead.ORG_LOCATIONS orgloc INNER JOIN ORG org on orgloc.ORG_ID=org.ID where orgloc.ID = ?;";
 		PreparedStatement ps = null;
 		try {
-			conn = dataSource.getConnection();
+//			conn = dataSource.getConnection();
 			 ps = conn.prepareStatement(sql);
 			ps.setString(1, location);
 			ResultSet rs = ps.executeQuery();
@@ -315,9 +342,9 @@ public class AddElkRequirement {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		 try{
-			 DataSource dataSource = comboPooledDataSource();
+//			 DataSource dataSource = comboPooledDataSource();
 				String sql = "select * from ORG_RELATIONS as orgrel where orgrel.ID = ?";
-				 conn = dataSource.getConnection();
+//				 conn = dataSource.getConnection();
 				 ps = conn.prepareStatement(sql);
 				 ps.setString(1, relationId);
 				 rs = ps.executeQuery();

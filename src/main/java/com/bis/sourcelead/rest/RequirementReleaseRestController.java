@@ -321,6 +321,8 @@ public class RequirementReleaseRestController {
 	public String releaseJobsToClientsOrVendors(@RequestParam(value = "requirementId", required = false) Long requirementId,
 												@RequestParam(value = "contactsIds", required = false) String contactsIds,
 			                                    @RequestParam(value="vendorIds", required=false) String vendorIds,
+			                                    @RequestParam(value = "isPublic", required = false) String isPublics,
+			                                    @RequestParam(value="isCrowdScourcing", required=false) String isCrowdScourcing,
 			                                    HttpServletRequest request) throws Exception {
 			
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -467,6 +469,29 @@ public class RequirementReleaseRestController {
 					}
 				}
 			}
+			
+			if(null != isPublics && !"".equalsIgnoreCase(isPublics)){
+				parentRequirement.setIsPublic(isPublics);
+			}
+			if(null != isCrowdScourcing && !"".equalsIgnoreCase(isCrowdScourcing)){
+				parentRequirement.setIsCrowdSourcing(isCrowdScourcing);
+			}
+			
+			if(null == parentRequirement.getReleasedBy()){
+				parentRequirement.setReleasedBy(loginUser.getId().toString());
+			}else{
+				List<Long> userId = new ArrayList<Long>();
+				for (String s : parentRequirement.getReleasedBy().split(",")){
+					userId.add(Long.parseLong(s));
+				 }
+				boolean flag = userId.contains(loginUser.getId());
+         		if(flag == false){
+         			StringBuilder releasedUser = new StringBuilder();
+    				releasedUser = releasedUser.append(",").append(loginUser.getId().toString());
+    				parentRequirement.setReleasedBy(parentRequirement.getReleasedBy()+releasedUser.toString());
+         		}
+			}
+			requirementService.addRequirement(parentRequirement);
 			
 			return "vendorsList";
 	}

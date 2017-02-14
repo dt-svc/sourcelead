@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,22 +10,18 @@ import java.util.Map;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -86,7 +81,7 @@ public class TaskServiceImpl implements TaskService{
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
-	 	String pattern = "dd-mm-yy";
+	 	String pattern = "dd-MM-yy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
        
@@ -151,6 +146,7 @@ public class TaskServiceImpl implements TaskService{
 		    	}
 		        task.setTaskStatus(Constants.TASK_STATUS_OPEN);
 		        task.setCreatedDate(commonUtil.currentDate());
+		        task.setUpdatedDate(commonUtil.currentDate());
      	        taskDao.saveTasks(task);
 				 //mail logic for users
      	        /*if(null != task.getAlertType() && !"".equalsIgnoreCase(task.getAlertType())){

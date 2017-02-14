@@ -1,11 +1,5 @@
 package com.bis.sourcelead.service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
-import org.json.JSONObject;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +11,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateSkills;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.util.CommonUtil;
 
 
@@ -46,7 +36,7 @@ public class CandidateSkillsServiceTest {
 		
 		private static final Logger logger = LoggerFactory.getLogger(CandidateSkillsServiceTest.class);
 		
-		@Test
+		/*@Test
 		public void storeCandidateSkills( ) throws Exception{
 			CandidateSkills candidateSkills = new CandidateSkills();
 			OrgLocations orgLocations = new OrgLocations();
@@ -103,7 +93,7 @@ public class CandidateSkillsServiceTest {
 			CandidateSkills candidateSkills = new CandidateSkills();
 			candidateSkills = candidateSkillsService.getCandidateSkillBySkillId(1l);
 			logger.info("getCandidateSkillBySkillId " + candidateSkills.getName());
-		}
+		}*/
 		
 		
 	}

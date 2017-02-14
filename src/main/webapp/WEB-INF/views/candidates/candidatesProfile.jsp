@@ -143,10 +143,10 @@ function editCandidate(candidateId){
 							
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_Space required">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="required validate_AlphaNumber validate_Space validate_length length1-100">';
 							result = result + '		          </div>';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							
@@ -154,11 +154,11 @@ function editCandidate(candidateId){
 							result = result + '		          <div class="col-md-6">';
 							
 							if(json.candidateType == 'Consultant'){
-							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email" readonly="true">';
+							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
 							}
 							
 							if(json.candidateType == 'Candidate'){
-								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email">';
+								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100>';
 								}
 							result = result + '</div>';
 							
@@ -258,10 +258,10 @@ function editCandidate(candidateId){
 			                
 			                result = result + '</div>';
 							
-			                result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
+			                result = result + '<input type="text" class="form-control input-sm" name="currentRate" id="currentRate" value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Type">';
+							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Per">';
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(json.currentRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.currentRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
@@ -293,10 +293,10 @@ function editCandidate(candidateId){
 			                
 			                result = result + '</div>';
 							
-							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
+							result = result + '<input type="text" class="form-control input-sm" name="expectedRate" id="expectedRate" value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="selct-picker" id="rateType" name="rateType" field-name="Rate Type">';
+							result = result + '<select class="selct-picker" id="expectedRateType" name="rateType" field-name="Rate Per">';
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.rateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
@@ -371,7 +371,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
-							result = result + '<button type="button"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
+							result = result + '<button type="button" id="update_candidate" onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
 							result = result + '<button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
@@ -714,20 +714,56 @@ function candidateProfile(candidateId){
 							result = result +'		  </ul>                                                                                                                                       ';
 							result = result +'		  <div class="tab-content">                                                                                                                   ';
 							result = result +'		    <div id="skills" class="tab-pane fade in active">                                                                                         ';
-							result = result +'		      <div class="skills-summary">                                                                                                            ';
+							result = result +'		      <div class="skills-summary positionRelative">                                                                                                            ';
 							result = result +'		        <div class="design-view">                                                                                                             ';
 							
 							result = result +'		          <!-- Select Skills -->                                                                                                              ';
 							
-							result = result +'		          <h2 class="education">Skills:</h2>                                                                                                  ';
-							result = result +'		          <div class="select-skills">                                                                                                         ';
-							result = result +'		            <div class="divskill col-md-12">                                                                                                  ';
+							result = result +'		          <h2 class="education  pull-left">Skills:</h2>                                                                                                  ';
+							if(window.candidateStatusGlobal == '0'){
+								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
+								result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
+
+							}else{
+								result = result +'		              <div class="addSkills clearfix pull-right mt10"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
+							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
+							}
+							result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
+							result = result +'		                    <div class="clearfix div-padding">                                                                                        ';
+							result = result +'		                      <div class="col-md-10">                                                                                                 ';
+							
+							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
+							<c:forEach var="skill" items="${skillsList}">
+					                var existed = 0;
+					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
+						                var res = [];
+						                res = json.skillsName.split(",");
+						                res.forEach(function(item) {
+						                	if('${skill.name}' == item){
+						                		result = result + ' <option  value="${skill.name}">${skill.name}</option>';
+						                		existed = 1;
+						                	}
+						                });
+					                }
+					                if(existed == 0){
+					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
+					                }
+			                </c:forEach>
+			                
+			                
+			                
+			                
+			                result = result + '</select>';
+							
+							result = result +'		                      </div> ';
+							result = result +'		          <div class="">                                                                                                         ';
+							result = result +'		            <div class="">                                                                                                  ';
 							result = result +'		              <!-- Add skills div -->                                                                                                         ';
 
 							/*result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="getAllSkills('+candidateId+'); removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';*/
 
 							
-							if(window.candidateStatusGlobal == '0'){
+							/* if(window.candidateStatusGlobal == '0'){
 								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
 								result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
 
@@ -745,9 +781,9 @@ function candidateProfile(candidateId){
 			                </c:forEach>
 			                result = result + '</select>';
 							
-							result = result +'		                      </div>                                                                                                                  ';
+							result = result +'		                      </div> '; */ 
 							result = result +'		                      <div class="col-md-2">                                                                                                  ';
-							result = result + '                              <button class="btn btn-sm btn-primary pull-right" type="submit" onClick="saveSkils('+candidateId+');" >Add</button>';
+							result = result + '                              <button class="btn btn-sm btn-primary pull-right mr" type="submit" onClick="saveSkils('+candidateId+');" >Add</button>';
 							result = result +'		                      </div>                                                                                                                  ';
 							result = result +'		                    </div>                                                                                                                    ';
 							result = result +'		                  </div>                                                                                                                      ';
@@ -757,14 +793,29 @@ function candidateProfile(candidateId){
 							
 							result = result + '<div class="clearfix"></div> ';
 							
-							result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> ';
+							result = result +'<div class="clearfix mt"></div>';
+							result = result +'<div class="append_skill ">';  
+							result = result +'<ul class="list-inline list-unstyled">';
+							if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
+								result = result + ' <li class="professinal-details"  value="${json.skillsName}">'+json.skillsName+'</li>'; 
+							}else{
+								result = result + ' <li class="professinal-details">NO DATA</li>';
+							}
+			               	
+			               
+							result = result +'</ul>'; 
+							result = result +'</div>';
+							result = result +'</div>';
+							
+							/* result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> '; */
 							
 							result = result +'		              <!-- Add skills div ends -->                                                                                                    ';
 							
-							result = result +'		             </div>       ';
-							result = result +'		          </div>                                                                                                                              ';
+							result = result +'</div> ';
+							result = result +'</div>                                                                                                                              ';
 							result = result +'		          <!-- Select Skills -->                                                                                                              ';
-							result = result +'		        </div>                                                                                                                                ';
+							
+							
 							
 							//Employee Div
 							result = result + '<div id="employeeSubmissionProfile"></div> '; 
@@ -902,6 +953,7 @@ function candidateProfile(candidateId){
 	               if(data != null && data != 'undefined' && data != ""){
 	            	   candidateSkillsList(candidateId);
 	            	   removeSkillPopUp(candidateId);
+	            	   candidateProfile(candidateId);
 	               }
 	        },
 	          
@@ -927,7 +979,15 @@ function removeSkillPopUp(candidateId){
 }
 </script>             
             
-   
+ <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
+  
 <%-- 
      @author : David Sammeta.
      this script is for upDate Candidate Details .
@@ -938,6 +998,24 @@ function removeSkillPopUp(candidateId){
 <script type="text/javascript">
 	function upDateCandidate(candidateId) {
 	
+		var expectedRate = document.getElementById("expectedRate").value; 
+		 if(expectedRate != null && expectedRate != ""){
+			 $('#expectedRateType').removeAttr('data-validation-optional');
+			 $('#expectedRateType').attr("data-validation","required"); 
+		 }else{
+		 $('#expectedRateType').removeAttr('data-validation');
+		 $('#expectedRateType').attr("data-validation-optional","true"); 
+		 }
+		 var currentRate = document.getElementById("currentRate").value; 
+			 if(currentRate != null && currentRate != ""){
+				
+				 $('#currentRateType').removeAttr('data-validation-optional');
+				 $('#currentRateType').attr("data-validation","required"); 
+			 }else{
+			 $('#currentRateType').removeAttr('data-validation');
+			 $('#currentRateType').attr("data-validation-optional","true"); 
+			 }
+			 
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -947,16 +1025,20 @@ function removeSkillPopUp(candidateId){
 		
 		
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			 
+			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
 			
 			 var con = JSON.stringify(frm);
-				 con = con.replace(/[{}]/g, "");
-				var jsonData = encodeURIComponent(con);
-				
+			 con = con.replace(/[{}]/g, "");
 				
 			  //It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
+			var jsonData = encodeURIComponent(con);
+			
+			var form = $('#candidateProfileEdit_form')[0];
+      		var formData = new FormData(form); 
+			
+			$("#update_candidate").attr("disabled", "disabled");
+			$("#update_candidate").addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
@@ -969,12 +1051,13 @@ function removeSkillPopUp(candidateId){
 		 }else{ 
 				return false;
 		 } 
+	}
 		 $('body').on('blur','#candidateProfileEdit_form',
 					function() {
 						$("#candidateProfileEdit_form").showHelpOnFocus();
 						$("#candidateProfileEdit_form").validateOnBlur(false,validationSettings);
-					});
-	} 
+			});
+	 
 </script>
 
 <script>

@@ -2,11 +2,14 @@ package com.bis.sourcelead.service;
 
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -134,7 +137,7 @@ public interface UserService  {
 	 */
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
 	
-	List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
+	LinkedHashSet<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
 	
 	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId)throws Exception;
 
@@ -143,10 +146,18 @@ public interface UserService  {
 	
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 	
-	public List<User> getUsersForAddAsConsultant(Org org,Long orgLocationsId) throws Exception;
+	/**
+	 * @author Prasad salina
+	 * @param currentApproverId
+	 * @param orgLocationsId
+	 * @param tabId
+	 * @return
+	 * @throws Exception
+	 * @Purpose to get level2 managers
+	 */
+	public List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId, Long orgLocationsId,Long tabId)throws Exception;
 	
-	public void saveOrUpdateUserElkDocument(UserRole userRole, Employees employee, String loginUserCode) throws Exception;
-
+	public List<User> getUsersForAddAsConsultant(Org org,Long orgLocationsId) throws Exception;
 	
 	public List<User> getUsersForConsultantsByUserRoleIdAndOrgLocationId(Long roleId,Long orgLocationsId) throws Exception;
 	
@@ -154,10 +165,12 @@ public interface UserService  {
 	
 	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId,Long userId,Long tabId) throws Exception;
 	
+	public void saveOrUpdateUserElkDocument(UserRole userRole, Employees employee, String loginUserCode) throws Exception;
+
 	public List<User> getUsersListByOrglocationId(Long orgLocationId) throws Exception;
 
 	List<UserIndex> getAllUniversalSearchUsersList(OrgLocations orgLocations, String searchValue, User user)throws Exception;
-	
+
 }	
 		
 	

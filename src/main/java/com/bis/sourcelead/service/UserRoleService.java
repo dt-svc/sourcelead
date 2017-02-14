@@ -62,6 +62,9 @@ public interface UserRoleService {
 	 */
 	public boolean isUserActive(Long userId) throws Exception;
 	
+	
+	public Boolean isUserAdmin(Long userId);
+	
 	//Prasad Salina to get managers list baded on role type
 	/*List<UserRole> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception;
 			
@@ -96,6 +99,8 @@ public interface UserRoleService {
 	 public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 	 
 	 public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
+	 
+	 public List<UserRole> getUsersListByUserId(Long userId) throws Exception;
 
 	 public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String wEEKLY) throws Exception;
 

@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.json.JSONObject;
 
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -26,9 +25,7 @@ public interface ProjectsService {
 		
 	    Projects getProjectById(Long id) throws Exception;
 		
-	    List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception;
-	    
-	    List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
+		List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
 		List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
 		
@@ -57,20 +54,27 @@ public interface ProjectsService {
 		List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
 		
 		List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
+		
+		List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long id, Long approverUserId);
+		
+	    List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception;   
 	
+		Projects getProjectDetailsUpdateByProjectId(Long projectId,User user,JSONObject jsonObj) throws Exception ;
+		
+		List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) throws Exception;
+
 		Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
 	
 		Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
 		
 		//HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 		
-		void  userEmailNotificationForTimeSheetSubmission(User user,Long locationsId, HashSet<TimesheetSubmissions> timesheetSubmissions,String level) throws Exception;
+		void  userEmailNotificationForTimeSheetSubmission(User user,Long locationsId, Map<String, String> timesheetFrequencyMap,Projects projects, String level) throws Exception;
 		
 		//HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 		
 		String getProjectDetailsByProjectIdAndLoginOrgId(Long projectId,User user,String loginOrgLocation) throws Exception ;
 	
-		String getProjectDetailsUpdateByProjectId(Long projectId,User user,JSONObject jsonObj) throws Exception ;
 	
 		String storeEmployeeInProjectDashboard(OrgLocations loginOrgLocation,User users,JSONObject jsonObj) throws Exception ;
 		 

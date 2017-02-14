@@ -32,7 +32,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
@@ -40,7 +39,6 @@ import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -79,8 +77,8 @@ public class MailBoxRestController {
 	@Autowired
 	private CommonUtil commonUtil;
 	
-	@Autowired
-	CandidateSkillsService candidateSkillsService;
+	/*@Autowired
+	CandidateSkillsService candidateSkillsService;*/
 	
 	@Autowired
 	UserService userService;
@@ -117,8 +115,7 @@ public class MailBoxRestController {
 		emails.toString();
 		
 		 String spocEmails =  emails.substring(0,emails.length()-1);
-		 System.out.println(spocEmails);
-		
+		 
 		return commonUtil.toJSON(spocEmails);
 	}
 	
@@ -462,14 +459,22 @@ public class MailBoxRestController {
 				for(Candidate candidate : candidatesList){
 					StringBuilder skills = new StringBuilder();
 					String candidateSkills = null;
-					List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
-					 if(skillsList.size() > 0){
-						 for(CandidateSkills skill : skillsList){
-							 skills.append(skill.getName()).append(", ");
+//					List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
+					String  skillsNames = candidate.getSkillsName();
+					if(null != skillsNames){
+						//List<String> skillsList = new ArrayList<String>(Arrays.asList(skillsNames.split(",")));
+						String [] skillsList = skillsNames.split(",");
+						if(skillsList.length > 0){
+							 for(String skill : skillsList){
+								 skills.append(skill).append(", ");
+							 }
+							 skills.toString();
+							 candidateSkills =  skills.substring(0,skills.length()-2);
 						 }
-						 skills.toString();
-						 candidateSkills =  skills.substring(0,skills.length()-2);
-					 }
+					
+					
+					}
+					
 					 
 					
 					 

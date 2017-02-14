@@ -52,8 +52,8 @@ public class ProjectMembers implements Serializable{
 	@JoinColumn(name="EMPLOYEE_ID", nullable=false )	
 	private Employees employee;
 	
-	@Column(name = "TIMESHEET_FREQUENCY")
-	private String timesheetFrequency;
+	/*@Column(name = "TIMESHEET_FREQUENCY")
+	private String timesheetFrequency;*/
 	
 	@Column(name = "PROJECT_ASSIGNED_DATE")
     private Date projectAssignedDate;
@@ -224,13 +224,13 @@ public class ProjectMembers implements Serializable{
 		this.employee = employee;
 	}
 
-	public String getTimesheetFrequency() {
+/*	public String getTimesheetFrequency() {
 		return timesheetFrequency;
 	}
 
 	public void setTimesheetFrequency(String timesheetFrequency) {
 		this.timesheetFrequency = timesheetFrequency;
-	}
+	}*/
 
 
 	public String getRole() {
