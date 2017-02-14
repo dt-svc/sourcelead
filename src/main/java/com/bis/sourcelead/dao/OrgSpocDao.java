@@ -78,4 +78,6 @@ public interface OrgSpocDao {
 	
 	Integer getAllVendorContactsCountbyOrgLocationId(Long orgId,String type,Long userId) throws Exception;
 
+	List<OrgSpoc> getOrgSpocByUserIdAndOrgLocationCode(Long userId, Long orgLocationId) throws Exception;
+	
 }

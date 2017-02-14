@@ -200,7 +200,7 @@ public class MailBoxController {
 	     maxResults = userMailBoxService.getMailBoxCountByUserIdAndOrgLocationid(user.getId(), orgLocations.getId(), type);
 	   
 	    try {
-	    	 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CAMPAIGN_INDEX, Constants.ELK_CAMPAIGN_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+	    	 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResultsForCampaigns(Constants.ELK_CAMPAIGN_INDEX, Constants.ELK_CAMPAIGN_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 	 	     if(null != searchHits && searchHits.length >0){
 	 	    	ObjectMapper mapper = new ObjectMapper();
 	 	    	for (SearchHit hit : searchHits) {

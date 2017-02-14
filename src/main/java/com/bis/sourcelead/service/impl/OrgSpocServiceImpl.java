@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -53,6 +54,9 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	private OrgLocationService orgLocationService;
 	
 	@Autowired
+	private CommonUtil commonUtil;
+	
+	@Autowired
     private SourceleadELKBaseIndexer<ClientVendorContactsIndex> sourceleadELKBaseIndexer;
 	
 
@@ -66,6 +70,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	@Override
 	public OrgSpoc addOrgSpoc(OrgSpoc orgSpoc) throws Exception {
 		
+		orgSpoc.setUpdatedDate(commonUtil.currentDate());
 		OrgSpoc orgSpocElk = orgSpocDao.addOrgSpoc(orgSpoc);
 		
 		 //Elastic Search Document Saving
@@ -640,6 +645,11 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	@Override
 	public OrgSpoc getSpocListByResponderLocationId(Long initiatingPartyOrgLocationId,Long responderLocationId,String respondingOrgType) throws Exception {
 		return orgSpocDao.getSpocListByResponderLocationId(initiatingPartyOrgLocationId,responderLocationId,respondingOrgType);
+	}
+
+	@Override
+	public List<OrgSpoc> getOrgSpocByUserIdAndOrgLocationCode(Long userId, Long orgLocationId) throws Exception {
+		return orgSpocDao.getOrgSpocByUserIdAndOrgLocationCode(userId,orgLocationId);
 	}
 	
 }

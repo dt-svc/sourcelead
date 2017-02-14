@@ -111,7 +111,7 @@ overflow-x: auto;
 			    <div class="cand-advsrch-popup" >
 			  <form:form id="projectlist_form" name="projectlist_form" >
 				
-					  <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
+					  <a href="javascript:void(0)" class="close-div" onClick="closePop(); clearKeys();"><i class="fa fa-close"></i></a>
 					  <div class="row">
 						   <div class="col-md-4">
 			                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
@@ -242,7 +242,7 @@ overflow-x: auto;
 					  <div class="row form-footer mt">
 						  <div class="pull-right mr">
 							   <input type="button" value="Search" id="search_project" onclick="searchProject();" class="btn btn-sm btn-primary"/>
-                               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
+                               <input type="button" value="Clear" onClick="clearKeys();" class="btn btn-sm btn-default ml10"/>
 						  </div>
 					  </div>
 				  
@@ -687,11 +687,38 @@ $(document).ready(function() {
 	function closePop(){
 		$("div.cand-advsrch-popup").hide();
 	}
+	function clearKeys(){
+		clearSearchKeys();
+	}
 	function openPop(){
 	  $("div.cand-advsrch-popup").toggle();
 	  
 	}
 </script>
+<script type="text/javascript">	
+	function clearSearchKeys(){
+	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	    $("#allKeywords").val('').trigger("chosen:updated");
+	    $("#excludeKeyWord").val('').trigger("chosen:updated");
+	    $("#projectIdAdvanced").val('').trigger("chosen:updated");
+	    $("#projectNameAdvanced").val('').trigger("chosen:updated");
+	    $("#projectManagerAdvanced").val('').trigger("chosen:updated");
+	    $("#invoiceFrequencyAdvanced").val('').trigger("chosen:updated");
+	    $("#clientsAdvanced").val('').trigger("chosen:updated");
+	    $("#statusAdvanced").val('').trigger("chosen:updated");
+	    $("#employeeNameAdvanced").val('').trigger("chosen:updated");
+	    $("#employeeEmailAdvanced").val('').trigger("chosen:updated");
+	    
+	    $("#projectStartDateAdvanced").val('');
+	    
+	    $("#anyOfKeyword").empty();
+	    $("#allKeywords").empty();
+	    $("#excludeKeyWord").empty();
+	    $("#projectIdAdvanced").empty();
+	    $("#projectNameAdvanced").empty();
+	}
+</script>
+
 <script type="text/javascript">	
 	function loadChosenScripts(){
 

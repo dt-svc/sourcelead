@@ -64,6 +64,16 @@ public interface UserRoleDao {
 	 * @throws Exception
 	 */
 	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception;
+	
+	
+	/**
+	 * this method is used for elastic search
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<UserRole> getUsersListByUserId(Long userId) throws Exception;
+
 
 	public UserRole getUserRoleByUserId(Long userId) throws Exception;
 	
