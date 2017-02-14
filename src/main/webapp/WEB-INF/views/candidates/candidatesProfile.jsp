@@ -150,26 +150,21 @@ function editCandidate(candidateId){
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6">';
-							
-							if(json.candidateType == 'Consultant'){
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6">';
+							if(json.candidateType = 'Candidate'){
+								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100>';
+							}
+							if(json.candidateType = 'Consultant'){
 							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
 							}
-							
-							if(json.candidateType == 'Candidate'){
-								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100>';
-								}
 							result = result + '</div>';
-							
-							
-					
 							
 							result = result + '<div class="col-md-6">';
 							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+mobilePhone+'" placeholder="Mobile" field-name="Mobile" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">';
 							result = result + '</div>';
 							
-							result = result + '</div>';
+							result = result + '</div>'; 
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
@@ -793,6 +788,16 @@ function candidateProfile(candidateId){
 							
 							result = result + '<div class="clearfix"></div> ';
 							
+							
+							
+							/* result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> '; */
+							
+							result = result +'		              <!-- Add skills div ends -->                                                                                                    ';
+							
+							result = result +'</div> ';
+							result = result +'</div>                                                                                                                              ';
+							result = result +'		          <!-- Select Skills -->                                                                                                              ';
+							
 							result = result +'<div class="clearfix mt"></div>';
 							result = result +'<div class="append_skill ">';  
 							result = result +'<ul class="list-inline list-unstyled">';
@@ -805,17 +810,7 @@ function candidateProfile(candidateId){
 			               
 							result = result +'</ul>'; 
 							result = result +'</div>';
-							result = result +'</div>';
-							
-							/* result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> '; */
-							
-							result = result +'		              <!-- Add skills div ends -->                                                                                                    ';
-							
-							result = result +'</div> ';
-							result = result +'</div>                                                                                                                              ';
-							result = result +'		          <!-- Select Skills -->                                                                                                              ';
-							
-							
+							result = result +'		        </div>';
 							
 							//Employee Div
 							result = result + '<div id="employeeSubmissionProfile"></div> '; 
