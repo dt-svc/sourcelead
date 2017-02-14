@@ -48,11 +48,11 @@
                     </c:if>
 	                <c:if test="${userTabs.tabName == 'Requirement'}"> 
 	                <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> 
-	                   <li class="${sessionData.nav == 'Requirement' ? 'side-nav-active' : ''}"><a href="<c:url value='/requirementList'/>" title="Requirement"><span><i class="fa fa-briefcase"></i></span>Requirement</a></li>
+	                   <li class="${sessionData.nav == 'Requirement' ? 'side-nav-active' : ''}"><a href="<c:url value='/requirementList'/>" title="Requirement"><span><i class="fa fa-briefcase"></i></span>Requirements</a></li>
 	                </c:if> 
 	                
 	                <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER' }">
-	                 <li class="${sessionData.nav == 'Requirement' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalRequirements'/>" title="Requirement"><span><i class="fa fa-briefcase"></i></span>Requirement</a></li>
+	                 <li class="${sessionData.nav == 'Requirement' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalRequirements'/>" title="Requirement"><span><i class="fa fa-briefcase"></i></span>Requirements</a></li>
 	                </c:if>
 	                </c:if>
 	                
