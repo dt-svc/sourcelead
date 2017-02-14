@@ -2,7 +2,6 @@ package com.bis.sourcelead.elk.index.helper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -16,11 +15,7 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementApproverHierarchy;
-import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
@@ -53,6 +48,7 @@ public class RequirementHelper {
 			requirementIndex.setOrgLocationId(requirement.getOrgLocationId().getId());
 			requirementIndex.setJobTitle(requirement.getJobTitle());
 			requirementIndex.setJobType(requirement.getJobType());
+			requirementIndex.setOtherJobType(requirement.getOtherJobType());
 			if (requirement.getRate() !=null && !"".equalsIgnoreCase(requirement.getRate())) {
 				requirementIndex.setRate(Float.parseFloat(requirement.getRate()));
 			}
