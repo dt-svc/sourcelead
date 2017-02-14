@@ -99,6 +99,8 @@ public interface UserRoleService {
 	 public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 	 
 	 public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
+	 
+	 public List<UserRole> getUsersListByUserId(Long userId) throws Exception;
 
 	 public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String wEEKLY) throws Exception;
 

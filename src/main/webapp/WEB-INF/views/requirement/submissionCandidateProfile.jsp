@@ -28,8 +28,11 @@ function getCandidateProfile(candidateId){
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
-							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
-							
+							if(json.summary != null && json.summary !='' && json.summary != 'undefined'){
+							result = result +'<textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
+							}else{
+								result = result +'<textarea placeholder="Enter description" readonly>NO DATA</textarea>';
+							}
 						    result = result +'<div class="clearfix mt dashboard-widget req-profile">';
 							result = result +'<ul class="nav nav-tabs">';
 							result = result +' <li class="active"><a data-toggle="tab" href="#skills">General View</a></li>';
@@ -45,7 +48,23 @@ function getCandidateProfile(candidateId){
 							    result = result +'      <h2 class="education">Skills:</h2>';
 							    result = result +'      <div class="select-skills">';
 							    result = result +'       <div class="divskill col-md-12"> ';
-							    result = result + '<div id="candidateSkillList"></div> '; 
+							    
+							    
+							    result = result +'<div class="clearfix mt"></div>';
+								result = result +'<div class="append_skill ">';  
+								result = result +'<ul class="list-inline list-unstyled">';
+								if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
+									result = result + ' <li class="professinal-details"  value="${json.skillsName}">'+json.skillsName+'</li>'; 
+								}else{
+									result = result + ' <li class="professinal-details">NO DATA</li>';
+								}
+				               	
+				               
+								result = result +'</ul>'; 
+								result = result +'</div>';
+								result = result +'		        </div>';
+							    
+							   /*  result = result + '<div id="candidateSkillList"></div> ';  */
 								result = result +'           </div>';
 								result = result +'          </div>';
 								result = result +'        </div>';

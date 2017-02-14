@@ -1,10 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,10 +37,8 @@ import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -79,8 +75,6 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -164,12 +158,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
 		logger.debug("In ProjectsServiceImpl class saveProject method...");
+		projects.setUpdatedDate(commonUtil.currentDate());
 		return projectsDao.saveProject(projects);
 	}
 
 	@Override
 	public Projects updateProject(Projects projects) throws Exception {
 		logger.debug("In ProjectsServiceImpl class updateProject method...");
+		projects.setUpdatedDate(commonUtil.currentDate());
 		return projectsDao.updateProject(projects);
 	}
 
@@ -953,8 +949,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    					ProjectMembers pm = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUserId, projects.getId());
 				    				if(pm.getId() != null){
 				    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
-				    					projectMembersHistory.setProjectTerminationDate(currentDate);
-				    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+				    					if(projectMembersHistory != null){
+				    						projectMembersHistory.setProjectTerminationDate(currentDate);
+					    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+				    					}
 					    				commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
 				    				}
 				    				 

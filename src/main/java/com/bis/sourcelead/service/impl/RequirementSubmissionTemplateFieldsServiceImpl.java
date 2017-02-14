@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * 
@@ -24,10 +25,14 @@ public class RequirementSubmissionTemplateFieldsServiceImpl implements Requireme
 	@Autowired
 	private RequirementSubmissionTemplateFieldsDao requirementSubmissionTemplateFieldsDao;
 
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	@Override
 	public RequirementSubmissionTemplateFields storeRequirementSubmissionTemplateFields(
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields) throws Exception {
 		logger.debug("In RequirementSubmissionTemplateFieldsServiceImpl class saveProject method...");
+		requirementSubmissionTemplateFields.setUpdatedDate(commonUtil.currentDate());
 		return requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(requirementSubmissionTemplateFields);
 	}
 
