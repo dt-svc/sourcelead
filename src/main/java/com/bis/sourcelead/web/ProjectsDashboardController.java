@@ -84,7 +84,17 @@ public class ProjectsDashboardController {
         
         List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
         for(OrgRelations orgRelations:orgClientList){
-        	orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
+        	//orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
+        	if(null != orgRelations.getLocationId() && orgRelations.getLocationId().getId() != null && orgRelations.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+				if(orgRelations.getResponderLocationId() != null){
+					orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
+				}
+			}
+			if(null != orgRelations.getResponderLocationId() && null != orgRelations.getResponderLocationId().getId() && orgRelations.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+				if(orgRelations.getLocationId() != null){
+					orgRelations.setClientName(orgRelations.getLocationId().getOrg().getOrgName());
+				}
+			}
         }
         model.addObject("add_client", orgClientList);
         model.addObject(orgClientList);

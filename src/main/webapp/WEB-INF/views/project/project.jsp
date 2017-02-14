@@ -161,7 +161,8 @@
 														<div class="form-group" id="descriptionDiv">
 															<label class="col-md-3">Description</label>
 															<div class="col-md-9">
-																<textarea class="form-control" placeholder="Enter Task Description" id="taskDescription" name="taskDescription"></textarea>
+																<textarea class="form-control" placeholder="Enter Task Description" data-validation="validate_length length10-5000"
+									data-validation-optional="true" id="taskDescription" name="taskDescription"></textarea>
 															</div>
 														</div>
 													</div>

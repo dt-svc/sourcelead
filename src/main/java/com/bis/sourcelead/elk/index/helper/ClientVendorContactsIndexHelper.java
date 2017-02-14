@@ -2,6 +2,8 @@ package com.bis.sourcelead.elk.index.helper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
@@ -32,6 +34,9 @@ public class ClientVendorContactsIndexHelper {
 			clientVendorContactsIndex.setSpocUserId(orgSpoc.getSpocUser().getId());
 			clientVendorContactsIndex.setStatus(orgSpoc.getStatus());
 			User ownerUser = userService.getUserById(orgSpoc.getOwnerUser().getId());
+			
+			clientVendorContactsIndex.setCreatedDate(Constants.DF_YMD.format(orgSpoc.getCreatedDate()));
+			clientVendorContactsIndex.setUpdatedDate(Constants.DF_YMD.format(orgSpoc.getUpdatedDate()));
 			
 			
 			if(null != ownerUser){

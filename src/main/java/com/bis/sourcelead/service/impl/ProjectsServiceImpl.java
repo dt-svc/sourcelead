@@ -493,9 +493,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
 			    	 projects.setEmployeeEndDateStr(Constants.DF_YMD.format(projects.getEndDate()));
 			    }
-			    if(projects.getOrgRelationId()!=null) {
-	                projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
-	            }
+			    
+			    if(null != projects.getOrgRelationId()){
+					if(null != projects.getOrgRelationId().getLocationId() && projects.getOrgRelationId().getLocationId().getId().longValue() == orgLocationsId.longValue()){
+						projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+					}if(null != projects.getOrgRelationId().getResponderLocationId() && projects.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocationsId.longValue()){
+						projects.setClient(projects.getOrgRelationId().getLocationId().getOrg().getOrgName());
+					}
+				}
+			    
 			    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
 			    	StringBuilder projectStringBuilder=new StringBuilder();
@@ -547,7 +553,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}*/
 
 	@Override
-	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,HashSet<TimesheetSubmissions> timesheetSubmissions,String level) throws Exception {
+	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,Map<String, String> timesheetFrequencyMap,Projects projects,String level) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(locationsId);
 		
 		Set<Projects> projectsSet = new HashSet<>();
@@ -563,19 +569,19 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
-		 globalVarsMap.put("administratorFirstName", user.getFirstName());
-		 globalVarsMap.put("administratorLastName",user.getLastName());
+		 globalVarsMap.put("administratorFirstName", "SourceLead");
+		 globalVarsMap.put("administratorLastName","Admin");
 		 globalVarsMap.put("role",user.getUserType());
 		 globalVarsMap.put("userEmailId",user.getEmail()); //
 		 LinkedList<String> frequency = new LinkedList<>();
 		 StringBuilder tempHTML = new StringBuilder();
 		 tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
-			tempHTML.append("<tr>");
+			        tempHTML.append("<tr>");
 					tempHTML.append("<th> Project Name </th>");
 					tempHTML.append("<th> Frequency </th>");
 					tempHTML.append("</tr>");
 		
-			if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
+			/*if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
 				 for(TimesheetSubmissions ts :timesheetSubmissions){
 					 tempHTML.append("<tr>");
 					 tempHTML.append("<td>").append(ts.getProjectMembers().getProjects().getProjectName()).append("</td>").toString();
@@ -583,7 +589,20 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 tempHTML.append("</tr>");
 					 projectsSet.add(ts.getProjectMembers().getProjects());
 				 }
+			}*/
+					
+			if(timesheetFrequencyMap != null && !timesheetFrequencyMap.isEmpty()){
+				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
+					    String key = entry.getKey();
+					    String value =entry.getValue();
+				    	 tempHTML.append("<tr>");
+						 tempHTML.append("<td>").append(projects.getProjectName()).append("</td>").toString();
+						 tempHTML.append("<td>").append(key.replaceAll("/", "-")).append(" To ").append(value.replaceAll("/", "-")).append("</td>").toString();
+						 tempHTML.append("</tr>");
+						 projectsSet.add(projects);
+				}
 			}
+			
 			
 	     tempHTML.append("</table> ");
 		 globalVarsMap.put("weekFrequency",tempHTML.toString());
@@ -772,14 +791,28 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    String[] clientList = new String[orgClientList.size()];
 	    int j = 0;
 		for(OrgRelations ocl :orgClientList){
-			if(projects.getOrgRelationId() !=null){
-				if(projects.getOrgRelationId().getId().equals(ocl.getId())){
+			if(null != projects.getOrgRelationId()){
+				if(projects.getOrgRelationId().getId().equals(ocl.getId()) && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 					projects.setRelationId(ocl.getId());
 					projects.setClient(ocl.getResponderLocationId().getOrg().getOrgName());
+				}if(projects.getOrgRelationId().getId().equals(ocl.getId()) && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+					projects.setRelationId(ocl.getId());
+					projects.setClient(ocl.getLocationId().getOrg().getOrgName());
 				}
 			}
-			StringBuilder approverHierarchiesSB=new StringBuilder();
-			clientList[j] = approverHierarchiesSB.append(ocl.getResponderLocationId().getOrg().getOrgName()).append("&").append(ocl.getId()).toString();
+			
+			if(null != ocl.getLocationId() && null != ocl.getLocationId().getId() && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+				if(null != ocl.getResponderLocationId()){
+					StringBuilder approverHierarchiesSB=new StringBuilder();
+					clientList[j] = approverHierarchiesSB.append(ocl.getResponderLocationId().getOrg().getOrgName()).append("&").append(ocl.getId()).toString();
+				}
+			}
+			if(null != ocl.getResponderLocationId() && null != ocl.getResponderLocationId().getId() && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+				if(null != ocl.getLocationId()){
+					StringBuilder approverHierarchiesSB=new StringBuilder();
+					clientList[j] = approverHierarchiesSB.append(ocl.getLocationId().getOrg().getOrgName()).append("&").append(ocl.getId()).toString();
+				}
+			}
 			j++;
 		 }
 		projects.setClientName(clientList);
@@ -1832,10 +1865,10 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			public void saveOrUpdateProjectElkDocument(Projects projects) throws Exception{
 				List<ProjectApproverHierarchy> projectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectId(projects.getId());
 				Collection<ProjectMembers> projectMembers = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
-				
+;				Projects updatedProject = getProjectById(projects.getId());
 				 //Elastic Search Document Saving
-				ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, projectApproverHierarchy, projectMembers);
-				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
+				ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(updatedProject, projectApproverHierarchy, projectMembers);
+				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,updatedProject.getId().toString());
 			}
 			
 			@Override

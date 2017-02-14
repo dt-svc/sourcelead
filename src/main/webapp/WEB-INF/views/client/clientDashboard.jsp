@@ -1173,9 +1173,17 @@ function preparedClientContactListFromElk(data){
 		   		}else{
 		   			result = result +'<td><div>--</div></td>';
 		   		}
-		   		result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
-		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
+		   
+		   		// from ELK ownerNames
+		   		if(null != report.ownerNames  &&  '' != report.ownerNames  && 'undefined' != report.ownerNames){
+					 result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
+				}
+		  		//from db ownerName
+		   		else if(null != report.ownerName && '' != report.ownerName && 'undefined' != report.ownerName){
+		   			result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+				}
 		   		
+		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		result = result + ' <td><div>';
 				result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
@@ -1241,6 +1249,29 @@ function preparedClientContactListFromElk(data){
 			    
    }
 </script> 
+
+
+
+<!-- This script is for resending the invitation mail -->
+<script type="text/javascript"><%-- <jsp:include page="submissionTemplate.jsp" />	 --%>
+function resendClientSpocInvitation(spocUserId,orgSpocId,orgRelationId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(spocUserId != null && spocUserId != ""){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Client&orgRelationID="+orgRelationId, 
+			        success: function(result) {
+			        	$("#loading").removeAttr("style"); 
+			        	/* getVendorContactLists(); */
+			        	getVendorContactListsELK();
+			        	
+			        },
+			    });
+		 }
+	}
+  
+</script>
 
 
 
@@ -2224,6 +2255,7 @@ $('#selector').delay(2000).fadeOut('slow');
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
+						document.getElementById("search_client").reset();
 						closePop();
 						preparedClientListFromElk(data);
 					},
@@ -2243,6 +2275,7 @@ $('#selector').delay(2000).fadeOut('slow');
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
+						document.getElementById("search_client").reset();
 						closePop();
 						preparedClientContactListFromElk(data);
 					},
