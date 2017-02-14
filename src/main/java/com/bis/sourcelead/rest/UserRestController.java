@@ -362,11 +362,12 @@ public class UserRestController {
 				 * Update USER DB data as ElasticSearch Documents
 				 */
 	 			  UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-    			  Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
-    			  if(null != employee){
-    				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
-    			  }
-
+	 			  if(null != userRole){
+	 				 Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
+	    			  if(null != employee){
+	    				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
+	    			  }
+	 			  }
 	 		}
 		
 	 	  return "success";

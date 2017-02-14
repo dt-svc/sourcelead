@@ -8,12 +8,16 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.RequirementRateSubmissionNegotiationDao;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class RequirementRateSubmissionNegotiationServiceImpl implements RequirementRateSubmissionNegotiationService{
 
 	@Autowired
 	RequirementRateSubmissionNegotiationDao requirementRateSubmissionNegotiationDao;
+	
+	@Autowired
+	 private CommonUtil commonUtil;
 	
 	/*@Override
 	public void saveRateNegotiation(RequirementRateSubmissionNegotiation rateNegotiation) {
@@ -34,6 +38,7 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 	
 	@Override
 	public void saveRateNegotiation(RequirementRateSubmissionNegotiation rateNegotiation) {
+		rateNegotiation.setUpdatedDate(commonUtil.currentDate());
 		requirementRateSubmissionNegotiationDao.saveRateNegotiation(rateNegotiation);		
 	}
 	

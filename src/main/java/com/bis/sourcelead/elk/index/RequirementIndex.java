@@ -1,13 +1,5 @@
 package com.bis.sourcelead.elk.index;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
-
-import com.itextpdf.text.ListItem;
-
 /**
  * 
  * @author Rajashekar and Prasanna
@@ -85,7 +77,7 @@ public class RequirementIndex {
 	
 	private String releasedBy;
 	
-	
+	private String otherJobType;
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -371,6 +363,12 @@ public class RequirementIndex {
 		this.releasedBy = releasedBy;
 	}
 
-	
-	
+	public String getOtherJobType() {
+		return otherJobType;
+	}
+
+	public void setOtherJobType(String otherJobType) {
+		this.otherJobType = otherJobType;
+	}
+
 }
