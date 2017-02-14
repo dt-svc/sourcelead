@@ -59,9 +59,7 @@ public class ProfessionalProfileController {
 		public String getProfessionalInfo(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,HttpServletRequest request) throws Exception {
 		        String resultJson;
 		        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		        
-		        List<Candidate> candidate =	candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(loginUser.getId(), candidateStatus);
-		        
+		        Candidate candidate =	candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(loginUser.getId(), candidateStatus);
 		        resultJson = commonUtil.toJSON(candidate);
 				return resultJson;
 	}

@@ -542,7 +542,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public List<Candidate> getProfessionalInfoByLoginUserIdAndCandidateType(Long userId, String candidateType) throws Exception {
+	public Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId, String candidateType) throws Exception {
 		return candidateDao.getProfessionalInfoByLoginUserIdAndCandidateType(userId,candidateType);
 	}
 	

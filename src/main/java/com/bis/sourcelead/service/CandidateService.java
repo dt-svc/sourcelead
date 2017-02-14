@@ -104,6 +104,6 @@ public interface CandidateService {
 
 	List<Object> getAllUniversalSearchCandidateList(OrgLocations orgLocation, String searchValue) throws Exception;
 
-	List<Candidate> getProfessionalInfoByLoginUserIdAndCandidateType(Long userId,String candidateType) throws Exception;
+	Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId,String candidateType) throws Exception;
 	
 }

@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -477,11 +478,15 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getProfessionalInfoByLoginUserIdAndCandidateType(Long userId, String candidateType) throws Exception {
+	public Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId, String candidateType) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate  where candidate.consultantUser =:userId and candidate.candidateType =:candidateType ";  
 		List<Candidate> candidateList =  session.createQuery(query).setLong("userId", userId).setString("candidateType", candidateType).setCacheable(true).list();
-		return  candidateList;
+		Candidate candidate = null;
+		if (candidateList != null && candidateList.size() > 0) {
+			candidate = (Candidate) candidateList.iterator().next();
+		}
+		return candidate;
 	}
 
 	

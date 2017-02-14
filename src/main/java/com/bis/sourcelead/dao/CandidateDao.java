@@ -40,6 +40,6 @@ public interface CandidateDao {
 
 	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId,Integer datRange)throws Exception;
 	
-	List<Candidate> getProfessionalInfoByLoginUserIdAndCandidateType(Long userId,String candidateType) throws Exception;
+	Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId,String candidateType) throws Exception;
 
 }
