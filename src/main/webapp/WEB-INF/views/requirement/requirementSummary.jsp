@@ -3523,11 +3523,11 @@ function getActions(){
 <script>
 var candidateStatusGlobal ="";
 function clientSideBar(candidateId){
-	  var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-           success :function(data) {  
+           success :function(data) { 
                 if(data != null && data != 'undefined' && data != ""){  
                 	 var json = JSON.parse(data);
               		 if( data.indexOf('Sign In') >= 0){
@@ -3539,9 +3539,9 @@ function clientSideBar(candidateId){
               		 else{
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
-	                	 var skillsList = json.skillsList;
+	                	/*  var skillsList = json.skillsList;
 			             var skills = [];
-			             skills = skillsList.split(",");
+			             skills = skillsList.split(","); */
 			             
 			             var country = '';
 				         var state = '';
@@ -3657,11 +3657,11 @@ function clientSideBar(candidateId){
 			             
 			            
 			             result = result+'<ul class="list-inline list-unstyled">';
-			             if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
-			             for (i=0;i < skills.length;i++)
-			             {
-			            	 result = result+'<li>'+skills[i]+'</li>';
-			             }
+			             if(json.skillsName != null && json.skillsName != '' && json.skillsName != 'undefined'){
+			            // for (i=0;i < skills.length;i++)
+			            // {
+			            	 result = result+'<li>'+json.skillsName+'</li>';
+			            // }
 			             }
 			             result = result+'</ul>';
 			             

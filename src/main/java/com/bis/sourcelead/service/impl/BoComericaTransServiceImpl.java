@@ -9,12 +9,16 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.BoComericaTransDao;
 import com.bis.sourcelead.entity.BoComericaTrans;
 import com.bis.sourcelead.service.BoComericaTransService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class BoComericaTransServiceImpl implements BoComericaTransService{
 
 	@Autowired
 	BoComericaTransDao boComericaTransDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Override
 	public BoComericaTrans getBoComericaTransById(Long Id) throws Exception {
@@ -33,6 +37,7 @@ public class BoComericaTransServiceImpl implements BoComericaTransService{
 
 	@Override
 	public BoComericaTrans saveBoComericaTrans(BoComericaTrans boComericaTrans) throws Exception {
+		boComericaTrans.setUpdatedDate(commonUtil.currentDate());
 		return boComericaTransDao.saveBoComericaTrans(boComericaTrans);
 	}
 

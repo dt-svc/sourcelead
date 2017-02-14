@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -34,6 +35,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 
 	@Override
 	public OrgLocations updateOrgLocations(OrgLocations orgLocations) throws Exception {
+		orgLocations.setUpdatedDate(commonUtil.currentDate());
 		return orgLocationsDao.updateOrgLocations(orgLocations);
 	}
 

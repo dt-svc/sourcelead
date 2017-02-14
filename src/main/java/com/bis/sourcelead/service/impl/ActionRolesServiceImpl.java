@@ -11,6 +11,7 @@ import com.bis.sourcelead.dao.ActionRolesDao;
 import com.bis.sourcelead.entity.ActionRoles;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.service.ActionRolesService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class ActionRolesServiceImpl implements ActionRolesService{
@@ -20,9 +21,13 @@ public class ActionRolesServiceImpl implements ActionRolesService{
 	@Autowired
 	private ActionRolesDao actionRolesDao;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	@Override
 	public ActionRoles addActionRoles(ActionRoles actionRoles) throws Exception {
 		logger.debug("In ActionRolesService class...");
+		actionRoles.setUpdatedDate(commonUtil.currentDate());
 		return actionRolesDao.addActionRoles(actionRoles);
 	}
 

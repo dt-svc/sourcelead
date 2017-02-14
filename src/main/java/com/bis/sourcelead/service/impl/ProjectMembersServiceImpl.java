@@ -97,12 +97,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public ProjectMembers saveProjectMember(ProjectMembers projectMembers) throws Exception{
 		logger.debug("In ProjectMembersServiceImpl class saveProjectMember method");
+		projectMembers.setUpdatedDate(commonUtil.currentDate());
 		return projectMembersDao.saveProjectMember(projectMembers);
 	}
 
 	@Override
 	public ProjectMembers updateProjectMember(ProjectMembers projectMembers) throws Exception {
 		logger.debug("In ProjectMembersServiceImpl class updateProjectMember method...");
+		projectMembers.setUpdatedDate(commonUtil.currentDate());
 		return projectMembersDao.updateProjectMember(projectMembers);
 	}
 
@@ -158,7 +160,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId, Long projectId) throws Exception {
-		// TODO Auto-generated method stub
 		return projectMembersDao.getProjectMemberByUserIdAndProjectId(userId,projectId);
 	}
 	
