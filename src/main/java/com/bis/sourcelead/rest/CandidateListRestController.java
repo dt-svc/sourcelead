@@ -15,10 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +28,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -57,15 +54,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateSkills;
-import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
@@ -103,8 +97,8 @@ public class CandidateListRestController {
 	 CandidateService candidateService;
 	 
 	 
-	 @Autowired
-	 CandidateSkillsService candidateSkillsService;
+	/* @Autowired
+	 CandidateSkillsService candidateSkillsService;*/
 	 
 	 @Autowired	
 	 LookUpDataService lookUpDataService;
@@ -468,14 +462,23 @@ public class CandidateListRestController {
 				
 				
 				//CandidateSkills
-				ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "candidateSkills");
+				/*ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "candidateSkills");
 				if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
 					BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : candidateSkillsArray){
 						skillBoolQueryBuilder.should(QueryBuilders.matchQuery("skills", keywd));
 					}
 					boolQueryBuilder.must(skillBoolQueryBuilder);
-				} 
+				} */
+				
+				ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "candidateSkills");
+				if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
+					BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : candidateSkillsArray){
+						skillBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("skillsName", keywd));
+					}
+					boolQueryBuilder.must(skillBoolQueryBuilder);
+				}
 				
 				
 				List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
@@ -546,7 +549,7 @@ public class CandidateListRestController {
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRateCurrencey", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("skillsName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
@@ -605,22 +608,7 @@ public class CandidateListRestController {
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 			String resultJson ="" ;
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-			if(null != can){
-			StringBuilder skillsList = new StringBuilder();
-			List<CandidateSkills> candidateSkills = candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
-			int i = 0;
-			for(CandidateSkills skilss: candidateSkills){
-				if(i <= 5){
-					skillsList = skillsList.append(skilss.getName());
-					if(i != candidateSkills.size()-1){
-						skillsList = skillsList.append(",");
-					}
-				}
-				i++;
-			}
-			can.setSkillsList(skillsList.toString());
 			resultJson = commonUtil.toJSON(can);
-			}
 			return resultJson;
      }
 			 
@@ -662,7 +650,12 @@ public class CandidateListRestController {
 		* 
 		* @throws NullPointerException
 		*/
-	  @RequestMapping(value = "/getCandidatesSkillsBycandidateID")
+	 
+	 
+	 // Skills Save In Candidates table Not In CandidateSkills Table
+	 
+	 
+	 /* @RequestMapping(value = "/getCandidatesSkillsBycandidateID")
 	  public String getCandidatesSkillsBycandidateID(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 	
 			String resultJson;
@@ -691,35 +684,27 @@ public class CandidateListRestController {
 	   public String saveSkilsBycandidateID(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="skillName", required=false) String  skillName,HttpServletRequest request) throws Exception {
 
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			String resultJson;
 			
-			String[] skills = skillName.split(",");
+			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 			
-   
-			//skills = new HashSet<String>(Arrays.asList(skills)).toArray(new String[0]);
-			
-			
-			for(String skill   : skills){
-				
-				CandidateSkills candidateSkills2 = candidateSkillsService.getSkillsByCandidateIdSkillName(candidateId, skill);
-			    if(candidateSkills2 == null ){
-						CandidateSkills cs = new CandidateSkills();
-						Candidate  candidate =  candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
-						cs.setCandidateId(candidate);
-						cs.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
-						cs.setOrgLocationID(loginOrgLocation);
-						cs.setName(skill);
-						List<String> skillList = Arrays.asList(skills);
-						lookUpDataService.getSkillsBySkillsName(skillList);
-						candidateSkillsService.storeCandidateSkills(cs);
-				 }
+			if(null != can && null != can.getSkillsName()){
+				StringBuilder candidateSkill = new StringBuilder();
+				can.setSkillsName(candidateSkill.append(can.getSkillsName()).append(",").append(skillName).toString());
+				candidateService.saveOrUpdateCandidate(can);
+				candidateService.saveOrUpdateCandidateElkDocument(can);
+			}else if(null != can){
+				can.setSkillsName(skillName);
+				candidateService.saveOrUpdateCandidate(can);
+				candidateService.saveOrUpdateCandidateElkDocument(can);
 			}
 			return "success";
-			
 		 }
 	   
+	   // Skills Save In Candidates table Not In CandidateSkills Table
 	   
-	   @RequestMapping(value = "/getSkillsExcludeExistingSkills")
+	   /*@RequestMapping(value = "/getSkillsExcludeExistingSkills")
 	   public String getSkillsExcludeExistingSkills(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -729,7 +714,7 @@ public class CandidateListRestController {
 				List<LookUpData> skills = lookUpDataService.getSkillsBySkillsName(candidateSkillNames);
 				resultJson = commonUtil.toJSON(skills);
 				return resultJson;
-		 }
+		 }*/
 	   
 	   
 	   /**
@@ -743,7 +728,9 @@ public class CandidateListRestController {
 		 * 
 		 * @throws NullPointerException
 		 */
-	   @RequestMapping(value = "/removeSkillBySkillId")
+	   // Skills Save In Candidates table Not In CandidateSkills Table
+	   
+	   /*@RequestMapping(value = "/removeSkillBySkillId")
 	   public String removeSkillBySkillId(@RequestParam(value="skillId", required=false) String  skillId,HttpServletRequest request) throws Exception {
 		  
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -757,7 +744,7 @@ public class CandidateListRestController {
 		    }else{
 				return "exception";
 			}
-		 }
+		 }*/
 	   
 	   
 	   /**
@@ -1006,7 +993,10 @@ public class CandidateListRestController {
  		 * 
  		 * @throws NullPointerException
  		 */ 
-	 	 @RequestMapping(value = "/fieldUpdateCandidate")
+	   
+	   // Skills Save In Candidates table Not In CandidateSkills Table
+	 	 
+	   /*@RequestMapping(value = "/fieldUpdateCandidate")
 	 	 public String fieldUpdateCandidate(@RequestParam(value="candidateSkillId", required=false) String  candidateSkillId,@RequestParam(value="name", required=false) String  name,@RequestParam(value="value", required=false) String  value,HttpServletRequest request) throws Exception {
 	 		       
 	 		 	CandidateSkills candidateSkills =  candidateSkillsService.getCandidateSkillBySkillId(Long.parseLong(candidateSkillId));
@@ -1019,7 +1009,7 @@ public class CandidateListRestController {
 	 		 	candidateSkillsService.storeCandidateSkills(candidateSkills);
 	 			return "success";
 	 			
-	 	 }
+	 	 }*/
 	 		 /**
 	 		  * @author Rajashekar
 	 		  * get candidate data to export excel and pdf

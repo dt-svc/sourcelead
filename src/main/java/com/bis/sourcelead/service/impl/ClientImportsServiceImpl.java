@@ -485,16 +485,24 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())){
 					OrgRelations  orgRelation = vandorsListByOrgLocationId.get(0);
 					 UserRole userRole = null;
-					  if(orgLocation.getId() == orgRelation.getLocationId().getId() ){
-						  userRole = userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(3).toString(), orgRelation.getResponderLocationId().getId());
-					  }else{
-						  userRole =  userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(3).toString(), orgRelation.getLocationId().getId());
-					  }
-					  
-					if(userRole !=null){
-						client.setReason("duplicate email");
-						return false;
-					}
+					
+					 userRole = userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(3).toString(), orgLocation.getId());
+					 if(userRole == null){
+						 if(orgLocation.getId() == orgRelation.getLocationId().getId() ){
+							  userRole = userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(3).toString(), orgRelation.getResponderLocationId().getId());
+						  }else{
+							  userRole =  userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(3).toString(), orgRelation.getLocationId().getId());
+						  }
+						  
+						if(userRole !=null){
+							client.setReason("duplicate email");
+							return false;
+						} 
+					 }else{
+						   client.setReason(row.getCell(3).toString()+ "should not your org users email");
+							return false;
+					 }
+					
 				}
 			  
 			  if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {

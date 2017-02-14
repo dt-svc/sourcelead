@@ -27,11 +27,13 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 
 	@Override
 	public ProjectTasks addTasks(ProjectTasks tasks) throws Exception {
+		tasks.setUpdatedDate(commonUtil.currentDate());
 		return tasksDao.addTasks(tasks);
 	}
 
 	@Override
 	public ProjectTasks updateTasks(ProjectTasks tasks) throws Exception {
+		tasks.setUpdatedDate(commonUtil.currentDate());
 		return tasksDao.updateTasks(tasks);
 	}
 

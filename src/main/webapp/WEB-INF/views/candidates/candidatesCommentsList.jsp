@@ -73,6 +73,12 @@ function candidateCommentsList(candidateId,submissionId){
               $("#tab-6").empty();
               $("#tab-8").empty();
               $("#tab-7").empty();
+              $("#tabb-1").empty();
+          	  $("#tabb-2").empty(); 
+          	  $("#tabb-3").empty();
+          	  $("#tabb-4").empty();  
+              $("#tabb-5").empty();  
+              $("#tabb-6").empty();
               $("#tab-7").append(result);
               
          },
