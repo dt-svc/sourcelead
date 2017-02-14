@@ -175,13 +175,16 @@ public class Candidate implements Serializable{
 	@Transient
 	private String candidateLocation;
 	
+	@Column(name = "SKILLS_NAME", columnDefinition = "TEXT default NULL")
+	private String skillsName ;
+	
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	/*@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
-	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);
+	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);*/
 	
 	
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -577,7 +580,7 @@ public class Candidate implements Serializable{
 	}
 
 
-	public Set<CandidateSkills> getCandidateSkills() {
+	/*public Set<CandidateSkills> getCandidateSkills() {
 		return candidateSkills;
 	}
 
@@ -585,7 +588,7 @@ public class Candidate implements Serializable{
 	public void setCandidateSkills(Set<CandidateSkills> candidateSkills) {
 		this.candidateSkills = candidateSkills;
 	}
-
+*/
 
 	public Set<CandidateResumes> getCandidateResumes() {
 		return candidateResumes;
@@ -906,4 +909,14 @@ public class Candidate implements Serializable{
 	public void setOrgId(Org orgId) {
 		this.orgId = orgId;
 	}
+
+	public String getSkillsName() {
+		return skillsName;
+	}
+
+
+	public void setSkillsName(String skillsName) {
+		this.skillsName = skillsName;
+	}
+	
 }

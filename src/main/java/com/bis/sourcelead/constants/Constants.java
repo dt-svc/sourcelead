@@ -430,7 +430,7 @@ public class Constants {
     
     public static int PREVIOUS_MONTH =-1;
     public static int NEXT_MONTH =1;
-    public static int CURRENT_MONTH =1;
+    public static int CURRENT_MONTH =0;
     
     public static String SHORTLIST_COUNT= "Shortlisted Applicants:";
     public static String INTERVIEW_COUNT= "Interview Applicants: ";
