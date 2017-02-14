@@ -928,83 +928,58 @@ public class TimesheetRestController {
 					tabDiv.append("</div>");
 				}
 			    
-			    
-			    
-			    tabDiv.append("		            <div class='clearfix'></div>");	
-			    
 			    tabDiv.append("</div>");
-		    
-		    
-		    tabDiv.append("		    	<div class='clearfix'></div>");	
-		    tabDiv.append("		    	<div class='timesheet_button' style='min-height: 40px;'>");	
-		    
-		    
-		    tabDiv.append("<div class='totalWrap'>");
-		    tabDiv.append("<ul>");
-			tabDiv.append("<li>");
-			tabDiv.append("<span>Billable Hours</span>");
-			tabDiv.append("<input type='text' name='grandBillableTotal' id='grandBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
-			tabDiv.append("</li>");
-			tabDiv.append("<li>");
-			tabDiv.append("<span>Non-Billable Hours</span>");
-			tabDiv.append("<input type='text' name='grandNonBillableTotal' id='grandNonBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
-			tabDiv.append("</li>");
-			tabDiv.append(" <li>");
-			tabDiv.append("<span>Total Hours</span>");
-			tabDiv.append("<input type='text' id='grandTotal' value='00:00' placeholder='HH/HH' readonly>");
-			tabDiv.append("</li>");
-			tabDiv.append("<div class='clearfix'></div> ");                                      
-			tabDiv.append(" </ul>");
-			tabDiv.append("</div>");
-
-		    /*tabDiv.append("	<div class='totalText row'>");
-		    
-		    tabDiv.append("	<div class='col-md-8'>");
-		    tabDiv.append("	<span class='text-primary'>Billable Hours : </span><input type='text' name='grandBillableTotal' id='grandBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
-		    tabDiv.append("	</div>");
-		    
-		    tabDiv.append("	<div class='clearfix'></div>");	
-		    
-		    tabDiv.append("	<div class='col-md-8 mt10'>");
-		    tabDiv.append("	<span class='text-danger'>Non-Billable Hours : </span><input type='text' name='grandNonBillableTotal' id='grandNonBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
-		    tabDiv.append("	</div>");
-		    
-		    tabDiv.append("	<div class='clearfix'></div>");	
-		    
-		    tabDiv.append("<div class='col-md-8 mt10 mb'>");
-		    tabDiv.append("	<span class='text-success'>Total Hours : </span><input type='text' id='grandTotal' value='00:00' placeholder='HH/HH' readonly>");
-		    tabDiv.append("	</div>");
-		    tabDiv.append("	</div>");*/
-		    
-		      
-		    if(!isNullOrEmpty(approvalStatus)  && !approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
-				tabDiv.append("		        	<input type='button' onClick='newSaveTimesheet(\"Draft\",\"user\");'  value='Save' class='time_btn time_dra' />");	
-				
-				if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
-					Date frequencyEndDate = format.parse(timesheetFrequencyEndDate.replaceAll("/", "-"));
-					if(frequencyEndDate.equals(actualEndDate))
-					tabDiv.append("		            <input type='button' onClick='newSaveTimesheet(\"Submitted\",\"user\");'  value='Submit' class='time_btn' />");	
-				}
-				tabDiv.append("		            <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />");	
-		    }
-		    else{
-		    	
-		    	tabDiv.append("		       <div class='clearfix'></div>   ");
-		    }
-			
-			tabDiv.append("		        </div>   ");	
-			tabDiv.append("<div class='clearfix'></div> ");     
 			tabDiv.append("		    </div>  ");	
+			tabDiv.append("</div>");      
 			
-			/*
-			tabDiv.append("		<div class='res_total_hour'>");	
-			tabDiv.append("			<i></i>");	
-			tabDiv.append("			<p>Total hours</p>");	
-			tabDiv.append("		    <h2> <input disabled type='text' id='grandTotal' name='grandTotal' class='inline_field' value='HH:MM' value='00:00' /> </h2>");	
-			tabDiv.append("		</div>   ");
-		    */
-		    
-			tabDiv.append("</div>");        	
+			
+			
+			
+			tabDiv.append("		    <div class='timesheet_bot'>");	
+	    tabDiv.append("		    	<div class='timesheet_button'>");	
+	    
+	    
+	    tabDiv.append("<div class='totalWrap'>");
+	    tabDiv.append("<ul>");
+		tabDiv.append("<li>");
+		tabDiv.append("<span>Billable Hours</span>");
+		tabDiv.append("<input type='text' name='grandBillableTotal' id='grandBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
+		tabDiv.append("</li>");
+		tabDiv.append("<li>");
+		tabDiv.append("<span>Non-Billable Hours</span>");
+		tabDiv.append("<input type='text' name='grandNonBillableTotal' id='grandNonBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
+		tabDiv.append("</li>");
+		tabDiv.append(" <li>");
+		tabDiv.append("<span>Total Hours</span>");
+		tabDiv.append("<input type='text' id='grandTotal' value='00:00' placeholder='HH/HH' readonly>");
+		tabDiv.append("</li>");
+		tabDiv.append("<div class='clearfix'></div> ");                                      
+		tabDiv.append(" </ul>");
+		tabDiv.append("</div>");
+
+	      
+	    if(!isNullOrEmpty(approvalStatus)  && !approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
+			tabDiv.append("		        	<input type='button' onClick='newSaveTimesheet(\"Draft\",\"user\");'  value='Save' class='time_btn time_dra' />");	
+			
+			if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
+				Date frequencyEndDate = format.parse(timesheetFrequencyEndDate.replaceAll("/", "-"));
+				if(frequencyEndDate.equals(actualEndDate))
+				tabDiv.append("		            <input type='button' onClick='newSaveTimesheet(\"Submitted\",\"user\");'  value='Submit' class='time_btn' />");	
+			}
+			tabDiv.append("		            <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />");	
+	    }
+	    else{
+	    	
+	    	tabDiv.append("		       <div class='clearfix'></div>   ");
+	    }
+		
+		tabDiv.append("		        </div>   ");	
+		tabDiv.append("<div class='clearfix'></div> ");     
+		tabDiv.append("		    </div>  ");	
+			
+			
+			
+			
 			tabDiv.append("</div>");
 			tabDiv.append("</div>");
 		
