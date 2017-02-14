@@ -402,6 +402,20 @@ public class TimesheetApprovalRestController {
 				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("reopened") ? "selected='selected'" : "") : "").append("  value='reopened'>REOPENED</option>");
 			timesheetApprovalDiv.append("	                </select>");
 			timesheetApprovalDiv.append("	            </div>   ");  
+			
+			timesheetApprovalDiv.append("					<div class='export dropexport' onClick='dropDown();'> ");
+			timesheetApprovalDiv.append("						<p data-toggle='tooltip' title='Export'><i class='glyphicon glyphicon-export'></i></p> ");
+			timesheetApprovalDiv.append("							<ul id='exporrt'> ");
+			String exportPdf="pdf";
+			String exportexcel="excel";
+			timesheetApprovalDiv.append("			                	<li onClick='exportTimeSheetToPdfOrExcel(\""+exportPdf+"\");'><i class='fa fa-file-pdf-o text-danger'></i>&nbsp;PDF</li> ");
+			timesheetApprovalDiv.append("			                    <li onClick='exportTimeSheetToPdfOrExcel(\""+exportexcel+"\");'><i class='fa fa-file-excel-o text-primary'></i>&nbsp;Excel</li> ");
+			timesheetApprovalDiv.append("			                    <li class='hidden'>Word<i class='fa fa-file-word-o'></i></li> ");
+			timesheetApprovalDiv.append("							</ul>			 ");
+			timesheetApprovalDiv.append("					</div> ");
+			timesheetApprovalDiv.append("			        <div class='clearfix'></div> ");			
+			
+			
 			selectedStage.append(stage);
 			stageBuilder.put(selectedStage,timesheetApprovalDiv);
 			return stageBuilder;

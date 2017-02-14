@@ -1300,6 +1300,11 @@ function dropDown(){
 }
 </script>
 
+<!-- <script>
+    $('[data-toggle="tooltip"]').tooltip();   
+</script> -->
+
+
 <!-- this script is for Timesheet Entries Export -->
 <script>
 function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType){

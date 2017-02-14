@@ -10,20 +10,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-
-import java.util.HashMap;
-import java.util.HashSet;
-
-
-import org.apache.commons.lang.StringUtils;
-
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -47,7 +39,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -67,7 +58,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 import com.itextpdf.text.BaseColor;
@@ -82,7 +72,6 @@ import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
 
 @Service
@@ -185,7 +174,6 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 				 nonBillableHours = nonBillableHours+Double.parseDouble(ts.getNonBillableHours())*60;
 				 grandTotalHours = grandTotalHours+Double.parseDouble(ts.getTotalHours())*60;
 				 
-				 int column = 0;
 	    		// lastRow = count;
 				 
 				 Long monTotHours = 0L;
@@ -787,7 +775,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}else{
 		timeSheetApprovalArray[3] = "--";
 	}
-	if(timesheetFrequency.equalsIgnoreCase("Weekly")){
+	
+	int count = 4;
 		LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
 			Float totalHours = 0f;
 			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
@@ -796,178 +785,29 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 					for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
 						if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
 							totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-							timeSheetApprovalArray[4] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
+							timeSheetApprovalArray[count] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
 						} else {
-							timeSheetApprovalArray[4] = "0/40";
+							timeSheetApprovalArray[count] = "0/40";
 						}
+						count++;
 					}
 				}
 			}
 	     if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
-	    	 timeSheetApprovalArray[5]   = totalHours.toString()+"/40";
+	    	 timeSheetApprovalArray[count]   = totalHours.toString()+"/40";
 	     }else{
-	    	 timeSheetApprovalArray[5] = "0.0/40";
+	    	 timeSheetApprovalArray[count] = "0.0/40";
 	     }
 		if(sah.getSubmissionApprovalStatus() != null && !"".equalsIgnoreCase(sah.getSubmissionApprovalStatus().toString())){
-			timeSheetApprovalArray[6] = sah.getSubmissionApprovalStatus().toString();
+			timeSheetApprovalArray[count+1] = sah.getSubmissionApprovalStatus().toString();
 		}else{
-			timeSheetApprovalArray[6] = "--";
+			timeSheetApprovalArray[count+1] = "--";
 		}
 		if(sah.getActionPerformedBy() != null && !"".equalsIgnoreCase(sah.getActionPerformedBy())){
-			timeSheetApprovalArray[7] = sah.getActionPerformedBy();
+			timeSheetApprovalArray[count+2] = sah.getActionPerformedBy();
 		}else{
-			timeSheetApprovalArray[7] = "--";
+			timeSheetApprovalArray[count+2] = "--";
 		}
-	}else if(timesheetFrequency.equalsIgnoreCase("Bi-weekly")){
-		LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
-		Float totalHours = 0f;
-		SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
-		if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
-			if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
-				for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-					if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-						totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-						timeSheetApprovalArray[4] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
-					} else {
-						timeSheetApprovalArray[4] = "0/40";
-					}
-				}
-				for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-					if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-						totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-						timeSheetApprovalArray[5] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
-					} else {
-						timeSheetApprovalArray[5] = "0/40";
-					}
-				}
-			}
-		}
-     if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
-    	 timeSheetApprovalArray[6]   = totalHours.toString()+"/40";
-     }else{
-    	 timeSheetApprovalArray[6] = "0.0/40";
-     }
-	if(sah.getSubmissionApprovalStatus() != null && !"".equalsIgnoreCase(sah.getSubmissionApprovalStatus().toString())){
-		timeSheetApprovalArray[7] = sah.getSubmissionApprovalStatus().toString();
-	}else{
-		timeSheetApprovalArray[7] = "--";
-	}
-	if(sah.getActionPerformedBy() != null && !"".equalsIgnoreCase(sah.getActionPerformedBy())){
-		timeSheetApprovalArray[8] = sah.getActionPerformedBy();
-	}else{	
-		timeSheetApprovalArray[8] = "--";
-	}
-}else if(timesheetFrequency.equalsIgnoreCase("Semi-monthly")){
-	LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
-	Float totalHours = 0f;
-	SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
-	if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
-		if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
-			for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-				if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-					totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-					timeSheetApprovalArray[4] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
-				} else {
-					timeSheetApprovalArray[4] = "0/40";
-				}
-			}
-			for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-				if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-					totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-					timeSheetApprovalArray[5] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
-				} else {
-					timeSheetApprovalArray[5] = "0/40";
-				}
-			}
-			for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-				if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-					totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-					timeSheetApprovalArray[6] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
-				} else {
-					timeSheetApprovalArray[6] = "0/40";
-				}
-			}
-		}
-	}
- if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
-	 timeSheetApprovalArray[7]   = totalHours.toString()+"/40";
- }else{
-	 timeSheetApprovalArray[7] = "0.0/40";
- }
-if(sah.getSubmissionApprovalStatus() != null && !"".equalsIgnoreCase(sah.getSubmissionApprovalStatus().toString())){
-	timeSheetApprovalArray[8] = sah.getSubmissionApprovalStatus().toString();
-}else{
-	timeSheetApprovalArray[8] = "--";
-}
-if(sah.getActionPerformedBy() != null && !"".equalsIgnoreCase(sah.getActionPerformedBy())){
-	timeSheetApprovalArray[9] = sah.getActionPerformedBy();
-}else{
-	timeSheetApprovalArray[9] = "--";
-}
-}else if(timesheetFrequency.equalsIgnoreCase("Monthly")){
-	LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
-	Float totalHours = 0f;
-	SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
-	if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
-		if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
-			for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-				if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-					totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-					timeSheetApprovalArray[4] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
-				} else {
-					timeSheetApprovalArray[4] = "0/40";
-				}
-			}
-			for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-				if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-					totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-					timeSheetApprovalArray[5] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
-				} else {
-					timeSheetApprovalArray[5] = "0/40";
-				}
-			}
-			for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-				if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-					totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-					timeSheetApprovalArray[6] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
-				} else {
-					timeSheetApprovalArray[6] = "0/40";
-				}
-			}
-			for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-				if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-					totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-					timeSheetApprovalArray[7] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
-				} else {
-					timeSheetApprovalArray[7] = "0/40";
-				}
-			}
-			for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-				if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-					totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-					timeSheetApprovalArray[8] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
-				} else {
-					timeSheetApprovalArray[8] = "0/40";
-				}
-			}
-		}
-	}
- if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
-	 timeSheetApprovalArray[9]   = totalHours.toString()+"/40";
- }else{
-	 timeSheetApprovalArray[9] = "0.0/40";
- }
-if(sah.getSubmissionApprovalStatus() != null && !"".equalsIgnoreCase(sah.getSubmissionApprovalStatus().toString())){
-	timeSheetApprovalArray[10] = sah.getSubmissionApprovalStatus().toString();
-}else{
-	timeSheetApprovalArray[10] = "--";
-}
-if(sah.getActionPerformedBy() != null && !"".equalsIgnoreCase(sah.getActionPerformedBy())){
-	timeSheetApprovalArray[11] = sah.getActionPerformedBy();
-}else{
-	timeSheetApprovalArray[11] = "--";
-}
-}
 			return timeSheetApprovalArray;
 	}
 
@@ -992,8 +832,6 @@ if(sah.getActionPerformedBy() != null && !"".equalsIgnoreCase(sah.getActionPerfo
 	}
 	
 	
-	
-	
 	private static void headerCellStyle(PdfPCell cell){
 	    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 	    cell.setPaddingTop(0f);
@@ -1003,6 +841,10 @@ if(sah.getActionPerformedBy() != null && !"".equalsIgnoreCase(sah.getActionPerfo
 	    cell.setBorderWidthBottom(2f);
 	    }
 
+	
+	
+	
+	
 	@Override
 	public File timeSheetApprovelExportExcel(User user, OrgLocations orgLocations,Date startDate,Date endDate,String timesheetFrequency,String client,String stage,String frequencyMonth,String weekFrequency) throws Exception {
 		File file= null;
@@ -1047,18 +889,22 @@ if(sah.getActionPerformedBy() != null && !"".equalsIgnoreCase(sah.getActionPerfo
 	private Sheet createXlsSheetTimesheetApproval(Sheet createExcelsheet, Row writeRow,ProjectMembers projMembers,String client,String timesheetFrequency,Date startDate,Date endDate,User user) throws Exception {
 		if (projMembers.getEmployee().getUser().getFullName() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getFullName())) {
 			writeRow.createCell(0).setCellValue(projMembers.getEmployee().getUser().getFullName());
+			createExcelsheet.setColumnWidth(0, 10000);
 		}
 		if (projMembers.getEmployee().getUser().getEmail() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getEmail())) {
 			writeRow.createCell(1).setCellValue(projMembers.getEmployee().getUser().getEmail());
+			createExcelsheet.setColumnWidth(1, 10000);
 		}
 		if (projMembers.getEmployee().getUser().getMobilePhone() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getMobilePhone())) {
 			writeRow.createCell(2).setCellValue(projMembers.getEmployee().getUser().getMobilePhone());
+			createExcelsheet.setColumnWidth(2, 10000);
 		}
 		
 		if (projMembers.getProjects().getOrgRelationId() != null) {
 			writeRow.createCell(3).setCellValue(projMembers.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+			createExcelsheet.setColumnWidth(3, 10000);
 		}
-		if(timesheetFrequency.equalsIgnoreCase("Weekly")){
+		int count = 4;
 			LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
 				Float totalHours = 0f;
 				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
@@ -1067,116 +913,29 @@ if(sah.getActionPerformedBy() != null && !"".equalsIgnoreCase(sah.getActionPerfo
 						for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
 							if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
 								totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-								writeRow.createCell(4).setCellValue(sah.getWeekTotals().get(entry.getKey()).toString() + "/40");
+								writeRow.createCell(count).setCellValue(sah.getWeekTotals().get(entry.getKey()).toString() + "/40");
 							} else {
-								writeRow.createCell(4).setCellValue( "0/40");
+								writeRow.createCell(count).setCellValue( "0/40");
 							}
+							count++;
 						}
 					}
 				}
 				 if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
-					 writeRow.createCell(5).setCellValue( totalHours.toString()+"/40");
+					 writeRow.createCell(count).setCellValue( totalHours.toString()+"/40");
 			     }else{
-			    	 writeRow.createCell(5).setCellValue( "0.0/40");
+			    	 writeRow.createCell(count).setCellValue( "0.0/40");
 			     }
 				if(sah.getSubmissionApprovalStatus() != null && !"".equalsIgnoreCase(sah.getSubmissionApprovalStatus().toString())){
-					writeRow.createCell(6).setCellValue( sah.getSubmissionApprovalStatus().toString());
+					writeRow.createCell(count+1).setCellValue( sah.getSubmissionApprovalStatus().toString());
 				}else{
-					writeRow.createCell(6).setCellValue( "--");
+					writeRow.createCell(count+1).setCellValue( "--");
 				}
 				if(sah.getActionPerformedBy() != null && !"".equalsIgnoreCase(sah.getActionPerformedBy())){
-					writeRow.createCell(7).setCellValue(sah.getActionPerformedBy());
+					writeRow.createCell(count+2).setCellValue(sah.getActionPerformedBy());
 				}else{
-					writeRow.createCell(7).setCellValue( "--");
+					writeRow.createCell(count+2).setCellValue( "--");
 				}
-				
-		}else if(timesheetFrequency.equalsIgnoreCase("Bi-weekly")){
-			LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
-			Float totalHours = 0f;
-			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
-			if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
-				if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
-					for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-						if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-							totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-							writeRow.createCell(4).setCellValue(sah.getWeekTotals().get(entry.getKey()).toString() + "/40");
-						} else {
-							writeRow.createCell(4).setCellValue( "0/40");
-						}
-					}
-					for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-						if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-							totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-							writeRow.createCell(5).setCellValue(sah.getWeekTotals().get(entry.getKey()).toString() + "/40");
-						} else {
-							writeRow.createCell(5).setCellValue( "0/40");
-						}
-					}
-				}
-			}
-			 if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
-				 writeRow.createCell(6).setCellValue( totalHours.toString()+"/40");
-		     }else{
-		    	 writeRow.createCell(6).setCellValue( "0.0/40");
-		     }
-			if(sah.getSubmissionApprovalStatus() != null && !"".equalsIgnoreCase(sah.getSubmissionApprovalStatus().toString())){
-				writeRow.createCell(7).setCellValue( sah.getSubmissionApprovalStatus().toString());
-			}else{
-				writeRow.createCell(7).setCellValue( "--");
-			}
-			if(sah.getActionPerformedBy() != null && !"".equalsIgnoreCase(sah.getActionPerformedBy())){
-				writeRow.createCell(8).setCellValue(sah.getActionPerformedBy());
-			}else{
-				writeRow.createCell(8).setCellValue( "--");
-			}
-		}else if(timesheetFrequency.equalsIgnoreCase("Semi-monthly")){
-			LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
-			Float totalHours = 0f;
-			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
-			if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
-				if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
-					for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-						if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-							totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-							writeRow.createCell(4).setCellValue(sah.getWeekTotals().get(entry.getKey()).toString() + "/40");
-						} else {
-							writeRow.createCell(4).setCellValue( "0/40");
-						}
-					}
-					for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-						if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-							totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-							writeRow.createCell(5).setCellValue(sah.getWeekTotals().get(entry.getKey()).toString() + "/40");
-						} else {
-							writeRow.createCell(5).setCellValue( "0/40");
-						}
-					}
-					for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-						if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-							totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-							writeRow.createCell(6).setCellValue(sah.getWeekTotals().get(entry.getKey()).toString() + "/40");
-						} else {
-							writeRow.createCell(6).setCellValue( "0/40");
-						}
-					}
-				}
-			}
-			 if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
-				 writeRow.createCell(7).setCellValue( totalHours.toString()+"/40");
-		     }else{
-		    	 writeRow.createCell(7).setCellValue( "0.0/40");
-		     }
-			if(sah.getSubmissionApprovalStatus() != null && !"".equalsIgnoreCase(sah.getSubmissionApprovalStatus().toString())){
-				writeRow.createCell(8).setCellValue( sah.getSubmissionApprovalStatus().toString());
-			}else{
-				writeRow.createCell(8).setCellValue( "--");
-			}
-			if(sah.getActionPerformedBy() != null && !"".equalsIgnoreCase(sah.getActionPerformedBy())){
-				writeRow.createCell(9).setCellValue(sah.getActionPerformedBy());
-			}else{
-				writeRow.createCell(9).setCellValue( "--");
-			}
-		}
 		return createExcelsheet;
 	}
 
