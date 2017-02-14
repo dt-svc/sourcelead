@@ -4356,6 +4356,49 @@ function customizeScore(requirementId){
 		        
 		        result = result +'		                </div>                        ';
 		        
+		        result = result +'				        <div class="clearfix mt"> ';
+		        result = result +'		                  <div class="col-md-10 lblup paddingRight">    ';
+		        result = result +'		                   <label>Notice Period</label>';
+		        result = result +'		                      <select class="chosen-select" data-placeholder="Notice" multiple id="noticeperiod" name="noticeperiod">';
+		      //split the noticeperiod
+		    	if(json.customizeNoticeperiod != null && json.customizeNoticeperiod != '' && json.customizeNoticeperiod != 'undefined'){
+		    		var customizeNoticeperiod = json.customizeNoticeperiod;
+			    	var noticeperiod = new Array();
+			    	noticeperiod =  customizeNoticeperiod.split(",");
+			        for (var j = 0; j < noticeperiod.length; j++) { 
+			        	var customnoticeperiods = noticeperiod[j];
+			        	 result = result  +' <option value="Immediately available" '+(customnoticeperiods == "Immediately" ? "selected" : '') +'>Immediately available</option>';
+			        	 result = result  +' <option value="15 Days" '+(customnoticeperiods == "15 Days" ? "selected" : '') +'>15 Days</option>';
+			        	 result = result  +' <option value="1 Month" '+(customnoticeperiods == "1 Month" ? "selected" : '') +'>1 Month</option>';
+			        	 result = result  +' <option value="2 Month" '+(customnoticeperiods == "2 Month" ? "selected" : '') +'>2 Month</option>';
+			        	 result = result  +' <option value="3 Month" '+(customnoticeperiods == "3 Month" ? "selected" : '') +'>3 Month</option>';
+			        } 
+		    	}else{
+		    		result = result  +' <option value="Immediately available" >Immediately available</option>';
+		        	 result = result  +' <option value="15 Days" >15 Days</option>';
+		        	 result = result  +' <option value="1 Month" >1 Month</option>';
+		        	 result = result  +' <option value="2 Month" >2 Month</option>';
+		        	 result = result  +' <option value="3 Month" >3 Month</option>';
+		    	}
+		        result = result +'		                    </select> ';
+		        result = result +'		                    </div>  ';
+		        
+		        result = result +'		                    <div class="col-md-2">  ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="noticeperiodScore" name="noticeperiodScore">';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "100" ? "selected" : '') +' value="100">100%</option>';
+		        result = result +'		                    </select>               ';
+		        result = result +'		                  </div>                    ';
+		        result = result +'		                </div>                      ';
 		        
 		        result = result +'		                <div class="clearfix mt">';
 		        result = result +'		                  <div class="col-md-5 lblup"> ';
@@ -4430,50 +4473,7 @@ function customizeScore(requirementId){
 		        result = result +'		                    </select>               ';
 		        result = result +'		                  </div>                    ';
 		        result = result +'		                </div>                      ';
-		        result = result +'				        <div class="clearfix mt"> ';
-		        result = result +'		                  <div class="col-md-10 lblup paddingRight">    ';
-		        result = result +'		                   <label>Notice Period</label>';
-		        result = result +'		                      <select class="chosen-select" data-placeholder="Notice" multiple id="noticeperiod" name="noticeperiod">';
-		      //split the noticeperiod
-		    	if(json.customizeNoticeperiod != null && json.customizeNoticeperiod != '' && json.customizeNoticeperiod != 'undefined'){
-		    		var customizeNoticeperiod = json.customizeNoticeperiod;
-			    	var noticeperiod = new Array();
-			    	noticeperiod =  customizeNoticeperiod.split(",");
-			        for (var j = 0; j < noticeperiod.length; j++) { 
-			        	var customnoticeperiods = noticeperiod[j];
-			        	 result = result  +' <option value="Immediately available" '+(customnoticeperiods == "Immediately" ? "selected" : '') +'>Immediately available</option>';
-			        	 result = result  +' <option value="15 Days" '+(customnoticeperiods == "15 Days" ? "selected" : '') +'>15 Days</option>';
-			        	 result = result  +' <option value="1 Month" '+(customnoticeperiods == "1 Month" ? "selected" : '') +'>1 Month</option>';
-			        	 result = result  +' <option value="2 Month" '+(customnoticeperiods == "2 Month" ? "selected" : '') +'>2 Month</option>';
-			        	 result = result  +' <option value="3 Month" '+(customnoticeperiods == "3 Month" ? "selected" : '') +'>3 Month</option>';
-			        } 
-		    	}else{
-		    		result = result  +' <option value="Immediately available" >Immediately available</option>';
-		        	 result = result  +' <option value="15 Days" >15 Days</option>';
-		        	 result = result  +' <option value="1 Month" >1 Month</option>';
-		        	 result = result  +' <option value="2 Month" >2 Month</option>';
-		        	 result = result  +' <option value="3 Month" >3 Month</option>';
-		    	}
-		        result = result +'		                    </select> ';
-		        result = result +'		                    </div>  ';
-		        
-		        result = result +'		                    <div class="col-md-2">  ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="noticeperiodScore" name="noticeperiodScore">';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select>               ';
-		        result = result +'		                  </div>                    ';
-		        result = result +'		                </div>                      ';
-		        result = result +'		                                            ';
+		       
 		        result = result +'		                  <div class="clearfix mt"> ';
 		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
 		        result = result +'		                   <label>Keywords</label>';

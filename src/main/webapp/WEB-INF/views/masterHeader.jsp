@@ -427,17 +427,17 @@ function notificationStatusAsRead(){
 			              </div>
 			              <div class="col-md-6">
 			                  <div class="row">
-				                  <div class="col-md-6">
+				                  <div class="col-md-6" id="taskDatpickerDiv" >
 					                <label>Date<span class="text-danger">*</span></label>
 						                <div class="positionRelative"> 
-						                  <input class="form-control input-sm" value="" name="taskDatpicker" id="taskDatpicker" type="text" field-name="Date"  data-validation="required">
+						                  <input class="form-control input-sm" value="" name="taskDatpicker"  readonly="readonly" id="taskDatpicker" type="text" field-name="Date"  data-validation="required">
 						                  <span class="input-group-addon input-groupAddon icon-Addon"><i class="fa fa-calendar"></i></span>
 						                </div>
 				                   </div>
 				                  <div class="col-md-6">
 					                <label>Time</label>
 						                <div class="positionRelative">
-						                  <input class="form-control input-sm"  name="timepicker" id="timepicker"  type="text">
+						                  <input class="form-control input-sm"  name="timepicker" id="timepicker" type="text">
 						                  <span class="input-group-addon input-groupAddon icon-Addon" ><i class="fa fa-clock-o"></i></span>
 						                </div>
 				                  </div>
@@ -513,8 +513,8 @@ function notificationStatusAsRead(){
 								$("#closed-task, #my-task").hide();
 							    $("#other-task").show().css("opacity", "1");
 							assignedTasksList('assignedTasks');
-							tasksList('myTask');
-							assignTasksList();
+							/* tasksList('myTask');
+							assignTasksList(); */
 						},
 					});
 			return true;
@@ -546,8 +546,8 @@ $('#taskDatpicker').datepicker({
 	onSelect : function(selected) {
 		var dt = new Date(selected);
 		dt.setDate(dt.getDate() + 1);
+		removevalidation();
 	}
-	
 	});
 	
 $('#myTaskDatpicker').datepicker({
@@ -587,7 +587,12 @@ $('#closedTaskDatpicker').datepicker({
 	
 $('#timepicker').timepicker({ 'timeFormat': 'h:i A' });
 </script>
+<script>
+function removevalidation(){
+	$('#taskDatpickerDiv').find('p.jquery_form_error_message').remove();	
+}
 
+</script>
 
 <script>
 //Collapse div

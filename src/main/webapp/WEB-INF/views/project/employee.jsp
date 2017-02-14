@@ -758,10 +758,10 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    result = result +'</div>';
    
    result = result +'<div class="form-group">';
-   result = result +'<label class="col-lg-3">End date <span class="text-danger">*</span></label>';
+   result = result +'<label class="col-lg-3">End date</label>';
    result = result +'<div class="col-lg-9 positionRelative">';
 
-   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-EndDate" name="Re-EndDate"  field-name="End Date" data-validation="required"/>';
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-EndDate" name="Re-EndDate"  field-name="End Date" />';
 
    result = result +'</div>';
    result = result +'</div>';

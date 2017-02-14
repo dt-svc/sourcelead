@@ -108,6 +108,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "IS_CLIENT_JOB")
 	private String isClientJob;
 	
+	@Column(name = "IS_PUBLIC")
+	private String isPublic;
+	
+	@Column(name = "IS_CROWD_SOURCING")
+	private String isCrowdSourcing;
+	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
@@ -999,6 +1005,22 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setIsRequirementReleasedByuser(String isRequirementReleasedByuser) {
 		this.isRequirementReleasedByuser = isRequirementReleasedByuser;
+	}
+
+	public String getIsPublic() {
+		return isPublic;
+	}
+
+	public void setIsPublic(String isPublic) {
+		this.isPublic = isPublic;
+	}
+
+	public String getIsCrowdSourcing() {
+		return isCrowdSourcing;
+	}
+
+	public void setIsCrowdSourcing(String isCrowdSourcing) {
+		this.isCrowdSourcing = isCrowdSourcing;
 	}
 	
 }
