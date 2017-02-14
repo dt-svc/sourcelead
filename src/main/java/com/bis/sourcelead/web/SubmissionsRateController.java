@@ -219,7 +219,10 @@ public class SubmissionsRateController {
 			Requirement requirement = requirementSubmission.getRequirement();
 			Candidate candidate = requirementSubmission.getCandidate();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
-			requirementSubmissionService.userAcceptRateNegotiation(requirement,userRole.getUser(),candidate,orgLocations,requirementRateSubmissionNegotiation);
+			
+			List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, requirementSubmission.getCandidate().getId());
+			StringBuilder tempHtml = requirementRateSubmissionNegotiationService.buildNegotiationHistory(negotiationList, requirement, candidate, submissionId, type);
+			requirementSubmissionService.userAcceptRateNegotiation(requirement,userRole.getUser(),candidate,orgLocations,requirementRateSubmissionNegotiation,tempHtml);
 			
 		}
 		return model;

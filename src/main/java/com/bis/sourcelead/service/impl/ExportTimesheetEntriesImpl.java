@@ -144,11 +144,10 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 				 Date weekStartDate = format.parse(key.replaceAll("/", "-"));
 				 Date weekEndDate = format.parse(value.replaceAll("/", "-"));
 				 
-				
-				 
 				 String weekMondayDate = null;
 				 
 				 TimesheetSubmissions ts = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(weekStartDate, weekEndDate, projectMember.getId());
+				 if(null != ts){
 				 billableHours = billableHours+Double.parseDouble(ts.getBillableHours())*60;
 				 nonBillableHours = nonBillableHours+Double.parseDouble(ts.getNonBillableHours())*60;
 				 grandTotalHours = grandTotalHours+Double.parseDouble(ts.getTotalHours())*60;
@@ -334,7 +333,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 										cell8.setCellStyle(style1);
 										count++;
 						          }
-			                 }
+			                 
 			
 						 StringBuilder fileName=new StringBuilder();
 						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getEmployee().getUser(),grandTotalHours.longValue(),projectMember.getProjects().getProjectName(),submissionStatusStr,billableHours.toString(),nonBillableHours.toString());
@@ -346,7 +345,9 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-		           }
+				 }
+		     }
+		 }
 			   else{
 				  logger.info("No Time sheets");
 			   }
