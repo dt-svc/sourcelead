@@ -332,12 +332,12 @@ function candidateSideBar(candidateId){
                 	 var json = JSON.parse(data);
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
-	                	/*  var skills = [];
+	                	 var skills = [];
 	                	 var skillsList ='';
 	                	 if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
 	                		 skillsList = json.skillsList;
 				             skills = skillsList.split(",");
-	                	 } */
+	                	 }
 			            var experienceMonths = '';
 			            var designationType = '';
 			            var country = '';
@@ -526,16 +526,22 @@ function candidateSideBar(candidateId){
 			             result = result+'</ul>';
 			             
 			             result = result+'<div class="clearfix">';
-			            /*  result = result+'<div class="professinal-details">';
+			             result = result+'<div class="professinal-details">';
 			             
 			            
 			             result = result+'<ul class="list-inline list-unstyled">';
-			             if(json.skillsName != null && json.skillsName != '' && json.skillsName != 'undefined'){
-			            	  result = result+'<li>'+json.skillsName+'</li>';
+			             if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
+			              for (i=0;i < skills.length;i++)
+			             {
+			            	  result = result+'<li>'+skills[i]+'</li>';
 			             } 
+			             }
+			             
+			             
+			             
 			             result = result+'</ul>';
 			             
-			             result = result+'</div>'; */
+			             result = result+'</div>';
 			             result = result+'<div class="socialnetwork-details">';
 			             result = result+'<ul class="list-inline list-unstyled">';
 			             result = result+'<li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
