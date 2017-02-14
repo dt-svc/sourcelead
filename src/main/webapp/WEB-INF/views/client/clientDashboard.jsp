@@ -1,17 +1,9 @@
-
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script>
 <script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -21,8 +13,6 @@
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
-
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
 <jsp:include page="editClientSpocDetails.jsp" />
 <jsp:include page="clientDetails.jsp" />	
@@ -973,7 +963,6 @@ function pagination(){
 
 <script>
 function preparedClientContacts(data){
-	
 			var json = JSON.parse(data);
 		   	var result = "";
 		   	/* if(json.length != null && json.length != ''){ */
@@ -1107,7 +1096,6 @@ function preparedClientContacts(data){
 <!-- contact list preparation from ELK result -->
 <script>
 function preparedClientContactListFromElk(data){
-	  
 			var json = JSON.parse(data);
 		   	var result = "";
 		   	result = result +'<thead>';
@@ -1158,7 +1146,7 @@ function preparedClientContactListFromElk(data){
 		   		
 		   		
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
-		   				result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		   				result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
 		   		'</sec:authorize>';
 		   		
 		   		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';

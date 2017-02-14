@@ -15,6 +15,7 @@ import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.SourceleadSignatureService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class SourceleadSignatureServiceImpl implements SourceleadSignatureService{
@@ -26,6 +27,8 @@ public class SourceleadSignatureServiceImpl implements SourceleadSignatureServic
 	@Autowired
 	UserRoleDao userRoleDao;
 	
+	@Autowired
+	 private CommonUtil commonUtil;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -47,6 +50,7 @@ public class SourceleadSignatureServiceImpl implements SourceleadSignatureServic
 
 	@Override
 	public SourceleadSignature saveSourceleadSignature(SourceleadSignature signature) throws Exception {
+		signature.setUpdatedDate(commonUtil.currentDate());
 		return sourceleadSignatureDao.saveSourceleadSignature(signature);
 	}
 

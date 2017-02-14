@@ -254,7 +254,7 @@ public class TimesheetRestController {
 		if(StringUtils.isNotEmpty(projectMemberId)){
 			ProjectMembers projectMember = projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
 			if(projectMember != null){
-				Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember);
+				Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,"view");
 				if(timesheetFrequencyMap != null && !timesheetFrequencyMap.isEmpty()){
 					
 				/*timesheetEntriesDiv.append("					<div id='timesheetEntriesDivByProjectMemberId'>");*/

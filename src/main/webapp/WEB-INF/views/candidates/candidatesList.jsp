@@ -147,11 +147,10 @@ else{
 	         /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
 	          result = result +"    <th>&nbsp;</th>";
 	          result = result +"    <th>Name</th>"; 
-	          result = result +"    <th>Designation</th>"; 
+	          result = result +"    <th>Skills</th>"; 
 	          result = result +"    <th>Employment Type</th>"; 
 	          result = result +"    <th>Email</th>"; 
 	          result = result +"    <th>Mobile</th>"; 
-	          result = result +"    <th>Type</th>"; 
 	          result = result +"    <th>Location</th>"; 
 	          result = result +"    <th>Last Update</th>"; 
 	          result = result +"  </tr>"; 
@@ -173,11 +172,7 @@ else{
 		            		mobilePhone = "----";
 		            	}
 	         	        
-		            	if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
-		            		designation = opt.designation;
-		            	}else{
-		            		designation = "----";
-		            	}
+		            	
 		            	if(opt.address != null && opt.address != 'undefined' && opt.address != ""){
 		            		address = opt.address;
 		            	}else{
@@ -214,7 +209,6 @@ else{
 		            	
 		            	
 		            	
-		            	
 	              result = result +"<tr>";
 	              result = result +"<td style='width : 25px;'>";
 	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
@@ -234,7 +228,15 @@ else{
 	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
 	              '</sec:authorize>';
-	              result = result +"  <td><div><span title="+designation+">"+designation+"</span></div></td>";
+	            
+	              if(opt.skillsName != null && opt.skillsName != '' && opt.skillsName != "undefined"){
+	            	  result = result +"  <td><div><span title='"+opt.skillsName+"'>"+opt.skillsName+"</span></div></td>";
+	              }else{
+	            	  
+	            	  result = result +"  <td><div>----</div></td>";
+	              }
+	             
+	              
 	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 	             	 {
 	                   result = result +"  <td><div>"+opt.designationType+"</div></td>";
@@ -243,7 +245,6 @@ else{
 	             	 }
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 	              result = result +"  <td><div>"+mobilePhone+"</div></td>";
-	              result = result +"  <td><div>"+opt.candidateType+"</div></td>";
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
@@ -294,6 +295,7 @@ function cpagination(){
 function cpagination(){ 
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -330,10 +332,12 @@ function candidateSideBar(candidateId){
                 	 var json = JSON.parse(data);
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
-	                	 var skillsList = json.skillsList;
-			             var skills = [];
-			             skills = skillsList.split(",");
-			             
+	                	 var skills = [];
+	                	 var skillsList ='';
+	                	 if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
+	                		 skillsList = json.skillsList;
+				             skills = skillsList.split(",");
+	                	 }
 			            var experienceMonths = '';
 			            var designationType = '';
 			            var country = '';
@@ -342,7 +346,6 @@ function candidateSideBar(candidateId){
 			            var currencyCodes = '';
 			            
 			            var currencyCode = '';
-			            
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'-'+'Months';            			 		
          			 	}else{
@@ -436,7 +439,6 @@ function candidateSideBar(candidateId){
          			 	 }
          			 	 
 	                	 var result = "";
-	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
 	                	
 	                	 
@@ -996,7 +998,7 @@ function cancel(candidateId){
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List</div>
   </section>
   <div class="timesheet_out">
-    <div class="vendor_wrap" style="overflow-x: auto;">
+    <div class="vendor_wrap">
     
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
@@ -1263,9 +1265,9 @@ function cancel(candidateId){
            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2" onclick="candidateList();"  ><label for="c5">All</label></li>
-						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  onclick="candidateList();"><label for="c6">Active</label></li>
-						<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="c7">In Active</label></li>
+	                    <li><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2" onclick="candidateList();"  ><label for="candidateAll">All</label></li>
+						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  onclick="candidateList();"><label for="candidateActive">Active</label></li>
+						<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="candidateInActive">In Active</label></li>
                     </ul>
                   </div>                	
           </li>
@@ -1273,9 +1275,9 @@ function cancel(candidateId){
           <li id="filter3ApprovePop"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="candidateList();"  ><label for="c5">All</label></li>
-						<li><input id="onlycandidate" type="radio" name="candidateType" value ="Candidate"  onclick="candidateList();"><label for="c6">Candidates</label></li>
-						<li><input id="consultant" type="radio"  name="candidateType" value ="Consultant"  onclick="candidateList();"><label for="c7">Consultants</label></li>
+	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="candidateList();"  ><label for="candidateTypeAll">All</label></li>
+						<li><input id="onlycandidate" type="radio" name="candidateType" value ="Candidate"  onclick="candidateList();"><label for="onlycandidate">Candidates</label></li>
+						<li><input id="consultant" type="radio"  name="candidateType" value ="Consultant"  onclick="candidateList();"><label for="consultant">Consultants</label></li>
                     </ul>
                   </div>                	
           </li>
@@ -1283,13 +1285,13 @@ function cancel(candidateId){
             <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
                   	<ul>
-                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="c5">All</label></li>
-                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
-						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="c6">3 Day ago</label></li>
-						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="c7">1 Week ago</label></li>
-						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="c7">2 Week ago</label></li>
-						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="c7">Month ago</label></li>
-	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="c7">3 Months</label></li>
+                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="candidateDayAgo">All</label></li>
+                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="candidateDayAgo">1 Day ago</label></li>
+						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="candidate3DayAgo">3 Day ago</label></li>
+						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="candidate1WeekAgo">1 Week ago</label></li>
+						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="candidate3WeekAgo">2 Week ago</label></li>
+						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="candidateMonthAgo">Month ago</label></li>
+	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="candidate3Months">3 Months</label></li>
                     </ul>
                   </div>                	
           </li>  
