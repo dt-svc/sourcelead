@@ -115,20 +115,23 @@ public class RequirementHelper {
 								String[] teamOwnerUserId = assignedTeamId.split(",");
 								requirementIndex.setTeamOwnerUserId(teamOwnerUserId);
 							}   
-							String teamAssignUserStr = null;
+							String teamAssignUserStr = "";
 							if(StringUtils.isNotEmpty(assignedToMaxCount)){
 							int maxCount = Integer.parseInt(assignedToMaxCount);
 								for (int c = 1; c < maxCount; c++) {
-									if(c==1){
-										teamAssignUserStr = jsonObj.getString("assignUserId"+c);
-									}else{
-										teamAssignUserStr = teamAssignUserStr + ","+jsonObj.getString("assignUserId"+c);
+									if(jsonObj.has("assignUserId"+c)&& !"".equalsIgnoreCase(jsonObj.getString("assignUserId"+c))){
+											if(c==1){
+												teamAssignUserStr = jsonObj.getString("assignUserId"+c);
+											}else{
+												teamAssignUserStr = teamAssignUserStr + ","+jsonObj.getString("assignUserId"+c);
+											}
 									}
-									
 								}
 							}
-							String[] teamAssignUserId = teamAssignUserStr.split(",");	
-							requirementIndex.setTeamAssignUserId(teamAssignUserId);
+							if(!"".equalsIgnoreCase(teamAssignUserStr)){
+								String[] teamAssignUserId = teamAssignUserStr.split(",");	
+								requirementIndex.setTeamAssignUserId(teamAssignUserId);
+							}
 				}
 			
 			
