@@ -26,7 +26,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1744,7 +1743,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	 */
 	@Override
 	public TimesheetEntries updateTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
-		// TODO Auto-generated method stub
+		timesheetEntries.setUpdatedDate(commonUtil.currentDate());
 		return timesheetEntriesDao.updateTimesheetEntries(timesheetEntries);
 	}
 	

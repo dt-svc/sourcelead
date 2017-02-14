@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class RequirementInterviewHistoryServiceImpl implements RequirementInterviewHistoryService{
@@ -34,9 +35,13 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	@Override
 	public RequirementInterviewHistory storeRequirementInterviewHistory(
 			RequirementInterviewHistory requirementInterviewHistory) throws Exception {
+		requirementInterviewHistory.setUpdatedDate(commonUtil.currentDate());
 		return requirementInterviewHistoryDao.storeRequirementInterviewHistory(requirementInterviewHistory);
 	}
 	

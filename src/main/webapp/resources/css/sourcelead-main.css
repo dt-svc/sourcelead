@@ -190,10 +190,10 @@ textarea {
 }
 .search-area {
     float: left;
-    margin-top: 11px;
+    margin-top: 10px;
 }
 .search-area .btn {
-    height: 32px; border-radius: 3px 0 0 3px; width: 140px;
+    height: 32px; border-radius: 3px 0 0 3px; width: 140px !important;
 }
 search-area .btn-default{
     color: #fff;
@@ -405,8 +405,12 @@ search-area .btn-default:hover {
 	-ms-transform: translateX(0px);
 	-webkit-transform: translateX(0px);
 }
-
-#spocks_links #spockLinksList {
+.spoclinks-area.spoclinks-area-active{
+	transform: translateX(0px);
+	-ms-transform: translateX(0px);
+	-webkit-transform: translateX(0px);
+}
+/* #spocks_links #spockLinksList {
 	transform: translateX(3000px);
 	-ms-transform: translateX(3000px);
 	-webkit-transform: translateX(3000px);
@@ -415,14 +419,13 @@ search-area .btn-default:hover {
     -moz-transition: all 1s ease-in-out;
     -o-transition: all 1s ease-in-out;
     -ms-transition: all 1s ease-in-out;
-	
 }
 #spocks_links:hover #spockLinksList {	
 	transform: translateX(0px);
 	-ms-transform: translateX(0px);
 	-webkit-transform: translateX(0px);
 	display: block;
-}
+} */
 
 .qlinks-area ul li, .spoclinks-area ul li {
 	line-height: 34px;
@@ -1834,9 +1837,9 @@ transform: rotate(0)
 	font-size: 18px;
 	line-height: 30px;
 	margin: 30px auto 0;
-	min-height: 350px;
+	min-height: 250px;
 	min-width: 300px;
-	padding: 50px;
+	padding: 25px;
 	text-align: center;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
@@ -5844,6 +5847,163 @@ background-color: #fff;
 .fa-bullhorn.success {
 color:#4CAF50 !important;
 }
+
+
+/* pop demo */
+.approvedpop{
+    display: none;
+    min-width: 150px;
+    position: absolute;
+    top: 30px;
+    background: #ededed;
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    z-index: 9999;
+    transition:all ease-in-out 0.3s;
+    border-radius:5px;
+    border: 1px solid #ddd;
+}
+.approvedpop:before{
+    bottom: 100%;
+	left:30%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+    border-color: rgba(194, 225, 245, 0);
+	border-bottom-color: #ddd;
+	border-width: 10px;
+	margin-left: -36px;
+}
+.approvedpop ul {
+    padding:5px 10px !important;
+    margin: 0;
+}
+.approvedpop ul li {
+    float: none;
+    width: 100%;
+    padding:2px 0px !important;
+    margin: 0 !important;
+    color: #333 !important;
+    border:none !important;
+    border-radius: 0px;
+    border-bottom: 1px solid #e2e2e2 !important;
+}
+.uasrch {
+ width: 140px !important;
+}
+/* pop demo */
+
+/* Customize score modified styles */
+#updateCustomize_form .form-footer {
+	background: #dddddd;
+    min-height: 35px;
+    line-height: 35px;
+    padding: 10px 0;
+}
+#updateCustomize_form .mt{
+	padding-top: 5px;
+}
+.lblup {
+	position: relative;
+}
+.lblup label{
+	position: absolute;
+    font-size: 12px;
+    padding: 1px 10px;
+    border-radius: 3px;
+    min-height: 10px;
+    z-index: 999;
+    top: -16px;
+    left: 5px;
+    font-weight:600;
+    color: rgba(000, 000, 000, 0.6);
+}
+.minDiv {
+	min-height: 100px;	
+	max-height: 325px;
+	overflow-Y:scroll;
+}
+#updateCustomize_form .chosen-container-multi .chosen-choices {
+	max-height: 75px;
+	overflow-Y:auto;
+}
+/* Customize score modified styles */
+
+
+
+
+/* Header icon border
+.timesheet_head ul li{
+    border: 1px solid #dedede;
+    border-radius: 30px;
+    margin: 5px 0px 5px 5px;
+    background: #ededed;
+}
+li.dropFilter{
+    border-radius: 30px 3px 3px 30px !important;
+}
+.timesheet_head ul li:hover{
+    color: #fff !important;
+    background: #c5cae9;
+    border: 1px solid #9fa8da;
+}
+.timesheet_head ul li a, .timesheet_head ul li span {
+    color:#616161 !important;
+}
+.timesheet_head ul li:hover a, .timesheet_head .fa-filter:hover, .timesheet_head ul li span:hover  {
+    color: #333 !important;
+}
+.timesheet_head ul li ul li, .timesheet_head ul li ul li {
+    background: #ededed;
+    border-radius: 0 !important;
+    color: #333 !important;
+border: none !important;
+}
+.timesheet_head ul li ul li:hover, .timesheet_head ul li ul li:hover a {
+    background: #ededed;
+    border-radius: 0 !important;
+    color: #333 !important;
+}
+.timesheet_head .glyphicon-play {
+    top: 3px !important;
+    right: -6px !important;
+    background: #b0b0b0;
+    padding: 5px 9px;
+    color: #fff !important;
+}
+.timesheet_head .glyphicon-play:hover{
+    background: #5c6bc0;
+}
+.timesheet_head ul li span {
+    padding: 0px 20px 0px 0px !important;
+}
+.vendor_wrap .timesheet_head ul li a .fa-plus {
+    font-size: 14px !important;
+    padding: 0px 5px 0px 2px !important;
+}
+.timesheet_head .glyphicon-export {
+    font-size: 14px !important;
+    padding: 0px 5px 0px 2px !important;
+}
+.cand-advsrch .btn {
+    border-radius: 30px;
+}
+.timesheet_head .fa-filter {
+    padding: 0 5px !important;
+    font-size: 15px !important;
+    color: #616161 !important;
+}
+.clients_wrap .timesheet_head ul li a .fa-plus {
+    font-size: 14px !important;
+    padding:0 5px 0 2px !important;
+}
+.uasrch-selectpicker .fa {
+	font: normal normal normal 14px/1 FontAwesome !important; 
+}
+Header icon border */
+
 /* media 320px */
 @media (max-width: 320px) {
     .universalSrch {

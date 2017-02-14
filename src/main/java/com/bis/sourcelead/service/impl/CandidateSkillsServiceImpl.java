@@ -1,24 +1,9 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.CandidateSkillsDao;
-import com.bis.sourcelead.elk.index.CandidateIndex;
-import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateSkills;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.CandidateSkillsService;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  *@author Ajith Matta
@@ -28,31 +13,35 @@ import com.bis.sourcelead.service.CandidateSkillsService;
 @Service
 public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 
-	@Autowired
+	/*@Autowired
 	CandidateSkillsDao candidateSkillsDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	
-	/**
+	*//**
 	 * @author  prasad.k
 	 * This method is used for to store candidate skills 
 	 * @param candidateSkills
 	 * @return candidateSkills
 	 * @throws Exception
-	 */
+	 *//*
 	@Override
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception {
 		String newlist = candidateSkills.getName();
+		candidateSkills.setUpdatedDate(commonUtil.currentDate());
 		candidateSkills = candidateSkillsDao.storeCandidateSkills(candidateSkills);
-		/*
+		
 		 * updating Candidate Skills DB data in existing candidateindex
-		 */
-		saveOrUpdateCandidateElkDocumentWithSkillDetails(candidateSkills.getCandidateId());
+		 
+		//saveOrUpdateCandidateElkDocumentWithSkillDetails(candidateSkills.getCandidateId());
 		return candidateSkills;
 	}
 	
-	/**
+	*//**
 	 * @author prasad.k
 	 * This method is used for to get CandidateSkills
 	 * @param jsonObj
@@ -61,7 +50,7 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	 * @param userCode
 	 * @return candidateSkillsList
 	 * @throws JSONException
-	 */
+	 *//*
 	
 	@Override
 	public HashSet<CandidateSkills> getCandidateSkillsDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode)throws JSONException{
@@ -77,6 +66,14 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	    	  catch(JSONException e){
 	    		  skills= jsonObj.getString("candidateSkills");
 	    	  }
+			 	skills = skills.replaceAll("\\[", "").replaceAll("\\]","");
+			 	skills = skills.replace("\"", "");
+			  CandidateSkills candSkill = new  CandidateSkills();
+	   		  candSkill.setName(skills);
+	   		  candSkill.setCandidateId(candidate);
+	   		  candSkill.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
+	   		  candSkill.setOrgLocationID(orgLocations);
+	   		  candidateSkillsList.add(candSkill);
 			 
 	    	  skills = skills.replaceAll("\\[", "").replaceAll("\\]","");
 	  	      String[] candSkills = skills.split(",");
@@ -94,18 +91,24 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 		return candidateSkillsList;    
 
    }
-	/**
+	*//**
 	 * @author prasad.k
 	 * This method is used for to get CandidateSkills
 	 * @param candidateId
 	 * @return CandidateSkills By CandidateId
 	 * @throws Exception
-	 */
+	 *//*
 
 	@Override
 	public List<CandidateSkills> getCandidateSkillsByCandidateId(String candidateId) throws Exception {
 		 
 		return candidateSkillsDao.getCandidateSkillsByCandidateId(candidateId);
+	}
+	
+	@Override
+	public CandidateSkills getAllCandidateSkillsByCandidateId(String candidateId) throws Exception {
+		 
+		return candidateSkillsDao.getAllCandidateSkillsByCandidateId(candidateId);
 	}
 	
 	
@@ -114,13 +117,13 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 		return candidateSkillsDao.getCandidateSkillNamesByCandidateId(candidateId);
 	}
 
-	/**
+	*//**
 	 * @author Venkat Kesav
 	 * This method is used for to get CandidateSkill by Id
 	 * @param candidateSkillId
 	 * @return CandidateSkills By candidateSkillId
 	 * @throws Exception
-	 */
+	 *//*
 	@Override
 	public CandidateSkills getCandidateSkillBySkillId(Long candidateSkillId) throws Exception {
 		
@@ -157,7 +160,7 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 		}
 	}
-	
+	*/
 	
 	
 	

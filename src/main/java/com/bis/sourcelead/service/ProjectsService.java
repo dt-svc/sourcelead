@@ -69,7 +69,7 @@ public interface ProjectsService {
 		
 		//HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 		
-		void  userEmailNotificationForTimeSheetSubmission(User user,Long locationsId, HashSet<TimesheetSubmissions> timesheetSubmissions,String level) throws Exception;
+		void  userEmailNotificationForTimeSheetSubmission(User user,Long locationsId, Map<String, String> timesheetFrequencyMap,Projects projects, String level) throws Exception;
 		
 		//HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 		
@@ -102,5 +102,7 @@ public interface ProjectsService {
 		Integer getProjectCountByOrgLocationId(Long orgLocationId)throws Exception;
 
 		List<Object> getAllUniversalSearchProjectsList(OrgLocations orgLocations, String searchValue) throws Exception;
+		
+		Boolean validateTasksName(String taskname, Long projectId) throws Exception;
 		
 }

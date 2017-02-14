@@ -4,10 +4,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.MessageFormat;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,12 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-
 import javax.mail.internet.InternetAddress;
-import javax.servlet.http.HttpServletRequest;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
@@ -33,16 +26,13 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -76,10 +66,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -775,6 +762,7 @@ public class ClientServiceImpl implements ClientService{
 
 					Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(editUser.getId(), orgLocation.getId());
 					//Update the user details for Elk search
+					commonUtil.commonUserUpdate(editUser);
 					userService.saveOrUpdateUserElkDocument(userRole,employee, editUser.getUserCode());
 			
 				}
@@ -911,7 +899,7 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
-			 emailMessage.setToEmail(orgSpoc.getSpocUser().getEmail());
+			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
 			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -993,7 +981,7 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
-			 emailMessage.setToEmail(orgSpoc.getSpocUser().getEmail());
+			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
 			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -1166,8 +1154,24 @@ public class ClientServiceImpl implements ClientService{
 					 responderType = "Vendor"; 
 				 }
 				
+				 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
+				 
+				 BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
+				 initiatorQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+				 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorType", responderType));
+				 
+				 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
+				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", orgLocations.getId()));
+				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
+				 
+				 combinedQueryBuilder.should(initiatorQueryBuilder);
+				 combinedQueryBuilder.should(responderQueryBuilder);
+				 
+				 combinedQueryBuilder.must(combinedQueryBuilder);
+				
 				ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(serachValue);
-					BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();;
+					BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+					 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
 					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : allKeyWordArray){

@@ -44,20 +44,19 @@ public class UserIndexHelper {
 			}
 			userIndex.setStatus(userRole.getUser().getStatus());
 			userIndex.setTerminateReason(userRole.getTerminateReason());
-			DateFormat StringDate = new SimpleDateFormat("dd-MM-yyyy");
+			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 				if(null != employee){
 					userIndex.setEmployeeId(employee.getEmployeeId());
 					userIndex.setRate(employee.getRate());
 					userIndex.setRatePer(employee.getRatePer());
 					 
 					if(null != employee.getHireDate()){
-					String hireDate  = StringDate.format(employee.getHireDate());
+					String hireDate  = dateFormat.format(employee.getHireDate());
 					userIndex.setHireDate(hireDate);
 				}
 			}
 			userIndex.setUserCode(user.getUserCode());
 			userIndex.setUserRoleId(userRole.getRoles().getId().toString());
-			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			if(null != userRole.getCreatedDate()){
 				userIndex.setCreatedDate(dateFormat.format(userRole.getCreatedDate()));
 			}
@@ -66,15 +65,13 @@ public class UserIndexHelper {
 			}
 			
 			
-			/*if(null == userRole.getCreatedBy() || "".equalsIgnoreCase(userRole.getCreatedBy())){
+			if(null == userRole.getCreatedBy() || "".equalsIgnoreCase(userRole.getCreatedBy())){
 				userIndex.setCreatedBy(loginUserCode);
-			}*/
-			userIndex.setCreatedBy(userRole.getCreatedBy());
-			if(null != userRole.getUpdatedDate()){
-				String updatedDate  = StringDate.format(new Date(userRole.getUpdatedDate().getTime()));
-
-				userIndex.setUpdatedDate(updatedDate);
 			}
+			/*if(null != userRole.getUpdatedDate()){
+				String updatedDate  = StringDate.format(new Date(userRole.getUpdatedDate().getTime()));
+				userIndex.setUpdatedDate(updatedDate);
+			}*/
 			
 			userIndex.setUpdatedBy(loginUserCode);
 		}

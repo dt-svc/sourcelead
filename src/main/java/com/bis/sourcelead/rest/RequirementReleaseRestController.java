@@ -321,6 +321,8 @@ public class RequirementReleaseRestController {
 	public String releaseJobsToClientsOrVendors(@RequestParam(value = "requirementId", required = false) Long requirementId,
 												@RequestParam(value = "contactsIds", required = false) String contactsIds,
 			                                    @RequestParam(value="vendorIds", required=false) String vendorIds,
+			                                    @RequestParam(value = "isPublic", required = false) String isPublics,
+			                                    @RequestParam(value="isCrowdScourcing", required=false) String isCrowdScourcing,
 			                                    HttpServletRequest request) throws Exception {
 			
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -466,6 +468,13 @@ public class RequirementReleaseRestController {
 					    }
 					}
 				}
+			}
+			
+			if(null != isPublics && !"".equalsIgnoreCase(isPublics)){
+				parentRequirement.setIsPublic(isPublics);
+			}
+			if(null != isCrowdScourcing && !"".equalsIgnoreCase(isCrowdScourcing)){
+				parentRequirement.setIsCrowdSourcing(isCrowdScourcing);
 			}
 			
 			if(null == parentRequirement.getReleasedBy()){

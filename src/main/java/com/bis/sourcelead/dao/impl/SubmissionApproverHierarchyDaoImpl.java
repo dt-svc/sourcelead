@@ -238,6 +238,26 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		return submissionApproverHierarchy;
 	}
 	
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean getCronRemainderForEmployeeByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId) {
+		
+		Boolean flag = true; 
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(frequencyStartDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
+		
+		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm where pm.id = :projectMemberId and (sah.submissionStatus = 'SUBMITTED' OR sah.submissionStatus = 'APPROVED')  and  ((submission.startDate = :sqlStartDate) OR (submission.startDate BETWEEN :sqlStartDate and :sqlEndDate))");
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("projectMemberId", projectMemberId).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).setCacheable(true).list();
+		if(null != submissionApproverHierarchyList  && !submissionApproverHierarchyList.isEmpty()){
+			flag = false;
+		}
+		return flag;
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public SubmissionApproverHierarchy getSubmissionLowLevelApproverHierarchyForEmployee(Long submissionId) {

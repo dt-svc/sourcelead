@@ -242,7 +242,7 @@ overflow-x: auto;
 					  <div class="row form-footer mt">
 						  <div class="pull-right mr">
 							   <input type="button" value="Search" id="search_project" onclick="searchProject();" class="btn btn-sm btn-primary"/>
-                               <input type="button" value="Cancel" onClick="closePop(); clearKeys();" class="btn btn-sm btn-default ml10"/>
+                               <input type="button" value="Clear" onClick="clearKeys();" class="btn btn-sm btn-default ml10"/>
 						  </div>
 					  </div>
 				  
