@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,21 +19,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
-import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
@@ -50,8 +42,8 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
-	@Autowired
-    CandidateSkillsService candidateSkillsService;
+	/*@Autowired
+    CandidateSkillsService candidateSkillsService;*/
 	
 	@Autowired
 	CandidateService candidateService;
@@ -282,7 +274,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		 }
 		 
 		 for(String email : candidateEmailsList){
-			 StringBuilder skills = new StringBuilder();
+			/* StringBuilder skills = new StringBuilder();
 			 StringBuilder candidateSkills = new StringBuilder();
 			 List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(email);
 			 if(skillsList.size() > 0){
@@ -292,7 +284,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 				 candidateSkills.append(skills);
 			 }else{
 				 candidateSkills.append("-----");
-			 }
+			 }*/
 			 
 			 
 			 
@@ -364,12 +356,17 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 			 }else{
 				 rate = rateBuilder.append("-----");
 			 }
-			 
+			 String skills;
+			 if(null != candidate.getSkillsName()){
+				 skills = candidate.getSkillsName();
+			 }else{
+				 skills = "-----";
+			 }
 			 tempHTML = tempHTML+"<tr align='center'>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateName.toString()+"</td>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+totalExp.toString()+"</td>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+rate.toString()+"</td>";
-			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateSkills.toString()+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+skills+"</td>";
 			 
 			 tempHTML = tempHTML+"</tr>";
 			 

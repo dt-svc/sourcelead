@@ -283,6 +283,8 @@ function addTimeSheetRow(projectId) {
  		  if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
 			   var taskId = $("#" + projectTaskId).val().split(",");
 			   $("#" + projectTaskId + "BillableTypeId").html(taskId[1]);
+		   }else{
+			   $("#" + projectTaskId + "BillableTypeId").html(""); 
 		   }
  		   
  		   var avilableProjectTaskIds = [];
@@ -1137,42 +1139,52 @@ $(document).ready(function() {
 function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize){
 	
 	 var msg = $("#reject"+projectMemberId+"message").val(); 
-     var sourceleadUrl ='${sourceleadUrl}';
-     var rowHtmlContent =  $("#row"+projectMemberId).html();
+	 if(msg.match(/^[^\s-](.*)*$/) != null){
+		 $("#rejectReasonDiv").empty();
+		 var sourceleadUrl ='${sourceleadUrl}';
+	     var rowHtmlContent =  $("#row"+projectMemberId).html();
+	     
+	     var firstName =  '${SourceLeadWeb_user.firstName}';
+		 if(firstName == '' || firstName == 'undefined' || firstName == null ){
+			firstName = '';
+		 }
+		 var lastName = '${SourceLeadWeb_user.lastName}';
+		 if(lastName == '' || lastName == 'undefined' || lastName == null ){
+			  lastName = '';
+	     }
+		 $("#row"+projectMemberId).empty();
+		 $("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
+	     $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
+	    $.ajax({
+	    type: "POST",
+	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
+	    success: function(data) {    
+	   	   // approvalList();
+	   	   var uniqueSepartor = startDate.replace('-','').replace('-','');
+	   	   if(projectMemberId.indexOf(uniqueSepartor) >= 0){
+	   		   var table = $('#example').DataTable();
+	   		   table.row('#row'+projectMemberId+'').remove().draw( false );
+	   	   }
+	   	   else{
+	   		  $("#row"+projectMemberId).empty();
+	 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
+	 	    	  $("#status"+projectMemberId).html("REJECTED");
+	 	    	  $("#action"+projectMemberId).empty();
+	 	    	  $("#action"+projectMemberId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='ts_app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><br>By :"+firstName+" "+lastName+"</div>");  
+	   	   }
+	   	   cancelRejectSubmission(projectMemberId);
+	   	    pagination();
+	   	   
+	      }
+	    }); 
+	 }else{
+		 if(msg){
+				$("#rejectReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+			}else{
+				$("#rejectReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+			}
+		}
      
-     var firstName =  '${SourceLeadWeb_user.firstName}';
-	 if(firstName == '' || firstName == 'undefined' || firstName == null ){
-		firstName = '';
-	 }
-	 var lastName = '${SourceLeadWeb_user.lastName}';
-	 if(lastName == '' || lastName == 'undefined' || lastName == null ){
-		  lastName = '';
-     }
-	 $("#row"+projectMemberId).empty();
-	 $("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
-     $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
-    $.ajax({
-    type: "POST",
-    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
-    success: function(data) {    
-   	   // approvalList();
-   	   var uniqueSepartor = startDate.replace('-','').replace('-','');
-   	   if(projectMemberId.indexOf(uniqueSepartor) >= 0){
-   		   var table = $('#example').DataTable();
-   		   table.row('#row'+projectMemberId+'').remove().draw( false );
-   	   }
-   	   else{
-   		  $("#row"+projectMemberId).empty();
- 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
- 	    	  $("#status"+projectMemberId).html("REJECTED");
- 	    	  $("#action"+projectMemberId).empty();
- 	    	  $("#action"+projectMemberId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='ts_app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><br>By :"+firstName+" "+lastName+"</div>");  
-   	   }
-   	   cancelRejectSubmission(projectMemberId);
-   	    pagination();
-   	   
-      }
-    }); 
     
 }
 
@@ -1190,10 +1202,14 @@ function cancelRejectSubmission(projectMemberId){
 }
 
 function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize){  
+	    $("#rejectReasonDiv").empty();
+	    $("#reject"+projectMemberId+"message").val(''); 
         var result = "";
         result = result +'<div class="time_appr_rejct_pop" id="reject'+projectMemberId+'panel" style="top:8%">';
 		result = result +'<textarea placeholder="Enter comment here" id="reject'+projectMemberId+'message" ></textarea>';
+		result = result + ' <div id="rejectReasonDiv"/>';
 		result = result +'<a href="#" onClick="saveRejectSubmissionByProjectMemberId(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\','+tdSpanSize+');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+projectMemberId+'\');">Cancel</a>';
+		result = result +'</div>';
 		result = result +'</div>';
 		$("#rejectedPopup").append(result);
 	    $(".mask_time").fadeIn(200); 
