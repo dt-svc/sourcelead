@@ -1901,5 +1901,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				return searchList;
 			}
 
+			@Override
+			public Boolean validateTasksName(String taskname, Long projectId) throws Exception {
+				Boolean flag = projectsDao.validateTasksName(taskname,projectId);
+				return flag;
+			}
+
 
 }

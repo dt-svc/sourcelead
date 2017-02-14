@@ -5,6 +5,27 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<script type="text/javascript">
+function taskNameValidation(){
+	var projectId  = $("#projectId").val();
+	var TaskName = document.getElementById("taskName").value.trim();
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+ "/validateTasksNameById?${_csrf.parameterName}=${_csrf.token}&TaskName="+ TaskName+"&ProjectId="+projectId,
+		success : function(data) {
+			 if (data == true) {
+				$("input#taskName").after("<p class='jquery_form_error_message'>"+ TaskName+ " is Already Existed</span>");
+				document.getElementById("taskName").setAttribute('record-exist', 'yes');
+				document.getElementById("taskName").setAttribute('record-exist-errorMsg',TaskName+ ' is Already Existed');
+				$('input#taskName').removeAttr( "record-exist record-exist-errorMsg");
+			} else {
+				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
+			} 
+		},
+	});
+}
+</script>
 
 <!-- Modal -->
 <div class="modal fade" id="addTask" role="dialog">
@@ -35,10 +56,8 @@
 							<div class="form-group" id="taskNamesDIV">
 								<label class="col-md-3">Task Name</label>
 								<div class="col-md-9">
-									<input type="text" id="taskName" name="taskName"
-										placeholder="Enter Task Name" class="form-control"
-										field-name="Task Name"
-										data-validation="required validate_length length2-250">
+									<input type="text" id="taskName" name="taskName" onblur="taskNameValidation();" placeholder="Enter Task Name" class="form-control"
+										field-name="Task Name" data-validation="required validate_length length2-250">
 								</div>
 							</div>
 							<div class="form-group" id="taskBillableTypeDiv">

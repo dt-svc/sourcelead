@@ -103,4 +103,6 @@ public interface ProjectsService {
 
 		List<Object> getAllUniversalSearchProjectsList(OrgLocations orgLocations, String searchValue) throws Exception;
 		
+		Boolean validateTasksName(String taskname, Long projectId) throws Exception;
+		
 }
