@@ -475,4 +475,15 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getProfessionalInfoByLoginUserIdAndCandidateType(Long userId, String candidateType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.consultantUser =:userId and candidate.candidateType =:candidateType ";  
+		List<Candidate> candidateList =  session.createQuery(query).setLong("userId", userId).setString("candidateType", candidateType).setCacheable(true).list();
+		return  candidateList;
+	}
+
+	
+	
 }
