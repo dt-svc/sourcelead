@@ -282,21 +282,22 @@ public class TimesheetEntriesRestController {
 	
 	@RequestMapping(value = "/exportTimeSheet")  
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS')")
-	public void ExportTimeShhet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate,@RequestParam(value="exportType", required=false) String exportType,@RequestParam(value="projectMemberId", required=false) Long projectMemberId, HttpServletResponse response) throws Exception {
+	public void ExportTimeShhet(HttpServletRequest request,@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+			@RequestParam(value="startDate", required=false) String startDate,
+			@RequestParam(value="endDate", required=false) String endDate,
+			@RequestParam(value="exportType", required=false) String exportType, 
+			HttpServletResponse response) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = null;
+		ProjectMembers projectMember =  null;
 		if(null != projectMemberId){
-			ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemberId);
-			user = userService.getUserByIdAndOrgLocationsId(projectMember.getEmployee().getUser().getId(), orgLocations.getId());
-		}else{
-			user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			projectMember = projectMembersService.getProjectMemberById(projectMemberId);
 		}
 		
 		File file = null;
 		if(!"pdf".equalsIgnoreCase(exportType)){
-			file = exportTimesheetEntries.exportTimesheets(user, navigation, startDate,orgLocations);
+			file = exportTimesheetEntries.exportTimesheets(projectMember,startDate,endDate,orgLocations);
 		}else{
-			file = timeSheetPdfUtil.exportTimesheetPdf(user, navigation, startDate,orgLocations);
+			file = timeSheetPdfUtil.exportTimesheetPdf(projectMember,startDate,endDate,orgLocations);
 		}
 		
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());

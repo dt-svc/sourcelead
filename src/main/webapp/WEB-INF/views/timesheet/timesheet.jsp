@@ -985,10 +985,9 @@ function deleteSubmissionDocument(submissionDocumentId){
 
 <!-- this script is for Timesheet Entries Export -->
 <script>
-function timesheetEntriesExport(startDate,projectMemberId,exportType){
+function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var navigation = "left";
-	 window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&exportType="+exportType+"&projectMemberId="+projectMemberId;
+	 window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
 }
 </script>
  <!-- this script is for save Timesheet -->  
