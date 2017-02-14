@@ -157,6 +157,7 @@ public class LoginSessionController {
 		}
 		else{
 			setSessionUserAttributes(user,request,sourceleadUrl);
+			setSessionOrgAttributes(userRole.getOrgId(), request);
 			tabsList = tabsService.getCrowdSourcingTabsListByRoleId(userRole.getRoles().getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			
@@ -167,6 +168,11 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getUserType());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 			SourceLeadSessionManager.setSessionAttribute(request, "country", user.getLocation());
+			
+			OrgLocations orgLocations = userRole.getOrgLocations();
+			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("professional/professionalDashboard");
