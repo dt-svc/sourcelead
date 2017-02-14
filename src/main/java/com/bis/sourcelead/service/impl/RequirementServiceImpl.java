@@ -2773,4 +2773,3 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getRequirementListByOrgLocationID(orgLocationId);
 	}
 }
-

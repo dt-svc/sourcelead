@@ -1,19 +1,21 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -37,18 +39,17 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
@@ -57,7 +58,20 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.html.WebColors;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 @Service
 public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
@@ -104,6 +118,12 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	
 	@Autowired
 	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
+	
+	@Autowired
+	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	TimesheetApprovalFrequencyGeneratorUtil timesheetApprovalFrequencyGeneratorUtil;
 
 	@Override
 	public File exportTimesheets(ProjectMembers projectMember, String frequencyStartDate,String frequencyEndDate,OrgLocations orgLocations) throws Exception {
@@ -564,5 +584,394 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		style.setFont(font);
 		return style;
 	}
+	
+	@Override
+	public File timeSheetApprovelExport(User user, OrgLocations orgLocations, Date startDate, Date endDate,String timesheetFrequency, String client, String stage,String frequencyMonth,String weekFrequency) throws Exception {
+		Long clientId;
+		if(!client.equalsIgnoreCase("")){
+		 clientId = Long.parseLong(client) ;
+		}else{
+		  clientId = null;
+		}
+		
+		List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId());
+		String[] headers;
+		int flag = 0;
+			StringBuilder StDateAndEndDate = new StringBuilder("");
+			StringBuilder separator = new StringBuilder(",");
+		    DateFormat format = Constants.DF_DMY;
+		    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
+		        
+			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate),format.format(endDate));
+			if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
+				for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
+		    		 String  k = entry.getKey();
+		    		 String  v = entry.getValue();
+				        Date weekStartDate;
+				        Date weekEndDate;
+					try {
+						 weekStartDate = format.parse(k.replaceAll("/", "-"));
+						 weekEndDate = format.parse(v.replaceAll("/", "-"));
+						 if(weekStartDate.equals(weekEndDate)){
+							 StDateAndEndDate.append(flag != 0 ? separator : "" ).append(shortormat.format(weekStartDate));
+						 }else{
+							 StDateAndEndDate.append(flag != 0 ? separator : "" ).append(shortormat.format(weekStartDate)).append("-").append(shortormat.format(weekEndDate));
+						 }
+	   					
+					} catch (Exception e) {}
+				        
+				        flag++;
+				}
+			}
+			String[] headersList = Constants.TIMESHEET_APPROVAL_MECHANISM_HEADER;
+			headers = getHeaders(headersList,StDateAndEndDate.toString());
+	    Document document = new Document(PageSize.LETTER.rotate());
+	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
+	    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append(orgLocations.getOrg().getOrgName()).append("_TimeSheetApproval_").append(dateFormat.format(new Date())).toString(),".pdf");
+
+	    file.setReadable(true);
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+	        com.itextpdf.text.Font boldFont = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 18, com.itextpdf.text.Font.BOLD);
+
+	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myBordColor);
+	        StringBuilder sbReqStyle = new StringBuilder();
+	        sbReqStyle.append(orgLocations.getOrg().getOrgName()).append(" ");
+
+	        StringBuilder orgNameSB = new StringBuilder();
+            Paragraph para = new Paragraph(orgNameSB.append(orgLocations.getOrg().getOrgName()).toString(),boldFont);
+
+            para.setAlignment(Element.ALIGN_CENTER);
+            document.add(para);
+	        // Create an instance of PdfPTable. After that we transform the header and
+             PdfPTable table = new PdfPTable(headers.length);
+            com.itextpdf.text.Font font = new com.itextpdf.text.Font(FontFamily.HELVETICA, 14, com.itextpdf.text.Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(sbReqStyle.toString(),font));
+	        cell1.setColspan(12);
+	        headerCellStyle(cell1);
+	        table.setWidthPercentage(100);
+	        
+	        if(timesheetFrequency.equalsIgnoreCase("Monthly")){
+	        	 table.setWidths(new int[]{5,5,5,5,3,3,3,3,3,3,3,5});
+	        }else if(timesheetFrequency.equalsIgnoreCase("Semi-monthly")){
+            table.setWidths(new int[]{3,5,5,3,5,3,3,3,3,5});
+	        }else if(timesheetFrequency.equalsIgnoreCase("Bi-weekly")){
+	        	table.setWidths(new int[]{3,5,5,3,5,3,3,3,5});
+	        }else{
+	        	table.setWidths(new int[]{3,5,5,3,5,3,3,5});
+	        }
+            table.addCell(cell1);
+	        for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header.toUpperCase(), new com.itextpdf.text.Font(FontFamily.HELVETICA, 10, com.itextpdf.text.Font.BOLD)));
+	            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+	            cell.setBackgroundColor(myColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> timesheetApproval = new ArrayList<>();
+	        for(ProjectMembers proMembers : projectMembers){
+	        	timesheetApproval.add(prepareTimesheetPdfToArray(proMembers,client,timesheetFrequency,stage,user,startDate,endDate));
+	        }
+	        
+	        for (String[] reqArray: timesheetApproval) {
+                for (int i = 0; i < reqArray.length; i++) {
+                    String datum = reqArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new com.itextpdf.text.Font(FontFamily.HELVETICA, 10, com.itextpdf.text.Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        
+	        document.addTitle("Candiate List Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+		return file;
+	}
+	
+	
+	private String[] getHeaders(String[] headers, String dates) {
+		String[] weekDates = dates.split(",");
+		int k=4;
+		List<String> headerList = new ArrayList<String>(Arrays.asList(headers));
+		List<String> listDates = new ArrayList<String>(Arrays.asList(weekDates));
+	    	for(String dateDynamic :listDates){
+	    	headerList.add(k, dateDynamic);
+	    	k++;
+	    }
+	    String [] headerListString = headerList.toArray(new String[headerList.size()]);
+		return headerListString;
+	}
+
+	private String[] prepareTimesheetPdfToArray(ProjectMembers projMembers,String client,String timesheetFrequency,String Stage,User user,Date startDate, Date endDate) throws Exception {
+		String[] timeSheetApprovalArray;
+			
+			StringBuilder StDateAndEndDate = new StringBuilder("");
+			StringBuilder separator = new StringBuilder(",");
+		    DateFormat format = Constants.DF_DMY;
+		    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
+			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate),format.format(endDate));
+			int flag = 0; 
+			if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
+				for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
+		    		 String  k = entry.getKey();
+		    		 String  v = entry.getValue();
+				        Date weekStartDate;
+				        Date weekEndDate;
+					try {
+						 weekStartDate = format.parse(k.replaceAll("/", "-"));
+						 weekEndDate = format.parse(v.replaceAll("/", "-"));
+						 if(weekStartDate.equals(weekEndDate)){
+							 StDateAndEndDate.append(flag != 0 ? separator : "" ).append(shortormat.format(weekStartDate));
+						 }else{
+							 StDateAndEndDate.append(flag != 0 ? separator : "" ).append(shortormat.format(weekStartDate)).append("-").append(shortormat.format(weekEndDate));
+						 }
+	   					
+					} catch (Exception e) {}
+				        
+				        flag++;
+				}
+			}
+			
+			String[] headersList = Constants.TIMESHEET_APPROVAL_MECHANISM_HEADER;
+			String [] timeSheetApproval = getHeaders(headersList,StDateAndEndDate.toString());
+			timeSheetApprovalArray =new String[timeSheetApproval.length];
+			
+	if(projMembers.getEmployee().getUser().getFullName() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getFullName())){
+		timeSheetApprovalArray[0] = projMembers.getEmployee().getUser().getFullName();
+	}else{
+		timeSheetApprovalArray[0] = "--";
+	}
+	if(projMembers.getEmployee().getUser().getEmail() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getEmail())){
+		timeSheetApprovalArray[1] = projMembers.getEmployee().getUser().getEmail();
+	}else{
+		timeSheetApprovalArray[1] = "--";
+	}
+	if(projMembers.getEmployee().getUser().getMobilePhone() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getMobilePhone())){
+		timeSheetApprovalArray[2] = projMembers.getEmployee().getUser().getMobilePhone();
+	}else{
+		timeSheetApprovalArray[2] = "--";
+	}
+	if(projMembers.getProjects().getOrgRelationId() != null){
+		timeSheetApprovalArray[3] = projMembers.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName();
+	}else{
+		timeSheetApprovalArray[3] = "--";
+	}
+	
+	int count = 4;
+		LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
+			Float totalHours = 0f;
+			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
+			if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
+				if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
+					for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
+						if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
+							totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
+							timeSheetApprovalArray[count] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
+						} else {
+							timeSheetApprovalArray[count] = "0/40";
+						}
+						count++;
+					}
+				}
+			}
+	     if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
+	    	 timeSheetApprovalArray[count]   = totalHours.toString()+"/40";
+	     }else{
+	    	 timeSheetApprovalArray[count] = "0.0/40";
+	     }
+		if(sah.getSubmissionApprovalStatus() != null && !"".equalsIgnoreCase(sah.getSubmissionApprovalStatus().toString())){
+			timeSheetApprovalArray[count+1] = sah.getSubmissionApprovalStatus().toString();
+		}else{
+			timeSheetApprovalArray[count+1] = "--";
+		}
+		if(sah.getActionPerformedBy() != null && !"".equalsIgnoreCase(sah.getActionPerformedBy())){
+			timeSheetApprovalArray[count+2] = sah.getActionPerformedBy();
+		}else{
+			timeSheetApprovalArray[count+2] = "--";
+		}
+			return timeSheetApprovalArray;
+	}
+
+	private LinkedHashMap<Date, Date> getTotalCountFromStartAndEndDate(Date startDate,Date endDate) throws Exception {
+		LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
+		DateFormat format = Constants.DF_DMY;
+		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
+		if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
+			for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
+	    		 String  k = entry.getKey();
+	    		 String  v = entry.getValue();
+		        Date weekStartDate;
+		        Date weekEndDate;
+				try {
+					 weekStartDate = format.parse(k.replaceAll("/", "-"));
+					 weekEndDate = format.parse(v.replaceAll("/", "-"));
+					 displayWeeksList.put(weekStartDate, weekEndDate);
+				} catch (Exception e) {}
+			}
+		}
+		return displayWeeksList;
+	}
+	
+	
+	private static void headerCellStyle(PdfPCell cell){
+	    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    cell.setPaddingTop(0f);
+	    cell.setPaddingBottom(7f);
+	    cell.setBackgroundColor(new BaseColor(0,121,182));
+	    cell.setBorder(0);
+	    cell.setBorderWidthBottom(2f);
+	    }
+
+	
+	
+	
+	
+	@Override
+	public File timeSheetApprovelExportExcel(User user, OrgLocations orgLocations,Date startDate,Date endDate,String timesheetFrequency,String client,String stage,String frequencyMonth,String weekFrequency) throws Exception {
+		File file= null;
+		Long clientId;
+		if(!client.equalsIgnoreCase("")){
+		 clientId = Long.parseLong(client) ;
+		}else{
+		  clientId = null;
+		}
+		//for creating workbook and sheet in excel.
+		Workbook createExcelworkbook = new XSSFWorkbook();
+		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		StringBuilder excelStringBuilder=new StringBuilder();
+		Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(orgLocations.getOrg().getOrgName()).append("_").append(dateFormat.format(new Date())).toString());
+		Row writeRow = null;
+		// to get list of project members from data base.
+		List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId());
+		for (ProjectMembers proMembers : projectMembers){
+			createExcelsheet = getExcelSheetWithHeaderTimesheetApproval(createExcelsheet, writeRow, createExcelworkbook,proMembers,startDate,endDate);
+		}
+		// Iteration of project members list.
+		int column = 0;
+		for (ProjectMembers proMembers : projectMembers) {
+			writeRow = createExcelsheet.createRow(column + 1);
+			createExcelsheet = createXlsSheetTimesheetApproval(createExcelsheet, writeRow,proMembers,client,timesheetFrequency,startDate,endDate,user);
+			column++;
+		}
+		// output the file using file output stream.
+		StringBuilder tempFileBuilder=new StringBuilder();
+		file = File.createTempFile(tempFileBuilder.append(orgLocations.getOrg().getOrgName()).append("_TimeSheet_").append(dateFormat.format(new Date())).toString(),".xls");
+		file.setReadable(true);
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			createExcelworkbook.write(fos);
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	// creating excel sheet data here depending upon input frequency.
+	private Sheet createXlsSheetTimesheetApproval(Sheet createExcelsheet, Row writeRow,ProjectMembers projMembers,String client,String timesheetFrequency,Date startDate,Date endDate,User user) throws Exception {
+		if (projMembers.getEmployee().getUser().getFullName() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getFullName())) {
+			writeRow.createCell(0).setCellValue(projMembers.getEmployee().getUser().getFullName());
+			createExcelsheet.setColumnWidth(0, 10000);
+		}
+		if (projMembers.getEmployee().getUser().getEmail() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getEmail())) {
+			writeRow.createCell(1).setCellValue(projMembers.getEmployee().getUser().getEmail());
+			createExcelsheet.setColumnWidth(1, 10000);
+		}
+		if (projMembers.getEmployee().getUser().getMobilePhone() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getMobilePhone())) {
+			writeRow.createCell(2).setCellValue(projMembers.getEmployee().getUser().getMobilePhone());
+			createExcelsheet.setColumnWidth(2, 10000);
+		}
+		
+		if (projMembers.getProjects().getOrgRelationId() != null) {
+			writeRow.createCell(3).setCellValue(projMembers.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+			createExcelsheet.setColumnWidth(3, 10000);
+		}
+		int count = 4;
+			LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
+				Float totalHours = 0f;
+				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
+				if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
+					if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
+						for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
+							if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
+								totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
+								writeRow.createCell(count).setCellValue(sah.getWeekTotals().get(entry.getKey()).toString() + "/40");
+							} else {
+								writeRow.createCell(count).setCellValue( "0/40");
+							}
+							count++;
+						}
+					}
+				}
+				 if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
+					 writeRow.createCell(count).setCellValue( totalHours.toString()+"/40");
+			     }else{
+			    	 writeRow.createCell(count).setCellValue( "0.0/40");
+			     }
+				if(sah.getSubmissionApprovalStatus() != null && !"".equalsIgnoreCase(sah.getSubmissionApprovalStatus().toString())){
+					writeRow.createCell(count+1).setCellValue( sah.getSubmissionApprovalStatus().toString());
+				}else{
+					writeRow.createCell(count+1).setCellValue( "--");
+				}
+				if(sah.getActionPerformedBy() != null && !"".equalsIgnoreCase(sah.getActionPerformedBy())){
+					writeRow.createCell(count+2).setCellValue(sah.getActionPerformedBy());
+				}else{
+					writeRow.createCell(count+2).setCellValue( "--");
+				}
+		return createExcelsheet;
+	}
+
+	private Sheet getExcelSheetWithHeaderTimesheetApproval(Sheet createExcelsheet, Row writeRow,Workbook createExcelworkbook, ProjectMembers proMembers,Date startDate,Date endDate) throws Exception {
+	CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		int flag = 0;
+		StringBuilder StDateAndEndDate = new StringBuilder("");
+		StringBuilder separator = new StringBuilder(",");
+		DateFormat format = Constants.DF_DMY;
+	    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
+	Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate),format.format(endDate));
+	if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
+		for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
+    		 String  k = entry.getKey();
+    		 String  v = entry.getValue();
+		        Date weekStartDate;
+		        Date weekEndDate;
+			try {
+				 weekStartDate = format.parse(k.replaceAll("/", "-"));
+				 weekEndDate = format.parse(v.replaceAll("/", "-"));
+				 if(weekStartDate.equals(weekEndDate)){
+					 StDateAndEndDate.append(flag != 0 ? separator : "" ).append(shortormat.format(weekStartDate));
+				 }else{
+					 StDateAndEndDate.append(flag != 0 ? separator : "" ).append(shortormat.format(weekStartDate)).append("-").append(shortormat.format(weekEndDate));
+				 }
+					
+			} catch (Exception e) {}
+		        
+		        flag++;
+		}
+	}
+	String head[] = Constants.TIMESHEET_APPROVAL_MECHANISM_HEADER;
+	String[] headers = getHeaders(head, StDateAndEndDate.toString());
+	createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 0);
+	return createExcelsheet;
+	}
+
 	
 }
