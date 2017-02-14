@@ -793,16 +793,6 @@ function candidateProfile(candidateId){
 							
 							result = result + '<div class="clearfix"></div> ';
 							
-							
-							
-							/* result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> '; */
-							
-							result = result +'		              <!-- Add skills div ends -->                                                                                                    ';
-							
-							result = result +'</div> ';
-							result = result +'</div>                                                                                                                              ';
-							result = result +'		          <!-- Select Skills -->                                                                                                              ';
-							
 							result = result +'<div class="clearfix mt"></div>';
 							result = result +'<div class="append_skill ">';  
 							result = result +'<ul class="list-inline list-unstyled">';
@@ -815,7 +805,17 @@ function candidateProfile(candidateId){
 			               
 							result = result +'</ul>'; 
 							result = result +'</div>';
-							result = result +'		        </div>';
+							result = result +'</div>';
+							
+							/* result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> '; */
+							
+							result = result +'		              <!-- Add skills div ends -->                                                                                                    ';
+							
+							result = result +'</div> ';
+							result = result +'</div>                                                                                                                              ';
+							result = result +'		          <!-- Select Skills -->                                                                                                              ';
+							
+							
 							
 							//Employee Div
 							result = result + '<div id="employeeSubmissionProfile"></div> '; 
