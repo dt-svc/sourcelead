@@ -257,6 +257,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		 submissionApproverHierarchyDao.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, approverUserId, startDate, endDate, status, rejectedReason);
 	}
 
+	@Override
+	public Boolean getCronRemainderForEmployeeByProjectMemberId(Date frequencyStartDate, Date frequencyEndDate,
+			Long projectMemberId) {
+		return  submissionApproverHierarchyDao.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
+	}
+
 	
 	
 	
