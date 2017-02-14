@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +43,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -75,6 +75,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
+import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -105,6 +106,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	TimesheetApprovalFrequencyGeneratorUtil timesheetApprovalFrequencyGeneratorUtil;
 	
 	@Autowired
 	TimeSheetPdfUtil timeSheetPdfUtil;
@@ -416,12 +420,15 @@ public class TimesheetRestController {
 			}
 			tabData =	projectTabDataByDates(currentStartDate.toString(), currentEndDate.toString(),projectMemberId,timesheetFrequencyEndDate,submissionStatus.getValue());
 		}
-		timesheetEntriesDiv.append("					<div class='export'> ");
+		
+		String exportPdf = "pdf";
+		String exportExcel = "excel";
+		timesheetEntriesDiv.append("					<div class='export' onClick='dropDown();'> ");
 		timesheetEntriesDiv.append("						<p><i class='glyphicon glyphicon-export'></i>Export<i class='fa fa-caret-down'></i></p> ");
-		timesheetEntriesDiv.append("							<ul> ");
-		timesheetEntriesDiv.append("			                	<li>PDF<i class='fa fa-file-pdf-o'></i></li> ");
-		timesheetEntriesDiv.append("			                    <li>Excel<i class='fa fa-file-excel-o'></i></li> ");
-		timesheetEntriesDiv.append("			                    <li>Word<i class='fa fa-file-word-o'></i></li> ");
+		timesheetEntriesDiv.append("							<ul id='exporrt'> ");
+		timesheetEntriesDiv.append("			                	<li onClick='timesheetEntriesExport(\""+weekStartDate+"\",\""+weekEndDate+"\","+projectMemberId+",\""+exportPdf+"\");'><i class='fa fa-file-pdf-o text-danger'></i>&nbsp;PDF</li> ");
+		timesheetEntriesDiv.append("			                    <li onClick='timesheetEntriesExport(\""+weekStartDate+"\",\""+weekEndDate+"\","+projectMemberId+",\""+exportExcel+"\");'><i class='fa fa-file-excel-o text-primary'></i>&nbsp;Excel</li> ");
+		timesheetEntriesDiv.append("			                    <li class='hidden'>Word<i class='fa fa-file-word-o'></i></li> ");
 		timesheetEntriesDiv.append("							</ul>			 ");
 		timesheetEntriesDiv.append("					</div> ");
 		timesheetEntriesDiv.append("			        <div class='clearfix'></div> ");
@@ -1615,5 +1622,4 @@ public class TimesheetRestController {
 	            return "success";
 	    }
 		
- 
 }
