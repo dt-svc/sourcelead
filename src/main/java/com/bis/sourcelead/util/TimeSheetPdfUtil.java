@@ -129,7 +129,7 @@ public class TimeSheetPdfUtil {
      */
 	public File exportTimesheetPdf(User user, String navigation, String startDate, OrgLocations orgLocations) throws Exception {
 
-		Map<String,java.util.List<TimesheetHours>> map = new HashMap();
+		Map<String,java.util.List<TimesheetHours>> map = new HashMap<String,java.util.List<TimesheetHours>>();
 		File file = null;
 		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId(),orgLocations.getId());
 		Date employeeStartDate = submissionDateRange.get("STARTDATE");
@@ -277,7 +277,7 @@ public class TimeSheetPdfUtil {
 			
 			String submissionStatusStr = submissionStatus.getValue();
 			String disbleCondition1 = "";
-			 Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+			Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			 currentCal.setLenient(false);
 			 currentCal.setTime(currentStartDate);
             if(sah.getSubmissionApprovalStatus() != null){
@@ -409,7 +409,7 @@ public class TimeSheetPdfUtil {
 		int k=0;
 		 for (Map.Entry<String, java.util.List<TimesheetHours>> entry : map.entrySet())
 	        {
-			 java.util.List<String[]> innerTableArrayData = new ArrayList();
+			 java.util.List<String[]> innerTableArrayData = new ArrayList<String[]>();
 	        	 table1.addCell(entry.getKey());
 	        	 PdfPTable table2 = getPdfTable(headers2,width2,k);
 	        	 PdfPTable table3 = getPdfTable(headers3,width3,k);
