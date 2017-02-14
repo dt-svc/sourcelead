@@ -36,12 +36,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterview;
@@ -56,7 +54,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
@@ -97,9 +94,9 @@ public class CandidateRestController {
 	@Autowired
 	private CandidateResumesService  candidateResumesService;
 	
-	@Autowired
+	/*@Autowired
 	private CandidateSkillsService candidateSkillsService;
-	
+	*/
 	@Autowired
 	private UserService userService;
 	
@@ -225,7 +222,7 @@ public class CandidateRestController {
 			return result;
 	   }
 	 
-	 @RequestMapping(value = "/validateSkillName" , method = RequestMethod.POST)
+	/* @RequestMapping(value = "/validateSkillName" , method = RequestMethod.POST)
 	 public @ResponseBody  Boolean validateSkillName(@RequestParam(value="skillName", required=false) String skillName, @RequestParam(value="candidateId", required=false) String candidateId, HttpServletRequest request) throws Exception {
 		 	Boolean flag = false;
 		 	CandidateSkills candidateSkills = candidateSkillsService.getSkillsByCandidateIdSkillName(candidateId,skillName);
@@ -233,7 +230,7 @@ public class CandidateRestController {
 		    	flag = candidateSkillsService.validateSkillName(skillName);
 		    }
 			return flag;
-	   }
+	   }*/
 	 
 	 
 	 @RequestMapping(value = "/getCandidatesList", method = RequestMethod.POST)

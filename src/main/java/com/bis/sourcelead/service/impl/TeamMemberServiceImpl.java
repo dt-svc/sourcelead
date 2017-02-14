@@ -66,7 +66,6 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	@Override
 	public TeamMembers saveOrUpdateTeamMembers(TeamMembers teamMembers) throws Exception {
 		
-		teamMembers.setCreatedDate(commonUtil.currentDate());
 		teamMembers.setUpdatedDate(commonUtil.currentDate());
 		
 		return teamMemberDao.saveOrUpdateTeamMembers(teamMembers);

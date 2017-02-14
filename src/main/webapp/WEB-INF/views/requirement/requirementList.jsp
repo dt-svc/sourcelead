@@ -299,7 +299,8 @@ function prepareRequirementData(data){
        	 result = result +"<td><div>----</div></td>";
         }
         if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){
-       	 result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div>"+opt.totalApplicantsForRequirement+"</div></a></td>";
+       	// result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div>"+opt.totalApplicantsForRequirement+"</div></a></td>";
+       	result = result +"<td><div>"+opt.totalApplicantsForRequirement+"</div></td>";
         }else{
        	 result = result +"<td><div>0</div></td>";
         }

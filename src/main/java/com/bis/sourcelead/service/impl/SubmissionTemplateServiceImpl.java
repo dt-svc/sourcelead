@@ -8,15 +8,20 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class SubmissionTemplateServiceImpl implements SubmissionTemplateService {
 	
 	@Autowired
 	private SubmissionTemplateDao submissionTemplateDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	public SubmissionTemplate addSubmissionTemplate(SubmissionTemplate submissionTemplate) throws Exception {
+		submissionTemplate.setUpdatedDate(commonUtil.currentDate());
 		return submissionTemplateDao.addSubmissionTemplate(submissionTemplate);
 	}
 

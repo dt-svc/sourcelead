@@ -6,26 +6,23 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.xmlbeans.impl.regex.RegularExpression;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,14 +40,12 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.UniversalSearchHelper;
@@ -81,8 +76,8 @@ public class CandidateServiceImpl implements CandidateService {
 	@Autowired
 	CandidateEmployersService candidateEmployersService;
 	
-	@Autowired
-	CandidateSkillsService candidateSkillsService;
+	/*@Autowired
+	CandidateSkillsService candidateSkillsService;*/
 	
 	@Autowired @Lazy
 	CandidateResumesService candidateResumesService;
@@ -230,14 +225,28 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setAddress(jsonObj.getString("address"));
 		}
 		
+		if(jsonObj.has("candidateSkills") && jsonObj.getString("candidateSkills") !=null){
+			String candidateSkills = null;
+			try{
+	    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateSkills");
+	    		   candidateSkills = jsonArray.toString();
+	    	  }
+	    	  catch(JSONException e){
+	    		  candidateSkills= jsonObj.getString("candidateSkills");
+	    	  }
+			candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+			
+			candidate.setSkillsName(candidateSkills);
+		}
+		
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
 		
 		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(jsonObj,orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEmployers(candidateEmployersList);
 		
-		HashSet<CandidateSkills> candidateSkillsList = candidateSkillsService.getCandidateSkillsDetails(jsonObj, orgLocations,candidate,user.getUserCode());
-		candidate.setCandidateSkills(candidateSkillsList);
+		/*HashSet<CandidateSkills> candidateSkillsList = candidateSkillsService.getCandidateSkillsDetails(jsonObj, orgLocations,candidate,user.getUserCode());
+		candidate.setCandidateSkills(candidateSkillsList);*/
 		
 		HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 		candidate.setCandidateResumes(candidateResumesList);
@@ -453,11 +462,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}
 		}
 	}
-	if(candidate.getCandidateSkills() !=null && candidate.getCandidateSkills().size() >0){
+	if(candidate.getSkillsName() !=null ){
 		StringBuilder skills = new StringBuilder();
-		Set<CandidateSkills> candidateSkillsList = candidate.getCandidateSkills();
-	    for(CandidateSkills candidateSkills : candidateSkillsList){
-	    	skills.append(candidateSkills.getName()).append(",");
+		String [] candidateSkillsList = candidate.getSkillsName().split(",");
+	    for(String skill : candidateSkillsList){
+	    	skills.append(skill).append(",");
 	    }
 	    writeRow.createCell(8).setCellValue(skills.toString().substring(0, skills.length()-1));
 	}
