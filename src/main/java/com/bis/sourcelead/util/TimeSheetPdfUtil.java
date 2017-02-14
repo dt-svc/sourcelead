@@ -238,7 +238,7 @@ public class TimeSheetPdfUtil {
         String approvalStatus = null;
         HashSet<String> combinedApprovalStatus = new HashSet<String>();
         ArrayList<Boolean> isThereAnyApproverApproved = null;
-        Document document =  prepareHeadres(user,weekStartDate,weekEndDate,file);
+        Document document =  prepareHeadres(user,weekStartDate,weekEndDate,file,timesheetSubmissionsList);
         try {
         	int [] width = new int[]{1,5,1};
         	PdfPTable table1 = new PdfPTable(3);
@@ -531,7 +531,7 @@ public class TimeSheetPdfUtil {
 		return table;
 	}
 
-	private Document prepareHeadres(User user, String weekStartDate, String weekEndDate, File file) {
+	private Document prepareHeadres(User user, String weekStartDate, String weekEndDate, File file, Collection<TimesheetSubmissions> timesheetSubmissionsList) {
 		 Document document = new Document(PageSize.LETTER.rotate());
 		    try {
 		    	StringBuilder nameSb = new StringBuilder();
@@ -550,6 +550,10 @@ public class TimeSheetPdfUtil {
 	            }
 		        orderedList.add(new ListItem("Name :"+nameSb.toString()));
 		        orderedList.add(new ListItem("Email Id :"+user.getEmail()));
+		        orderedList.add(new ListItem("Phone Number :"+user.getMobilePhone()));
+		        for(TimesheetSubmissions ts : timesheetSubmissionsList){
+		        	orderedList.add(new ListItem("Project :"+ts.getProjectMembers().getProjects().getProjectName()));
+		        }
 		        orderedList.add(new ListItem("Week : "+weekSb.append(weekStartDate).append("_").append(weekEndDate).toString()));
 
 		        document.add(orderedList);
