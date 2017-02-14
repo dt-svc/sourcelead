@@ -13,6 +13,7 @@ import com.bis.sourcelead.entity.AmexUploadFile;
 import com.bis.sourcelead.entity.BoUploadedFiles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.BoUploadedFilesService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class BoUploadedFilesServiceImpl implements BoUploadedFilesService{
@@ -20,8 +21,12 @@ public class BoUploadedFilesServiceImpl implements BoUploadedFilesService{
 	@Autowired
 	BoUploadedFilesDao boUploadedFilesDao;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	@Override
 	public BoUploadedFiles saveBoUploadedFiles(BoUploadedFiles boUploadedFiles) throws Exception {
+		boUploadedFiles.setUpdatedDate(commonUtil.currentDate());
 		return boUploadedFilesDao.saveBoUploadedFiles(boUploadedFiles);
 	}
 

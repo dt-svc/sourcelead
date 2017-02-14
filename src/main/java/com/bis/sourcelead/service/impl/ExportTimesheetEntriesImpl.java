@@ -10,12 +10,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+
+import java.util.HashMap;
+import java.util.HashSet;
+
+
+import org.apache.commons.lang.StringUtils;
+
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -39,6 +47,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -58,6 +67,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 import com.itextpdf.text.BaseColor;
@@ -72,6 +82,8 @@ import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+
 
 @Service
 public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
@@ -583,7 +595,6 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		style.setFont(font);
 		return style;
 	}
-	
 	
 	
 	@Override

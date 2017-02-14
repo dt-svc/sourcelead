@@ -37,6 +37,7 @@ function candidateEducation(candidateId){
     $("#tab-14").empty();  
     $("#tab-15").empty();  
     $("#tab-16").empty();  
+    $("#history").empty();
     $("#tab-14").append(result);  
     $("#tab-14").show();  
 	

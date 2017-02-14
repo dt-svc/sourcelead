@@ -77,10 +77,10 @@
 	  <!-- Accordion First Tab Ends -->
 
       <!-- Accordion second Tab -->
-        <!-- <div class="clearfix">
-          <h2>Job boards, Social Networks &amp; Career Portal</h2>
-          <div class="content clearfix">
-            <div class="row">
+        <div class="clearfix">
+          <h2 onclick="opennetwork();">Open Network</h2>
+          <div class="content clearfix" >
+            <!-- <div class="row">
               <div class="col-md-12">
                 <div class="panel panel-success">
                   <div class="panel-heading ">Selected Job Boards</div>
@@ -127,46 +127,41 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
             <div class="row">
               <div class="col-md-6">
                 <div class="row">
                   <div class="form-group clearfix toggle-button-lbl">
-                    <label class="col-md-5">Career Portal</label>
+                    <label class="col-md-5">Public</label>
+                    <input type="hidden" id="isPublicGlobel" value="">
                     <div class="col-md-7 toggle-button">
                       <label class="switch">
-                      <input type="checkbox" checked>
+                      <input type="checkbox" name="isPublic" id="isPublicId"  value="N" onclick="ispublic();">
                       <div class="slider round"></div>
                       </label>
                     </div>
                   </div>
                   <div class="form-group clearfix toggle-button-lbl">
-                    <label class="col-md-5">Professional Network</label>
+                    <label class="col-md-5">Crowd Sourcing</label>
+                    <input type="hidden" id="isCrowdScourcingGlobel" value="">
                     <div class="col-md-7 toggle-button">
                       <label class="switch">
-                      <input type="checkbox">
+                      <input type="checkbox" name="isCrowdScourcing" value="N" id="isCrowdScourcingId" onclick="isCrowdScourcing();" >
                       <div class="slider round"></div>
                       </label>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-md-12">Notify to others</label>
-                    <div class="col-md-12">
-                      <textarea rows="2" class="form-control" placeholder="Upto 20 Email/Users/Grpoups">                                        
-                                                            </textarea>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div> -->
+        </div>
       <!-- Accordion second Tab Ends -->
       </div>
       <div class="form-footer clearfix row mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
+            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact/Open Network selection is mandatory</span>
             <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
             	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
 			</sec:authorize>
@@ -197,8 +192,13 @@ function releaseTo(){
 	    {
 	    	vendorIds.push($(this).attr('id'));
 	    });
+	    var isPublic = $("#isPublicId").val();
+	    var isCrowdScourcing = $("#isCrowdScourcingId").val();
 	    
-	    if(contactsIds.length > 0 || vendorIds.length > 0){
+	    var isPublicGlobel = $("#isPublicGlobel").val();
+	    var isCrowdScourcingGlobel = $("#isCrowdScourcingGlobel").val();
+	    
+	    if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
 	    	$('span.jquery_form_error_message').hide();
 	    	$("#releaseBtn").prop('disabled', true);
 	    	$("#releaseCancelBtn").prop('disabled', true);
@@ -207,7 +207,7 @@ function releaseTo(){
 		    var requirementId = '${param.requirementId}';
 			$.ajax({
 		           type : "POST",
-		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
+		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds+"&isCrowdScourcing="+isCrowdScourcing+"&isPublic="+isPublic,    
 		            success :function(data) {
 							location.replace(sourceleadUrl+"/requirementList");
 		            },
@@ -598,3 +598,46 @@ $(document).ready(function() {
     });	
 });	
 </script>
+
+<script>
+function ispublic(){
+	 if(document.getElementById('isPublicId').checked) {
+	        $("#isPublicId").val('Y');
+	    }else{
+	        $("#isPublicId").val('N');
+	    }
+}
+</script>
+
+<script>
+function isCrowdScourcing(){
+	 if(document.getElementById('isCrowdScourcingId').checked) {
+	        $("#isCrowdScourcingId").val('Y');
+	    }else{
+	        $("#isCrowdScourcingId").val('N');
+	    }
+}
+</script>
+
+<script>
+function opennetwork(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var requirementId = '${param.requirementId}';
+	  $.ajax({
+		   	type: "GET",
+		    url: sourceleadUrl+"/getOpenNetworkStatus?requirementId="+requirementId, 	   
+   		    success: function(data) {
+   		    	var json = JSON.parse(data);
+   		    	if(json.isPublic == "Y"){
+   		    	 $("#isPublicId").prop('checked', true).val('Y');
+   		    	}
+   		    	if(json.isCrowdSourcing == "Y"){
+      		    	 $("#isCrowdScourcingId").prop('checked', true).val('Y');
+      		    }
+   		      $("#isPublicGlobel").val(json.isPublic);
+   		      $("#isCrowdScourcingGlobel").val(json.isCrowdSourcing);
+   		    }
+	  });
+}
+</script>
+

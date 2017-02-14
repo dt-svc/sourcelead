@@ -3,9 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -22,13 +20,11 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 
@@ -52,8 +48,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	 
-	 @Autowired
-	 private CandidateSkillsService candidateSkillsService;
+	 /*@Autowired
+	 private CandidateSkillsService candidateSkillsService;*/
 	 
 	 
 	 
@@ -133,18 +129,22 @@ public class RecommendationsServiceImpl implements RecommendationsService{
     //		List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
 			
 			
-			List<CandidateSkills> candidateSkillList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
+//			List<CandidateSkills> candidateSkillList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
 			
-			  // Changed the below method by  bringing from  service as cache is implemented  for  the above method
+			String candidateSkills = candidate.getSkillsName();
+			String[] skills = candidateSkills.split(",");
+			//List<String> candidateSkillList = new ArrayList<String>(Arrays.asList(skills));
+			 
+			// Changed the below method by  bringing from  service as cache is implemented  for  the above method
 			
 			   // Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
 			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
 			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
 			
-			if(null != candidateSkillList && candidateSkillList.size() >0){
-				for(CandidateSkills candidateSkills : candidateSkillList){
-					if(candidateSkills.getName() !=null && !"".equalsIgnoreCase(candidateSkills.getName())){
-						if(reqSkills.contains(candidateSkills.getName())){
+			if(null != skills && skills.length >0){
+				for(String skill : skills){
+					if(skill !=null && !"".equalsIgnoreCase(skill)){
+						if(reqSkills.contains(skill)){
 							matchedSkillCount++;
 						}
 						
@@ -319,20 +319,25 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					boolean isCandidateAdded = false;
 					float expPercentage = 0; //  experience = 20%
 					int matchedSkillCount = 0;
-					Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
-					List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
-					CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
-					
-					if(candidateSkillList != null && candidateSkillList.size() >0){
-						for(CandidateSkills candidateSkills : candidateSkillList){
-							if(candidateSkills.getName() !=null && !"".equalsIgnoreCase(candidateSkills.getName())){
-								if(reqSkills.contains(candidateSkills.getName())){
+//					Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
+					if(null != candidate.getSkillsName()){
+						String[] candidateSkillList = candidate.getSkillsName().split(",");
+						for(String skill : candidateSkillList){
+							if(skill !=null && !"".equalsIgnoreCase(skill)){
+								if(reqSkills.contains(skill)){
 									matchedSkillCount++;
 								}
 								
 							}
 						}
 					}
+					
+					List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
+					CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
+					
+//					if(candidateSkillList != null && candidateSkillList.size() >0){
+					
+//					}
 					skillPercentage = matchedSkillCount*percentPerSkill;
 					if(null != candidate.getExperienceYears() && !"".equalsIgnoreCase(candidate.getExperienceYears()) && null != candidate.getExperienceMonths()  && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
 						int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
@@ -478,7 +483,11 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			float expPercentage = 0; //  experience = 20%
 			int matchedSkillCount = 0;
 			
-			List<CandidateSkills> candidateSkillList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
+			//List<CandidateSkills> candidateSkillList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
+			String candidateSkills = candidate.getSkillsName();
+			String[] skills = candidateSkills.split(",");
+//			List<String> candidateSkillList = new ArrayList<String>(Arrays.asList(skills));
+			
 			
 			  // Changed the below method by  bringing from  service as cache is implemented  for  the above method
 			
@@ -486,10 +495,10 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
 			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
 			
-			if(null != candidateSkillList && candidateSkillList.size() >0){
-				for(CandidateSkills candidateSkills : candidateSkillList){
-					if(null != candidateSkills.getName() && !"".equalsIgnoreCase(candidateSkills.getName())){
-						if(reqSkills.contains(candidateSkills.getName())){
+			if(null != skills && skills.length >0){
+				for(String skill : skills){
+					if(null != skill && !"".equalsIgnoreCase(skill)){
+						if(reqSkills.contains(skill)){
 							matchedSkillCount++;
 						}
 						
@@ -641,12 +650,20 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					boolean isCandidateAdded = false;
 					
 					int matchedSkillCount = 0;
-					ArrayList<String> candidateSkillList = candidateIndex.getSkills();
+					String candidateSkill = candidateIndex.getSkillsName();
+					
+					
 					//List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
 					Integer reqListCount = requirementSubmissionService.getRequirementPerCandidateCount(candidateIndex.getCandidateId());
 					
 					//get the skillPercentage method
-					skillPercentage = getSkillPercentage(candidateSkillList,percentPerSkill,matchedSkillCount,reqSkills);
+					
+					if(null  != candidateSkill){
+						String[] skills = candidateSkill.split(",");
+//						ArrayList<String> candidateSkillList = new ArrayList<String>(Arrays.asList(skills));
+						skillPercentage = getSkillPercentage(skills,percentPerSkill,matchedSkillCount,reqSkills);
+					}
+					
 					
 					//get the ExperiencePercentage
 					expPercentage = getExperiencePercentage(candidateIndex,recommendedCustomizeScore,reqMinExp,expPercentage,percentPerMonthExp,reqMaxExp);
@@ -715,8 +732,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 * @param reqSkills
 	 * @return float
 	 */
-	private float getSkillPercentage(ArrayList<String> candidateSkillList, float percentPerSkill, int matchedSkillCount, String reqSkills) {
-		if(candidateSkillList != null && candidateSkillList.size() >0){
+	private float getSkillPercentage(String[] candidateSkillList, float percentPerSkill, int matchedSkillCount, String reqSkills) {
+		if(candidateSkillList != null && candidateSkillList.length >0){
 			for(String skill : candidateSkillList){
 					if(reqSkills.contains(skill)){
 						matchedSkillCount++;

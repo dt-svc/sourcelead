@@ -918,9 +918,10 @@ function cancelEdit(){
 <script>
 function candidateSkillsList(candidateId){  
 	 var sourceleadUrl ='${sourceleadUrl}';
+	// getCandidatesSkillsBycandidateID
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidatesSkillsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
              		 if( data.indexOf('Sign In') >= 0){

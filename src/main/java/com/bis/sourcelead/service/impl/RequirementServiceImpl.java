@@ -50,10 +50,10 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.RequirementHelper;
+import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -77,7 +77,6 @@ import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -157,8 +156,8 @@ public class RequirementServiceImpl implements RequirementService {
 	 @Autowired
 	 private  RequirementSubmissionService requirementSubmissionService;
 	 
-	 @Autowired
-	 private CandidateSkillsService candidateSkillsService;
+	 /*@Autowired
+	 private CandidateSkillsService candidateSkillsService;*/
 	 
 	 @Autowired
 	 private CandidateResumesService candidateResumeSerivce;
@@ -173,7 +172,7 @@ public class RequirementServiceImpl implements RequirementService {
 	 private PdfUtil pdfUtil;
 	 
 	 @Autowired
-	 private RequirementHelper requirementHelper;
+	 private RequirementElkUtil requirementElkUtil;
 	 
 	 @Autowired
 	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
@@ -771,7 +770,7 @@ public class RequirementServiceImpl implements RequirementService {
 					// this logic will execute when no approvers are selected for requirement.
 				  if(!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)){
 					Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
-					if(updatedRequirementAssignToList != null && savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
+					if(updatedRequirementAssignToList != null  ){
 						for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
 							if(requirementAssignTo.getAssignUserId() != null && !user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
 								AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
@@ -786,22 +785,22 @@ public class RequirementServiceImpl implements RequirementService {
 					}
 		 }		
 
-			       saveElkRequirement(savedRequirement,jsonObj);
+			       requirementElkUtil.saveElkRequirement(savedRequirement,jsonObj);
 			    
 		return savedRequirement;
 	}
 
-	private void saveElkRequirement(Requirement requirement, JSONObject jsonObj) throws Exception {
+/*	private void saveElkRequirement(Requirement requirement, JSONObject jsonObj) throws Exception {
 		 
 		RequirementIndex requirementIndex = requirementHelper.populateRequirementIndex(requirement,jsonObj);
 		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirement.getId().toString());
-	}
+	}*/
 
 	@Override
 	public Requirement addRequirement(Requirement requirement) throws Exception {
 
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
-		saveElkRequirement(savedRequirement,new JSONObject());
+		requirementElkUtil.saveElkRequirement(savedRequirement,new JSONObject());
 		return savedRequirement;
 
 	}
@@ -1250,19 +1249,27 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		for(Candidate candidate : candidateList){
 			int matchedSkillCount = 0;
-			List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
-			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
-			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
-			if(candidateSkillList != null && candidateSkillList.size() >0){
-				for(CandidateSkills candidateSkills : candidateSkillList){
-					if(candidateSkills.getName() !=null && !"".equalsIgnoreCase(candidateSkills.getName())){
-						if(reqSkills.contains(candidateSkills.getName())){
+//			List<String> candidateSkillList  = null;
+			if(null != candidate.getSkillsName()){
+				String[] skills = candidate.getSkillsName().split(",");
+				
+				for(String skillName : skills){
+					if(skillName !=null && !"".equalsIgnoreCase(skillName)){
+						if(reqSkills.contains(skillName)){
 							matchedSkillCount++;
 						}
 						
 					}
 				}
+				//candidateSkillList = new ArrayList<String>(Arrays.asList(skills));
 			}
+			
+			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
+			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
+//			if(candidateSkillList != null && candidateSkillList.size() >0){
+				
+				
+//			}
 			skillPercentage = matchedSkillCount*percentPerSkill;
 			if(candidate.getExperienceYears() != null && !"".equalsIgnoreCase(candidate.getExperienceYears()) && candidate.getExperienceMonths()!=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
 				int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
@@ -2529,6 +2536,7 @@ public class RequirementServiceImpl implements RequirementService {
 		requirement.setId(requirementIndex.getRequirementId());
      	requirement.setJobId(requirementIndex.getJobId());
      	requirement.setJobType(requirementIndex.getJobType());
+     	requirement.setOtherJobType(requirementIndex.getOtherJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
@@ -2688,6 +2696,7 @@ public class RequirementServiceImpl implements RequirementService {
 		List<Object>   searchList = new ArrayList<>();
 		 Long maxResults = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
 		 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 		 if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
 			 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
 				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
@@ -2764,4 +2773,3 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getRequirementListByOrgLocationID(orgLocationId);
 	}
 }
-

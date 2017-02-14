@@ -477,21 +477,21 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                     		 return '' +
                              '<div id="sjfb-' + countryUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>Country'+reqSymbol+'</label>' +
-                             '<select class="chosen-select form-control"  '+datavalidation2+' '+novalidation+'  name="country" id="country" field-name="Country"  >'+
+                             '<select class="chosen-select form-control"  '+datavalidation2+' '+novalidation+'  name="country" id="submissionCountry" field-name="Country"  >'+
                              '<option>--Select--</option>'+
                              '</select>'+
                              '</div>'+
                              
                              '<div id="sjfb-' + stateUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>State'+reqSymbol+'</label>' +
-                             '<select class="chosen-select form-control"  '+datavalidation2+' '+novalidation+'  name="state" id="state" field-name="State"  >'+
+                             '<select class="chosen-select form-control"  '+datavalidation2+' '+novalidation+'  name="state" id="submissionState" field-name="State"  >'+
                              '<option>--Select--</option>'+
                              '</select>'+
                              '</div>'+
                              
                              '<div id="sjfb-' + cityUniqueID + '" '+novalidation+' class="sjfb-field sjfb-text">' +
                              '<label>City'+reqSymbol+'</label>' +
-                             '<select class="chosen-select form-control" '+datavalidation2+' '+novalidation+'  name="city" id="city" field-name="State"  >'+
+                             '<select class="chosen-select form-control" '+datavalidation2+' '+novalidation+'  name="city" id="submissionCity" field-name="State"  >'+
                              '<option>--Select--</option>'+
                              '</select>'+
                              '</div>';
