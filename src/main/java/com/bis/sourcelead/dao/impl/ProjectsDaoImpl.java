@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -698,5 +699,46 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			return count;
 	}
 
+	@Override
+	@Transactional
+	public Boolean validateTasksName(String taskname, Long projectId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(taskname != null && projectId != null){
+				String query = "from ProjectTasks projectTasks where projectTasks.projectId = :projectId and projectTasks.taskName = :taskname ";
+				Collection<ProjectTasks> projectTaskList = session.createQuery(query.toString())
+						                                   .setLong("projectId", projectId)
+						                                   .setString("taskname", taskname)
+						                                   .setCacheable(true)
+						                                   .list();
+
+				if (projectTaskList != null && projectTaskList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
+	}
+
+	
+	/*@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Boolean validateProjectSequeneNumber(String projectSequeneNumber, Long orgLocationsId) throws Exception {
+		 logger.debug("In ProjectsDaoImpl validateProjectSequeneNumber method");
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(projectSequeneNumber != null && orgLocationsId != null){
+				String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectSequeneNumber = :projectSequeneNumber ";
+				Collection<Projects> projectsList = session.createQuery(query.toString())
+						                                   .setLong("orgLocationsId", orgLocationsId)
+						                                   .setString("projectSequeneNumber", projectSequeneNumber)
+						                                   .setCacheable(true)
+						                                   .list();
+
+				if (projectsList != null && projectsList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
+	}*/
 }
 
