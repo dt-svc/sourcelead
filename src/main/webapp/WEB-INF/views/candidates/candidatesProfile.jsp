@@ -150,26 +150,21 @@ function editCandidate(candidateId){
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6">';
-							
-							if(json.candidateType == 'Consultant'){
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6">';
+							if(json.candidateType = 'Candidate'){
+								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100>';
+							}
+							if(json.candidateType = 'Consultant'){
 							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
 							}
-							
-							if(json.candidateType == 'Candidate'){
-								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100>';
-								}
 							result = result + '</div>';
-							
-							
-					
 							
 							result = result + '<div class="col-md-6">';
 							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+mobilePhone+'" placeholder="Mobile" field-name="Mobile" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">';
 							result = result + '</div>';
 							
-							result = result + '</div>';
+							result = result + '</div>'; 
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
@@ -707,7 +702,7 @@ function candidateProfile(candidateId){
 					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
 				    	        }
 							
-							result = result +'		<div class="clearfix dashboard-widget candidate-profile">                                                                                                    ';
+							result = result +'		<div class="clearfix dashboard-widget candidate-profile mt">                                                                                                    ';
 							result = result +'		  <ul class="nav nav-tabs">                                                                                                                   ';
 							result = result +'		    <li class="active"><a data-toggle="tab" href="#skills">General View</a></li>                                                              ';
 							//result = result +'		    <li><a data-toggle="tab" href="#milestone">Milestone View</a></li>                                                                        ';
@@ -715,7 +710,7 @@ function candidateProfile(candidateId){
 							result = result +'		  <div class="tab-content">                                                                                                                   ';
 							result = result +'		    <div id="skills" class="tab-pane fade in active">                                                                                         ';
 							result = result +'		      <div class="skills-summary positionRelative">                                                                                                            ';
-							result = result +'		        <div class="design-view">                                                                                                             ';
+							result = result +'		        <div class="design-view skillsresult">                                                                                                             ';
 							
 							result = result +'		          <!-- Select Skills -->                                                                                                              ';
 							
@@ -804,10 +799,16 @@ function candidateProfile(candidateId){
 							result = result +'		          <!-- Select Skills -->                                                                                                              ';
 							
 							result = result +'<div class="clearfix mt"></div>';
-							result = result +'<div class="append_skill ">';  
+							result = result +'<div class="append_skill professinal-details">';  
 							result = result +'<ul class="list-inline list-unstyled">';
 							if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-								result = result + ' <li class="professinal-details"  value="${json.skillsName}">'+json.skillsName+'</li>'; 
+								var skillsNameArray = json.skillsName.split(',');
+								 for (i=0;i < skillsNameArray.length;i++)
+					             {
+					            	  result = result+'<li>'+skillsNameArray[i]+'</li>';
+					            	  
+					             } 
+								//result = result + ' <li class="professinal-details"  value="${json.skillsName}">'+json.skillsName+'</li>'; 
 							}else{
 								result = result + ' <li class="professinal-details">NO DATA</li>';
 							}

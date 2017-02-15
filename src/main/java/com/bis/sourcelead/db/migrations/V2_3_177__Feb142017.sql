@@ -51,4 +51,5 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 											('Individual Recruiter Invitation','Email', 'Individual Recruiter Invitation', 'Welcome to SourceLead ', 'Welcome to SourceLead','org', 'Best Regards,\nSourceLead.', 'Welcome !!!\n\n Dear Recruiter {{RecruiterInvitation.recruiterName}}\n\n It is great to see that you have started accessing sourcelead.\n User Name : {{RecruiterInvitation.loginUserName}}\n Your Sourcelead URL : {{RecruiterInvitation.resetLink}}\n  I hope you will  have a wonderful time with SourceLead. If you have any questions or comments, feel free to reach out to us at info@sourcelead.com','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
 									
 
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','POSTED_ORG_NAME','VARCHAR(250) DEFAULT NULL');
  

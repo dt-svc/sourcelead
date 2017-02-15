@@ -337,7 +337,7 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" name="email" id="EmailId" value=""  onblur=" validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" field-name="Email" placeholder="Email Id *" data-validation="required">';
+	result = result  +'	    <input type="text" class="form-control input-sm" name="email" id="EmailId" value=""  onblur=" validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" field-name="Email" placeholder="Email Id *" data-validation="required validate_Space validate_length length2-100 validate_email">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	

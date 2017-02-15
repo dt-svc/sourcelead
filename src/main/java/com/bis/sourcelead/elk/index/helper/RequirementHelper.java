@@ -184,6 +184,22 @@ public class RequirementHelper {
 				requirementIndex.setNumberOfApplicants(requirement.getTotalApplicantsForRequirement().toString());
 			}
 			requirementIndex.setReleasedBy(requirement.getReleasedBy());
+			
+			if(null != requirement.getIsPublic()){
+				requirementIndex.setIsPublicJob(requirement.getIsPublic());
+			}else{
+				requirementIndex.setIsPublicJob("N");
+			}
+			
+			if(null != requirement.getIsPublic()){
+				requirementIndex.setIsCrowdSourcingJob(requirement.getIsCrowdSourcing());
+			}else{
+				requirementIndex.setIsCrowdSourcingJob("N");
+			}
+			
+			if(null != requirement.getPostedOrgName() && !requirement.getPostedOrgName().isEmpty()){
+				requirementIndex.setPostedOrg(requirement.getPostedOrgName());
+			}
 
 		}
 		return requirementIndex;
