@@ -19,7 +19,27 @@
 	z-index: 100000 !important;
 }
 </style>
+<script>
+function validateTaskName(){
+		var Taskname= $("#taskName").val();
+		var checkMaxTsRowNum = $("#maxTsRowNum").val();
+		for(i = 1; i<checkMaxTsRowNum;i++){
+			var oldTaskname = $("#" + i + "taskName").val();
+			if(oldTaskname == Taskname){
+				$("input#taskName").after("<p class='jquery_form_error_message'>"+ Taskname+ " is Already Existed</span>");
+				document.getElementById("taskName").setAttribute('record-exist', 'yes');
+				document.getElementById("taskName").setAttribute('record-exist-errorMsg',Taskname+ ' is Already Existed');
+				$('input#taskName').removeAttr( "record-exist record-exist-errorMsg");
+			}/* else{
+				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
+			} */
+			
+		}
+		
+		
+}
 
+</script>
 
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
@@ -146,7 +166,7 @@
 														<div class="form-group" id="taskNameDIV">
 															<label class="col-md-3">Task Name</label>
 															<div class="col-md-9">
-																<input type="text" value="" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control">
+																<input type="text" value="" id="taskName" name="taskName" onkeyup="validateTaskName();" placeholder="Enter Task Name" class="form-control">
 															</div>
 														</div>
 														<div class="form-group">
