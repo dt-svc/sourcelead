@@ -445,6 +445,8 @@ public class UsersListRestController {
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
+
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 
