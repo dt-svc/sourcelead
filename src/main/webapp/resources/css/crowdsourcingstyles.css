@@ -2,7 +2,8 @@
 
 /* crowdsourcing styles */
 .content-area.panelBody{
-    padding: 15px;
+    padding: 10px 15px;
+    min-height: 100px !important;
 }
 .chip {
     display:inline-block;
@@ -13,7 +14,7 @@
     border-radius: 25px;
     background-color: #CFD8DC;
     position:relative;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 .chip img {
     margin:0;
@@ -32,7 +33,7 @@
 }
 .professional-details {
     margin-left: 22%;
-    line-height: 20px;
+    line-height: 18px;
     font-size: 13px;
 }
 .professional-details i{
@@ -63,7 +64,8 @@
     font-size: 16px;
     color: #607d8b;
     border-bottom: 1px solid #cfd8dc;
-    padding-bottom: 10px;
+    padding-bottom:0px;
+    margin-top: 0;
 }
 .btn-fb i {
     color: #3B5998;
@@ -147,6 +149,43 @@
 }
 .db-widget-sm .fa {
     text-shadow: none;
+}
+.checkbox {
+	margin-top: 5px !important;
+}
+.checkbox input[type=checkbox]{
+	margin-top: 2px;
+}
+.dates p{
+	margin-bottom: 2px;
+	font-size: 13px;
+	color:#909090;
+	
+}
+.candiateInfo .dataTables_filter {
+	top: -30px !important;
+}
+/* .addPop .edit-details.edit-details-active {
+    visibility: visible;
+    opacity: 1;
+    -webkit-transform: translateX(175px);
+    -ms-transform: translateX(175px);
+    transform: translateX(175px);
+    top: 30px;
+}
+.addPop .edit-details{
+	right: 500px;
+} */
+.addPop .close-div {
+	left: auto;
+	right:-15px;
+}
+.addPop .edit-details:before{
+	left: 10px;
+	right: auto;
+}
+.addPop .edit-details.edit-details-active {
+	top: 30px;
 }
 /* NewDash Board Styles */
 /* Crowdsourcing Styels */
