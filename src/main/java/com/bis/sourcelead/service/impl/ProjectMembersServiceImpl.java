@@ -308,7 +308,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	            	pmh.setProjectAssignedDate(projects.getStartDate());
 	            }
 	            if(StringUtils.isNotEmpty(endDate)){
-	            	if(endDate != null && endDate != "--"){
+	            	if(endDate != null && !"--".equalsIgnoreCase(endDate)){
 	            		Date currentEndDate = format.parse(endDate);
 	            		pmh.setProjectTerminationDate(currentEndDate);
 	            	}
