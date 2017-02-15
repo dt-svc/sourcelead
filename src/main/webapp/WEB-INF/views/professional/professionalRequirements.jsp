@@ -11,7 +11,7 @@
 
 <script type="text/javascript">
 window.onload = function () {
-	requirementsList();
+	requirementsList(0);
 	document.getElementById('requirementType').value = 'OpenJObs';
  };
 </script>
@@ -20,7 +20,7 @@ window.onload = function () {
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Requirements<span class="select-fild">
-          <select id="requirementType" onchange="requirementsList();">
+          <select id="requirementType" onchange="requirementsList('0');">
            	<option value="OpenJObs">Open</option>
             <option value="CrowdSourcingJobs">Crowdsourcing</option>
           </select>
@@ -64,8 +64,9 @@ window.onload = function () {
 		  <div class="clearfix"></div>
 	  </section>
 	   <br/>
+	   <input type="hidden" name="requirementOffset" id="requirementOffset" value="0"/>
 	  <div id="requirementsList"></div> 
-	  
+	  <a href="#"><section class="loadJob" onclick="getViewMoreRecords();"><i id="viewMoreLoading"></i><span id="viewMore">View more</span></section></a>
 	  
 	  
 	  
@@ -75,17 +76,33 @@ window.onload = function () {
 <jsp:include page="../masterFooter.jsp" />
 
 
+<script>
+function getViewMoreRecords(){
+	 offset = $("#requirementOffset").val();
+	 offset = parseInt(offset)+parseInt(10);
+	 $("#requirementOffset").val(offset);
+	 requirementsList(offset);
+	 
+	 document.getElementById("viewMoreLoading").className = 'fa fa-spinner fa-spin'
+	 
+}
+</script>
 
 
 <script>
-function requirementsList(jobType){
+function requirementsList(offset){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementType = document.getElementById('requirementType').value;
+	if(offset == 0){
+		$("#requirementsList").empty();
+		$("#requirementOffset").val(offset)
+		$('#viewMore').html("View More");
+	}
 	
 	
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType,
+	   	url: sourceleadUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType+"&offset="+offset,
 	   			
 	    success: function(data) {
        	 var json = JSON.parse(data);
@@ -187,12 +204,12 @@ function requirementsList(jobType){
 			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'</section>';
 			 				
-			 				$("#requirementsList").empty();
 			       	    	$('#requirementsList').append(result);
+			       	    	document.getElementById("viewMoreLoading").removeAttribute("class");
 		            		
 				   }
 	   		    }
-          } else{
+          }else if(offset == 0){
 	   		     var result ="";
 	    	     result = result+"   <div class='row'>"; 
 	    	     result = result +'<div class="clearfix"></div>';
@@ -207,6 +224,10 @@ function requirementsList(jobType){
 				 result = result+"  </div> "; 
 				$("#requirementsList").empty();
 			    $("#requirementsList").append(result); 
+   		    }else{
+   		    	
+   		    	$('#viewMore').html("No Records Found");
+   		    	document.getElementById("viewMoreLoading").removeAttribute("class");
    		    }
    	
 		 },

@@ -48,6 +48,7 @@ public class CrowdSourcingRequirementsRestController {
 	@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 	@RequestMapping(value = "/getCrowdSourcingRequirements")
 	public @ResponseBody String getCrowdSourcingRequirements(@RequestParam(value = "requirementType", required = false) String requirementType,
+			@RequestParam(value = "offset", required = false) Integer offset,
 			HttpServletRequest request) throws Exception {
 
 	    String resultJson;
@@ -67,7 +68,7 @@ public class CrowdSourcingRequirementsRestController {
 		
 	   
 	    try {
-	    	 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,10,boolQueryBuilder).getHits();
+	    	 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,offset, Constants.MAX_RESULTS_TEN,boolQueryBuilder).getHits();
 	 	     if(null != searchHits && searchHits.length >0){
 	 	    	ObjectMapper mapper = new ObjectMapper();
 	 	    	for (SearchHit hit : searchHits) {
