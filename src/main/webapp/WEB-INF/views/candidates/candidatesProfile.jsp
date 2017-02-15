@@ -735,7 +735,6 @@ function candidateProfile(candidateId){
 						                res = json.skillsName.split(",");
 						                res.forEach(function(item) {
 						                	if('${skill.name}' == item){
-						                		result = result + ' <option  value="${skill.name}">${skill.name}</option>';
 						                		existed = 1;
 						                	}
 						                });
@@ -744,10 +743,6 @@ function candidateProfile(candidateId){
 					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
 					                }
 			                </c:forEach>
-			                
-			                
-			                
-			                
 			                result = result + '</select>';
 							
 							result = result +'		                      </div> ';
