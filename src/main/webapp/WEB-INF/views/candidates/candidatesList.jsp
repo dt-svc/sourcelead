@@ -295,6 +295,7 @@ function cpagination(){
 function cpagination(){ 
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -997,7 +998,7 @@ function cancel(candidateId){
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List</div>
   </section>
   <div class="timesheet_out">
-    <div class="vendor_wrap" style="overflow-x: auto;">
+    <div class="vendor_wrap">
     
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
@@ -1264,9 +1265,9 @@ function cancel(candidateId){
            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2" onclick="candidateList();"  ><label for="c5">All</label></li>
-						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  onclick="candidateList();"><label for="c6">Active</label></li>
-						<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="c7">In Active</label></li>
+	                    <li><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2" onclick="candidateList();"  ><label for="candidateAll">All</label></li>
+						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  onclick="candidateList();"><label for="candidateActive">Active</label></li>
+						<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="candidateInActive">In Active</label></li>
                     </ul>
                   </div>                	
           </li>
@@ -1274,9 +1275,9 @@ function cancel(candidateId){
           <li id="filter3ApprovePop"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="candidateList();"  ><label for="c5">All</label></li>
-						<li><input id="onlycandidate" type="radio" name="candidateType" value ="Candidate"  onclick="candidateList();"><label for="c6">Candidates</label></li>
-						<li><input id="consultant" type="radio"  name="candidateType" value ="Consultant"  onclick="candidateList();"><label for="c7">Consultants</label></li>
+	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="candidateList();"  ><label for="candidateTypeAll">All</label></li>
+						<li><input id="onlycandidate" type="radio" name="candidateType" value ="Candidate"  onclick="candidateList();"><label for="onlycandidate">Candidates</label></li>
+						<li><input id="consultant" type="radio"  name="candidateType" value ="Consultant"  onclick="candidateList();"><label for="consultant">Consultants</label></li>
                     </ul>
                   </div>                	
           </li>
@@ -1284,13 +1285,13 @@ function cancel(candidateId){
             <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
                   	<ul>
-                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="c5">All</label></li>
-                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
-						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="c6">3 Day ago</label></li>
-						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="c7">1 Week ago</label></li>
-						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="c7">2 Week ago</label></li>
-						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="c7">Month ago</label></li>
-	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="c7">3 Months</label></li>
+                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="candidateDayAgo">All</label></li>
+                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="candidateDayAgo">1 Day ago</label></li>
+						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="candidate3DayAgo">3 Day ago</label></li>
+						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="candidate1WeekAgo">1 Week ago</label></li>
+						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="candidate3WeekAgo">2 Week ago</label></li>
+						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="candidateMonthAgo">Month ago</label></li>
+	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="candidate3Months">3 Months</label></li>
                     </ul>
                   </div>                	
           </li>  

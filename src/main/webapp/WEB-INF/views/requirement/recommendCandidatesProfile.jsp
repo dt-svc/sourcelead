@@ -705,8 +705,20 @@ function candidateProfile(candidateId){
 							result = result + '        </div>';
 							result = result + '      </div>';
 							
-							
-							result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> ';
+							result = result +'<div class="clearfix mt"></div>';
+							result = result +'<div class="append_skill ">';  
+							result = result +'<ul class="list-inline list-unstyled">';
+							if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
+								result = result + ' <li class="professinal-details"  value="${json.skillsName}">'+json.skillsName+'</li>'; 
+							}else{
+								result = result + ' <li class="professinal-details">NO DATA</li>';
+							}
+			               	
+			               
+							result = result +'</ul>'; 
+							result = result +'</div>';
+							result = result +'		        </div>';
+					//		result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> ';
 							
 							/* result = result + '      <a href="javascript:void(0)">more <i class="fa fa-angle-right"></i></a>'; */
 							result = result + '    </div>';

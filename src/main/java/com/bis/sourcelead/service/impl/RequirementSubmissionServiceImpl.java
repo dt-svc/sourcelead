@@ -56,6 +56,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -68,6 +69,7 @@ import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RecommendationsService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -152,6 +154,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
 	RecommendationsService recommendationsService;
 	
+	@Autowired
+	RecommendedCustomizeScoreService recommendedCustomizeScoreService;
+	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionById(submissionId);
@@ -171,6 +176,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Override
 	public RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission) throws Exception {
 		logger.debug("In ProjectsServiceImpl class saveProject method...");
+		requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 		return requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 	}
 	
@@ -382,9 +388,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 requirementSubmission.setCreatedBy(user.getUserCode());
 		 requirementSubmission.setCreatedDate(new Date());
 		 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-		 String score = recommendationsService.getCandidateScore(candidate,requirementSubmission.getRequirement());
-		 requirementSubmission.setCandidateScore(Integer.parseInt(score));
-		 
+		 RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementSubmission.getRequirement().getId());
+		 String score = recommendationsService.getCandidateScore(candidate,requirementSubmission.getRequirement(),recommendedCustomizeScore);
+		 if(null !=score){
+			 requirementSubmission.setCandidateScore(score);			 
+		 }
 		 StringBuilder userName = new StringBuilder();
 		 StringBuilder nameBuilder = new StringBuilder();
 		 

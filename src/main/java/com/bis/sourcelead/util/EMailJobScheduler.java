@@ -227,9 +227,9 @@ public class EMailJobScheduler {
 
 	/**
 	 * @author Rajashekar & Prasad salina
-	 * Fires on Every 15 (semi_monthly) days at 7:30 PM and send mails to employees those who are not submited their timesheets
+	 * Fires on Every 15 (semi_monthly) days at 11:45 PM and send mails to employees those who are not submited their timesheets
 	 */
-	@Scheduled(cron = "0 30 19 1/15 * ?")
+	@Scheduled(cron = "0 45 23 1/15 * ?")
 	public void runJobSchedulerBySemi_Monthly() {
 		logger.info("******************  Notification Job Scheduler Every 15 days in a month started..! **********");
 		try {
@@ -249,9 +249,9 @@ public class EMailJobScheduler {
     }
 	/**
 	 * @author Rajashekar
-	 * Fires on Every month at 7:30 PM and send mails to employees those who are not submited their timesheets
+	 * Fires on Every month at 11:45 PM and send mails to employees those who are not submited their timesheets
 	 */
-	@Scheduled(cron = "0 30 19 30 1/1 ?")
+	@Scheduled(cron = "0 45 23 30 1/1 ?")
 	public void runJobSchedulerByMonthly() {
 		logger.info("******************  Notification Job Scheduler  Every month 30th started..! **********");
 		try {
@@ -276,9 +276,9 @@ public class EMailJobScheduler {
 	 * Prasanna vadla 
 	 * mail to level1 Managers
 	 * 
-	 * Fires on Monday of every week of the month emailJobScheduler.job.cron.everyfriday.expression
+	 * Fires on Monday at 11:45 PM of every week of the month emailJobScheduler.job.cron.everyfriday.expression
 	 */
-	@Scheduled(cron = "0 0 12 ? * MON")
+	@Scheduled(cron = "0 45 23 ? * MON")
 	public void runJobSchedulerByMonday() {
 
 
@@ -366,9 +366,9 @@ public class EMailJobScheduler {
 	/**
 	 * Prasanna vadla
 	 * this is for level for level 2
-	 * Fires on Wednesday of every week of the month emailJobScheduler.job.cron.everyfriday.expression
+	 * Fires on Wednesday at 11:45 PM of every week of the month emailJobScheduler.job.cron.everyfriday.expression
 	 */
-	@Scheduled(cron = "0 1 0 ? * WED")
+	@Scheduled(cron = "0 45 23 ? * WED")
 	public void runJobSchedulerByWedDay() {
 		logger.info("******************  Notification Job Scheduler WednesDay of every week of the month started..! **********");
 		try {
@@ -454,9 +454,9 @@ public class EMailJobScheduler {
 	/**
 	 * Prasanna vadla
 	 * this is for Admin mail
-	 * Fires on Friday of every week of the month emailJobScheduler.job.cron.everyfriday.expression
+	 * Fires on Friday at 11:45 PM of every week of the month emailJobScheduler.job.cron.everyfriday.expression
 	 */
-	@Scheduled(cron = "0 1 0 ? * FRI")
+	@Scheduled(cron = "0 45 23 ? * FRI")
 	public void runJobSchedulerByFRIDay() {
 		logger.info("******************  Notification Job Scheduler FRIDAY of every week of the month started..! **********");
 		try {

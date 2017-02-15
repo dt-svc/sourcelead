@@ -194,5 +194,17 @@ public class RequirementListController {
 			return "success";
 		}
 	
+	 @RequestMapping(value = "/getOpenNetworkStatus", method = RequestMethod.GET)
+		public @ResponseBody String getOpenNetworkStatus(Long requirementId, HttpServletRequest request) throws Exception {
+		 String resultJson = null;
+		 Requirement requirement= requirementService.getRequirementByRequirementId(requirementId);
+			if(null != requirement){
+				requirement.setIsCrowdSourcing(requirement.getIsCrowdSourcing());
+				requirement.setIsPublic(requirement.getIsPublic());
+			}
+			resultJson = commonUtil.toJSON(requirement);
+			return resultJson;
+		}
+	 
 	 
 }
