@@ -229,6 +229,8 @@ public class RequirementController {
 					totSkils.addAll(skillsList);
 					totSkils.addAll(allReqSkills);
 					model.addObject("skillsList", totSkils);
+				}else{
+					model.addObject("skillsList", skillsList);
 				}
 
 		}else{

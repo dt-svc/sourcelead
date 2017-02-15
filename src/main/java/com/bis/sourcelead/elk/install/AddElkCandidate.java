@@ -95,7 +95,7 @@ public class AddElkCandidate{
 					
 					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_YEARS"))){
 						if(rs.getString("EXPERIENCE_YEARS").equalsIgnoreCase("25+")){
-							candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS);
+							candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS.toString());
 						}
 						else{
 							candidateIndex.setExperienceYears(rs.getString("EXPERIENCE_YEARS"));
@@ -124,6 +124,7 @@ public class AddElkCandidate{
 					candidateIndex.setStatus(rs.getInt("STATUS"));
 					candidateIndex.setTerminateReason(rs.getString("TERMINATE_REASON"));
 					 	
+					candidateIndex.setSkillsName(rs.getString("SKILLS_NAME"));
 
 					Timestamp createdDateTimestamp = rs.getTimestamp("CREATED_DATE");
 				    if (createdDateTimestamp != null){
@@ -140,7 +141,11 @@ public class AddElkCandidate{
 				    
 				    Long candidateId = rs.getLong("ID");
 		    	    if(candidateId != null && candidateId != 0){
-		    	    	    String sql1 = "SELECT * FROM sourcelead.CANDIDATE_SKILLS candidateSkills where candidateSkills.CANDIDATE_ID = '"+ candidateId+"' ";
+		    	    	
+		    	    	/**
+		    	    	 * Skills Save in Candidate table Not In Candidate Skills Table
+		    	    	 */
+		    	    	    /*String sql1 = "SELECT * FROM sourcelead.CANDIDATE_SKILLS candidateSkills where candidateSkills.CANDIDATE_ID = '"+ candidateId+"' ";
 							Statement stmt1 = conn.createStatement();
 							ResultSet rs1 = stmt1.executeQuery(sql1);
 							if(rs1 != null){
@@ -151,7 +156,7 @@ public class AddElkCandidate{
 							    if(null != skillList && !skillList.isEmpty()){
 									candidateIndex.setSkills(skillList);
 								}
-		    	           }
+		    	           }*/
 							
 						    String sql2 = "SELECT * FROM sourcelead.CANDIDATE_EMPLOYERS candidateEmployers where candidateEmployers.CANDIDATE_ID = '"+ candidateId+"' ";
 							Statement stmt2 = conn.createStatement();

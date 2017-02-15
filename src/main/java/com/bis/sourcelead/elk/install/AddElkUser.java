@@ -46,7 +46,7 @@ public class AddElkUser {
 		if (null != elkUserList && !elkUserList.isEmpty()) {
 			for (UserIndex userIndex : elkUserList) {
 				saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,
-						userIndex.getUserId().toString());
+						userIndex.getUserRoleTableId().toString());
 			}
 		}
 		logger.info("User Successfully Added To Elk");
@@ -56,13 +56,15 @@ public class AddElkUser {
 		DataSource dataSource = comboPooledDataSource();
 		ArrayList<UserIndex> userIndexsList = new ArrayList<UserIndex>();
 		Connection conn = null;
+		Statement stmt = null;
 		try {
 			String sql = "SELECT * FROM sourcelead.USER_ROLE userRole";
 			conn = dataSource.getConnection();
-			Statement stmt = conn.createStatement();
+		    stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				UserIndex userIndex = new UserIndex();
+				userIndex.setUserRoleTableId(rs.getLong("ID"));
 				userIndex.setUserId(rs.getLong("USER_ID"));
 				userIndex.setOrgLocationId(rs.getLong("ORG_LOCATIONS_ID"));
 				userIndex.setUserStatus(rs.getString("USER_STATE"));
@@ -73,17 +75,25 @@ public class AddElkUser {
 					userIndex.setReportingManagerId(rs.getLong("REPORTING_MANAGER_ID"));
 				}
 				Timestamp createdDateTimestamp = rs.getTimestamp("CREATED_DATE");
-				DateFormat StringDate = new SimpleDateFormat("dd-MM-yyyy");
+				DateFormat StringDate = new SimpleDateFormat("yyyy-MM-dd");
 				if (null != createdDateTimestamp) {
 					String createdDate = StringDate.format(new java.util.Date(createdDateTimestamp.getTime()));
 					userIndex.setCreatedDate(createdDate);
 				}
 				userIndex.setCreatedBy(rs.getString("CREATED_BY"));
-				Timestamp updatedDateTimestamp = rs.getTimestamp("UPDATED_DATE");
-				if (null != updatedDateTimestamp) {
-					String updatedDate = StringDate.format(new java.util.Date(updatedDateTimestamp.getTime()));
-					userIndex.setUpdatedDate(updatedDate);
+				
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				if(null != rs.getDate("CREATED_DATE")){
+					userIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
 				}
+				
+				if(null != rs.getDate("UPDATED_DATE")){
+					userIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
+				}else{
+					userIndex.setUpdatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
+				}
+				
+			
 				userIndex.setUpdatedBy(rs.getString("UPDATED_BY"));
 
 				Long userId = rs.getLong("USER_ID");
@@ -92,7 +102,7 @@ public class AddElkUser {
 				if (null != userId && userId != 0) {
 					Statement stmt1 = conn.createStatement();
 					try {
-						String sql1 = "SELECT * FROM sourcelead.USER user where user.ID = '" + userId + "' ";
+						String sql1 = "SELECT * FROM sourcelead.USER user where user.ID = '" + userId + "'  and  '" + userId + "' IN (SELECT userRole.USER_ID FROM sourcelead.USER_ROLE userRole where userRole.ORG_LOCATIONS_ID = '" + orgLocationId + "') ";
 
 						ResultSet rs1 = stmt1.executeQuery(sql1);
 						if (rs1 != null) {
@@ -169,6 +179,7 @@ public class AddElkUser {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
+			stmt.close();
 			conn.close();
 		}
 		return userIndexsList;

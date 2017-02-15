@@ -27,11 +27,13 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 
 	@Override
 	public ProjectTasks addTasks(ProjectTasks tasks) throws Exception {
+		tasks.setUpdatedDate(commonUtil.currentDate());
 		return tasksDao.addTasks(tasks);
 	}
 
 	@Override
 	public ProjectTasks updateTasks(ProjectTasks tasks) throws Exception {
+		tasks.setUpdatedDate(commonUtil.currentDate());
 		return tasksDao.updateTasks(tasks);
 	}
 
@@ -102,6 +104,9 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 				if(jsonObj.has(c+"taskDescription")){
 				tasks.setDescription(jsonObj.getString(c+"taskDescription"));
 				}
+				if(jsonObj.has(c+"taskBillableType")){
+					tasks.setBillableType(jsonObj.getString(c+"taskBillableType"));
+				}
 			tasks.setCreatedDate(new Date());
 			tasks.setUpdatedDate(new Date());
 			Projects projects = projectsService.getProjectById(projectId);
@@ -132,6 +137,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 						tasks.setDescription(jsonObj.getString(c+"taskDescription"));
 					}
 						tasks.setTaskName(jsonObj.getString(c+"taskName"));
+						tasks.setBillableType(jsonObj.getString(c+"taskBillableType"));
 						tasks.setCreatedDate(new Date());
 						tasks.setUpdatedDate(new Date());
 						tasks.setProjectId(projects);

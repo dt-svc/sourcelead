@@ -333,6 +333,7 @@ public class RequirementListRestController {
 		requirement.setId(requirementIndex.getRequirementId());
      	requirement.setJobId(requirementIndex.getJobId());
      	requirement.setJobType(requirementIndex.getJobType());
+     	requirement.setOtherJobType(requirementIndex.getOtherJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
@@ -350,6 +351,9 @@ public class RequirementListRestController {
      	requirement.setCity(requirementIndex.getCity());
      	requirement.setSearchType("Requirement");
      	requirement.setPositions(requirementIndex.getNumberOfPositions());
+     	if(requirementIndex.getNumberOfApplicants() != null){
+     		requirement.setTotalApplicantsForRequirement(Integer.parseInt(requirementIndex.getNumberOfApplicants()));	
+     	}
      	requirement.setNoOfApplicants(requirementIndex.getNumberOfApplicants());
      	requirement.setManager(requirementIndex.getManager());
      	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){

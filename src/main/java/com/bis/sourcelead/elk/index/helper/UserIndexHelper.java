@@ -27,6 +27,8 @@ public class UserIndexHelper {
 		
 		if(null != userRole && null != userRole.getId()){
 			userIndex = new UserIndex();
+
+			userIndex.setUserRoleTableId(userRole.getId());
 			userIndex.setUserId(userRole.getUser().getId());
 			userIndex.setFirstName(user.getFirstName());
 			userIndex.setLastName(user.getLastName());
@@ -42,32 +44,34 @@ public class UserIndexHelper {
 			}
 			userIndex.setStatus(userRole.getUser().getStatus());
 			userIndex.setTerminateReason(userRole.getTerminateReason());
-			DateFormat StringDate = new SimpleDateFormat("dd-MM-yyyy");
+			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 				if(null != employee){
 					userIndex.setEmployeeId(employee.getEmployeeId());
 					userIndex.setRate(employee.getRate());
 					userIndex.setRatePer(employee.getRatePer());
 					 
 					if(null != employee.getHireDate()){
-					String hireDate  = StringDate.format(employee.getHireDate());
+					String hireDate  = dateFormat.format(employee.getHireDate());
 					userIndex.setHireDate(hireDate);
 				}
 			}
 			userIndex.setUserCode(user.getUserCode());
 			userIndex.setUserRoleId(userRole.getRoles().getId().toString());
 			if(null != userRole.getCreatedDate()){
-				String createdDate  = StringDate.format(new Date(userRole.getCreatedDate().getTime()));
-				userIndex.setCreatedDate(createdDate);
+				userIndex.setCreatedDate(dateFormat.format(userRole.getCreatedDate()));
 			}
-			/*if(null == userRole.getCreatedBy() || "".equalsIgnoreCase(userRole.getCreatedBy())){
-				userIndex.setCreatedBy(loginUserCode);
-			}*/
-			userIndex.setCreatedBy(userRole.getCreatedBy());
 			if(null != userRole.getUpdatedDate()){
-				String updatedDate  = StringDate.format(new Date(userRole.getUpdatedDate().getTime()));
-
-				userIndex.setUpdatedDate(updatedDate);
+				userIndex.setUpdatedDate(dateFormat.format(userRole.getUpdatedDate()));
 			}
+			
+			
+			if(null == userRole.getCreatedBy() || "".equalsIgnoreCase(userRole.getCreatedBy())){
+				userIndex.setCreatedBy(loginUserCode);
+			}
+			/*if(null != userRole.getUpdatedDate()){
+				String updatedDate  = StringDate.format(new Date(userRole.getUpdatedDate().getTime()));
+				userIndex.setUpdatedDate(updatedDate);
+			}*/
 			
 			userIndex.setUpdatedBy(loginUserCode);
 		}

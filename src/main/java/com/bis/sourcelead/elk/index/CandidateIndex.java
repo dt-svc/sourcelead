@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Transient;
 
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -63,10 +64,12 @@ public class CandidateIndex implements Serializable {
 	private String invitationstatus;
 
 	private String terminateReason;
+	
+	private String skillsName ;
 
 	private ArrayList<String> education;
 
-	private ArrayList<String> skills;
+	/*private ArrayList<String> skills;*/
 
 	private ArrayList<String> employer;
 
@@ -126,7 +129,8 @@ public class CandidateIndex implements Serializable {
 	
 	private boolean isCandidateAdedd;
 
-	private List<RequirementSubmission> requirementSubmisstions;
+	
+	private double finalScore;
 	
 		
 	public String getSearchType() {
@@ -355,13 +359,13 @@ public class CandidateIndex implements Serializable {
 		this.education = education;
 	}
 
-	public ArrayList<String> getSkills() {
+	/*public ArrayList<String> getSkills() {
 		return skills;
 	}
 
 	public void setSkills(ArrayList<String> skills) {
 		this.skills = skills;
-	}
+	}*/
 
 	public ArrayList<String> getEmployer() {
 		return employer;
@@ -595,6 +599,23 @@ public class CandidateIndex implements Serializable {
 	
 	public void setCandidateAdedd(boolean isCandidateAdedd) {
 		this.isCandidateAdedd = isCandidateAdedd;
+	}
+
+	public String getSkillsName() {
+		return skillsName;
+	}
+
+	public void setSkillsName(String skillsName) {
+		this.skillsName = skillsName;
+	}
+	
+
+	public double getFinalScore() {
+		return finalScore;
+	}
+
+	public void setFinalScore(double finalScore) {
+		this.finalScore = finalScore;
 	}
 
 	}

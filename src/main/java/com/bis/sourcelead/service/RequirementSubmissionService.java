@@ -96,6 +96,8 @@ public interface RequirementSubmissionService {
 	
 	Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId,User user,String loginUserRole) throws Exception;
 	
+	Integer getNumberOfApplicantsForRequirement(Long orgLocationId,Long requirementId) throws Exception;
+	
 	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode) throws Exception;
 	
 	/*public void applicantReceiveMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,

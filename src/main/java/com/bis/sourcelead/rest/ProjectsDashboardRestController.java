@@ -134,7 +134,7 @@ public class ProjectsDashboardRestController {
 	 
 	 @Autowired
 	 SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
-		
+	 
 			
 		/**
 		 * to filter the projects based on client and project status
@@ -153,11 +153,6 @@ public class ProjectsDashboardRestController {
 				String resultJson;
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    List<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
-			   
-			    
-			    
-			    
-			    
 			    for(Projects ps : projectsList){
 			    	ps.setManagerLevel1(ps.getManagerLevel1());
 			    	if(ps.getManagerLevel2() != null){
@@ -198,13 +193,14 @@ public class ProjectsDashboardRestController {
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT')")
 	 @RequestMapping(value = "/updateProjectByProjectId", method = RequestMethod.POST)
 	 public String updateProjectByProjectId(@RequestParam(value="json", required=false) String json,@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
-
+		 String resultJson;
 		 String json1 = "{"+json+"}";	
 		 JSONObject jsonObj = new JSONObject(json1);
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
-		 String ProjectDetailsUpdating = projectsService.getProjectDetailsUpdateByProjectId(projectId, user, jsonObj);
+		 Projects projects = projectsService.getProjectDetailsUpdateByProjectId(projectId, user, jsonObj);
 	
-		 return ProjectDetailsUpdating;
+		 resultJson = commonUtil.toJSON(projects);
+		 return resultJson;
 	 }
 	 
 
@@ -269,6 +265,25 @@ public class ProjectsDashboardRestController {
 			 return resultJson;
 		 	
 	 }
+	 
+	 /** update billableType of project task
+	  * @author Prasad Salina
+	  * @param taskId
+	  * @param billableType
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/updateTakBillableType", method = RequestMethod.POST)
+	 @ResponseBody String updateTakBillableType(@RequestParam(value = "taskId", required = false) String taskId,@RequestParam(value="billableType", required=false) String billableType) throws Exception{
+		    ProjectTasks projectTasks = tasksService.getTasksId(taskId);
+		    if(null != projectTasks){
+		    	projectTasks.setBillableType(billableType);
+		    	tasksService.updateTasks(projectTasks);
+		    }
+		    return "success";
+		}
+	 
+	 
 	/**
 	 * Get Employees list based on project id
 	 * @param projectId
@@ -356,9 +371,6 @@ public class ProjectsDashboardRestController {
 			 
 				return storeAssignEmployee;
 		}
-	 
-	 
-	 
 	 /**
 	  * @author Rajashekar
 	  * 
@@ -393,7 +405,7 @@ public class ProjectsDashboardRestController {
 			}
 		
 	  }
-	 
+	
 	 
 	 /**
 	   * @author Venkat Kesav
@@ -634,7 +646,7 @@ public class ProjectsDashboardRestController {
 		 else{
 			 keyWordList = new ArrayList<String>();
 		 }
-        return keyWordList;
+         return keyWordList;
     }
 
 	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){

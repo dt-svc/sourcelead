@@ -15,9 +15,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.service.CandidateResumesService;
-import com.ibm.icu.impl.duration.DateFormatter;
 
 @Component
 public class CandidateIndexHelper {
@@ -44,7 +42,12 @@ public class CandidateIndexHelper {
 			candidateIndex.setNoticePriod(candidate.getNoticePeriod());
 			candidateIndex.setSummary(candidate.getSummary());
 			candidateIndex.setCandidateType(candidate.getCandidateType());
-			if(null != candidate.getCandidateSkills() && !candidate.getCandidateSkills().isEmpty()){
+			
+			if(null != candidate.getSkillsName() && !candidate.getSkillsName().isEmpty()){
+				candidateIndex.setSkillsName(candidate.getSkillsName());
+			}
+			
+			/*if(null != candidate.getCandidateSkills() && !candidate.getCandidateSkills().isEmpty()){
 				ArrayList<String> skillList = new ArrayList<>();
 				for(CandidateSkills skills : candidate.getCandidateSkills()){
 					skillList.add(skills.getName());
@@ -53,7 +56,7 @@ public class CandidateIndexHelper {
 					candidateIndex.setSkills(skillList);
 				}
 				
-			}
+			}*/
 			if(null != candidate.getCandidateEmployers() && !candidate.getCandidateEmployers().isEmpty()){
 				ArrayList<String> employerList = new ArrayList<>();
 				for(CandidateEmployers employer : candidate.getCandidateEmployers()){
@@ -82,7 +85,7 @@ public class CandidateIndexHelper {
 			}
 			if(StringUtils.isNotEmpty(candidate.getExperienceYears())){
 				if(candidate.getExperienceYears().equalsIgnoreCase("25+")){
-					candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS);
+					candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS.toString());
 				}
 				else{
 					candidateIndex.setExperienceYears(candidate.getExperienceYears());

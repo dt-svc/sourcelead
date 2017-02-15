@@ -1,13 +1,5 @@
 package com.bis.sourcelead.elk.index;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
-
-import com.itextpdf.text.ListItem;
-
 /**
  * 
  * @author Rajashekar and Prasanna
@@ -63,11 +55,11 @@ public class RequirementIndex {
 	
 	private String priority; 
 
-   private String reqCreatedDate;
+   private String createdDate;
 
 	private String reqCreatedBy;
 
-	private String reqUpdatedDate;
+	private String updatedDate;
 
 	private String reqUpdatedBy;
 	
@@ -85,7 +77,7 @@ public class RequirementIndex {
 	
 	private String releasedBy;
 	
-	
+	private String otherJobType;
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -346,20 +338,21 @@ public class RequirementIndex {
 		this.numberOfApplicants = numberOfApplicants;
 	}
 
-	public String getReqCreatedDate() {
-		return reqCreatedDate;
+
+	public String getCreatedDate() {
+		return createdDate;
 	}
 
-	public void setReqCreatedDate(String reqCreatedDate) {
-		this.reqCreatedDate = reqCreatedDate;
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
 	}
 
-	public String getReqUpdatedDate() {
-		return reqUpdatedDate;
+	public String getUpdatedDate() {
+		return updatedDate;
 	}
 
-	public void setReqUpdatedDate(String reqUpdatedDate) {
-		this.reqUpdatedDate = reqUpdatedDate;
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 
 	public String getReleasedBy() {
@@ -370,6 +363,12 @@ public class RequirementIndex {
 		this.releasedBy = releasedBy;
 	}
 
-	
-	
+	public String getOtherJobType() {
+		return otherJobType;
+	}
+
+	public void setOtherJobType(String otherJobType) {
+		this.otherJobType = otherJobType;
+	}
+
 }

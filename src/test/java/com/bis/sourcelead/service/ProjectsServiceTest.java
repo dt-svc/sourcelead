@@ -1,18 +1,19 @@
 package com.bis.sourcelead.service;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -26,17 +27,18 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -62,6 +64,12 @@ public class ProjectsServiceTest {
 	
 	@Autowired
 	OrgService orgService;
+	
+	@Autowired
+	SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	
+	@Autowired
+	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
 	
 	@Autowired
 	ProjectMembersService projectMembersService;
@@ -244,24 +252,46 @@ public class ProjectsServiceTest {
 	 * Junit test for employess Manager
 	 * @throws Exception
 	 */
-	//@Test
+	@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
-		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus("");
+		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+ProjectMembersList.size());
 		if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
 			for(ProjectMembers projectMember : ProjectMembersList){
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
 				if("Admin".equalsIgnoreCase(userRole.getUserType()))
 					continue;
-				HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId(),userRole.getUser().getId());
-				//				if(projectApproverHierarchyList.size() == 0){
 					String level ="";
-					if(timesheetSubmissions !=null){
-						projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions,level);	
-					}
+					DateFormat format = Constants.DF_DMY;
+					Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,"scheduler");
+					LinkedHashMap<String,String> finalTFMap = new LinkedHashMap<>();
+					if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
+						for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
+						    String key = entry.getKey();
+						    String value =entry.getValue();
+						    Date frequencyStartDate = format.parse(key.replaceAll("/", "-"));
+							Date frequencyEndDate = format.parse(value.replaceAll("/", "-"));
+							
+							Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+							currentCal.setLenient(false);
+							currentCal.setTime(new Date());
+							Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "FRI");
+							
+				             Boolean flag = true;
+				            /* if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentMonday.getTime()) <-2){
+				            	 flag = false;
+				             }*/
+							
+						    if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getId()) && (flag)){
+						    	finalTFMap.put(key, value);
+							}
+						}
 						
-					logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
-//				}
+					}
+					if(null != finalTFMap && !finalTFMap.isEmpty()){
+						projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),finalTFMap,projectMember.getProjects(),level);	
+						logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+					}
 			}
 		}
 		

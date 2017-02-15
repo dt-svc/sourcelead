@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -84,66 +85,69 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 public class UsersListRestController {
-	
-private static final Logger logger = LoggerFactory.getLogger(UsersListRestController.class);
-	
+
+	private static final Logger logger = LoggerFactory.getLogger(UsersListRestController.class);
+
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-	
+
 	@Autowired
 	UserRoleService userRoleService;
-	
+
 	@Autowired
 	EmployeesService employeesService;
-	
+
 	@Autowired
 	UserService userService;
 
 	@Autowired
 	ProjectsService projectsService;
-	
+
 	@Autowired
 	CommonUtil commonUtil;
-	
+
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
-	
+
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
-	
+
 	@Autowired
 	OrgSpocService orgSpocService;
-	
+
 	@Autowired
 	RequirementService requirementService;
-	
+
 	@Autowired
 	TeamService teamService;
-	
+
 	@Autowired
 	RequirementApproverHierarchyService requirementApproverHierarchyService;
-	
+
 	@Autowired
 	TeamMembersService teamMembersService;
-	
+
 	@Autowired
 	ProjectApproverHierarchyService projectApproverHierarchyService;
-	
+
 	@Autowired
 	ProjectMembersService projectMembersService;
-	
+
 	@Autowired
 	ProjectMembersHistoryService projectMembersHistoryService;
-	
+
 	@Autowired
 	RolesService rolesService;
-	@Autowired
-	SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
+
 	@Autowired
 	TabsService tabsService;
-	
+
+	@Autowired
+	SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
+
 	/**
-	 * To get All the Users by filtering 
+	 * To get All the Users by filtering
+	 * 
 	 * @param request
 	 * @param userRole
 	 * @param searchByName
@@ -151,988 +155,1062 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	 * @param loginUserRole
 	 * @return
 	 */
-	
+
 	/* this method is not at used */
 	@RequestMapping(value = "/getUsersList")
 	@JsonInclude(value = JsonInclude.Include.NON_NULL)
 	@ResponseBody
 	public String getUsersList(HttpServletRequest request,
-			@RequestParam(value="userRole", required=false) String userRole,
-			@RequestParam(value="searchByName", required=false) String searchByName,
-			@RequestParam(value="userState", required=false) String userState,
-			@RequestParam(value="loginUserRole", required=false) String loginUserRole,
-			@RequestParam(value="offset", required=false) Integer offset) throws Exception {
-		
-	 	String resultJson = null;
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			@RequestParam(value = "userRole", required = false) String userRole,
+			@RequestParam(value = "searchByName", required = false) String searchByName,
+			@RequestParam(value = "userState", required = false) String userState,
+			@RequestParam(value = "loginUserRole", required = false) String loginUserRole,
+			@RequestParam(value = "offset", required = false) Integer offset) throws Exception {
+
+		String resultJson = null;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
-			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-			
-			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
-			
-			if(null != userState  && !"".equalsIgnoreCase(userState)){
-				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userStatus", userState));
-				}
-			if(null != userRole  && !"".equalsIgnoreCase(userRole)){
-				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userRoleId", userRole));
-				}
-			if(null != searchByName  && !"".equalsIgnoreCase(searchByName)){
-				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("email", searchByName));
-				}
-			boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
-			 
-			Integer maxResults =  Constants.MAX_RESULTS_TEN;
-			
-			List<UserIndex> usersList = new ArrayList<UserIndex>();
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		
-			try{
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,offset,maxResults.intValue(),boolQueryBuilder).getHits();
-				if(searchHits != null && searchHits.length >0){
-					ObjectMapper mapper = new ObjectMapper();
-					for (SearchHit hit : searchHits) {
-						StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
-						mapper.setDateFormat(df);
-						UserIndex userIndex = mapper.readValue(json1.toString(), UserIndex.class);
-						usersList.add(userIndex);
-					}
-				}
-			}catch (Exception e) {
-				e.printStackTrace();
+		Long userRoleType;
+
+		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+		if (null != userState && !"".equalsIgnoreCase(userState)) {
+			boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userStatus", userState));
+		}
+		if (null != userRole && !"".equalsIgnoreCase(userRole)) {
+			boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userRoleId", userRole));
+		}
+
+		boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
+		Integer maxResults = offset + Constants.MAX_RESULTS_TEN;
+
+		if (null != searchByName && !"".equalsIgnoreCase(searchByName)) {
+			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("email", searchByName));
+		}
+
+		List<UserIndex> usersList = new ArrayList<UserIndex>();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+		SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX,
+				Constants.ELK_USER_TYPE, offset, maxResults.intValue(), boolQueryBuilder).getHits();
+		if (searchHits != null && searchHits.length > 0) {
+			ObjectMapper mapper = new ObjectMapper();
+			for (SearchHit hit : searchHits) {
+				String json = hit.getSourceAsString();
+				json = hit.getSourceAsString();
+				mapper.setDateFormat(df);
+				UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+				usersList.add(userIndex);
 			}
-			
-			
-		 resultJson = toJSON(usersList);
-		 return resultJson;
+		}
+
+		/*
+		 * List<UserRole> rolesList =
+		 * userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType,
+		 * searchByName,
+		 * orgLocations.getId(),userState,user.getId(),loginUserRole,user.
+		 * getUserCode(),offset);
+		 */
+		resultJson = toJSON(usersList);
+		return resultJson;
 
 	}
-	/* This method is used for landing page and advanced search for user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
+
+	/*
+	 * This method is used for landing page and advanced search for user tab.
+	 * So, who has user tab access they can see users list. No preAuthorize for
+	 * this method
+	 */
 	@RequestMapping(value = "/searchUser", method = RequestMethod.POST)
-	 public String searchUser(@RequestParam(value = "json", required = false) String json,
-			 @RequestParam(value="offset", required=false) Integer offset,
-			 @RequestParam(value="userRole", required=false) String userRole,
-			 @RequestParam(value="searchByName", required=false) String searchByName,
-			 @RequestParam(value="userState", required=false) String userState,
-			 @RequestParam(value="loginUserRole", required=false) String loginUserRole,
-			 MultipartHttpServletRequest request) throws Exception {
+	public String searchUser(@RequestParam(value = "json", required = false) String json,
+			@RequestParam(value = "offset", required = false) Integer offset,
+			@RequestParam(value = "userRole", required = false) String userRole,
+			@RequestParam(value = "searchByName", required = false) String searchByName,
+			@RequestParam(value = "userState", required = false) String userState,
+			@RequestParam(value = "loginUserRole", required = false) String loginUserRole,
+			MultipartHttpServletRequest request) throws Exception {
 
-		
-				
-				
-		 MultipartFile multiFile = null;
-			Iterator<String> itrator = request.getFileNames();
-			if(itrator.hasNext()){
-		        multiFile = request.getFile(itrator.next());
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if (itrator.hasNext()) {
+			multiFile = request.getFile(itrator.next());
+		}
+		String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+
+		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+
+		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+		boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
+
+		Integer maxResults = Constants.MAX_RESULTS_TEN;
+
+		if (null != userState && !"".equalsIgnoreCase(userState)) {
+			boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userStatus", userState));
+		}
+		if (null != userRole && !"".equalsIgnoreCase(userRole)) {
+			boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userRoleId", userRole));
+		}
+		if (null != searchByName && !"".equalsIgnoreCase(searchByName)) {
+			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("email", searchByName));
+			/*
+			 * boolQueryBuilder.should(QueryBuilders.matchPhraseQuery(
+			 * "lastName", searchByName));
+			 * boolQueryBuilder.should(QueryBuilders.matchPhraseQuery(
+			 * "firstName", searchByName));
+			 */
+		}
+
+		// Exclude Keyword
+		ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+		if (null != excludeKeyWordArray && !excludeKeyWordArray.isEmpty()) {
+
+			BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : excludeKeyWordArray) {
+				BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+				ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+
+				if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
+
+					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
+						excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+					}
+					excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+				}
 			}
-			String jsonc = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(jsonc);
-			
-			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			
-			 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-			 
-			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
-			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
-			 Integer maxResults =  Constants.MAX_RESULTS_TEN;
+			boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+		}
 
-			if(null != userState  && !"".equalsIgnoreCase(userState)){
-				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userStatus", userState));
-				}
-			if(null != userRole  && !"".equalsIgnoreCase(userRole)){
-				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userRoleId", userRole));
-				}
-			if(null != searchByName  && !"".equalsIgnoreCase(searchByName)){
-				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("email", searchByName));
-				/*boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("lastName", searchByName));
-				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("firstName", searchByName));*/
-				}
-			
-		 
-			//Exclude Keyword
-			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
-			 if(null != excludeKeyWordArray && !excludeKeyWordArray.isEmpty()){
-			 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
-				 for(String keywd : excludeKeyWordArray){
-					 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-					ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-					if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
-						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-							excludeBoolSubQueryBuilder.should(matchQueryBuilder);
-						}
-						excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
-					}
-				}
-				 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
-			  }
-			 
-			 
-			//Any Keyword
-				ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
-				if(null != anyKeyWordArray && !anyKeyWordArray.isEmpty()){
-					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : anyKeyWordArray){
-						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-						if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
-							}
-							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
-						}
-					}
-					 boolQueryBuilder.must(anyBoolQueryBuilder);
-				}
-				//All Keywords
-				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
-				if(null != allKeyWordArray && !allKeyWordArray.isEmpty()){
-					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : allKeyWordArray){
-						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-						if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
-							}
-							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
-						}
-					}
-					 boolQueryBuilder.must(allBoolQueryBuilder);
-				}
-				
-				//Email
-				ArrayList<String> emailArray = getSearchKeywordsFromChosenSelectField(jsonObj, "email");
-				if(null != emailArray && !emailArray.isEmpty()){
-					BoolQueryBuilder emailBoolQueryBuilder = QueryBuilders.boolQuery();
-					for(String keywd : emailArray){
-						emailBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("email", "*"+keywd+"*"));
-					}
-					boolQueryBuilder.must(emailBoolQueryBuilder);
-				}
-				
-				
-				//Mobile Phone
-			    ArrayList<String> mobilePhoneArray = getSearchKeywordsFromChosenSelectField(jsonObj, "mobilePhone");
-				if(null != mobilePhoneArray && !mobilePhoneArray.isEmpty()){
-					BoolQueryBuilder mobilePhoneBoolQueryBuilder = QueryBuilders.boolQuery();
-					for(String keywd : mobilePhoneArray){
-						mobilePhoneBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
-					}
-					boolQueryBuilder.must(mobilePhoneBoolQueryBuilder);
-				}
-				
-				
-				//Role
-				ArrayList<String> userTypeArray = getSearchKeywordsFromChosenSelectField(jsonObj, "userType");
-				if(null != userTypeArray && !userTypeArray.isEmpty()){
-					BoolQueryBuilder userTypeBoolQueryBuilder = QueryBuilders.boolQuery();
-					for(String keywd : userTypeArray){
-						userTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("userType", keywd));
-					}
-					boolQueryBuilder.must(userTypeBoolQueryBuilder);
-				}
-				
-				
-				//Employee Id
-				ArrayList<String> employeeIdArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeId");
-				if(null != employeeIdArray && !employeeIdArray.isEmpty()){
-					BoolQueryBuilder employeeIdBoolQueryBuilder = QueryBuilders.boolQuery();
-					for(String keywd : employeeIdArray){
-						employeeIdBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("employeeId", keywd));
-					}
-					boolQueryBuilder.must(employeeIdBoolQueryBuilder);
-				}
-				
-				
-				//User State
-				ArrayList<String> userStateArray = getSearchKeywordsFromChosenSelectField(jsonObj, "userStatus");
-				if(null != userStateArray && !userStateArray.isEmpty()){
-					BoolQueryBuilder userStateBoolQueryBuilder = QueryBuilders.boolQuery();
-					for(String keywd : userStateArray){
-						userStateBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("userStatus", keywd));
-					}
-					boolQueryBuilder.must(userStateBoolQueryBuilder);
-				}
-				
-				//Rate
-				if(jsonObj.has("rate") && StringUtils.isNotEmpty(jsonObj.getString("rate"))){
-			    	boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("rate", jsonObj.getString("rate")));
-			    }
-				
-				//Rate Per
-				if(jsonObj.has("ratePer") && StringUtils.isNotEmpty(jsonObj.getString("ratePer"))){
-					boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("ratePer", jsonObj.getString("ratePer")));
-			    }
-				
-				List<UserIndex> usersList = new ArrayList<UserIndex>();
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				df.setTimeZone(TimeZone.getTimeZone("GMT"));
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,offset,maxResults.intValue(),boolQueryBuilder).getHits();
-				if(null != searchHits && searchHits.length >0){
-					ObjectMapper mapper = new ObjectMapper();
-					for (SearchHit hit : searchHits) {
-						StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
-						mapper.setDateFormat(df);
-						UserIndex userIndex = mapper.readValue(json1.toString(), UserIndex.class);
-						usersList.add(userIndex);
-					}
-				}
-			 String resultJson;
-			 resultJson = commonUtil.toJSON(usersList);
-			 return resultJson;
-			 
-	 }
-	 private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
-		 ArrayList<String> keyWordList = null;
-		 if(jsonObj.has(param)){
-			 String searchKeywordString = null;
-			 try{
-	   		   JSONArray jsonArray = jsonObj.getJSONArray(param);
-	   		   searchKeywordString = jsonArray.toString();
-		   	  }
-		   	  catch(JSONException e){
-		   		  searchKeywordString= jsonObj.getString(param);
-		   	  }
-			 
-		     searchKeywordString = searchKeywordString.replaceAll("\\[", "").replaceAll("\\]","");
-		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
-		 }
-		 else{
-			 keyWordList = new ArrayList<String>();
-		 }
-        return keyWordList;
-    }
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
-		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("ratePer", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+		// Any Keyword
+		ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
 
-			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
-			
-			if(matcher.find()){
-				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
-				//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
-				String mobileKeywd =matcher.group().replaceAll("[+91]", "");
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+		if (null != anyKeyWordArray && !anyKeyWordArray.isEmpty()) {
+
+			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : anyKeyWordArray) {
+				BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+				ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+
+				if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
+					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
+						anyBoolSubQueryBuilder.should(matchQueryBuilder);
+					}
+					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+				}
 			}
-			
-			return matchQueryBuilderList; 
-	 }
+			boolQueryBuilder.must(anyBoolQueryBuilder);
+		}
+		// All Keywords
+		ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+
+		if (null != allKeyWordArray && !allKeyWordArray.isEmpty()) {
+
+			BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : allKeyWordArray) {
+				BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+				ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+
+				if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
+					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
+						allBoolSubQueryBuilder.should(matchQueryBuilder);
+					}
+					allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+				}
+			}
+			boolQueryBuilder.must(allBoolQueryBuilder);
+		}
+
+		// Email
+		ArrayList<String> emailArray = getSearchKeywordsFromChosenSelectField(jsonObj, "email");
+
+		if (null != emailArray && !emailArray.isEmpty()) {
+			BoolQueryBuilder emailBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : emailArray) {
+				emailBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("email", "*" + keywd + "*"));
+			}
+			boolQueryBuilder.must(emailBoolQueryBuilder);
+		}
+
+		// Mobile Phone
+		ArrayList<String> mobilePhoneArray = getSearchKeywordsFromChosenSelectField(jsonObj, "mobilePhone");
+
+		if (null != mobilePhoneArray && !mobilePhoneArray.isEmpty()) {
+			BoolQueryBuilder mobilePhoneBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : mobilePhoneArray) {
+				mobilePhoneBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
+			}
+			boolQueryBuilder.must(mobilePhoneBoolQueryBuilder);
+		}
+
+		// Role
+		ArrayList<String> userTypeArray = getSearchKeywordsFromChosenSelectField(jsonObj, "userType");
+
+		if (null != userTypeArray && !userTypeArray.isEmpty()) {
+			BoolQueryBuilder userTypeBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : userTypeArray) {
+				userTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("userType", keywd));
+			}
+			boolQueryBuilder.must(userTypeBoolQueryBuilder);
+		}
+
+		// Employee Id
+		ArrayList<String> employeeIdArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeId");
+
+		if (null != employeeIdArray && !employeeIdArray.isEmpty()) {
+			BoolQueryBuilder employeeIdBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : employeeIdArray) {
+				employeeIdBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("employeeId", keywd));
+			}
+			boolQueryBuilder.must(employeeIdBoolQueryBuilder);
+		}
+
+		// User State
+		ArrayList<String> userStateArray = getSearchKeywordsFromChosenSelectField(jsonObj, "userStatus");
+
+		if (null != userStateArray && !userStateArray.isEmpty()) {
+			BoolQueryBuilder userStateBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : userStateArray) {
+				userStateBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+			}
+			boolQueryBuilder.must(userStateBoolQueryBuilder);
+		}
+
+		// Rate
+		if (jsonObj.has("rate") && StringUtils.isNotEmpty(jsonObj.getString("rate"))) {
+
+			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("rate", jsonObj.getString("rate")));
+		}
+
+		// Rate Per
+		if (jsonObj.has("ratePer") && StringUtils.isNotEmpty(jsonObj.getString("ratePer"))) {
+			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("ratePer", jsonObj.getString("ratePer")));
+		}
+
+		List<UserIndex> usersList = new ArrayList<UserIndex>();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+		SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX,
+				Constants.ELK_USER_TYPE, offset, maxResults.intValue(), boolQueryBuilder).getHits();
+		if (null != searchHits && searchHits.length > 0) {
+			ObjectMapper mapper = new ObjectMapper();
+			for (SearchHit hit : searchHits) {
+				StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
+				mapper.setDateFormat(df);
+				UserIndex userIndex = mapper.readValue(json1.toString(), UserIndex.class);
+				usersList.add(userIndex);
+			}
+		}
+		String resultJson;
+		resultJson = commonUtil.toJSON(usersList);
+		return resultJson;
+
+	}
+
+	private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj, String param)
+			throws Exception {
+		ArrayList<String> keyWordList = null;
+		if (jsonObj.has(param)) {
+			String searchKeywordString = null;
+			try {
+				JSONArray jsonArray = jsonObj.getJSONArray(param);
+				searchKeywordString = jsonArray.toString();
+			} catch (JSONException e) {
+				searchKeywordString = jsonObj.getString(param);
+			}
+
+			searchKeywordString = searchKeywordString.replaceAll("\\[", "").replaceAll("\\]", "");
+			keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+		} else {
+			keyWordList = new ArrayList<String>();
+		}
+
+		return keyWordList;
+	}
+
+	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd) {
+		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("ratePer", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
+
+		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+
+		if (matcher.find()) {
+			Float expYears = Float.valueOf(matcher.group());
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+			// matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone",
+			// keywd));
+			String mobileKeywd = matcher.group().replaceAll("[+91]", "");
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+		}
+
+		return matchQueryBuilderList;
+	}
 
 	/**
 	 * Forward to user controller by using userId as request param
+	 * 
 	 * @param userId
 	 * @param request
 	 * @param response
 	 * @throws Exception
 	 */
-	 @RequestMapping(value = "/userSummary/{userId}" , method = RequestMethod.GET)
-	 public @ResponseBody void userSummary(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response) throws Exception {
-			 StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/sourcelead/userSummaryDetails?userId=").append(userId).toString());
-			
-	   }
-	 
-	 
-	 /**
-	  * Get Employee details by User ID
-	  * @param request
-	  * @param userId
-	  * @return
-	  * @throws Exception
-	  */
-	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_USER','ROLE_VIEW_USER','ROLE_VIEW_DELETE_USER')")
-	 @RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
-	 public @ResponseBody String getUserDetailsById(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
-		 String resultJson = null;  
-		 
-		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 
-		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
-		 
-		 Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
-		 
-		 userRole.setUserType(userRole.getUserType());
-		 
-		 if(employee !=null){
-				userRole.setEmployeeId(employee.getEmployeeId());
-				userRole.setRate(employee.getRate());
-				userRole.setRatePer(employee.getRatePer());
-				if(employee.getHireDate() != null){
-					userRole.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(employee.getHireDate())); 
-				 }else{
-					 userRole.setHireDateStr("");
-				 }
-				userRole.setDailyHours(employee.getDailyHours());
-				
-		 }
-		 
-		 resultJson = toJSON(userRole);
-		 return resultJson;
-	  }
-	 
-	 
-	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_USER','ROLE_VIEW_USER','ROLE_VIEW_DELETE_USER')")
-	 @RequestMapping(value = "/getUserDetailsByIdForTermination", method = RequestMethod.POST)
-	 public @ResponseBody String getUserDetailsByIdForTermination(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
-		 String resultJson = null;  
-		 
-		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 
-		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
-		 
-		
-		List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationId(userRole.getUser().getId(), userRole.getRoles().getId(), orgLocations.getId());
-		 for (User user : userList) {
-			    UserRole userRole1 = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				if(userRole1 != null){
-					user.setUserType(userRole1.getUserType());
+	@RequestMapping(value = "/userSummary/{userId}", method = RequestMethod.GET)
+	public @ResponseBody void userSummary(@PathVariable Long userId, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		StringBuilder redirectUrl = new StringBuilder();
+		response.sendRedirect(redirectUrl.append("/sourcelead/userSummaryDetails?userId=").append(userId).toString());
+
+	}
+
+	/**
+	 * Get Employee details by User ID
+	 * 
+	 * @param request
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_USER','ROLE_VIEW_USER','ROLE_VIEW_DELETE_USER')")
+	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
+	public @ResponseBody String getUserDetailsById(HttpServletRequest request,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		String resultJson = null;
+
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
+
+		Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
+
+		userRole.setUserType(userRole.getUserType());
+
+		if (employee != null) {
+			userRole.setEmployeeId(employee.getEmployeeId());
+			userRole.setRate(employee.getRate());
+			userRole.setRatePer(employee.getRatePer());
+			if (employee.getHireDate() != null) {
+				userRole.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(employee.getHireDate()));
+			} else {
+				userRole.setHireDateStr("");
+			}
+			userRole.setDailyHours(employee.getDailyHours());
+
+		}
+
+		resultJson = toJSON(userRole);
+		return resultJson;
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_USER','ROLE_VIEW_USER','ROLE_VIEW_DELETE_USER')")
+	@RequestMapping(value = "/getUserDetailsByIdForTermination", method = RequestMethod.POST)
+	public @ResponseBody String getUserDetailsByIdForTermination(HttpServletRequest request,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		String resultJson = null;
+
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
+
+		List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationId(userRole.getUser().getId(),
+				userRole.getRoles().getId(), orgLocations.getId());
+		for (User user : userList) {
+			UserRole userRole1 = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+			if (userRole1 != null) {
+				user.setUserType(userRole1.getUserType());
+			}
+		}
+
+		userRole.setAllReportingManagers(userList);
+
+		// To change reporting manager
+		List<Long> userIds = userRoleService.getAllAssignedUsersIdsByReportingManagerId(userId, orgLocations.getId());
+		userRole.setAssignedUsersCountToReportingManager(userIds.size());
+		List<User> reportManagerUsersList = new ArrayList<User>();
+		if (userIds.size() > 0) {
+			userIds.add(userId);
+			List<User> managerUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(
+					orgLocations.getId(), userIds, Long.valueOf(Constants.TAB_USER));
+			for (User user : managerUsersList) {
+				UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if (role != null) {
+					user.setUserType(role.getRoles().getDisplayName());
+					reportManagerUsersList.add(user);
 				}
-		  }
-		 
-		 userRole.setAllReportingManagers(userList);
-		 
-		 
-		 //To change reporting manager
-		 List<Long> userIds = userRoleService.getAllAssignedUsersIdsByReportingManagerId(userId,orgLocations.getId());
-		 userRole.setAssignedUsersCountToReportingManager(userIds.size());
-		 List<User> reportManagerUsersList = new ArrayList<User>();
-		 if(userIds.size() > 0){
-			 userIds.add(userId);
-			 List<User> managerUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(orgLocations.getId(), userIds, Long.valueOf(Constants.TAB_USER));
-			 for(User user :managerUsersList){
-				 UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				 if(role != null){
-					 user.setUserType(role.getRoles().getDisplayName());
-					 reportManagerUsersList.add(user);
-				 }
-			 }
-		 }
-		 
-		 userRole.setReportingManagers(reportManagerUsersList);
-		 
-		 //To change client owner and spoc
-		 List<Long> cleintSpocIds = orgSpocService.getAssignedAsClientOrVendorSpocCountByUserId(userId, orgLocations.getId(),"Client");
-		 userRole.setAssignedAsClientOwnerOrSpocCount(cleintSpocIds.size());
-		 List<User> clientTabUsersList = new ArrayList<User>();
-		 if(cleintSpocIds.size() > 0){
-			 List<User> clientUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocations.getId(), userId, Long.valueOf(Constants.TAB_CLIENT));
-			 for(User user :clientUsersList){
-				 UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				 if(role != null){
-					 user.setUserType(role.getRoles().getDisplayName());
-					 clientTabUsersList.add(user);
-				 }
-			 }
-		 }
-		 userRole.setClientUsersList(clientTabUsersList);
-		 
+			}
+		}
+
+		userRole.setReportingManagers(reportManagerUsersList);
+
+		// To change client owner and spoc
+		List<Long> cleintSpocIds = orgSpocService.getAssignedAsClientOrVendorSpocCountByUserId(userId,
+				orgLocations.getId(), "Client");
+		userRole.setAssignedAsClientOwnerOrSpocCount(cleintSpocIds.size());
+		List<User> clientTabUsersList = new ArrayList<User>();
+		if (cleintSpocIds.size() > 0) {
+			List<User> clientUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(
+					orgLocations.getId(), userId, Long.valueOf(Constants.TAB_CLIENT));
+			for (User user : clientUsersList) {
+				UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if (role != null) {
+					user.setUserType(role.getRoles().getDisplayName());
+					clientTabUsersList.add(user);
+				}
+			}
+		}
+		userRole.setClientUsersList(clientTabUsersList);
+
 		// To change vendor owner and spoc
-		 List<Long> vendorSpocIds = orgSpocService.getAssignedAsClientOrVendorSpocCountByUserId(userId, orgLocations.getId(),"Vendor");
-		 userRole.setAssignedAsVendorOwnerOrSpocCount(vendorSpocIds.size());
-		 List<User> vendorTabUsersList = new ArrayList<User>();;
-		 if(vendorSpocIds.size() > 0){
-			 List<User> vendorUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocations.getId(), userId, Long.valueOf(Constants.TAB_VENDOR));
-			 for(User user :vendorUsersList){
-				 UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				 if(role != null){
-					 user.setUserType(role.getRoles().getDisplayName());
-					 vendorTabUsersList.add(user);
-				 }
-			 }
-		 }
-		 userRole.setVendorUsersList(vendorTabUsersList);
-		 
-		 //To change requirement Manager
-		 Integer requirementsCountAsManager = requirementService.getManagerAssignedRequirementsCount(userId, orgLocations.getId());
-		 userRole.setRequirementsCountAsManager(requirementsCountAsManager);
-		 List<User> requirementManagersList = new ArrayList<User>();
-		 if(requirementsCountAsManager > 0){
-			 List<User> requirementManagersUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocations.getId(), userId, Long.valueOf(Constants.TAB_REQUIREMENT));
-			 for(User user :requirementManagersUsersList){
-				 UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				 if(role != null){
-					 user.setUserType(role.getRoles().getDisplayName());
-					 requirementManagersList.add(user);
-				 }
-			 }
-		 }
-		 userRole.setRequirementManagersList(requirementManagersList);
-		 
-		 Integer requirementsCountAsApprover = requirementService.getRequirementsCountAsApprover(userId, orgLocations.getId());
-		 userRole.setRequirementsCountAsApprover(requirementsCountAsApprover);
-		 List<User> requirementApproversList = new ArrayList<User>();
-		 if(requirementsCountAsApprover > 0){
-			 List<User> requirementApproversUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocations.getId(), userId, Long.valueOf(Constants.TAB_REQUIREMENT));
-			 for(User user :requirementApproversUsersList){
-				 UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				 if(role != null){
-					 user.setUserType(role.getRoles().getDisplayName());
-					 requirementApproversList.add(user);
-				 }
-			 }
-		 }
-		 userRole.setRequirementApproversList(requirementApproversList);
-		 
-		 Integer teamsCountAsOwner = teamService.getTeamCountByTeamOwner(userId, orgLocations.getId());
-		 userRole.setTeamsCountAsOwner(teamsCountAsOwner);
-		 List<User> teamOwnersList = new ArrayList<User>();
-		 if(teamsCountAsOwner > 0){
-			 List<User> teamUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocations.getId(), userId, Long.valueOf(Constants.TAB_REQUIREMENT));
-			 for(User user :teamUsersList){
-				 UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				 if(role != null){
-					 user.setUserType(role.getRoles().getDisplayName());
-					 teamOwnersList.add(user);
-				 }
-			 }
-		 }
-		 userRole.setTeamOwnersList(teamOwnersList);
-		 
-		 Integer projectApproverCount = projectsService.getProjectApproversCountByUserIdAndOrgLocationId(userId, orgLocations.getId());
-		 userRole.setProjectApproverCount(projectApproverCount);
-		 List<User> approversOwnersList = new ArrayList<User>();
-		 if(projectApproverCount > 0){
-			 List<User> projectApproversList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocations.getId(), userId, Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
-			 for(User user :projectApproversList){
-				 UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				 if(role != null){
-					 user.setUserType(role.getRoles().getDisplayName());
-					 approversOwnersList.add(user);
-				 }
-			 }
-		 }
-		 userRole.setProjectApproversList(approversOwnersList);
-		 
-		 
+		List<Long> vendorSpocIds = orgSpocService.getAssignedAsClientOrVendorSpocCountByUserId(userId,
+				orgLocations.getId(), "Vendor");
+		userRole.setAssignedAsVendorOwnerOrSpocCount(vendorSpocIds.size());
+		List<User> vendorTabUsersList = new ArrayList<User>();
+		;
+		if (vendorSpocIds.size() > 0) {
+			List<User> vendorUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(
+					orgLocations.getId(), userId, Long.valueOf(Constants.TAB_VENDOR));
+			for (User user : vendorUsersList) {
+				UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if (role != null) {
+					user.setUserType(role.getRoles().getDisplayName());
+					vendorTabUsersList.add(user);
+				}
+			}
+		}
+		userRole.setVendorUsersList(vendorTabUsersList);
+
+		// To change requirement Manager
+		Integer requirementsCountAsManager = requirementService.getManagerAssignedRequirementsCount(userId,
+				orgLocations.getId());
+		userRole.setRequirementsCountAsManager(requirementsCountAsManager);
+		List<User> requirementManagersList = new ArrayList<User>();
+		if (requirementsCountAsManager > 0) {
+			List<User> requirementManagersUsersList = userService
+					.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocations.getId(), userId,
+							Long.valueOf(Constants.TAB_REQUIREMENT));
+			for (User user : requirementManagersUsersList) {
+				UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if (role != null) {
+					user.setUserType(role.getRoles().getDisplayName());
+					requirementManagersList.add(user);
+				}
+			}
+		}
+		userRole.setRequirementManagersList(requirementManagersList);
+
+		Integer requirementsCountAsApprover = requirementService.getRequirementsCountAsApprover(userId,
+				orgLocations.getId());
+		userRole.setRequirementsCountAsApprover(requirementsCountAsApprover);
+		List<User> requirementApproversList = new ArrayList<User>();
+		if (requirementsCountAsApprover > 0) {
+			List<User> requirementApproversUsersList = userService
+					.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocations.getId(), userId,
+							Long.valueOf(Constants.TAB_REQUIREMENT));
+			for (User user : requirementApproversUsersList) {
+				UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if (role != null) {
+					user.setUserType(role.getRoles().getDisplayName());
+					requirementApproversList.add(user);
+				}
+			}
+		}
+		userRole.setRequirementApproversList(requirementApproversList);
+
+		Integer teamsCountAsOwner = teamService.getTeamCountByTeamOwner(userId, orgLocations.getId());
+		userRole.setTeamsCountAsOwner(teamsCountAsOwner);
+		List<User> teamOwnersList = new ArrayList<User>();
+		if (teamsCountAsOwner > 0) {
+			List<User> teamUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(
+					orgLocations.getId(), userId, Long.valueOf(Constants.TAB_REQUIREMENT));
+			for (User user : teamUsersList) {
+				UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if (role != null) {
+					user.setUserType(role.getRoles().getDisplayName());
+					teamOwnersList.add(user);
+				}
+			}
+		}
+		userRole.setTeamOwnersList(teamOwnersList);
+
+		Integer projectApproverCount = projectsService.getProjectApproversCountByUserIdAndOrgLocationId(userId,
+				orgLocations.getId());
+		userRole.setProjectApproverCount(projectApproverCount);
+		List<User> approversOwnersList = new ArrayList<User>();
+		if (projectApproverCount > 0) {
+			List<User> projectApproversList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(
+					orgLocations.getId(), userId, Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			for (User user : projectApproversList) {
+				UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if (role != null) {
+					user.setUserType(role.getRoles().getDisplayName());
+					approversOwnersList.add(user);
+				}
+			}
+		}
+		userRole.setProjectApproversList(approversOwnersList);
+
+		resultJson = toJSON(userRole);
+		return resultJson;
+	}
+
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
+	@RequestMapping(value = "/getRolesExpectSelectedRole", method = RequestMethod.POST)
+	public @ResponseBody String getRolesExpectSelectedRole(
+			@RequestParam(value = "roleId", required = false) Long roleId, HttpServletRequest request)
+			throws Exception {
+		String resultJson = null;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+
+		List<Roles> rolesList = rolesService.getRolesListExpcetCurrentUserRole(roleId, orgLocations.getId());
+
+		resultJson = toJSON(rolesList);
+		return resultJson;
+	}
+
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
+	@RequestMapping(value = "/getUserPermissionByRole", method = RequestMethod.POST)
+	public @ResponseBody String getUserPermissionByRole(HttpServletRequest request,
+			@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "userRoleId", required = false) Long userRoleId,
+			@RequestParam(value = "changeRoleId", required = false) Long changeRoleId) throws Exception {
+		String resultJson = null;
+
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+
+		List<Long> userRoletabIds = tabsService.getTabsIdsListByUserRoleIdAndOrgLocationId(userRoleId,
+				orgLocations.getId());
+
+		List<Long> changeRoletabIds = tabsService.getTabsIdsListByUserRoleIdAndOrgLocationId(changeRoleId,
+				orgLocations.getId());
+
+		userRoletabIds.removeAll(changeRoletabIds);
+
+		UserRole userRole = userRoleService.getChangeRolePermissions(userRoletabIds, userId, orgLocations.getId());
+
+		resultJson = toJSON(userRole);
+		return resultJson;
+
+	}
+
+	/**
+	 * To terminate user by using User ID.
+	 * 
+	 * @param userId
+	 * @param reason
+	 * @return
+	 * @throws Exception
+	 */
+	@PreAuthorize("hasRole('ROLE_VIEW_DELETE_USER')")
+	@RequestMapping(value = "/terminateUser", method = RequestMethod.POST)
+	public @ResponseBody String terminateUser(@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
+
+		json = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json);
+
+		if (null != userRole) {
+
+			if (jsonObj.has("assignReportingManagers") && !isNullOrEmpty("assignReportingManagers")) {
+				List<UserRole> userRolesList = userRoleService.getAllAssignedUsersByReportingManagerId(userId,
+						orgLocations.getId());
+				User reportingManager = new User();
+				reportingManager.setId(Long.valueOf(jsonObj.getString("assignReportingManagers")));
+				if (null != userRolesList) {
+					for (UserRole roles : userRolesList) {
+						roles.setReportingManager(reportingManager);
+						roles.setUpdatedBy(user.getUserCode());
+						roles.setUpdatedDate(new Date());
+						userRoleService.addUserRole(roles);
+					}
+				}
+
+			}
+
+			if (jsonObj.has("clientUsers") && !isNullOrEmpty("clientUsers")) {
+				User clientOwnerOrUser = new User();
+				clientOwnerOrUser.setId(Long.valueOf(jsonObj.getString("clientUsers")));
+				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
+						orgLocations.getId(), "Client");
+				if (null != orgSpocList) {
+					for (OrgSpoc orgSpoc : orgSpocList) {
+						if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
+								.longValue()) {
+							orgSpoc.setOwnerUser(clientOwnerOrUser);
+						} else if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId()
+								.longValue()) {
+							orgSpoc.setSpocUser(clientOwnerOrUser);
+						}
+						orgSpoc.setUpdatedBy(user.getUserCode());
+						orgSpoc.setUpdatedDate(new Date());
+						orgSpocService.addOrgSpoc(orgSpoc);
+					}
+				}
+
+			}
+
+			if (jsonObj.has("vendorUsers") && !isNullOrEmpty("vendorUsers")) {
+				User vendorOwnerOrUser = new User();
+				vendorOwnerOrUser.setId(Long.valueOf(jsonObj.getString("vendorUsers")));
+				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
+						orgLocations.getId(), "Vendor");
+				if (null != orgSpocList) {
+					for (OrgSpoc orgSpoc : orgSpocList) {
+						if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
+								.longValue()) {
+							orgSpoc.setOwnerUser(vendorOwnerOrUser);
+						} else if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId()
+								.longValue()) {
+							orgSpoc.setSpocUser(vendorOwnerOrUser);
+						}
+						orgSpoc.setUpdatedBy(user.getUserCode());
+						orgSpoc.setUpdatedDate(new Date());
+						orgSpocService.addOrgSpoc(orgSpoc);
+					}
+				}
+
+			}
+
+			if (jsonObj.has("managerUsers") && !isNullOrEmpty("managerUsers")) {
+				User requirementManagerUser = new User();
+				requirementManagerUser.setId(Long.valueOf(jsonObj.getString("managerUsers")));
+				List<Requirement> requirementsList = requirementService.getManagerAssignedRequirementsList(userId,
+						orgLocations.getId());
+				if (null != requirementsList) {
+					for (Requirement requirement : requirementsList) {
+						requirement.setManagerUserId(requirementManagerUser);
+						requirement.setUpdatedBy(user.getUserCode());
+						requirement.setUpdatedDate(new Date());
+						requirementService.addRequirement(requirement);
+					}
+				}
+
+			}
+
+			if (jsonObj.has("approverUser") && !isNullOrEmpty("approverUser")) {
+				User requirementApproverUser = new User();
+				requirementApproverUser.setId(Long.valueOf(jsonObj.getString("approverUser")));
+				List<RequirementApproverHierarchy> approversList = requirementApproverHierarchyService
+						.getRequirementsAsApprover(userId, orgLocations.getId());
+				if (null != approversList) {
+					for (RequirementApproverHierarchy hierarchy : approversList) {
+						hierarchy.setApproverUserId(requirementApproverUser);
+						hierarchy.setUpdatedBy(user.getUserCode());
+						hierarchy.setUpdatedDate(new Date());
+						requirementApproverHierarchyService.addRequirementApproverHierarchy(hierarchy);
+					}
+				}
+
+			}
+
+			if (jsonObj.has("teamOwnerUser") && !isNullOrEmpty("teamOwnerUser")) {
+				User teamOwnerUser = new User();
+				teamOwnerUser.setId(Long.valueOf(jsonObj.getString("teamOwnerUser")));
+				List<Team> teamsList = teamService.getTeamListByTeamOwner(userId, orgLocations.getId());
+				if (null != teamsList) {
+					for (Team team : teamsList) {
+						team.setOwnerUserId(teamOwnerUser);
+						team.setUpdatedBy(user.getUserCode());
+						team.setUpdatedDate(new Date());
+						teamService.saveTeam(team);
+					}
+				}
+
+			}
+
+			List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByUserIdAndLocationId(userId,
+					orgLocations.getId());
+			if (null != teamMembersList) {
+				for (TeamMembers teamMembers : teamMembersList) {
+					teamMembers.setStatus("0");
+					teamMembers.setUpdatedBy(user.getUserCode());
+					teamMembers.setUpdatedDate(new Date());
+					teamMembersService.saveOrUpdateTeamMembers(teamMembers);
+				}
+			}
+
+			if (jsonObj.has("projectApproverUser") && !isNullOrEmpty("projectApproverUser")) {
+
+				projectsService.tereminateAsProjectApprover(jsonObj, user, userId, orgLocations);
+			} else {
+
+				List<ProjectMembers> projectmembersList = projectMembersService
+						.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE);
+				if (null != projectmembersList) {
+					for (ProjectMembers pm : projectmembersList) {
+
+						ProjectMembersHistory projectMembersHistory = projectMembersHistoryService
+								.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+
+						if (null != projectMembersHistory) {
+							projectMembersHistory.setProjectTerminationDate(new Date());
+							projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+						}
+
+						commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
+
+						List<TimesheetSubmissions> submissionsList = timesheetSubmissionsService
+								.getTimeSheetSubmissionByProjectMemberId(pm.getId());
+						if (null != submissionsList) {
+							for (TimesheetSubmissions submissions : submissionsList) {
+								submissions.setStatus(Constants.MEMBER_IN_ACTIVE);
+								submissions.setUpdatedBy(user.getUserCode());
+								submissions.setUpdatedDate(new Date());
+								timesheetSubmissionsService.addTimesheetSubmissions(submissions);
+							}
+						}
+
+					}
+				}
+			}
+
+			userRole.setIsPrimary(0);
+			userRole.setPreviousUserState(userRole.getUserState());
+			userRole.setUserState(Status.INACTIVE);
+			userRole.setTerminateReason(jsonObj.getString("reason"));
+			userRole.setUpdatedBy(user.getUserCode());
+			userRole.setUpdatedDate(commonUtil.currentDate());
+
+			UserRole updateUserRole = userRoleService.addUserRole(userRole);
+
+			// to assign primary role to another user
+			UserRole existinguserRole = userRoleService.getNotPrimaryUser(userId);
+			if (existinguserRole != null) {
+				existinguserRole.setIsPrimary(1);
+				userRoleService.addUserRole(existinguserRole);
+			}
+			Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(updateUserRole.getUser().getId(),
+					orgLocations.getId());
+			userService.saveOrUpdateUserElkDocument(updateUserRole, employee, user.getUserCode());
+		}
+
+		return "success";
+	}
+
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
+	@RequestMapping(value = "/editUserRole", method = RequestMethod.POST)
+	public @ResponseBody String editUserRole(@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
+
+		json = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json);
+
+		if (userRole != null) {
+
+			if (jsonObj.has("assignReportingManagers") && !isNullOrEmpty("assignReportingManagers")) {
+				List<UserRole> userRolesList = userRoleService.getAllAssignedUsersByReportingManagerId(userId,
+						orgLocations.getId());
+				User reportingManager = new User();
+				reportingManager.setId(Long.valueOf(jsonObj.getString("assignReportingManagers")));
+				if (null != userRolesList) {
+					for (UserRole roles : userRolesList) {
+						roles.setReportingManager(reportingManager);
+						roles.setUpdatedBy(user.getUserCode());
+						roles.setUpdatedDate(new Date());
+						userRoleService.addUserRole(roles);
+					}
+				}
+
+			}
+
+			if (jsonObj.has("clientUsers") && !isNullOrEmpty("clientUsers")) {
+				User clientOwnerOrUser = new User();
+				clientOwnerOrUser.setId(Long.valueOf(jsonObj.getString("clientUsers")));
+				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
+						orgLocations.getId(), "Client");
+				if (null != orgSpocList) {
+					for (OrgSpoc orgSpoc : orgSpocList) {
+						if (orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()) {
+							orgSpoc.setOwnerUser(clientOwnerOrUser);
+						} else if (orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()) {
+							orgSpoc.setSpocUser(clientOwnerOrUser);
+						}
+						orgSpoc.setUpdatedBy(user.getUserCode());
+						orgSpoc.setUpdatedDate(new Date());
+						orgSpocService.addOrgSpoc(orgSpoc);
+					}
+				}
+
+			}
+
+			if (jsonObj.has("vendorUsers") && !isNullOrEmpty("vendorUsers")) {
+				User vendorOwnerOrUser = new User();
+				vendorOwnerOrUser.setId(Long.valueOf(jsonObj.getString("vendorUsers")));
+				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
+						orgLocations.getId(), "Vendor");
+				if (null != orgSpocList) {
+					for (OrgSpoc orgSpoc : orgSpocList) {
+						if (orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()) {
+							orgSpoc.setOwnerUser(vendorOwnerOrUser);
+						} else if (orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()) {
+							orgSpoc.setSpocUser(vendorOwnerOrUser);
+						}
+						orgSpoc.setUpdatedBy(user.getUserCode());
+						orgSpoc.setUpdatedDate(new Date());
+						orgSpocService.addOrgSpoc(orgSpoc);
+					}
+				}
+
+			}
+
+			if (jsonObj.has("managerUsers") && !isNullOrEmpty("managerUsers")) {
+				User requirementManagerUser = new User();
+				requirementManagerUser.setId(Long.valueOf(jsonObj.getString("managerUsers")));
+				List<Requirement> requirementsList = requirementService.getManagerAssignedRequirementsList(userId,
+						orgLocations.getId());
+				if (null != requirementsList) {
+					for (Requirement requirement : requirementsList) {
+						requirement.setManagerUserId(requirementManagerUser);
+						requirement.setUpdatedBy(user.getUserCode());
+						requirement.setUpdatedDate(new Date());
+						requirementService.addRequirement(requirement);
+					}
+				}
+
+			}
+
+			if (jsonObj.has("approverUser") && !isNullOrEmpty("approverUser")) {
+				User requirementApproverUser = new User();
+				requirementApproverUser.setId(Long.valueOf(jsonObj.getString("approverUser")));
+				List<RequirementApproverHierarchy> approversList = requirementApproverHierarchyService
+						.getRequirementsAsApprover(userId, orgLocations.getId());
+				if (null != approversList) {
+					for (RequirementApproverHierarchy hierarchy : approversList) {
+						hierarchy.setApproverUserId(requirementApproverUser);
+						hierarchy.setUpdatedBy(user.getUserCode());
+						hierarchy.setUpdatedDate(new Date());
+						requirementApproverHierarchyService.addRequirementApproverHierarchy(hierarchy);
+					}
+				}
+
+			}
+
+			if (jsonObj.has("teamOwnerUser") && !isNullOrEmpty("teamOwnerUser")) {
+				User teamOwnerUser = new User();
+				teamOwnerUser.setId(Long.valueOf(jsonObj.getString("teamOwnerUser")));
+				List<Team> teamsList = teamService.getTeamListByTeamOwner(userId, orgLocations.getId());
+				if (null != teamsList) {
+					for (Team team : teamsList) {
+						team.setOwnerUserId(teamOwnerUser);
+						team.setUpdatedBy(user.getUserCode());
+						team.setUpdatedDate(new Date());
+						teamService.saveTeam(team);
+					}
+				}
+
+			}
+
+			if (jsonObj.has("projectApproverUser") && !isNullOrEmpty("projectApproverUser")) {
+
+				projectsService.tereminateAsProjectApprover(jsonObj, user, userId, orgLocations);
+			}
+
+			if (jsonObj.has("userChangeRole") && !isNullOrEmpty("userChangeRole")) {
+				Roles roles = rolesService.getRolesById(Long.valueOf(jsonObj.getString("userChangeRole")));
+				userRole.setRoles(roles);
+				userRole.setUserType(roles.getDisplayName());
+			}
+
+			userRole.setRoleChangeReason(jsonObj.getString("reason"));
+			userRole.setUpdatedBy(user.getUserCode());
+			userRole.setUpdatedDate(commonUtil.currentDate());
+			userRoleService.addUserRole(userRole);
+
+			/*
+			 * Saving USER DB data as ElasticSearch Documents
+			 */
+			Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(),
+					orgLocations.getId());
+			if (null != employee) {
+				userService.saveOrUpdateUserElkDocument(userRole, employee, user.getUserCode());
+			}
+
+		}
+
+		return "success";
+	}
+
+	/**
+	 * To update user and employee By User ID.
+	 * 
+	 * @param json
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
+	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+	@ResponseBody
+	String updateUser(@RequestParam(value = "json", required = false) String json,
+			@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "emailId", required = false) String emailId, HttpServletRequest request)
+			throws Exception {
+
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+
+		User user = userService.getUserById(userId);
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+
+		json = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json);
+		String password = "";
+		boolean isUserActive = false;
+
+		if (user != null) {
+			user.setFirstName(jsonObj.getString("FirstName"));
+			user.setLastName(jsonObj.getString("LastName"));
+			user.setMobilePhone(jsonObj.getString("PhoneNumber"));
+			if (jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))) {
+				User reportingManager = new User();
+				reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
+				userRole.setReportingManager(reportingManager);
+			} else {
+				userRole.setReportingManager(null);
+			}
+
+			isUserActive = userRoleService.isUserActive(user.getId());
+			if (isUserActive == false && !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))) {
+				// generate random password
+				user.setEmail(jsonObj.getString("EmailId"));
+				user.setUserName(jsonObj.getString("EmailId"));
+				password = SourceLeadRandomCodeHelper.generateRandomPassword();
+				user.setPassword(sourceleadPasswordEncoder.encode(password));
+				user.setIsMailSent(Status.Y);
+			}
+			user.setUpdatedBy(loginUser.getUserCode());
+			user.setUpdatedDate(commonUtil.currentDate());
+			userRole.setUpdatedBy(loginUser.getUserCode());
+			userRole.setUpdatedDate(commonUtil.currentDate());
+			userService.addUser(user);
+			userRoleService.addUserRole(userRole);
+
+			if (isUserActive == false && !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))) {
+				userService.sendEmail(user, loginUser, password, orgLocations.getId());
+			}
+		}
+		Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
+
+		if (employees != null) {
+			employees.setEmployeeId(jsonObj.getString("EmployeeId"));
+			employees.setRate(jsonObj.getString("Rate"));
+			employees.setRatePer(jsonObj.getString("RatePer"));
+			employees.setDailyHours(jsonObj.getString("DayHours"));
+			/*
+			 * employees.setInvoiceFrequency(jsonObj.getString(
+			 * "InvoiceFrequency"));
+			 */
+			if (jsonObj.has("DateofJoin") && !isNullOrEmpty(jsonObj.getString("DateofJoin"))) {
+				try {
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					employees.setHireDate(sdf.parse(jsonObj.getString("DateofJoin")));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			employees.setUpdatedBy(loginUser.getUserCode());
+			employees.setUpdatedDate(commonUtil.currentDate());
+			employeesService.updateEmployee(employees);
+		}
+		/*
+		 * update common user (single user different orgs) details in  ElasticSearch Documents (User)
+		 */
+		commonUtil.commonUserUpdate(user);
+		/*
+		 * update spoc details in ElasticSearch Documents
+		 */
+		commonUtil.updateSpockDetails(user, orgLocations);
+		/*
+		 * Save or update the user in Elk.
+		 */
+		userService.saveOrUpdateUserElkDocument(userRole, employees, loginUser.getUserCode());
 		
-		 
-		 resultJson = toJSON(userRole);
-		 return resultJson;
-	  }
-	 
-	 
-	 
-	 
-	    @PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
-		@RequestMapping(value = "/getRolesExpectSelectedRole", method = RequestMethod.POST)
-		public @ResponseBody String getRolesExpectSelectedRole(
-				@RequestParam(value = "roleId", required = false) Long roleId, HttpServletRequest request) throws Exception {
-			String resultJson = null;
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			
-			List<Roles> rolesList = rolesService.getRolesListExpcetCurrentUserRole(roleId, orgLocations.getId());
-			 
-			resultJson = toJSON(rolesList);
-			return resultJson;
-		}
-	 
-	 
-	 @PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
-	 @RequestMapping(value = "/getUserPermissionByRole", method = RequestMethod.POST)
-	 public @ResponseBody String getUserPermissionByRole(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId,
-			  @RequestParam(value="userRoleId", required=false) Long userRoleId,
-			  @RequestParam(value="changeRoleId", required=false) Long changeRoleId) throws Exception{ 
-		 String resultJson = null;  
-		 
-		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
-		 List<Long> userRoletabIds = tabsService.getTabsIdsListByUserRoleIdAndOrgLocationId(userRoleId, orgLocations.getId());
-		 
-		 List<Long> changeRoletabIds = tabsService.getTabsIdsListByUserRoleIdAndOrgLocationId(changeRoleId, orgLocations.getId());
-		 
-		 userRoletabIds.removeAll(changeRoletabIds);
-		 
-		 
-		 UserRole userRole = userRoleService.getChangeRolePermissions(userRoletabIds, userId, orgLocations.getId());
-		 
-		 
-		 resultJson = toJSON(userRole);
-		 return resultJson;
-		 
-	 }
-	 
-	 
-	 
 
-	 /**
-	  * To terminate user by using User ID.
-	  * @param userId
-	  * @param reason
-	  * @return
-	  * @throws Exception
-	  */
-	 @PreAuthorize("hasRole('ROLE_VIEW_DELETE_USER')")
-	 @RequestMapping(value = "/terminateUser", method = RequestMethod.POST)
-		public @ResponseBody String terminateUser(
-				@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception{
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
-				
-				
-				json = "{"+json+"}";
-			    JSONObject jsonObj = new JSONObject(json);
-			    
-				if(null != userRole){
-					
-					if(jsonObj.has("assignReportingManagers") && !isNullOrEmpty("assignReportingManagers")){
-						List<UserRole> userRolesList = userRoleService.getAllAssignedUsersByReportingManagerId(userId, orgLocations.getId());
-						User reportingManager = new User();
-						reportingManager.setId(Long.valueOf(jsonObj.getString("assignReportingManagers")));
-						if(null != userRolesList){
-							for(UserRole roles : userRolesList){
-								roles.setReportingManager(reportingManager);
-								roles.setUpdatedBy(user.getUserCode());
-								roles.setUpdatedDate(new Date());
-								userRoleService.addUserRole(roles);
-							}
-						}
-						
-					}
-					
-					if(jsonObj.has("clientUsers") && !isNullOrEmpty("clientUsers")){
-						User clientOwnerOrUser = new User();
-						clientOwnerOrUser.setId(Long.valueOf(jsonObj.getString("clientUsers")));
-						List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId, orgLocations.getId(), "Client");
-						if(null != orgSpocList){
-							for(OrgSpoc orgSpoc : orgSpocList){
-								if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-									orgSpoc.setOwnerUser(clientOwnerOrUser);
-								}else if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId().longValue()){
-									orgSpoc.setSpocUser(clientOwnerOrUser);
-								}
-								orgSpoc.setUpdatedBy(user.getUserCode());
-								orgSpoc.setUpdatedDate(new Date());
-								orgSpocService.addOrgSpoc(orgSpoc);
-							}
-						}
-						
-					}
-					
-					if(jsonObj.has("vendorUsers") && !isNullOrEmpty("vendorUsers")){
-						User vendorOwnerOrUser = new User();
-						vendorOwnerOrUser.setId(Long.valueOf(jsonObj.getString("vendorUsers")));
-						List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId, orgLocations.getId(), "Vendor");
-						if(null != orgSpocList){
-							for(OrgSpoc orgSpoc : orgSpocList){
-								if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-									orgSpoc.setOwnerUser(vendorOwnerOrUser);
-								}else if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId().longValue()){
-									orgSpoc.setSpocUser(vendorOwnerOrUser);
-								}
-								orgSpoc.setUpdatedBy(user.getUserCode());
-								orgSpoc.setUpdatedDate(new Date());
-								orgSpocService.addOrgSpoc(orgSpoc);
-							}
-						}
-						
-					}
-					
-					if(jsonObj.has("managerUsers") && !isNullOrEmpty("managerUsers")){
-						User requirementManagerUser = new User();
-						requirementManagerUser.setId(Long.valueOf(jsonObj.getString("managerUsers")));
-						List<Requirement> requirementsList = requirementService.getManagerAssignedRequirementsList(userId, orgLocations.getId());
-						if(null != requirementsList){
-							for(Requirement requirement : requirementsList){
-								requirement.setManagerUserId(requirementManagerUser);
-								requirement.setUpdatedBy(user.getUserCode());
-								requirement.setUpdatedDate(new Date());
-								requirementService.addRequirement(requirement);
-							}
-						}
-						
-					}
-					
-					
-					if(jsonObj.has("approverUser") && !isNullOrEmpty("approverUser")){
-						User requirementApproverUser = new User();
-						requirementApproverUser.setId(Long.valueOf(jsonObj.getString("approverUser")));
-						List<RequirementApproverHierarchy> approversList = requirementApproverHierarchyService.getRequirementsAsApprover(userId, orgLocations.getId()); 
-						if(null != approversList){
-							for(RequirementApproverHierarchy hierarchy : approversList){
-								hierarchy.setApproverUserId(requirementApproverUser);
-								hierarchy.setUpdatedBy(user.getUserCode());
-								hierarchy.setUpdatedDate(new Date());
-								requirementApproverHierarchyService.addRequirementApproverHierarchy(hierarchy);
-							}
-						}
-						
-					}
-					
-					if(jsonObj.has("teamOwnerUser") && !isNullOrEmpty("teamOwnerUser")){
-						User teamOwnerUser = new User();
-						teamOwnerUser.setId(Long.valueOf(jsonObj.getString("teamOwnerUser")));
-						List<Team> teamsList = teamService.getTeamListByTeamOwner(userId, orgLocations.getId());
-						if(null != teamsList){
-							for(Team team : teamsList){
-								team.setOwnerUserId(teamOwnerUser);
-								team.setUpdatedBy(user.getUserCode());
-								team.setUpdatedDate(new Date());
-								teamService.saveTeam(team);
-							}
-						}
-						
-					}
-					
-					List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByUserIdAndLocationId(userId, orgLocations.getId());
-					if(null != teamMembersList){
-						for(TeamMembers teamMembers : teamMembersList){
-							teamMembers.setStatus("0");
-							teamMembers.setUpdatedBy(user.getUserCode());
-							teamMembers.setUpdatedDate(new Date());
-							teamMembersService.saveOrUpdateTeamMembers(teamMembers);
-						}
-					}
-					
-					
-					if(jsonObj.has("projectApproverUser") && !isNullOrEmpty("projectApproverUser")){
-						
-						projectsService.tereminateAsProjectApprover(jsonObj, user, userId, orgLocations);
-					}else{
-					
-						List<ProjectMembers> projectmembersList = projectMembersService.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE);
-						if(null != projectmembersList){
-							for(ProjectMembers pm :projectmembersList){
-								
-								ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
-		    					
-		    					if(null != projectMembersHistory){
-		    						projectMembersHistory.setProjectTerminationDate(new Date());
-			    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
-		    					}
-		    					
-			    				commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
-			    				
-			    				List<TimesheetSubmissions> submissionsList = timesheetSubmissionsService.getTimeSheetSubmissionByProjectMemberId(pm.getId());
-			    				if(null != submissionsList){
-			    					for(TimesheetSubmissions submissions : submissionsList){
-			    						submissions.setStatus(Constants.MEMBER_IN_ACTIVE);
-			    						submissions.setUpdatedBy(user.getUserCode());
-			    						submissions.setUpdatedDate(new Date());
-			    						timesheetSubmissionsService.addTimesheetSubmissions(submissions);
-			    					}
-			    				}
-								
-							}
-						}
-					}
-					
-					
-					
-					
-					userRole.setIsPrimary(0);
-					userRole.setPreviousUserState(userRole.getUserState());
-					userRole.setUserState(Status.INACTIVE);
-					userRole.setTerminateReason(jsonObj.getString("reason"));
-					UserRole updateUserRole = userRoleService.addUserRole(userRole);
-					
-					//to assign primary role to another user
-					UserRole existinguserRole = userRoleService.getNotPrimaryUser(userId);
-					if(existinguserRole != null){
-						existinguserRole.setIsPrimary(1);
-						userRoleService.addUserRole(existinguserRole);
-					}
-					Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(updateUserRole.getUser().getId(), orgLocations.getId());
-					userService.saveOrUpdateUserElkDocument(updateUserRole,employee,user.getUserCode());
-			
-				}
-			
-				return "success";
-		}
-	 
-	 
-	 
-	 
-	 
-	 @PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
-	 @RequestMapping(value = "/editUserRole", method = RequestMethod.POST)
-		public @ResponseBody String editUserRole(
-				@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception{
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
-				
-				
-				json = "{"+json+"}";
-			    JSONObject jsonObj = new JSONObject(json);
-			    
-				if(userRole != null){
-					
-					if(jsonObj.has("assignReportingManagers") && !isNullOrEmpty("assignReportingManagers")){
-						List<UserRole> userRolesList = userRoleService.getAllAssignedUsersByReportingManagerId(userId, orgLocations.getId());
-						User reportingManager = new User();
-						reportingManager.setId(Long.valueOf(jsonObj.getString("assignReportingManagers")));
-						if(null != userRolesList){
-							for(UserRole roles : userRolesList){
-								roles.setReportingManager(reportingManager);
-								roles.setUpdatedBy(user.getUserCode());
-								roles.setUpdatedDate(new Date());
-								userRoleService.addUserRole(roles);
-							}
-						}
-						
-					}
-					
-					if(jsonObj.has("clientUsers") && !isNullOrEmpty("clientUsers")){
-						User clientOwnerOrUser = new User();
-						clientOwnerOrUser.setId(Long.valueOf(jsonObj.getString("clientUsers")));
-						List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId, orgLocations.getId(), "Client");
-						if(null != orgSpocList){
-							for(OrgSpoc orgSpoc : orgSpocList){
-								if(orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()){
-									orgSpoc.setOwnerUser(clientOwnerOrUser);
-								}else if(orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()){
-									orgSpoc.setSpocUser(clientOwnerOrUser);
-								}
-								orgSpoc.setUpdatedBy(user.getUserCode());
-								orgSpoc.setUpdatedDate(new Date());
-								orgSpocService.addOrgSpoc(orgSpoc);
-							}
-						}
-						
-					}
-					
-					if(jsonObj.has("vendorUsers") && !isNullOrEmpty("vendorUsers")){
-						User vendorOwnerOrUser = new User();
-						vendorOwnerOrUser.setId(Long.valueOf(jsonObj.getString("vendorUsers")));
-						List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId, orgLocations.getId(), "Vendor");
-						if(null != orgSpocList){
-							for(OrgSpoc orgSpoc : orgSpocList){
-								if(orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()){
-									orgSpoc.setOwnerUser(vendorOwnerOrUser);
-								}else if(orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()){
-									orgSpoc.setSpocUser(vendorOwnerOrUser);
-								}
-								orgSpoc.setUpdatedBy(user.getUserCode());
-								orgSpoc.setUpdatedDate(new Date());
-								orgSpocService.addOrgSpoc(orgSpoc);
-							}
-						}
-						
-					}
-					
-					if(jsonObj.has("managerUsers") && !isNullOrEmpty("managerUsers")){
-						User requirementManagerUser = new User();
-						requirementManagerUser.setId(Long.valueOf(jsonObj.getString("managerUsers")));
-						List<Requirement> requirementsList = requirementService.getManagerAssignedRequirementsList(userId, orgLocations.getId());
-						if(null != requirementsList){
-							for(Requirement requirement : requirementsList){
-								requirement.setManagerUserId(requirementManagerUser);
-								requirement.setUpdatedBy(user.getUserCode());
-								requirement.setUpdatedDate(new Date());
-								requirementService.addRequirement(requirement);
-							}
-						}
-						
-					}
-					
-					
-					if(jsonObj.has("approverUser") && !isNullOrEmpty("approverUser")){
-						User requirementApproverUser = new User();
-						requirementApproverUser.setId(Long.valueOf(jsonObj.getString("approverUser")));
-						List<RequirementApproverHierarchy> approversList = requirementApproverHierarchyService.getRequirementsAsApprover(userId, orgLocations.getId()); 
-						if(null != approversList){
-							for(RequirementApproverHierarchy hierarchy : approversList){
-								hierarchy.setApproverUserId(requirementApproverUser);
-								hierarchy.setUpdatedBy(user.getUserCode());
-								hierarchy.setUpdatedDate(new Date());
-								requirementApproverHierarchyService.addRequirementApproverHierarchy(hierarchy);
-							}
-						}
-						
-					}
-					
-					if(jsonObj.has("teamOwnerUser") && !isNullOrEmpty("teamOwnerUser")){
-						User teamOwnerUser = new User();
-						teamOwnerUser.setId(Long.valueOf(jsonObj.getString("teamOwnerUser")));
-						List<Team> teamsList = teamService.getTeamListByTeamOwner(userId, orgLocations.getId());
-						if(null != teamsList){
-							for(Team team : teamsList){
-								team.setOwnerUserId(teamOwnerUser);
-								team.setUpdatedBy(user.getUserCode());
-								team.setUpdatedDate(new Date());
-								teamService.saveTeam(team);
-							}
-						}
-						
-					}
-					
-					
-					
-					
-					if(jsonObj.has("projectApproverUser") && !isNullOrEmpty("projectApproverUser")){
-						
-						projectsService.tereminateAsProjectApprover(jsonObj, user, userId, orgLocations);
-					}
-					
-					
-					if(jsonObj.has("userChangeRole") && !isNullOrEmpty("userChangeRole")){
-						Roles roles = rolesService.getRolesById(Long.valueOf(jsonObj.getString("userChangeRole")));
-						userRole.setRoles(roles);
-						userRole.setUserType(roles.getDisplayName());
-					}
-					
-					userRole.setRoleChangeReason(jsonObj.getString("reason"));
-					userRoleService.addUserRole(userRole);
-					
-					/*
-    				 * Saving USER DB data as ElasticSearch Documents
-    				 */
-        			  Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
-        			  if(null != employee){
-        				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
-        			  }
-					
-				}
-			
-				return "success";
-		}
-	 
-	 
-	 
-	 /**
-	  * To update user and employee By User ID.
-	  * @param json
-	  * @param userId
-	  * @return
-	  * @throws Exception
-	  */
-	 @PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
-	 @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-	 @ResponseBody String updateUser(@RequestParam(value="json", required=false) String json,@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="emailId", required=false) String emailId,HttpServletRequest request) throws Exception{
+		return "success";
+	}
 
-				
-				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				
-				User user = userService.getUserById(userId);
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				
-
-				json = "{"+json+"}";
-			    JSONObject jsonObj = new JSONObject(json);
-			    String password = "";
-			    boolean isUserActive = false;
-			    
-				if(user != null){
-					user.setFirstName(jsonObj.getString("FirstName"));
-					user.setLastName(jsonObj.getString("LastName"));
-					user.setMobilePhone(jsonObj.getString("PhoneNumber"));
-					if(jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))){
-						User reportingManager = new User();
-						reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
-						userRole.setReportingManager(reportingManager);
-					}else{
-						userRole.setReportingManager(null);
-					}
-					
-					isUserActive = userRoleService.isUserActive(user.getId());
-					if(isUserActive == false && !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
-						//generate random password
-						user.setEmail(jsonObj.getString("EmailId"));
-						user.setUserName(jsonObj.getString("EmailId"));
-						password = SourceLeadRandomCodeHelper.generateRandomPassword();
-			 			user.setPassword(sourceleadPasswordEncoder.encode(password));
-			 			user.setIsMailSent(Status.Y);
-					}
-					user.setUpdatedBy(loginUser.getUserCode());
-					user.setUpdatedDate(commonUtil.currentDate());
-					
-					userService.addUser(user);
-					userRoleService.addUserRole(userRole);
-					
-					if(isUserActive == false && !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
-						userService.sendEmail(user,loginUser,password,orgLocations.getId());
-                     }
-				}
-			    Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId,orgLocations.getId());
-
-			    if(employees !=  null){
-			    	employees.setEmployeeId(jsonObj.getString("EmployeeId"));
-					employees.setRate(jsonObj.getString("Rate"));
-					employees.setRatePer(jsonObj.getString("RatePer"));
-					employees.setDailyHours(jsonObj.getString("DayHours"));
-					/*employees.setInvoiceFrequency(jsonObj.getString("InvoiceFrequency"));*/
-					if(jsonObj.has("DateofJoin") && !isNullOrEmpty(jsonObj.getString("DateofJoin"))){
-						try {
-							   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-							   employees.setHireDate(sdf.parse(jsonObj.getString("DateofJoin")));
-							} catch (Exception e) {
-							  e.printStackTrace();
-							}
-					}
-					employees.setUpdatedBy(loginUser.getUserCode());
-					employees.setUpdatedDate(commonUtil.currentDate());
-					employeesService.updateEmployee(employees);
-			    }
-			    /*
-				 * update USER DB data as ElasticSearch Documents
-				 */
-			    userService.saveOrUpdateUserElkDocument(userRole,employees,loginUser.getUserCode());
-			    
-				return "success";
-		}
 	
-	 /**
+	/**
 	 * to get the start date and end date of the particular project by projectId
+	 * 
 	 * @param projectId
 	 * @return
 	 * @throws Exception
 	 */
-		//to get a start date and end date of the project
-	 @RequestMapping(value = "/getStartAndEndOfProject" , method = RequestMethod.POST)
-	 public @ResponseBody String getStartAndEndOfProject(@RequestParam(value="projectId", required=false) Long projectId) throws Exception {
-		 	String resultJson = null;
-		 	
-		 	Projects projects = projectsService.getProjectById(projectId);
-			if(projects.getStartDate()!=null){
-				projects.setStartDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getStartDate()));
-			}
-			if(projects.getEndDate()!=null){
-				projects.setEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getEndDate()));
-			}
+	// to get a start date and end date of the project
+	@RequestMapping(value = "/getStartAndEndOfProject", method = RequestMethod.POST)
+	public @ResponseBody String getStartAndEndOfProject(
+			@RequestParam(value = "projectId", required = false) Long projectId) throws Exception {
+		String resultJson = null;
 
-			resultJson = toJSON(projects);
-			return resultJson;
-	   }
-	 
-	 
-		/**
-		 * Redirectin for universal users list
-		 * @param searchValue
-		 * @param request
-		 * @return json
-		 * @throws Exception
-		 */
-	 @RequestMapping(value = "/getUniversalSearchUsersList" , method = RequestMethod.GET)
-	 public @ResponseBody String getUniversalSearchUsersList(@RequestParam(value="searchValue", required=false) String searchValue,HttpServletRequest request) throws Exception {
-		    String resultJson = null;
-		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 	List<UserIndex> usersList =	userService.getAllUniversalSearchUsersList(orgLocations, searchValue,user);
-			resultJson = commonUtil.toJSON(usersList);
-			return resultJson;
-		 	
-	   }
-	 
-	private String toJSON(Object obj){
-        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-            public HierarchicalStreamWriter createWriter(Writer writer) {
-                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-            }
-        });
-        return xstream.toXML(obj);
-    }
-	
+		Projects projects = projectsService.getProjectById(projectId);
+		if (projects.getStartDate() != null) {
+			projects.setStartDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getStartDate()));
+		}
+		if (projects.getEndDate() != null) {
+			projects.setEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getEndDate()));
+		}
+
+		resultJson = toJSON(projects);
+		return resultJson;
+	}
+
+	/**
+	 * Redirectin for universal users list
+	 * 
+	 * @param searchValue
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getUniversalSearchUsersList", method = RequestMethod.GET)
+	public @ResponseBody String getUniversalSearchUsersList(
+			@RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request)
+			throws Exception {
+		String resultJson = null;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<UserIndex> usersList = userService.getAllUniversalSearchUsersList(orgLocations, searchValue, user);
+		resultJson = commonUtil.toJSON(usersList);
+		return resultJson;
+
+	}
+
+	private String toJSON(Object obj) {
+		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+			public HierarchicalStreamWriter createWriter(Writer writer) {
+				return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+			}
+		});
+		return xstream.toXML(obj);
+	}
+
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}

@@ -65,7 +65,11 @@ public class Constants {
 	public static DateFormat DF_YMD = new SimpleDateFormat("yyyy-MM-dd");
 	public static DateFormat DF_STD_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
 	
+	public static transient DateFormat MY = new SimpleDateFormat("MMMM-yyyy");
+	
 	public static DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
+	public static DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
+	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd/MM");
 	
 	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
 	public static String INVITE_USER = "Invite User";
@@ -131,6 +135,10 @@ public class Constants {
 	
 	public static String loginUserAsAdminWithMaxHeirarchyLevel ="(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projects.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id))";
 	
+	
+	public static String loginUserAsAdminForProjects =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = projects.orgLocationsId.id)";
+	
+	
 	/** projectMember  constants**/
 	public static String MEMBER_ACTIVE = "1";
 	public static String  MEMBER_IN_ACTIVE= "0";
@@ -161,9 +169,6 @@ public class Constants {
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
 	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	
-	public static String ELK_USER_INDEX = "users";
-	    
-	public static String ELK_USER_TYPE = "user";
 
 	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
 	
@@ -343,8 +348,8 @@ public class Constants {
     
     public static String[] REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Rejected On","Rejected By","Rejected Stage","Status"};
     
-    public static String[] TIMESHEET_EXCEL_HEADERS = {"Projects","Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Status"};
-    public static String[] TIMESHEET_EXCEL_HEADERS2 = {"Tasks","Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
+    public static String[] TIMESHEET_EXCEL_HEADERS = {"Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Total"};
+    public static String[] TIMESHEET_EXCEL_HEADERS2 = {"Tasks","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Total"};
     public static String[] TIMESHEET_EXCEL_HEADERS3 = {"Status"};
    
     public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts"};
@@ -364,9 +369,13 @@ public class Constants {
     public static String ELK_PROJECT_TYPE = "project";
     
     public static String ELK_CANDIDATE_INDEX = "candidates";
+    
+    public static String ELK_USER_INDEX = "users";
     		
     public static String ELK_CANDIDATE_TYPE = "candidate";
     
+    public static String ELK_USER_TYPE = "user";
+
     public static String ELK_REQUIREMENT_INDEX = "requirement";
 	
     public static String ELK_REQUIREMENT_TYPE = "requirement";
@@ -409,6 +418,10 @@ public class Constants {
     public static int level1 =1;
     public static int level2 =2;
     
+    public static int PREVIOUS_MONTH =-1;
+    public static int NEXT_MONTH =1;
+    public static int CURRENT_MONTH =0;
+    
     public static String SHORTLIST_COUNT= "Shortlisted Applicants:";
     public static String INTERVIEW_COUNT= "Interview Applicants: ";
     public static String OFFER_COUNT= "Offer Applicants:";
@@ -440,7 +453,7 @@ public class Constants {
     public static String NOTICE_PERIOD_3MONTH = "3 Month";
     public static String NOTICE_PERIOD_IMMEDIATELY = "Immediately available";
     
-    public static String EXPERIENCE_26YEARS = "26";
+    public static Integer EXPERIENCE_26YEARS = 26;
     public static String RATE_TYPE_HOURLY = "Hourly";
     public static String RATE_TYPE_WEEKLY = "Weekly";
     public static String RATE_TYPE_BI_WEEKLY = "Bi-weekly";

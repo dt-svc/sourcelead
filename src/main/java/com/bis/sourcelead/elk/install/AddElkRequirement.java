@@ -97,10 +97,8 @@ public class AddElkRequirement {
 				requirementIndex.setReqCreatedBy(rs.getString("CREATED_BY"));
 				requirementIndex.setReqUpdatedBy(rs.getString("UPDATED_BY"));
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-				String reqcreatedDate = dateFormat.format(rs.getDate("CREATED_DATE"));
-				requirementIndex.setReqCreatedDate(reqcreatedDate);
-				String reqUpDatedDate = dateFormat.format(rs.getDate("CREATED_DATE"));
-				requirementIndex.setReqUpdatedDate(reqUpDatedDate);
+				requirementIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
+				requirementIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
 				requirementIndex.setIsTemplate(rs.getString("IS_Template"));
 				requirementIndex.setManagerUserId(rs.getString("MANAGER_USER_ID"));
 				ResultSet approverSet = getApproverUserDetails(Long.parseLong(rs.getString("ID")),conn);
@@ -146,6 +144,7 @@ public class AddElkRequirement {
 						requirementIndex.setSkills(skills.split(","));
 					}
 					requirementIndex.setJobType(rs.getString("JOB_TYPE"));
+					requirementIndex.setOtherJobType(rs.getString("OTHER_JOBTYPE"));
 					requirementIndex.setJobId(rs.getString("JOB_ID"));
 					String clientContactName = null;
 					String clientContactEmail = null;
@@ -184,7 +183,10 @@ public class AddElkRequirement {
 				if(null != rs.getString("RELEASED_BY") && null != rs.getString("RELEASED_BY")){
 					requirementIndex.setReleasedBy(rs.getString("RELEASED_BY"));
 				}
+				Integer numberOfApplicants = getNumberOfApplicants(rs.getString("ID"),conn,rs.getString("ORG_LOCATION_ID"));
+				requirementIndex.setNumberOfApplicants(numberOfApplicants.toString());
 				reqIndexList.add(requirementIndex);
+				
 			}
 			
 		}catch(Exception e){
@@ -202,6 +204,28 @@ public class AddElkRequirement {
 	}
 	
 	
+	private Integer getNumberOfApplicants(String requirementId, Connection conn, String orgLocationId) {
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		 Integer numberOfApplicant =0;
+		 try{
+			 String sql ="select count(*) from REQUIREMENT_SUBMISSION rs where rs.ORG_LOCATION_ID = ? and rs.REQUIREMENT_ID =?";
+				 ps = conn.prepareStatement(sql);
+				 ps.setLong(1, Long.parseLong(orgLocationId));
+				 ps.setLong(2, Long.parseLong(requirementId));
+				 rs = ps.executeQuery();
+				 while(rs.next()){
+					 numberOfApplicant = Integer.parseInt(rs.getString(1));
+				 }
+		 }catch(Exception e){
+			 e.printStackTrace();
+		 }
+//	     return rs;
+		return numberOfApplicant;
+		
+	}
+
+
 	private ResultSet getTeamDetails(long requirementId, Connection conn) {
 		PreparedStatement ps=null;
 		ResultSet rs=null;

@@ -111,7 +111,7 @@ overflow-x: auto;
 			    <div class="cand-advsrch-popup" >
 			  <form:form id="projectlist_form" name="projectlist_form" >
 				
-					  <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
+					  <a href="javascript:void(0)" class="close-div" onClick="closePop(); clearKeys();"><i class="fa fa-close"></i></a>
 					  <div class="row">
 						   <div class="col-md-4">
 			                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
@@ -242,7 +242,7 @@ overflow-x: auto;
 					  <div class="row form-footer mt">
 						  <div class="pull-right mr">
 							   <input type="button" value="Search" id="search_project" onclick="searchProject();" class="btn btn-sm btn-primary"/>
-                               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
+                               <input type="button" value="Clear" onClick="clearKeys();" class="btn btn-sm btn-default ml10"/>
 						  </div>
 					  </div>
 				  
@@ -408,7 +408,7 @@ $(document).ready(function() {
 		  	
 		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
 		  	    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">' 
-		  	         result = result + '<li><a href="#tab-2" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Employees</a></li>';
+		  	         result = result + '<li><a href="#tab-2" id="empTab" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Employees</a></li>';
 		  	    '</sec:authorize>';
 		  	    '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'
 			  	    result = result + '<li class="current"><a href="#tab-2" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Employees</a></li>';
@@ -417,7 +417,7 @@ $(document).ready(function() {
 		  	
 		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
 			  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
-			      	 result = result + '<li><a href="#tab-3" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
+			      	 result = result + '<li><a href="#tab-3" id="taskTab" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
 			  	'</sec:authorize>';
 			  	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
 			  	     result = result + '<li class="current"><a href="#tab-3" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
@@ -687,11 +687,38 @@ $(document).ready(function() {
 	function closePop(){
 		$("div.cand-advsrch-popup").hide();
 	}
+	function clearKeys(){
+		clearSearchKeys();
+	}
 	function openPop(){
 	  $("div.cand-advsrch-popup").toggle();
 	  
 	}
 </script>
+<script type="text/javascript">	
+	function clearSearchKeys(){
+	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	    $("#allKeywords").val('').trigger("chosen:updated");
+	    $("#excludeKeyWord").val('').trigger("chosen:updated");
+	    $("#projectIdAdvanced").val('').trigger("chosen:updated");
+	    $("#projectNameAdvanced").val('').trigger("chosen:updated");
+	    $("#projectManagerAdvanced").val('').trigger("chosen:updated");
+	    $("#invoiceFrequencyAdvanced").val('').trigger("chosen:updated");
+	    $("#clientsAdvanced").val('').trigger("chosen:updated");
+	    $("#statusAdvanced").val('').trigger("chosen:updated");
+	    $("#employeeNameAdvanced").val('').trigger("chosen:updated");
+	    $("#employeeEmailAdvanced").val('').trigger("chosen:updated");
+	    
+	    $("#projectStartDateAdvanced").val('');
+	    
+	    $("#anyOfKeyword").empty();
+	    $("#allKeywords").empty();
+	    $("#excludeKeyWord").empty();
+	    $("#projectIdAdvanced").empty();
+	    $("#projectNameAdvanced").empty();
+	}
+</script>
+
 <script type="text/javascript">	
 	function loadChosenScripts(){
 

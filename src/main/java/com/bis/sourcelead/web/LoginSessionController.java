@@ -196,7 +196,6 @@ public class LoginSessionController {
 			
 			String userName = (String) authentication.getPrincipal();
 			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
-			System.out.println(authentication.getAuthorities());
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			setLoginSession(request, authentication,user,userRole);
 			model.addObject("sourceleadUrl", sourceleadUrl);
@@ -302,7 +301,11 @@ public class LoginSessionController {
 		Long notificationTo = loginUser.getId();
 		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
 		calculateDays(notificationList);
-		commonUtil.storeTimesheetSubmissionRecords(user);
+		
+		/**
+		 * commented by Prasad salina
+		 */
+		//commonUtil.storeTimesheetSubmissionRecords(user);
 		commonUtil.terminateAllProjectMembersByUser(user);
 		
 		try {

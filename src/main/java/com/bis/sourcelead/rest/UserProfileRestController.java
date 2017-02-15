@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -26,15 +27,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -42,168 +46,189 @@ import com.google.gson.GsonBuilder;
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
 public class UserProfileRestController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(UserProfileRestController.class);
-	
+
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-	
+
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
-    private SourceleadPasswordEncoder sourceleadPasswordEncoder;
-	
+	OrgSpocService orgSpocService;
+
+	@Autowired
+	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+
 	@Autowired
 	UserRoleService userRoleService;
-	    
+	
+	@Autowired
+	CommonUtil commonUtil;
 
-	   @RequestMapping(value = "/saveUserProfile" , method = RequestMethod.POST)
-	   public String saveUserProfile(@RequestParam(value="json", required=false) String json ,MultipartHttpServletRequest request) throws Exception {
-			
-		   
-		    Iterator<String> itrator = request.getFileNames();
-	        MultipartFile multiFile = request.getFile(itrator.next());
+	@RequestMapping(value = "/saveUserProfile", method = RequestMethod.POST)
+	public String saveUserProfile(@RequestParam(value = "json", required = false) String json,
+			MultipartHttpServletRequest request) throws Exception {
+
+		Iterator<String> itrator = request.getFileNames();
+		MultipartFile multiFile = request.getFile(itrator.next());
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+
+		json = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json);
+		UserRole userRoleElk = null;
 		
-		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		    
-		    json = "{"+json+"}";
-			JSONObject jsonObj = new JSONObject(json);
-			Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-			UserProfile userProfile =  gson.fromJson(json,UserProfile.class);
-			   try {
-				user = userService.saveUserProfile(userProfile, multiFile, user);
-				UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				userRole.setDesignation(userProfile.getDesignation());
-				userRoleService.addUserRole(userRole);
-				
-				SourceLeadSessionManager.setSessionAttribute(request, "user", user);
-				StringBuilder userNameSB = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "userName", userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-				SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
-				
-			   } catch (Exception e) {
-				e.printStackTrace();
-			} 
-			   return "home";
-	  
-	   
-	   }
-	   
-	   
-	   @RequestMapping(value = "/passwordSettings" , method = RequestMethod.POST)
-	   public String passwordSettings(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
-		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		   json = "{"+json+"}";
-		   JSONObject jsonObj = new JSONObject(json);
-		   Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		   UserProfile userProfile =  gson.fromJson(json,UserProfile.class);
-		   
-		   if(sourceleadPasswordEncoder.matches(userProfile.getCurrentPassword(), user.getPassword())){
-			   user.setPassword(sourceleadPasswordEncoder.encode(userProfile.getPassword()));
-			   try {
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		UserProfile userProfile = gson.fromJson(json, UserProfile.class);
+		try {
+			user = userService.saveUserProfile(userProfile, multiFile, user);
+			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
+			userRole.setDesignation(userProfile.getDesignation());
+			userRoleElk = userRoleService.addUserRole(userRole);
+			/*
+			 * update common user (single user different orgs) details in  ElasticSearch Documents (User)
+			 */
+			commonUtil.commonUserUpdate(user);
+			/*
+			 * Save or update the user in Elk.
+			 */
+			userService.saveOrUpdateUserElkDocument(userRoleElk, null, user.getUserCode());
+
+			/*
+			 * updating user in the Spock
+			 * 
+			 */
+
+			commonUtil.updateSpockDetails(user, orgLocations);
+
+			SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+			StringBuilder userNameSB = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "userName",
+					userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
+
+		} catch (Exception e) {
+			logger.info("--exception--"+e);
+			
+		}
+		return "home";
+
+	}
+	
+
+	@RequestMapping(value = "/passwordSettings", method = RequestMethod.POST)
+	public String passwordSettings(@RequestParam(value = "json", required = false) String json,
+			HttpServletRequest request) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		json = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json);
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		UserProfile userProfile = gson.fromJson(json, UserProfile.class);
+
+		if (sourceleadPasswordEncoder.matches(userProfile.getCurrentPassword(), user.getPassword())) {
+			user.setPassword(sourceleadPasswordEncoder.encode(userProfile.getPassword()));
+			try {
 				userService.addUser(user);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			   SourceLeadSessionManager.setSessionAttribute(request, "resetPwdMsg", "Your password has reset successfully");  
-			   return "home";
-		   }else{
-			   return "Invalid Password";
-		   }
-		   
-	   }
-	   
-	   
-	   
-	   @RequestMapping(value = "/validateCurrentPassword",  method = RequestMethod.POST)
-			public  String validateCurrentPassword(@RequestParam(value="currentPassword", required=false) String currentPassword,HttpServletRequest request) throws Exception {
-			
-		         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				 if(sourceleadPasswordEncoder.matches(currentPassword, user.getPassword())){
-					 return "valid";
-				 }else{
-					 return "invalid";
-				 }
+			SourceLeadSessionManager.setSessionAttribute(request, "resetPwdMsg",
+					"Your password has reset successfully");
+			return "home";
+		} else {
+			return "Invalid Password";
 		}
-	   
-	   
-	   @RequestMapping(value = "/deleteProfileImage" , method = RequestMethod.GET)
-	   public String deleteProfileImage(HttpServletRequest request) throws Exception {
-		   
-		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		   user.setDocFile(null);
-		   user.setFileContentType(null);
-		   userService.addUser(user);
-		   SourceLeadSessionManager.setSessionAttribute(request, "user", user);
-		   
-		   return "success";
-		   
-	   }
-	   
-	   
-     @RequestMapping(value = "/displayUserImage/{userId}" , method = RequestMethod.GET)
-     public void displayUserImage(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response,HttpSession session) {
-    	 
-    	 User user = null;
-			try {
-				user = userService.getUserById(userId);
-				
-				if(user != null && user.getDocFile() != null)
-				{
-					user.setFileContentType("image/jpeg");
-					InputStream in = new ByteArrayInputStream(user.getDocFile());
-					BufferedImage bi = ImageIO.read(in);
-					OutputStream out = response.getOutputStream();
-					if(null != bi){
-						ImageIO.write(bi, "jpg", out);	
-					}
-					out.close();
-					
-				/*	try {
-					    InputStream in = new ByteArrayInputStream(user.getDocFile());
-			            BufferedImage img = colorImage(ImageIO.read(in));
-			            OutputStream out = response.getOutputStream();
-			            ImageIO.write(img, "png", out);
-			        } catch (IOException ex) {
-			            ex.printStackTrace();
-			        }
-					*/
-					    
-					
-				}
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			} 
-			
-			catch (Exception e1) {
-				e1.printStackTrace();
-			}
-			
-     }
-     
-     private static BufferedImage colorImage(BufferedImage image) {
-         int width = image.getWidth();
-         int height = image.getHeight();
-         WritableRaster raster = image.getRaster();
 
-         for (int xx = 0; xx < width; xx++) {
-             for (int yy = 0; yy < height; yy++) {
-                 int[] pixels = raster.getPixel(xx, yy, (int[]) null);
-                 pixels[0] = 0;
-                 pixels[1] = 0;
-                 pixels[2] = 255;
-                 raster.setPixel(xx, yy, pixels);
-             }
-         }
-         return image;
-     }
-     
-     protected boolean isNullOrEmpty(String str) {
- 		return (str == null || "".equals(str.trim()));
- 	}
-    
+	}
+
+	@RequestMapping(value = "/validateCurrentPassword", method = RequestMethod.POST)
+	public String validateCurrentPassword(
+			@RequestParam(value = "currentPassword", required = false) String currentPassword,
+			HttpServletRequest request) throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (sourceleadPasswordEncoder.matches(currentPassword, user.getPassword())) {
+			return "valid";
+		} else {
+			return "invalid";
+		}
+	}
+
+	@RequestMapping(value = "/deleteProfileImage", method = RequestMethod.GET)
+	public String deleteProfileImage(HttpServletRequest request) throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		user.setDocFile(null);
+		user.setFileContentType(null);
+		userService.addUser(user);
+		SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+
+		return "success";
+
+	}
+
+	@RequestMapping(value = "/displayUserImage/{userId}", method = RequestMethod.GET)
+	public void displayUserImage(@PathVariable Long userId, HttpServletRequest request, HttpServletResponse response,
+			HttpSession session) {
+
+		User user = null;
+		try {
+			user = userService.getUserById(userId);
+
+			if (user != null && user.getDocFile() != null) {
+				user.setFileContentType("image/jpeg");
+				InputStream in = new ByteArrayInputStream(user.getDocFile());
+				BufferedImage bi = ImageIO.read(in);
+				OutputStream out = response.getOutputStream();
+				if (null != bi) {
+					ImageIO.write(bi, "jpg", out);
+				}
+				out.close();
+
+				/*
+				 * try { InputStream in = new
+				 * ByteArrayInputStream(user.getDocFile()); BufferedImage img =
+				 * colorImage(ImageIO.read(in)); OutputStream out =
+				 * response.getOutputStream(); ImageIO.write(img, "png", out); }
+				 * catch (IOException ex) { ex.printStackTrace(); }
+				 */
+
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+	}
+
+
+	private static BufferedImage colorImage(BufferedImage image) {
+		int width = image.getWidth();
+		int height = image.getHeight();
+		WritableRaster raster = image.getRaster();
+
+		for (int xx = 0; xx < width; xx++) {
+			for (int yy = 0; yy < height; yy++) {
+				int[] pixels = raster.getPixel(xx, yy, (int[]) null);
+				pixels[0] = 0;
+				pixels[1] = 0;
+				pixels[2] = 255;
+				raster.setPixel(xx, yy, pixels);
+			}
+		}
+		return image;
+	}
+
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 
 }

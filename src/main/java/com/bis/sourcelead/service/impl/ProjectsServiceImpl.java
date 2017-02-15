@@ -1,10 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,10 +37,8 @@ import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -79,8 +75,6 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -164,12 +158,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
 		logger.debug("In ProjectsServiceImpl class saveProject method...");
+		projects.setUpdatedDate(commonUtil.currentDate());
 		return projectsDao.saveProject(projects);
 	}
 
 	@Override
 	public Projects updateProject(Projects projects) throws Exception {
 		logger.debug("In ProjectsServiceImpl class updateProject method...");
+		projects.setUpdatedDate(commonUtil.currentDate());
 		return projectsDao.updateProject(projects);
 	}
 
@@ -355,6 +351,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setIsMailToProjectManager(Status.N);
 		}
     	
+	    if((jsonObj.has("isTimesheetAttachmentRequired")) && StringUtils.isNotEmpty(jsonObj.getString("isTimesheetAttachmentRequired")) && ("Y".equals(jsonObj.getString("isTimesheetAttachmentRequired")))){
+	    	projects.setIsTimesheetAttachmentRequired(Constants.RECORD_ACTIVE);
+	    }else{
+	    	projects.setIsTimesheetAttachmentRequired(Constants.RECORD_INACTIVE);
+	    }
 
     	//prepare ProjectApproverHierarchy
     	Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj,request,projects);
@@ -395,8 +396,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		/**
 		 * this block is for submissions for project member
+		 * commented by Prasad salina on 11/01/17
 		*/
-		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(updatedProjects.getId());
+		/*Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(updatedProjects.getId());
 		if (projectMembersList != null && !projectMembersList.isEmpty()){
 			for (ProjectMembers pm : projectMembersList) {
 				if(pm.getEmployee() != null){
@@ -404,7 +406,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}
 		  	  
 			}
-		}
+		}*/
 		
 		/*
 		 * This block is for Email To Managers and Project Members
@@ -417,8 +419,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			User  approverUserId2  = null;
 			User  approverUserId1 = null;
 			if( null !=  jsonObj.getString("level1Manager")  && jsonObj.has("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
-				  approverUserId1 =   userService.getUserById(Long.valueOf(jsonObj.getString("level1Manager")));
-			if(null != jsonObj.getString("level2Manager") &&jsonObj.has("level2Manager")  && !jsonObj.getString("level2Manager").isEmpty()){
+				  String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+				  approverUserId1 =   userService.getUserById(Long.valueOf(level1UserDetails[0]));
+			if(jsonObj.has("level2Manager") && null != jsonObj.getString("level2Manager") &&jsonObj.has("level2Manager")  && !jsonObj.getString("level2Manager").isEmpty()){
 		      approverUserId2 =   userService.getUserById(Long.valueOf(jsonObj.getString("level2Manager")));
 			}
 			
@@ -445,7 +448,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
 			if(jsonObj.has("level1Manager") && null != jsonObj.getString("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
 				User  approverUserId1 =new User();
-				approverUserId1.setId(Long.valueOf(jsonObj.getString("level1Manager")));
+				String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+				approverUserId1.setId(Long.valueOf(level1UserDetails[0]));
 				if(approverUserId1 != null && user.getId() != approverUserId1.getId()){
 					sendEmailToProjectManager(projects, user, approverUserId1, loginOrgLocation, "", loginOrgCode);
 				}
@@ -485,9 +489,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
 			    	 projects.setEmployeeEndDateStr(Constants.DF_YMD.format(projects.getEndDate()));
 			    }
-			    if(projects.getOrgRelationId()!=null) {
-	                projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
-	            }
+			    
+			    if(null != projects.getOrgRelationId()){
+					if(null != projects.getOrgRelationId().getLocationId() && projects.getOrgRelationId().getLocationId().getId().longValue() == orgLocationsId.longValue()){
+						projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+					}if(null != projects.getOrgRelationId().getResponderLocationId() && projects.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocationsId.longValue()){
+						projects.setClient(projects.getOrgRelationId().getLocationId().getOrg().getOrgName());
+					}
+				}
+			    
 			    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
 			    	StringBuilder projectStringBuilder=new StringBuilder();
@@ -509,6 +519,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		return projectsDao.getProjectByOrgLocationsIdAndUserId(id,userId);
 	}
 
+	@Override
+	public List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long id, Long userId) {
+		// TODO Auto-generated method stub
+		return projectsDao.getProjectsByOrgLocationsIdAndApproverUserId(id,userId);
+	}
+	
+	
 
 	@Override
 	public Projects getProjectByIdAndLoginOrgId(Long projectId, Long orgLocationId) throws Exception {
@@ -532,7 +549,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}*/
 
 	@Override
-	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,HashSet<TimesheetSubmissions> timesheetSubmissions,String level) throws Exception {
+	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,Map<String, String> timesheetFrequencyMap,Projects projects,String level) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(locationsId);
 		
 		Set<Projects> projectsSet = new HashSet<>();
@@ -548,19 +565,19 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
-		 globalVarsMap.put("administratorFirstName", user.getFirstName());
-		 globalVarsMap.put("administratorLastName",user.getLastName());
+		 globalVarsMap.put("administratorFirstName", "SourceLead");
+		 globalVarsMap.put("administratorLastName","Admin");
 		 globalVarsMap.put("role",user.getUserType());
 		 globalVarsMap.put("userEmailId",user.getEmail()); //
 		 LinkedList<String> frequency = new LinkedList<>();
 		 StringBuilder tempHTML = new StringBuilder();
 		 tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
-			tempHTML.append("<tr>");
+			        tempHTML.append("<tr>");
 					tempHTML.append("<th> Project Name </th>");
 					tempHTML.append("<th> Frequency </th>");
 					tempHTML.append("</tr>");
 		
-			if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
+			/*if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
 				 for(TimesheetSubmissions ts :timesheetSubmissions){
 					 tempHTML.append("<tr>");
 					 tempHTML.append("<td>").append(ts.getProjectMembers().getProjects().getProjectName()).append("</td>").toString();
@@ -568,7 +585,20 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 tempHTML.append("</tr>");
 					 projectsSet.add(ts.getProjectMembers().getProjects());
 				 }
+			}*/
+					
+			if(timesheetFrequencyMap != null && !timesheetFrequencyMap.isEmpty()){
+				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
+					    String key = entry.getKey();
+					    String value =entry.getValue();
+				    	 tempHTML.append("<tr>");
+						 tempHTML.append("<td>").append(projects.getProjectName()).append("</td>").toString();
+						 tempHTML.append("<td>").append(key.replaceAll("/", "-")).append(" To ").append(value.replaceAll("/", "-")).append("</td>").toString();
+						 tempHTML.append("</tr>");
+						 projectsSet.add(projects);
+				}
 			}
+			
 			
 	     tempHTML.append("</table> ");
 		 globalVarsMap.put("weekFrequency",tempHTML.toString());
@@ -707,6 +737,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
 		    	if(approverHierarchy.getLevel() != null){
 		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
+		    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
+		    		if(null != userRole){
+		    			projects.setManagerLevel1UserType(userRole.getUserType());
+		    		}
 		    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
 	    	}
@@ -715,6 +749,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
 		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1){
 		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
+		    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
+		    		if(null != userRole){
+		    			projects.setManagerLevel1UserType(userRole.getUserType());
+		    		}
 		    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
 		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
@@ -728,11 +766,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    
 	    projects.setProjectApproverHierarchiesList(projectApproverHierarchies);
 	    
-	    Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(loginOrgLocations.getId());
+	    //Collection<User> userList = userService.getUsersByUserRolesAndOrgLocationId(loginOrgLocations.getId());
+	    List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 	    projects.setManagersList(userList);
 	    if(projects.getManager1() != null){
-	    	  List<User> userListwithoutmaneger1 = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId());
-			    projects.setManagersListwithoutManager1(userListwithoutmaneger1);
+	    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(projects.getManager1(),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			  projects.setManagersListwithoutManager1(userListwithoutmaneger1);
 	    }
 	    
 	    String[] approvers = new String[projectApproverHierarchies.size()];
@@ -748,14 +787,28 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    String[] clientList = new String[orgClientList.size()];
 	    int j = 0;
 		for(OrgRelations ocl :orgClientList){
-			if(projects.getOrgRelationId() !=null){
-				if(projects.getOrgRelationId().getId().equals(ocl.getId())){
+			if(null != projects.getOrgRelationId()){
+				if(projects.getOrgRelationId().getId().equals(ocl.getId()) && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 					projects.setRelationId(ocl.getId());
 					projects.setClient(ocl.getResponderLocationId().getOrg().getOrgName());
+				}if(projects.getOrgRelationId().getId().equals(ocl.getId()) && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+					projects.setRelationId(ocl.getId());
+					projects.setClient(ocl.getLocationId().getOrg().getOrgName());
 				}
 			}
-			StringBuilder approverHierarchiesSB=new StringBuilder();
-			clientList[j] = approverHierarchiesSB.append(ocl.getResponderLocationId().getOrg().getOrgName()).append("&").append(ocl.getId()).toString();
+			
+			if(null != ocl.getLocationId() && null != ocl.getLocationId().getId() && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+				if(null != ocl.getResponderLocationId()){
+					StringBuilder approverHierarchiesSB=new StringBuilder();
+					clientList[j] = approverHierarchiesSB.append(ocl.getResponderLocationId().getOrg().getOrgName()).append("&").append(ocl.getId()).toString();
+				}
+			}
+			if(null != ocl.getResponderLocationId() && null != ocl.getResponderLocationId().getId() && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+				if(null != ocl.getLocationId()){
+					StringBuilder approverHierarchiesSB=new StringBuilder();
+					clientList[j] = approverHierarchiesSB.append(ocl.getLocationId().getOrg().getOrgName()).append("&").append(ocl.getId()).toString();
+				}
+			}
 			j++;
 		 }
 		projects.setClientName(clientList);
@@ -774,12 +827,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 	  * @param projectId
 	  * @param json
 	  * @param request
-	  * @return String
+	  * @return Projects
 	  * @throws Exception
+	  * 
+	  * update by prasad salina here changed method return type String to Projects
 	  */
 	
 	@Override
-	public String getProjectDetailsUpdateByProjectId(Long projectId, User user, JSONObject jsonObj) throws Exception {
+	public Projects getProjectDetailsUpdateByProjectId(Long projectId, User user, JSONObject jsonObj) throws Exception {
 		
 		 Date currentDate = new Date();
 		 Date previousEndDate = null;
@@ -820,11 +875,18 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		
 			    	}
 		    		
-		    		if(jsonObj.has("invoiceFrequency")){
+		    		/*if(jsonObj.has("invoiceFrequency")){
 			        	  if(jsonObj.getString("invoiceFrequency") != null){
 					    	 projects.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
 					     }
-				        }
+				        }*/
+		    		
+		    		
+		    		if((jsonObj.has("isTimesheetAttachmentRequired")) && StringUtils.isNotEmpty(jsonObj.getString("isTimesheetAttachmentRequired")) && ("Y".equals(jsonObj.getString("isTimesheetAttachmentRequired")))){
+		    	    	projects.setIsTimesheetAttachmentRequired(Constants.RECORD_ACTIVE);
+		    	    }else{
+		    	    	projects.setIsTimesheetAttachmentRequired(Constants.RECORD_INACTIVE);
+		    	    }	
 		    		
 		    	if(jsonObj.has("level1Manager") || jsonObj.has("level2Manager") ){
 			    		HashSet<Long> oldlist = new HashSet<>();
@@ -850,7 +912,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		/**
 						 * this block is for submissions for project member
 						*/
-						Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
+						/*Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
 						if (projectMembersList != null && !projectMembersList.isEmpty()){
 							for (ProjectMembers pm : projectMembersList) {
 								if(pm.getEmployee() != null){
@@ -858,12 +920,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 								}
 						  	  
 							}
-						}
+						}*/
 			    		for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
 								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
 								 Long fieldValuelong = null;
+								     String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
 								     if(prHierarchy.getLevel() == 1 || (prHierarchy.getLevel() == 2 && projectApproverHierarchies.size() == 1))
-									  fieldValuelong = Long.valueOf(jsonObj.getString("level1Manager"));
+									  fieldValuelong = Long.valueOf(level1UserDetails[0]);
 								     
 								     if(prHierarchy.getLevel() == 2 &&  jsonObj.has("level2Manager"))
 								      fieldValuelong = Long.valueOf(jsonObj.getString("level2Manager"));
@@ -886,8 +949,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    					ProjectMembers pm = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUserId, projects.getId());
 				    				if(pm.getId() != null){
 				    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
-				    					projectMembersHistory.setProjectTerminationDate(currentDate);
-				    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+				    					if(projectMembersHistory != null){
+				    						projectMembersHistory.setProjectTerminationDate(currentDate);
+					    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+				    					}
 					    				commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
 				    				}
 				    				 
@@ -901,10 +966,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    			if(freshlist != null && !freshlist.isEmpty()){
 			    				for(Long freshlyaddedUserId : freshlist){
 			    					ProjectMembers pm = storeProjectMemberByMemberUserIdAndLoginUser(freshlyaddedUserId, user, projects, currentDate);
-			    					User usr = userService.getUserById(freshlyaddedUserId);
+			    					/*User usr = userService.getUserById(freshlyaddedUserId);
 			    					if(pm != null){
 			    						commonUtil.storeTimesheetSubmissionRecords(usr);
-			    					}
+			    					}*/
 			    				}
 			    				
 			    			}
@@ -918,7 +983,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	/*if(currentDate.before(projects.getStartDate())){
 			    		projects.setEndDate(projects.getStartDate());
 			    	}else{*/
-			    		projects.setEndDate(currentDate);
+			    		//projects.setEndDate(currentDate);
 			    	/*}*/
 			    	projects = commonUtil.terminateProject(projects);
 			    	 updateProject(projects);
@@ -950,9 +1015,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 									  projectMember.setMemberHistoryList(memberHistoryList);
 								  }
 								  projectMembersService.saveProjectMember(projectMember);
-			    	    		 if(projectMember.getEmployee()!= null && projectMember.getEmployee().getUser() != null){
+			    	    		/* if(projectMember.getEmployee()!= null && projectMember.getEmployee().getUser() != null){
 			    	    			 commonUtil.storeTimesheetSubmissionRecords(projectMember.getEmployee().getUser());
-			    	    		 }
+			    	    		 }*/
 			    	    	 }
 			    	     }
 			    	}
@@ -966,11 +1031,23 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	    		commonUtil.terminateProjectMembersWhoseAssignedDateOrTerminatedisGreaterThanProjectEndDate(projects, user);
 	    	    }
 	    	    
-	    	    /*
+
+	    	    /**
+	    	     * To use onclick parameters for emp tab and task tab
+	    	     */
+	    	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+			    if(projects.getEndDate() != null){
+			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+			    }
+				
+				 /*
 	    		 * Updating Project data as ElasticSearch Documents
 	    		 */
 	    		saveOrUpdateProjectElkDocument(projects);
-		 return "success";
+	    	    
+	    	    
+		 return projects;
+
 	}
 
 	 /**
@@ -1624,7 +1701,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 												
 											}
 											
-											commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
+											//commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
 											
 											/**
 										    * This teamMembersList string to store all team members for mail to project manager.
@@ -1730,7 +1807,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 								}
 							}
 							
-							if(flag == false){
+							/*if(flag == false){
 								
 					    			//getting projectmember userId's who are added to the project
 					    					ProjectMembers pm = storeProjectMemberByMemberUserIdAndLoginUser(usr.getId(), user, hierarchy.getProjectId(), new Date());
@@ -1738,7 +1815,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					    						commonUtil.storeTimesheetSubmissionRecords(user);
 					    					}
 										 
-							}
+							}*/
 							
 							 if(hierarchy.getProjectId() != null && hierarchy.getProjectId().getId() != null){
 			    					ProjectMembers pm1 = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUser.getId(), hierarchy.getProjectId().getId());
@@ -1770,6 +1847,12 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 		    		
 			}
 
+			@Override
+			public List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId,
+					Long userId) throws Exception {
+				return projectsDao.getProjectBasedClientsByOrgLocationsIdAndApproverUserId(orgLocationsId, userId);
+			}
+
 			/*@Override
 			public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception {
 				return projectsDao.getAllUserTimeSheetSubmissionStatusCurrentWeek();
@@ -1780,10 +1863,10 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			public void saveOrUpdateProjectElkDocument(Projects projects) throws Exception{
 				List<ProjectApproverHierarchy> projectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectId(projects.getId());
 				Collection<ProjectMembers> projectMembers = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
-				
+;				Projects updatedProject = getProjectById(projects.getId());
 				 //Elastic Search Document Saving
-				ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, projectApproverHierarchy, projectMembers);
-				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
+				ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(updatedProject, projectApproverHierarchy, projectMembers);
+				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,updatedProject.getId().toString());
 			}
 			
 			@Override
@@ -1831,6 +1914,12 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					}
 				
 				return searchList;
+			}
+
+			@Override
+			public Boolean validateTasksName(String taskname, Long projectId) throws Exception {
+				Boolean flag = projectsDao.validateTasksName(taskname,projectId);
+				return flag;
 			}
 
 

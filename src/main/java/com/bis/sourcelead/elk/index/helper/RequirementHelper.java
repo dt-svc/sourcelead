@@ -2,7 +2,6 @@ package com.bis.sourcelead.elk.index.helper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -16,11 +15,7 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementApproverHierarchy;
-import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
@@ -53,6 +48,7 @@ public class RequirementHelper {
 			requirementIndex.setOrgLocationId(requirement.getOrgLocationId().getId());
 			requirementIndex.setJobTitle(requirement.getJobTitle());
 			requirementIndex.setJobType(requirement.getJobType());
+			requirementIndex.setOtherJobType(requirement.getOtherJobType());
 			if (requirement.getRate() !=null && !"".equalsIgnoreCase(requirement.getRate())) {
 				requirementIndex.setRate(Float.parseFloat(requirement.getRate()));
 			}
@@ -72,9 +68,9 @@ public class RequirementHelper {
 			requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
 			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			 String reqcreatedDate = dateFormat.format(requirement.getCreatedDate());
-			requirementIndex.setReqCreatedDate(reqcreatedDate);
+			requirementIndex.setCreatedDate(reqcreatedDate);
 			 String reqUpDatedDate = dateFormat.format(requirement.getCreatedDate());
-			requirementIndex.setReqUpdatedDate(reqUpDatedDate);
+			requirementIndex.setUpdatedDate(reqUpDatedDate);
 			Long userId = requirement.getManagerUserId().getId();
 			User ownerUser = userService.getUserById(userId);
 			StringBuilder sbilder = new StringBuilder();
@@ -108,27 +104,30 @@ public class RequirementHelper {
 				 requirementIndex.setReqLevel2ApproverUserId(sequentialApprovers2.split(","));
 			 }
 			 
-				if (jsonObj.has("assignedToMaxCount")){
+			 	if (jsonObj.has("assignedToMaxCount")&& !"".equalsIgnoreCase(jsonObj.getString("assignedToMaxCount"))){
 					String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
 							if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
 								String assignedTeamId = jsonObj.getString("assignedTeamId");
 								String[] teamOwnerUserId = assignedTeamId.split(",");
 								requirementIndex.setTeamOwnerUserId(teamOwnerUserId);
 							}   
-							String teamAssignUserStr = null;
+							String teamAssignUserStr = "";
 							if(StringUtils.isNotEmpty(assignedToMaxCount)){
 							int maxCount = Integer.parseInt(assignedToMaxCount);
 								for (int c = 1; c < maxCount; c++) {
-									if(c==1){
-										teamAssignUserStr = jsonObj.getString("assignUserId"+c);
-									}else{
-										teamAssignUserStr = teamAssignUserStr + ","+jsonObj.getString("assignUserId"+c);
+									if(jsonObj.has("assignUserId"+c)&& !"".equalsIgnoreCase(jsonObj.getString("assignUserId"+c))){
+											if(c==1){
+												teamAssignUserStr = jsonObj.getString("assignUserId"+c);
+											}else{
+												teamAssignUserStr = teamAssignUserStr + ","+jsonObj.getString("assignUserId"+c);
+											}
 									}
-									
 								}
 							}
-							String[] teamAssignUserId = teamAssignUserStr.split(",");	
-							requirementIndex.setTeamAssignUserId(teamAssignUserId);
+							if(!"".equalsIgnoreCase(teamAssignUserStr)){
+								String[] teamAssignUserId = teamAssignUserStr.split(",");	
+								requirementIndex.setTeamAssignUserId(teamAssignUserId);
+							}
 				}
 			
 			
@@ -178,12 +177,12 @@ public class RequirementHelper {
 				requirementIndex.setSkills(skills);
 			}
 			requirementIndex.setJobId(requirement.getJobId());
-			// requirementIndex.setClientContactName(requirement.getClientContactName());
-			// requirementIndex.setClientContactEmail(requirement.getClientContactName());
 			requirementIndex.setPriority(requirement.getPriority());
 			requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());
 			requirementIndex.setNumberOfPositions(requirement.getPositions());
-			requirementIndex.setNumberOfApplicants(requirement.getNoOfApplicants());
+			if(null != requirement.getTotalApplicantsForRequirement()){
+				requirementIndex.setNumberOfApplicants(requirement.getTotalApplicantsForRequirement().toString());
+			}
 			requirementIndex.setReleasedBy(requirement.getReleasedBy());
 
 		}

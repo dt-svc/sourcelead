@@ -41,7 +41,7 @@ public class CandidateSkills {
 	private Candidate candidateId;
 		
 	
-	@Column(name = "NAME")
+	@Column(name = "NAME", columnDefinition = "TEXT default NULL")
 	private String name ;
 	
 	@Column(name = "TOTALEXPERIENCE ")

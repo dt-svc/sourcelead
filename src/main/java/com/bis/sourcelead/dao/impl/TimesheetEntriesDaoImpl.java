@@ -81,8 +81,7 @@ public class TimesheetEntriesDaoImpl implements TimesheetEntriesDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		TimesheetEntries timesheetEntries = (TimesheetEntries)session.get(TimesheetEntries.class, Long.valueOf(id));
 		timesheetEntries.setStatus("1");
-        System.out.println("in timesheetEntriesdddddd "+timesheetEntries.getId());        
-		session.saveOrUpdate(timesheetEntries);
+        session.saveOrUpdate(timesheetEntries);
 		logger.info("Successfully deleted !!!");
 		return null;
 		/*Query query = session.createQuery("delete Cities where id = :ID");

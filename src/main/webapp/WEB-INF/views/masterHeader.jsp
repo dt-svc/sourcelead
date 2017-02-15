@@ -7,7 +7,6 @@
 <link rel="icon" type="image/png" href="resources/images/fav.png" />
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -15,6 +14,7 @@
 <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css" type="text/css" >
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/font-awesome.min.css">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <link rel="stylesheet" href="resources/css/jquery.timepicker.css">
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
@@ -141,43 +141,35 @@ width: 11.5%;
  <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>
     </a> </span>
-    <nav class="header-nav navbar"> <a href="javascript:void(0)" class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
-      <div class="custom-navbar">
-        <div class="search-area">
-          <div class="dropdown hidden">
-            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"> <i class="fa fa-list-ul"></i> <span class="caret"></span></button>
-            <ul class="dropdown-menu">
-              <li><a href="javascript:void(0)">Candidate</a></li>
-              <li><a href="javascript:void(0)">Professional</a></li>
-            </ul>
-          </div>
-           <div class="search-area">
+    <nav class="header-nav navbar">
+    <a href="javascript:void(0)" class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
+      <div class="search-area col-md-offset-0 col-sm-offset-0 col-lg-offset-2">
            <form:form name ="search_form" id="search_form">
-           
-			<div class="search-area-txt">
-			<div class="select-field pull-left srch-select">
-			<select id="searchType" name="searchType">
-			<option value="All">All</option>
-			<option value="Users">Users</option>
-			<option value="Requirement">Requirement</option>
-			<option value="Candidate">Candidate</option>
-			<option value="Client">Clients</option>
-			<option value="Vendor">Vendors</option>
-			<option value="Projects">Projects</option>
+			<div class="uasrch-selectpicker">
+			<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
+			<option data-icon="fa fa-th-large" ${searchType == "All" ?"selected='selected'":""} value="All">All</option>
+			<option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option>
+			<option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirement</option>
+			<option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidate</option>
+			<option data-icon="fa fa-user-plus" ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
+			<option data-icon="fa fa-suitcase" ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option>
+			<option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>
 			</select>
 			</div>
+			
+			
+			
 			<div class="pull-left universalSrch">
-			<input type="text" id="searchKey" name="searchKey" class="form-control" placeholder="Search"/>
+			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);"/>
 			 <button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="universalSearch();" ><i class="fa fa-search"></i></button>
-			</div>
 			</div>
 			</form:form>
 			</div> 
-        </div>
+<div class="custom-navbar">
         <!-- login User details -->
         <div class="login-user">
         <span class="image"> <img class="img-circle" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>"> </span> <span class="pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </span>
-          <div class="user-details animated">
+          <div class="user-details">
             <div class="user-media">
               <div class="logn-image">
               <img class="img-circle" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>"> </div>
@@ -211,7 +203,7 @@ width: 11.5%;
             	<li><a href="<c:url value='${sourceleadUrl}/mailBox'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </a></li>
             </sec:authorize>
             <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-            <li id="spocks_links"> <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
+            <li> <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
 	              <div id="spockLinksList" style="display: none;">
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
@@ -262,7 +254,7 @@ width: 11.5%;
                 </c:forEach>
                 </c:if>
               </ul>
-              <div class="headerwidget-footer"> <a href="<c:url value='/notificationsList'/>" title="See all notifications"><strong>See all notifications&nbsp;&nbsp;<i class="fa fa-angle-right"></i></strong></strong></a> </div>
+              <div class="headerwidget-footer"> <a href="<c:url value='/notificationsList'/>">View All</a> </div>
             </div>
           </li>
           
@@ -433,17 +425,17 @@ function notificationStatusAsRead(){
 			              </div>
 			              <div class="col-md-6">
 			                  <div class="row">
-				                  <div class="col-md-6">
+				                  <div class="col-md-6" id="taskDatpickerDiv" >
 					                <label>Date<span class="text-danger">*</span></label>
 						                <div class="positionRelative"> 
-						                  <input class="form-control input-sm" value="" name="taskDatpicker" id="taskDatpicker" type="text" field-name="Date"  data-validation="required">
+						                  <input class="form-control input-sm" value="" name="taskDatpicker"  readonly="readonly" id="taskDatpicker" type="text" field-name="Date"  data-validation="required">
 						                  <span class="input-group-addon input-groupAddon icon-Addon"><i class="fa fa-calendar"></i></span>
 						                </div>
 				                   </div>
 				                  <div class="col-md-6">
 					                <label>Time</label>
 						                <div class="positionRelative">
-						                  <input class="form-control input-sm"  name="timepicker" id="timepicker"  type="text">
+						                  <input class="form-control input-sm"  name="timepicker" id="timepicker" type="text">
 						                  <span class="input-group-addon input-groupAddon icon-Addon" ><i class="fa fa-clock-o"></i></span>
 						                </div>
 				                  </div>
@@ -519,6 +511,8 @@ function notificationStatusAsRead(){
 								$("#closed-task, #my-task").hide();
 							    $("#other-task").show().css("opacity", "1");
 							assignedTasksList('assignedTasks');
+							/* tasksList('myTask');
+							assignTasksList(); */
 						},
 					});
 			return true;
@@ -550,8 +544,8 @@ $('#taskDatpicker').datepicker({
 	onSelect : function(selected) {
 		var dt = new Date(selected);
 		dt.setDate(dt.getDate() + 1);
+		removevalidation();
 	}
-	
 	});
 	
 $('#myTaskDatpicker').datepicker({
@@ -591,7 +585,12 @@ $('#closedTaskDatpicker').datepicker({
 	
 $('#timepicker').timepicker({ 'timeFormat': 'h:i A' });
 </script>
+<script>
+function removevalidation(){
+	$('#taskDatpickerDiv').find('p.jquery_form_error_message').remove();	
+}
 
+</script>
 
 <script>
 //Collapse div
@@ -765,6 +764,8 @@ function assignedTasksList(status){
         success: function(data) {
         	 var json = JSON.parse(data);
         	 var result = "";
+        	 
+       		 
        		result = result + '	 <table id="assignedTasksPagination">'; 
         	result = result + '     <thead>';
         	result = result + '       <tr>';
@@ -821,9 +822,12 @@ function assignedTasksList(status){
 			}
         	result = result + '</tbody>';
         	result = result + '</table>';
+        	
        		 $("#assignedTasksId").empty();
            	 $("#assignedTasksId").append(result); 
            	 assignedTasksPagination();
+        	
+        	 
         }
 	});
 	 
@@ -907,6 +911,15 @@ function closedTasksList(status){
 	 
 }
 </script>
+
+<script>
+   function handle(e){
+       if(e.keyCode === 13){
+           e.preventDefault(); // Ensure it is only this code that rusn
+           universalSearch();
+       }
+   }
+</script>
  
 <script>
 function updateMyTaskStatus(taskId){
@@ -942,7 +955,7 @@ function updateAssignTaskStatus(taskId){
 function universalSearch(){
 	 var searchType = document.getElementById('searchType').value;
 	 var searchValue = document.getElementById('searchKey').value;
-	var sourceleadUrl = '${sourceleadUrl}';
+	 var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
 }
 </script>
@@ -1028,6 +1041,10 @@ jQuery('.main-header').addClass('navbar-fixed-top').animate({"top":"0%"}, 500);
 jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-13%"});
 }
 });
+
+// Select picker updated script for universalSerch
+
+$("#searchType").selectpicker('refresh');
 </script>
 
 <!-- Task related code Ends -->

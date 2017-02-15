@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.InterviewFeedbackTemplateDao;
 import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class InterviewFeedbackTemplateServiceImpl implements InterviewFeedbackTemplateService {
@@ -13,10 +14,13 @@ public class InterviewFeedbackTemplateServiceImpl implements InterviewFeedbackTe
 	@Autowired
 	private InterviewFeedbackTemplateDao interviewFeedbackTemplateDao;
 
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Override
 	public InterviewFeedbackTemplate addInterviewFeedbackTemplate(InterviewFeedbackTemplate interviewFeedbackTemplate)
 			throws Exception {
+		interviewFeedbackTemplate.setUpdatedDate(commonUtil.currentDate());
 		return interviewFeedbackTemplateDao.addInterviewFeedbackTemplate(interviewFeedbackTemplate);
 	}
 

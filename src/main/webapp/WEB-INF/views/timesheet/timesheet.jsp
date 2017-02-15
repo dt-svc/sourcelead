@@ -1,5 +1,7 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
+<!-- this is for mask -->
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -13,125 +15,55 @@
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/chosen.jquery.min.js"></script> 
 
-<body  onclick="bodyClick();">
-<section class="content-wraper">
- <form id="timesheet_form" name="timesheet_form" enctype="multipart/form-data" method="post">
- <div id="hideError" style="display:none;"></div>
-  <section class="content-header clearfix">
-    <div class="pull-left">
-      <h2>Timesheets</h2>
-    </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; TimeSheets</div>
-  </section>
-    <div class="timesheet_out"> 
-	<div class="timesheet_wrap">
-				         <div id="dynamic"> 
-				                    
-				         </div> 
-           
-				         <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
-				         <div id="divadttTd1" style="display:none;" >   
-				             <div> 
-				              <select id="REPLACEROWIDsubmissionsubmissionIdtask1Id" name="REPLACEROWIDsubmissionsubmissionIdtask1Id" class="existedProjectTaskIdprojectId" onchange="getProjectTasksOnChange('REPLACEROWIDsubmissionsubmissionIdtask1Id','projectId')">  
-				                          <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
-				                              	<option value="${task.id}">${task.taskName}</option>
-				                           </c:forEach> --%>
-				             </select>
-				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID','submissionId')" class="addtaskfield removetaskfield"/>
-				             </div>
-				             
-				        </div>
-				        <div id="divadttTd2" style="display:none;">
-					    	   <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
-				               <div class="timesheet_comm">
-				                <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment1Id');"></i>
-				                <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment1Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea1Id" ></textarea></span>
-				               </div>
-				   		</div>
-				        <div id="divadttTd3" style="display:none;">
-								  <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
-				                  <div class="timesheet_comm">
-				                      <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment2Id');"></i>
-				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment2Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment2Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea2Id" ></textarea></span></div>
-				        </div>
-				        <div id="divadttTd4" style="display:none;">
-								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
-				                  <div class="timesheet_comm">
-				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment3Id');"></i>
-				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment3Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment3Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea3Id"></textarea></span></div>
-				        </div>
-				        <div id="divadttTd5" style="display:none;">
-								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
-				                  <div class="timesheet_comm">
-				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment4Id');"></i>
-				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment4Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment4Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea4Id"></textarea></span></div>           
-				        </div>
-				        <div id="divadttTd6" style="display:none;">
-								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
-				                  <div class="timesheet_comm">
-				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment5Id');"></i>
-				                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment5Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment5Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea5Id"></textarea></span></div>  
-				    	 </div>
-				         <div id="divadttTd7" style="display:none;">
-							  <input type="text" onblur='checkHours()'   id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
-				                 <div class="timesheet_comm">
-				                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment6Id');"></i>
-				                 <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment6Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment6Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea6Id"></textarea></span></div>
-				         </div>
-				         <div id="divadttTd8" style="display:none;">
-							  <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
-				                 <div class="timesheet_comm">
-				                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment7Id');"></i>
-				                 <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment7Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment7Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea7Id"></textarea></span></div>            
-				    	 </div>
-						<!-- #### this div is for dummy timesheets entries ( useful for add rows ) above  ####-->      
-	</div>
-	</div>  
-	<div id="divAttachmentTd1" style="display: none; float: left;">
-			<div id='REPLACEROWIDdocFileuploadFileGroup'>
-	  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation"> 
-	  			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
-	  		</div>
-    </div>
-
-</form>   
-</section>
-<div class="time_pop" id="timeSheetErrorMsg"></div>
-</body>
-<jsp:include page="../masterFooter.jsp" />
-
-
-<!-- this script is for timesheet screen  below -->
 <script>
+// project side bar tabs
 $(document).ready(function() {
-	var startdate;
-	var navigation;
-	dynamicTimesheet(navigation,startdate);  
+	timesheetEntriesDiv();
 });
+</script>  
+<script>
+	$(document).on("mouseover", ".rejectedHover", function() { 
+		var projectMemberId = $("#projectMemberId").val();
+		$("#rejectedMessage"+projectMemberId).addClass('app_error_mes_active');
+	});	
+	$(document).on("mouseleave", ".rejectedHover", function() { 
+		 var projectMemberId = $("#projectMemberId").val();
+		  $("#rejectedMessage"+projectMemberId).removeClass('app_error_mes_active');
+	});	
 </script>
 
-
-
-<script type="text/javascript">
-function dynamicTimesheet(navigation , startDate){ 
-			var sourceleadUrl ='${sourceleadUrl}';  
-			$("#dynamic").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-			$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/newTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate, 	   
-				    success: function(data) {
-				    	       if(data != '' && data != 'undefined' && data != null){
-				    	    	   $("#dynamic").removeAttr("style");
-				    	    	   $("#dynamic").empty();
-							       $("#dynamic").append(data);
-							       maskme();  
-							       $("html").trigger('click');
-							       
-							       timesheetAttachmentValidationFun();
-						       
-				    	       }else{
-				    	    	    $("#dynamic").removeAttr("style");
+<script>
+	function timesheetEntriesDiv(){ 
+	               var sourceleadUrl ='${sourceleadUrl}';
+	               $("#timesheetEntriesDiv").empty();
+	               $("#timesheetEntriesDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        	   $.ajax({
+		      	          type : "POST",
+		          	      dataType : 'json',
+	        	      	  url: sourceleadUrl+"/timesheetEntries?${_csrf.parameterName}=${_csrf.token}&from=timesheet",		
+	        		      success :function(data) {
+	        		    	   if(data != '' && data != 'undefined' && data != null){ 
+		        		    	    $("#timesheetEntriesDiv").removeAttr("style");
+		        		    	    $("#timesheetEntriesDiv").empty();
+		        		    	  	$("#timesheetEntriesDiv").append(data);
+		        		    	  	maskme();
+		        		    	  	$("html").trigger('click');
+		        		    	  	prepareChosenScripts();
+		        		    	  	$("#tab-1").show()
+		        		    	    $(".project-tabs-menu a").click(function(event) {
+		        		    	        event.preventDefault();
+		        		    	        $(this).parent().addClass("current");
+		        		    	        $(this).parent().siblings().removeClass("current");
+		        		    	        var tab = $(this).attr("href");
+		        		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+		        		    	        $(tab).fadeIn();
+		        		    	    }); 
+	        		    	   }else{
+				    	    	    $("#timesheetEntriesDiv").removeAttr("style");
 				    	    	    var result ="";
 						    	     result = result+"   <div class='row'>"; 
 									 result = result+"	<div class='col-lg-12'>"; 
@@ -143,206 +75,219 @@ function dynamicTimesheet(navigation , startDate){
 									 result = result+"		</div>"; 
 									 result = result+"	</div>"; 
 									 result = result+"  </div> "; 
-									$("#dynamic").empty();
-								    $("#dynamic").append(result); 
+									$("#timesheetEntriesDiv").empty();
+								    $("#timesheetEntriesDiv").append(result); 
 				    	       }
-					}	
-		    });
-}
-</script>	
-
-<!-- this script is for timesheet screen  above -->   
-
-<!-- this script is for validate size of attachments -->
-<script type="text/javascript">
-function timesheetAttachmentValidationFun(){
-		       var deleteLink = document.querySelectorAll('.timesheetAttachmentValidation');
-		       for (var i = 0; i < deleteLink.length; i++) {
-		           deleteLink[i].addEventListener('change', function(event) {
-		        	     	var attach_id = this.id;
-		        	     	var size = $('#'+attach_id)[0].files[0].size;
-		        	     	if(size > 2000000){ 
-		        		    	  $("#"+attach_id).val('');
-		        		    	  $("#"+attach_id+"uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-		        	     	}
-		           });
-		       }
-}   
-</script>
-	
-<!-- this script is for timesheet comment  shown and hide  -->	      
-<script type="text/javascript">
-function timesheetComment(local){ 
-	$('.teskcomment').each(function() {
-	    var currentId = this.id;
-	    var localId = local;
-	    if(localId.trim() == currentId.trim()){
-       	 		$("#"+local).slideToggle(200); 
-        }else{
-       	    $("#"+currentId).slideUp(200); 
-        }
-	});
-} 
-</script>	
- 
-<script type="text/javascript">
-		function bodyClick(){
-		    $(".teskcomment").slideUp(200);   
-		    $("html .timesheet_comm").click(function(event){
-		        event.stopPropagation();
-		    }); 
-		 }
-</script>	
- 
-<!-- this script is for mask for each entity  -->	
-<script>
-function maskme(){
-	$.mask.definitions['H'] = "[0-9]";
-    $.mask.definitions['h'] = "[0-9]";
-    $.mask.definitions['M'] = "[0-9]";
-    $.mask.definitions['m'] = "[0-9]";
-    $.mask.definitions['P'] = "[AaPp]";
-    $.mask.definitions['p'] = "[Mm]";
-    $(".inline_field").mask("Hh:Mm"); 
-}
-</script>
-
-<script>
-$(document).ready(function() {  
-	maskme();    
- });
+	        		    	  	
+	        		      }
+	        	      	  
+	        	      	  
+	        	      	  
+	        	    }); 
+	}
 </script>
 
 
+
 <script>
-$(document).ready(function() {
-    $(".initiateTimesheetMax").each(function(){
-		        this.val("1");
-    });
-	
-});	
+	function timesheetEntriesDivByProjectMemberId(){ 
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         var projectMemberId = $("#projectMemberId").val();
+	         $("#timesheetEntriesDivByProjectMemberId").empty();
+	         $("#timesheetEntriesDivByProjectMemberId").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+     	          type : "POST",
+         	      dataType : 'json',
+   	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&from=timesheet",		
+   		          success :function(result) {
+   		        	 $("#timesheetEntriesDivByProjectMemberId").removeAttr("style");
+   		        	 $("#timesheetEntriesDivByProjectMemberId").empty();
+   		        	 $("#timesheetEntriesDivByProjectMemberId").append(result);
+   		        	 maskme();
+   		        	$("html").trigger('click');
+   		             prepareChosenScripts();
+		    	  	 $("#tab-1").show();
+ 		    	     $(".project-tabs-menu a").click(function(event) {
+ 		    	        event.preventDefault();
+ 		    	        $(this).parent().addClass("current");
+ 		    	        $(this).parent().siblings().removeClass("current");
+ 		    	        var tab = $(this).attr("href");
+ 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+ 		    	        $(tab).fadeIn();
+ 		    	    }); 
+		    	  	 
+   		          }
+   	         }); 
+	}
+</script>	
+<script>
+	function timesheetDivByFrequency(){   
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         var timesheetFrequency = $("#timesheetFrequency").val();
+	         var projectMemberId = $("#projectMemberId").val();
+	         $("#timesheetDivByFrequency").empty();
+	         $("#timesheetDivByFrequency").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        
+	         $.ajax({
+     	          type : "POST",
+         	      dataType : 'json',
+   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from=timesheet",		
+   		          success :function(result) {
+   		        	  		
+   		        	      $("#timesheetDivByFrequency").removeAttr("style");
+	   		    	      $("#timesheetDivByFrequency").empty();
+			    	  	  $("#timesheetDivByFrequency").append(result); 
+			    	  	  
+			    	  	  maskme();
+			    	  	 $("html").trigger('click');
+			    	  	 prepareChosenScripts();
+			    	  	 $("#tab-1").show();
+	 		    	     $(".project-tabs-menu a").click(function(event) {
+	 		    	        event.preventDefault();
+	 		    	        $(this).parent().addClass("current");
+	 		    	        $(this).parent().siblings().removeClass("current");
+	 		    	        var tab = $(this).attr("href");
+	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+	 		    	        $(tab).fadeIn();
+	 		    	    });
+   		          }
+   	         }); 
+	}
 </script> 
 
-<!-- this script is for add row functionality at inline edit screen -->
 <script>
-function callInlineEdit(local){     
-       var id = local.id;
-	   $("#"+id).addClass("inline_field");
-       $("#"+id).editInPlace({
-		
-		saving_animation_color: "#ECF2F8",
-		callback: function(idOfEditor, enteredText, orinalHTMLContent, settingsParams, animationCallbacks) {
-			return enteredText;
-		}
-	});
-}
+	/* function timesheetDivByTab(startDate,endDate) */
+	function timesheetDivByTab(startDate,endDate,approvalStatus){ 
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         var projectMemberId = $("#projectMemberId").val();
+	         var timesheetFrequency = $("#timesheetFrequency").val();
+	         $("#timesheetDivByTab").empty();
+	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+    	          type : "POST",
+        	      dataType : 'json',
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=timesheet",		
+  		          success :function(result) {
+  		    	       
+  		        	   $("#timesheetDivByTab").removeAttr("style");
+  		    	       $("#timesheetDivByTab").empty();
+		    	  	   $("#timesheetDivByTab").append(result);
+		    	  	   
+		    	  	   maskme();
+		    	  	   $("html").trigger('click');
+		    	  	   
+			    	   $("#tab-1").show();
+	 		    	   $(".project-tabs-menu a").click(function(event) {
+	 		    	        event.preventDefault();
+	 		    	        $(this).parent().addClass("current");
+	 		    	        $(this).parent().siblings().removeClass("current");
+	 		    	        var tab = $(this).attr("href");
+	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+	 		    	        $(tab).fadeIn();
+	 		    	   });
+		    	  	   
+  		          }
+  	         }); 
+	}
 </script>
+
+   
+
+
 
 <!-- this script is for add row functionality at Timesheet screen -->
 <script>
-function addTimeSheetRow(submissionId,projectId) {
+function addTimeSheetRow(projectId) {
 	          
-		    var tbl = document.getElementById("table"+submissionId);
-			var rowNum = $("#maxRowNumber"+submissionId).val();
+		    var tbl = document.getElementById("timesheet");
+			var rowNum = $("#maxRowNumber").val();
 			var maxRowNum = parseInt(rowNum);
-			$("#maxRowNumber"+submissionId).val(maxRowNum + 1); 
-			var row = tbl.insertRow(maxRowNum-1);
-			row.setAttribute("id", "timesheetRow"+maxRowNum+"submission"+submissionId);
+			maxRowNum = maxRowNum +1;
+			$("#maxRowNumber").val(maxRowNum); 
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "timesheetRow"+maxRowNum);
 			
-			 
 			  
 		    var previousMaxRowNum =parseInt(rowNum-1);
 			var cell0 = row.insertCell(0);
 			var divadttTd0Str = document.getElementById("divadttTd1").innerHTML;
 			divadttTd0Str = divadttTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd0Str = divadttTd0Str.replace(/submissionId/g, (submissionId));
 			divadttTd0Str = divadttTd0Str.replace(/projectId/g, (projectId)); 
-			cell0.setAttribute("class", "pname");  
+			/* cell0.setAttribute("class", "pname");*/
 			cell0.innerHTML = divadttTd0Str;
 			
-			
-			
-		    var cell1 = row.insertCell(1);
-			var isCell1Disabled = $("#1submission"+submissionId+"timeSheetDay1Id").prop('disabled');
-			if(isCell1Disabled){
-				$("#divadttTd2 :input").attr('disabled','disabled');
-				$('.timesheet_comm','#divadttTd2').find('i').attr('class','glyphicon');
-				
-			}
-			else{
-				$("#divadttTd2 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd2').find('i').attr('class','glyphicon glyphicon-comment');
-			}
+			var cell1 = row.insertCell(1);
 			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
 			divadttTd1Str = divadttTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
-            divadttTd1Str = divadttTd1Str.replace(/submissionId/g, (submissionId));
+			divadttTd1Str = divadttTd1Str.replace(/projectId/g, (projectId)); 
 			cell1.innerHTML = divadttTd1Str;
 			
 			
-			var cell2 = row.insertCell(2);
-			var isCell2Disabled = $("#1submission"+submissionId+"timeSheetDay2Id").prop('disabled');
-			if(isCell2Disabled){
+		    var cell2 = row.insertCell(2);
+			var isCell1Disabled = $("#1timeSheetDay1Id").prop('disabled');
+			if(isCell1Disabled){
 				$("#divadttTd3 :input").attr('disabled','disabled');
 				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon');
 			}
 			else{
 				$("#divadttTd3 :input").removeAttr('disabled');
 				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon glyphicon-comment');
-			}
+			} 
 			var divadttTd2Str = document.getElementById("divadttTd3").innerHTML;
 			divadttTd2Str = divadttTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd2Str = divadttTd2Str.replace(/submissionId/g, (submissionId));
+			divadttTd2Str = divadttTd2Str.replace(/projectId/g, (projectId));
 			cell2.innerHTML = divadttTd2Str;
 			
 			
 			var cell3 = row.insertCell(3);
-			var isCell3Disabled = $("#1submission"+submissionId+"timeSheetDay3Id").prop('disabled');
-			if(isCell3Disabled){
+			var isCell2Disabled = $("#1timeSheetDay2Id").prop('disabled');
+			if(isCell2Disabled){
 				$("#divadttTd4 :input").attr('disabled','disabled');
 				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon');
 			}
 			else{
 				$("#divadttTd4 :input").removeAttr('disabled');
 				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon glyphicon-comment');
-			}
+			} 
 			var divadttTd3Str = document.getElementById("divadttTd4").innerHTML;
 			divadttTd3Str = divadttTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd3Str = divadttTd3Str.replace(/submissionId/g, (submissionId));
+			divadttTd2Str = divadttTd3Str.replace(/projectId/g, (projectId));
 			cell3.innerHTML = divadttTd3Str;
 			
-			var cell4= row.insertCell(4);
-			var isCell4Disabled = $("#1submission"+submissionId+"timeSheetDay4Id").prop('disabled');
-			if(isCell4Disabled){
-				$("#divadttTd5 :input").attr("disabled", "disabled");
-				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon');
-			}else{
-				$("#divadttTd5 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon glyphicon-comment');
-			}
 			
-			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
-			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd4Str = divadttTd4Str.replace(/submissionId/g, (submissionId)); 
-			cell4.innerHTML = divadttTd4Str;
-			
-			var cell5 = row.insertCell(5);
-			var isCell5Disabled = $("#1submission"+submissionId+"timeSheetDay5Id").prop('disabled');
-			if(isCell5Disabled){
-				$("#divadttTd6 :input").attr("disabled", "disabled");
-				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon');
+			var cell4 = row.insertCell(4);
+			var isCell3Disabled = $("#1timeSheetDay3Id").prop('disabled');
+			if(isCell3Disabled){
+				$("#divadttTd5 :input").attr('disabled','disabled');
+				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon');
 			}
 			else{
+				$("#divadttTd5 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon glyphicon-comment');
+			} 
+			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
+			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd4Str = divadttTd4Str.replace(/projectId/g, (projectId));
+			cell4.innerHTML = divadttTd4Str;
+			
+			
+			var cell5= row.insertCell(4);
+			 var isCell4Disabled = $("#1timeSheetDay4Id").prop('disabled');
+			if(isCell4Disabled){
+				$("#divadttTd6 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon');
+			}else{
 				$("#divadttTd6 :input").removeAttr('disabled');
 				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon glyphicon-comment');
-			}
+			} 
 			var divadttTd5Str = document.getElementById("divadttTd6").innerHTML;
 			divadttTd5Str = divadttTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd5Str = divadttTd5Str.replace(/submissionId/g, (submissionId)); 
+			divadttTd5Str = divadttTd5Str.replace(/projectId/g, (projectId)); 
 			cell5.innerHTML = divadttTd5Str;
 			
 			var cell6 = row.insertCell(6);
-			var isCell6Disabled = $("#1submission"+submissionId+"timeSheetDay6Id").prop('disabled');
-			if(isCell6Disabled){
+			var isCell5Disabled = $("#1timeSheetDay5Id").prop('disabled'); 
+			 if(isCell5Disabled){
 				$("#divadttTd7 :input").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon');
 			}
@@ -350,60 +295,80 @@ function addTimeSheetRow(submissionId,projectId) {
 				$("#divadttTd7 :input").removeAttr('disabled');
 				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon glyphicon-comment');
 			}
-			var divadttTd6Str = document.getElementById("divadttTd7").innerHTML;
+			var divadttTd6Str = document.getElementById("divadttTd7").innerHTML; 
 			divadttTd6Str = divadttTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd6Str = divadttTd6Str.replace(/submissionId/g, (submissionId));
+			divadttTd6Str = divadttTd6Str.replace(/projectId/g, (projectId)); 
 			cell6.innerHTML = divadttTd6Str;
 			
 			var cell7 = row.insertCell(7);
-			var isCell7Disabled = $("#1submission"+submissionId+"timeSheetDay7Id").prop('disabled');
-			if(isCell7Disabled){
+			var isCell6Disabled = $("#1timeSheetDay6Id").prop('disabled');
+			if(isCell6Disabled){
 				$("#divadttTd8 :input").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon');
-			}else{
+			}
+			else{
 				$("#divadttTd8 :input").removeAttr('disabled');
 				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon glyphicon-comment');
-			}
+			} 
 			var divadttTd7Str = document.getElementById("divadttTd8").innerHTML;
 			divadttTd7Str = divadttTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd7Str = divadttTd7Str.replace(/submissionId/g, (submissionId));
+			divadttTd7Str = divadttTd7Str.replace(/projectId/g, (projectId));
 			cell7.innerHTML = divadttTd7Str;
 			
-			maskme();   
+			var cell8 = row.insertCell(8);
+		    var isCell7Disabled = $("#1timeSheetDay7Id").prop('disabled');
+			if(isCell7Disabled){
+				$("#divadttTd9 :input").attr("disabled", "disabled");
+				$('.timesheet_comm','#divadttTd9').find('i').attr('class','glyphicon');
+			}else{
+				$("#divadttTd9 :input").removeAttr('disabled');
+				$('.timesheet_comm','#divadttTd9').find('i').attr('class','glyphicon glyphicon-comment');
+			} 
+			var divadttTd8Str = document.getElementById("divadttTd9").innerHTML;
+			divadttTd8Str = divadttTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd8Str = divadttTd8Str.replace(/projectId/g, (projectId));
+			cell8.innerHTML = divadttTd8Str;
+			
+		    maskme();
 		    
-			var projectTaskId = maxRowNum+"submission"+submissionId+"task1Id"; 
+			var projectTaskId = maxRowNum+"task1Id"; 
 			
 			getProjectTasks(projectTaskId,projectId); 
-		  
 			
 		}	
-	 
         
         function disableInput(divId){
         	$("#"+divId+" :input").attr("disabled", "disabled");
-        }
-        
-       //get project tasks 
+        } 
+       
+	   //get project tasks 
 	   function getProjectTasks(projectTaskId,projectId){
 		   var sourceleadUrl ='${sourceleadUrl}';
-		   $("#"+projectTaskId).empty();
+		   
+		   if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
+			   var taskId = $("#" + projectTaskId).val().split(",");
+			   $("#" + projectTaskId + "BillableTypeId").html(taskId[1]);
+		   }else{
+			   $("#" + projectTaskId + "BillableTypeId").html(""); 
+		   }
 		   
 		   var avilableProjectTaskIds = [];
 		   $('.existedProjectTaskId'+projectId).each(function() {
 				 var localId = this.value;
-				 avilableProjectTaskIds.push(localId);
+				 var taskIdArray = localId.split(",");
+				 avilableProjectTaskIds.push(taskIdArray[0]);
 		   }); 
-			 
 		   $.ajax({
    	          type : "POST",
  	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
  		      success :function(data) {
  		    	    var json = JSON.parse(data);
  		    	    $('.existedProjectTaskId'+projectId).each(function() {
- 			   			 var localId = this.id;
- 			   			 var localValue = this.value;
+ 			   				 var localId = this.id;
+ 			   				 var localValue = this.value;
+ 			   				 
 	 			   		    var result = ""; 
-	 			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){ 
+	 			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){
 	 			   			    $('option', this).not(':eq(0), :selected').remove();
 	 			   		    }else{ 
 	 			   		    	 $("#"+localId).empty();
@@ -412,7 +377,7 @@ function addTimeSheetRow(submissionId,projectId) {
 	  		    	    	for (var i=0; i<json.length; i++)
 	  					 	{
 	  			        		var opt = json[i];
-	  			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+	  			        		result = result + "<option value='" +opt.Id+","+opt.billableType+"'>"+opt.taskName+"</option>";
 	  						}
  				    	 	$("#"+localId).append(result);
  			   	   }); 
@@ -423,216 +388,55 @@ function addTimeSheetRow(submissionId,projectId) {
 		   
 	   }
 
+
 	 
 </script>
-<script>
-function getProjectTasksOnChange(projectTaskId,projectId){
 
-	   var sourceleadUrl ='${sourceleadUrl}';
-	   
-	   var avilableProjectTaskIds = [];
-	   $('.existedProjectTaskId'+projectId).each(function() {
-			 var localId = this.value;
-			 avilableProjectTaskIds.push(localId);
-	   }); 
-		 
-	   $.ajax({
-          type : "POST",
-    	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
-	      success :function(data) {
-	    	    var json = JSON.parse(data);
-	    	    $('.existedProjectTaskId'+projectId).each(function() {
-		   			 var localId = this.id;
-		   			 var localValue = this.value;
-			   		    var result = ""; 
-			   		    if(projectTaskId != localId){  
-					   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){ 
-					   			    $('option', this).not(':eq(0), :selected').remove();
-					   		    }else{  
-					   		    	 $("#"+localId).empty();
-					   		   		 result = result + "<option value=''>--select Task--</option>";
-					   		    }
-				    	    	for (var i=0; i<json.length; i++)
-							 	{
-					        		var opt = json[i];
-					        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
-								}
-					    	 	$("#"+localId).append(result);
-			   		    }
-			   		   
-		   	   }); 
-	    	   
-	      }
-    	  
-     }); 
-}
-</script>
-
-	
-<script type="text/javascript">
-(function ($) {
-   $.fn.serializeFormJSON = function () {
-
-       var o = {};
-       var a = this.serializeArray();
-       $.each(a, function () {
-           if (o[this.name]) {
-               if (!o[this.name].push) {
-                   o[this.name] = [o[this.name]];
-               }
-               o[this.name].push(this.value || '');
-           } else {
-               o[this.name] = this.value || '';
-           }
-       });
-       return o;
-   };
-})(jQuery);
-</script>
-                
-<!-- this script is for save Timesheet -->               
-<script type="text/javascript">
-function saveMyTimesheet(status,savingType){ 
-	 checkHours();
-	 var validationSettings = {
-		        errorMessagePosition : 'element',
-		       borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd' 
-	 }; 
-	 if ($('#timesheet_form').validate(false, validationSettings)){ 
-				 
-	
-               var frm = $('#timesheet_form').serializeFormJSON();
-               
-               var sourceleadUrl ='${sourceleadUrl}';
-               var startdate;
-           	   var navigation;
-               
-       		   var mydata = JSON.stringify(frm);
-       		   mydata = mydata.replace(/[{}]/g, "");
-       		   mydata = encodeURIComponent(mydata);
-       		
-       		   var form = $('#timesheet_form')[0];
-       		   var formData = new FormData(form); 
-       		   var submissionIds = $("#submissionId").val();
-       		   $("#dynamic").empty();
-       		   $("#dynamic").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-        	   $.ajax({
-	      	          type : "POST",
-	          	      data: formData,
-	          	      contentType : 'application/json; charset=utf-8',
-	          	      enctype: 'multipart/form-data',
-	      	          processData: false,
-	      	          contentType:false,
-	          	      dataType : 'json',
-        	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
-        		      success :function(result) {
-        		    	   dynamicTimesheet("left",result); 
-        		    	  /* dynamicTimesheet(); */
-        		      }
-        	      	  
-        	    }); 
-        	   return true;
-	 	}else{ 
-			return false;
-	 } 
-}
-
-$('body').on('blur', '#timesheet_form', function() {
-	$("#timesheet_form").showHelpOnFocus();
-	$("#timesheet_form").validateOnBlur(false, validationSettings);  
-});
-</script>
-<script type="text/javascript">
-function withdrawMyTimesheet(submissionId,startdate){ 
-	/* var frm = $('#timesheet_form').serializeFormJSON(); */
-	var sourceleadUrl ='${sourceleadUrl}';
-	var navigation;
-	   
-/* 	var mydata = JSON.stringify(frm);
-	mydata = mydata.replace(/[{}]/g, ""); */
-	$.ajax({
-	      type : "POST",
-     	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,		
-	      success :function(result) {
-	    	  dynamicTimesheet(navigation,startdate); 
-	      }
-   }); 
-}
-</script>
-
-<!-- this script is for delete document -->
-<script type="text/javascript">
-function deleteSubmissionDocument(submissionDocumentId,startdate){  
-    var sourceleadUrl ='${sourceleadUrl}';
-    /*  var startdate; */
-	var navigation;
-    $.ajax({
-          type : "POST",
-      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
-	      success :function(result) {
-	    		dynamicTimesheet("left",startdate); 
-	      }
-      	  
-    }); 
-	   
-}
-</script>
-
-   
+<!-- this script is for remove timesheet -->
 <script type="text/javascript">	
-/* for total hours */
-/* $(document).click(function(){
-		var submissionId = 1;
-		var total;
-		 for (var p = 1; p < 8; p++){
-		 for (var i = 1; i < 8; i++){  
-			 var bsum = 0;
-			 var nbsum = 0;
-			 var total = 0;
-			 for (var j = 1; j < 8; j++){
-				    var btemp = $("#"+i+"submission"+p+"timeSheetDay"+j+"Id").val();
-				    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
-				    	 var hours = btemp;
-				    	 var split = hours.split(':');
-				    	 var first = split[0];
-				    	 var second = split[1];
-						 
-						 var minute = first * 60;
-						 var minute1 = second;
-						 var finalmin = parseInt(minute) + parseInt(minute1);
-				    	 
-					     bsum = parseFloat(bsum) + parseInt(finalmin);
-				    	 
-					}
-				    
-			 }
-			 
-		    var t = bsum; 
-			var hours = Math.floor(t / 60); 
-			var minutes = t % 60;
-			total = hours +":"+ minutes;
+
+function removeTimeSheetRow(rowId) { 
+	
+			var rowNum = $("#maxRowNumber").val();
+			var maxRowNum = parseInt(rowNum);
+			/* $("#maxRowNumber"+submissionId).val(maxRowNum - 1);  */
 			
-		    $("#"+i+"submission"+p+"total1Id").val(total);
-	 }  
-}	
+			 document.getElementById("timesheetRow"+rowId).style.display = 'none';
+			 document.getElementById("timesheetRow"+rowId).value= '';
+			 var  rId = "timesheetRow"+rowId;
+			  var r = document.getElementById("timesheet").rows[rId];
+	          var count = 2*(r.cells.length);
+			    for(i=0;i<=count;i++){
+			        r.deleteCell(0);
+			    } 
+		}
 		
-		
-}); */
+</script>	
 
+<!-- this script is for clear timesheet -->
+<script>
+function clearTimesheet(){ 
+	for (var i = 1; i < 8; i++){
+		 for (var j = 1; j < 50; j++){
+			    $("#"+j+"timeSheetDay"+i+"Id").val("00:00");
+			    $("#"+j+"textArea"+i+"Id").val("");  
+		 }
+	}
+	$("#weekComment").val('');
+}
+</script>
 
-/* this script is for calculate total hours */
-$(document).click(function(){ 
-	 var total;
+<!-- this script is for validation of 24 hours -->
+<script>
+function checkHours(){ 
+	 var result = "";		
+	 var total; 
 	 for (var i = 1; i < 8; i++){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-		 $('.timesheetrProject').each(function() {
-		 var p = this.id;
-		 for (var j = 1; j < 50; j++){
-			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
+		 for (var j = 1; j < 50; j++){  
+			    var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;
 			    	 var split = hours.split(':');
@@ -644,6 +448,116 @@ $(document).click(function(){
 					 var finalmin = parseInt(minute) + parseInt(minute1);
 			    	 
 				     bsum = parseFloat(bsum) + parseInt(finalmin);
+				}
+			    
+		 }
+	    var t = bsum; 
+		var hours = Math.floor(t / 60); 
+		var minutes = t % 60;
+		total = hours +":"+ minutes;
+	 var time = total.split(':'); 
+	 if(!isNaN(time[0])){
+	 if(time.length === 2 && parseInt(time[0],10)>=0 && parseInt(time[0],10)<=23  && parseInt(time[1],10)>=0  && parseInt(time[1],10)<=59){
+	    	 
+	 }else{
+	    	if(i == '1'){
+	    		result = result+"MonDay ,";
+	    	}
+	    	if(i == '2'){  
+	    		result = result+"TuesDay ,";
+	    	}
+	    	if(i == '3'){  
+	    		result = result+"Wednesday ,";
+	    	}
+	    	if(i == '4'){  
+	    		result = result+"Thursday ,";
+	    	}
+	    	if(i == '5'){
+	    		result = result+"Friday ,";
+	    	}
+	    	if(i == '6'){
+	    		result = result+"Saturday ,";
+	    	}
+	    	if(i == '7'){
+	    		result = result+"Sunday ,";
+	    	}
+	    	
+	 }
+   }
+}   
+	if(result != "" && result != null && result != 'undefined'){   
+		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
+		$("#timeSheetErrorMsg").attr('style','display:block;');
+		$("#timeSheetErrorMsg").empty();
+		$("#timeSheetErrorMsg").append(outPut);
+		var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
+		$("#hideError").empty();
+		$("#hideError").append(error);
+	 }else{
+		$("#timeSheetErrorMsg").empty();
+		$("#hideError").empty();
+	} 
+	
+	$(".time_pop b").click(function(){
+		$("#timeSheetErrorMsg").attr('style','display:none;');
+	    $("#timeSheetErrorMsg").empty();
+	}); 
+	
+}
+</script>
+
+<script>
+/* this script is for calculate total hours */
+$(document).click(function(){ 
+	 var total;
+	 var billableTotal;
+	 var billableSum = 0;
+	 var nonBillableTotal;
+	 var nonBillableSum = 0;
+	 for (var i = 1; i < 8; i++){
+		 var bsum = 0;
+		 var nbsum = 0;
+		 var total = 0;
+		 for (var j = 1; j < 50; j++){
+			    var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
+			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
+			    	 var hours = btemp;
+			    	 var split = hours.split(':');
+			    	 var first = split[0];
+			    	 var second = split[1];
+					 
+					 var minute = first * 60;
+					 var minute1 = second;
+					 var finalmin = parseInt(minute) + parseInt(minute1);
+			    	 
+				     bsum = parseFloat(bsum) + parseInt(finalmin);
+				     
+				     var billableType = $("#"+j+"task1IdBillableTypeId").text();
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Billable') {
+				    	 var billableHours = btemp;
+				    	 var billableSplit = billableHours.split(':');
+				    	 var billableFirst = billableSplit[0];
+				    	 var billableSecond = billableSplit[1];
+						 
+						 var billableMinute = billableFirst * 60;
+						 var billableMinute1 = billableSecond;
+						 var billableFinalmin1 = parseInt(billableMinute) + parseInt(billableMinute1);
+				    	 
+						 billableSum = parseFloat(billableSum) + parseInt(billableFinalmin1);
+				    }
+				     
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Non-Billable') {
+				    	 var nonBillableHours = btemp;
+				    	 var nonBillableSplit = nonBillableHours.split(':');
+				    	 var nonBillableFirst = nonBillableSplit[0];
+				    	 var nonBillableSecond = nonBillableSplit[1];
+						 
+						 var nonBillableMinute = nonBillableFirst * 60;
+						 var nonBillableMinute1 = nonBillableSecond;
+						 var nonBillableFinalmin1 = parseInt(nonBillableMinute) + parseInt(nonBillableMinute1);
+				    	 
+						 nonBillableSum = parseFloat(nonBillableSum) + parseInt(nonBillableFinalmin1);
+				    }
 				}
 			    
 		 }
@@ -663,10 +577,46 @@ $(document).click(function(){
 		}else{
 			total =  "00:00";
 		}
-	 });  
 	 $("#rowTotal"+i+"Id").val(total);
 }	
-	
+	 
+	   //for calculate billable count
+	    var t1 = billableSum; 
+		var billableHours = Math.floor(t1 / 60); 
+		var billableMinutes = t1 % 60;
+		
+		if (billableMinutes < 10) {
+			billableMinutes = '0' + billableMinutes;
+		}
+		if (billableHours < 10) {
+			billableHours = '0' + billableHours;
+		}
+		if(!isNaN(billableHours) && !isNaN(billableMinutes)){
+			billableTotal = billableHours +":"+ billableMinutes;
+		}else{
+			billableTotal =  "00:00";
+		}
+	    $("#grandBillableTotal").val(billableTotal);
+	    
+	    
+	  //for calculate non-billable count
+	    var t2 = nonBillableSum; 
+		var nonBillableHours = Math.floor(t2 / 60); 
+		var nonBillableMinutes = t2 % 60;
+		
+		if (nonBillableMinutes < 10) {
+			nonBillableMinutes = '0' + nonBillableMinutes;
+		}
+		if (nonBillableHours < 10) {
+			nonBillableHours = '0' + nonBillableHours;
+		}
+		if(!isNaN(nonBillableHours) && !isNaN(nonBillableMinutes)){
+			nonBillableTotal = nonBillableHours +":"+ nonBillableMinutes;
+		}else{
+			nonBillableTotal =  "00:00";
+		}
+	    $("#grandNonBillableTotal").val(nonBillableTotal);
+	    
 	 grandTotal();		
 });
 
@@ -708,157 +658,84 @@ function grandTotal(){
 
 </script>
 
-<!-- this script is for remove timesheet -->
-<script type="text/javascript">	
+<!-- this script is for mask for each entity  -->	
+<script>
+function maskme(){
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $(".inline_field").mask("Hh:Mm"); 
+}
+</script>
 
-function removeTimeSheetRow(rowId,submissionId) { 
-	
-			var rowNum = $("#maxRowNumber"+submissionId).val();
-			var maxRowNum = parseInt(rowNum);
-			/* $("#maxRowNumber"+submissionId).val(maxRowNum - 1);  */
-			
-			 document.getElementById("timesheetRow"+rowId+"submission"+submissionId).style.display = 'none';
-			 document.getElementById("timesheetRow"+rowId+"submission"+submissionId).value= '';
-			 var  rId = "timesheetRow"+rowId+"submission"+submissionId;
-			  var r = document.getElementById("table"+submissionId).rows[rId];
-	          var count = 2*(r.cells.length);
-			    for(i=0;i<=count;i++){
-			        r.deleteCell(0);
-			    } 
-		}
+<script>
+$(document).ready(function() {  
+	maskme();    
+ });
+</script>
+
+<!-- this script is for add row functionality at inline edit screen -->
+<script>
+function callInlineEdit(local){     
+       var id = local.id;
+	   $("#"+id).addClass("inline_field");
+       $("#"+id).editInPlace({
 		
-</script>		
-
-<!-- this script is for clear timesheet -->
-<script>
-function clearTimesheet(){ 
-	for (var i = 1; i < 8; i++){
-	 $('.NEW').each(function() {
-		 var p = this.id;
-		 for (var j = 1; j < 50; j++){
-			    $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val("00:00");
-			    $("#"+j+"submission"+p+"textArea"+i+"Id").val("");  
-		 }
-    	 });  
-	}
-	$("#weekComment").val('');
+		saving_animation_color: "#ECF2F8",
+		callback: function(idOfEditor, enteredText, orinalHTMLContent, settingsParams, animationCallbacks) {
+			return enteredText;
+		}
+	});
 }
 </script>
 
-<!-- this script is for validation of 24 hours -->
-<script>
-function checkHours(){
-	 var result = "";		
-	 var total; 
-	 for (var i = 1; i < 8; i++){
-		 var bsum = 0;
-		 var nbsum = 0;
-		 var total = 0;
-		 $('.timesheetrProject').each(function() {
-		 var p = this.id;
-		 for (var j = 1; j < 50; j++){
-			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
-			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
-			    	 var hours = btemp;
-			    	 var split = hours.split(':');
-			    	 var first = split[0];
-			    	 var second = split[1];
-					 
-					 var minute = first * 60;
-					 var minute1 = second;
-					 var finalmin = parseInt(minute) + parseInt(minute1);
-			    	 
-				     bsum = parseFloat(bsum) + parseInt(finalmin);
-				}
-			    
+	
+<!-- this script is for timesheet comment  shown and hide  -->	      
+<script type="text/javascript">
+function timesheetComment(local){ 
+	$('.teskcomment').each(function() {
+	    var currentId = this.id;
+	    var localId = local;
+	    if(localId.trim() == currentId.trim()){
+       	 		$("#"+local).slideToggle(200); 
+        }else{
+       	    $("#"+currentId).slideUp(200); 
+        }
+	});
+} 
+</script>	
+
+<script type="text/javascript">
+		function bodyClick(){
+		    $(".teskcomment").slideUp(200);   
+		    $("html .timesheet_comm").click(function(event){
+		        event.stopPropagation();
+		    }); 
 		 }
-	    var t = bsum; 
-		var hours = Math.floor(t / 60); 
-		var minutes = t % 60;
-		total = hours +":"+ minutes;
-	 });  
-	 var time = total.split(':'); 
-	 if(!isNaN(time[0])){
-	 if(time.length === 2 && parseInt(time[0],10)>=0 && parseInt(time[0],10)<=23  && parseInt(time[1],10)>=0  && parseInt(time[1],10)<=59){
-	    	 
-	 }else{
-	    	if(i == '1'){
-	    		result = result+"MonDay ,";
-	    	}
-	    	if(i == '2'){  
-	    		result = result+"TuesDay ,";
-	    	}
-	    	if(i == '3'){  
-	    		result = result+"Wednesday ,";
-	    	}
-	    	if(i == '4'){  
-	    		result = result+"Thursday ,";
-	    	}
-	    	if(i == '5'){
-	    		result = result+"Friday ,";
-	    	}
-	    	if(i == '6'){
-	    		result = result+"Saturday ,";
-	    	}
-	    	if(i == '7'){
-	    		result = result+"Sunday ,";
-	    	}
-	    	
-	 }
-   }
-}   
-	
-	if(result != "" && result != null && result != 'undefined'){   
-		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
-		$("#timeSheetErrorMsg").attr('style','display:block;');
-		$("#timeSheetErrorMsg").empty();
-		$("#timeSheetErrorMsg").append(outPut);
-		var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
-		$("#hideError").empty();
-		$("#hideError").append(error);
-	 }else{
-		$("#timeSheetErrorMsg").empty();
-		$("#hideError").empty();
-	} 
-	
-	$(".time_pop b").click(function(){
-		$("#timeSheetErrorMsg").attr('style','display:none;');
-	    $("#timeSheetErrorMsg").empty();
-	}); 
-	
-}
-</script>
-
-<script>
-	$(document).on("mouseover", ".rejectedHover", function() { 
-		var localId = $(this).attr('id');
-		$("#rejectedMessage"+localId).addClass('app_error_mes_active');
-	});	
-	$(document).on("mouseleave", ".rejectedHover", function() { 
-		  var localId = $(this).attr('id');
-		  $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
-	});	
-</script>
-
+</script>	
 
 
 <script>
 function addAttachment(){  
-			
 			var checkMaxTsRowNum = $("#attcahmentMaxRowNumber").val();
 			var tbl = document.getElementById("attachmentTable");
 			var maxRowNum = parseInt($("input[name = 'attcahmentMaxRowNumber']").val());
 			$("input[name = 'attcahmentMaxRowNumber']").val(maxRowNum + 1);
 			
+			
 			var row = tbl.insertRow(maxRowNum);
 			row.setAttribute("id", "divAttachmentTsRow" + maxRowNum);
+			
 			
 			var cell0 = row.insertCell(0);
 			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
 			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
 			cell0.innerHTML = divAttachmentTdStr;
 			
-			timesheetAttachmentValidationFun();
+			/* timesheetAttachmentValidationFun(); */
 			
 }			
 </script>
@@ -877,35 +754,246 @@ function addAttachment(){
 		    } 
 	}
 </script>
-<script>
-function exportType(){
-	$(".export_pop").toggle();
-	 /* $("#export-pop").click(function(){
-         $(".export_pop").slideToggle();
- }); */
-$("html").click(function() {
- $(".export_pop").hide();
+
+	
+
+<!-- Content Area -->
+<body  onclick="bodyClick();">
+<section class="content-wraper">
+        <section class="content-header clearfix">
+          <div class="pull-left">
+            <h2>Timesheets</h2>
+          </div>
+          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
+        </section>
+        
+        <div class="loadTime" id="loadTime"></div>    
+        
+        <div id="timesheetEntriesDiv"> 
+        </div>
+        
+        
+        <!-- <div id="timesheetEntriesDivByProjectMemberId">
+        		 <div id="timesheetDivByFrequency">
+        			 <div id="timesheetDivByTab">
+        			 </div>
+        		  </div>
+        	</div> -->
+        
+        <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
+				         <div id="divadttTd1" style="display:none;" >   
+				             <div> 
+				              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="pull-left existedProjectTaskIdprojectId" data-validation="required" field-name="Task" onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
+				                          <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
+				                              	<option value="${task.id}">${task.taskName}</option>
+				                           </c:forEach> --%>
+				             </select>
+				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="pull-left addtaskfield removetaskfield"/>
+				             </div>
+				             
+				        </div>
+				        
+				        <div id="divadttTd2" style="display:none;">
+					    	   <span id="REPLACEROWIDtask1IdBillableTypeId" name="REPLACEROWIDtask1IdBillableTypeId" ></span>	
+				   		</div>
+				        
+				        
+				        <div id="divadttTd3" style="display:none;">
+					    	   <input type="text" onblur='checkHours()'  id="REPLACEROWIDtimeSheetDay1Id" name="REPLACEROWIDtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
+				               <div class="timesheet_comm">
+				                <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment1Id');"></i>
+				                <span class="teskcomment" id="REPLACEROWIDcomment1Id" ><textarea name="REPLACEROWIDcomment1Id" id="REPLACEROWIDtextArea1Id" ></textarea></span>
+				               </div>
+				   		</div>
+				        <div id="divadttTd4" style="display:none;">
+								  <input type="text" onblur='checkHours()'  id="REPLACEROWIDtimeSheetDay2Id" name="REPLACEROWIDtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
+				                  <div class="timesheet_comm">
+				                      <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment2Id');"></i>
+				                  <span class="teskcomment" id="REPLACEROWIDcomment2Id" ><textarea name="REPLACEROWIDcomment2Id" id="REPLACEROWIDtextArea2Id" ></textarea></span></div>
+				        </div>
+				        <div id="divadttTd5" style="display:none;">
+								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay3Id" name="REPLACEROWIDtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
+				                  <div class="timesheet_comm">
+				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment3Id');"></i>
+				                  <span class="teskcomment" id="REPLACEROWIDcomment3Id" ><textarea name="REPLACEROWIDcomment3Id" id="REPLACEROWIDtextArea3Id"></textarea></span></div>
+				        </div>
+				        <div id="divadttTd6" style="display:none;">
+								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay4Id" name="REPLACEROWIDtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
+				                  <div class="timesheet_comm">
+				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment4Id');"></i>
+				                  <span class="teskcomment" id="REPLACEROWIDcomment4Id" ><textarea name="REPLACEROWIDcomment4Id" id="REPLACEROWIDtextArea4Id"></textarea></span></div>           
+				        </div>
+				        <div id="divadttTd7" style="display:none;">
+								  <input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay5Id" name="REPLACEROWIDtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
+				                  <div class="timesheet_comm">
+				                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment5Id');"></i>
+				                  <span class="teskcomment" id="REPLACEROWIDcomment5Id" ><textarea name="REPLACEROWIDcomment5Id" id="REPLACEROWIDtextArea5Id"></textarea></span></div>  
+				    	 </div>
+				         <div id="divadttTd8" style="display:none;">
+							  <input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay6Id" name="REPLACEROWIDtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
+				                 <div class="timesheet_comm">
+				                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment6Id');"></i>
+				                 <span class="teskcomment" id="REPLACEROWIDcomment6Id" ><textarea name="REPLACEROWIDcomment6Id" id="REPLACEROWIDtextArea6Id"></textarea></span></div>
+				         </div>
+				         <div id="divadttTd9" style="display:none;">
+							  <input type="text" onblur='checkHours()'  id="REPLACEROWIDtimeSheetDay7Id" name="REPLACEROWIDtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
+				                 <div class="timesheet_comm">
+				                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment7Id');"></i>
+				                 <span class="teskcomment" id="REPLACEROWIDcomment7Id" ><textarea name="REPLACEROWIDcomment7Id" id="REPLACEROWIDtextArea7Id"></textarea></span></div>            
+				    	 </div>
+						<!-- #### this div is for dummy timesheets entries ( useful for add rows ) above  ####-->  
+						
+						<div id="divAttachmentTd1" style="display: none; float: left;">
+								<div id='REPLACEROWIDdocFileuploadFileGroup'>
+						  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation"> 
+						  			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
+						  		</div>
+					    </div>
+</section>
+<!-- Content Area Ends--> 
+<div class="time_pop" id="timeSheetErrorMsg"></div>
+</body>
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+                
+<!-- this script is for save Timesheet -->               
+<script type="text/javascript">
+function newSaveTimesheet(status,savingType){ 
+	 checkHours();
+	 var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
+	 if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
+		 $('#0docFile').removeAttr('data-validation-optional');
+		 $('#0docFile').attr("data-validation","required"); 
+	 }
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	 }; 
+	 if ($('#timesheet_form').validate(false, validationSettings)){ 
+				 
+		  		
+               var frm = $('#timesheet_form').serializeFormJSON();
+               
+               var sourceleadUrl ='${sourceleadUrl}';
+               var startdate;
+           	   var navigation;
+               
+       		   var mydata = JSON.stringify(frm);
+       		   mydata = mydata.replace(/[{}]/g, "");
+       		   mydata = encodeURIComponent(mydata);
+       		
+       		   var form = $('#timesheet_form')[0];
+       		   var formData = new FormData(form); 
+       		   var submissionIds = $("#submissionId").val();
+       		   $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
+        	   $.ajax({
+	      	          type : "POST",
+	          	      data: formData,
+	          	      contentType : 'application/json; charset=utf-8',
+	          	      enctype: 'multipart/form-data',
+	      	          processData: false,
+	      	          contentType:false,
+	          	      dataType : 'json',
+        	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
+        		      success :function(result) {
+        		    	  $("#loadTime").removeAttr("style"); 
+        		    	  timesheetDivByFrequency();
+        		    	  $("html").trigger('click');
+        		    	  maskme();
+        		    	 /*  timesheetEntriesDiv(); */
+        		    	 /*  $("#loadTime").removeAttr("style"); */
+        		    	  /*  dynamicTimesheet("left",result);  */
+        		    	   /* timesheetEntriesDiv */
+        		    	  /* dynamicTimesheet(); */
+        		      }
+        	      	  
+        	    }); 
+        	   return true;
+	 	}else{ 
+			return false;
+	 } 
+}
+
+$('body').on('blur', '#timesheet_form', function() {
+	$("#timesheet_form").showHelpOnFocus();
+	$("#timesheet_form").validateOnBlur(false, validationSettings);  
 });
-$(".export_pop, #export-pop").click(function(e) {
- e.stopPropagation();
-});  
+</script>
+
+
+<!-- this script is for delete document -->
+<script type="text/javascript">
+function deleteSubmissionDocument(submissionDocumentId){  
+    var sourceleadUrl ='${sourceleadUrl}';
+    var projectExistingValue = $("#dbIsTimesheetAttachmentRequired").val();
+    /*  var startdate; */
+	var navigation;
+    $.ajax({
+          type : "POST",
+      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
+	      success :function(result) {
+	    	  $("#"+submissionDocumentId+"document").remove();
+	    	  if(projectExistingValue != null && projectExistingValue != "" && projectExistingValue !="undefined" && projectExistingValue == "1"){
+	    		  $("#isTimesheetAttachmentRequired").val('Y');
+	    	  }
+	      }
+      	  
+    }); 
+	   
 }
 </script>
 
+
+<script type="text/javascript">
+         function prepareChosenScripts(){ 
+        	      var config = {
+        			  '.chosen-select'           : {},
+        			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+        			  '.chosen-select-no-single' : {disable_search_threshold:10},
+        			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        			  '.chosen-select-width'     : {width:"95%"}
+        			};
+        		   for (var selector in config) {
+        			  $(selector).chosen(config[selector]);
+        			};
+        			$('.chosen-select').each(function() {
+        			var $this = $(this);
+        			$this.next().css({'width': '100%'});
+        			})
+           };
+         
+            
+				
+</script> 
+
+<!-- this script is for Timesheet Entries Export -->
 <script>
-function exportPdf(startDate){
+function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var navigation = "left";
-	 window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&exportType=pdf";
+	 window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
 }
 </script>
-
-<script>
-function exportExcel(startDate){
-	var sourceleadUrl ='${sourceleadUrl}';
-	var navigation = "left";
-	 window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&exportType=xls";
-}
-</script>
-
-
+ <!-- this script is for save Timesheet -->  
+ 
+      
+    
