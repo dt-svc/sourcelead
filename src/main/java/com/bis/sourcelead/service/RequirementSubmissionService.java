@@ -165,4 +165,7 @@ public interface RequirementSubmissionService {
 	
 	Integer getRequirementPerCandidateCount(Long candudateId) throws Exception;
 
+	void applicantAcceptMailAboutRateNegotiation(Requirement requirement, User initiatorUser, RequirementSubmission requirementSubmission,
+			OrgLocations orgLocations,StringBuilder tempHTML) throws Exception;
+
 }
