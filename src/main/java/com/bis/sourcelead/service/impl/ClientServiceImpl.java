@@ -899,7 +899,7 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
-			 emailMessage.setToEmail(orgSpoc.getSpocUser().getEmail());
+			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
 			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -981,7 +981,7 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
-			 emailMessage.setToEmail(orgSpoc.getSpocUser().getEmail());
+			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
 			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
