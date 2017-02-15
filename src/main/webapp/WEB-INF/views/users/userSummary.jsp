@@ -1459,7 +1459,7 @@ function removeUser(userId){
 							
 					result = result + '<div class="clearfix mb10 mt">';
 					  result = result + '<div class="col-md-12" id="reasonDiv">';
-						  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Terminate Reason"></textarea>';
+						  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required validate_length length2-250" field-name="Reason" placeholder="Terminate Reason"></textarea>';
 						  	result = result + '</div>';
 						  result = result + '</div>';
 					  result = result + '<div class="clearfix"></div>';
