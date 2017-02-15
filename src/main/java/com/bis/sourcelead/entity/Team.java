@@ -80,6 +80,9 @@ public class Team implements Serializable{
 	@Transient
 	private Integer candidateHotlistCount;
 	
+	@Transient
+	private String isTeamAssigned;
+	
 	public Long getId() {
 		return id;
 	}
@@ -198,5 +201,13 @@ public class Team implements Serializable{
 
 	public void setCandidateHotlistCount(Integer candidateHotlistCount) {
 		this.candidateHotlistCount = candidateHotlistCount;
+	}
+
+	public String getIsTeamAssigned() {
+		return isTeamAssigned;
+	}
+
+	public void setIsTeamAssigned(String isTeamAssigned) {
+		this.isTeamAssigned = isTeamAssigned;
 	}
 }
