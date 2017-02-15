@@ -378,15 +378,28 @@ public class TimesheetRestController {
 				 Date endDate = format.parse(value.replaceAll("/", "-"));
 			    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 			    StringBuilder isActive = new StringBuilder("");
+			    
+			    SubmissionApproverHierarchy sahForActive =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(startDate, endDate, projectMemberId);
+			    Submission_Status submission_Status = sahForActive.getSubmissionStatus();
+				String status = submission_Status.getValue();
+			    
 			    if(isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
 			    	if(isCurrentDateBetweenDateRange(key, value)){
 			    		   isActive.append("class='current'");
+			    		   if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+			    			    isActive.delete(0, isActive.length());
+					    		isActive.append("");
+				    			isActive.append("class='current subColor'");
+						    }
 			    		   currentStartDate.append(key);
 			    		   currentEndDate.append(value);
 			    	}
 			    	else{
 			    		isActive.delete(0, isActive.length());
 			    		isActive.append("");
+			    		if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+			    			isActive.append("class='subColor'");
+					    }
 			    	}
 			    	if(startDate.equals(endDate)){
 			    	   timesheetEntriesDiv.append("<input type='hidden' name='tabDates'  id='tabDates' value='"+key+"To"+value+"' >");
@@ -400,12 +413,20 @@ public class TimesheetRestController {
 			    else{
 				    	if(count == 1){
 				    		   isActive.append("class='current'");
+				    		   if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+				    			    isActive.delete(0, isActive.length());
+						    		isActive.append("");
+					    			isActive.append("class='current subColor'");
+							    }
 			            	   currentStartDate.append(key);
 				    		   currentEndDate.append(value);
 			            }
 				    	else{
 				    		isActive.delete(0, isActive.length());
 				    		isActive.append("");
+				    		if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+				    			isActive.append("class='subColor'");
+						    }
 				    	}
 				    	if(startDate.equals(endDate)){
 				    		timesheetEntriesDiv.append("<input type='hidden' name='tabDates'  id='tabDates' value='"+key+"To"+value+"' >");
