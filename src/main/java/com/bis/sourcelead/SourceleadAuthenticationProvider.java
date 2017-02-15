@@ -96,7 +96,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
       			  Org org = null;
       			  List<SourceleadActions> actionsList = null;
       			
-        		  if(!user.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && !user.getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER)){
+        		  if(null == user.getUserType() || (!user.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && !user.getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER))){
         			  orgLocations = userRole.getOrgLocations();
           			  org = orgLocations.getOrg();
     				try {

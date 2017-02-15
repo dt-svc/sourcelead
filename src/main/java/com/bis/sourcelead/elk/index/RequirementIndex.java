@@ -1,5 +1,7 @@
 package com.bis.sourcelead.elk.index;
 
+import java.util.List;
+
 /**
  * 
  * @author Rajashekar and Prasanna
@@ -78,6 +80,16 @@ public class RequirementIndex {
 	private String releasedBy;
 	
 	private String otherJobType;
+	
+	private String isPublicJob;
+	
+	private String isCrowdSourcingJob;
+	
+	private String calDays;
+	
+	private String postedOrg;
+	
+	private List<String> skillsList;
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -369,6 +381,46 @@ public class RequirementIndex {
 
 	public void setOtherJobType(String otherJobType) {
 		this.otherJobType = otherJobType;
+	}
+
+	public String getIsPublicJob() {
+		return isPublicJob;
+	}
+
+	public void setIsPublicJob(String isPublicJob) {
+		this.isPublicJob = isPublicJob;
+	}
+
+	public String getIsCrowdSourcingJob() {
+		return isCrowdSourcingJob;
+	}
+
+	public void setIsCrowdSourcingJob(String isCrowdSourcingJob) {
+		this.isCrowdSourcingJob = isCrowdSourcingJob;
+	}
+
+	public String getCalDays() {
+		return calDays;
+	}
+
+	public void setCalDays(String calDays) {
+		this.calDays = calDays;
+	}
+
+	public String getPostedOrg() {
+		return postedOrg;
+	}
+
+	public void setPostedOrg(String postedOrg) {
+		this.postedOrg = postedOrg;
+	}
+
+	public List<String> getSkillsList() {
+		return skillsList;
+	}
+
+	public void setSkillsList(List<String> skillsList) {
+		this.skillsList = skillsList;
 	}
 
 }

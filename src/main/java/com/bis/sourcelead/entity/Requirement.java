@@ -131,6 +131,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "CLIENT_RATE_TYPE")
 	private String clientRateType;
 	
+	@Column(name = "POSTED_ORG_NAME")
+	private String postedOrgName;
+	
 	
 	@ManyToOne
     @JoinColumn(name="SUBMISSION_TEMPLATE_ID" )        
@@ -1021,6 +1024,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setIsCrowdSourcing(String isCrowdSourcing) {
 		this.isCrowdSourcing = isCrowdSourcing;
+	}
+
+	public String getPostedOrgName() {
+		return postedOrgName;
+	}
+
+	public void setPostedOrgName(String postedOrgName) {
+		this.postedOrgName = postedOrgName;
 	}
 	
 }
