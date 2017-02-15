@@ -428,7 +428,7 @@ public class ProjectsServiceTest {
 								        tempHTML.append("<th> Employee Name </th>");
 								        tempHTML.append("<th> Frequency </th>");
 										tempHTML.append("<th> Project Name </th>");
-										tempHTML.append("<th> Manager Name </th>");
+										/*tempHTML.append("<th> Manager Name </th>");*/
 										tempHTML.append("</tr>");
 										count++;
 							  }
@@ -473,8 +473,8 @@ public class ProjectsServiceTest {
 													    tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
 												     }
 													  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
-													  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
-													  tempHTML.append("<td>").append(managerProjectApproverHierarchy.getApproverUserId().getFullName()).append("</td>");
+													 /* ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
+													  tempHTML.append("<td>").append(managerProjectApproverHierarchy.getApproverUserId().getFullName()).append("</td>");*/
 													  tempHTML.append("</tr>");
 										          }
 									       }	
@@ -520,7 +520,7 @@ public class ProjectsServiceTest {
 									count++;
 						   }
 					    	
-					    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.SEMI_MONTHLY);
+					    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
 							
 					    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
 								for (ProjectMembers projectMembers : projectMembersList) {
@@ -556,8 +556,22 @@ public class ProjectsServiceTest {
 												    tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
 											     }
 												  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
-												  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
-												  tempHTML.append("<td>").append(managerProjectApproverHierarchy.getApproverUserId().getFullName()).append("</td>");
+												  StringBuilder projectStringBuilder=new StringBuilder();
+												  Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectMembers.getProjects().getId());
+												    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+												    	 StringBuilder level1SB=new StringBuilder();
+												    	 StringBuilder level2SB=new StringBuilder();
+												    	if(approverHierarchy.getLevel()==1){
+												    		level1SB.append(approverHierarchy.getApproverUserId().getFullName()).toString();
+												    	}else if(approverHierarchy.getLevel()==2){
+												    		level1SB.append(" ").append(approverHierarchy.getApproverUserId().getFullName()).toString();
+												    	}
+												    	projectStringBuilder.append(level1SB).append(level2SB);
+												    }
+												    
+												  
+												 // ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
+												  tempHTML.append("<td>").append(projectStringBuilder).append("</td>");
 												  tempHTML.append("</tr>");
 									          }
 								       }	

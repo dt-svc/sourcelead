@@ -271,7 +271,7 @@ public class EMailJobScheduler {
 	//=============================================== EMPLOYEE TIME SHEETS MAILS END==========================================
  	
 	
-	//=============================================== LEVEL 1 SHEETS MAILS STARTED==========================================
+	//=============================================== LEVEL 1 TIME SHEETS MAILS STARTED==========================================
 	/**
 	 * @author Prasad salina
 	 * mail to level1 Managers Weekly
@@ -401,7 +401,9 @@ public class EMailJobScheduler {
 							        tempHTML.append("<th> Employee Name </th>");
 							        tempHTML.append("<th> Frequency </th>");
 									tempHTML.append("<th> Project Name </th>");
-									tempHTML.append("<th> Manager Name </th>");
+									if(managerLevel != 1){
+										tempHTML.append("<th> Manager Name </th>");
+									}
 									tempHTML.append("</tr>");
 									count++;
 						  }
@@ -446,8 +448,10 @@ public class EMailJobScheduler {
 												    tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
 											     }
 												  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
-												  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
-												  tempHTML.append("<td>").append(managerProjectApproverHierarchy.getApproverUserId().getFullName()).append("</td>");
+												  if(managerLevel != 1){
+													  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
+													  tempHTML.append("<td>").append(managerProjectApproverHierarchy.getApproverUserId().getFullName()).append("</td>");
+												  }
 												  tempHTML.append("</tr>");
 									          }
 								       }	
@@ -577,8 +581,21 @@ public class EMailJobScheduler {
 												    tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
 											     }
 												  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
-												  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
-												  tempHTML.append("<td>").append(managerProjectApproverHierarchy.getApproverUserId().getFullName()).append("</td>");
+												 
+												  StringBuilder projectStringBuilder=new StringBuilder();
+												  Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectMembers.getProjects().getId());
+												    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+												    	 StringBuilder level1SB=new StringBuilder();
+												    	 StringBuilder level2SB=new StringBuilder();
+												    	if(approverHierarchy.getLevel()==1){
+												    		level1SB.append(approverHierarchy.getApproverUserId().getFullName()).toString();
+												    	}else if(approverHierarchy.getLevel()==2){
+												    		level1SB.append(" ").append(approverHierarchy.getApproverUserId().getFullName()).toString();
+												    	}
+												    	projectStringBuilder.append(level1SB).append(level2SB);
+												    }
+												    
+												  tempHTML.append("<td>").append(projectStringBuilder).append("</td>");
 												  tempHTML.append("</tr>");
 									          }
 								       }	
