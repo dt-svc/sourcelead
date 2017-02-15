@@ -20,8 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -36,6 +38,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	@Autowired
 	private UserRoleDao userRoleDao;
+	
+	@Autowired
+	UserDao userDao;
 	
 	@Autowired
 	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
@@ -469,6 +474,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+		
+		User loginUser = userDao.getUserById(approverUserId);
 		/*
 		 *  get submissionapproverhierarchy list by using empId and logged in user id as approver(either user may exist in project hierarchy  or user may be admin)
 		 */
@@ -510,13 +517,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    		if(status!=null && status.equalsIgnoreCase("REJECTED")){
             	 	sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
             	 	sah.setSubmissionStatus(Submission_Status.REJECTED);
-            	 	sah.setActionPerformedBy(""+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
+            	 	sah.setActionPerformedBy(""+loginUser.getFullName());
             	 	sah.setRejectedReason(rejectedReason);
             	 	
 	             }else if(status!=null && status.equalsIgnoreCase("APPROVED")){
 	            	 sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	 sah.setSubmissionStatus(Submission_Status.APPROVED);
-	            	 sah.setActionPerformedBy(""+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
+	            	 sah.setActionPerformedBy(""+loginUser.getFullName());
 	             }
 	    		 try {
 					updateSubmissionApproverHierarchy(sah);
@@ -539,13 +546,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		                			if(status!=null && status.equalsIgnoreCase("REJECTED")){
 		                				approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
 		                				approver.setSubmissionStatus(Submission_Status.REJECTED);
-		                				approver.setActionPerformedBy(""+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
+		                				approver.setActionPerformedBy(""+loginUser.getFullName());
 		                				approver.setRejectedReason(rejectedReason);
 		                        	 	
 		            	             }else if(status!=null && status.equalsIgnoreCase("APPROVED")){
 		            	            	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 		            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
-		            	            	 approver.setActionPerformedBy(""+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
+		            	            	 approver.setActionPerformedBy(""+loginUser.getFullName());
 		            	             }
 	                		 }
 	                	      //if logged in user is low level approver then record will be submitted to high level approver

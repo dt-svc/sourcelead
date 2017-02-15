@@ -252,7 +252,7 @@ public class ProjectsServiceTest {
 	 * Junit test for employess Manager
 	 * @throws Exception
 	 */
-	@Test
+	//@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
 		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+ProjectMembersList.size());
@@ -411,75 +411,80 @@ public class ProjectsServiceTest {
 	//@Test
 	public void sendMailToLevel1Manager() throws Exception{
 
-
 		logger.info("******************  Notification Job Scheduler MONDAY of every week of the month started..! **********");
 		try {
 			List<Org> orgList = orgService.getOrgs();
-			HashSet<TimesheetSubmissions> timesheetSubmissions = null;
+			Map<String,String>  timesheetFrequencyMap = null;
+			DateFormat format = Constants.DF_DMY;
 			for (Org org : orgList) {
-				ProjectApproverHierarchy projectApproverHierarchy = null;
-				User user = null;
-				StringBuilder tempHTML = new StringBuilder();
-				int count=0;
-				tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
-				
-				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
-				
-				List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
-				if(count==0){	
-					 tempHTML.append("<tr>");
-						        tempHTML.append("<th> Employee Name </th>");
-						        tempHTML.append("<th> Frequency </th>");
-								tempHTML.append("<th> Project Name </th>");
-								tempHTML.append("<th> Manager Name </th>");
-								tempHTML.append("</tr>");
-								count++;
-					}
-				
-				for (Projects projects : projectsList) {
-					Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
-					for (ProjectMembers projectMembers : projectMembersList) {
-						 timesheetSubmissions = timesheetSubmissionsService.getWeekFrequencyByProjMemId(projectMembers.getId());
-						          if(timesheetSubmissions !=null){
-							          TimesheetSubmissions ts = timesheetSubmissions.iterator().next();
-							          List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectIdForManager(ts.getProjectMembers().getProjects().getId(), projectMembers.getEmployee().getUser().getId(),1);
-							           if(projectApproverHierarchyList.size() > 0){
-							        	   projectApproverHierarchy = projectApproverHierarchyList.get(0);
-							        	   if(projectApproverHierarchy.getLevel() == 1){
-							        		   user = projectApproverHierarchy.getApproverUserId();
-							        	   }
-							           }
-							          LinkedList<String> frequency = new LinkedList<>();
-										if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
-											if(projectApproverHierarchyList.size() == 0){
-												 tempHTML.append("<tr>");
-												 if(projectMembers.getEmployee().getUser().getFirstName()!= null && projectMembers.getEmployee().getUser().getLastName() !=null){
-													 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName()+"</td>");
-												 }else{
-													 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
-												 }
-												 
-												 for(TimesheetSubmissions ts1 :timesheetSubmissions){
-													 frequency.add("<b>"+Constants.DMY.format(ts1.getStartDate())+" To "+Constants.DMY.format(ts1.getEndDate()));
-												   }
-											    if(frequency != null && !frequency.isEmpty()){
-												 tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
-											     }
-												  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
-												  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
-												  tempHTML.append("<td>"+managerProjectApproverHierarchy.getApproverUserId().getFirstName()+"</td>");
-												 tempHTML.append("</tr>");
-											
-											}
-										}
-						          }
-									
+					StringBuilder tempHTML = new StringBuilder();
+					int count=0;
+					tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+					
+					List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+					for (OrgLocations ol : orgLocations) {
+						     if(count==0){	
+							            tempHTML.append("<tr>");
+								        tempHTML.append("<th> Employee Name </th>");
+								        tempHTML.append("<th> Frequency </th>");
+										tempHTML.append("<th> Project Name </th>");
+										tempHTML.append("<th> Manager Name </th>");
+										tempHTML.append("</tr>");
+										count++;
+							  }
+						     
+						     List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getApproverUserIdsByOrgLocationIdAndLevelAndFrequency(ol.getId(), Constants.BI_WEEKLY, Constants.LEVEL1);
+						   
+						     for (ProjectApproverHierarchy pah : projectApproverHierarchyList) {
+						    	
+						    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(Constants.BI_WEEKLY,pah.getApproverUserId().getId());
+								
+						    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
+									for (ProjectMembers projectMembers : projectMembersList) {
+										timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,"approverScheduler");
+										  if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
+										            LinkedList<String> frequency = new LinkedList<>();
+													 tempHTML.append("<tr>");
+													 if(projectMembers.getEmployee().getUser().getFirstName()!= null && projectMembers.getEmployee().getUser().getLastName() !=null){
+														 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName()+"</td>");
+													 }else{
+														 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
+													 }
+													 
+													 for(Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
+														    String key = entry.getKey();
+														    String value =entry.getValue();
+															
+														    Date frequencyEndDate = format.parse(value.replaceAll("/", "-"));
+															Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+															currentCal.setLenient(false);
+															currentCal.setTime(CommonUtil.currentDate());
+															
+												             Boolean flag = true;
+												             if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()) <-2 ){
+												            	 flag = false;
+												             }
+												             
+												             if(flag){
+												            	 frequency.add("<b>"+key.replaceAll("/", "-")+" To "+value.replaceAll("/", "-"));
+												             }
+													 }
+												     if(frequency != null && !frequency.isEmpty()){
+													    tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
+												     }
+													  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
+													  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
+													  tempHTML.append("<td>").append(managerProjectApproverHierarchy.getApproverUserId().getFullName()).append("</td>");
+													  tempHTML.append("</tr>");
+										          }
+									       }	
+									}
+						    	 tempHTML.append("</table> ");
+									if(pah.getApproverUserId() !=null && null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
+									   projectsService.userEmailToAdmin(tempHTML,ol,pah.getApproverUserId());
+									}
 							}
 					}
-				tempHTML.append("</table> ");
-				if(user !=null && timesheetSubmissions!=null){
-				projectsService.userEmailToAdmin(tempHTML,orgLocations,user);
-				}
 				}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -492,67 +497,77 @@ public class ProjectsServiceTest {
 	 * Junit test for Admin 
 	 * @throws Exception
 	 */
-	//@Test
+	@Test
 	public void sendMailAdmin() throws Exception{
 		logger.info("******************  Notification Job Scheduler FRIDAY of every week of the month started..!For Admin **********");
-		try {
-			List<Org> orgList = orgService.getOrgs();
-			HashSet<TimesheetSubmissions> timesheetSubmissions =null;
-			for (Org org : orgList) {
-				User user = null;
+		try {List<Org> orgList = orgService.getOrgs();
+		Map<String,String>  timesheetFrequencyMap = null;
+		DateFormat format = Constants.DF_DMY;
+		for (Org org : orgList) {
 				StringBuilder tempHTML = new StringBuilder();
 				int count=0;
 				tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
 				
-				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
-				
-				List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
-				if(count==0){	
-					 tempHTML.append("<tr>");
-						        tempHTML.append("<th> Employee Name </th>");
-						        tempHTML.append("<th> Frequency </th>");
-								tempHTML.append("<th> Project Name </th>");
-								tempHTML.append("<th> Manager Name </th>");
-								tempHTML.append("</tr>");
-								count++;
-					}
-				
-				for (Projects projects : projectsList) {
-					
-					Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
-					for (ProjectMembers projectMembers : projectMembersList) {
-						
-						 timesheetSubmissions = timesheetSubmissionsService.getWeekFrequencyByProjMemId(projectMembers.getId());
-						if(timesheetSubmissions !=null){
-						      LinkedList<String> frequency = new LinkedList<>();
-									if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
-										
-											 tempHTML.append("<tr>");
-											 if(projectMembers.getEmployee().getUser().getFirstName()!= null && projectMembers.getEmployee().getUser().getLastName() !=null){
-												 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName()+"</td>");
-											 }else{
-												 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
-											 }
-											 for(TimesheetSubmissions ts1 :timesheetSubmissions){
-												 frequency.add("<b>"+Constants.DMY.format(ts1.getStartDate())+" To "+Constants.DMY.format(ts1.getEndDate()));
-											   }
-										    if(frequency != null && !frequency.isEmpty()){
-											 tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
-										     }
-											  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
-											  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
-											  tempHTML.append("<td>"+managerProjectApproverHierarchy.getApproverUserId().getFirstName()+"</td>");
-											 tempHTML.append("</tr>");
-										
-										}
-						}
-							}
-					}
-				tempHTML.append("</table> ");
-				if(timesheetSubmissions!=null){
-					projectsService.userEmailToAdmin(tempHTML,orgLocations,user);
-				}
-				}
+				List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+				for (OrgLocations ol : orgLocations) {
+					     if(count==0){	
+						            tempHTML.append("<tr>");
+							        tempHTML.append("<th> Employee Name </th>");
+							        tempHTML.append("<th> Frequency </th>");
+									tempHTML.append("<th> Project Name </th>");
+									tempHTML.append("<th> Manager Name </th>");
+									tempHTML.append("</tr>");
+									count++;
+						   }
+					    	
+					    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.SEMI_MONTHLY);
+							
+					    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
+								for (ProjectMembers projectMembers : projectMembersList) {
+									timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,"approverScheduler");
+									  if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
+									            LinkedList<String> frequency = new LinkedList<>();
+												 tempHTML.append("<tr>");
+												 if(projectMembers.getEmployee().getUser().getFirstName()!= null && projectMembers.getEmployee().getUser().getLastName() !=null){
+													 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName()+"</td>");
+												 }else{
+													 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
+												 }
+												 
+												 for(Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
+													    String key = entry.getKey();
+													    String value =entry.getValue();
+													    
+														Date frequencyEndDate = format.parse(value.replaceAll("/", "-"));
+														Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+														currentCal.setLenient(false);
+														currentCal.setTime(CommonUtil.currentDate());
+														
+											             Boolean flag = true;
+											             if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()) <-2){
+											            	 flag = false;
+											             }
+											             if(flag){
+											            	 frequency.add("<b>"+key.replaceAll("/", "-")+" To "+value.replaceAll("/", "-"));
+											             }
+													    
+												 }
+											     if(frequency != null && !frequency.isEmpty()){
+												    tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
+											     }
+												  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
+												  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
+												  tempHTML.append("<td>").append(managerProjectApproverHierarchy.getApproverUserId().getFullName()).append("</td>");
+												  tempHTML.append("</tr>");
+									          }
+								       }	
+								}
+					    	 tempHTML.append("</table> ");
+								if(null != ol.getUser() && null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
+								   projectsService.userEmailToAdmin(tempHTML,ol,ol.getUser());
+								}
+				  }
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("ERROR in " + e.getMessage());
