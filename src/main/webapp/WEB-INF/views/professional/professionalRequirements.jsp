@@ -29,6 +29,7 @@ window.onload = function () {
           <select id="requirementType" onchange="requirementsList('0');">
            	<option value="OpenJObs">Open</option>
             <option value="CrowdSourcingJobs">Crowdsourcing</option>
+            <option value="AppliedJobs">Applied</option>
           </select>
           </span>
 			<div class="timeNewSe timeNewSe_h">
@@ -72,7 +73,7 @@ window.onload = function () {
 	   <br/>
 	   <input type="hidden" name="requirementOffset" id="requirementOffset" value="0"/>
 	  <div id="requirementsList"></div> 
-	  <a href="#"><section class="loadJob" onclick="getViewMoreRecords();"><i id="viewMoreLoading"></i><span id="viewMore">View more</span></section></a>
+	  <a href="#" id="loadMoreSection" style="display: block;"><section class="loadJob" onclick="getViewMoreRecords();"><i id="viewMoreLoading"></i><span id="viewMore">View more</span></section></a>
 	  
 	 <div class="side_mask"><div class="proj_close"></div></div>
 	 <div class="new_side_wrap">
@@ -188,32 +189,49 @@ function requirementsList(offset){
 			 				result = result +'</h5>';
 			 		  
 			 				result = result +'</div>';
-			 				result = result +'<div class="openCtaRight">';
-			 				/* result = result +'<p>Share Requirement</p>';
-			 				result = result +'<span>';
-			 				result = result +'<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
-			 				result = result +'<a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';				  
-			 				result = result +'<a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
-			 				result = result +'<a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';
-			 				result = result +'</span>'; */
-			 				result = result +'<div class="openPostBtns">';
-			 				result = result +'<a href="javascript:void(0)" onclick="applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
 			 				
-			 				if(requirementType == "CrowdSourcingJobs"){
-			 					result = result +'<a class="refer" href="javascript:void(0)">Refer</a>';
+			 				
+			 				if(requirementType != "AppliedJobs"){
+			 					result = result +'<div class="openCtaRight">';
+				 				/* result = result +'<p>Share Requirement</p>';
+				 				result = result +'<span>';
+				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
+				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';				  
+				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
+				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';
+				 				result = result +'</span>'; */
+				 				result = result +'<div class="openPostBtns">';
+				 				result = result +'<a href="javascript:void(0)" onclick="applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
+				 				
+				 				if(requirementType == "CrowdSourcingJobs"){
+				 					result = result +'<a class="refer" href="javascript:void(0)">Refer</a>';
+				 				}
+				 				
+				 				result = result +'</div>';
+				 				result = result +'<div class="openPostDate">';
+				 				result = result +'Posted :';
+				 				result = result +'<b><i class="fa fa-clock-o"></i> '+requirements.calDays+'</b>';
+				 				result = result +'</div>';			  
+				 				result = result +'</div>';
 			 				}
-			 				
-			 				result = result +'</div>';
-			 				result = result +'<div class="openPostDate">';
-			 				result = result +'Posted :';
-			 				result = result +'<b><i class="fa fa-clock-o"></i> '+requirements.calDays+'</b>';
-			 				result = result +'</div>';			  
-			 				result = result +'</div>';
+			 				else if(requirementType == "AppliedJobs"){
+			 					
+			 					result = result +'<div class="openCtaRight text-center">';
+			 					result = result +'<div class="appliedWrap">';
+			 					result = result +'<i class="fa fa-check-circle"></i>';
+			 					result = result +'<div class="openPostDate">';
+			 					result = result +'<b><h5>Applied</h5></b>';
+			 					result = result +'</div>';
+			 					result = result +'</div>';
+			 					result = result +'</div>';
+			 				  
+			 				}
 			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'</section>';
 			 				
 			       	    	$('#requirementsList').append(result);
 			       	    	document.getElementById("viewMoreLoading").removeAttribute("class");
+			       	    	document.getElementById("loadMoreSection").style.display="";
 		            		
 				   }
 	   		    }
@@ -224,7 +242,7 @@ function requirementsList(offset){
 				 result = result+"	<div class='col-lg-12'>"; 
 				 result = result+"		<div class='content-area clearfix'>"; 
 				 result = result+"			<div class='blank-pages'>";
-				 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+				 result = result+"			        <p><i class='fa fa-5x fa-briefcase'></i></p>";
 				 result = result+"			        <p>No Requirements Found</p>";
 				 result = result+"			 </div>";
 				 result = result+"		</div>"; 
@@ -232,6 +250,7 @@ function requirementsList(offset){
 				 result = result+"  </div> "; 
 				$("#requirementsList").empty();
 			    $("#requirementsList").append(result); 
+			    document.getElementById("loadMoreSection").style.display="none";
    		    }else{
    		    	
    		    	$('#viewMore').html("No Records Found");
@@ -259,13 +278,15 @@ function applyToJob(requirementId){
 <script>
 function getRequirementSubmissionTemaplate(requirementId){
 	 var sourceleadUrl ='${sourceleadUrl}';
-	generateOrgSubmissionForm(sourceleadUrl,requirementId) 
+	 var candidateId = '${candidateId}';
+	 generateOrgSubmissionForm(sourceleadUrl,requirementId) 
 	
 	
 	var result = "";
 	result = result + '<form id="applyToJob_form" name="applyToJob_form" method="post">';
 	result = result + '<div class="form-horizontal clearfix select-field">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
+	result = result + '<input type="hidden" id="candidateId" name="candidateId" value='+candidateId+'>';
 	
 	result = result + '<div class="row">';
 	
@@ -650,24 +671,19 @@ $('body').on('submit', '#applyToJob_form', function(e){
 		
        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
       
-  	/*      $.ajax({
+  	     $.ajax({
 	    	type: "POST",
 	    	data: formData,
  	        contentType : 'application/json; charset=utf-8',
- 	        enctype: 'multipart/form-data',
 	        processData: false,
 	        contentType:false,
  	        dataType : 'json',
- 	    	url : sourceleadUrl+"/saveAddApplicant?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
+ 	    	url : sourceleadUrl+"/applyToJobFromCrowdSourcing?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
-	        	 $(".new_side_wrap").removeClass("new_side_wrap_active");
-	    		$(".side_mask").fadeOut(200);
-	    		$("body").css('overflow-y', 'auto');
-	    		var allApplicants = 'all';
-	    		requirementPipeline(requirementId,allApplicants); 
+	        	location.replace(sourceleadUrl+"/professionalRequirements"); 
 	        	
 	        },
-	    }); */ 
+	    }); 
       return true; 
     }
     else{

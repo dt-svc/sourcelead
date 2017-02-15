@@ -450,18 +450,20 @@ public class SubmissionsRestController {
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		StringBuilder skillsList = new StringBuilder();
-		String[] candidateSkills = submission.getCandidate().getSkillsName().split(",");
-		int i = 0;
-		for (String skill : candidateSkills) {
-			if (i <= 5) {
-				skillsList = skillsList.append(skill);
-				if (i != candidateSkills.length - 1) {
-					skillsList = skillsList.append(",");
+		if(null != submission.getCandidate().getSkillsName()){
+			String[] candidateSkills = submission.getCandidate().getSkillsName().split(",");
+			int i = 0;
+			for (String skill : candidateSkills) {
+				if (i <= 5) {
+					skillsList = skillsList.append(skill);
+					if (i != candidateSkills.length - 1) {
+						skillsList = skillsList.append(",");
+					}
 				}
+				i++;
 			}
-			i++;
 		}
-
+		
 		submission.setSkillsList(skillsList.toString());
 		submission.setRequirementSubmissionTemplateFields(requirementSubmissionTemplateFields);
 		resultJson = toJSON(submission);

@@ -43,6 +43,8 @@ public class RequirementIndex {
 	
 	private String[] skills;
 	
+	private String[] appliedProfessionals;
+	
 	private String jobType;
 	
 	private String jobId;
@@ -90,6 +92,8 @@ public class RequirementIndex {
 	private String postedOrg;
 	
 	private List<String> skillsList;
+	
+	private String isJobApplied;
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -421,6 +425,22 @@ public class RequirementIndex {
 
 	public void setSkillsList(List<String> skillsList) {
 		this.skillsList = skillsList;
+	}
+
+	public String[] getAppliedProfessionals() {
+		return appliedProfessionals;
+	}
+
+	public void setAppliedProfessionals(String[] appliedProfessionals) {
+		this.appliedProfessionals = appliedProfessionals;
+	}
+
+	public String getIsJobApplied() {
+		return isJobApplied;
+	}
+
+	public void setIsJobApplied(String isJobApplied) {
+		this.isJobApplied = isJobApplied;
 	}
 
 }

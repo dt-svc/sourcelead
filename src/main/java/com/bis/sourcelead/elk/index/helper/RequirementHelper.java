@@ -200,6 +200,11 @@ public class RequirementHelper {
 			if(null != requirement.getPostedOrgName() && !requirement.getPostedOrgName().isEmpty()){
 				requirementIndex.setPostedOrg(requirement.getPostedOrgName());
 			}
+			
+			if (null != requirement.getAppliedProfessionals() && !"".equalsIgnoreCase(requirement.getAppliedProfessionals())) {
+				String[] appliedProfessionals = requirement.getAppliedProfessionals().split(",");
+				requirementIndex.setAppliedProfessionals(appliedProfessionals);
+			}
 
 		}
 		return requirementIndex;

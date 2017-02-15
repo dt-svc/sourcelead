@@ -179,6 +179,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Type(type="text")
 	private String releasedBy;
 	
+	@Column(name="APPLIED_PROFESSIONALS")
+	@Type(type="text")
+	private String appliedProfessionals;
+	
 	@Column(name="PRIORITY")
 	private String priority;
 	
@@ -1032,6 +1036,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setPostedOrgName(String postedOrgName) {
 		this.postedOrgName = postedOrgName;
+	}
+
+	public String getAppliedProfessionals() {
+		return appliedProfessionals;
+	}
+
+	public void setAppliedProfessionals(String appliedProfessionals) {
+		this.appliedProfessionals = appliedProfessionals;
 	}
 	
 }
