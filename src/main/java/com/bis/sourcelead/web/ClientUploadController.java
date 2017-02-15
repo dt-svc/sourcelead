@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UploadedFile;
@@ -186,15 +187,33 @@ public class ClientUploadController {
 			File file;
 //			clients_contacts_Import.xls
 //			clients_import_template.xls
-			if("clients_import_template.xls".equalsIgnoreCase(fileName)){
-				 file = new File("clients_import_template.xls");
-			}else if("clients_contacts_Import.xls".equalsIgnoreCase(fileName)){
-				 file = new File("clients_contacts_Import.xls");
-			}else if("clients_import_template.xlsx".equalsIgnoreCase(fileName)){
-				file = new File("clients_import_template.xlsx");
+			StringBuilder finalFileName = new StringBuilder();
+			if(fileName.contains("(")){
+			    String fileArray [] = fileName.split("\\.");
+			    String fileName1 = fileArray[0].substring(0, fileArray[0].indexOf("("));
+			    finalFileName.append(fileName1).append(".").append(fileArray[1]);
+			    String finalValue = finalFileName.toString().replaceAll("\\s", "");
+			    if(Constants.CLIENTS_IMPORT_TEMPLATE_XLS.equalsIgnoreCase(finalValue)){
+					 file = new File("clients_import_template.xls");
+				}else if(Constants.CLIENTS_CONTACTS_IMPORT_XLS.equalsIgnoreCase(finalValue)){
+					 file = new File("clients_contacts_Import.xls");
+				}else if(Constants.CLIENTS_IMPORT_TEMPLATE_XLSX.equalsIgnoreCase(finalValue)){
+					file = new File("clients_import_template.xlsx");
+				}else{
+					file = new File("clients_import_template.xlsx");
+				}
 			}else{
-				file = new File("clients_contacts_Import.xlsx");
+				if(Constants.CLIENTS_IMPORT_TEMPLATE_XLS.equalsIgnoreCase(fileName)){
+					 file = new File("clients_import_template.xls");
+				}else if(Constants.CLIENTS_CONTACTS_IMPORT_XLS.equalsIgnoreCase(fileName)){
+					 file = new File("clients_contacts_Import.xls");
+				}else if(Constants.CLIENTS_IMPORT_TEMPLATE_XLSX.equalsIgnoreCase(fileName)){
+					file = new File("clients_import_template.xlsx");
+				}else{
+					file = new File("clients_import_template.xlsx");
+				}
 			}
+			
 			
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
