@@ -580,6 +580,7 @@ function getCandidateDetails(){
 		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
+		        	
 		        	 $("input[name=FirstName]").val(json['firstName']);
 		        	 $("input[name=EmailId]").val(json['email']);
 		        	 $("input[name=EmailId]").attr('readonly', 'readonly');
@@ -594,6 +595,12 @@ function getCandidateDetails(){
 		        		 $("input[name=PhoneNumber]").val(json['mobilePhone']);
 		        	 }else{
 		        		 $("input[name=PhoneNumber]").val(''); 
+		        	 }
+		        	 
+		        	 if(json['alternateMobilePhone'] != null && json['alternateMobilePhone'] != "" && json['alternateMobilePhone'] != 'undefined'){
+		        		 $("input[name=AlternateNumber]").val(json['alternateMobilePhone']);
+		        	 }else{
+		        		 $("input[name=AlternateNumber]").val(''); 
 		        	 }
 		        	 
 		        	 if(json['designation'] != null && json['designation'] != "" && json['designation'] != 'undefined'){

@@ -150,12 +150,16 @@ function editCandidate(candidateId){
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							
+							// If Candidate Type equals Consultant email field should be Disable mode
+							
+							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
-							if(json.candidateType = 'Candidate'){
-								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100>';
+							if(json.candidateType == "Candidate"){
+								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" >';
 							}
-							if(json.candidateType = 'Consultant'){
+							
+							if(json.candidateType == "Consultant"){
 							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
 							}
 							result = result + '</div>';
@@ -735,7 +739,6 @@ function candidateProfile(candidateId){
 						                res = json.skillsName.split(",");
 						                res.forEach(function(item) {
 						                	if('${skill.name}' == item){
-						                		result = result + ' <option  value="${skill.name}">${skill.name}</option>';
 						                		existed = 1;
 						                	}
 						                });
@@ -744,10 +747,6 @@ function candidateProfile(candidateId){
 					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
 					                }
 			                </c:forEach>
-			                
-			                
-			                
-			                
 			                result = result + '</select>';
 							
 							result = result +'		                      </div> ';
@@ -1582,3 +1581,4 @@ function updateDesignationType(){
 	}
 }
 </script>
+

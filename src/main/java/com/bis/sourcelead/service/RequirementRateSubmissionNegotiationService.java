@@ -2,6 +2,8 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 
 public interface RequirementRateSubmissionNegotiationService {
@@ -19,5 +21,7 @@ public interface RequirementRateSubmissionNegotiationService {
 	public RequirementRateSubmissionNegotiation getLatestRequirementRateSubmissionNegotiationBySubmissionId(Long submissionId);
 	
 	public List<RequirementRateSubmissionNegotiation> getAllRateHistoryBySubmissionIdAndCandidateId(Long submissionId, Long candidateId) throws Exception;
+	
+	public StringBuilder buildNegotiationHistory(List<RequirementRateSubmissionNegotiation>  negotiationList, Requirement requirement, Candidate candidate, Long submissionId, String type) throws Exception;
 
 }
