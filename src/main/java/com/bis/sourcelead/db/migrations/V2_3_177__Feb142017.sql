@@ -52,4 +52,6 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 									
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','POSTED_ORG_NAME','VARCHAR(250) DEFAULT NULL');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','USER','COUNTRY','VARCHAR(100) DEFAULT NULL');
  

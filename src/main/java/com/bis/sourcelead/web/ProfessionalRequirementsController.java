@@ -19,12 +19,14 @@ public class ProfessionalRequirementsController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	
 	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 	 @RequestMapping(value = "/professionalRequirements")
 		public ModelAndView professionalProfile(HttpServletRequest request) throws Exception {
 		    
-		        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				ModelAndView model = new ModelAndView();
+		        Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+				
+		        ModelAndView model = new ModelAndView();
 				
 				SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 				if(sessionData == null)
@@ -37,6 +39,8 @@ public class ProfessionalRequirementsController {
 				
 				model.setViewName("professional/professionalRequirements");
 				model.addObject("sourceleadUrl", sourceleadUrl);
+				model.addObject("candidateId", candidateId);
+				
 				return model;
 	}
 }
