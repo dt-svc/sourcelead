@@ -16,8 +16,10 @@ import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -37,6 +39,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	 private TimeZoneService timeZoneService;
 	
 	@Override
 	public RequirementInterviewHistory storeRequirementInterviewHistory(
@@ -152,7 +157,8 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	@Override
 	public List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)
 			throws Exception {
-		List<RequirementInterviewHistory> list = requirementInterviewHistoryDao.getAllInterviewAssignedToLoginUser(orgLocationsId, dateRange, currentTime, userType, userId, userCode);
+		Timezone timezone = timeZoneService.getTimezone(orgLocationsId);
+		List<RequirementInterviewHistory> list = requirementInterviewHistoryDao.getAllInterviewAssignedToLoginUser(orgLocationsId, dateRange, currentTime, userType, userId, userCode,timezone);
 		return list;
 
 			}
