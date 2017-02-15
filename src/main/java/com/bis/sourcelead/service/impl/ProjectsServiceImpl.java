@@ -1885,20 +1885,20 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				 Integer maxResults = getProjectCountByOrgLocationId(orgLocation.getId());
 					
 					//All Keywords
-				 ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
-					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-						 for(String keywd : allKeyWordArray){
-							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+				 ArrayList<String> anyKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
+					if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : anyKeyWordArray){
+							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
 							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getProjectsMatchQueryBuilderList(keywd);
 							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									allBoolSubQueryBuilder.should(matchQueryBuilder);
+									anyBoolSubQueryBuilder.should(matchQueryBuilder);
 								}
-								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 							}
 						}
-						 boolQueryBuilder.must(allBoolQueryBuilder);
+						 boolQueryBuilder.must(anyBoolQueryBuilder);
 					}
 					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					df.setTimeZone(TimeZone.getTimeZone("GMT"));

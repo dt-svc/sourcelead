@@ -1077,21 +1077,21 @@ public class ClientServiceImpl implements ClientService{
 			
 			 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocation.getId(),responderType);
 				//All Keywords
-			 ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
-				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : allKeyWordArray){
-						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
-							}
-							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+			 ArrayList<String> anyKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
+			 if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+				 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+				 for(String keywd : anyKeyWordArray){
+					 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
+					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+							anyBoolSubQueryBuilder.should(matchQueryBuilder);
 						}
+						anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 					}
-					 boolQueryBuilder.must(allBoolQueryBuilder);
 				}
+				 boolQueryBuilder.must(anyBoolQueryBuilder);
+			}
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				List<Object>   searchList = new ArrayList<>();
@@ -1169,24 +1169,23 @@ public class ClientServiceImpl implements ClientService{
 				 
 				 combinedQueryBuilder.must(combinedQueryBuilder);
 				
-				ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(serachValue);
+				ArrayList<String> anyKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(serachValue);
 					BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 					 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
-					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-						 for(String keywd : allKeyWordArray){
-							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							 // need to change for setters 
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									allBoolSubQueryBuilder.should(matchQueryBuilder);
+						if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+							 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+							 for(String keywd : anyKeyWordArray){
+								 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+								ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
+								if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+									for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+										anyBoolSubQueryBuilder.should(matchQueryBuilder);
+									}
+									anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 								}
-								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 							}
+							 boolQueryBuilder.must(anyBoolQueryBuilder);
 						}
-						 boolQueryBuilder.must(allBoolQueryBuilder);
-					}
 					
 					Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilder).getTotalHits();
 					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
