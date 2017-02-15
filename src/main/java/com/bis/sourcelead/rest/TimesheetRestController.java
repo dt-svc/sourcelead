@@ -275,7 +275,7 @@ public class TimesheetRestController {
 					    	selectedStartDate.append(key.replaceAll("/", "-"));
 					    	selectedEndDate.append(value.replaceAll("/", "-"));
 					    }
-					    if(isCurrentDateBetweenDateRange(key, value)){
+					    if(CalendarUtil.isCurrentDateBetweenDateRange(key, value)){
 					    	selectedStartDate.setLength(0);
 					    	selectedEndDate.setLength(0);
 					    	isSelected.append("selected='selected'");
@@ -383,8 +383,8 @@ public class TimesheetRestController {
 			    Submission_Status submission_Status = sahForActive.getSubmissionStatus();
 				String status = submission_Status.getValue();
 			    
-			    if(isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
-			    	if(isCurrentDateBetweenDateRange(key, value)){
+			    if(CalendarUtil.isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
+			    	if(CalendarUtil.isCurrentDateBetweenDateRange(key, value)){
 			    		   isActive.append("class='current'");
 			    		   if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
 			    			    isActive.delete(0, isActive.length());
@@ -470,22 +470,6 @@ public class TimesheetRestController {
 		
 	}
 	
-	
-	boolean isCurrentDateBetweenDateRange(String weekStartDate,String weekEndDate) {
-		Boolean flag = false;
-		if(StringUtils.isNotEmpty(weekStartDate) && StringUtils.isNotEmpty(weekEndDate)){
-			Date currentDate = CommonUtil.currentDate();
-			 DateFormat format = Constants.DF_STD_DMY;
-			 Date startDate = null;
-			 Date endDate = null;
-			try {
-				startDate = format.parse(weekStartDate.replaceAll("-", "/"));
-				 endDate = format.parse(weekEndDate.replaceAll("-", "/"));
-				 flag =   currentDate.after(startDate) && currentDate.before(endDate);
-			} catch (ParseException e) {}
-		}
-		return flag;
-	}
 	
 	public StringBuilder projectTabDataByDates(String startDate ,String endDate,Long projectMemberId,String timesheetFrequencyEndDate,String approvalStatus) throws Exception{
 		

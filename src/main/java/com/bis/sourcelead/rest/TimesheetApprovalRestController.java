@@ -297,14 +297,14 @@ public class TimesheetApprovalRestController {
 			    		 StringBuilder isSelected = new StringBuilder("");
 			    		try {
 			    			if(sDate == null && eDate == null&& count == 1
-			    				&& !isCurrentDateBetweenDateRange(format.format(startDate), format.format(endDate))){
+			    				&& !CalendarUtil.isCurrentDateBetweenDateRange(format.format(startDate), format.format(endDate))){
 			    				 dateList.clear();
                           	     dateList.put("STARTDATE", frequencyStartDate);
 							     dateList.put("ENDDATE",frequencyEndDate);
 							     isSelected.append("selected='selected'");
 			    			}
 			    			else if(sDate == null && eDate == null
-			    					 && isCurrentDateBetweenDateRange(k, v)){
+			    					 && CalendarUtil.isCurrentDateBetweenDateRange(k, v)){
                            	     dateList.clear();
                            	     dateList.put("STARTDATE",frequencyStartDate);
 							     dateList.put("ENDDATE", frequencyEndDate);
@@ -685,21 +685,6 @@ public class TimesheetApprovalRestController {
 	}
 	
 
-	boolean isCurrentDateBetweenDateRange(String weekStartDate,String weekEndDate) {
-		Boolean flag = false;
-		if(StringUtils.isNotEmpty(weekStartDate) && StringUtils.isNotEmpty(weekEndDate)){
-			Date currentDate = CommonUtil.currentDate();
-			 DateFormat format = Constants.DF_STD_DMY;
-			 Date startDate = null;
-			 Date endDate = null;
-			try {
-				startDate = format.parse(weekStartDate.replaceAll("-", "/"));
-				 endDate = format.parse(weekEndDate.replaceAll("-", "/"));
-				 flag =   currentDate.after(startDate) && currentDate.before(endDate);
-			} catch (ParseException e) {}
-		}
-		return flag;
-	}
 	
 @RequestMapping(value = "/getExportTimeSheetForApprovalMechanizm")  
 	public void getExportTimeSheetForApprovalMechanizm(HttpServletRequest request,
