@@ -2651,11 +2651,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("applicantName",requirementSubmissionTemplateFields.getFirstName());
 			 }
 		 
-		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
+		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate()) && requirementSubmission.getFinalizedRateType() != null && !"".equalsIgnoreCase(requirementSubmission.getFinalizedRateType())){
 			 StringBuilder rateBuild = new StringBuilder();
 			 globalVarsMap.put("finalRate", rateBuild.append(requirementSubmission.getFinalizedRate()).append(" / ").append(requirementSubmission.getFinalizedRateType()).toString());
 			 }else{
-				 globalVarsMap.put("finalRate","--");
+				 globalVarsMap.put("finalRate",requirementSubmission.getFinalizedRate());
 			 }
 		
 		 if(null != tempHTML){
