@@ -923,7 +923,7 @@ $(document).ready(function () {
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
 				
-                  <input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow();">
+                  <input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow(${requirement.id});">
 
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
@@ -1845,11 +1845,11 @@ function approvalType(type){
 --%>
 
 <script>
-function popupWindow(){  
+function popupWindow(reqId){ 
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#popupWindow").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $("#popupWindow").removeAttr("style");
-	  getTeamsList();
+	  getTeamsList(reqId);
 	  getUserList();
 	  var result = '';
 	    result = result +'<div class="modal-body clearfix">';
@@ -1936,8 +1936,11 @@ function getUserList(teamType){
 		                    	 }else{
 		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    	 }
-		                    	 
-		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+' '+opt.lastName+'">'+opt.firstName+' '+opt.lastName+'</span></td>';
+		                    	 var lastName = '';
+		                    	 if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+		                    		 lastName = ' '+opt.lastName;
+		                    	 }
+		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+''+lastName+'">'+opt.firstName+''+lastName+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot" title="'+opt.email+'">'+opt.email+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.userType+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.assignJobCount+'</span></td>';
@@ -1949,6 +1952,7 @@ function getUserList(teamType){
 	                       result = result +"</table>"; 
 	                       result = result +'   <div class="clearfix"></div>'; 
 	                 	   result = result +'   </div>'; 
+	                 	   result = result +'	<span class="jquery_form_error_message" style="display:none;">To assign, at least one is mandatory</span>';
 	                 	   result = result +'   <div class="modal-footer mt">';
 	                 	   result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="assignMembers();">Assign</button>';
 	                 	   result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Cancel</button>';
@@ -2012,11 +2016,14 @@ function handleClick() {
      append Roles and Teams list to AssignedTo model dialog box
 --%>
 <script>
-function getTeamsList(teamType){ 
+function getTeamsList(reqId){
+	if(reqId == '' || reqId == 'undefined' || reqId == null){
+		reqId = '';
+	}
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getTeamsList?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getTeamsList?${_csrf.parameterName}=${_csrf.token}&reqId="+reqId,    
             success :function(data) {
             	var json = JSON.parse(data);
 				var output = "";
@@ -2033,7 +2040,7 @@ function getTeamsList(teamType){
 				  output = output + "<optgroup label='Teams'>";
 				  for (var i = 0; i < json.teams.length; i++) {
 						var opt = json.teams[i];
-						if(teamType == opt.id){
+						if('Y' == opt.isTeamAssigned){
 							output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
 						}else{
 							output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
@@ -2048,7 +2055,7 @@ function getTeamsList(teamType){
 				  output = output + "<optgroup label='Roles'>"; 
 					for (var i = 0; i < json.roles.length; i++) {
 						var opt = json.roles[i];
-						if(teamType == opt.id){
+						if('Y' == opt.isRoleAssigned){
 							output = output + "<option value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
 						}else{
 							output = output + "<option value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
@@ -2115,9 +2122,9 @@ function assignMembers() {
 	var rowcollection =  oTable.$(".myCheckbox:checked", {"page": "all"});
 	var totalCount = $("[type='checkbox']:checked").length;
 	var count = 1;
-	/* if(totalCount == 0){
-		alert("Please Select atleast one Check-Box.")
-	}else{ */
+	if(totalCount == 0){
+		$('span.jquery_form_error_message').show();
+	}else{
 		$('#assignbtnId').attr("data-dismiss","modal");
 		rowcollection.each(function(index,elem){
 		    var checkbox_value = $(elem).val();
@@ -2128,7 +2135,7 @@ function assignMembers() {
 		$("#assignedToSavingDiv").empty();
 		$("#assignedToSavingDiv").append(result);
 		assignedToValidation();
-	/* } */
+	}
 }
 </script>
 

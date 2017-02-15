@@ -80,8 +80,8 @@ public class Roles implements Serializable{
 	@Transient
 	private Integer actionsCount;
 	
-	
-	
+	@Transient
+	private String isRoleAssigned;
 	
 	
 
@@ -211,6 +211,14 @@ public class Roles implements Serializable{
 
 	public void setDefaultRole(Integer defaultRole) {
 		this.defaultRole = defaultRole;
+	}
+
+	public String getIsRoleAssigned() {
+		return isRoleAssigned;
+	}
+
+	public void setIsRoleAssigned(String isRoleAssigned) {
+		this.isRoleAssigned = isRoleAssigned;
 	}
 
 
