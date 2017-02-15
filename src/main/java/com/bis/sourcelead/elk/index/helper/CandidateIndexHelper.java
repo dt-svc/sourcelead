@@ -85,7 +85,7 @@ public class CandidateIndexHelper {
 			}
 			if(StringUtils.isNotEmpty(candidate.getExperienceYears())){
 				if(candidate.getExperienceYears().equalsIgnoreCase("25+")){
-					candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS);
+					candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS.toString());
 				}
 				else{
 					candidateIndex.setExperienceYears(candidate.getExperienceYears());

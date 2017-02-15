@@ -37,6 +37,7 @@ function candidateCertificate(candidateId){
     $("#tab-14").empty();  
     $("#tab-15").empty();  
     $("#tab-16").empty();  
+    $("#history").empty();
     $("#tab-15").append(result);
     
     candidateCertificateList(candidateId);

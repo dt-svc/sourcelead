@@ -144,6 +144,7 @@ public class AddElkRequirement {
 						requirementIndex.setSkills(skills.split(","));
 					}
 					requirementIndex.setJobType(rs.getString("JOB_TYPE"));
+					requirementIndex.setOtherJobType(rs.getString("OTHER_JOBTYPE"));
 					requirementIndex.setJobId(rs.getString("JOB_ID"));
 					String clientContactName = null;
 					String clientContactEmail = null;
