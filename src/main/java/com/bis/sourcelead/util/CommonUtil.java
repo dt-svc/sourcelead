@@ -13,6 +13,14 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Session;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -739,4 +747,19 @@ public class CommonUtil {
 	        return false;
 	    }
 		
+		/**
+		 * convertTimeZones is used to convert one timezone to anothet timezone 
+		 * @author: Prasanna Vadla
+		 * 
+		 */
+		public static String convertTimeZones(final String fromTimeZoneString, 
+		        final String toTimeZoneString, final String fromDateTime) {
+		    final DateTimeZone fromTimeZone = DateTimeZone.forID(fromTimeZoneString);
+		    final DateTimeZone toTimeZone = DateTimeZone.forID(toTimeZoneString);
+		    final DateTime dateTime = new DateTime(fromDateTime, fromTimeZone);
+
+		    final DateTimeFormatter outputFormatter 
+		        = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").withZone(toTimeZone);
+		    return outputFormatter.print(dateTime);
+		}
 }

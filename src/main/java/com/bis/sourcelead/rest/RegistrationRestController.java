@@ -102,11 +102,14 @@ public class RegistrationRestController {
 					regOrg.setUserState(regOrg.getUser().getUserState());
 					regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
 					UserRole userRole = userRoleService.getUserByUserId(regOrg.getUser().getId());
-					regOrg.setUserState(userRole.getUserState());
+					if(null != userRole){
+						regOrg.setUserState(userRole.getUserState());
+					}
 				}
 				OrgLocations orglocations = orgLocationService.getOrgLocationByOrgId(regOrg.getId());
-				regOrg.setLocation(orglocations.getCountry());
-				
+				if(null != orglocations){
+					regOrg.setLocation(orglocations.getCountry());
+				}
 				regOrgsList.add(regOrg);
 			}
 		} catch (Exception e) {

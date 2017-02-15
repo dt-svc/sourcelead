@@ -1,7 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,12 +19,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementInterviewHistoryDao;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewHistoryDao{
@@ -95,7 +101,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)
+	public List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode,Timezone timezone)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -116,20 +122,31 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 			
 			params.put("orgLocationsId",orgLocationsId);
 		}
+		Date currentDate = new Date();
+	    
+		String currentTimeStr = Constants.TZ_DF.format(currentDate);  
+		String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+		Date convertedCurrentDate = Constants.DF_YMD.parse(currentDateInTimezone);
+		Date convertedDateTime = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+		
 		
 		String query = "";
         if(dateRange != null && "today".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+ subQuery;
+        	
+            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = :convertedCurrentDate) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= :convertedDateTime) "+ subQuery;
+            params.put("convertedCurrentDate",convertedCurrentDate);
+            params.put("convertedDateTime",convertedDateTime);
+        
         }else if(dateRange != null && "previous".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) <= CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+ subQuery;
+            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) <= :convertedCurrentDate) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < :convertedDateTime)"+ subQuery;
+            params.put("convertedCurrentDate",convertedCurrentDate);
+            params.put("convertedDateTime",convertedDateTime);
         }else if(dateRange != null && "upcoming".equals(dateRange)){
-        	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) > CURDATE())"+ subQuery;
+        	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) > :convertedCurrentDate)"+ subQuery;
+        	params.put("convertedCurrentDate",convertedCurrentDate);
         }else{
-        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        	java.util.Date date = dateFormat.parse(dateRange);
-        	java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
         	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = :sqlStartDate)"+ subQuery;
-        	params.put("sqlStartDate",sqlStartDate);
+        	params.put("sqlStartDate",convertedCurrentDate);
         }
         
         Query queryExe = session.createQuery(query);

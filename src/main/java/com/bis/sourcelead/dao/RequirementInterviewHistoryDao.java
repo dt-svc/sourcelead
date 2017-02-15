@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.Timezone;
 
 public interface RequirementInterviewHistoryDao {
 	
@@ -25,11 +26,12 @@ public interface RequirementInterviewHistoryDao {
 	 * @param userType
 	 * @param userId
 	 * @param userCode
+	 * @param timezone 
 	 * @return
 	 * @throws Exception
 	 * To get dashboard interviews
 	 */
-	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception;
+	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode, Timezone timezone)throws Exception;
 	
 	Integer getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 }

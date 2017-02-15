@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -91,6 +93,8 @@ public class RegistrationController {
 	 @Autowired
 	 OrgSpocService orgSpocService;
 	 
+	 @Autowired
+	 TimeZoneService timeZoneService;
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/enrolledOrgsList")
@@ -121,6 +125,9 @@ public class RegistrationController {
 			try {
 				 modulesList = modulesService.getSourceLeadModules();
 				 model.addObject("modulesList", modulesList);
+				 
+				 List<Timezone> timezoneList= timeZoneService.getAllTimeZones();
+				 model.addObject("timezoneList", timezoneList);
 				 
 				 requirementSubModulesList = moduleService.getRequirementSubModules();
 				 model.addObject("requirementSubModulesList", requirementSubModulesList);
