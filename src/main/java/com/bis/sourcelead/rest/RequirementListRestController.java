@@ -1328,7 +1328,7 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		requirementSubmissionCounts.setNumOfRejected(numOfRejected);
 		requirementSubmissionCounts.setSubmittedCount(requirementSubmissions.size());
 		requirementSubmissionCounts.setNumOfRequestSent(numOfRequestSent);
-		if(duplicatecount.size()!= 0 && duplicatecount != null){
+		if(null !=  duplicatecount && duplicatecount.size() != 0){
 		requirementSubmissionCounts.setDuplicateCount(duplicatecount.size());
 		}
 	}

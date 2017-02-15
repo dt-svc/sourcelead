@@ -71,6 +71,9 @@ public class Constants {
 	public static DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
 	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd/MM");
 	
+	public static final DateFormat TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss");
+	public static final DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+	
 	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
 	public static String INVITE_USER = "Invite User";
 	public static String INVITE_CLIENT = "Invite Client";
@@ -351,6 +354,8 @@ public class Constants {
     public static String[] TIMESHEET_EXCEL_HEADERS = {"Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Total"};
     public static String[] TIMESHEET_EXCEL_HEADERS2 = {"Tasks","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Total"};
     public static String[] TIMESHEET_EXCEL_HEADERS3 = {"Status"};
+    
+    public static String[] TIMESHEET_APPROVAL_MECHANISM_HEADER={"Employee Name","Email id","Phone Number","Client","Total","Stage","approved By"};
    
     public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts"};
     

@@ -1,4 +1,9 @@
 package com.bis.sourcelead.rest;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -10,10 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -395,6 +402,20 @@ public class TimesheetApprovalRestController {
 				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("reopened") ? "selected='selected'" : "") : "").append("  value='reopened'>REOPENED</option>");
 			timesheetApprovalDiv.append("	                </select>");
 			timesheetApprovalDiv.append("	            </div>   ");  
+			
+			timesheetApprovalDiv.append("					<div class='export dropexport' onClick='dropDown();'> ");
+			timesheetApprovalDiv.append("						<p data-toggle='tooltip' title='Export'><i class='glyphicon glyphicon-export'></i></p> ");
+			timesheetApprovalDiv.append("							<ul id='exporrt'> ");
+			String exportPdf="pdf";
+			String exportexcel="excel";
+			timesheetApprovalDiv.append("			                	<li onClick='exportTimeSheetToPdfOrExcel(\""+exportPdf+"\");'><i class='fa fa-file-pdf-o text-danger'></i>&nbsp;PDF</li> ");
+			timesheetApprovalDiv.append("			                    <li onClick='exportTimeSheetToPdfOrExcel(\""+exportexcel+"\");'><i class='fa fa-file-excel-o text-primary'></i>&nbsp;Excel</li> ");
+			timesheetApprovalDiv.append("			                    <li class='hidden'>Word<i class='fa fa-file-word-o'></i></li> ");
+			timesheetApprovalDiv.append("							</ul>			 ");
+			timesheetApprovalDiv.append("					</div> ");
+			timesheetApprovalDiv.append("			        <div class='clearfix'></div> ");			
+			
+			
 			selectedStage.append(stage);
 			stageBuilder.put(selectedStage,timesheetApprovalDiv);
 			return stageBuilder;
@@ -679,6 +700,56 @@ public class TimesheetApprovalRestController {
 		}
 		return flag;
 	}
+	
+@RequestMapping(value = "/getExportTimeSheetForApprovalMechanizm")  
+	public void getExportTimeSheetForApprovalMechanizm(HttpServletRequest request,
+			@RequestParam(value="startDate", required=false) String startDate,
+			@RequestParam(value="endDate", required=false) String endDate,
+			@RequestParam(value="exportType", required=false) String exportType,
+			@RequestParam(value="client", required=false) String client,
+			@RequestParam(value="stage", required=false) String stage,
+			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
+			@RequestParam(value="frequencyMonth", required=false) String frequencyMonth,
+			@RequestParam(value="weekFrequency", required=false) String weekFrequency,
+			HttpServletResponse response) throws Exception {
 		
-
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		DateFormat df = Constants.DMY;
+		Date stDate = null;
+		Date edDate= null;
+		if(null !=startDate && !("undefined").equalsIgnoreCase(startDate) && null !=endDate && !("undefined").equalsIgnoreCase(endDate)){
+		 stDate = df.parse(startDate);
+		 edDate = df.parse(endDate);
+		}
+		File file = null;
+		
+		  if(timesheetFrequency.equalsIgnoreCase("Monthly")){
+			  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthString(frequencyMonth.toString());
+			  
+			  stDate = dateList.get("STARTDATE");
+			  edDate = dateList.get("ENDDATE");
+		  }
+		 if("pdf".equalsIgnoreCase(exportType)){
+			file = exportTimesheetEntries.timeSheetApprovelExport(user, orgLocations, stDate, edDate, timesheetFrequency, client, stage,frequencyMonth,weekFrequency);
+	    }else{
+			file = exportTimesheetEntries.timeSheetApprovelExportExcel(user, orgLocations, stDate, edDate, timesheetFrequency, client, stage,frequencyMonth,weekFrequency);
+		}
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
 	}
+	
+
+}

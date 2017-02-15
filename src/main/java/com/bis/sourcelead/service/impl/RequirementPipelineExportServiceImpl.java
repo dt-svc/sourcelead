@@ -156,7 +156,9 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			writeRow.createCell(3).setCellValue(requirementsub.getResumeName());
 		}
 		if (requirementsub.getCreatedDate() != null) {
-			writeRow.createCell(4).setCellValue(requirementsub.getCreatedDate().toString());
+			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			String createdDate = date.format(requirementsub.getCreatedDate());
+			writeRow.createCell(4).setCellValue(createdDate);
 		}
 		if (requirementsub.getCandidate().getExpectedRate() != null && !"".equalsIgnoreCase(requirementsub.getCandidate().getExpectedRate())) {
 			writeRow.createCell(5).setCellValue(requirementsub.getCandidate().getExpectedRate());
@@ -272,7 +274,9 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			writeRow.createCell(3).setCellValue(requirementsub.getResumeName());
 		}
 		if (requirementsub.getCreatedDate() != null) {
-			writeRow.createCell(4).setCellValue(requirementsub.getCreatedDate().toString());
+			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			String createdDate = date.format(requirementsub.getCreatedDate());
+			writeRow.createCell(4).setCellValue(createdDate);
 		}
 		if (requirementsub.getExpectedCTC() != null && !"".equalsIgnoreCase(requirementsub.getExpectedCTC())) {
 			writeRow.createCell(5).setCellValue(requirementsub.getExpectedCTC());
@@ -455,9 +459,10 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		if (requirementsub.getResumeName() != null && !"".equalsIgnoreCase(requirementsub.getResumeName())) {
 			writeRow.createCell(3).setCellValue(requirementsub.getResumeName());
 		}
-		if (requirementsub.getCreatedDate() != null
-				&& !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())) {
-			writeRow.createCell(4).setCellValue(requirementsub.getCreatedDate());
+		if (requirementsub.getCreatedDate() != null	&& !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())) {
+			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			String createdDate = date.format(requirementsub.getCreatedDate());
+			writeRow.createCell(4).setCellValue(createdDate);
 		}
 		if (requirementsub.getExpectedCTC() != null && !"".equalsIgnoreCase(requirementsub.getExpectedCTC())) {
 			writeRow.createCell(5).setCellValue(requirementsub.getExpectedCTC());
@@ -471,8 +476,8 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		if (requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())) {
 			writeRow.createCell(8).setCellValue(requirementsub.getWorkExperience());
 		}
-		if (requirementsub.getStatus() != null && !"".equalsIgnoreCase(requirementsub.getStatus().toString())) {
-			writeRow.createCell(9).setCellValue(requirementsub.getStatus());
+		if (requirementsub.getSubmissionStatus() != null && !"".equalsIgnoreCase(requirementsub.getSubmissionStatus().toString())) {
+			writeRow.createCell(9).setCellValue(requirementsub.getSubmissionStatus().toString());
 		}
 		if (requirementsub.getSubmittedBy() != null && !"".equalsIgnoreCase(requirementsub.getSubmittedBy())) {
 			writeRow.createCell(10).setCellValue(requirementsub.getSubmittedBy());
@@ -613,7 +618,9 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			writeRow.createCell(3).setCellValue(requirementsub.getResumeName());
 		}
 		if (requirementsub.getCreatedDate() != null) {
-			writeRow.createCell(4).setCellValue(requirementsub.getCreatedDate().toString());
+			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			String createdDate = date.format(requirementsub.getCreatedDate());
+			writeRow.createCell(4).setCellValue(createdDate);
 		}
 		if (requirementsub.getExpectedCTC() != null && !"".equalsIgnoreCase(requirementsub.getExpectedCTC())) {
 			writeRow.createCell(5).setCellValue(requirementsub.getExpectedCTC());
