@@ -592,7 +592,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			String [] reqMaxSkills = reqSkills.split(",");
 			if(reqMaxSkills != null && reqMaxSkills.length >0){
 				for(String skill : reqMaxSkills){
-					boolQueryBuilder.should(QueryBuilders.matchQuery("skills", skill));
+					boolQueryBuilder.should(QueryBuilders.matchQuery("skillsName", skill));
 				}
 			}
 			boolQueryBuilder.minimumShouldMatch("1");
