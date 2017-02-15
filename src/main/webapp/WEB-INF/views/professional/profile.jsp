@@ -4,8 +4,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  <link href="resources/css/jquery-ui.css" rel="stylesheet">
  <link href="resources/css/ crowdsourcingstyles.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<!-- <script src="resources/js/formvalidator.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> -->
+
 
 <script> 
 $(document).ready(function(){
@@ -32,8 +33,8 @@ $(document).ready(function(){
     <div id="professionalInfoDiv"></div>
      <!-- Profile Content End -->
     
-    <section class="clearfix mt25">
-           <div class="project_side_wrap_inn_tabs">
+         <!-- <section class="clearfix mt25"> -->
+           <!-- <div class="project_side_wrap_inn_tabs">
             <ul class="project-tabs-menu">
               <li class="current"><a href="#tab-1" onclick="professionalProfile();">Profile</a></li>
               <li><a href="#tab-2">Resume</a></li>
@@ -41,8 +42,8 @@ $(document).ready(function(){
               <li><a href="#tab-4">Education</a></li>
               <li><a href="#tab-5">Certifications</a></li>
               <div class="clearfix"></div>
-            </ul>
-            <div class="project_tabs">
+            </ul> -->
+            <!-- <div class="project_tabs">
 			<div id="tab-1" class="project_tabs_inn" style="display: block;">
 				<div class="require_wrap_details content_padding crwd-textarea">
 					  <h1>Summary:</h1>
@@ -54,10 +55,10 @@ $(document).ready(function(){
 					    <div class="tab-content">
 					      <div id="skills" class="tab-pane fade in active">
 					        <div class="skills-summary">
-					          <div class="design-view"> <!-- Select Skills -->
+					          <div class="design-view"> Select Skills
 					            <h2 class="education">Skills:</h2>
 					            <div class="select-skills">
-					              <div class="divskill col-md-12"> <!-- Add skills div -->
+					              <div class="divskill col-md-12"> Add skills div
 					                <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onclick="removeSkillPopUp(4547);"> <i class="fa fa-code"></i>Add Skills </a>
 					                  <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onclick="removeSkillPopUp(4547);"></i>
 					                    <div class="form-horizontal clearfix">
@@ -120,10 +121,10 @@ $(document).ready(function(){
 					                    </tbody>
 					                  </table>
 					                </div>
-					                <!-- Add skills div ends --> </div>
+					                Add skills div ends </div>
 					            </div>
 					            
-					            <!-- Select Skills --> </div>
+					            Select Skills </div>
 					          <div id="employeeSubmissionProfile">
 					            <div class="clearfix design-view">
 					              <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>
@@ -193,7 +194,7 @@ $(document).ready(function(){
               <div id="tab-2" class="project_tabs_inn" style="display: none;">
                 <div class="project_tabs_inn_head">
                     <a href="#" class="addUser-org add_mrgnRignt"><i class="glyphicon glyphicon-plus"></i>Add Resume</a> 
-                  <!-- Popup Div -->
+                  Popup Div
                   <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                       <div class="clearfix mb10">
@@ -221,7 +222,7 @@ $(document).ready(function(){
                       </div>
                     </div>
                   </div>
-                  <!-- Popup Div --> 
+                  Popup Div 
                 <div class="remove_search">
                   <input placeholder="search" type="text">
                 </div>
@@ -422,7 +423,7 @@ $(document).ready(function(){
               </div>
               <div id="tab-3" class="project_tabs_inn" style="display: none;">
                 <div class="project_tabs_inn_head add_mrgnRignt"> <a href="#" class="addUser-org"> <i class="glyphicon glyphicon-plus"></i>Add Employer's </a> 
-                  <!-- Popup Div -->
+                  Popup Div
                   <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                       <div class="clearfix mb10">
@@ -519,7 +520,7 @@ $(document).ready(function(){
                       </div>
                     </div>
                   </div>
-                  <!-- Popup Div --> 
+                  Popup Div 
                  <div class="remove_search">
                   <input placeholder="search" type="text">
                 </div>
@@ -751,7 +752,7 @@ $(document).ready(function(){
               </div>
               <div id="tab-4" class="project_tabs_inn" style="display: none;">
                 <div class="project_tabs_inn_head addUser-org add_mrgnRignt"> <a href="javascript:void(0)"><i class="glyphicon glyphicon-plus"></i>Add Education</a> 
-                  <!-- Popup Div -->
+                  Popup Div
                   <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                       <div class="clearfix mb10">
@@ -799,7 +800,7 @@ $(document).ready(function(){
                       </div>
                     </div>
                   </div>
-                  <!-- Popup Div --> 
+                  Popup Div 
                  <div class="remove_search">
                   <input placeholder="search" type="text">
                 </div>
@@ -1093,7 +1094,7 @@ $(document).ready(function(){
               </div>
               <div id="tab-5" class="project_tabs_inn" style="display: none;">
                 <div class="project_tabs_inn_head add_mrgnRignt"> <a href="#" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> 
-                  <!-- Popup Div -->
+                  Popup Div
                   <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                       <div class="clearfix mb10">
@@ -1136,7 +1137,7 @@ $(document).ready(function(){
                       </div>
                     </div>
                   </div>
-                  <!-- Popup Div --> 
+                  Popup Div 
                 <div class="remove_search">
                   <input placeholder="search" type="text">
                 </div>
@@ -1824,7 +1825,7 @@ $(document).ready(function(){
                   <div class="clearfix"></div>
                 </nav>
                 
-                <!-- popup -->
+                popup
                 <div class="reqPop">
                   <div class="reqPopInn">
                     <div class="reqClose"> <span><i class="fa fa-angle-double-left"></i>Go Back</span><b class="fa fa-close"></b> </div>
@@ -1849,10 +1850,10 @@ $(document).ready(function(){
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </div> -->
+          <!-- </div>
           
-      </section>
+      </section> -->
 </section>
 
 <script>
@@ -1907,7 +1908,11 @@ function getProfessionalInfo(){
 		    		 country = "";
 		    	 }
 		    	 
-		    	 
+		    	 if(json.skillsName != null  && json.skillsName != '' && json.skillsName != 'undefiend'){
+		    		 skillsName = json.skillsName;
+		    	 }else{
+		    		 skillsName = "NO DATA";
+		    	 }
 		    	 
 		    	 
 		    	 var result = "";
@@ -1952,16 +1957,47 @@ function getProfessionalInfo(){
 				 result = result +'	        <h5>Skills</h5>';
 				 result = result +'	        <div class="skills text-center mt25">';
 				 result = result +'	            <p><strong>';
-				 result = result +'	        Java, PHP, Hibernet, Spring, jQuery, javascript, HTML, HTML5, CSS3</strong>';
+				 result = result +'	        '+skillsName+'</strong>';
 				 result = result +'	        </p>';
 				 result = result +'	            </div>';
 				 result = result +'	    </div>';
 				 result = result +'	</section>';
 				 result = result +'	</div>';
 				 
+				 
+				 result = result +' <section class="clearfix mt25">';
+				 result = result +'<div class="project_side_wrap_inn_tabs">';
+			     result = result +'   <ul class="project-tabs-menu">';
+			     result = result +'     <li class="current"><a href="#tab-1" onclick="professionalProfile('+json.id+');">Profile</a></li>';
+			     result = result +'     <li><a href="#tab-2" onclick="candidateResumesList('+json.id+'); candidateResume('+json.id+');">Resume</a></li>';
+			     result = result +'     <li><a href="#tab-3" onclick="professionalCandidateEmployers('+json.id+');">Employers</a></li>';
+			     result = result +'     <li><a href="#tab-4" onclick="professionalCandidateEducation('+json.id+');">Education</a></li>';
+			     result = result +'     <li><a href="#tab-5" onclick="professionalCandidateCertificate('+json.id+');">Certifications</a></li>';
+			     result = result +'     <div class="clearfix"></div>';
+			     result = result +'   </ul>';
+			     
+			     result = result+'     <div class="project_tabs">';
+		         result = result + ' <div id="tab-1" class="project_tabs_inn">';
+				 result = result + '</div>';
+
+				 result = result + '<div id="tab-2" class="project_tabs_inn">';
+				 result = result + '</div>';
+				 
+				 result = result + '<div id="tab-3" class="project_tabs_inn">';
+				 result = result + '</div>';
+				 
+				 result = result + ' <div id="tab-4" class="project_tabs_inn">';
+				 result = result + '</div>';
+				 
+				 result = result + '<div id="tab-5" class="project_tabs_inn">';
+				 result = result + '</div>';
+				 
+			     result = result +'	</div>';
+			     result = result +' </section>';
+				 
 				 $("#professionalInfoDiv").empty();
 				 $("#professionalInfoDiv").append(result); 
-				 professionalProfile();
+				 professionalProfile(json.id);
 		    },
 	});
             
@@ -1969,16 +2005,10 @@ function getProfessionalInfo(){
 
 </script>
 
-<script>
-function professionalProfile(){
-alert("hello");
 
-
-}
-
-
-</script>
-
-
-
+<jsp:include page="professionalCandidatesProfile.jsp"></jsp:include>
+<jsp:include page="professionalCandidateResumes.jsp"></jsp:include>
+<jsp:include page="professionalCandidateEmployers.jsp"></jsp:include>
+<jsp:include page="professionalCandidateEducation.jsp"></jsp:include>
+<jsp:include page="professionalCandidateCertificates.jsp"></jsp:include>
 <jsp:include page="../masterFooter.jsp" />

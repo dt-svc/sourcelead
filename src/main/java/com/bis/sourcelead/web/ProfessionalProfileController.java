@@ -15,8 +15,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -33,6 +35,10 @@ public class ProfessionalProfileController {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	LookUpDataService lookUpDataService;
+	
+	
 	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_PROFILE')")
 	 @RequestMapping(value = "/professionalProfile")
 		public ModelAndView professionalProfile(HttpServletRequest request) throws Exception {
@@ -48,6 +54,12 @@ public class ProfessionalProfileController {
 				sessionData.setNav(Constants.Profile);
 				
 				request.getSession().setAttribute("sessionData",sessionData);
+				
+				List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+				model.addObject("educationsList", educationsList);
+				
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				model.addObject("skillsList", skillsList);
 				
 				model.setViewName("professional/profile");
 				model.addObject("sourceleadUrl", sourceleadUrl);

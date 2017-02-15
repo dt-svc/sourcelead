@@ -84,7 +84,7 @@ public class CandidateResumeRestController {
 	*/
 	
 	
-	@PreAuthorize("hasRole('ROLE_ADD_CANDIDATE_RESUMES')")
+	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE')")
 	@RequestMapping(value = "/saveCandidateResume", method = RequestMethod.POST)
 	public @ResponseBody String saveCandidateResume(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "resumeId", required = false) String resumeId,MultipartHttpServletRequest request) throws Exception {
