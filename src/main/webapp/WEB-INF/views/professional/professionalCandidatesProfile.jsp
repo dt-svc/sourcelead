@@ -1041,8 +1041,8 @@ function removeSkillPopUp(candidateId){
 						type : "POST",
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
-							/* location.replace(sourceleadUrl+"/candidatesList");  */
-							candidateSideBar(candidateId);
+							$("#profileEditPopup").hide();
+							getProfessionalInfo();
 						},
 					});
 			return true;
