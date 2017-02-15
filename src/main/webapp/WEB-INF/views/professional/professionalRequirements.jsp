@@ -291,12 +291,18 @@ function getRequirementSubmissionTemaplate(requirementId){
 	result = result + '<div class="row">';
 	
 	result = result + '<div class="venk clearfix">';
-	result = result + '<div class="col-md-8 pull-left">';
-	result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv">';
+	result = result + '<div class="col-md-6">';
+	result = result + '<label class="col-md-2 mt10">Resume</label>';
+	result = result + '<div class="panel-border_a col-md-8 mt10" id="resumesDiv">';
 	result = result + '<select id="candidateResumesList" data-validation="required" onchange="getCandidateDetails();" name="candidateResume" field-name="Resume" class="form-control block">';
 	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '</div>';
+	
+	result = result + '<div class="col-md-6 text-danger" id="noProfilesFound" style="display: none;">';
+	result = result + '<p class="mt10"><i class="fa fa-info-circle"></i>&nbsp;&nbsp;No resumes found. Provide resume in your profile</p>';
+	result = result + '</div>';
+	
 	result = result + '</div>';
 	
 	result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div></div>';
@@ -364,6 +370,8 @@ function getResumesList(){
 		        	$("#candidateResumesList").empty();
 			        $("#candidateResumesList").append(output);
 			        
+	        	}else{
+	        		 document.getElementById("noProfilesFound").style.display="";
 	        	}
 	        	
 	        },
