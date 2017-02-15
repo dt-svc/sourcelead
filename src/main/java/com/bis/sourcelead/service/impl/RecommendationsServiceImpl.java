@@ -3,9 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -22,15 +20,14 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.itextpdf.text.log.SysoLogger;
 
 @Service
 public class RecommendationsServiceImpl implements RecommendationsService{
@@ -52,8 +49,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	 
-	 @Autowired
-	 private CandidateSkillsService candidateSkillsService;
+	 /*@Autowired
+	 private CandidateSkillsService candidateSkillsService;*/
 	 
 	 
 	 
@@ -133,18 +130,22 @@ public class RecommendationsServiceImpl implements RecommendationsService{
     //		List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
 			
 			
-			List<CandidateSkills> candidateSkillList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
+//			List<CandidateSkills> candidateSkillList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
 			
-			  // Changed the below method by  bringing from  service as cache is implemented  for  the above method
+			String candidateSkills = candidate.getSkillsName();
+			String[] skills = candidateSkills.split(",");
+			//List<String> candidateSkillList = new ArrayList<String>(Arrays.asList(skills));
+			 
+			// Changed the below method by  bringing from  service as cache is implemented  for  the above method
 			
 			   // Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
 			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
 			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
 			
-			if(null != candidateSkillList && candidateSkillList.size() >0){
-				for(CandidateSkills candidateSkills : candidateSkillList){
-					if(candidateSkills.getName() !=null && !"".equalsIgnoreCase(candidateSkills.getName())){
-						if(reqSkills.contains(candidateSkills.getName())){
+			if(null != skills && skills.length >0){
+				for(String skill : skills){
+					if(skill !=null && !"".equalsIgnoreCase(skill)){
+						if(reqSkills.contains(skill)){
 							matchedSkillCount++;
 						}
 						
@@ -319,20 +320,25 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					boolean isCandidateAdded = false;
 					float expPercentage = 0; //  experience = 20%
 					int matchedSkillCount = 0;
-					Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
-					List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
-					CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
-					
-					if(candidateSkillList != null && candidateSkillList.size() >0){
-						for(CandidateSkills candidateSkills : candidateSkillList){
-							if(candidateSkills.getName() !=null && !"".equalsIgnoreCase(candidateSkills.getName())){
-								if(reqSkills.contains(candidateSkills.getName())){
+//					Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
+					if(null != candidate.getSkillsName()){
+						String[] candidateSkillList = candidate.getSkillsName().split(",");
+						for(String skill : candidateSkillList){
+							if(skill !=null && !"".equalsIgnoreCase(skill)){
+								if(reqSkills.contains(skill)){
 									matchedSkillCount++;
 								}
 								
 							}
 						}
 					}
+					
+					List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
+					CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
+					
+//					if(candidateSkillList != null && candidateSkillList.size() >0){
+					
+//					}
 					skillPercentage = matchedSkillCount*percentPerSkill;
 					if(null != candidate.getExperienceYears() && !"".equalsIgnoreCase(candidate.getExperienceYears()) && null != candidate.getExperienceMonths()  && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
 						int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
@@ -422,136 +428,116 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	}
 
 	@Override
-	public String getCandidateScore(Candidate candidate, Requirement requirement) throws Exception {
-		
+	public String getCandidateScore(Candidate candidate, Requirement requirement,RecommendedCustomizeScore recommendedCustomizeScore) throws Exception {
 		float locationPercentage = 0; // location 10%
 		float ratePercentage = 0;    // rate 20 %
-		float skillPercentage = 0; // skill = 50%
+		float skillPercentage = 0; // skill = 20%
 		float percentPerSkill = 0;
-		List<Candidate> CandidateListcopy = new ArrayList<>();
+		float percentPerkeyword = 0; //keyword 20%
+		float noticePeriod = 0; // notice 10%
+		float expPercentage = 0; //  experience = 20%
 		String reqSkills = "";
-		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
-		     reqSkills = requirement.getSkills();
-			String [] reqMaxSkills = reqSkills.split(",");
-			 percentPerSkill = 50/(float)reqMaxSkills.length;
-		}
-		int reqMinExp = 0;
-		int reqMaxExp = 0;
-		float percentPerMonthExp = 0;
-		if(null != requirement.getMinExp() && !"".equalsIgnoreCase(requirement.getMinExp()) && null != requirement.getMaxExp() && !"".equalsIgnoreCase(requirement.getMaxExp())){
-			 reqMinExp = Integer.parseInt(requirement.getMinExp());
-			 reqMaxExp = Integer.parseInt(requirement.getMaxExp());
-			int reqExp = reqMaxExp *12 ;
-			 percentPerMonthExp = 20/(float)reqExp;
-		}
-		String reqCity = "";
-		if(null != requirement.getCity() && !"".equalsIgnoreCase(requirement.getCity())){
-			 reqCity = requirement.getCity();
-		}
-		float reqPerMonthSal = 0;
-		if(null != requirement.getRate() && !"".equalsIgnoreCase(requirement.getRate())){
-			int reqRate = Integer.parseInt(requirement.getRate());
-			String reqRateType = requirement.getRateType();
-			if("Hourly".equalsIgnoreCase(reqRateType)){
-				int perDaySal = reqRate *9;
-				reqPerMonthSal = perDaySal * 30;
-			}else if("Weekly".equalsIgnoreCase(reqRateType)){
-				int perDaySal = reqRate /7;
-				reqPerMonthSal = perDaySal * 30;
-			}else if("Bi-weekly".equalsIgnoreCase(reqRateType)){
-				int perDaySal = reqRate /14;
-				reqPerMonthSal = perDaySal * 30;
-			}else if("Semi-Monthly".equalsIgnoreCase(reqRateType)){
-				int perDaySal = reqRate /15;
-				reqPerMonthSal = perDaySal * 30;
-			}else if("Monthly".equalsIgnoreCase(reqRateType)){
-				reqPerMonthSal = reqRate;
-			}else if("Bi-Monthly".equalsIgnoreCase(reqRateType)){
-				int perDaySal = reqRate /60;
-				reqPerMonthSal = perDaySal * 30;
-			}else{
-				reqPerMonthSal = reqRate /12;
-			}
-		}
-		
-			boolean isCandidateAdded = false;
-			float expPercentage = 0; //  experience = 20%
-			int matchedSkillCount = 0;
-			
-			List<CandidateSkills> candidateSkillList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
-			
-			  // Changed the below method by  bringing from  service as cache is implemented  for  the above method
-			
-			   // Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
-			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
-			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
-			
-			if(null != candidateSkillList && candidateSkillList.size() >0){
-				for(CandidateSkills candidateSkills : candidateSkillList){
-					if(null != candidateSkills.getName() && !"".equalsIgnoreCase(candidateSkills.getName())){
-						if(reqSkills.contains(candidateSkills.getName())){
-							matchedSkillCount++;
-						}
-						
+		String candidateScore = null; 
+		if(null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
+		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
+		     String [] numOfKeyWords = null;
+		     if(null != recommendedCustomizeScore.getCustomizeKeywords()){
+		    	 numOfKeyWords =  recommendedCustomizeScore.getCustomizeKeywords().split(",");
+		    	 percentPerkeyword = Integer.parseInt(recommendedCustomizeScore.getCustomizeKeywordsScore())/(float)numOfKeyWords.length;
+		     }
+		     
+		    	String [] reqMaxSkills = reqSkills.split(",");
+				percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
+				int reqMinExp = 0;
+				int reqMaxExp = 0;
+				float percentPerMonthExp = 0;
+				String reqCity = "";
+				if(null != recommendedCustomizeScore.getCustomizeCity() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCity())){
+					 reqCity = recommendedCustomizeScore.getCustomizeCity();
+				}
+				float reqPerMonthSal = 0;
+				if(null != recommendedCustomizeScore.getCustomizeRate() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeRate())){
+					int reqRate = Integer.parseInt(recommendedCustomizeScore.getCustomizeRate());
+					String reqRateType = recommendedCustomizeScore.getCustomizeRatetype();
+					if("Hourly".equalsIgnoreCase(reqRateType)){
+						int perDaySal = reqRate *9;
+						reqPerMonthSal = perDaySal * 30;
+					}else if("Weekly".equalsIgnoreCase(reqRateType)){
+						int perDaySal = reqRate /7;
+						reqPerMonthSal = perDaySal * 30;
+					}else if("Bi-weekly".equalsIgnoreCase(reqRateType)){
+						int perDaySal = reqRate /14;
+						reqPerMonthSal = perDaySal * 30;
+					}else if("Semi-Monthly".equalsIgnoreCase(reqRateType)){
+						int perDaySal = reqRate /15;
+						reqPerMonthSal = perDaySal * 30;
+					}else if("Monthly".equalsIgnoreCase(reqRateType)){
+						reqPerMonthSal = reqRate;
+					}else if("Bi-Monthly".equalsIgnoreCase(reqRateType)){
+						int perDaySal = reqRate /60;
+						reqPerMonthSal = perDaySal * 30;
+					}else{
+						reqPerMonthSal = reqRate /12;
 					}
-				}
-			}
-			skillPercentage = matchedSkillCount*percentPerSkill;
-			if(null != candidate.getExperienceYears() && !"".equalsIgnoreCase(candidate.getExperienceYears()) && null != candidate.getExperienceMonths() && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
-				int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
-				if(candidateExpMonths < reqMinExp *12){
-					expPercentage = 0;
-				}else if(candidateExpMonths >= reqMinExp *12 && candidateExpMonths <= reqMaxExp *12){
-					expPercentage = percentPerMonthExp*(float)candidateExpMonths;
-				}else{
-					expPercentage = 20;
-				}
-			}
-			if(null != candidate.getCity() && !"".equalsIgnoreCase(candidate.getCity())){
-				if(candidate.getCity().equalsIgnoreCase(reqCity)){
-					locationPercentage = 10;
-				}
-			}
-			
-			if(null != candidate.getExpectedRate() && !"".equalsIgnoreCase(candidate.getExpectedRate()) && null != candidate.getRateType()  && !"".equalsIgnoreCase(candidate.getRateType())){
-				String candidateRateType = candidate.getRateType();
-				String  expectedRate = candidate.getExpectedRate();
-				
-				int reqRate = Integer.parseInt(expectedRate);
-				float perMonthCandidateSal = 0;
-				if("Hourly".equalsIgnoreCase(candidateRateType)){
-					int perDaySal = reqRate *9;
-					perMonthCandidateSal = perDaySal * 30;
-				}else if("Weekly".equalsIgnoreCase(candidateRateType)){
-					int perDaySal = reqRate /7;
-					perMonthCandidateSal = perDaySal * 30;
-				}else if("Bi-weekly".equalsIgnoreCase(candidateRateType)){
-					int perDaySal = reqRate /14;
-					perMonthCandidateSal = perDaySal * 30;
-				}else if("Semi-Monthly".equalsIgnoreCase(candidateRateType)){
-					int perDaySal = reqRate /15;
-					perMonthCandidateSal = perDaySal * 30;
-				}else if("Monthly".equalsIgnoreCase(candidateRateType)){
-					perMonthCandidateSal = reqRate;
-				}else if("Bi-Monthly".equalsIgnoreCase(candidateRateType)){
-					int perDaySal = reqRate /60;
-					perMonthCandidateSal = perDaySal * 30;
-				}else{
-					perMonthCandidateSal = reqRate /12;
-				}
-				
-				if(perMonthCandidateSal<=reqPerMonthSal){
-					ratePercentage = 20;
-				}
-			}
-			float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage;
-			
-			int roundOff = (int) (Math.round(totalPercentage * 100.0) / 100.0);
-			String candidateScore = String.valueOf(roundOff);
-			
-			
+				 }
+		    	    CandidateIndex candidateIndex = getCandidateIndex(candidate);
+					int matchedSkillCount = 0;
+					String candidateSkill = candidate.getSkillsName();
+					
+					
+					if(null  != candidateSkill){
+						String[] skills = candidateSkill.split(",");
+						skillPercentage = getSkillPercentage(skills,percentPerSkill,matchedSkillCount,reqSkills);
+					}
+					
+					
+					//get the ExperiencePercentage
+					expPercentage = getExperiencePercentage(candidateIndex,recommendedCustomizeScore,reqMinExp,expPercentage,percentPerMonthExp,reqMaxExp);
+					
+					//get the RatePercentage
+					ratePercentage = getRatePercentage(candidateIndex,ratePercentage,recommendedCustomizeScore,reqPerMonthSal);
+					
+					// get the NoticeperiodPercentage
+					noticePeriod = getNoticeperiodPercentage(recommendedCustomizeScore,candidateIndex,noticePeriod);
+					
+					if(null != candidateIndex.getCity() && !"".equalsIgnoreCase(candidateIndex.getCity())){
+						if(candidateIndex.getCity().equalsIgnoreCase(reqCity)){
+							locationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore());
+						}
+					}
+					
+					//keywords calculation
+				    float totalKeyWordPer = 0;
+					if(null != candidateIndex.getSummary() && null != numOfKeyWords){
+						for(int i=0;i<numOfKeyWords.length;i++){
+							if(candidateIndex.getSummary().contains(numOfKeyWords[i])){
+								totalKeyWordPer = totalKeyWordPer + percentPerkeyword;	
+							}
+						}
+					}
+					
+					float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage+noticePeriod+totalKeyWordPer;
+					
+					double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
+					candidateScore = String.valueOf(roundOff);		
+		 }
+		logger.info("....getRecommendationsWithScoreByUsingElk Method Ended...");
 		return candidateScore;
-	
+	}
+
+	private CandidateIndex getCandidateIndex(Candidate candidate) {
+		CandidateIndex canIndex = new CandidateIndex();
+		canIndex.setExperienceMonths(candidate.getExperienceMonths());
+		canIndex.setExperienceYears(candidate.getExperienceYears());
+		canIndex.setRateType(candidate.getRateType());
+		if(null != candidate.getExpectedRate() && !"".equalsIgnoreCase(candidate.getExpectedRate())){
+			canIndex.setExpectedRate(Float.parseFloat(candidate.getExpectedRate()));
+		}
+		canIndex.setNoticePriod(candidate.getNoticePeriod());
+		canIndex.setCity(candidate.getCity());
+		canIndex.setState(candidate.getState());
+		canIndex.setCountry(candidate.getCountry());
+		return canIndex;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -583,7 +569,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			String [] reqMaxSkills = reqSkills.split(",");
 			if(reqMaxSkills != null && reqMaxSkills.length >0){
 				for(String skill : reqMaxSkills){
-					boolQueryBuilder.should(QueryBuilders.matchQuery("skills", skill));
+					boolQueryBuilder.should(QueryBuilders.matchQuery("skillsName", skill));
 				}
 			}
 			boolQueryBuilder.minimumShouldMatch("1");
@@ -641,12 +627,20 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					boolean isCandidateAdded = false;
 					
 					int matchedSkillCount = 0;
-					ArrayList<String> candidateSkillList = candidateIndex.getSkills();
+					String candidateSkill = candidateIndex.getSkillsName();
+					
+					
 					//List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
 					Integer reqListCount = requirementSubmissionService.getRequirementPerCandidateCount(candidateIndex.getCandidateId());
 					
 					//get the skillPercentage method
-					skillPercentage = getSkillPercentage(candidateSkillList,percentPerSkill,matchedSkillCount,reqSkills);
+					
+					if(null  != candidateSkill){
+						String[] skills = candidateSkill.split(",");
+//						ArrayList<String> candidateSkillList = new ArrayList<String>(Arrays.asList(skills));
+						skillPercentage = getSkillPercentage(skills,percentPerSkill,matchedSkillCount,reqSkills);
+					}
+					
 					
 					//get the ExperiencePercentage
 					expPercentage = getExperiencePercentage(candidateIndex,recommendedCustomizeScore,reqMinExp,expPercentage,percentPerMonthExp,reqMaxExp);
@@ -715,8 +709,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 * @param reqSkills
 	 * @return float
 	 */
-	private float getSkillPercentage(ArrayList<String> candidateSkillList, float percentPerSkill, int matchedSkillCount, String reqSkills) {
-		if(candidateSkillList != null && candidateSkillList.size() >0){
+	private float getSkillPercentage(String[] candidateSkillList, float percentPerSkill, int matchedSkillCount, String reqSkills) {
+		if(candidateSkillList != null && candidateSkillList.length >0){
 			for(String skill : candidateSkillList){
 					if(reqSkills.contains(skill)){
 						matchedSkillCount++;

@@ -10,6 +10,7 @@ public class TimesheetHours {
 	private String satDayHours;
 	private String sunDayHours;
 	private String status;
+	private String weekTotal;
 
 	
 	public String getTaskName() {
@@ -83,5 +84,15 @@ public class TimesheetHours {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public String getWeekTotal() {
+		return weekTotal;
+	}
+
+	public void setWeekTotal(String weekTotal) {
+		this.weekTotal = weekTotal;
+	}
+
+
 
 }

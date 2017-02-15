@@ -1,10 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,10 +37,8 @@ import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -79,8 +75,6 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -164,12 +158,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
 		logger.debug("In ProjectsServiceImpl class saveProject method...");
+		projects.setUpdatedDate(commonUtil.currentDate());
 		return projectsDao.saveProject(projects);
 	}
 
 	@Override
 	public Projects updateProject(Projects projects) throws Exception {
 		logger.debug("In ProjectsServiceImpl class updateProject method...");
+		projects.setUpdatedDate(commonUtil.currentDate());
 		return projectsDao.updateProject(projects);
 	}
 
@@ -493,9 +489,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
 			    	 projects.setEmployeeEndDateStr(Constants.DF_YMD.format(projects.getEndDate()));
 			    }
-			    if(projects.getOrgRelationId()!=null) {
-	                projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
-	            }
+			    
+			    if(null != projects.getOrgRelationId()){
+					if(null != projects.getOrgRelationId().getLocationId() && projects.getOrgRelationId().getLocationId().getId().longValue() == orgLocationsId.longValue()){
+						projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+					}if(null != projects.getOrgRelationId().getResponderLocationId() && projects.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocationsId.longValue()){
+						projects.setClient(projects.getOrgRelationId().getLocationId().getOrg().getOrgName());
+					}
+				}
+			    
 			    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
 			    	StringBuilder projectStringBuilder=new StringBuilder();
@@ -547,7 +549,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}*/
 
 	@Override
-	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,HashSet<TimesheetSubmissions> timesheetSubmissions,String level) throws Exception {
+	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,Map<String, String> timesheetFrequencyMap,Projects projects,String level) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(locationsId);
 		
 		Set<Projects> projectsSet = new HashSet<>();
@@ -570,12 +572,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 LinkedList<String> frequency = new LinkedList<>();
 		 StringBuilder tempHTML = new StringBuilder();
 		 tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
-			tempHTML.append("<tr>");
+			        tempHTML.append("<tr>");
 					tempHTML.append("<th> Project Name </th>");
 					tempHTML.append("<th> Frequency </th>");
 					tempHTML.append("</tr>");
 		
-			if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
+			/*if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
 				 for(TimesheetSubmissions ts :timesheetSubmissions){
 					 tempHTML.append("<tr>");
 					 tempHTML.append("<td>").append(ts.getProjectMembers().getProjects().getProjectName()).append("</td>").toString();
@@ -583,7 +585,20 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 tempHTML.append("</tr>");
 					 projectsSet.add(ts.getProjectMembers().getProjects());
 				 }
+			}*/
+					
+			if(timesheetFrequencyMap != null && !timesheetFrequencyMap.isEmpty()){
+				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
+					    String key = entry.getKey();
+					    String value =entry.getValue();
+				    	 tempHTML.append("<tr>");
+						 tempHTML.append("<td>").append(projects.getProjectName()).append("</td>").toString();
+						 tempHTML.append("<td>").append(key.replaceAll("/", "-")).append(" To ").append(value.replaceAll("/", "-")).append("</td>").toString();
+						 tempHTML.append("</tr>");
+						 projectsSet.add(projects);
+				}
 			}
+			
 			
 	     tempHTML.append("</table> ");
 		 globalVarsMap.put("weekFrequency",tempHTML.toString());
@@ -1899,6 +1914,12 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					}
 				
 				return searchList;
+			}
+
+			@Override
+			public Boolean validateTasksName(String taskname, Long projectId) throws Exception {
+				Boolean flag = projectsDao.validateTasksName(taskname,projectId);
+				return flag;
 			}
 
 

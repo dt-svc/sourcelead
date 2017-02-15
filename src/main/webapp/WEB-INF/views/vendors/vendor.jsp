@@ -585,9 +585,9 @@ function validateClientName(){
 					//duplicate client
 					$("#save_client").removeAttr("disabled");
 			        $("#save_client").attr("disabled", "disabled");
-					$("input#orgName").after( "<p class='jquery_form_error_message'>" + vendor + " is already existed as vendor</span>");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + vendorName + " is already existed as vendor</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', vendor +"  already existed as vendor");
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', vendorName +"  already existed as vendor");
 					$('input#orgName').removeAttr( "record-exist record-exist-errorMsg");
 					
 				}else {

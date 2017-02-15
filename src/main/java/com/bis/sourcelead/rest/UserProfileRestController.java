@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
@@ -37,6 +38,7 @@ import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -61,6 +63,9 @@ public class UserProfileRestController {
 
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 
 	@RequestMapping(value = "/saveUserProfile", method = RequestMethod.POST)
 	public String saveUserProfile(@RequestParam(value = "json", required = false) String json,
@@ -76,6 +81,7 @@ public class UserProfileRestController {
 		json = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json);
 		UserRole userRoleElk = null;
+		
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 		UserProfile userProfile = gson.fromJson(json, UserProfile.class);
 		try {
@@ -84,9 +90,12 @@ public class UserProfileRestController {
 			userRole.setDesignation(userProfile.getDesignation());
 			userRoleElk = userRoleService.addUserRole(userRole);
 			/*
-			 * Saving USER DB data as ElasticSearch Documents
+			 * update common user (single user different orgs) details in  ElasticSearch Documents (User)
 			 */
-			commonUserUpdate(user);
+			commonUtil.commonUserUpdate(user);
+			/*
+			 * Save or update the user in Elk.
+			 */
 			userService.saveOrUpdateUserElkDocument(userRoleElk, null, user.getUserCode());
 
 			/*
@@ -94,7 +103,7 @@ public class UserProfileRestController {
 			 * 
 			 */
 
-			updateSpockDetails(user, orgLocations);
+			commonUtil.updateSpockDetails(user, orgLocations);
 
 			SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 			StringBuilder userNameSB = new StringBuilder();
@@ -109,23 +118,7 @@ public class UserProfileRestController {
 		return "home";
 
 	}
-
-	/*
-	 * Saving USER DB data as ElasticSearch Documents for common user
-	 */
-	private void commonUserUpdate(User user) {
-
-		try {
-			List<UserRole> userRole = userRoleService.getUsersListByUserId(user.getId());
-			if (null != userRole) {
-				for (UserRole role : userRole) {
-					userService.saveOrUpdateUserElkDocument(role, null, user.getUserCode());
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	
 
 	@RequestMapping(value = "/passwordSettings", method = RequestMethod.POST)
 	public String passwordSettings(@RequestParam(value = "json", required = false) String json,
@@ -216,25 +209,6 @@ public class UserProfileRestController {
 
 	}
 
-	/*
-	 * updating the userDetails in the Spock
-	 */
-	private void updateSpockDetails(User user, OrgLocations orgLocations) throws Exception {
-
-		try {
-			List<OrgSpoc> orgSpockList = orgSpocService.getOrgSpocByUserIdAndOrgLocationCode(user.getId(),
-					orgLocations.getId());
-			if (null != orgSpockList) {
-				for (OrgSpoc org : orgSpockList) {
-					orgSpocService.addOrgSpoc(org);
-
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
 
 	private static BufferedImage colorImage(BufferedImage image) {
 		int width = image.getWidth();

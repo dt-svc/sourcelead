@@ -75,7 +75,7 @@ public class AddElkUser {
 					userIndex.setReportingManagerId(rs.getLong("REPORTING_MANAGER_ID"));
 				}
 				Timestamp createdDateTimestamp = rs.getTimestamp("CREATED_DATE");
-				DateFormat StringDate = new SimpleDateFormat("dd-MM-yyyy");
+				DateFormat StringDate = new SimpleDateFormat("yyyy-MM-dd");
 				if (null != createdDateTimestamp) {
 					String createdDate = StringDate.format(new java.util.Date(createdDateTimestamp.getTime()));
 					userIndex.setCreatedDate(createdDate);

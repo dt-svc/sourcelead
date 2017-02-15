@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class RequirementApproverHierarchyServiceImpl implements RequirementApproverHierarchyService{
@@ -26,6 +28,8 @@ public class RequirementApproverHierarchyServiceImpl implements RequirementAppro
 	@Autowired
 	private RequirementApproverHierarchyDao requirementApproverHierarchyDao;
 	
+	@Autowired
+	 private CommonUtil commonUtil;
 
 	@Override
 	public List<RequirementApproverHierarchy> getRequirementApproverHierarchyList(Long requirementId,Long approverUserId) throws Exception {
@@ -42,6 +46,7 @@ public class RequirementApproverHierarchyServiceImpl implements RequirementAppro
 	@Override
 	public RequirementApproverHierarchy addRequirementApproverHierarchy(
 			RequirementApproverHierarchy requirementApproverHierarchy) throws Exception {
+			requirementApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 			return requirementApproverHierarchyDao.storeRequirementApproverHierarchy(requirementApproverHierarchy);
 	}
 
