@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.json.JSONObject;
@@ -596,15 +598,28 @@ public class RequirementRestController {
 	 * @throws NullPointer
 	 */
 	@RequestMapping(value = "/getTeamsList", method = RequestMethod.POST)
-	public @ResponseBody String getTeamsList(HttpServletRequest request) throws Exception {
+	public @ResponseBody String getTeamsList(@RequestParam(value = "reqId", required = false) Long reqId, HttpServletRequest request) throws Exception {
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		CombinedList combinedList = new CombinedList();
+		
+		List<RequirementAssignTo> requirementAssignTo = null;
+		if(!Objects.isNull(reqId)){
+			requirementAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(reqId, orgLocation.getId());
+		}
 
 		Boolean isTeamViewAccess = commonUtil.hasRole("ROLE_VIEW_TEAM");
 		if (isTeamViewAccess) {
 			List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
 			if (null != teamsList) {
+				for(Team team : teamsList){
+					
+					if(null != requirementAssignTo){
+						if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() != null && t.getTeamId().getId().equals(team.getId()))) {
+							team.setIsTeamAssigned("Y");
+						}
+					}
+				}
 				combinedList.setTeams(teamsList);
 			}
 		}
@@ -612,8 +627,18 @@ public class RequirementRestController {
 		List<Roles> rolesList = roleService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),
 				Long.valueOf(Constants.TAB_REQUIREMENT));
 		if (null != rolesList) {
+			for(Roles role : rolesList){
+				if(null != requirementAssignTo){
+					if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() == null && t.getRoleId() != null && t.getRoleId().getId().equals(role.getId()))) {
+						role.setIsRoleAssigned("Y");
+					}
+				}
+			}
 			combinedList.setRoles(rolesList);
 		}
+		
+		
+		
 
 		resultJson = commonUtil.toJSON(combinedList);
 		return resultJson;
