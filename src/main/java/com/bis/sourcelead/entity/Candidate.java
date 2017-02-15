@@ -41,11 +41,11 @@ public class Candidate implements Serializable{
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CONSULTANT_USER_ID")        
     private User consultantUser;
 	
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "ORG_ID", nullable = false)
    	private Org orgId;
 	
