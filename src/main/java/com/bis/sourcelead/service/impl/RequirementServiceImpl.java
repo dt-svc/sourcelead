@@ -2698,21 +2698,21 @@ public class RequirementServiceImpl implements RequirementService {
 		 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 		 if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
-			 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
-				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : allKeyWordArray){
-						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+			 ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : anyKeyWordArray){
+						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
 						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForUniversalSearch(keywd);
 						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
 							}
-							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 					}
-					 boolQueryBuilder.must(allBoolQueryBuilder);
-				}
+					 boolQueryBuilder.must(anyBoolQueryBuilder);
+				} 
 		 }
 		 
 		 
