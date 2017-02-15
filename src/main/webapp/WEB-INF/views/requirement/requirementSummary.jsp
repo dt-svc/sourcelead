@@ -2162,8 +2162,8 @@ function requirementPipelineSL(requirementId,submissionType){
 							    	     } 
 						           
 						          
-						        	   if(report.submittedBy != null && report.submittedBy != '' && report.submittedBy != 'undefined'){ 
-						        	   result = result + '<td><div><span>'+report.submittedBy+'</span></div></td>';
+						        	   if(report.updatedUser != null && report.updatedUser != '' && report.updatedUser != 'undefined'){ 
+						        	   result = result + '<td><div><span>'+report.updatedUser+'</span></div></td>';
 						        	   }else{
 						        		   result = result + '<td><div><span>--</span></div></td>';
 						        	   }
