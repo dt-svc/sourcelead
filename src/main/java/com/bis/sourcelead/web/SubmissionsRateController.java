@@ -97,8 +97,6 @@ public class SubmissionsRateController {
 		String permission = "YES";
 		if(pastRequirementRateSubmissionNegotiation != null && pastRequirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE){
 			permission = "NO";
-		}else if((requirementSubmission != null && requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.REJECTED)) || (rateStatus.equalsIgnoreCase("Accepted") && requirementSubmission != null && requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.SUBMISSION))){
-			permission = "NO";
 		}
 		model.addObject("permission",permission);
 		model.addObject("rateStatus",rateStatus);

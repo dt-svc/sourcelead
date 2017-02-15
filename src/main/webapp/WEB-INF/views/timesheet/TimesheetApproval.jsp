@@ -1295,6 +1295,12 @@ function exportTimeSheetToPdfOrExcel(exportType){
 </script>
 
 <script>
+function dropDownExport(){
+	$("#exporrtEntries").slideToggle();
+}
+</script>
+
+<script>
 function dropDown(){
 	$("#exporrt").slideToggle();
 }

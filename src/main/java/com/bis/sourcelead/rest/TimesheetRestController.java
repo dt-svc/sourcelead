@@ -423,9 +423,9 @@ public class TimesheetRestController {
 		
 		String exportPdf = "pdf";
 		String exportExcel = "excel";
-		timesheetEntriesDiv.append("					<div class='export' onClick='dropDown();'> ");
+		timesheetEntriesDiv.append("					<div class='export' onClick='dropDownExport();'> ");
 		timesheetEntriesDiv.append("						<p><i class='glyphicon glyphicon-export'></i>Export<i class='fa fa-caret-down'></i></p> ");
-		timesheetEntriesDiv.append("							<ul id='exporrt'> ");
+		timesheetEntriesDiv.append("							<ul id='exporrtEntries'> ");
 		timesheetEntriesDiv.append("			                	<li onClick='timesheetEntriesExport(\""+weekStartDate+"\",\""+weekEndDate+"\","+projectMemberId+",\""+exportPdf+"\");'><i class='fa fa-file-pdf-o text-danger'></i>&nbsp;PDF</li> ");
 		timesheetEntriesDiv.append("			                    <li onClick='timesheetEntriesExport(\""+weekStartDate+"\",\""+weekEndDate+"\","+projectMemberId+",\""+exportExcel+"\");'><i class='fa fa-file-excel-o text-primary'></i>&nbsp;Excel</li> ");
 		timesheetEntriesDiv.append("			                    <li class='hidden'>Word<i class='fa fa-file-word-o'></i></li> ");
