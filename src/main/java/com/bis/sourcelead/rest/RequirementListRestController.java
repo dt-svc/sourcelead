@@ -168,8 +168,9 @@ public class RequirementListRestController {
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
 		 String resultJson;
 			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");//""
+			String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user);
 			for(Requirement requirement : requirementList){
 				if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -569,7 +570,7 @@ public class RequirementListRestController {
 			Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user);
 			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			File file =null;
 			
@@ -811,7 +812,7 @@ public class RequirementListRestController {
 			Integer onholdCount = 0;
 			Integer cancelCount = 0;
 			
-			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocations.getId(),null,null,user.getId());
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocations.getId(),null,null,user);
 	        	
 	        		  for(Requirement req :requirementList){
 	        			  if("NEW".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){

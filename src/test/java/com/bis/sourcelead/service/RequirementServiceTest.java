@@ -176,8 +176,8 @@ public class RequirementServiceTest {
 			String status="OPEN";
 			String client = "INFOSYS";
 			Long orgLocationId=1l;
-			Long userId=1l;
-			List<Requirement> req = requirementService.getRequirementListByOrgLocationID(orgLocationId, status, client, userId);
+			User user = new User();
+			List<Requirement> req = requirementService.getRequirementListByOrgLocationID(orgLocationId, status, client, user);
 			for (Requirement requirement : req) {
 				requirement.getId();
 				logger.info("Successfully retrived!!!!");

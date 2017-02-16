@@ -779,7 +779,7 @@ public class RequirementServiceImpl implements RequirementService {
 					if(null != savedRequirement.getId() && requirementAssignToList.size()!=0){
 						for (RequirementAssignTo newList : requirementAssignToList) {
 					       boolean found=false;
-					       if(!oldAssigntoTeamList.isEmpty()){
+					       if(null != oldAssigntoTeamList && oldAssigntoTeamList.size()!=0){
 					       for (RequirementAssignTo oldList : oldAssigntoTeamList) {
 					           if ((newList.getAssignUserId().getId().equals(oldList.getAssignUserId().getId()))) {
 					               found=true;
@@ -858,8 +858,8 @@ public class RequirementServiceImpl implements RequirementService {
 	*/
 
 	@Override
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,Long  userId) throws Exception {
-		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients, userId);
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User  user) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients,user);
 	}
 
 	
