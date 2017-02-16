@@ -308,7 +308,7 @@ public class ProjectsRestController {
 	 
 	 
 	//to validate Task Name
-	 @RequestMapping(value = "/validateTasksNameById" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/validateTasksNameById" , method = RequestMethod.GET)
 	 public @ResponseBody  Boolean validateTasksNameById(@RequestParam(value="TaskName", required=false) String TaskName,@RequestParam(value="ProjectId", required=false) Long projectId, HttpServletRequest request) throws Exception {
 		    return projectsService.validateTasksName(TaskName,projectId);
 	   }
