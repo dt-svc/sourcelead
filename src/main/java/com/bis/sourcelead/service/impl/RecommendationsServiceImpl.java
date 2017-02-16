@@ -482,11 +482,10 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				 }
 		    	    CandidateIndex candidateIndex = getCandidateIndex(candidate);
 					int matchedSkillCount = 0;
-					String candidateSkill = candidate.getSkillsName();
 					
 					
-					if(null  != candidateSkill){
-						String[] skills = candidateSkill.split(",");
+					if(null  != candidate.getSkillsName()){
+						String[] skills = candidate.getSkillsName().split(",");
 						skillPercentage = getSkillPercentage(skills,percentPerSkill,matchedSkillCount,reqSkills);
 					}
 					
