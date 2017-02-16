@@ -314,14 +314,31 @@ public class VendorController {
 				File file;
 //				vendors_import_template.xls
 //				vendors_contacts_Import.xls
-				if("vendors_import_template.xls".equalsIgnoreCase(fileName)){
-					 file = new File("vendors_import_template.xls");
-				}else if("vendors_contacts_Import.xls".equalsIgnoreCase(fileName)){
-					 file = new File("vendors_contacts_Import.xls");
-				}else if("vendors_import_template.xlsx".equalsIgnoreCase(fileName)){
-					file = new File("vendors_import_template.xlsx");
+				StringBuilder finalFileName = new StringBuilder();
+				if(fileName.contains("(")){
+				    String fileArray [] = fileName.split("\\.");
+				    String fileName1 = fileArray[0].substring(0, fileArray[0].indexOf("("));
+				    finalFileName.append(fileName1).append(".").append(fileArray[1]);
+				    String finalValue = finalFileName.toString().replaceAll("\\s", "");
+				    if(Constants.VENDORS_IMPORT_TEMPLATE_XLS.equalsIgnoreCase(finalValue)){
+						 file = new File("vendors_import_template.xls");
+					}else if(Constants.VENDORS_CONTACTS_IMPORT_XLS.equalsIgnoreCase(finalValue)){
+						 file = new File("vendors_contacts_Import.xls");
+					}else if(Constants.VENDORS_IMPORT_TEMPLATE_XLSX.equalsIgnoreCase(finalValue)){
+						file = new File("vendors_import_template.xlsx");
+					}else{
+						file = new File("vendors_import_template.xlsx");
+					}
 				}else{
-					file = new File("vendors_contacts_Import.xlsx");
+					if(Constants.VENDORS_IMPORT_TEMPLATE_XLS.equalsIgnoreCase(fileName)){
+						 file = new File("vendors_import_template.xls");
+					}else if(Constants.VENDORS_CONTACTS_IMPORT_XLS.equalsIgnoreCase(fileName)){
+						 file = new File("vendors_contacts_Import.xls");
+					}else if(Constants.VENDORS_IMPORT_TEMPLATE_XLSX.equalsIgnoreCase(fileName)){
+						file = new File("vendors_import_template.xlsx");
+					}else{
+						file = new File("vendors_import_template.xlsx");
+					}
 				}
 				
 				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
