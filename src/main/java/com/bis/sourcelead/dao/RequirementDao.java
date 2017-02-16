@@ -67,5 +67,4 @@ public interface RequirementDao {
 	
 	List<String> getAllRequirementSkillsByRequirementI(Long requirementId)throws Exception;
 
-	public List<Requirement> searchRequirementDb(Long id, JSONObject jsonObj, User user, String userRoleName)throws Exception;
 }

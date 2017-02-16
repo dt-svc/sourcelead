@@ -760,45 +760,5 @@ public class RequirementDaoImpl implements RequirementDao {
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
 	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> searchRequirementDb(Long id, JSONObject jsonObj, User user, String userRoleName) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
-		
-	     String qry = "From Requirement requirement";
-		if(jsonObj.has("requirementTitle") && !"".equalsIgnoreCase(jsonObj.getString("requirementTitle"))){
-		    qry = qry + " where requirement.jobTitle like :jobTitle";
-		}
-//		if ( searchField!= null)
-//		{
-//		    query.setString("searchField","%"+searchField+"%");
-//		}
-		List<Requirement> requirementList = session.createQuery(qry).setString("jobTitle","%"+jsonObj.getString("requirementTitle")+"%").list();
-		
-		for(Requirement req : requirementList){
-			logger.info("JobTile "+req.getJobTitle());
-			logger.info("Education "+req.getEducation());
-			logger.info("JobId "+req.getJobId());
-			logger.info("JobType "+req.getJobType());
-			logger.info("Skills "+req.getSkills());
-			logger.info("========================================");
-		}
-		/*String query = ""
-                + "from User where "
-                + "u.firstName like '%" + firstName+ "%' ";
-        if (!"".equals(lastName)) {
-            query += "and u.lastName like '%" + lastName + "%' ";
-        }
-        if (!"".equals(bDate)) {
-            query += "and u.bDate like '%" + bDate + "%'";
-        }
-        List<User> resultList = null;
-        resultList = hibernateTemplate.find(query);
-		*/
-		
-		
-		return requirementList;
-	}
 	
 }

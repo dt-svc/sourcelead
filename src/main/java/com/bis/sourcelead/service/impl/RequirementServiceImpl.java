@@ -2810,8 +2810,4 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getRequirementListByOrgLocationID(orgLocationId);
 	}
 
-	@Override
-	public List<Requirement> searchRequirementDb(Long id, JSONObject jsonObj, User user, String userRoleName)throws Exception {
-		return requirementDao.searchRequirementDb(id,jsonObj,user,userRoleName);
-	}
 }
