@@ -81,6 +81,7 @@ public class RequirementIndex {
 	
 	private String otherJobType;
 	
+	private String requirementAppliedDate;
 
 	private String isPublicJob;
 	
@@ -450,5 +451,13 @@ public class RequirementIndex {
 
 	public void setRequirementSubmissionPreviousStatus(String requirementSubmissionPreviousStatus) {
 		this.requirementSubmissionPreviousStatus = requirementSubmissionPreviousStatus;
+	}
+
+	public String getRequirementAppliedDate() {
+		return requirementAppliedDate;
+	}
+
+	public void setRequirementAppliedDate(String requirementAppliedDate) {
+		this.requirementAppliedDate = requirementAppliedDate;
 	}
 }

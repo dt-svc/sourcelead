@@ -169,5 +169,7 @@ public interface RequirementSubmissionService {
 
 	void applicantAcceptMailAboutRateNegotiation(Requirement requirement, User initiatorUser, RequirementSubmission requirementSubmission,
 			OrgLocations orgLocations,StringBuilder tempHTML) throws Exception;
+	
+	RequirementSubmission getRequirementSubmissionByRequirementIdAndCandidateId(Long requirementId,Long candidateId) throws Exception;
 
 }
