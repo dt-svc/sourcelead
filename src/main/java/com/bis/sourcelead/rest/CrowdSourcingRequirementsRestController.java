@@ -77,9 +77,10 @@ public class CrowdSourcingRequirementsRestController {
 			HttpServletRequest request) throws Exception {
 
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		
 	    String resultJson;
 	    List<RequirementIndex> requirementList = new ArrayList<RequirementIndex>();
-	    Long maxResults = null;
 	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	    df.setTimeZone(TimeZone.getTimeZone("GMT"));
 	    
@@ -90,7 +91,6 @@ public class CrowdSourcingRequirementsRestController {
 	     }
 	     else if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
-	    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
 	     }
 	     else if (requirementType.equalsIgnoreCase("AppliedJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
@@ -107,6 +107,31 @@ public class CrowdSourcingRequirementsRestController {
 	 	    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
 	 	    		mapper.setDateFormat(df);
 	 	    	    RequirementIndex requirementIndex = mapper.readValue(json.toString(), RequirementIndex.class);
+	 	    	    
+	 	    	   if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
+	 	    		   if(null !=  requirementIndex.getAppliedProfessionals()){
+	 	    			  List<Long> userId = new ArrayList<Long>();
+		 					for (String s : requirementIndex.getAppliedProfessionals()){
+		 						userId.add(Long.parseLong(s));
+		 					 }
+		 					boolean flag = userId.contains(user.getId());
+		 					if(flag == true){
+		 						requirementIndex.setIsJobApplied(Constants.YES);
+		 					}else{
+		 						requirementIndex.setIsJobApplied(Constants.NO);
+		 					} 
+	 	    		     }else{
+	 	    			    requirementIndex.setIsJobApplied(Constants.NO);
+	 	    		      }
+	 	    	   }
+	 	    	    
+	 	    	   if (requirementType.equalsIgnoreCase("AppliedJobs")){
+	 	    		   RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+	 	    		   if(null != submission){
+	 	    			  requirementIndex.setRequirementAppliedDate(Constants.DF_YMD.format(submission.getCreatedDate()));
+	 	    		   }
+	 	    	   }
+	 	    	    
 	 	    	    requirementList.add(requirementIndex);
 	 	    	}
 	 	    }

@@ -2863,6 +2863,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	}
 
+	@Override
+	public RequirementSubmission getRequirementSubmissionByRequirementIdAndCandidateId(Long requirementId,
+			Long candidateId) throws Exception {
+		return requirementSubmissionDao.getRequirementSubmissionByRequirementIdAndCandidateId(requirementId, candidateId);
+	}
+
 }
 
 

@@ -201,7 +201,15 @@ function requirementsList(offset){
 				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';
 				 				result = result +'</span>'; */
 				 				result = result +'<div class="openPostBtns">';
-				 				result = result +'<a href="javascript:void(0)" onclick="applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
+				 				
+				 				if(requirementType == "OpenJobs" || (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
+				 					result = result +'<a href="javascript:void(0)" onclick="applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
+				 				}
+				 				
+				 				if(requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'Y'){
+				 					result = result +'<a href="javascript:void(0)" class="jobApply">Applied</a>';
+				 				}
+				 				
 				 				
 				 				if(requirementType == "CrowdSourcingJobs"){
 				 					result = result +'<a class="refer" href="javascript:void(0)">Refer</a>';
@@ -220,7 +228,7 @@ function requirementsList(offset){
 			 					result = result +'<div class="appliedWrap">';
 			 					result = result +'<i class="fa fa-check-circle"></i>';
 			 					result = result +'<div class="openPostDate">';
-			 					result = result +'<b><h5>Applied</h5></b>';
+			 					result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+requirements.requirementAppliedDate+'</b>';
 			 					result = result +'</div>';
 			 					result = result +'</div>';
 			 					result = result +'</div>';
