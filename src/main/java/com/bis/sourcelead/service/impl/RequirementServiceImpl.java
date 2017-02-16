@@ -618,6 +618,14 @@ public class RequirementServiceImpl implements RequirementService {
 			} 
 			
 			//storing assigned team START (Venkat Kesav)
+			
+
+			List<RequirementAssignTo> oldAssigntoTeamList= null;
+			if(requirement.getId()!= null){
+			oldAssigntoTeamList = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirement.getId(), orgLocations.getId());
+			}
+
+			
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
@@ -765,10 +773,39 @@ public class RequirementServiceImpl implements RequirementService {
 						    }
 					 }
 					
+					
+					/*shivayogi Kadagad/rakshith mahabal*/	
+					// this logic is for assigned to team members when new team user is added for requirement-edit and saved.	
+					if(null != savedRequirement.getId() && requirementAssignToList.size()!=0){
+						for (RequirementAssignTo newList : requirementAssignToList) {
+					       boolean found=false;
+					       if(!oldAssigntoTeamList.isEmpty()){
+					       for (RequirementAssignTo oldList : oldAssigntoTeamList) {
+					           if ((newList.getAssignUserId().getId().equals(oldList.getAssignUserId().getId()))) {
+					               found=true;
+					               break;
+					           }
+					         }
+					       }
+					       if(!found){
+					       	List<RequirementAssignTo> newlyAddedList = new ArrayList<RequirementAssignTo>();
+					       	newlyAddedList.add(newList);
+					       	for(RequirementAssignTo newly :newlyAddedList){
+					       		User newlyAddedUser = newly.getAssignUserId();
+					       		Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
+									if(updatedRequirementAssignToList != null  ){
+												AssignToTeamMembersEmail(user, newlyAddedUser, savedRequirement,location,orgLocations);
+											}
+										}
+									}
+					       	}
+					       }
+						
+					
 					//send mail to Assigned Team 
 					//condition : if login user as team member then mail not send
 					// this logic will execute when no approvers are selected for requirement.
-				  if(!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)){
+				  if(!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED) && savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
 					Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
 					if(updatedRequirementAssignToList != null  ){
 						for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
