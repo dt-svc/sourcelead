@@ -56,6 +56,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -68,6 +69,7 @@ import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RecommendationsService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -151,6 +153,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	RecommendationsService recommendationsService;
+	
+	@Autowired
+	RecommendedCustomizeScoreService recommendedCustomizeScoreService;
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -383,9 +388,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 requirementSubmission.setCreatedBy(user.getUserCode());
 		 requirementSubmission.setCreatedDate(new Date());
 		 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-		 String score = recommendationsService.getCandidateScore(candidate,requirementSubmission.getRequirement());
-		 requirementSubmission.setCandidateScore(Integer.parseInt(score));
-		 
+		 RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementSubmission.getRequirement().getId());
+		 String score = recommendationsService.getCandidateScore(candidate,requirementSubmission.getRequirement(),recommendedCustomizeScore);
+		 if(null !=score){
+			 requirementSubmission.setCandidateScore(score);			 
+		 }
 		 StringBuilder userName = new StringBuilder();
 		 StringBuilder nameBuilder = new StringBuilder();
 		 
@@ -2048,7 +2055,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate,
-			OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation) throws Exception {
+			OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, StringBuilder tempHtml) throws Exception {
 
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getId());
 		 EmailMessage emailMessage = new EmailMessage();
@@ -2091,6 +2098,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("finalRate","--");
 			 }
+		 
+		 if(tempHtml != null){
+			 globalVarsMap.put("negotiationTable",tempHtml.toString());
+		 }
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
@@ -2771,6 +2782,82 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 	}
 
+	@Override
+	public void applicantAcceptMailAboutRateNegotiation(Requirement requirement, User initiatorUser, RequirementSubmission requirementSubmission,
+			OrgLocations orgLocations,StringBuilder tempHTML) throws Exception {
+		 
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(initiatorUser.getFirstName());
+		 emailMessage.setLastName(initiatorUser.getLastName());
+		 emailMessage.setToEmail(initiatorUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
+		
+		 if(requirementSubmissionTemplateFields.getFirstName() != null && requirementSubmissionTemplateFields.getLastName()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+			 StringBuilder msgBuild = new StringBuilder();
+			 emailMessage.setFromName(msgBuild.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+		 }else{
+			 emailMessage.setFromName(requirementSubmissionTemplateFields.getFirstName());
+		 }
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+
+		 if(initiatorUser.getLastName()!= null && !"".equalsIgnoreCase(initiatorUser.getLastName())){
+			 StringBuilder sb = new StringBuilder();
+			 globalVarsMap.put("userName", sb.append(initiatorUser.getFirstName()).append(" ").append(initiatorUser.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("userName",initiatorUser.getFirstName());
+			 }
+		 
+		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+			 }else{
+				 globalVarsMap.put("requirementName","--");
+			 }
+		
+		 if(requirementSubmissionTemplateFields.getFirstName() != null && requirementSubmissionTemplateFields.getLastName()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+			 StringBuilder candBuild = new StringBuilder();
+			 globalVarsMap.put("applicantName", candBuild.append(requirementSubmissionTemplateFields.getFirstName()).append("").append(requirementSubmissionTemplateFields.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("applicantName",requirementSubmissionTemplateFields.getFirstName());
+			 }
+		 
+		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate()) && requirementSubmission.getFinalizedRateType() != null && !"".equalsIgnoreCase(requirementSubmission.getFinalizedRateType())){
+			 StringBuilder rateBuild = new StringBuilder();
+			 globalVarsMap.put("finalRate", rateBuild.append(requirementSubmission.getFinalizedRate()).append(" / ").append(requirementSubmission.getFinalizedRateType()).toString());
+			 }else{
+				 globalVarsMap.put("finalRate",requirementSubmission.getFinalizedRate());
+			 }
+		
+		 if(null != tempHTML){
+			 globalVarsMap.put("negotiationTable",tempHTML.toString());
+		 }
+		 
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPT_RATE,Constants.ENTITY_TYPE_EMAIL);
+
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		  
+		 User toUser = orgLocations.getUser();
+		 
+		 String actionLink="";
+		//calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	}
 
 }
 

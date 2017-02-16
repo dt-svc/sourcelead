@@ -550,23 +550,23 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Object> getAllUniversalSearchCandidateList(OrgLocations orgLocation,String searchValue)throws Exception {
 		List<Object>   searchList = new ArrayList<>();
 		 Long maxResults = getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
-		 ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
+		 ArrayList<String> anyKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
 			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();;
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
-			if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-				 for(String keywd : allKeyWordArray){
-					 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-					ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
-					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-							allBoolSubQueryBuilder.should(matchQueryBuilder);
+				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : anyKeyWordArray){
+						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
-						allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 					}
+					 boolQueryBuilder.must(anyBoolQueryBuilder);
 				}
-				 boolQueryBuilder.must(allBoolQueryBuilder);
-			}
 			
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			df.setTimeZone(TimeZone.getTimeZone("GMT"));

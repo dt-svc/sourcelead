@@ -922,20 +922,21 @@ public class UserServiceImpl implements UserService {
 		 
 			//All Keywords
 //			ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
-			ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
-			if(null != allKeyWordArray && !allKeyWordArray.isEmpty()){
-				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-				 for(String keywd : allKeyWordArray){
-					 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+			ArrayList<String> anyKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
+			if (null != anyKeyWordArray && !anyKeyWordArray.isEmpty()) {
+				BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+				for (String keywd : anyKeyWordArray) {
+					BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
 					ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getUsersMatchQueryBuilderList(keywd);
-					if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
-						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-							allBoolSubQueryBuilder.should(matchQueryBuilder);
+
+					if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
+						for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
+							anyBoolSubQueryBuilder.should(matchQueryBuilder);
 						}
-						allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 					}
 				}
-				 boolQueryBuilder.must(allBoolQueryBuilder);
+				boolQueryBuilder.must(anyBoolQueryBuilder);
 			}
 		
 			List<UserIndex> usersList = new ArrayList<UserIndex>();

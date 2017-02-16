@@ -1101,7 +1101,7 @@ $(document).ready(function() {
 	    			'</sec:authorize>';
 	
 		    		result = result +'<td data-title="Manager">';
-		    		result = result +'<div><span title='+report.level1ManagerName+'>';
+		    		result = result +'<div><span title="'+report.level1ManagerName+' , '+report.level2ManagerName+'">';
 		    		if(report.level1ManagerName !=null && report.level1ManagerName !='' && report.level1ManagerName !='undefined'){
 		    			result = result +report.level1ManagerName;
 		    		}
