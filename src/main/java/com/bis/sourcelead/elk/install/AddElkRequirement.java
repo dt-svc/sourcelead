@@ -202,6 +202,9 @@ public class AddElkRequirement {
 				if(null != rs.getString("POSTED_ORG_NAME")){
 					requirementIndex.setPostedOrg(rs.getString("POSTED_ORG_NAME"));
 				}
+				if(null != rs.getString("REQUIREMENT_UUID")){
+					requirementIndex.setRequirementUUID(rs.getString("REQUIREMENT_UUID"));
+				}
 				
 				String appliedProfessionals = rs.getString("APPLIED_PROFESSIONALS");
 				if(!("").equalsIgnoreCase(appliedProfessionals) && appliedProfessionals!=null){
