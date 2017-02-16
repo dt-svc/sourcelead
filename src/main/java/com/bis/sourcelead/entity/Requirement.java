@@ -114,6 +114,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "IS_CROWD_SOURCING")
 	private String isCrowdSourcing;
 	
+	@Column(name = "REQUIREMENT_UUID")
+	private String requirementUUID;
+	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
@@ -326,7 +329,8 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String isRequirementReleasedByuser;
 	
-	
+	@Transient
+	private String orgcode;
 
 	public String getSearchType() {
 		return searchType;
@@ -1030,6 +1034,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.isCrowdSourcing = isCrowdSourcing;
 	}
 
+	public String getRequirementUUID() {
+		return requirementUUID;
+	}
+
+	public void setRequirementUUID(String requirementUUID) {
+		this.requirementUUID = requirementUUID;
+	}
+
 	public String getPostedOrgName() {
 		return postedOrgName;
 	}
@@ -1045,5 +1057,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setAppliedProfessionals(String appliedProfessionals) {
 		this.appliedProfessionals = appliedProfessionals;
 	}
-	
+
+	public String getOrgcode() {
+		return orgcode;
+	}
+
+	public void setOrgcode(String orgcode) {
+		this.orgcode = orgcode;
+	}
 }

@@ -59,6 +59,8 @@ public interface RequirementDao {
 	
     public Requirement getRequirementByRequirementIdOrgLocationsId(String id,Long requirementId, Long orgLocationsId) throws Exception;
 	
+    public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception;
+    
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
 
 	public Long getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;

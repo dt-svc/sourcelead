@@ -165,7 +165,7 @@ function requirementsList(offset){
 			 				
 			 				result = '<section class="openCta">';
 			 				result = result +'<div class="OpenJob">';
-			 				result = result +'<a href="open-jobs-details.html"><h3>'+requirements.jobTitle+'</h3></a>';
+			 				result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3></a>';
 			 				result = result +'<h4>'+requirements.postedOrg+'</h4>';
 			 				result = result +'<span>';
 			 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';

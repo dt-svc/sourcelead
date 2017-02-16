@@ -186,6 +186,8 @@ public class RequirementHelper {
 			}
 			requirementIndex.setReleasedBy(requirement.getReleasedBy());
 			
+			requirementIndex.setRequirementUUID(requirement.getRequirementUUID());
+			
 			if(null != requirement.getIsPublic()){
 				requirementIndex.setIsPublicJob(requirement.getIsPublic());
 			}else{
