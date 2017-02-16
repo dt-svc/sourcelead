@@ -253,6 +253,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		// TODO Auto-generated method stub
 		return projectMembersDao.getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(userId);
 	}
+	
+	@Override
+	public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheet()throws Exception {
+		return projectMembersDao.getAllTerminatedProjectMembersIdsByTimesheet();
+	}
 
 	@Override
 	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception {

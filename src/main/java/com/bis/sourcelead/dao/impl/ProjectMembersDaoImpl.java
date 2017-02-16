@@ -187,6 +187,19 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheet() throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where pm.id IN(select pmh.projectMemberId.id from ProjectMembersHistory pmh where pmh.status ='OPEN' and  pmh.projectTerminationDate < :currentDate)" ;
+		List<ProjectMembers> idsList =session.createQuery(query)
+											.setParameter("currentDate", currentDate)
+											.setCacheable(true)
+										    .list(); 
+		return idsList;  
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId, Long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());

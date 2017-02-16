@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -130,7 +131,8 @@ public class EMailJobScheduler {
 	@Autowired
 	SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
-
+    @Autowired
+    CommonUtil commonUtil;
 	
 	@Autowired
 	ProjectMembersService projectMembersService;
@@ -609,6 +611,33 @@ public class EMailJobScheduler {
 			}
 	}
 	//=============================================== ADMIN TIME SHEETS MAILS END==========================================
+	
+	
+	
+	/**
+	 * @author Prasad salina
+	 * for terminate projects when current date is crossed project end date
+	 * Fires on Every Day at 12:05 AM emailJobScheduler.job.cron.everyfriday.expression
+	 */
+	@Scheduled(cron = "0 5 0 1/1 * ?")
+	public void runJobSchedulerProjectsAndMembers() {
+		try {
+			  logger.info("******************  Notification Job Scheduler for terminate projects when current date is crossed project end date..! **********");
+			  List<Projects> projectsList = projectsService.getAllProjectsEndDateGraterthanCurrentDate();
+				for(Projects project : projectsList){
+					commonUtil.terminateProject(project);
+				}
+				projectsService.saveAllProjects(projectsList);
+				
+				commonUtil.terminateAllProjectMembers();
+				
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		}
+	}
+	
+	
 	
 	/**
 	 * @author prasanna

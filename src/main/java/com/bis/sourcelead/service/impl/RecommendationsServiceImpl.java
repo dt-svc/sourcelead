@@ -27,7 +27,6 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
-import com.itextpdf.text.log.SysoLogger;
 
 @Service
 public class RecommendationsServiceImpl implements RecommendationsService{
