@@ -85,7 +85,8 @@ public class ProfessionalRequirementsController {
 	 
 	 @RequestMapping(value = "/requirementProfileDetails")
 		public ModelAndView userSummaryDetails(HttpServletRequest request, @RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception {
-			  ModelAndView model = new ModelAndView();
+		 Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");	 
+		 ModelAndView model = new ModelAndView();
 			  SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			 if(sessionData == null)
 			 {
@@ -96,6 +97,7 @@ public class ProfessionalRequirementsController {
 			model.setViewName("professional/professionalRequirementProfile");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("requirementUUID", requirementUUID);
+			model.addObject("candidateId", candidateId);
 			return model;
 
 		}

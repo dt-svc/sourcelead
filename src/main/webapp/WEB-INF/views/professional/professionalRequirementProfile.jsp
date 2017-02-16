@@ -24,6 +24,12 @@ $(document).ready(function() {
     <div class="pull-right brud-crum"><a href="<c:url value='professionalRequirements'/>">Requirement List </a> » Requirement Details</div>
   </section>
   
+  <div class="side_mask"><div class="proj_close"></div></div>
+	 <div class="new_side_wrap">
+		<div id="applytoJobDiv"></div>
+	 </div>    
+            
+  
   <div id="professionalRequirementProfileDiv"></div>
 
   </section>
@@ -137,7 +143,7 @@ function requirementProfile(requirementUUID){
 				 result = result +'          </div>';
 				 result = result +'          <div class="col-md-3">';
 				 result = result +'         <div class="openPostBtns">';
-				 result = result +'         <a href="javascript:void(0)" class="jobApply">Apply</a>';
+				 result = result +'<a href="javascript:void(0)" onclick="applyToJob('+json.id+');"  class="jobApply">Apply</a>';
 				 result = result +'         <a class="refer" href="javascript:void(0)">Refer</a>';
 				 result = result +'          </div>';
 				 result = result +'          </div>';
@@ -186,4 +192,5 @@ function requirementProfile(requirementUUID){
 		$(imageId).attr('src','resources/images/userprofile-img.png');
 	}
 </script>
+<jsp:include page="applyToJob.jsp" />
 <jsp:include page="../masterFooter.jsp" />
