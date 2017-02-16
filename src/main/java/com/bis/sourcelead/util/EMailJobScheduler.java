@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +131,8 @@ public class EMailJobScheduler {
 	@Autowired
 	SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
-
+    @Autowired
+    CommonUtil commonUtil;
 	
 	@Autowired
 	ProjectMembersService projectMembersService;
@@ -582,17 +585,17 @@ public class EMailJobScheduler {
 											     }
 												  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
 												 
-												  StringBuilder projectStringBuilder=new StringBuilder();
 												  Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectMembers.getProjects().getId());
-												    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
-												    	 StringBuilder level1SB=new StringBuilder();
-												    	 StringBuilder level2SB=new StringBuilder();
+												  StringBuilder projectStringBuilder=new StringBuilder();
+												  for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+													    if(StringUtils.isNoneEmpty(projectStringBuilder.toString())){
+													    	projectStringBuilder.append(" , ");
+													    }
 												    	if(approverHierarchy.getLevel()==1){
-												    		level1SB.append(approverHierarchy.getApproverUserId().getFullName()).toString();
+												    		projectStringBuilder.append(approverHierarchy.getApproverUserId().getFullName()).toString();
 												    	}else if(approverHierarchy.getLevel()==2){
-												    		level1SB.append(" ").append(approverHierarchy.getApproverUserId().getFullName()).toString();
+												    		projectStringBuilder.append(approverHierarchy.getApproverUserId().getFullName()).toString();
 												    	}
-												    	projectStringBuilder.append(level1SB).append(level2SB);
 												    }
 												    
 												  tempHTML.append("<td>").append(projectStringBuilder).append("</td>");
@@ -608,6 +611,33 @@ public class EMailJobScheduler {
 			}
 	}
 	//=============================================== ADMIN TIME SHEETS MAILS END==========================================
+	
+	
+	
+	/**
+	 * @author Prasad salina
+	 * for terminate projects when current date is crossed project end date
+	 * Fires on Every Day at 12:05 AM emailJobScheduler.job.cron.everyfriday.expression
+	 */
+	@Scheduled(cron = "0 5 0 1/1 * ?")
+	public void runJobSchedulerProjectsAndMembers() {
+		try {
+			  logger.info("******************  Notification Job Scheduler for terminate projects when current date is crossed project end date..! **********");
+			  List<Projects> projectsList = projectsService.getAllProjectsEndDateGraterthanCurrentDate();
+				for(Projects project : projectsList){
+					commonUtil.terminateProject(project);
+				}
+				projectsService.saveAllProjects(projectsList);
+				
+				commonUtil.terminateAllProjectMembers();
+				
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		}
+	}
+	
+	
 	
 	/**
 	 * @author prasanna
