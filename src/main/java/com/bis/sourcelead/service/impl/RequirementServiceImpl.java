@@ -858,8 +858,8 @@ public class RequirementServiceImpl implements RequirementService {
 	*/
 
 	@Override
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User  user) throws Exception {
-		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients,user);
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User  user,String userRoleName) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients,user,userRoleName);
 	}
 
 	
@@ -2537,14 +2537,14 @@ public class RequirementServiceImpl implements RequirementService {
 		            	
 		            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
-		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel1ApproverStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			)){
 		            		requirement = getData(requirementIndex);
 		            	}
 		            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
-		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus()))
 		            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
-		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			)){
 		            		requirement = getData(requirementIndex);
 		            	}
@@ -2774,14 +2774,14 @@ public class RequirementServiceImpl implements RequirementService {
 		            	
 		            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
-		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel1ApproverStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			)){
 		            		requirement = getData(requirementIndex);
 		            	}
 		            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
-		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus()))
 		            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
-		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			)){
 		            		requirement = getData(requirementIndex);
 		            	}
@@ -2808,5 +2808,10 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Long getRequirementsListById(Long orgLocationId) throws Exception {
 		return requirementDao.getRequirementListByOrgLocationID(orgLocationId);
+	}
+
+	@Override
+	public List<Requirement> searchRequirementDb(Long id, JSONObject jsonObj, User user, String userRoleName)throws Exception {
+		return requirementDao.searchRequirementDb(id,jsonObj,user,userRoleName);
 	}
 }

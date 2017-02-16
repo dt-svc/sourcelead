@@ -185,6 +185,12 @@ public class RequirementHelper {
 				requirementIndex.setNumberOfApplicants(requirement.getTotalApplicantsForRequirement().toString());
 			}
 			requirementIndex.setReleasedBy(requirement.getReleasedBy());
+			if(null != requirement.getReqlevel1ApproverStatus() && !"".equalsIgnoreCase(requirement.getReqlevel1ApproverStatus())){
+				requirementIndex.setReqLevel1ApproverStatus(requirement.getReqlevel1ApproverStatus());	
+			}
+			if(null != requirement.getReqlevel2ApproverStatus() && !"".equalsIgnoreCase(requirement.getReqlevel1ApproverStatus())){
+				requirementIndex.setReqLevel2ApproverStatus(requirement.getReqlevel2ApproverStatus());	
+			}
 
 		}
 		return requirementIndex;

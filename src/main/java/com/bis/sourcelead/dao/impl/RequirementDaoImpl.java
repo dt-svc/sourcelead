@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,19 +120,19 @@ public class RequirementDaoImpl implements RequirementDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User user) throws Exception {
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User user,String userRoleName) throws Exception {
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		//User user = userDao.getUserById(userId);
 		
-		UserRole userRole = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+//		UserRole userRole1 = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
 				
 		Map<String, Object> params = new HashMap<String,Object>();
 		
 		String from = "from Requirement requirement  left join fetch requirement.parentRequirement  left join fetch requirement.clientId left join fetch requirement.spocId left join fetch requirement.submissionTemplateId left join fetch requirement.clientSubmissionTemplateId left join fetch requirement.parentRequirement"; 
 		String subQuery = "";
 		
-		if(userRole != null && userRole.getRoles().getRoleName() != null && "ROLE_ADMIN".equalsIgnoreCase(userRole.getRoles().getRoleName()) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole.getRoles().getRoleName())){
+		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 			subQuery = " where requirement.orgLocationId.id =:orgLocationId and (requirement.isTemplate IS NULL OR requirement.isTemplate <> 'Y') ";
 			params.put("orgLocationId",orgLocationId);
 		}else{
@@ -758,6 +759,46 @@ public class RequirementDaoImpl implements RequirementDao {
 		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> searchRequirementDb(Long id, JSONObject jsonObj, User user, String userRoleName) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+	     String qry = "From Requirement requirement";
+		if(jsonObj.has("requirementTitle") && !"".equalsIgnoreCase(jsonObj.getString("requirementTitle"))){
+		    qry = qry + " where requirement.jobTitle like :jobTitle";
+		}
+//		if ( searchField!= null)
+//		{
+//		    query.setString("searchField","%"+searchField+"%");
+//		}
+		List<Requirement> requirementList = session.createQuery(qry).setString("jobTitle","%"+jsonObj.getString("requirementTitle")+"%").list();
+		
+		for(Requirement req : requirementList){
+			logger.info("JobTile "+req.getJobTitle());
+			logger.info("Education "+req.getEducation());
+			logger.info("JobId "+req.getJobId());
+			logger.info("JobType "+req.getJobType());
+			logger.info("Skills "+req.getSkills());
+			logger.info("========================================");
+		}
+		/*String query = ""
+                + "from User where "
+                + "u.firstName like '%" + firstName+ "%' ";
+        if (!"".equals(lastName)) {
+            query += "and u.lastName like '%" + lastName + "%' ";
+        }
+        if (!"".equals(bDate)) {
+            query += "and u.bDate like '%" + bDate + "%'";
+        }
+        List<User> resultList = null;
+        resultList = hibernateTemplate.find(query);
+		*/
+		
+		
+		return requirementList;
 	}
 	
 }
