@@ -482,16 +482,12 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			boolean isCandidateAdded = false;
 			float expPercentage = 0; //  experience = 20%
 			int matchedSkillCount = 0;
+			String[] skills = null;
+			if(null != candidate.getSkillsName()){
+				String candidateSkills = candidate.getSkillsName();
+				skills = candidateSkills.split(",");
+			}
 			
-			//List<CandidateSkills> candidateSkillList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
-			String candidateSkills = candidate.getSkillsName();
-			String[] skills = candidateSkills.split(",");
-//			List<String> candidateSkillList = new ArrayList<String>(Arrays.asList(skills));
-			
-			
-			  // Changed the below method by  bringing from  service as cache is implemented  for  the above method
-			
-			   // Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
 			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
 			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
 			

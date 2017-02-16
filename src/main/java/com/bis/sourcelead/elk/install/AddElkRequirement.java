@@ -202,6 +202,11 @@ public class AddElkRequirement {
 					requirementIndex.setPostedOrg(rs.getString("POSTED_ORG_NAME"));
 				}
 				
+				String appliedProfessionals = rs.getString("APPLIED_PROFESSIONALS");
+				if(!("").equalsIgnoreCase(appliedProfessionals) && appliedProfessionals!=null){
+					requirementIndex.setAppliedProfessionals(appliedProfessionals.split(","));
+				}
+				
 				reqIndexList.add(requirementIndex);
 				
 			}
