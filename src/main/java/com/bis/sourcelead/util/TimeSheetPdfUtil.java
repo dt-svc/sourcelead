@@ -167,6 +167,7 @@ public class TimeSheetPdfUtil {
 				 String weekMondayDate = null;
 				 
 				 TimesheetSubmissions ts = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(weekStartDate, weekEndDate, projectMember.getId());
+				 if(null != ts){
 				 if(null != ts.getBillableHours()){
 					 billableHours = billableHours+(Double.parseDouble(ts.getBillableHours())*60);
 				 }
@@ -400,6 +401,7 @@ public class TimeSheetPdfUtil {
 			        logger.info("Pdf table created !!");
 			}
 		  }
+        }
         }catch(Exception ex){
         	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(ex));
         }finally{

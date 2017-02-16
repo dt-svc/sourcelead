@@ -2043,7 +2043,7 @@ width: 100%;
     }   
  
 .new_side_wrap {
-    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
+    width:81%; position:fixed; right:-100%; top:0px; background-color:#fff; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
     transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
     z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
     }
@@ -2759,20 +2759,20 @@ padding-right:10px;
 
 
 .timeNewSe.timeNewSe_month {
-    width:136px;
+    width:135px;
 }
 .timeNewSe.timeNewSe_week {
-    width:120px;
+    width:115px;
 }
 
 .timeNewSe.timeNewSe_week_date {
-    width:201px;
+    width:196px;
 }
 .timeNewSe.timeNewSe_client {
-    width:135px;
+    width:120px;
 }
 .timeNewSe.timeNewSe_stage {
-    width:172px;
+    width:160px;
 }
 
 

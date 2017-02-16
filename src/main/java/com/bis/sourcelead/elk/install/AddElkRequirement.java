@@ -91,6 +91,7 @@ public class AddElkRequirement {
 					requirementIndex.setMaxExperience(Integer.parseInt(rs.getString("MAX_EXP")));
 				}
 				requirementIndex.setRequirementStatus(rs.getString("REQUIREMENT_SUBMISSION_STATUS"));
+				//requirementIndex.setRequirementSubmissionPreviousStatus(rs.getString("REQUIREMENT_SUBMISSION_PREVIOUS_STATUS"));
 				requirementIndex.setCountry(rs.getString("COUNTRY"));
 				requirementIndex.setState(rs.getString("STATE"));
 				requirementIndex.setCity(rs.getString("CITY"));
@@ -200,6 +201,11 @@ public class AddElkRequirement {
 				
 				if(null != rs.getString("POSTED_ORG_NAME")){
 					requirementIndex.setPostedOrg(rs.getString("POSTED_ORG_NAME"));
+				}
+				
+				String appliedProfessionals = rs.getString("APPLIED_PROFESSIONALS");
+				if(!("").equalsIgnoreCase(appliedProfessionals) && appliedProfessionals!=null){
+					requirementIndex.setAppliedProfessionals(appliedProfessionals.split(","));
 				}
 				
 				reqIndexList.add(requirementIndex);

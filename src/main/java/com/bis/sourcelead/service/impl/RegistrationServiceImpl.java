@@ -794,7 +794,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
-			user.setLocation(jsonObj.getString("location"));
+			user.setCountry(jsonObj.getString("location"));
 		}
 		
 		user.setUserName(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
@@ -845,6 +845,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			candidate.setEmail(jsonObj.getString("email"));
 		}
 		
+		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 		candidate.setCreatedBy("sladmin");
 		candidate.setCreatedDate(new Date());
 		candidate.setUpdatedDate(new Date());
@@ -920,7 +921,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
-			user.setLocation(jsonObj.getString("location"));
+			user.setCountry(jsonObj.getString("location"));
 		}
 		
 		user.setUserName(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
@@ -970,6 +971,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			candidate.setEmail(jsonObj.getString("email"));
 		}
 		
+		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 		candidate.setCreatedBy("sladmin");
 		candidate.setCreatedDate(new Date());
 		candidate.setUpdatedDate(new Date());
