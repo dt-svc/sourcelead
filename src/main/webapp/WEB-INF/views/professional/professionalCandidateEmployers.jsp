@@ -132,14 +132,13 @@ function closeCertificatePopup(){
 		result = result	+ '	         <form id="employers_form" name="employers_form" method="post">';
 		result = result+'	           <i class="fa fa-close close-div" onClick="closeCertificatePopup();"></i>';
 		result = result	+ '	             <div class="form-horizontal clearfix">';
-		result = result + '	               <div class="clearfix mb10">';
+		result = result + '	               <div class="clearfix">';
 		result = result + '	                 <div class="col-md-12">';
 		result = result	+ '	                  <input type="text" class="form-control"  placeholder="Employer *" name="name" data-validation="required validate_AlphaNumber validate_length length2-100" field-name="Employer Name" value=""> <span class="hidden">Employer Name</span>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
-		result = result + '	                 <div class="clearfix checkbox">';
-		result = result + '	                   <label>';
+		result = result + '	                 <div class="ml checkbox">';
 		result = result	+ '	                  <label> <input type="checkbox" id="isCurrentPosition" value="Y" onClick ="iscurrentPosition();"name="isCurrentPosition"> Is Current Position</label>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
@@ -153,20 +152,21 @@ function closeCertificatePopup(){
 		result = result + '	                  <input type="text" class="form-control input-sm" placeholder="Address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" value=""> <span 	class="hidden">Address</span>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
-		result = result + '	               <div class="clearfix mb10">';
-		result = result + '	                 <p class="ml">Start Date</p>';
+		
+		result = result + '	               <div class="clearfix mb10 dates">';
+		
 		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
+		result = result + '	                 <p>Start Date</p>';
 		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear"  placeholder="Select Start Date"  field-name="Start Date" >';
 		result = result + '	                 </div>';
-		result = result + '	                 </div>';
-		result = result + '	                 <div id="endDateDiv">';
-		result = result + '	                 <div class="clearfix mb10 endDate">';
-		result = result + '	                 <p class="ml">End Date</p>';
-		result = result + '	                   <div class="col-md-6" >';
+
+		result = result + '	                  <div class="col-md-6 endDate" id="endDateDiv">';
+		result = result + '	                 <p>End Date</p>';
 		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year"  placeholder="Select End Date" >';
-		result = result + '	                 </div>';
 		result = result + '	                 </div> ';
+
 		result = result + '	                 </div> ';
+
 		result = result + '	               <div class="clearfix mr">';
 		result = result	+ '	                 <button type="button" id ="candidateEmployersAdd" onClick ="candidateEmployersStore('+ candidateId+ ');"class="btn btn-sm btn-primary pull-right">Add</button>';
 		result = result + '	               </div>';

@@ -72,6 +72,26 @@ public class ProfessionalProfileController {
 		        String resultJson;
 		        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		        Candidate candidate =	candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(loginUser.getId(), candidateStatus);
+		        if(null != candidate.getConsultantUser()){
+		        	candidate.setFirstName(candidate.getConsultantUser().getFirstName());
+		        	if(null != candidate.getConsultantUser().getLastName()){
+		        		candidate.setLastName(candidate.getConsultantUser().getLastName());	
+		        	}
+			        if(null != candidate.getConsultantUser().getFacebook()){
+			        	candidate.setFacebook(candidate.getConsultantUser().getFacebook());	
+			        }
+			        if(null != candidate.getConsultantUser().getTwitter()){
+			        	candidate.setTwitter(candidate.getConsultantUser().getTwitter());
+			        }
+			        if(null != candidate.getConsultantUser().getGooglePlus()){
+			        	candidate.setGooglePlus(candidate.getConsultantUser().getGooglePlus());	
+			        }
+			        if(null != candidate.getConsultantUser().getLinkedIn()){
+			        	candidate.setLinkedIn(candidate.getConsultantUser().getLinkedIn());
+			        }
+			        	
+		        }
+		        
 		        resultJson = commonUtil.toJSON(candidate);
 				return resultJson;
 	}

@@ -149,7 +149,7 @@ public interface RequirementSubmissionService {
 			 OrgLocations loginOrgLocation) throws Exception;
 		
 
-	void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation) throws Exception;
+	void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, StringBuilder tempHtml) throws Exception;
 
 	void sendEmailtoVendor(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, Candidate candidate,
 			StringBuilder tempHTML, OrgLocations orgLocations) throws Exception;
@@ -166,5 +166,8 @@ public interface RequirementSubmissionService {
 	Integer getRequirementPerCandidateCount(Long candudateId) throws Exception;
 	
 	RequirementSubmission saveRequirementSubmissionFromCrowdSourcing(JSONObject jsonObj,User user,String jsonStringvalues) throws Exception;
+
+	void applicantAcceptMailAboutRateNegotiation(Requirement requirement, User initiatorUser, RequirementSubmission requirementSubmission,
+			OrgLocations orgLocations,StringBuilder tempHTML) throws Exception;
 
 }

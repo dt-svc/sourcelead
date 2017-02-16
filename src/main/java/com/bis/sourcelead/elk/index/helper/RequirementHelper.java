@@ -60,6 +60,7 @@ public class RequirementHelper {
 				requirementIndex.setMaxExperience(Integer.parseInt(requirement.getMaxExp()));
 			}
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
+			//requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus().toString());
 			requirementIndex.setCountry(requirement.getCountry());
 			requirementIndex.setState(requirement.getState());
 			requirementIndex.setCity(requirement.getCity());

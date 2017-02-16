@@ -24,6 +24,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "CANDIDATE", catalog = "sourcelead")
@@ -245,6 +246,18 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private Long currentResumeId;
 	 
+	 @Transient
+	 private String linkedIn;
+		
+	 @Transient
+	 private String facebook;
+		
+	 @Transient
+	 private String twitter;
+		
+	 @Transient
+	 private String googlePlus;
+		
 	 
 	 @Transient
 	 private List<RequirementSubmission> requirementSubmisstions;
@@ -918,5 +931,44 @@ public class Candidate implements Serializable{
 	public void setSkillsName(String skillsName) {
 		this.skillsName = skillsName;
 	}
-	
+
+
+	public String getLinkedIn() {
+		return linkedIn;
+	}
+
+
+	public void setLinkedIn(String linkedIn) {
+		this.linkedIn = linkedIn;
+	}
+
+
+	public String getFacebook() {
+		return facebook;
+	}
+
+
+	public void setFacebook(String facebook) {
+		this.facebook = facebook;
+	}
+
+
+	public String getTwitter() {
+		return twitter;
+	}
+
+
+	public void setTwitter(String twitter) {
+		this.twitter = twitter;
+	}
+
+
+	public String getGooglePlus() {
+		return googlePlus;
+	}
+
+
+	public void setGooglePlus(String googlePlus) {
+		this.googlePlus = googlePlus;
+	}
 }

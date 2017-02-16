@@ -59,7 +59,7 @@ public class RequirementIndex {
 	
 	private String priority; 
 
-   private String createdDate;
+    private String createdDate;
 
 	private String reqCreatedBy;
 
@@ -71,9 +71,7 @@ public class RequirementIndex {
 	
 	private String[] reqLevel1ApproverUserId;
 	
-	
 	private String[] reqLevel2ApproverUserId;
-	
 	
 	private String[] teamOwnerUserId;
 	
@@ -83,6 +81,7 @@ public class RequirementIndex {
 	
 	private String otherJobType;
 	
+
 	private String isPublicJob;
 	
 	private String isCrowdSourcingJob;
@@ -94,6 +93,8 @@ public class RequirementIndex {
 	private List<String> skillsList;
 	
 	private String isJobApplied;
+
+	private String requirementSubmissionPreviousStatus;
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -443,4 +444,11 @@ public class RequirementIndex {
 		this.isJobApplied = isJobApplied;
 	}
 
+	public String getRequirementSubmissionPreviousStatus() {
+		return requirementSubmissionPreviousStatus;
+	}
+
+	public void setRequirementSubmissionPreviousStatus(String requirementSubmissionPreviousStatus) {
+		this.requirementSubmissionPreviousStatus = requirementSubmissionPreviousStatus;
+	}
 }
