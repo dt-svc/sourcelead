@@ -21,24 +21,24 @@
 </style>
 <script>
 function validateTaskName(){
+
 		var Taskname= $("#taskName").val();
 		var checkMaxTsRowNum = $("#maxTsRowNum").val();
-		for(i = 1; i<7;i++){
-			var oldTaskname = $("#" + i + "taskName").val();
+		for(i = 1; i<checkMaxTsRowNum;i++){
+			var oldTaskname = $("#" + i + "taskName").val()
 			if(oldTaskname == Taskname){
+				$("#save_task").hide();			
 				$("input#taskName").after("<p class='jquery_form_error_message'>"+ Taskname+ " is Already Existed</span>");
 				document.getElementById("taskName").setAttribute('record-exist', 'yes');
 				document.getElementById("taskName").setAttribute('record-exist-errorMsg',Taskname+ ' is Already Existed');
-				$('input#taskName').removeAttr( "record-exist record-exist-errorMsg");
-			}/* else{
+				break;
+			}else{
+				$("#save_task").show();
 				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
-			} */
+			}
 			
 		}
-		
-		
 }
-
 </script>
 
 <script type="text/javascript">
@@ -436,7 +436,6 @@ function getStatus(){
 <!-- Add Task Script start -->
 <script type="text/javascript">
 	function addTasks() {
-
 		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
 		$('#descriptionDiv').find('p.jquery_form_error_message').remove();
 		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200 || $("#taskName").val().length > 100) {
@@ -654,6 +653,7 @@ function getStatus(){
 <!-- Add Task Script Ends -->
 <script type="text/javascript">
 function flushProjectTasks(){
+	$("#taskName").val('');
 	$('#addTask').find('p.jquery_form_error_message').remove();	
 }
 </script>
@@ -757,7 +757,10 @@ function flushProjectTasks(){
 							output = output + ' <tbody>';
 							for (var i = 0; i < json.length; i++) {
 								var projectStartDate = $('#StartDate').val();
-								// var projectEndDate = $('#EndDate').val();
+								var projectEndDate = $('#EndDate').val();
+								if(projectEndDate == null ||  projectEndDate == "" || projectEndDate == "undefined"){
+									projectEndDate = "";
+								}
 								var opt = json[i];
 								var role = '';
 								if (opt.userType != null
@@ -795,7 +798,7 @@ function flushProjectTasks(){
 									output = output+ "<input  id='startDate"+ opt.id+ "' type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
 									output = output + "</div></span></td>";
 									output = output+ "<td><div class='input-group tblminwidth-150'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
-									output = output + "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
+									output = output + "<input id='endDate" + opt.id + "'  value='"+projectEndDate+"' type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
 									output = output + "</div></td>";
 									output = output + "</tr>";
 								}

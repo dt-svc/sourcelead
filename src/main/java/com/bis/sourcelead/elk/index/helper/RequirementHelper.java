@@ -60,6 +60,7 @@ public class RequirementHelper {
 				requirementIndex.setMaxExperience(Integer.parseInt(requirement.getMaxExp()));
 			}
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
+			//requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus().toString());
 			requirementIndex.setCountry(requirement.getCountry());
 			requirementIndex.setState(requirement.getState());
 			requirementIndex.setCity(requirement.getCity());
@@ -184,6 +185,27 @@ public class RequirementHelper {
 				requirementIndex.setNumberOfApplicants(requirement.getTotalApplicantsForRequirement().toString());
 			}
 			requirementIndex.setReleasedBy(requirement.getReleasedBy());
+			
+			if(null != requirement.getIsPublic()){
+				requirementIndex.setIsPublicJob(requirement.getIsPublic());
+			}else{
+				requirementIndex.setIsPublicJob("N");
+			}
+			
+			if(null != requirement.getIsPublic()){
+				requirementIndex.setIsCrowdSourcingJob(requirement.getIsCrowdSourcing());
+			}else{
+				requirementIndex.setIsCrowdSourcingJob("N");
+			}
+			
+			if(null != requirement.getPostedOrgName() && !requirement.getPostedOrgName().isEmpty()){
+				requirementIndex.setPostedOrg(requirement.getPostedOrgName());
+			}
+			
+			if (null != requirement.getAppliedProfessionals() && !"".equalsIgnoreCase(requirement.getAppliedProfessionals())) {
+				String[] appliedProfessionals = requirement.getAppliedProfessionals().split(",");
+				requirementIndex.setAppliedProfessionals(appliedProfessionals);
+			}
 
 		}
 		return requirementIndex;

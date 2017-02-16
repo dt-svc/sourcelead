@@ -91,6 +91,7 @@ public class AddElkRequirement {
 					requirementIndex.setMaxExperience(Integer.parseInt(rs.getString("MAX_EXP")));
 				}
 				requirementIndex.setRequirementStatus(rs.getString("REQUIREMENT_SUBMISSION_STATUS"));
+				//requirementIndex.setRequirementSubmissionPreviousStatus(rs.getString("REQUIREMENT_SUBMISSION_PREVIOUS_STATUS"));
 				requirementIndex.setCountry(rs.getString("COUNTRY"));
 				requirementIndex.setState(rs.getString("STATE"));
 				requirementIndex.setCity(rs.getString("CITY"));
@@ -144,6 +145,7 @@ public class AddElkRequirement {
 						requirementIndex.setSkills(skills.split(","));
 					}
 					requirementIndex.setJobType(rs.getString("JOB_TYPE"));
+					requirementIndex.setOtherJobType(rs.getString("OTHER_JOBTYPE"));
 					requirementIndex.setJobId(rs.getString("JOB_ID"));
 					String clientContactName = null;
 					String clientContactEmail = null;
@@ -184,6 +186,28 @@ public class AddElkRequirement {
 				}
 				Integer numberOfApplicants = getNumberOfApplicants(rs.getString("ID"),conn,rs.getString("ORG_LOCATION_ID"));
 				requirementIndex.setNumberOfApplicants(numberOfApplicants.toString());
+				
+				if(null != rs.getString("IS_PUBLIC")){
+					requirementIndex.setIsPublicJob(rs.getString("IS_PUBLIC"));
+				}else{
+					requirementIndex.setIsPublicJob("N");
+				}
+				
+				if(null != rs.getString("IS_CROWD_SOURCING")){
+					requirementIndex.setIsCrowdSourcingJob(rs.getString("IS_CROWD_SOURCING"));
+				}else{
+					requirementIndex.setIsCrowdSourcingJob("N");
+				}
+				
+				if(null != rs.getString("POSTED_ORG_NAME")){
+					requirementIndex.setPostedOrg(rs.getString("POSTED_ORG_NAME"));
+				}
+				
+				String appliedProfessionals = rs.getString("APPLIED_PROFESSIONALS");
+				if(!("").equalsIgnoreCase(appliedProfessionals) && appliedProfessionals!=null){
+					requirementIndex.setAppliedProfessionals(appliedProfessionals.split(","));
+				}
+				
 				reqIndexList.add(requirementIndex);
 				
 			}

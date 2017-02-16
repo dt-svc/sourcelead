@@ -1,5 +1,7 @@
 package com.bis.sourcelead.elk.index;
 
+import java.util.List;
+
 /**
  * 
  * @author Rajashekar and Prasanna
@@ -41,6 +43,8 @@ public class RequirementIndex {
 	
 	private String[] skills;
 	
+	private String[] appliedProfessionals;
+	
 	private String jobType;
 	
 	private String jobId;
@@ -55,7 +59,7 @@ public class RequirementIndex {
 	
 	private String priority; 
 
-   private String createdDate;
+    private String createdDate;
 
 	private String reqCreatedBy;
 
@@ -67,9 +71,7 @@ public class RequirementIndex {
 	
 	private String[] reqLevel1ApproverUserId;
 	
-	
 	private String[] reqLevel2ApproverUserId;
-	
 	
 	private String[] teamOwnerUserId;
 	
@@ -78,6 +80,21 @@ public class RequirementIndex {
 	private String releasedBy;
 	
 	private String otherJobType;
+	
+
+	private String isPublicJob;
+	
+	private String isCrowdSourcingJob;
+	
+	private String calDays;
+	
+	private String postedOrg;
+	
+	private List<String> skillsList;
+	
+	private String isJobApplied;
+
+	private String requirementSubmissionPreviousStatus;
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -371,4 +388,67 @@ public class RequirementIndex {
 		this.otherJobType = otherJobType;
 	}
 
+	public String getIsPublicJob() {
+		return isPublicJob;
+	}
+
+	public void setIsPublicJob(String isPublicJob) {
+		this.isPublicJob = isPublicJob;
+	}
+
+	public String getIsCrowdSourcingJob() {
+		return isCrowdSourcingJob;
+	}
+
+	public void setIsCrowdSourcingJob(String isCrowdSourcingJob) {
+		this.isCrowdSourcingJob = isCrowdSourcingJob;
+	}
+
+	public String getCalDays() {
+		return calDays;
+	}
+
+	public void setCalDays(String calDays) {
+		this.calDays = calDays;
+	}
+
+	public String getPostedOrg() {
+		return postedOrg;
+	}
+
+	public void setPostedOrg(String postedOrg) {
+		this.postedOrg = postedOrg;
+	}
+
+	public List<String> getSkillsList() {
+		return skillsList;
+	}
+
+	public void setSkillsList(List<String> skillsList) {
+		this.skillsList = skillsList;
+	}
+
+	public String[] getAppliedProfessionals() {
+		return appliedProfessionals;
+	}
+
+	public void setAppliedProfessionals(String[] appliedProfessionals) {
+		this.appliedProfessionals = appliedProfessionals;
+	}
+
+	public String getIsJobApplied() {
+		return isJobApplied;
+	}
+
+	public void setIsJobApplied(String isJobApplied) {
+		this.isJobApplied = isJobApplied;
+	}
+
+	public String getRequirementSubmissionPreviousStatus() {
+		return requirementSubmissionPreviousStatus;
+	}
+
+	public void setRequirementSubmissionPreviousStatus(String requirementSubmissionPreviousStatus) {
+		this.requirementSubmissionPreviousStatus = requirementSubmissionPreviousStatus;
+	}
 }

@@ -758,6 +758,7 @@ function addAttachment(){
 	
 
 <!-- Content Area -->
+<body  onclick="bodyClick();">
 <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
@@ -851,7 +852,7 @@ function addAttachment(){
 </section>
 <!-- Content Area Ends--> 
 <div class="time_pop" id="timeSheetErrorMsg"></div>
-
+</body>
 <script type="text/javascript">
 (function ($) {
    $.fn.serializeFormJSON = function () {
@@ -984,6 +985,12 @@ function deleteSubmissionDocument(submissionDocumentId){
             
 				
 </script> 
+
+<script>
+function dropDownExport(){
+	$("#exporrtEntries").slideToggle();
+}
+</script>
 
 <!-- this script is for Timesheet Entries Export -->
 <script>
