@@ -56,4 +56,8 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','POSTED_ORG_NAME
 CALL sourcelead.AlterTableAddColumn ('sourcelead','USER','COUNTRY','VARCHAR(100) DEFAULT NULL');
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','APPLIED_PROFESSIONALS','TEXT DEFAULT NULL');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','REQUIREMENT_UUID','VARCHAR(20) NULL AFTER `IS_CROWD_SOURCING`');
+
+
  

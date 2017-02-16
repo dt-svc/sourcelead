@@ -81,6 +81,7 @@ public class RequirementIndex {
 	
 	private String otherJobType;
 	
+	private String requirementUUID;
 
 	private String isPublicJob;
 	
@@ -386,6 +387,14 @@ public class RequirementIndex {
 
 	public void setOtherJobType(String otherJobType) {
 		this.otherJobType = otherJobType;
+	}
+
+	public String getRequirementUUID() {
+		return requirementUUID;
+	}
+
+	public void setRequirementUUID(String requirementUUID) {
+		this.requirementUUID = requirementUUID;
 	}
 
 	public String getIsPublicJob() {
