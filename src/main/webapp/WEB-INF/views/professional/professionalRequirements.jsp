@@ -231,7 +231,7 @@ window.onload = function () {
             </div>
             <div class="row form-footer">
               <div class="pull-right mr"> 
-              <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement();" class="btn btn-sm btn-primary"/>
+              <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement('0');" class="btn btn-sm btn-primary"/>
                <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/> 
               </div>
             </div>
@@ -255,8 +255,10 @@ window.onload = function () {
 	  </section>
 	   <br/>
 	   <input type="hidden" name="requirementOffset" id="requirementOffset" value="0"/>
+	    <input type="hidden" name="requirementSearchOffset" id="requirementSearchOffset" value="0"/>
 	  <div id="requirementsList"></div> 
-	  <a href="#" id="loadMoreSection" style="display: block;"><section class="loadJob" onclick="getViewMoreRecords();"><i id="viewMoreLoading"></i><span id="viewMore">View more</span></section></a>
+	  <a href="#" id="loadMoreSection" style="display: none;"><section class="loadJob" onclick="getViewMoreRecords();"><i id="viewMoreLoading"></i><span id="viewMore">View more</span></section></a>
+	  <a href="#" id="loadMoreSearchSection" style="display: none;"><section class="loadJob" onclick="getViewMoreSearchRecords();"><i id="viewMoreSearchLoading"></i><span id="viewSearchMore">View more</span></section></a>
 	  
 	 <div class="side_mask"><div class="proj_close"></div></div>
 	 <div class="new_side_wrap">
@@ -462,6 +464,19 @@ function getViewMoreRecords(){
 }
 </script>
 
+<script>
+function getViewMoreSearchRecords(){
+	 offset = $("#requirementSearchOffset").val();
+	 offset = parseInt(offset)+parseInt(10);
+	 $("#requirementSearchOffset").val(offset);
+	 searchRequirement(offset);
+	 
+	 document.getElementById("viewMoreSearchLoading").className = 'fa fa-spinner fa-spin'
+	 
+}
+</script>
+
+
 
 
 
@@ -494,6 +509,7 @@ function requirementsList(offset){
 	var postedOn = document.getElementById('postedOn').value;
 	var jobTitleSearch = document.getElementById('jobTitleSearch').value;
 	var jobLocationSearch = document.getElementById('jobLocationSearch').value;
+    loadChosenRequirementScripts();
 	
 	
 	if(offset == 0){
@@ -653,6 +669,7 @@ function requirementsList(offset){
 			       	    	$('#requirementsList').append(result);
 			       	    	document.getElementById("viewMoreLoading").removeAttribute("class");
 			       	    	document.getElementById("loadMoreSection").style.display="";
+			       	    	document.getElementById("loadMoreSearchSection").style.display="none";
 		            		
 				   }
 	   		    }
@@ -672,6 +689,7 @@ function requirementsList(offset){
 				$("#requirementsList").empty();
 			    $("#requirementsList").append(result); 
 			    document.getElementById("loadMoreSection").style.display="none";
+			    document.getElementById("loadMoreSearchSection").style.display="none";
    		    }else{
    		    	
    		    	$('#viewMore').html("No Records Found");
@@ -687,7 +705,7 @@ function requirementsList(offset){
 
 
 <script>
-function searchRequirement(){
+function searchRequirement(offset){
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
@@ -707,6 +725,12 @@ function searchRequirement(){
 			$("#search_requiremet").addClass('button').val('Processing..');
 			
 			var requirementType = document.getElementById('requirementType').value;
+			
+			if(offset == 0){
+				$("#requirementsList").empty();
+				$("#requirementSearchOffset").val(offset)
+				$('#viewSearchMore').html("View More");
+			}
 
 			$.ajax({
 						type : "GET",
@@ -716,11 +740,10 @@ function searchRequirement(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/searchCrowdSourcingRequiremets?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&requirementType="+requirementType,
+						url : sourceleadUrl+"/searchCrowdSourcingRequiremets?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&requirementType="+requirementType+"&offset="+offset,
 						success : function(data) {
 							$("#search_requiremet").addClass('button').val('Search');
 							$("#search_requiremet").removeAttr("disabled");
-							$("#requirementsList").empty();
 							 closePop();
 							 var json = JSON.parse(data);
 					       	 var result = ""
@@ -840,12 +863,14 @@ function searchRequirement(){
 									 				
 									 				result = result +'<div class="clearfix"></div>';
 									 				result = result +'</section>';
-									       	    	$('#requirementsList').append(result);
+									       	     $('#requirementsList').append(result);
 									       	     document.getElementById("loadMoreSection").style.display="none";
+									       	     document.getElementById("loadMoreSearchSection").style.display="";
+									       	     document.getElementById("viewMoreSearchLoading").removeAttribute("class");
 								            		
 										   }
 							   		    }
-						          }else{
+						          }else if(offset == 0){
 				                	 var result ="";
 				    	    	     result = result+"   <div class='row'>"; 
 				    	    	     result = result +'<div class="clearfix"></div>';
@@ -861,6 +886,10 @@ function searchRequirement(){
 				    				$("#requirementsList").empty();
 				    			    $("#requirementsList").append(result); 
 				    			    document.getElementById("loadMoreSection").style.display="none";
+				    			    document.getElementById("loadMoreSearchSection").style.display="none";
+		               		 }else{
+		               			$('#viewSearchMore').html("No Records Found");
+		           		    	document.getElementById("viewMoreSearchLoading").removeAttribute("class");
 		               		 }
 						},
 					});  
@@ -922,6 +951,7 @@ function loadChosenRequirementScripts(){
 	 $("#maxExp").val('').trigger("chosen:updated");
 	 $("#skills").val('').trigger("chosen:updated"); 
 	 $("#noticePeriod").val('').trigger("chosen:updated"); 
+	 $("#organizations").val('').trigger("chosen:updated");
 	 
 	 $("#anyKeyWord").empty();
 	 $("#allReqKeyWord").empty();

@@ -279,6 +279,7 @@ public class CrowdSourcingRequirementsRestController {
 	 @RequestMapping(value = "/searchCrowdSourcingRequiremets",method = RequestMethod.GET)
 		public @ResponseBody  String searchCrowdSourcingRequiremets(@RequestParam(value = "json", required = false) String json,
 				@RequestParam(value = "requirementType", required = false) String requirementType,
+				@RequestParam(value = "offset", required = false) Integer offset,
 				HttpServletRequest request,HttpServletResponse response) throws Exception {
 		String resultJson = "";
 		String jsonc = "{" + json + "}";
@@ -304,7 +305,7 @@ public class CrowdSourcingRequirementsRestController {
 				
 			   
 			    try {
-			    	 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0, Constants.MAX_RESULTS_TWENTY,boolQueryBuilder).getHits();
+			    	 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,offset, Constants.MAX_RESULTS_TEN,boolQueryBuilder).getHits();
 			 	     if(null != searchHits && searchHits.length >0){
 			 	    	ObjectMapper mapper = new ObjectMapper();
 			 	    	for (SearchHit hit : searchHits) {
