@@ -60,4 +60,19 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','APPLIED_PROFESS
 CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','REQUIREMENT_UUID','VARCHAR(20) NULL AFTER `IS_CROWD_SOURCING`');
 
 
+
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('Applied To Requirement','Email');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'professionalName', '{{AppliedRequirement.professionalName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'employerName', '{{AppliedRequirement.employerName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'requirementTitle', '{{AppliedRequirement.requirementTitle}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'experience', '{{AppliedRequirement.experience}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'location', '{{AppliedRequirement.location}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'professionalEmail', '{{AppliedRequirement.professionalEmail}}');
+
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES 
+											('Applied To Requirement','Email', 'Applied To Requirement', 'Confirmation - Requirement Application ', 'Confirmation - Requirement Application','org', 'Best Regards,\nSourceLead.', 'Dear Professional {{AppliedRequirement.professionalName}}\n\n\n you have applied to below mentioned requirement.\n\n Requirement Title : {{AppliedRequirement.requirementTitle}}\n\n Employer Name : {{AppliedRequirement.employerName}}\n\n Experience : {{AppliedRequirement.experience}}\n Location : {{AppliedRequirement.location}}\n\n  If the recruiters at {{AppliedRequirement.employerName}} find your profile suitable, they will email you at {{AppliedRequirement.professionalEmail}}','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
+									
+
+
+
  
