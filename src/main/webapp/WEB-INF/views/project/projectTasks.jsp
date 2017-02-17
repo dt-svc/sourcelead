@@ -11,16 +11,23 @@ function taskNameValidation(){
 	var TaskName = document.getElementById("taskName").value.trim();
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
-		type : "POST",
+		type : "GET",
 		url : sourceleadUrl+ "/validateTasksNameById?${_csrf.parameterName}=${_csrf.token}&TaskName="+ TaskName+"&ProjectId="+projectId,
 		success : function(data) {
 			 if (data == true) {
+				$("#save_task").hide();
 				$("input#taskName").after("<p class='jquery_form_error_message'>"+ TaskName+ " is Already Existed</span>");
 				document.getElementById("taskName").setAttribute('record-exist', 'yes');
 				document.getElementById("taskName").setAttribute('record-exist-errorMsg',TaskName+ ' is Already Existed');
 				$('input#taskName').removeAttr( "record-exist record-exist-errorMsg");
 			} else {
+				$("#save_task").show();
+				$("#save_task").removeAttr("disabled");
 				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
+				$('input#taskName').attr('class','valid form-control');
+				$('#taskNamesDIV').find('p.jquery_form_error_message').remove();
+				$("#save_task").click(function() {
+				});
 			} 
 		},
 	});
@@ -206,6 +213,7 @@ function updateTakBillableType(taskId){
 
 <script type="text/javascript">
 	function flushTasks() {
+		$('#taskName').val();
 		$('#taskNamesDIV').find('p.jquery_form_error_message').remove();
 		$("#taskBillableType").val('Billable');
 		$('#taskBillableType').selectpicker('refresh');

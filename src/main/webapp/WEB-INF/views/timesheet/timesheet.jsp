@@ -986,6 +986,12 @@ function deleteSubmissionDocument(submissionDocumentId){
 				
 </script> 
 
+<script>
+function dropDownExport(){
+	$("#exporrtEntries").slideToggle();
+}
+</script>
+
 <!-- this script is for Timesheet Entries Export -->
 <script>
 function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType){

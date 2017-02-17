@@ -149,9 +149,9 @@ public class TaskServiceImpl implements TaskService{
 		        task.setUpdatedDate(commonUtil.currentDate());
      	        taskDao.saveTasks(task);
 				 //mail logic for users
-     	        /*if(null != task.getAlertType() && !"".equalsIgnoreCase(task.getAlertType())){
-     	        	mailToUserTask(user,ownerUser,task,loginOrgLocation);
-     	        }*/
+     	        if(null != task.getAlertType() && !"".equalsIgnoreCase(task.getAlertType())){
+     	        	mailToUserTask(task);
+     	        }
 			}
         }
         
@@ -169,57 +169,57 @@ public class TaskServiceImpl implements TaskService{
 	 * @throws Exception
 	 */
 	@Override
-	public void mailToUserTask(Tasks tasks) throws Exception{
+	public void mailToUserTask(Tasks task) throws Exception{
 			EmailMessage emailMessage = new EmailMessage();
-			 emailMessage.setFirstName(tasks.getTaskOwnerId().getFirstName());
-			 emailMessage.setLastName(tasks.getTaskOwnerId().getLastName());
-			 emailMessage.setToEmail(tasks.getAssignedUserId().getEmail());
+			 emailMessage.setFirstName(task.getTaskOwnerId().getFirstName());
+			 emailMessage.setLastName(task.getTaskOwnerId().getLastName());
+			 emailMessage.setToEmail(task.getAssignedUserId().getEmail());
 			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-			 emailMessage.setCreatedBy(tasks.getTaskOwnerId().getUserCode());
+			 emailMessage.setCreatedBy(task.getTaskOwnerId().getUserCode());
 			 StringBuilder msgBuild = new StringBuilder();
-			 emailMessage.setFromName(msgBuild.append(tasks.getTaskOwnerId().getFirstName()).append(" ").append(tasks.getTaskOwnerId().getLastName()).toString());
+			 emailMessage.setFromName(msgBuild.append(task.getTaskOwnerId().getFirstName()).append(" ").append(task.getTaskOwnerId().getLastName()).toString());
 			 
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 if(tasks.getSubject()!= null  && !"".equalsIgnoreCase(tasks.getSubject())){
-			 globalVarsMap.put("subject", tasks.getSubject()); 
+			 if(task.getSubject()!= null  && !"".equalsIgnoreCase(task.getSubject())){
+			 globalVarsMap.put("subject", task.getSubject()); 
 			 }else{
 			 globalVarsMap.put("subject", "--");	 
 			 }
-			 if(tasks.getPriority()!= null  && !"".equalsIgnoreCase(tasks.getPriority())){
-			 globalVarsMap.put("priority", tasks.getPriority()); 
+			 if(task.getPriority()!= null  && !"".equalsIgnoreCase(task.getPriority())){
+			 globalVarsMap.put("priority", task.getPriority()); 
 			 }else{
-			 globalVarsMap.put("subject", "--");	 
+			 globalVarsMap.put("priority", "--");	 
 			 }
-			 if(null != tasks.getTaskDate() && !"".equalsIgnoreCase(tasks.getTaskDate().toString())){
-			 tasks.setTaskDateStr(Constants.DF_DMY.format(tasks.getTaskDate()));
-			 if( tasks.getTaskDateStr()!= null  && !"".equalsIgnoreCase( tasks.getTaskDateStr().toString())){
-			 globalVarsMap.put("date", tasks.getTaskDateStr());	 
+			 if(null != task.getTaskDate() && !"".equalsIgnoreCase(task.getTaskDate().toString())){
+			 task.setTaskDateStr(Constants.DF_DMY.format(task.getTaskDate()));
+			 if( task.getTaskDateStr()!= null  && !"".equalsIgnoreCase( task.getTaskDateStr().toString())){
+			 globalVarsMap.put("date", task.getTaskDateStr());	 
 			 	}
 			 }else{
 		     globalVarsMap.put("date","--"); 
 			 }
-			 if(tasks.getTaskTime()!= null  && !"".equalsIgnoreCase(tasks.getTaskTime())){
-			 globalVarsMap.put("time", tasks.getTaskTime());	 
+			 if(task.getTaskTime()!= null  && !"".equalsIgnoreCase(task.getTaskTime())){
+			 globalVarsMap.put("time", task.getTaskTime());	 
 			 }else{
 			 globalVarsMap.put("time","--"); 
 			 }
-			 if(tasks.getDescription()!= null  && !"".equalsIgnoreCase(tasks.getDescription())){
-			 globalVarsMap.put("description", tasks.getDescription()); 
+			 if(task.getDescription()!= null  && !"".equalsIgnoreCase(task.getDescription())){
+			 globalVarsMap.put("description", task.getDescription()); 
 			 }else{
 			 globalVarsMap.put("description","--"); 
 			 }
-			 if(tasks.getTaskOwnerId().getFirstName() != null && tasks.getTaskOwnerId().getLastName()!= null  && !"".equalsIgnoreCase( tasks.getTaskOwnerId().getFirstName()) && !"".equalsIgnoreCase( tasks.getTaskOwnerId().getLastName())){
+			 if(task.getTaskOwnerId().getFirstName() != null && task.getTaskOwnerId().getLastName()!= null  && !"".equalsIgnoreCase( task.getTaskOwnerId().getFirstName()) && !"".equalsIgnoreCase( task.getTaskOwnerId().getLastName())){
 				 StringBuilder userBuild = new StringBuilder();
-				 globalVarsMap.put("LoginUser",userBuild.append(tasks.getTaskOwnerId().getFirstName()).append(" ").append(tasks.getTaskOwnerId().getLastName()).toString());
+				 globalVarsMap.put("LoginUser",userBuild.append(task.getTaskOwnerId().getFirstName()).append(" ").append(task.getTaskOwnerId().getLastName()).toString());
 			 }else{
-			 globalVarsMap.put("LoginUser",tasks.getTaskOwnerId().getFirstName()); 
+			 globalVarsMap.put("LoginUser",task.getTaskOwnerId().getFirstName()); 
 			 }
-			 if (tasks.getAssignedUserId().getFirstName() != null && tasks.getAssignedUserId().getLastName()!= null  && !"".equalsIgnoreCase( tasks.getAssignedUserId().getFirstName()) && !"".equalsIgnoreCase( tasks.getAssignedUserId().getLastName())){
+			 if (task.getAssignedUserId().getFirstName() != null && task.getAssignedUserId().getLastName()!= null  && !"".equalsIgnoreCase( task.getAssignedUserId().getFirstName()) && !"".equalsIgnoreCase( task.getAssignedUserId().getLastName())){
 				 StringBuilder userBuild = new StringBuilder();
-				 globalVarsMap.put("assignedUser",userBuild.append(tasks.getAssignedUserId().getFirstName()).append(" ").append(tasks.getAssignedUserId().getLastName()).toString());
+				 globalVarsMap.put("assignedUser",userBuild.append(task.getAssignedUserId().getFirstName()).append(" ").append(task.getAssignedUserId().getLastName()).toString());
 			 }else{
-			 globalVarsMap.put("assignedUser",tasks.getAssignedUserId().getFirstName()); 
+			 globalVarsMap.put("assignedUser",task.getAssignedUserId().getFirstName()); 
 			 }
 			 
 			 
@@ -245,19 +245,19 @@ public class TaskServiceImpl implements TaskService{
 			 emailMessage.setMessageBody(emailTemplate);
 			 
 			 //calling the Email 
-			 if(tasks.getAlertType().equalsIgnoreCase("Email") && null !=tasks.getAlertType()){
-				 emailScenerioUtil.sendEmail(emailMessage,tasks.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 if(task.getAlertType().equalsIgnoreCase("Email") && null !=task.getAlertType()){
+				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 }
 			 //calling the Notification 
-			 if(tasks.getAlertType().equalsIgnoreCase("Notification") && null !=tasks.getAlertType()){
+			 if(task.getAlertType().equalsIgnoreCase("Notification") && null !=task.getAlertType()){
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, tasks.getTaskOwnerId(),tasks.getAssignedUserId(), tasks.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario);
 			 }
 			 //calling the Email  and notification 
-			 if(tasks.getAlertType().equalsIgnoreCase("Email,Notification") && null !=tasks.getAlertType()){
-				 emailScenerioUtil.sendEmail(emailMessage,tasks.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 if(task.getAlertType().equalsIgnoreCase("Email,Notification") && null !=task.getAlertType()){
+				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, tasks.getTaskOwnerId(),tasks.getAssignedUserId(),tasks.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario);
 			 }
 
 	}

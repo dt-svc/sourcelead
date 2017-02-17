@@ -1589,7 +1589,7 @@ function setTemplateValues(){
 			            $('#education').trigger("chosen:updated");
 					}
 			    	
-			    	$("#description").val(json.description);
+			    	$("textarea#description").val(json.description);
 			    	$("#rate").val(json.rate);
 			    	
 			    	if(json.currencyCode != null && json.currencyCode != '' && json.currencyCode != 'undefined'){
