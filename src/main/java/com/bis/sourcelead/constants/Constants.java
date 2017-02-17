@@ -59,6 +59,7 @@ public class Constants {
 	
 	public static final Integer LEVEL2 = 2;
 	   
+	public static transient DateFormat TMS = new SimpleDateFormat("hh:mm a");
 	public static transient DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
 	public static DateFormat DF_STD = new SimpleDateFormat("yyyy/MM/dd");
