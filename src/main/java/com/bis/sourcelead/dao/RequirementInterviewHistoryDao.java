@@ -31,7 +31,7 @@ public interface RequirementInterviewHistoryDao {
 	 * @throws Exception
 	 * To get dashboard interviews
 	 */
-	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode, Timezone timezone)throws Exception;
+	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception;
 	
 	Integer getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 }
