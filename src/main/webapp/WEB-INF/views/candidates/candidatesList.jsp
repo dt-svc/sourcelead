@@ -1103,7 +1103,7 @@ function cancel(candidateId){
 							  <div class="col-md-6">
 								  <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months" onblur="minMaxExperience();">
 									  <option selected value="">Max Years</option>
-									  <c:forEach begin="0" end="24" varStatus="loop">
+									  <c:forEach begin="0" end="25" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
 								  </select>
