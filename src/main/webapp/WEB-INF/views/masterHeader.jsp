@@ -295,7 +295,7 @@ width: 11.5%;
 	          </li>
           </c:if> --%>
           
-          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_user.country}.gif" title="${SourceLeadWeb_user.country}"></a></li>
+          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
 
         </ul>
       </div>

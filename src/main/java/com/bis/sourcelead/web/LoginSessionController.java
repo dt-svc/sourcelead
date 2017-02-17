@@ -172,7 +172,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getUserType());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
-			SourceLeadSessionManager.setSessionAttribute(request, "country", user.getLocation());
+			SourceLeadSessionManager.setSessionAttribute(request, "country", user.getCountry());
 			
 			OrgLocations orgLocations = userRole.getOrgLocations();
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
