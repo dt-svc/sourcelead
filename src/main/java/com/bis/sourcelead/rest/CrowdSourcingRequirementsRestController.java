@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,9 @@ public class CrowdSourcingRequirementsRestController {
 	@RequestMapping(value = "/getCrowdSourcingRequirements")
 	public @ResponseBody String getCrowdSourcingRequirements(@RequestParam(value = "requirementType", required = false) String requirementType,
 			@RequestParam(value = "offset", required = false) Integer offset,
+			@RequestParam(value = "postedOn", required = false) String postedOn,
+			@RequestParam(value = "jobTitleSearch", required = false) String jobTitleSearch,
+			@RequestParam(value = "jobLocationSearch", required = false) String jobLocationSearch,
 			HttpServletRequest request) throws Exception {
 
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -103,6 +107,29 @@ public class CrowdSourcingRequirementsRestController {
 	     }
 	     else if (requirementType.equalsIgnoreCase("AppliedJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
+	     }
+	     
+	     if(!isNullOrEmpty(postedOn)){
+				String upOn = UpdateOnToDate(postedOn);
+				if(!Constants.ALL_RECORDS.equalsIgnoreCase(upOn)){
+				 RangeQueryBuilder qb = QueryBuilders.rangeQuery("createdDate").gte(upOn);
+				boolQueryBuilder.must(qb);
+				}
+			}
+	     
+	     if(!isNullOrEmpty(jobTitleSearch)){
+	    	 BoolQueryBuilder anyJobSearchBoolQueryBuilder = QueryBuilders.boolQuery();
+	    	 anyJobSearchBoolQueryBuilder.should(QueryBuilders.matchQuery("jobTitle", jobTitleSearch));
+	    	 anyJobSearchBoolQueryBuilder.should(QueryBuilders.matchQuery("jobId", jobTitleSearch));
+	    	 boolQueryBuilder.must(anyJobSearchBoolQueryBuilder);
+	     }
+	     
+	     if(!isNullOrEmpty(jobLocationSearch)){
+	    	 BoolQueryBuilder anyLocationBoolQueryBuilder = QueryBuilders.boolQuery();
+	    	 anyLocationBoolQueryBuilder.should(QueryBuilders.matchQuery("country", jobLocationSearch));
+	    	 anyLocationBoolQueryBuilder.should(QueryBuilders.matchQuery("state", jobLocationSearch));
+	    	 anyLocationBoolQueryBuilder.should(QueryBuilders.matchQuery("city", jobLocationSearch));
+	    	 boolQueryBuilder.must(anyLocationBoolQueryBuilder);
 	     }
 		 
 		 boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
@@ -155,6 +182,33 @@ public class CrowdSourcingRequirementsRestController {
 	    resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
 	}
+	
+	 public String UpdateOnToDate(String updatedOn){
+			
+		 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	     Calendar cal = Calendar.getInstance();
+	     if((Constants.ONE_DAY_AGO).equalsIgnoreCase(updatedOn)){
+	        cal.add(Calendar.DATE, -1);    
+	        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.THREE_DAY_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -3);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.ONE_WEEK_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -7);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.TWO_WEEK_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -14);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.ONE_MONTH_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -30);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.THREE_MONTH_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -90);    
+		        return  dateFormat.format(cal.getTime());
+		 }else{
+			 return updatedOn;
+		 }
+	 }
 	
 	
 	public void calculateDaysAndSkills(List<RequirementIndex> requirementList) throws ParseException {
@@ -441,8 +495,8 @@ public class CrowdSourcingRequirementsRestController {
 				}
 				
 				//Requirement Skills
-				if(jsonObj.has("organization") && !"".equalsIgnoreCase(jsonObj.getString("organization"))){
-					ArrayList<String> organizationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "postedOrg");
+				if(jsonObj.has("organizations") && !"".equalsIgnoreCase(jsonObj.getString("organizations"))){
+					ArrayList<String> organizationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "organizations");
 					if(organizationArray != null && !organizationArray.isEmpty()){
 						BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : organizationArray){

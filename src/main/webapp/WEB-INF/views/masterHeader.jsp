@@ -350,6 +350,7 @@ function notificationStatusAsRead(){
   <!-- Task related code Start -->
   
   <!-- Add Task Div -->
+		 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 		 <div class="addTask"> <span class="icon-addTask" title="Add Task"> <i class="fa fa-gears"></i> </span>
 		    <div class="clearfix col-xs-12 col-md-12 addTask-widget">
 		    <i class="fa fa-close close-div taskpop-close"></i>  
@@ -489,6 +490,7 @@ function notificationStatusAsRead(){
 		      <!-- Add New Task Widget --> 
 		    </div>
 		  </div>
+		  </c:if>
 
 <div class="addtAsk_popmask"></div>
 

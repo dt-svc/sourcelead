@@ -47,13 +47,13 @@ window.onload = function () {
 	  <section class="openJobsHead">
 	  
 		  <span>
-			  <i class="fa fa-search"></i><input type="text" placeholder="Search" class="searchJob">
+			  <i class="fa fa-search"></i><input type="text" placeholder="Search" id="jobTitleSearch" name="jobTitleSearch" class="searchJob">
 		  </span>
 		  <span>
-			  <i class="fa fa-map-marker"></i><input type="text" placeholder="Location" class="searchJob searchJobLo">
+			  <i class="fa fa-map-marker"></i><input type="text" placeholder="Location" id="jobLocationSearch" name="jobLocationSearch" class="searchJob searchJobLo">
 		  </span>
 		  <span>
-			  <input type="button" value="Search" class="jobBtn">
+			  <input type="button" value="Search" class="jobBtn" onclick="requirementsList('0');">
 		  </span>	
 		  
 		  <div class="cand-advsrch">
@@ -241,12 +241,13 @@ window.onload = function () {
 		  	  		  	  
 	  
 			<div class="timeNewSe" style="float:right;">
-                <select class="form-control chosen-select">
-                  <option>1 day ago</option>
-                  <option>3 day ago</option>
-                  <option>1 week ago</option>
-                  <option>3 week ago</option>
-                  <option>1 month ago</option>
+                <select class="form-control chosen-select"  id="postedOn" name="postedOn" onchange="requirementsList('0');">
+                  <option value="1 Day Ago">1 day ago</option>
+                  <option value="3 Days Ago">3 day ago</option>
+                  <option value="1 Week Ago">1 week ago</option>
+                  <option value="2 Weeks Ago">2 weeks ago</option>
+                  <option value="1 Month Ago">1 month ago</option>
+                   <option value="3 Months Ago">3 Months Ago</option>
                 </select>
             </div>    
             
@@ -266,6 +267,8 @@ window.onload = function () {
 
 <jsp:include page="../masterFooter.jsp" />
 <jsp:include page="applyToJob.jsp" />
+
+<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
 
 
 <script type="text/javascript">
@@ -488,6 +491,11 @@ function getViewMoreRecords(){
 function requirementsList(offset){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementType = document.getElementById('requirementType').value;
+	var postedOn = document.getElementById('postedOn').value;
+	var jobTitleSearch = document.getElementById('jobTitleSearch').value;
+	var jobLocationSearch = document.getElementById('jobLocationSearch').value;
+	
+	
 	if(offset == 0){
 		$("#requirementsList").empty();
 		$("#requirementOffset").val(offset)
@@ -512,7 +520,7 @@ function requirementsList(offset){
 	
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType+"&offset="+offset,
+	   	url: sourceleadUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType+"&offset="+offset+"&postedOn="+postedOn+"&jobTitleSearch="+jobTitleSearch+"&jobLocationSearch="+jobLocationSearch,
 	   			
 	    success: function(data) {
        	 var json = JSON.parse(data);
@@ -529,6 +537,7 @@ function requirementsList(offset){
 			 				var experience = '';
 			 				var rate = '';
 			 				var location = '';
+			 				var jobId = '';
 			 				
 			 				if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType != 'undefined'){
 			 					jobType = requirements.jobType;
@@ -536,6 +545,9 @@ function requirementsList(offset){
 			 					jobType = 'No Data';
 			 				}
 			 				
+			 				if(requirements.jobId != null && requirements.jobId != '' && requirements.jobId != 'undefined'){
+			 					jobId = requirements.jobId+" - "	
+			 				}
 			 				
 			 				if(requirements.minExperience != 'undefined' && requirements.maxExperience == 'undefined'){
 			 					experience = requirements.minExperience+" Years";
@@ -563,7 +575,7 @@ function requirementsList(offset){
 			 				
 			 				result = '<section class="openCta">';
 			 				result = result +'<div class="OpenJob">';
-			 				result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3></a>';
+			 				result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 			 				result = result +'<h4>'+requirements.postedOrg+'</h4>';
 			 				result = result +'<span>';
 			 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
@@ -726,10 +738,16 @@ function searchRequirement(){
 									 				var rate = '';
 									 				var location = '';
 									 				
+									 				var jobId = '';
+									 				
 									 				if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType != 'undefined'){
 									 					jobType = requirements.jobType;
 									 				}else{
 									 					jobType = 'No Data';
+									 				}
+									 				
+									 				if(requirements.jobId != null && requirements.jobId != '' && requirements.jobId != 'undefined'){
+									 					jobId = requirements.jobId+" - "	
 									 				}
 									 				
 									 				
@@ -759,7 +777,7 @@ function searchRequirement(){
 									 				
 									 				result = '<section class="openCta">';
 									 				result = result +'<div class="OpenJob">';
-									 				result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3></a>';
+									 				result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 									 				result = result +'<h4>'+requirements.postedOrg+'</h4>';
 									 				result = result +'<span>';
 									 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
@@ -909,5 +927,21 @@ function loadChosenRequirementScripts(){
 	 $("#allReqKeyWord").empty();
 	 $("#excludeReqKeyWord").empty();
 }
+</script>
+
+
+<script>
+// Back To Top 
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
 </script>
 
