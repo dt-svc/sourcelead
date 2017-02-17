@@ -267,9 +267,15 @@ public class TimesheetRestController {
 				StringBuilder selectedStartDate = new StringBuilder("");
 				StringBuilder selectedEndDate =  new StringBuilder("");
 				int count = 1;
+				 DateFormat format = Constants.DF_DMY;
 				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
 					    String key = entry.getKey();
 					    String value =entry.getValue();
+					    Date currentStartDate = format.parse(key.replaceAll("/", "-"));
+					    Date currentEndDate = format.parse(value.replaceAll("/", "-"));
+					    HashSet<Date> pmhDateList =  projectMembersHistoryService.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(projectMember.getId(), currentStartDate, currentEndDate);
+					    if(pmhDateList.isEmpty() || pmhDateList == null)
+					    continue;
 					    StringBuilder isSelected = new StringBuilder("");
 					    if(count == 1){
 					    	selectedStartDate.append(key.replaceAll("/", "-"));
@@ -304,7 +310,28 @@ public class TimesheetRestController {
 		
 	}
 	
+	@PreAuthorize("hasRole('ROLE_MODIFY_MY_TIMESHEETS')")
+	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
+	public @ResponseBody void withDrawTimesheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency) throws Exception {
+			
+			DateFormat format = Constants.DF_DMY;
+			if(StringUtils.isNotEmpty(timesheetFrequency)){
+			 	 String[] frequency = timesheetFrequency.split("To");
+			 	 String weekStartDate = frequency[0].trim();
+			  	 String weekEndDate = frequency[1].trim();
+			  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
+				 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
+			  	submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDate(projectMemberId, startDate, endDate, Submission_Status.DRAFT.getValue());;
+			}
+		
+	}
+	
 	public StringBuilder timesheetEntriesDivByFrequnecy(String weekStartDate,String weekEndDate,Long projectMemberId,String from) throws Exception{
+		
+		Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
+		Boolean isExportMyTimeSheet = commonUtil.hasRole("ROLE_EXPORT_MY_TIMESHEETS");
+		Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
 		DateFormat format = Constants.DF_DMY;
@@ -321,17 +348,21 @@ public class TimesheetRestController {
 		timesheetEntriesDiv.append("<input type='hidden' name='projectMemberId'  id='projectMemberId' value='"+projectMemberId+"' >");
 		timesheetEntriesDiv.append("<input type='hidden' name='timesheetFrequency'  id='timesheetFrequency' value='"+weekStartDate+"To"+weekEndDate+"' >");
 		
+		 SubmissionApproverHierarchy isSah = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForProjectMember(projectMemberId, frequencyStartDate, frequencyEndDate, "APPROVED");
 		String pullRightClass = "pull-right";
+		String styleWidth = "";
+		String innerStyleWidth = "";
 		if(from != null && !from.isEmpty() && from.equalsIgnoreCase("timesheet")){
 			pullRightClass = "" ;
 		}
 		
+		if(isSah == null && isModifyMyTimeSheet && !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
+			styleWidth = "style='width:120px;'";
+			innerStyleWidth = "style='width:100%;'";
+		}
 		/*timesheetEntriesDiv.append("			<div id='timesheetDivByFrequency'> ");*/
 		
-		timesheetEntriesDiv.append("					<div class='timeNewSe "+pullRightClass+"'>");
-		
-			
-		    
+	 	    timesheetEntriesDiv.append("					<div "+styleWidth+" class='timeNewSe "+pullRightClass+"'>");
 			if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
 		    	timesheetEntriesDiv.append("<b class='proj_new "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
@@ -339,13 +370,16 @@ public class TimesheetRestController {
 	        	timesheetEntriesDiv.append("<b class='proj_draft "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-	        	timesheetEntriesDiv.append("<b class='proj_process "+pullRightClass+" '>").append(submissionStatus).append("</b></td>");
+	        	timesheetEntriesDiv.append("<b "+innerStyleWidth+"  class='proj_process "+pullRightClass+" '>").append(submissionStatus).append("</b>");
+	        	if(isSah == null && isModifyMyTimeSheet){
+	                timesheetEntriesDiv.append("</div><div "+styleWidth+" class='timeNewSe '><b "+innerStyleWidth+" class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Modify</b>");
+	        	}
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
-	        	timesheetEntriesDiv.append("<b class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b> </td>");
+	        	timesheetEntriesDiv.append("<b class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
-	        	timesheetEntriesDiv.append("<b class='proj_closed "+pullRightClass+"'>").append(submissionStatus).append("</b> </td>");
+	        	timesheetEntriesDiv.append("<b class='proj_closed "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        	timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'>");
 	        	timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getRejectedReason()).append("</div>");
 	        	timesheetEntriesDiv.append(" </i>");

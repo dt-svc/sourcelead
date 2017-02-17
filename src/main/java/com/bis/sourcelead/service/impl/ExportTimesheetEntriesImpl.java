@@ -787,7 +787,11 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						
 						long diff = CalendarUtil.getNumberOfDays(entry.getKey(), entry.getValue());
 		    	    	  Float weekTotal = 0f;
-		    	    	  if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 1){
+		    	    	  if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 7){
+		    	    		  weekTotal = (float) ((diff)*8);
+		    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+		    	    	  }
+		    	    	  else if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 1){
 		    	    		  weekTotal = (float) ((diff-1)*8);
 		    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 		    	    	  }
@@ -926,7 +930,11 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
 							  long diff = CalendarUtil.getNumberOfDays(entry.getKey(), entry.getValue());
 			    	    	  Float weekTotal = 0f;
-			    	    	  if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 1){
+			    	    	  if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 7){
+			    	    		  weekTotal = (float) ((diff)*8);
+			    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+			    	    	  }
+			    	    	  else if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 1){
 			    	    		  weekTotal = (float) ((diff-1)*8);
 			    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 			    	    	  }

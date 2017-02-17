@@ -362,7 +362,6 @@ public  class TimesheetFrequencyGeneratorUtil {
 								  
 								  Date tsStartDate = null;
 								  Date tsEndDate = null;
-									System.out.println(empEndMonday.getTime());
 								  totalWeeks = (int)((empEndMonday.getTimeInMillis()-empStartMonday.getTimeInMillis())/(7l * 24l * 60l * 60l * 1000l));
 								  for (int week = 0; week < totalWeeks; week++) {
 									  
