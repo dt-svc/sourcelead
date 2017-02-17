@@ -55,7 +55,7 @@ public class RequirementIndex {
 	
 	private String priority; 
 
-   private String createdDate;
+    private String createdDate;
 
 	private String reqCreatedBy;
 
@@ -67,9 +67,7 @@ public class RequirementIndex {
 	
 	private String[] reqLevel1ApproverUserId;
 	
-	
 	private String[] reqLevel2ApproverUserId;
-	
 	
 	private String[] teamOwnerUserId;
 	
@@ -78,6 +76,13 @@ public class RequirementIndex {
 	private String releasedBy;
 	
 	private String otherJobType;
+	
+	private String requirementSubmissionPreviousStatus;
+	
+	private String reqLevel1ApproverStatus;
+	
+	private String reqLevel2ApproverStatus;
+	
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -367,8 +372,34 @@ public class RequirementIndex {
 		return otherJobType;
 	}
 
+
 	public void setOtherJobType(String otherJobType) {
 		this.otherJobType = otherJobType;
 	}
 
+	public String getRequirementSubmissionPreviousStatus() {
+		return requirementSubmissionPreviousStatus;
+	}
+
+	public void setRequirementSubmissionPreviousStatus(String requirementSubmissionPreviousStatus) {
+		this.requirementSubmissionPreviousStatus = requirementSubmissionPreviousStatus;
+	}
+
+	public String getReqLevel1ApproverStatus() {
+		return reqLevel1ApproverStatus;
+	}
+
+	public void setReqLevel1ApproverStatus(String reqLevel1ApproverStatus) {
+		this.reqLevel1ApproverStatus = reqLevel1ApproverStatus;
+	}
+
+	public String getReqLevel2ApproverStatus() {
+		return reqLevel2ApproverStatus;
+	}
+
+	public void setReqLevel2ApproverStatus(String reqLevel2ApproverStatus) {
+		this.reqLevel2ApproverStatus = reqLevel2ApproverStatus;
+	}
+	
+	
 }

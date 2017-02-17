@@ -190,7 +190,7 @@ public class Constants {
 	public static String VENDOR_ACCEPT_RATE_NEGOTIATION = "VendorAcceptRateNegotiation";
 	public static String CLIENT_REJECT_RATE_NEGOTIATION = "ClientRejectRateNegotiation";
 	public static String VENDOR_REJECT_RATE_NEGOTIATION = "VendorRejectRateNegotiation";
-
+	public static String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
 
 
 
@@ -351,6 +351,8 @@ public class Constants {
     public static String[] TIMESHEET_EXCEL_HEADERS = {"Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Total"};
     public static String[] TIMESHEET_EXCEL_HEADERS2 = {"Tasks","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Total"};
     public static String[] TIMESHEET_EXCEL_HEADERS3 = {"Status"};
+    
+    public static String[] TIMESHEET_APPROVAL_MECHANISM_HEADER={"Employee Name","Email id","Phone Number","Client","Total","Stage","approved By"};
    
     public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts"};
     

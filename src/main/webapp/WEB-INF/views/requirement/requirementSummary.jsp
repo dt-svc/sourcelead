@@ -947,8 +947,9 @@ function requirementDetails(requirementId){
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
 
-				             if(json.requirementSubmissionStatus  !='DRAFT'  &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
-               					 result = result +'<button  class="btn btn-success mr" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
+				             if(json.requirementSubmissionStatus  !='DRAFT'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null ){
+               					 
+				            	 result = result +'<button  class="btn btn-success mr" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
                		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
    				           	 }/* else if(json.requirementApproverHierarchyStatus == 'APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
       						              result = result +'<strong  id="requirementStatus" class="pull-right mr btn btn-success disabled">OPEN</strong>';
@@ -2161,8 +2162,8 @@ function requirementPipelineSL(requirementId,submissionType){
 							    	     } 
 						           
 						          
-						        	   if(report.submittedBy != null && report.submittedBy != '' && report.submittedBy != 'undefined'){ 
-						        	   result = result + '<td><div><span>'+report.submittedBy+'</span></div></td>';
+						        	   if(report.updatedUser != null && report.updatedUser != '' && report.updatedUser != 'undefined'){ 
+						        	   result = result + '<td><div><span>'+report.updatedUser+'</span></div></td>';
 						        	   }else{
 						        		   result = result + '<td><div><span>--</span></div></td>';
 						        	   }
