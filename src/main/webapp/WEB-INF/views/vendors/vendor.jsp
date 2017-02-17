@@ -565,7 +565,7 @@ function getSpocUserDetails(){
    <script type="text/javascript">
 function validateClientName(){
 	
-	var vendorName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
+	var clientName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
 	var vendor = encodeURIComponent(clientName);
 	
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -585,9 +585,9 @@ function validateClientName(){
 					//duplicate client
 					$("#save_client").removeAttr("disabled");
 			        $("#save_client").attr("disabled", "disabled");
-					$("input#orgName").after( "<p class='jquery_form_error_message'>" + vendorName + " is already existed as vendor</span>");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as vendor</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', vendorName +"  already existed as vendor");
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as vendor");
 					$('input#orgName').removeAttr( "record-exist record-exist-errorMsg");
 					
 				}else {
