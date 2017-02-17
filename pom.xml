@@ -507,11 +507,11 @@
 		</dependency>
 		
 		<!-- SQL syntax for elastic search -->	
-		<!-- <dependency>
+		<dependency>
 			<groupId>nl.anchormen.sql4es</groupId>
 			<artifactId>sql4es</artifactId>
-		<version>0.8.2.3</version>
-      </dependency> -->
+		<version>0.8.2.4</version>
+</dependency>
 
 	</dependencies>
 	<build>
