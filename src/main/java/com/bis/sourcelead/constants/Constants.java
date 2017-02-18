@@ -203,6 +203,9 @@ public class Constants {
 	public static String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
 
 	public static String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
+	public static String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
+	
+	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 
 
 
