@@ -126,7 +126,7 @@ public class RequirementInterviewRestController {
 		 String resultJson = null;
 			
 		// List<RequirementInterview> interviewsList = requirementInterviewService.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
-		 List<RequirementInterviewHistory> interviewsList = requirementInterviewHistoryService.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
+		 List<RequirementInterviewHistory> interviewsList = requirementInterviewHistoryService.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations);
 		 resultJson = commonUtil.toJSON(interviewsList);
 		 return resultJson;
 	   }

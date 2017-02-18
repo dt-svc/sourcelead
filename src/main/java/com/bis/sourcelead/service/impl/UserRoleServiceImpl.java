@@ -341,6 +341,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
 		return userRoleDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
 	}
+	
+	@Override
+	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency, Long approverUserId) throws Exception {
+		return userRoleDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(invoiceFrequency,approverUserId);
+	}
 
 	@Override
 	public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek() {

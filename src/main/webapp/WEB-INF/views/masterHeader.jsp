@@ -440,9 +440,9 @@ function notificationStatusAsRead(){
 						                </div>
 				                   </div>
 				                  <div class="col-md-6">
-					                <label>Time</label>
+					                <label>Time<span class="text-danger">*</span></label>
 						                <div class="positionRelative">
-						                  <input class="form-control input-sm"  name="timepicker" id="timepicker" type="text">
+						                  <input class="form-control input-sm"  name="timepicker" id="timepicker"  field-name="Time" type="text" data-validation="required">
 						                  <span class="input-group-addon input-groupAddon icon-Addon" ><i class="fa fa-clock-o"></i></span>
 						                </div>
 				                  </div>
@@ -562,7 +562,7 @@ function notificationStatusAsRead(){
 
 <script type="text/javascript">
 $('#taskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	//dateFormat : 'dd-mm-yy',
 	 changeMonth: true,
 	changeYear: true, 
 	minDate : 0,
@@ -574,7 +574,7 @@ $('#taskDatpicker').datepicker({
 	});
 	
 $('#myTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	//dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
@@ -586,7 +586,7 @@ $('#myTaskDatpicker').datepicker({
 	});
 	
 $('#assignedTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	//dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
@@ -597,7 +597,7 @@ $('#assignedTaskDatpicker').datepicker({
 	   }
 	});
 $('#closedTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	//dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
@@ -608,7 +608,8 @@ $('#closedTaskDatpicker').datepicker({
 	  }
 	});
 	
-$('#timepicker').timepicker({ 'timeFormat': 'h:i A' });
+$('#timepicker').timepicker();
+/* { 'timeFormat': 'h:i A' } */
 </script>
 <script>
 function removevalidation(){
