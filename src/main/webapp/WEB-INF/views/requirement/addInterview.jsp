@@ -307,16 +307,20 @@ function selectInterviewApplicants(){
 		cell3.innerHTML = "<div class='pull-left mr' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime' onBlur='validateEndTime("+maxRowNum+");' type='text' data-validation='required' field-name='Start Time'/><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime' onBlur='validateEndTime("+maxRowNum+");' type='text' field-name='End Time' /><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> </div> ";
 		
 		$("#"+maxRowNum+"startTime").timepicker({
-			'showDuration': true
+			'showDuration': true,
+			'disableTextInput': true
 		}).on('changeTime', function() {
             $("#"+maxRowNum+"endTime").timepicker('option', 'minTime', $(this).val());
         });
 		
 		$("#"+maxRowNum+"endTime").timepicker({
-			'showDuration': true
+			'showDuration': true,
+			'disableTextInput': true
 		}).on('changeTime', function() {
             $("#"+maxRowNum+"startTime").timepicker('option', 'maxTime', $(this).val());
         }); 
+		
+		
 		
 		var cell4 = row.insertCell(4);
 		var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;

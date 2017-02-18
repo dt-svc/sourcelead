@@ -101,6 +101,11 @@ z-index: 9999999999 !important;
 								<label class="col-md-4">Enrolled Date :</label>
 								<p><fmt:formatDate type="date"  value="${orgloc.createdDate}" /></p></p>
 								</div>
+								
+								<div class="form-group">
+								<label class="col-md-4">Time Zone :</label>
+								<p class="tbldata-dotdot-me">${orgloc.timezone.timeZoneId}</p>
+								</div>
 	                  </div>
 	                  
 	                  
