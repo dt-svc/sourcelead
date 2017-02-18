@@ -145,13 +145,18 @@ function requirementProfile(requirementUUID){
 				 result = result +'         <div class="openPostBtns">';
 				 
 				 if(json.isJobApplied == 'N'){
-				 result = result +'<a href="javascript:void(0)" onclick="applyToJob('+json.id+');"  class="jobApply">Apply</a>';
+				 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob('+json.id+');"  class="jobApply">Apply</a>';
 				 }else{
 					 result = result +'<a href="javascript:void(0)" class="jobApply">Applied</a>';
 				 }
 				 
 				 if(json.isCrowdSourcing == 'Y'){
-				 result = result +'         <a class="refer" href="javascript:void(0)">Refer</a>';
+				    result = result +'<a class="refer" onclick="referToJob('+json.id+')" href="javascript:void(0)">Refer</a>';
+				    result = result +'<div class="referWrap" id="refer">';
+	 				result = result +'<div class="referWrapInn">';
+	 				result = result +'<div id="refertoJobDiv"></div>';  
+	 				result = result +'</div>';
+	 				result = result +'</div>';
 				 }
 				 result = result +'          </div>';
 				 result = result +'          </div>';
@@ -194,6 +199,70 @@ function requirementProfile(requirementUUID){
 	});
 }
 
+</script>
+
+
+
+<script>
+function referToJob(requirementId){
+	   appendReferToJob(requirementId); 
+	    
+	   var result = ''
+	    
+	    result = result + '<form id="referToJob_form" name="referToJob_form" method="post">';
+		result = result +'<div class="form-group col-md-6">';
+		result = result +'<input type="hidden" name="searchRequirementId" id="searchRequirementId" value='+requirementId+' >';
+		result = result +'<label class="col-md-12" for="Project Id">First Name *</label>';
+		result = result +'<div class="col-md-12">';
+		result = result +'<input type="text" class="form-control" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">';
+		result = result +'</div>';
+		result = result +'</div>'; 
+		result = result +'<div class="form-group col-md-6">';
+		result = result +'<label class="col-md-12" for="Project Id">Last Name</label>';
+		result = result +'<div class="col-md-12">';
+		result = result +'<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">';
+		result = result +'</div>';
+		result = result +'</div>'; 
+		result = result +'<div class="form-group col-md-6">';
+		result = result +'<label class="col-md-12" for="Project Id">Email Id *</label>';
+		result = result +'<div class="col-md-12">';
+		result = result +'<input type="text" class="form-control" name="email" id="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
+		result = result +'<span class="hidden">Enter Project Id</span> </div>';
+		result = result +'</div>'; 
+		result = result +'<div class="form-group col-md-6">';
+		result = result +'<label class="col-md-12" for="Project Id">Phone *</label>';
+		result = result +'<div class="col-md-12">';
+		result = result +'<input type="text" class="form-control" name="phone" id="phone" field-name="Phone" data-validation="required validate_Space validate_phone validate_length length9-20">';
+		result = result +'</div>';
+		result = result +'</div>'; 
+		result = result +'<div class="col-md-12 mt5 clearfix">';            
+		result = result +'<div class="pull-right">';
+		result = result +'<input type="submit" value="Refer" onclick="submitRefer();" class="btn btn-primary">';
+		result = result +'<input type="button" value="Cancel" onclick="cancelReferPopUp()" class="btn btn-default ml10 canBtn">';
+		result = result +'</div>';    
+		result = result +'</div>'; 
+		result = result +'<div class="clearfix"></div>'; 
+		result = result + '</form>';
+		
+		$("#refertoJobDiv").empty(); 
+	    $("#refertoJobDiv").append(result); 
+}
+</script>
+
+
+<script>	
+function appendReferToJob(requirementId){
+		$("#refer").toggleClass("referWrapActive");
+		
+}
+</script> 
+
+<script>
+function cancelReferPopUp(){
+	$("#refer").removeClass("referWrapActive");
+	$("#refertoJobDiv").empty(); 
+	
+}
 </script>
 <script>
 	function predefineProfileImage(imageId){   
