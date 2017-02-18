@@ -1,8 +1,12 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,8 +19,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.States;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -33,12 +43,22 @@ public class ProfessionalRequirementsController {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	CountriesService countriesService;
+	
+	@Autowired
+	StatesService statesService;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
+	
 	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 	 @RequestMapping(value = "/professionalRequirements")
 		public ModelAndView professionalProfile(HttpServletRequest request) throws Exception {
 		    
 		        Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-				
+		        User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		        
 		        ModelAndView model = new ModelAndView();
 				
 				SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -49,6 +69,25 @@ public class ProfessionalRequirementsController {
 				sessionData.setNav(Constants.Requirement);
 				
 				request.getSession().setAttribute("sessionData",sessionData);
+				
+				
+				
+			    List<Countries> countryList = countriesService.getAllCountries();
+				model.addObject("countryList", countryList);
+				
+				if(StringUtils.isNotEmpty(user.getCountry())){
+				
+					Countries countries = countriesService.getCountriesByCountryName(user.getCountry());
+					if(null != countries){
+					   model.addObject("loginCountryName", countries.getName());
+					}
+			        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
+			        model.addObject("statesList", statesList);
+				}
+				
+				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				model.addObject("skillsList", skillsList);
+			    
 				
 				model.setViewName("professional/professionalRequirements");
 				model.addObject("sourceleadUrl", sourceleadUrl);
@@ -106,6 +145,7 @@ public class ProfessionalRequirementsController {
 	 @ResponseBody
 		public String getRequirementProfessionalProfileDetails(@RequestParam(value="requirementUUID", required=false) String  requirementUUID,HttpServletRequest request) throws Exception {
 		        String resultJson;
+		        User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		        Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		        if(null != requirement.getOrgLocationId()){
 		        	if(null != requirement.getOrgLocationId().getOrg()){
@@ -114,6 +154,23 @@ public class ProfessionalRequirementsController {
 		        		}
 		        	}
 		        }
+		        
+		        if(null !=  requirement.getAppliedProfessionals()){
+	    			  List<Long> userId = new ArrayList<Long>();
+	    			  String[] appliedProfessionals = requirement.getAppliedProfessionals().split(",");
+	 					for (int i=0; i < appliedProfessionals.length; i++){
+	 						userId.add(Long.parseLong(appliedProfessionals[i]));
+	 					 }
+	 					boolean flag = userId.contains(user.getId());
+	 					if(flag == true){
+	 						requirement.setIsJobApplied(Constants.YES);
+	 					}else{
+	 						requirement.setIsJobApplied(Constants.NO);
+	 					} 
+	    		     }else{
+	    		    	 requirement.setIsJobApplied(Constants.NO);
+	    		      }
+		        
 		        resultJson = commonUtil.toJSON(requirement);
 				return resultJson;
 	}

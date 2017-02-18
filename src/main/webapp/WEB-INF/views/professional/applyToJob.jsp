@@ -3,11 +3,14 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
+<script src="resources/js/jquery-fun.js"></script> 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link rel="stylesheet" href="resources/css/style.css" />
 <script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+
+
 
 
 <script>
@@ -127,6 +130,8 @@ function getCandidateDetails(){
      $("#submissionState").on('change', function (e) {
   	   getCandidateCities();
      });
+     
+     dobDatePicker();
     
      $('.chosen-select').each(function() {
 			var $this = $(this);
@@ -442,6 +447,29 @@ $('body').on('submit', '#applyToJob_form', function(e){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
+
+<script>
+  function dobDatePicker() {
+	  $('#DOB').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  });
+	  
+  }
+</script>
+
+<script>
+  $( function() {
+	  
+	  $('#DOB').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  });
+	  
+  } );
+</script>
 
 
 <script type="text/javascript">
