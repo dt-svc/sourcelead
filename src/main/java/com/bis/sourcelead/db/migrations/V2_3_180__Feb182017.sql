@@ -1,5 +1,4 @@
 
-CALL sourcelead.AlterTableAddColumn ('sourcelead','USER','USER_UUID','VARCHAR(20) NULL');
 
 DROP TABLE IF EXISTS `sourcelead`.`TIMEZONE`;
 CREATE TABLE `sourcelead`.`TIMEZONE` (
