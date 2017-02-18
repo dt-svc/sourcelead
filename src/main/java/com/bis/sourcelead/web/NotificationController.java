@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -37,6 +41,9 @@ public class NotificationController {
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	TimeZoneService timeZoneService;
+	
 	/*
 	 * To change the notification mode as read
 	 */
@@ -50,18 +57,19 @@ public class NotificationController {
 	 * to get a list of notification of particular user by user id
 	 * @param request
 	 * @return
-	 * @throws ParseException
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/notificationsList")
-	public ModelAndView notificationsList(HttpServletRequest request) throws ParseException {
+	public ModelAndView notificationsList(HttpServletRequest request) throws Exception {
 		logger.debug("notificationsList");
 		ModelAndView model = new ModelAndView();
 		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		String locationCode =  (String) SourceLeadSessionManager.getSessionAttribute(request,"locationCode");
 		List<Notifications> notificationsList = notificationsService.getAllNotificationsListByUserId(userId,orgLocations.getOrg().getOrgCode(), locationCode);
 		if(notificationsList!=null){
-			calculateDays(notificationsList);
+			calculateDays(notificationsList, timezone);
 		}
 		model.setViewName("notifications/notificationsList");
 		model.addObject("notificationsList", notificationsList);
@@ -78,10 +86,11 @@ public class NotificationController {
 	    String resultJson;
 	    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		String locationCode =  (String) SourceLeadSessionManager.getSessionAttribute(request,"locationCode");
 		List<Notifications> notificationsList = notificationsService.getAllNotificationsListByUserId(userId,orgLocations.getOrg().getOrgCode(), locationCode);
 		if(notificationsList!=null){
-			calculateDays(notificationsList);
+			calculateDays(notificationsList,timezone);
 			for(Notifications nl : notificationsList){
 				nl.setNotificationFirstName(nl.getNotificationFrom().getFirstName());
 				nl.setNotificationLastName(nl.getNotificationFrom().getLastName());
@@ -99,25 +108,32 @@ public class NotificationController {
 	 * @throws ParseException
 	 */
 	
-	public void calculateDays(List<Notifications> notificationList) throws ParseException {
+	public void calculateDays(List<Notifications> notificationList,Timezone timezone) throws ParseException {
 		for (Notifications notifications : notificationList) {
-			// differentiating date and time
-			Date date = notifications.getCreatedDate();
-			String[] parts = date.toString().split(" ");
-			notifications.setDateValue(parts[0]);
-			final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
-			final Date dateObj = sdf.parse(parts[1].toString());
-			notifications.setTime(new SimpleDateFormat("K:mm a").format(dateObj));
-			// calculating days b/w dates
-			Date currentDate = new Date();
-			Date d1 = notifications.getCreatedDate();
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-			String strDate = dateFormat.format(currentDate);
-			Date d2 = dateFormat.parse(strDate);
-			long diff = d2.getTime() - d1.getTime();
+			
+			long diff = commonUtil.currentDate().getTime() - notifications.getCreatedDate().getTime();
+		    long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
 			long diffDays = diff / (24 * 60 * 60 * 1000);
-			notifications.setCalDays(diffDays);
-
+			StringBuilder  time = new StringBuilder();
+			if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
+				notifications.setCalDays(time.append(diffSeconds).append(" sec ago ").toString());
+			}else if(diffDays == 0 && diffHours == 0){
+				notifications.setCalDays(time.append(diffMinutes).append(" min ").append(diffSeconds).append(" sec ago ").toString());
+			}else if(diffDays == 0){
+				notifications.setCalDays(time.append(diffHours).append(" hours ").append(diffMinutes).append(" min ago ").toString());
+			}else if(diffDays < 7){
+				notifications.setCalDays(time.append(diffDays).append(" day(s) ago").toString());
+			}else{
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+				String currentTimeStr = Constants.TZ_DF.format(notifications.getCreatedDate());
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+				String commonDateFormat = standardFormat.format(converteDate);
+				notifications.setCalDays(commonDateFormat.toString());
+			} 	
+			
 		}
 
 	}
