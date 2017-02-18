@@ -736,7 +736,18 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 * @return float
 	 */
 	private float getExperiencePercentage(CandidateIndex candidateIndex, RecommendedCustomizeScore recommendedCustomizeScore, int reqMinExp, float expPercentage, float percentPerMonthExp, int reqMaxExp) {
-		if(null != candidateIndex.getExperienceYears()  && !"".equalsIgnoreCase(candidateIndex.getExperienceYears()) && null != candidateIndex.getExperienceMonths() && !"".equalsIgnoreCase(candidateIndex.getExperienceMonths())){
+
+		Integer Months = null;
+		Integer Years = null;
+		if(null != candidateIndex.getExperienceYears()){
+			 Years = Integer.parseInt(candidateIndex.getExperienceYears());	
+		}
+		if(candidateIndex.getExperienceMonths() != null){
+			 Months = Integer.parseInt(candidateIndex.getExperienceMonths());
+		}
+		
+		if(null != candidateIndex.getExperienceYears()  && null != candidateIndex.getExperienceMonths() && Years > 0 && Months > 0 ){
+
 			int  candidateExpMonths = (Integer.parseInt(candidateIndex.getExperienceYears()))*12 + (Integer.parseInt(candidateIndex.getExperienceMonths()));
 			
 			if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) && null != recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
