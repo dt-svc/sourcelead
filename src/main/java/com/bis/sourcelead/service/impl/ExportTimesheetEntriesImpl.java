@@ -779,24 +779,40 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	int count = 4;
 		LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
 			Float totalHours = 0f;
+		    Float estimatedTotalHours = 0f;
 			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
 			if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 				if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 					for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
+						
+						long diff = CalendarUtil.getNumberOfDays(entry.getKey(), entry.getValue());
+		    	    	  Float weekTotal = 0f;
+		    	    	  if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 7){
+		    	    		  weekTotal = (float) ((diff)*8);
+		    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+		    	    	  }
+		    	    	  else if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 1){
+		    	    		  weekTotal = (float) ((diff-1)*8);
+		    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+		    	    	  }
+		    	    	  else if(CalendarUtil.getDayOfTheDate(entry.getKey()) == 2){
+		    	    		  weekTotal = (float) ((diff+1)*8);
+		    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+		    	    	  }
 						if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
 							totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-							timeSheetApprovalArray[count] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/40";
+							timeSheetApprovalArray[count] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/"+weekTotal;
 						} else {
-							timeSheetApprovalArray[count] = "0/40";
+							timeSheetApprovalArray[count] = "0/"+weekTotal;
 						}
 						count++;
 					}
 				}
 			}
 	     if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
-	    	 timeSheetApprovalArray[count]   = totalHours.toString()+"/40";
+	    	 timeSheetApprovalArray[count]   = totalHours+"/"+estimatedTotalHours;
 	     }else{
-	    	 timeSheetApprovalArray[count] = "0.0/40";
+	    	 timeSheetApprovalArray[count] = "0.0/"+estimatedTotalHours;
 	     }
 		if(sah.getSubmissionApprovalStatus() != null && !"".equalsIgnoreCase(sah.getSubmissionApprovalStatus().toString())){
 			timeSheetApprovalArray[count+1] = sah.getSubmissionApprovalStatus().toString();
@@ -907,24 +923,39 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		int count = 4;
 			LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
 				Float totalHours = 0f;
+				Float estimatedTotalHours = 0f;
 				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
 				if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 					if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 						for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
+							  long diff = CalendarUtil.getNumberOfDays(entry.getKey(), entry.getValue());
+			    	    	  Float weekTotal = 0f;
+			    	    	  if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 7){
+			    	    		  weekTotal = (float) ((diff)*8);
+			    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+			    	    	  }
+			    	    	  else if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 1){
+			    	    		  weekTotal = (float) ((diff-1)*8);
+			    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+			    	    	  }
+			    	    	  else if(CalendarUtil.getDayOfTheDate(entry.getKey()) == 2){
+			    	    		  weekTotal = (float) ((diff+1)*8);
+			    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+			    	    	  }
 							if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
 								totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
-								writeRow.createCell(count).setCellValue(sah.getWeekTotals().get(entry.getKey()).toString() + "/40");
+								writeRow.createCell(count).setCellValue(sah.getWeekTotals().get(entry.getKey()).toString() + "/"+weekTotal);
 							} else {
-								writeRow.createCell(count).setCellValue( "0/40");
+								writeRow.createCell(count).setCellValue( "0/"+weekTotal);
 							}
 							count++;
 						}
 					}
 				}
 				 if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
-					 writeRow.createCell(count).setCellValue( totalHours.toString()+"/40");
+					 writeRow.createCell(count).setCellValue( totalHours.toString()+"/"+estimatedTotalHours);
 			     }else{
-			    	 writeRow.createCell(count).setCellValue( "0.0/40");
+			    	 writeRow.createCell(count).setCellValue( "0.0/"+estimatedTotalHours);
 			     }
 				if(sah.getSubmissionApprovalStatus() != null && !"".equalsIgnoreCase(sah.getSubmissionApprovalStatus().toString())){
 					writeRow.createCell(count+1).setCellValue( sah.getSubmissionApprovalStatus().toString());

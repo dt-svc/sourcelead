@@ -2211,10 +2211,14 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			if(jsonObj.has("maxExp") && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
 				reqTemplate.setMaxExp(jsonObj.getString("maxExp"));
+				}else{
+					reqTemplate.setMaxExp(null);
 				}
 				
 				if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp"))){
 					reqTemplate.setMinExp(jsonObj.getString("minExp"));
+				}else{
+					reqTemplate.setMinExp(null);
 				}
 				
 				if(jsonObj.has("rate") && !"".equalsIgnoreCase(jsonObj.getString("rate"))){
@@ -2533,47 +2537,49 @@ public class RequirementServiceImpl implements RequirementService {
 						Requirement requirement = null;
 						RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
 		            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
 		            	{
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	
 		            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
-		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel1ApproverStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel1ApproverStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			)){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
 		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus()))
 		            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
-		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			)){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	
 		            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	
 		            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
-		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex);
+		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+		            		//&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())
+		            		requirement = getData(requirementIndex,user);
 		            	}
-		            	
-		            	reqList.add(requirement);
+		            	if(requirement !=null){
+		            		reqList.add(requirement);
+		            	}
 		            }
 				}
 			}
-			
+			logger.info("*****************============="+reqList.size());
 		return reqList;
 		
 	}
-	 private Requirement getData(RequirementIndex requirementIndex) {
+	 private Requirement getData(RequirementIndex requirementIndex, User user) throws Exception {
 		 Requirement requirement = new Requirement();
 		requirement.setId(requirementIndex.getRequirementId());
      	requirement.setJobId(requirementIndex.getJobId());
@@ -2596,11 +2602,18 @@ public class RequirementServiceImpl implements RequirementService {
      	requirement.setCity(requirementIndex.getCity());
      	requirement.setSearchType("Requirement");
      	requirement.setPositions(requirementIndex.getNumberOfPositions());
-     	requirement.setNoOfApplicants(requirementIndex.getNumberOfApplicants());
+     	if(null != requirementIndex.getNumberOfApplicants()){
+     		requirement.setTotalApplicantsForRequirement(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
+     	}
      	requirement.setManager(requirementIndex.getManager());
      	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
          	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
-     	}	
+     	}
+     	Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementIndex.getRequirementId(), user.getId());
+		requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
+ 
+//     	if(user.getId().toString())
+//     	isLoginUserAsTeamMember
      	return requirement;
 	}
 
@@ -2770,36 +2783,36 @@ public class RequirementServiceImpl implements RequirementService {
 						Requirement requirement = null;
 						RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
 		            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
 		            	{
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	
 		            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
 		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel1ApproverStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			)){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
 		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus()))
 		            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
 		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			)){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	
 		            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	
 		            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	searchList.add(requirement);
 		            }
