@@ -729,61 +729,9 @@ function candidateProfile(candidateId){
 							result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
 							result = result +'		          <span id="saveSkillBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
 							result = result +'		</div>';
-							/* if(window.candidateStatusGlobal == '0'){
-								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
-								result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
-
-							}else{
-								result = result +'		              <div class="addSkills clearfix pull-right mt10"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
-							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
-							} */
-							/* result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
-							result = result +'		                    <div class="clearfix div-padding">                                                                                        ';
-							result = result +'		                      <div class="col-md-10">                                                                                                 ';
-							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
-							<c:forEach var="skill" items="${skillsList}">
-					                var existed = 0;
-					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-						                var res = [];
-						                res = json.skillsName.split(",");
-						                res.forEach(function(item) {
-						                	if('${skill.name}' == item){
-						                		existed = 1;
-						                	}
-						                });
-					                }
-					                if(existed == 0){
-					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
-					                }
-			                </c:forEach>
-			                result = result + '</select>';
-							
-							result = result +'		                      </div> ';
-							result = result +'		          <div class="">                                                                                                         ';
-							result = result +'		            <div class="">                                                                                                  ';
-							result = result +'		              <!-- Add skills div -->                                                                                                         ';
-
-							result = result +'		                      <div class="col-md-2">                                                                                                  ';
-							result = result + '                              <button class="btn btn-sm btn-primary pull-right mr" type="submit" onClick="saveSkils('+candidateId+');" >Add</button>';
-							result = result +'		                      </div>                                                                                                                  ';
-							result = result +'		                    </div>                                                                                                                    ';
-							result = result +'		                  </div>                                                                                                                      ';
-							result = result +'		                </div>                                                                                                                        ';
-							result = result +'		              </div>                                                                                                                          ';
-							 */
-							
 							result = result + '<div class="clearfix"></div> ';
 							
-							
-							
-							/* result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> '; */
-							
-							
-							
-							
-							
 							result = result +'<div class="clearfix">';
-							
 							
 							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
 							<c:forEach var="skill" items="${skillsList}">
@@ -803,19 +751,6 @@ function candidateProfile(candidateId){
 					                }
 			                </c:forEach>
 			                result = result + '</select>';
-							
-							/* result = result +'<ul class="list-inline list-unstyled">';
-							if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-								var skillsNameArray = json.skillsName.split(',');
-								 for (i=0;i < skillsNameArray.length;i++)
-					             {
-					            	  result = result+'<li class="chosen-select sm">'+skillsNameArray[i]+'</li>';
-					            	  
-					             } 
-							}else{
-								result = result + ' <li class="professinal-details">NO DATA</li>';
-							}
-							result = result +'</ul>'; */ 
 							result = result +'</div>';
 							result = result +'<div class="clearfix"></div>';
 							result = result +'</div>';
@@ -1016,19 +951,7 @@ function candidateProfile(candidateId){
  }  
 </script>
  
- 
- <%-- 
-     @author : sarath kumar.
-     this script is for remove Skill PopUp.
-     1.usage     :  used in saveSkils() function line number 339
-     2.parameter : candidateId  .
---%>
-<script>  
-function removeSkillPopUp(candidateId){           
-		/* $(".add-skills").removeClass('add-skills-active'); */
-		$(".add-skills").css({"display":"none","opacity":"0"});
-}
-</script>             
+             
             
  <script type="text/javascript">
         var validationSettings = {
@@ -1579,30 +1502,6 @@ function certificationSubmissionProfile(candidateId){
 </script>
 <script>
 $('.selectpicker').selectpicker('refresh');
-
-/* function getAllSkills(candidateId){
-	
-	 var sourceleadUrl ='${sourceleadUrl}';
-		$.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getSkillsExcludeExistingSkills?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	var output = "";
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.name+ "'>"+opt.name+"</option>";
-				}
-	        	$("#skillName").empty();
-		        $("#skillName").append(output);
-		        $('#skillName').trigger("chosen:updated");
-	        },
-	    });
-	
-} */
-
-
 </script>    
      
 <script>
