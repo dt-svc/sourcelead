@@ -140,11 +140,11 @@ public class OrgDocumentsRestController {
 		OrgDocuments orgDocument = orgDocumentsService.getOrgDocumentsById(Long.parseLong(docId));
 		
 		//to fetch client contact list
-		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId());
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId(),"Client");
 		for (OrgSpoc orgSpoc : orgSpocsList) {
 			StringBuilder name = new StringBuilder();
-			orgSpoc.setSpocName(name.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+			/*orgSpoc.setSpocName(name.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());*/
 		}
 		
 		//to fetch Owners list
@@ -167,11 +167,11 @@ public class OrgDocumentsRestController {
 		OrgDocuments orgDocument = orgDocumentsService.getOrgDocumentsByIdAndSpocId(Long.parseLong(docId),Long.parseLong(userId));
 		
 		//to fetch client contact list
-		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId());
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId(),"Client");
 		for (OrgSpoc orgSpoc : orgSpocsList) {
 			StringBuilder name = new StringBuilder();
-			orgSpoc.setSpocName(name.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+			/*orgSpoc.setSpocName(name.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
+			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());*/
 		}
 		
 		//to fetch Owners list

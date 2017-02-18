@@ -474,13 +474,13 @@ public class CandidateRestController {
 				 req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName());
 			 }
 			
-			 if(null != req.getRequirement().getSpocId()){
+			 /*if(null != req.getRequirement().getSpocId()){
 				 if(!"".equalsIgnoreCase(req.getRequirement().getSpocId().getSpocUser().getLastName()) && null != req.getRequirement().getSpocId().getSpocUser().getLastName() ){
 					 req.setClientName(req.getRequirement().getSpocId().getSpocUser().getFirstName() +""+req.getRequirement().getSpocId().getSpocUser().getLastName());
 				 }else{
 					 req.setClientName(req.getRequirement().getSpocId().getSpocUser().getFirstName());
 				 }
-			 }
+			 }*/
 			
 			 
 		 }

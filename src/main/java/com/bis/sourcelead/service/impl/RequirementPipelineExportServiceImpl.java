@@ -189,7 +189,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		 }
 		 
 		 //client contact name related code start
-		 if(requirementsub.getRequirement().getSpocId().getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
+		 /*if(requirementsub.getRequirement().getSpocId().getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
 			 if(requirementsub.getRequirement().getId() != null){
 				 if(requirementsub.getRequirement().getSpocId().getId() != null){
 					 if(requirementsub.getRequirement().getSpocId().getOwnerUser().getId() != null){
@@ -219,7 +219,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			 }
 			
 				
-		}
+		}*/
 		 //client contact name related code end
 	}
 		return createExcelsheet;

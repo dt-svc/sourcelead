@@ -412,7 +412,7 @@ public class PdfUtilPipelineHelper  {
 		}
 		
 		//client contact name related code start
-		 if(requirementsub.getRequirement().getSpocId().getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
+		 /*if(requirementsub.getRequirement().getSpocId().getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
 			 if(requirementsub.getRequirement().getId() != null){
 				 if(requirementsub.getRequirement().getSpocId().getId() != null){
 					 if(requirementsub.getRequirement().getSpocId().getOwnerUser().getId() != null){
@@ -440,9 +440,7 @@ public class PdfUtilPipelineHelper  {
 					 }
 				 }
 			 }
-			
-				
-		}
+		}*/
 		 //client contact name related code end
 		 
 		/*if(requirementsub.getRequirement().getSpocId().getSpocUser().getMobilePhone() != null){

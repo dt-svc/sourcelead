@@ -567,10 +567,10 @@ public class RequirementRestController {
 				org);
 
 		List<OrgSpoc> orgSpocsList = orgSpocService.getAllSpocsByOrgRelationId(Long.parseLong(orgRelationId),
-				user.getId(), orgLocations.getId());
+				user.getId(), orgLocations.getId(),"Client");
 		for (OrgSpoc orgSpoc : orgSpocsList) {
 			String ownerLastName = "";
-			if (null != orgSpoc.getOwnerUser() && null != orgSpoc.getOwnerUser().getLastName()) {
+			/*if (null != orgSpoc.getOwnerUser() && null != orgSpoc.getOwnerUser().getLastName()) {
 				ownerLastName = orgSpoc.getOwnerUser().getLastName();
 			}
 			StringBuilder spocNameSB = new StringBuilder();
@@ -580,7 +580,7 @@ public class RequirementRestController {
 			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 			orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(ownerLastName).toString());
 			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
-			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());*/
 		}
 		return commonUtil.toJSON(orgSpocsList);
 	}

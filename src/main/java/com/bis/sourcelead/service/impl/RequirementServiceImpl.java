@@ -1706,12 +1706,12 @@ public class RequirementServiceImpl implements RequirementService {
 	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype) throws Exception {
 		User  vendorContactUser = null;
 		
-		if(releasetype.equalsIgnoreCase("VENDORS")){
+		/*if(releasetype.equalsIgnoreCase("VENDORS")){
 			vendorContactUser = userService.getUserById(orgSpoc.getSpocUser().getId());
 
 		}else if(releasetype.equalsIgnoreCase("CONTACTS")){
 			vendorContactUser = userService.getUserById(orgSpoc.getSpocUser().getId());
-		}
+		}*/
 	 
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
@@ -1808,7 +1808,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 notificationScenario.setBody(notificationbody);
 
 		 
-		 OrgLocations vendorOrgLoc = requirement.getSpocId().getResponderLocationId();
+		 /*OrgLocations vendorOrgLoc = requirement.getSpocId().getResponderLocationId();
 
 		 
 		 //construct HTML template using required data
@@ -1819,7 +1819,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);*/
 
 		
 	}

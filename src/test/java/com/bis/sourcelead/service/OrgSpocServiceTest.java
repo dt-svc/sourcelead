@@ -77,17 +77,17 @@ public class OrgSpocServiceTest {
 		/*user.setUserState(Status.ACTIVE);
 		user.setUserType("employee");*/
 		user.setWorkPhone("1233467890");
-		orgSpoc.setSpocUser(user);
+		//orgSpoc.setSpocUser(user);
 		
 		User ownerUser = userService.getUserById(3l);
-		orgSpoc.setOwnerUser(ownerUser);
+		//orgSpoc.setOwnerUser(ownerUser);
 		
 		orgSpoc.setInvitationStatus("New");
 		
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(3L);
-		orgSpoc.setInitiatorLocationId(orgLocations);
+		//orgSpoc.setInitiatorLocationId(orgLocations);
 		OrgLocations clientOrgLocations = orgLocationService.getOrgLocations(5L);
-		orgSpoc.setResponderLocationId(clientOrgLocations);
+		//orgSpoc.setResponderLocationId(clientOrgLocations);
 		orgSpoc.setSpocStatus("Active");
 		orgSpoc.setStatus("Active");
 		
@@ -113,7 +113,7 @@ public class OrgSpocServiceTest {
 	
 	@Test
 	public void getAllSpocsByOrgRelationId() throws Exception{
-		List<OrgSpoc> list = orgSpocService.getAllSpocsByOrgRelationId(3l, 3l, 3l);
+		List<OrgSpoc> list = orgSpocService.getAllSpocsByOrgRelationId(3l, 3l, 3l,"");
 		logger.info("retrieved sucessfully...."+list.size());
 	}
 	

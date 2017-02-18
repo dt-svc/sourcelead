@@ -277,7 +277,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     public void offerMailToVendors(User loginUser,OrgLocations loginOrgLocations,Requirement clientrequirement) throws Exception {
 		
 		
-            EmailMessage emailMessage = new EmailMessage();
+           /* EmailMessage emailMessage = new EmailMessage();
             emailMessage.setFirstName(loginUser.getFirstName());
             emailMessage.setLastName(loginUser.getLastName());
             emailMessage.setToEmail(clientrequirement.getSpocId().getSpocUser().getEmail());
@@ -357,7 +357,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
         		} catch (UnsupportedEncodingException e) {
         			logger.error(ExceptionUtils.getFullStackTrace(e));
         		}
-            
+            */
             
 }
 	

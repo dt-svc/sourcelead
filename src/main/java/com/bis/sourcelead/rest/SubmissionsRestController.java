@@ -661,13 +661,12 @@ public class SubmissionsRestController {
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		requirement.setSubmitToClientFromMailId(user.getEmail());
 		
-		if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
-			
+		/*if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
 				requirement.setSubmitToClientToMailId(requirement.getSpocId().getSpocUser().getEmail());
 		 }
 		if(requirement.getSpocId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 			requirement.setSubmitToClientToMailId(requirement.getSpocId().getOwnerUser().getEmail());
-		}
+		}*/
 		StringBuilder subjectSB = new StringBuilder();
 		requirement.setSubmitToClientMailSubject(subjectSB.append("New applicants received for the").append(" ").append(requirement.getJobTitle()).toString());
 
@@ -684,7 +683,7 @@ public class SubmissionsRestController {
 			}
 		}else{
 			if(null != requirement.getSpocId()){
-				if(null != requirement.getSpocId().getSpocUser()){
+				/*if(null != requirement.getSpocId().getSpocUser()){
 					sb.append("<p>").append("Hi,");
 					if(user.getId().longValue() == requirement.getSpocId().getSpocUser().getId().longValue()){
 						sb.append(" ").append(requirement.getSpocId().getOwnerUser().getFirstName()).append(" ")
@@ -698,7 +697,7 @@ public class SubmissionsRestController {
 					.append("<p>").append("Best Regards,").append("</p>")
 					.append("<p>").append(fullName).append("</p>");
 					requirement.setMailBody(sb.toString());
-				}
+				}*/
 			}
 		}
 		resultJson = toJSON(requirement);

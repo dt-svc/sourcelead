@@ -252,30 +252,39 @@ public class ClientServiceImpl implements ClientService{
 							orgSpoc.setOrgRelations(orgRelations);
 						}
 					}
-				
-				orgSpoc.setSpocUser(spocUser);
-				orgSpoc.setResponderLocationId(clientOrgLocations);
-				orgSpoc.setInitiatorLocationId(orgLocations);
-				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
-				orgSpoc.setOwnerUser(ownerUser);
-				if(jsonObj.has("spocStatus")){
-					orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
-				}else{
-					orgSpoc.setSpocStatus(Constants.ACTIVE);
-				}
-				if(jsonObj.has("isMailSent")){
-					orgSpoc.setInvitationStatus(Constants.MAIL_SENT);
-				}else{
-					orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
-				}
-				orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
-				orgSpoc.setCreatedDate(commonUtil.currentDate());
-				orgSpoc.setCreatedBy(user.getUserCode());
-				orgSpoc.setUpdatedDate(commonUtil.currentDate());
-				orgSpoc.setUpdatedBy(user.getUserCode());
-				orgSpocService.addOrgSpoc(orgSpoc);
-				
-				
+					
+					//to differentiate client and vendor in ORG_SPOC Table
+					User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));	
+					if(responderType.equalsIgnoreCase("Client")){
+						orgSpoc.setClientLocationId(clientOrgLocations);
+						orgSpoc.setVendorLocationId(orgLocations);
+						orgSpoc.setClientUser(spocUser);
+						orgSpoc.setVendorUser(ownerUser);
+						orgSpoc.setOwnerUser(ownerUser);
+					}else if(responderType.equalsIgnoreCase("Vendor")){
+						orgSpoc.setClientLocationId(orgLocations);
+						orgSpoc.setVendorLocationId(clientOrgLocations);
+						orgSpoc.setClientUser(ownerUser);
+						orgSpoc.setVendorUser(spocUser);
+						orgSpoc.setOwnerUser(ownerUser);
+					}
+					
+					if(jsonObj.has("spocStatus")){
+						orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
+					}else{
+						orgSpoc.setSpocStatus(Constants.ACTIVE);
+					}
+					if(jsonObj.has("isMailSent")){
+						orgSpoc.setInvitationStatus(Constants.MAIL_SENT);
+					}else{
+						orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
+					}
+					orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
+					orgSpoc.setCreatedDate(commonUtil.currentDate());
+					orgSpoc.setCreatedBy(user.getUserCode());
+					orgSpoc.setUpdatedDate(commonUtil.currentDate());
+					orgSpoc.setUpdatedBy(user.getUserCode());
+					orgSpocService.addOrgSpoc(orgSpoc);
 				}
 			}
 			
@@ -731,7 +740,6 @@ public class ClientServiceImpl implements ClientService{
 			String owner = "owner";
 			
 			if(null != orgSpoc){
-				/*User user = orgSpoc.getSpocUser();*/
 				User editUser =null;
 				if(jsonObj.getString("existingSpocUserId") != null && !jsonObj.getString("existingSpocUserId").isEmpty()){
 					User existingUser = userService.getUserById(Long.parseLong(jsonObj.getString("existingSpocUserId")));
@@ -767,53 +775,23 @@ public class ClientServiceImpl implements ClientService{
 			
 				}
 				
-				
 				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
 					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
 				}
 				
-				/*if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
+				User user = orgSpoc.getClientUser();
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
-						orgSpoc.setSpocUser(spocUser);
+						orgSpoc.setVendorUser(spocUser);
 					}
-				}
-				if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
-					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
-						User spocUser = new User();
-						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
-						orgSpoc.setOwnerUser(spocUser);
-					}
-				}*/
-				User user = orgSpoc.getSpocUser();
-				if(loginUser.getId().longValue()== spocUserId.longValue()){
-					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
-						User spocUser = new User();
-						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
-						orgSpoc.setSpocUser(spocUser);
-					}
-				}
+					orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
+					
 				
-				else if(loginUser.getId().longValue()== ownerId.longValue()){
-					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
-						User spocUser = new User();
-						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
-						orgSpoc.setOwnerUser(spocUser);
-					}
-				}
-				else{
-					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
-						User spocUser = new User();
-						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
-						orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-						orgSpoc.setOwnerUser(spocUser);
-					}
-				}
 				OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
 				
 				
-				if(orgSpoc.getTempOwnerId() != null && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getOwnerUser().getId().longValue()){
+				if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orSpocElk.getVendorUser().getId().longValue()){
 					user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
 					sendEmailToClientContact(user,editUser,orgLocation,loginUser);
 				}
@@ -894,7 +872,7 @@ public class ClientServiceImpl implements ClientService{
 		@Override
 		public void sendAcceptEmailToClientOrVendor(OrgSpoc orgSpoc,User loginUser,OrgLocations orgLocations) throws Exception {
 			 
-			 EmailMessage emailMessage = new EmailMessage();
+			 /*EmailMessage emailMessage = new EmailMessage();
 			 if(null != orgSpoc.getOwnerUser()){
 				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
@@ -928,21 +906,6 @@ public class ClientServiceImpl implements ClientService{
 					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			}
 
-			 /*//setting the Recipient information
-			 StringBuilder recipientbuilder = new StringBuilder();
-
-			 //setting the Recipient information
-			 /*StringBuilder recipientbuilder = new StringBuilder();
-
-			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-			 EmailRecipient emailRecipient = new EmailRecipient();
-			 emailRecipient.setEmail(emailMessage.getToEmail());
-			 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-			 emailRecipientList.add(emailRecipient);*/
-			 
-
-			 //setting the Recipient information
-
 			 // changed the logic of adding to emails in InetAddress Array
 
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -969,14 +932,14 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setOrgLocationId(orgLocations.getId());
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());*/
 		
 		}
 
 		@Override
 		public void sendRejectEmailToClientOrVendor(OrgSpoc orgSpoc, User loginUser, OrgLocations orgLocations)throws Exception {
 			
-			EmailMessage emailMessage = new EmailMessage();
+			/*EmailMessage emailMessage = new EmailMessage();
 			 if(null != orgSpoc.getOwnerUser()){
 				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
@@ -1004,21 +967,6 @@ public class ClientServiceImpl implements ClientService{
 					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
 				}
 
-			 /*//setting the Recipient information
-			 StringBuilder recipientbuilder = new StringBuilder();
-
-			 //setting the Recipient information
-			 /*StringBuilder recipientbuilder = new StringBuilder();
-
-			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-			 EmailRecipient emailRecipient = new EmailRecipient();
-			 emailRecipient.setEmail(emailMessage.getToEmail());
-			 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-			 emailRecipientList.add(emailRecipient);*/
-			 
-
-			 //setting the Recipient information
-
 			 // changed the logic of adding to emails in InetAddress Array
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
@@ -1044,7 +992,7 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setOrgLocationId(orgLocations.getId());
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());*/
 		}
 
 

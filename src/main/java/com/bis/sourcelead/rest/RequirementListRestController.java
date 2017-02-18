@@ -265,7 +265,7 @@ public class RequirementListRestController {
 						requirement.setRequirementApproverHierarchyStatus(requirementApproverHierarchy.getRequirementApproverStatus().toString());
 						isLoginUserAsApprover = true;
 					}
-					if(requirement.getSpocId() !=null){
+					/*if(requirement.getSpocId() !=null){
 						if(requirement.getClientId() !=null ){
 							if(requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")){
 								requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
@@ -274,10 +274,8 @@ public class RequirementListRestController {
 								requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 							}
 						}
-					//requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
 					
 					if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
-						
 						if(requirement.getSpocId().getSpocUser().getFirstName() != null && requirement.getSpocId().getSpocUser().getFirstName() != "" && requirement.getSpocId().getSpocUser().getLastName() != null && requirement.getSpocId().getSpocUser().getLastName() != "" ){
 							StringBuilder spocSB = new StringBuilder();
 							requirement.setSpocName(spocSB.append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName()).toString());
@@ -291,8 +289,7 @@ public class RequirementListRestController {
 					}
 					requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 					requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
-					/*requirement.setClientSubmissionTemplate(requirement.getClientSubmissionTemplateId().getTemplateName());*/
-					}
+					}*/
 					if(requirement.getManagerUserId() != null && requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getLastName() != null ){
 						StringBuilder managerSB = new StringBuilder();
 						requirement.setManager(managerSB.append(requirement.getManagerUserId().getFirstName()).append(" ").append(requirement.getManagerUserId().getLastName()).toString());	
@@ -576,7 +573,7 @@ public class RequirementListRestController {
 			TimeSheetSubmissionCount requirementSubCount = getRequirementCount(requirementList);
 			StringBuilder sb = new StringBuilder();
 			for(Requirement requirement : requirementList){
-				if(requirement.getClientId() != null){
+				/*if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
 						if(requirement.getClientId().getResponderLocationId() != null){
 							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
@@ -601,7 +598,7 @@ public class RequirementListRestController {
 						requirement.setClientContactName(sb.toString());
 						requirement.setClientContactEmail(requirement.getSpocId().getSpocUser().getEmail());
 					}
-				}
+				}*/
 				if(requirement.getManagerUserId() != null){
 					String managerFirstName = "";
 					if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
@@ -622,7 +619,7 @@ public class RequirementListRestController {
 				for (String stat : status1) {
 					for(Requirement requirement : requirementList){
 						if(stat.equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
-							if(requirement.getClientId() != null){
+							/*if(requirement.getClientId() != null){
 								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
 									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 									if(requirement.getSpocId().getSpocUser().getFirstName() !=null && requirement.getSpocId().getSpocUser().getLastName() !=null){
@@ -645,7 +642,7 @@ public class RequirementListRestController {
 									requirement.setClientContactName(sb.toString());
 									requirement.setClientContactEmail(requirement.getSpocId().getSpocUser().getEmail());
 								}
-							}
+							}*/
 							if(requirement.getManagerUserId() != null){
 								String managerFirstName = "";
 								if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){

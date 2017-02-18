@@ -153,10 +153,10 @@ public class RequirementController {
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirementId);
 			if(null != requirement.getClientId()){
-				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId());
+				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId(),"Client");
 				if(null != clientContactList){
 					for(OrgSpoc orgSpoc : clientContactList){
-						orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
+						//orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
 					}
 				}
 			    model.addObject("clientContactList", clientContactList);

@@ -43,7 +43,7 @@ public class RequirementHelper {
 	public RequirementIndex populateRequirementIndex(Requirement requirement, JSONObject jsonObj) throws Exception {
 		RequirementIndex requirementIndex = new RequirementIndex();
 		
-		if (null != requirement) {
+		/*if (null != requirement) {
 			requirementIndex.setRequirementId(requirement.getId());
 			requirementIndex.setOrgLocationId(requirement.getOrgLocationId().getId());
 			requirementIndex.setJobTitle(requirement.getJobTitle());
@@ -186,7 +186,7 @@ public class RequirementHelper {
 			}
 			requirementIndex.setReleasedBy(requirement.getReleasedBy());
 
-		}
+		}*/
 		return requirementIndex;
 	}
 

@@ -369,7 +369,7 @@ public class VendorRestController {
 		
 			
 			for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
-				if((orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue() )|| (orgSpoc.getOwnerUser() != null &&orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue())){
+				/*if((orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue() )|| (orgSpoc.getOwnerUser() != null &&orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue())){
 					//if login user is spoc
 					if(orgSpoc.getSpocUser() != null && orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()){
 						if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
@@ -386,7 +386,6 @@ public class VendorRestController {
 						}
 	    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
 	    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-	    				// orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 	    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
 	    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 					}
@@ -406,7 +405,6 @@ public class VendorRestController {
 						}
 							 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 							 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-							 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
 							 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 							 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
 						}
@@ -468,7 +466,7 @@ public class VendorRestController {
 				
 				orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
 				orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
-				orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
+				orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());*/
 			}
 			
 			 resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
@@ -601,7 +599,7 @@ public class VendorRestController {
 		
 			
 			for (OrgSpoc orgSpoc : vandorsContactList) {
-				if(orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue() || orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
+				/*if(orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue() || orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
 					//if login user is spoc
 					if(orgSpoc.getSpocUser() !=null && orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()){
 						
@@ -619,7 +617,6 @@ public class VendorRestController {
 						}
 	    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
 	    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-	    				// orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 	    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
 	    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 					}
@@ -639,7 +636,6 @@ public class VendorRestController {
 						}
 							 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 							 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-							 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
 							 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 							 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
 						}
@@ -696,7 +692,7 @@ public class VendorRestController {
 				
 				orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
 				orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
-				orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
+				orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());*/
 			}
 			
 			 File file = clientVendorExport.getVendorContactDetailsFile(vandorsContactList,org.getOrgName(),exportType);
@@ -1229,9 +1225,39 @@ public class VendorRestController {
 						
 						for(ClientVendorContactsIndex clientVendorContactsIndex : clientVendorContactsList){
 							
+							if(null != clientVendorContactsIndex.getClientUserFirstName() && clientVendorContactsIndex.getClientUserFirstName() != "" && clientVendorContactsIndex.getClientUserLastName() != null && clientVendorContactsIndex.getClientUserLastName() != "" ){
+								StringBuilder spocNameSB = new StringBuilder();
+								clientVendorContactsIndex.setSpocName(spocNameSB.append(clientVendorContactsIndex.getClientUserFirstName()).append(" ").append(clientVendorContactsIndex.getClientUserLastName()).toString());
+							}else{
+								clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getClientUserFirstName());
+							}
+							
+							if(clientVendorContactsIndex.getVendorUserFirstName() != null && clientVendorContactsIndex.getVendorUserFirstName() != "" && clientVendorContactsIndex.getVendorUserLastName() != null && clientVendorContactsIndex.getVendorUserLastName() != "" ){
+								StringBuilder ownerNameSB = new StringBuilder();
+								clientVendorContactsIndex.setOwnerNames(ownerNameSB.append(clientVendorContactsIndex.getVendorUserFirstName()).append(" ").append(clientVendorContactsIndex.getVendorUserLastName()).toString());
+							}else{
+								clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getVendorUserFirstName());
+							}
+							
+							clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getClientUserEmail());
+							clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getClientUserPhNo());
+							
+						    clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getVendorUserId());
+	    				    clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getClientUserId());
+		    				 
+							clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getClientLocationId());
+							clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getClientOrgName());
+							
+								/*if(clientVendorContactsIndex.getVendorLocationId() !=null && clientVendorContactsIndex.getVendorLocationId() == loginOrgLocation.getId().longValue() ){
+									clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getResponderLocationId());
+									clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getResponderOrgName());
+								}*/
+							
+							
+							
 						//loginOrgLocation
 						
-						if(clientVendorContactsIndex.getSpocUserId() == loginUser.getId().longValue() || clientVendorContactsIndex.getOwnerUserId() == loginUser.getId().longValue()){
+						/*if(clientVendorContactsIndex.getSpocUserId() == loginUser.getId().longValue() || clientVendorContactsIndex.getOwnerUserId() == loginUser.getId().longValue()){
 							//if login user is spoc
 							if(clientVendorContactsIndex.getSpocUserId() !=null && clientVendorContactsIndex.getSpocUserId() == loginUser.getId().longValue()){
 								
@@ -1331,7 +1357,7 @@ public class VendorRestController {
 						if(clientVendorContactsIndex.getInitiatorLocationId() !=null && clientVendorContactsIndex.getInitiatorLocationId() == loginOrgLocation.getId().longValue() ){
 							clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getResponderLocationId());
 							clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getResponderOrgName());
-						}
+						}*/
 						
 						//clientVendorContactsIndex.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
 						//clientVendorContactsIndex.setSpocUserId(orgSpoc.getSpocUser().getId());
@@ -1469,31 +1495,30 @@ public class VendorRestController {
 				 
 				// boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 				
-
+				 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
 				 if("Vendor".equalsIgnoreCase(responderType)){
-					 responderType = "Client";
+					 //responderType = "Client";
+					 responderQueryBuilder.must(QueryBuilders.matchQuery("clientLocationId", loginOrgLocation.getId()));
 				 }else if("Client".equalsIgnoreCase(responderType)){
-					 responderType = "Vendor"; 
+					 //responderType = "Vendor"; 
+					 responderQueryBuilder.must(QueryBuilders.matchQuery("vendorLocationId", loginOrgLocation.getId()));
 				 }
 				 
-				 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
 				 
-				 BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
-				 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorLocationId", loginOrgLocation.getId()));
-				 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorType", responderType));
+				 /*BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
+				 initiatorQueryBuilder.must(QueryBuilders.matchQuery("vendorLocationId", loginOrgLocation.getId()));
+				 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorType", responderType));*/
 				 
 				 
-				 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
-				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", loginOrgLocation.getId()));
-				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
+				 
+				 //responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
 				 
 				 BoolQueryBuilder statusQueryBuilder = QueryBuilders.boolQuery();
 				 statusQueryBuilder.must(QueryBuilders.matchQuery("status", "1"));
 				 
-				 combinedQueryBuilder.should(initiatorQueryBuilder);
-				 combinedQueryBuilder.should(responderQueryBuilder);
-				 
-				 boolQueryBuilder.must(combinedQueryBuilder);
+				/* combinedQueryBuilder.should(initiatorQueryBuilder);
+				 combinedQueryBuilder.should(responderQueryBuilder);*/
+				 boolQueryBuilder.must(responderQueryBuilder);
 				 boolQueryBuilder.must(statusQueryBuilder);
 				 
 				 //  this condition is if Login user is Owner or SpocUserId
@@ -1529,10 +1554,72 @@ public class VendorRestController {
 						}
 						
 						for(ClientVendorContactsIndex clientVendorContactsIndex : clientVendorContactsList){
+							if("Vendor".equalsIgnoreCase(responderType)){
+								if(null != clientVendorContactsIndex.getVendorUserFirstName() && clientVendorContactsIndex.getVendorUserFirstName() != "" && clientVendorContactsIndex.getVendorUserLastName() != null && clientVendorContactsIndex.getVendorUserLastName() != "" ){
+									StringBuilder spocNameSB = new StringBuilder();
+									clientVendorContactsIndex.setSpocName(spocNameSB.append(clientVendorContactsIndex.getVendorUserFirstName()).append(" ").append(clientVendorContactsIndex.getVendorUserLastName()).toString());
+								}else{
+									clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getVendorUserLastName());
+								}
+								if(clientVendorContactsIndex.getClientUserFirstName() != null && clientVendorContactsIndex.getClientUserFirstName() != "" && clientVendorContactsIndex.getClientUserLastName()!= null && clientVendorContactsIndex.getClientUserLastName() != "" ){
+									StringBuilder ownerNameSB = new StringBuilder();
+									clientVendorContactsIndex.setOwnerNames(ownerNameSB.append(clientVendorContactsIndex.getClientUserFirstName()).append(" ").append(clientVendorContactsIndex.getClientUserLastName()).toString());
+								}else{
+									clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getClientUserFirstName());
+								}
+								clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getVendorUserEmail());
+								clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getVendorUserPhNo());
+								
+							    clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getClientUserId());
+		    				    clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getVendorUserId());
+			    				 
+								clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getVendorLocationId());
+								clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getVendorOrgName());
+								
+								if(null != clientVendorContactsIndex.getOwnerUserId() && null != clientVendorContactsIndex.getClientUserId() && clientVendorContactsIndex.getOwnerUserId().longValue() == clientVendorContactsIndex.getClientUserId().longValue()){
+									 clientVendorContactsIndex.setSpocUserId(clientVendorContactsIndex.getVendorUserId());
+									 clientVendorContactsIndex.setOwnerUserId(clientVendorContactsIndex.getClientUserId());
+								}
+								else{
+									 clientVendorContactsIndex.setSpocUserId(clientVendorContactsIndex.getClientUserId());
+									 clientVendorContactsIndex.setOwnerUserId(clientVendorContactsIndex.getVendorUserId());
+								}
+								
+							 }else if("Client".equalsIgnoreCase(responderType)){
+								 if(null != clientVendorContactsIndex.getClientUserFirstName() && clientVendorContactsIndex.getClientUserFirstName() != "" && clientVendorContactsIndex.getClientUserLastName() != null && clientVendorContactsIndex.getClientUserLastName() != "" ){
+										StringBuilder spocNameSB = new StringBuilder();
+										clientVendorContactsIndex.setSpocName(spocNameSB.append(clientVendorContactsIndex.getClientUserFirstName()).append(" ").append(clientVendorContactsIndex.getClientUserLastName()).toString());
+									}else{
+										clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getVendorUserLastName());
+									}
+									if(clientVendorContactsIndex.getVendorUserFirstName() != null && clientVendorContactsIndex.getVendorUserFirstName() != "" && clientVendorContactsIndex.getVendorUserLastName()!= null && clientVendorContactsIndex.getVendorUserLastName() != "" ){
+										StringBuilder ownerNameSB = new StringBuilder();
+										clientVendorContactsIndex.setOwnerNames(ownerNameSB.append(clientVendorContactsIndex.getVendorUserFirstName()).append(" ").append(clientVendorContactsIndex.getVendorUserLastName()).toString());
+									}else{
+										clientVendorContactsIndex.setOwnerNames(clientVendorContactsIndex.getVendorUserFirstName());
+									}
+									clientVendorContactsIndex.setSpocEmail(clientVendorContactsIndex.getClientUserEmail());
+									clientVendorContactsIndex.setSpocMobilePhone(clientVendorContactsIndex.getClientUserPhNo());
+									
+								    clientVendorContactsIndex.setTempOwnerId(clientVendorContactsIndex.getVendorUserId());
+			    				    clientVendorContactsIndex.setUserId(clientVendorContactsIndex.getClientUserId());
+				    				 
+									clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getClientLocationId());
+									clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getClientOrgName());
+									
+									if(null != clientVendorContactsIndex.getClientUserId() && null != clientVendorContactsIndex.getOwnerUserId() && clientVendorContactsIndex.getOwnerUserId().longValue() == clientVendorContactsIndex.getClientUserId().longValue()){
+										 clientVendorContactsIndex.setSpocUserId(clientVendorContactsIndex.getVendorUserId());
+										 clientVendorContactsIndex.setOwnerUserId(clientVendorContactsIndex.getClientUserId());
+									}
+									else{
+										 clientVendorContactsIndex.setSpocUserId(clientVendorContactsIndex.getClientUserId());
+										 clientVendorContactsIndex.setOwnerUserId(clientVendorContactsIndex.getVendorUserId());
+									}
+							 }
 							
 							//loginOrgLocation
 							
-							if(clientVendorContactsIndex.getSpocUserId() == loginUser.getId().longValue() || clientVendorContactsIndex.getOwnerUserId() == loginUser.getId().longValue()){
+							/*if(clientVendorContactsIndex.getSpocUserId() == loginUser.getId().longValue() || clientVendorContactsIndex.getOwnerUserId() == loginUser.getId().longValue()){
 								//if login user is spoc
 								if(clientVendorContactsIndex.getSpocUserId() !=null && clientVendorContactsIndex.getSpocUserId() == loginUser.getId().longValue()){
 									
@@ -1629,7 +1716,7 @@ public class VendorRestController {
 							if(clientVendorContactsIndex.getInitiatorLocationId() !=null && clientVendorContactsIndex.getInitiatorLocationId() == loginOrgLocation.getId().longValue() ){
 								clientVendorContactsIndex.setSpocLocationId(clientVendorContactsIndex.getResponderLocationId());
 								clientVendorContactsIndex.setOrgName(clientVendorContactsIndex.getResponderOrgName());
-							}
+							}*/
 							
 							//clientVendorContactsIndex.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
 							//clientVendorContactsIndex.setSpocUserId(orgSpoc.getSpocUser().getId());
