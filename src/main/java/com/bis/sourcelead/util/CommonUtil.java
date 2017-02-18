@@ -13,7 +13,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -282,6 +281,29 @@ public class CommonUtil {
 		List<ProjectMembers> projectMembers;
 		try {
 			projectMembers = projectMembersService.getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(user.getId());
+			if(projectMembers != null && !projectMembers.isEmpty()){
+				for(ProjectMembers projectMember :projectMembers){
+					terminateProjectMemberByProjectMemberId(projectMember.getId(),Primary.NO);
+				}
+				
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+	}
+	
+	
+	/**
+	 * This method is used to terminate all projectmembers whose project is closed
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public void terminateAllProjectMembers(){
+		List<ProjectMembers> projectMembers;
+		try {
+			projectMembers = projectMembersService.getAllTerminatedProjectMembersIdsByTimesheet();
 			if(projectMembers != null && !projectMembers.isEmpty()){
 				for(ProjectMembers projectMember :projectMembers){
 					terminateProjectMemberByProjectMemberId(projectMember.getId(),Primary.NO);

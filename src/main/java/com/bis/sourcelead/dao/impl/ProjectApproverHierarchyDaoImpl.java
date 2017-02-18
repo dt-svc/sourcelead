@@ -249,6 +249,14 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	        return projectHirachyList;
 
 	}
+	@Override
+	@Transactional
+	public List<ProjectApproverHierarchy> getApproverUserIdsByOrgLocationIdAndLevelAndFrequency(Long orgLocationId, String invoiceFrequency, int managerLevel) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectApproverHierarchy hierarchy left join fetch hierarchy.approverUserId user left join fetch hierarchy.projectId proj left join fetch proj.orgLocationsId ol where ol.id = :orgLocationId and hierarchy.level = :managerLevel and proj.invoiceFrequency = :invoiceFrequency GROUP BY hierarchy.approverUserId.id " ;
+	    List<ProjectApproverHierarchy> projectHirachyList = session.createQuery(query).setLong( "orgLocationId", orgLocationId).setInteger("managerLevel", managerLevel).setString("invoiceFrequency", invoiceFrequency).setCacheable(true).list();
+        return projectHirachyList;
+	}
 
 	
 }
