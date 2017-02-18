@@ -726,8 +726,8 @@ function candidateProfile(candidateId){
 							
 							result = result +'		<div class="clearfix">';
 							result = result +'		          <h2 class="education  pull-left">Skills:</h2>';
-							result = result +'		          <div id="editSkillBtnDiv" class="pull-right mt10 mb"><span id="editSkillBtnSpan class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill();">Edit Skill</button></span></div>';
-							result = result +'		          <div id="saveSkillBtnDiv" class="pull-right mt10 mb" style.display = "none";></div>';
+							result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
+							result = result +'		          <span id="saveSkillBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
 							result = result +'		</div>';
 							/* if(window.candidateStatusGlobal == '0'){
 								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
@@ -955,33 +955,39 @@ function candidateProfile(candidateId){
 </script>
 
 <script>
-function editSkill(){
-	$("#skillName").prop('disabled', false).trigger("chosen:updated");
-	$("#editSkillBtnSpan").remove();
-	$("#editSkillBtnDiv").hide();
-	var result = '';
-	result = result + ' <span id="saveSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="saveSkillBtn" name="saveSkillBtn" class="btn btn-primary btn-sm" onclick="saveSkill();">Save Skill</button></span>';
-	
-	$("#saveSkillBtnDiv").empty();
-	$("#saveSkillBtnDiv").append(result);
-	$("#saveSkillBtnDiv").show();
-}
-function saveSkill(){
-	$("#skillName").prop('disabled', true).trigger("chosen:updated");
-	$("#saveSkillBtnSpan").remove();
-	$("#saveSkillBtnDiv").hide();
-	var result = '';
-	result = result + ' <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill();">Edit Skill</button></span>';
-	
-	$("#editSkillBtnDiv").empty();
-	$("#editSkillBtnDiv").append(result);
-	$("#editSkillBtnDiv").show();
-}
+	function editSkill(candidateId){
+		$("#skillName").prop('disabled', false).trigger("chosen:updated");
+		$("#editSkillBtn").remove();
+		$("#editSkillBtnSpan").hide();
+		window.skillCountBefore = $("#skillName :selected").length;
+		var result = '';
+		result = result + '<button type="button" id="saveSkillBtn" name="saveSkillBtn" class="btn btn-primary btn-sm" onclick="saveSkill('+candidateId+');">Save Skill</button>';
+		$("#saveSkillBtnSpan").empty();
+		$("#saveSkillBtnSpan").append(result);
+		$("#saveSkillBtnSpan").show();
+	}
+
+	function saveSkill(candidateId){
+		$("#skillName").prop('disabled', true).trigger("chosen:updated");
+		window.skillCountAfter = $("#skillName :selected").length;
+		if(skillCountBefore != skillCountAfter){
+			saveSkils(candidateId);
+		}
+		$("#saveSkillBtn").remove();
+		$("#saveSkillBtnSpan").hide();
+		var result = '';
+		result = result + '<button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button>';
+		$("#editSkillBtnSpan").empty();
+		$("#editSkillBtnSpan").append(result);
+		$("#editSkillBtnSpan").show();
+		skillCountAfter = skillCountBefore = 0;
+	}
 </script>
 
 
 <%-- 
      @author : sarath kumar.
+     @author : venkat kesav (modified on 02/18/2017)
      this script is for save Skils in Candidate.
      1.usage     :  used in editCandidate() function  line 13
      2.parameter : csrf token ,candidateId.
@@ -995,12 +1001,10 @@ function saveSkill(){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({  
 	          type : "POST",
-	          url: sourceleadUrl+"/saveSkilsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
+	          url: sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
 	          success :function(data) {
-	               if(data != null && data != 'undefined' && data != ""){
-	            	   candidateSkillsList(candidateId);
-	            	   removeSkillPopUp(candidateId);
-	            	   candidateProfile(candidateId);
+	               if(data != null && data != 'undefined' && data != "" && data == "success"){
+	            	  //candidateProfile(candidateId);
 	               }
 	        },
 	          
