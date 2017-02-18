@@ -92,6 +92,7 @@ function getUsersSearchResult(searchValue){
     </div>
   </div>
       <section class="clearfix usersHeader positionRelative">
+      <div class="section-action-btns clearfix">
       <div class="pull-left cand-advsrche">
        <div id="searchElement"></div>
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
@@ -215,7 +216,7 @@ function getUsersSearchResult(searchValue){
        
        
        
-       <div class="section-action-btns positionRelative">
+       <div class="positionRelative pull-left mt10">
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           <li><i class="fa fa-filter"></i>&nbsp;
@@ -265,7 +266,7 @@ function getUsersSearchResult(searchValue){
 	         </sec:authorize>
         </ul>
       </div>
-      
+      </div>
       </section>
       
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
@@ -617,7 +618,6 @@ var validationSettings = {
    		     $('#searchElement').append(searchByName);
     		 offset = 0;
     	}
-		
 		
 		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	    var userRole = document.getElementById("userRole").value;
