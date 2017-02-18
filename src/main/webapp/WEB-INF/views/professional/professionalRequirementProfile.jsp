@@ -105,7 +105,7 @@ function requirementProfile(requirementUUID){
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +'                <div class="company-logo">';
-				 result = result +'                  <div class="imageParent"> <img onerror="predefineProfileImage(this);" src="<c:url value="'+sourceleadUrl+'/displayOrgImage/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive"> </div>';
+				 result = result +'                  <div class="orgImage"> <img onerror="predefineProfileImage(this);" src="<c:url value="'+sourceleadUrl+'/displayOrgImage/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive"> </div>';
 				 result = result +'                 </div>';
 				 result = result +'              </div>';
 				 result = result +'              <div class="col-md-9">';
@@ -266,7 +266,7 @@ function cancelReferPopUp(){
 </script>
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','resources/images/office-image.jpg');
 	}
 </script>
 <jsp:include page="applyToJob.jsp" />
