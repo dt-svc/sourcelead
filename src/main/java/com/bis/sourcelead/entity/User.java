@@ -121,6 +121,9 @@ public class User implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "USER_UUID")
+	private String userUUID;
+	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
@@ -453,6 +456,14 @@ public class User implements Serializable{
 
 	public void setCountry(String country) {
 		this.country = country;
+	}
+
+	public String getUserUUID() {
+		return userUUID;
+	}
+
+	public void setUserUUID(String userUUID) {
+		this.userUUID = userUUID;
 	}
 	
 }
