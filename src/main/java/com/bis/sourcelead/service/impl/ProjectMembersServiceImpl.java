@@ -253,6 +253,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		// TODO Auto-generated method stub
 		return projectMembersDao.getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(userId);
 	}
+	
+	@Override
+	public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheet()throws Exception {
+		return projectMembersDao.getAllTerminatedProjectMembersIdsByTimesheet();
+	}
 
 	@Override
 	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception {
@@ -308,7 +313,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	            	pmh.setProjectAssignedDate(projects.getStartDate());
 	            }
 	            if(StringUtils.isNotEmpty(endDate)){
-	            	if(endDate != null && endDate != "--"){
+	            	if(endDate != null && !"--".equalsIgnoreCase(endDate)){
 	            		Date currentEndDate = format.parse(endDate);
 	            		pmh.setProjectTerminationDate(currentEndDate);
 	            	}

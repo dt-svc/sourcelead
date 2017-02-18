@@ -340,7 +340,7 @@ public class LoginSessionController {
 		 * commented by Prasad salina
 		 */
 		//commonUtil.storeTimesheetSubmissionRecords(user);
-		commonUtil.terminateAllProjectMembersByUser(user);
+		/*commonUtil.terminateAllProjectMembersByUser(user);
 		
 		try {
 			List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(orgLocations.getId(), loginUser.getId());
@@ -350,7 +350,7 @@ public class LoginSessionController {
 			projectsService.saveAllProjects(projectsList);
 		} catch (Exception e) {
 			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-		}
+		}*/
 		
 		
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
