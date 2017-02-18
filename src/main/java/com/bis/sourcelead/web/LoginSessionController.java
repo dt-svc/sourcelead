@@ -381,7 +381,7 @@ public class LoginSessionController {
 						Date d2 = dateFormat.parse(strDate);
 						long diff = d2.getTime() - d1.getTime();
 						long diffDays = diff / (24 * 60 * 60 * 1000);
-						notifications.setCalDays(diffDays);
+						notifications.setCalDays(String.valueOf(diffDays));
 					
 				}
 		

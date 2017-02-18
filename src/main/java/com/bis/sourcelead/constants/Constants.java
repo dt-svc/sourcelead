@@ -71,6 +71,9 @@ public class Constants {
 	public static DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
 	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd/MM");
 	
+	public static final DateFormat TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss");
+	public static final DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+	
 	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
 	public static String INVITE_USER = "Invite User";
 	public static String INVITE_CLIENT = "Invite Client";
@@ -198,8 +201,6 @@ public class Constants {
 	public static String INDIVIDUAL_RECRUITER = "Recruiter";
 	public static String INVITE_PROFESSIONAL = "Professional Invitation";
 	public static String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
-	
-	public static String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
 
 	public static String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
 
