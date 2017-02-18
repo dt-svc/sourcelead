@@ -1,1 +1,0 @@
-UPDATE `sourcelead`.`org_locations` SET `TIMEZONE_ID`='132' WHERE `ID`='1';
