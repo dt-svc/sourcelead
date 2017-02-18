@@ -2210,10 +2210,14 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			if(jsonObj.has("maxExp") && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
 				reqTemplate.setMaxExp(jsonObj.getString("maxExp"));
+				}else{
+					reqTemplate.setMaxExp(null);
 				}
 				
 				if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp"))){
 					reqTemplate.setMinExp(jsonObj.getString("minExp"));
+				}else{
+					reqTemplate.setMinExp(null);
 				}
 				
 				if(jsonObj.has("rate") && !"".equalsIgnoreCase(jsonObj.getString("rate"))){

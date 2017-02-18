@@ -2058,7 +2058,7 @@ function getTeamsList(reqId){
 				  for (var i = 0; i < json.teams.length; i++) {
 						var opt = json.teams[i];
 						if('Y' == opt.isTeamAssigned){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected>"+ opt.name + "</option>";
+							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected disabled>"+ opt.name + "</option>";
 						}else if($.inArray(''+opt.id, teamRoleIds) > -1){
 							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected>"+ opt.name + "</option>";	
 					    }else{
@@ -2075,7 +2075,7 @@ function getTeamsList(reqId){
 					for (var i = 0; i < json.roles.length; i++) {
 						var opt = json.roles[i];
 						if('Y' == opt.isRoleAssigned){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
+							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected disabled>"+ opt.displayName + "</option>";
 						}else if($.inArray(''+opt.id+'role', teamRoleIds) > -1){
 							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
 						}else{
