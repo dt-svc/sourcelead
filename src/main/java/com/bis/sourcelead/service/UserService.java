@@ -170,6 +170,10 @@ public interface UserService  {
 	public List<User> getUsersListByOrglocationId(Long orgLocationId) throws Exception;
 
 	List<UserIndex> getAllUniversalSearchUsersList(OrgLocations orgLocations, String searchValue, User user)throws Exception;
+	
+	User getUserByEmailAndUserType(String email,String userType) throws Exception;
+	
+	User getUserByUserName(String userName) throws Exception;
 
 }	
 		

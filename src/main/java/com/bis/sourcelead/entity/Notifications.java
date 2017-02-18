@@ -85,7 +85,7 @@ public class Notifications implements Serializable{
 	
 	//to calculate days
 	@Transient
-	private Long calDays;
+	private String calDays;
 	
 	//to notification count
 	@Transient
@@ -112,14 +112,6 @@ public class Notifications implements Serializable{
 
 	public void setNotificationStatus(String notificationStatus) {
 		this.notificationStatus = notificationStatus;
-	}
-
-	public Long getCalDays() {
-		return calDays;
-	}
-
-	public void setCalDays(Long calDays) {
-		this.calDays = calDays;
 	}
 
 	public String getDateValue() {
@@ -280,5 +272,13 @@ public class Notifications implements Serializable{
 
 	public void setNotificationFormId(String notificationFormId) {
 		this.notificationFormId = notificationFormId;
+	}
+
+	public String getCalDays() {
+		return calDays;
+	}
+
+	public void setCalDays(String calDays) {
+		this.calDays = calDays;
 	}
 }

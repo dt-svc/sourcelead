@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -57,6 +58,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionCounts;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
@@ -74,6 +76,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -147,6 +150,9 @@ public class RequirementListRestController {
 	 @Autowired
 	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
 	 
+	 @Autowired
+	 private TimeZoneService timeZoneService;
+	 
 	 /**
 	   * @author sarath kumar
 	   * @since  aug 30 2016
@@ -166,212 +172,164 @@ public class RequirementListRestController {
 	 @PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getRequirementListByOrgLocationID")
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
+		
 		 String msg = "";
-		String resultJson;
-		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		
-		
-	    List<Requirement> requirementList = new ArrayList<Requirement>();
-	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	    df.setTimeZone(TimeZone.getTimeZone("GMT"));
-	    
-	    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
-		
-		Long maxResults = requirementService.getRequirementsListById(loginOrgLocation.getId());
-		
-		try {
-			 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-			 if(searchHits != null && searchHits.length >0){
-					for (SearchHit hit : searchHits) {
-						String sourceAsString = hit.getSourceAsString();
-						ObjectMapper mapper = new ObjectMapper();
-						if (sourceAsString != null) {
-							Requirement requirement = null;
-							RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
-			            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
-			            	{
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	
-			            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-			            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
-			            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-			            			)){
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
-			            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-			            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
-			            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-			            			)){
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	
-			            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	
-			            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	
-			            	if(null != requirementIndex.getReleasedBy()){
-			            		List<Long> userId = new ArrayList<Long>();
-			            		for (String s : requirementIndex.getReleasedBy().split(",")){
-			    					userId.add(Long.parseLong(s));
-			    				 }
-			    				boolean flag = userId.contains(user.getId());
-			             		if(flag == true){
-			             			requirement.setIsRequirementReleasedByuser(Constants.YES);
-			             		}
-			            	}
-			            	
-			            	
-			            	requirementList.add(requirement);
-			            }
-					}
-				}
-		
-		
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			String resultJson;
+			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			
-		/*for(Requirement requirement : requirementList){
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user,userRoleName);
 			
-			Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirement.getId(), user.getId());
-			requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
-			
-			int totalApplicatsCountForRequirement = 0;
-			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation,requirement.getId(),user,userRole);
-			if(totalApplicatsCountForRequirement > 0){
-				requirement.setTotalApplicantsForRequirement(totalApplicatsCountForRequirement); ;
-			}
-			
-			if(requirement.getClientId() != null){
-				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
-				}
-				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-					requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
-				}
-			}
-			if(requirement.getManagerUserId() != null){
-				String managerFirstName = "";
-				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
-					managerFirstName = requirement.getManagerUserId().getFirstName();
-				}
-				String managerLastName = "";
-				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
-					managerLastName = requirement.getManagerUserId().getLastName();
-				}
-				StringBuilder name = new StringBuilder();
-				requirement.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
-			}
-			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqStatusChange");
-			if(msg != null && msg != ""){
-				requirement.setMsg(msg);
-			}
-				 SourceLeadSessionManager.removeSessionAttribute(request, "reqStatusChange");
-			
-		}*/
-		
-		/*
-		 * filter based search for requirement  List
-		 */
-		ArrayList<Requirement>  requirementList1 = new ArrayList<Requirement>();
-		String[] status1 = status.split(",");
-		if (status1[0] != null && status1[0].length() > 0) {
-			for (String stat : status1) {
-				for(Requirement requirement : requirementList){
-					if(stat.equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
-						/*if(requirement.getClientName() != null){
-							if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-								requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
-							}
-							if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-								requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
-							}
-						}
-						if(requirement.getManager() != null){
-							String managerFirstName = "";
-							if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
-								managerFirstName = requirement.getManagerUserId().getFirstName();
-							}
-							String managerLastName = "";
-							if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
-								managerLastName = requirement.getManagerUserId().getLastName();
-							}
-							 StringBuilder managerSB = new StringBuilder();
-							requirement.setManager(managerSB.append(managerFirstName).append(" ").append(managerLastName).toString());
-						}*/
-						requirementList1.add(requirement);
-					}
+			for(Requirement requirement : requirementList){
+				
+				Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirement.getId(), user.getId());
+				requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
+				
+				int totalApplicatsCountForRequirement = 0;
+				totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation,requirement.getId(),user,userRoleName);
+				if(totalApplicatsCountForRequirement > 0){
+					requirement.setTotalApplicantsForRequirement(totalApplicatsCountForRequirement); ;
 				}
 				
+				if(requirement.getClientId() != null){
+					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+					}
+					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+					}
+				}
+				if(requirement.getManagerUserId() != null){
+					String managerFirstName = "";
+					if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+						managerFirstName = requirement.getManagerUserId().getFirstName();
+					}
+					String managerLastName = "";
+					if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+						managerLastName = requirement.getManagerUserId().getLastName();
+					}
+					StringBuilder name = new StringBuilder();
+					requirement.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
+				}
+				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqStatusChange");
+				if(msg != null && msg != ""){
+					requirement.setMsg(msg);
+				}
+					 SourceLeadSessionManager.removeSessionAttribute(request, "reqStatusChange");
+				
 			}
-			resultJson = commonUtil.toJSON(requirementList1);
-		}else{
-			resultJson = commonUtil.toJSON(requirementList);
-		}
-		return resultJson;
+			
+			/*
+			 * filter based search for requirement  List
+			 */
+			ArrayList<Requirement>  requirementList1 = new ArrayList<Requirement>();
+			String[] status1 = status.split(",");
+			if (status1[0] != null && status1[0].length() > 0) {
+				for (String stat : status1) {
+					for(Requirement requirement : requirementList){
+						if(stat.equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
+							if(requirement.getClientId() != null){
+								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+								}
+								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+									requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+								}
+							}
+							if(requirement.getManagerUserId() != null){
+								String managerFirstName = "";
+								if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+									managerFirstName = requirement.getManagerUserId().getFirstName();
+								}
+								String managerLastName = "";
+								if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+									managerLastName = requirement.getManagerUserId().getLastName();
+								}
+								 StringBuilder managerSB = new StringBuilder();
+								requirement.setManager(managerSB.append(managerFirstName).append(" ").append(managerLastName).toString());
+							}
+							requirementList1.add(requirement);
+						}
+					}
+					
+				}
+				resultJson = commonUtil.toJSON(requirementList1);
+			}else{
+				resultJson = commonUtil.toJSON(requirementList);
+			}
+			return resultJson;
+		 
+		 
+		 /* String resultJson;
+			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");//""
+			String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user,userRoleName);
+			for(Requirement requirement : requirementList){
+				if(requirement.getClientId() != null){
+					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+					}
+					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+					}
+				}
+				if(requirement.getManagerUserId() != null){
+					String managerFirstName = "";
+					if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+						managerFirstName = requirement.getManagerUserId().getFirstName();
+					}
+					String managerLastName = "";
+					if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+						managerLastName = requirement.getManagerUserId().getLastName();
+					}
+					requirement.setManager(managerFirstName+" "+managerLastName);
+				}
+			}
+			
+			ArrayList<Requirement>  requirementList1 = new ArrayList<Requirement>();
+			String[] status1 = status.split(",");
+			if (status1[0] != null && status1[0].length() > 0) {
+				for (String stat : status1) {
+					for(Requirement requirement : requirementList){
+						if(stat.equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
+							if(requirement.getClientId() != null){
+								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+								}
+								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+									requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+								}
+							}
+							if(requirement.getManagerUserId() != null){
+								String managerFirstName = "";
+								if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+									managerFirstName = requirement.getManagerUserId().getFirstName();
+								}
+								String managerLastName = "";
+								if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+									managerLastName = requirement.getManagerUserId().getLastName();
+								}
+								requirement.setManager(managerFirstName+" "+managerLastName);
+							}
+							
+							requirementList1.add(requirement);
+						}
+					}
+					
+				}
+				resultJson = commonUtil.toJSON(requirementList1);
+			}else{
+				
+				resultJson = commonUtil.toJSON(requirementList);
+			}
+			
+			
+			
+			return resultJson;*/
 	 }
 	 
-	 
-	 private Requirement getData(RequirementIndex requirementIndex) {
-		 Requirement requirement = new Requirement();
-		requirement.setId(requirementIndex.getRequirementId());
-     	requirement.setJobId(requirementIndex.getJobId());
-     	requirement.setJobType(requirementIndex.getJobType());
-     	requirement.setOtherJobType(requirementIndex.getOtherJobType());
-     	requirement.setJobTitle(requirementIndex.getJobTitle());
-     	if(requirementIndex.getMinExperience() !=null){
-     		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
-     	}
-     	if(requirementIndex.getSkills() !=null){
-     		String skills = getReqSkills(requirementIndex.getSkills());
-     		requirement.setSkills(skills);
-     	}
-     	if(requirementIndex.getMaxExperience() !=null){
-     		requirement.setMaxExp(requirementIndex.getMaxExperience().toString());
-     	}
-     	requirement.setClientName(requirementIndex.getClient());
-     	requirement.setCountry(requirementIndex.getCountry());
-     	requirement.setState(requirementIndex.getState());
-     	requirement.setCity(requirementIndex.getCity());
-     	requirement.setSearchType("Requirement");
-     	requirement.setPositions(requirementIndex.getNumberOfPositions());
-     	if(requirementIndex.getNumberOfApplicants() != null){
-     		requirement.setTotalApplicantsForRequirement(Integer.parseInt(requirementIndex.getNumberOfApplicants()));	
-     	}
-     	requirement.setNoOfApplicants(requirementIndex.getNumberOfApplicants());
-     	requirement.setManager(requirementIndex.getManager());
-     	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-         	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
-     	}	
-     	return requirement;
-	}
-	 
-
-		private String getReqSkills(String[] skills) {
-			StringBuilder sb = new StringBuilder();
-			for(int i=0;i<skills.length;i++){
-				sb.append(skills[i]).append(",");
-			}
-			String str = sb.toString();
-			return str.substring(0, str.length()-1);
-		}
-	    
 	 
 	 /**
 	 * @author sarath kumar
@@ -537,6 +495,7 @@ public class RequirementListRestController {
 				String resultJson = null;
 				
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				Timezone timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
 					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 					if(requirementId !=null && !requirementId.isEmpty()){
 						List<RequirementSubmission> requirementStatusList = null;
@@ -644,13 +603,29 @@ public class RequirementListRestController {
 											}
 											
 										}
-									
+										
+										
+										
 									if(requirementSubmission.getCreatedDate() != null){
-										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
-									}
+										String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getCreatedDate());
+										String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+										Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+										currentDateInTimezone = Constants.DMY.format(converteDate);
+										requirementSubmission.setCreatedDateStr(currentDateInTimezone);
+								    }
 									if(requirementSubmission.getUpdatedDate() != null){
+										String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getUpdatedDate());
+										String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+										Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+										currentDateInTimezone = Constants.DMY.format(converteDate);
+										requirementSubmission.setUpDatedStr(currentDateInTimezone);
+								    }
+									/*if(requirementSubmission.getCreatedDate() != null){
+										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+									}*/
+									/*if(requirementSubmission.getUpdatedDate() != null){
 										requirementSubmission.setUpDatedStr(Constants.DF_YMD.format(requirementSubmission.getUpdatedDate()));
-									}
+									}*/
 									
 									
 									submissionList.add(requirementSubmission);
@@ -707,7 +682,8 @@ public class RequirementListRestController {
 			Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
+			String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user,userRoleName);
 			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			File file =null;
 			
@@ -939,7 +915,7 @@ public class RequirementListRestController {
 			String resultJson;
 		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			
+			String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			TimeSheetSubmissionCount  timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 			
 			Integer newCount = 0;
@@ -949,7 +925,7 @@ public class RequirementListRestController {
 			Integer onholdCount = 0;
 			Integer cancelCount = 0;
 			
-			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocations.getId(),null,null,user.getId());
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocations.getId(),null,null,user,userRoleName);
 	        	
 	        		  for(Requirement req :requirementList){
 	        			  if("NEW".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
@@ -1328,7 +1304,7 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		requirementSubmissionCounts.setNumOfRejected(numOfRejected);
 		requirementSubmissionCounts.setSubmittedCount(requirementSubmissions.size());
 		requirementSubmissionCounts.setNumOfRequestSent(numOfRequestSent);
-		if(null !=  duplicatecount && duplicatecount.size() != 0){
+		if(duplicatecount.size()!= 0 && duplicatecount != null){
 		requirementSubmissionCounts.setDuplicateCount(duplicatecount.size());
 		}
 	}
@@ -1350,8 +1326,8 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		List<Requirement> searchRequirementList = requirementService.searchRequirement(orgLocation, jsonObj,org,userRole,user);
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		List<Requirement> searchRequirementList = requirementService.searchRequirement(orgLocation, jsonObj,org,userRoleName,user);
 		resultJson = commonUtil.toJSON(searchRequirementList);
 		return resultJson;
 	    
