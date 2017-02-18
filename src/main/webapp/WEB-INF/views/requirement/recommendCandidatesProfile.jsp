@@ -705,8 +705,9 @@ function candidateProfile(candidateId){
 							result = result + '        </div>';
 							result = result + '      </div>';
 							
+							
 							result = result +'<div class="clearfix mt"></div>';
-							result = result +'<div class="append_skill ">';  
+							result = result +'<div class="append_skill professinal-details">';  
 							result = result +'<ul class="list-inline list-unstyled">';
 							if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
 								result = result + ' <li class="professinal-details"  value="${json.skillsName}">'+json.skillsName+'</li>'; 
