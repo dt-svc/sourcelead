@@ -2658,8 +2658,16 @@ padding-right:10px;
 	border-color: rgba(136, 183, 213, 0); border-bottom-color: #0cc2aa; border-width: 13px; margin-left: -13px;
 }
 .referWrap .form-group {
-	margin:0px; padding: 0px 0px 8px;
+	margin:0px; padding: 0px 0px 8px; position: relative; height: 60px;
 }
+.referWrap .jquery_form_error_message {
+    padding: 0px 0px 0px 15px !important;
+    margin: 0px;
+    font-size: 11px;
+    color: #f12929;
+    font-weight: 500;
+    }
+
 .referWrap .form-group label {
 	text-transform: capitalize; font-size: 13px; font-weight: 500; color: #545454; margin-bottom: 1px;
 }
