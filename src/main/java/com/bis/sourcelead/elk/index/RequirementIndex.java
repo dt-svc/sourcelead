@@ -99,6 +99,11 @@ public class RequirementIndex {
 
 	private String requirementSubmissionPreviousStatus;
 	
+	private String reqLevel1ApproverStatus;
+	
+	private String reqLevel2ApproverStatus;
+	
+	
 	public String getManagerUserId() {
 		return managerUserId;
 	}
@@ -387,6 +392,7 @@ public class RequirementIndex {
 		return otherJobType;
 	}
 
+
 	public void setOtherJobType(String otherJobType) {
 		this.otherJobType = otherJobType;
 	}
@@ -470,4 +476,21 @@ public class RequirementIndex {
 	public void setRequirementAppliedDate(String requirementAppliedDate) {
 		this.requirementAppliedDate = requirementAppliedDate;
 	}
+
+	public String getReqLevel1ApproverStatus() {
+		return reqLevel1ApproverStatus;
+	}
+
+	public void setReqLevel1ApproverStatus(String reqLevel1ApproverStatus) {
+		this.reqLevel1ApproverStatus = reqLevel1ApproverStatus;
+	}
+
+	public String getReqLevel2ApproverStatus() {
+		return reqLevel2ApproverStatus;
+	}
+
+	public void setReqLevel2ApproverStatus(String reqLevel2ApproverStatus) {
+		this.reqLevel2ApproverStatus = reqLevel2ApproverStatus;
+	}
+	
 }

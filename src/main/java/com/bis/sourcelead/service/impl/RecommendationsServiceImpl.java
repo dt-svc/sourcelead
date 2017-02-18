@@ -526,8 +526,12 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 
 	private CandidateIndex getCandidateIndex(Candidate candidate) {
 		CandidateIndex canIndex = new CandidateIndex();
-		canIndex.setExperienceMonths(candidate.getExperienceMonths());
-		canIndex.setExperienceYears(candidate.getExperienceYears());
+		if(null != candidate.getExperienceMonths()){
+			canIndex.setExperienceMonths(candidate.getExperienceMonths());
+		}
+		if(null != candidate.getExperienceYears()){
+			canIndex.setExperienceYears(candidate.getExperienceYears());
+		}
 		canIndex.setRateType(candidate.getRateType());
 		if(null != candidate.getExpectedRate() && !"".equalsIgnoreCase(candidate.getExpectedRate())){
 			canIndex.setExpectedRate(Float.parseFloat(candidate.getExpectedRate()));
@@ -732,6 +736,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 * @return float
 	 */
 	private float getExperiencePercentage(CandidateIndex candidateIndex, RecommendedCustomizeScore recommendedCustomizeScore, int reqMinExp, float expPercentage, float percentPerMonthExp, int reqMaxExp) {
+
 		Integer Months = null;
 		Integer Years = null;
 		if(null != candidateIndex.getExperienceYears()){
@@ -742,6 +747,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		}
 		
 		if(null != candidateIndex.getExperienceYears()  && null != candidateIndex.getExperienceMonths() && Years > 0 && Months > 0 ){
+
 			int  candidateExpMonths = (Integer.parseInt(candidateIndex.getExperienceYears()))*12 + (Integer.parseInt(candidateIndex.getExperienceMonths()));
 			
 			if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) && null != recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
