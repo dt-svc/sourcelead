@@ -76,7 +76,7 @@ function customizeFields(templateId,sourceleadUrl){
 
 
 //Add field to builder
-function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValidationCheck) {
+function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,labelValidationCheck) {
 
     var hasRequired, hasChoices,hasAutocomplete,fieldName;
     var includeRequiredHTML = '';
@@ -142,7 +142,7 @@ function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValid
     }else{
     	DeleteButtion = '<button type="button"  class="btnDisable btn btn-default disabled"><i class="glyphicon glyphicon-remove"></i></button>'
     	
-    		if(labelValue == 'First Name' || labelValue == 'Phone Number' || labelValue == 'Email Id'){
+    		if(labelName == 'First Name' || labelName == 'Phone Number' || labelName == 'Email Id'){
     			checkbox = 'disabled="disabled"'
     		}
     		
@@ -280,7 +280,7 @@ function loadForm(sourceleadUrl,templateId) {
 	                 //go through each saved field object and render the builder
 	                 $.each( data, function( k, v ) {
 	                     //Add the field
-	                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],sourceleadUrl,templateId,'N')).appendTo('#form-fields').hide().slideDown('fast');
+	                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],v['label'],sourceleadUrl,templateId,'N')).appendTo('#form-fields').hide().slideDown('fast');
 	                     var $currentField = $('#form-fields .field').last();
 
 	                     //Add the label
@@ -330,7 +330,7 @@ function loadSavedForm(templateId,sourceleadUrl) {
                  //go through each saved field object and render the builder
                  $.each( data, function( k, v ) {
                      //Add the field
-                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],sourceleadUrl,templateId,'N')).appendTo('#form-fields').hide().slideDown('fast');
+                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],v['label'],sourceleadUrl,templateId,'N')).appendTo('#form-fields').hide().slideDown('fast');
                      var $currentField = $('#form-fields .field').last();
 
                      //Add the label

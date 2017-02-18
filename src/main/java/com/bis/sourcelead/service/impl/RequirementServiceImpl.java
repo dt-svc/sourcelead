@@ -94,6 +94,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
  * 
@@ -448,7 +449,7 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			requirement.setStatus(Constants.TEAM_ACTIVE);
-			
+			requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			
 			//requirement status 
 			if(jsonObj.has("saveType")){            
@@ -2210,10 +2211,14 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			if(jsonObj.has("maxExp") && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
 				reqTemplate.setMaxExp(jsonObj.getString("maxExp"));
+				}else{
+					reqTemplate.setMaxExp(null);
 				}
 				
 				if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp"))){
 					reqTemplate.setMinExp(jsonObj.getString("minExp"));
+				}else{
+					reqTemplate.setMinExp(null);
 				}
 				
 				if(jsonObj.has("rate") && !"".equalsIgnoreCase(jsonObj.getString("rate"))){
@@ -2812,6 +2817,11 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Long getRequirementsListById(Long orgLocationId) throws Exception {
 		return requirementDao.getRequirementListByOrgLocationID(orgLocationId);
+	}
+
+	@Override
+	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception {
+		return requirementDao.getRequirementByRequirementUUID(requirementUUID);
 	}
 
 }

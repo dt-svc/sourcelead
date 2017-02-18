@@ -190,7 +190,19 @@ public class Constants {
 	public static String VENDOR_ACCEPT_RATE_NEGOTIATION = "VendorAcceptRateNegotiation";
 	public static String CLIENT_REJECT_RATE_NEGOTIATION = "ClientRejectRateNegotiation";
 	public static String VENDOR_REJECT_RATE_NEGOTIATION = "VendorRejectRateNegotiation";
+
+	public static String ROLE_NAME_PROFESSIONAL = "ROLE_CROWDSOURCING_PROFESSIONAL";
+	public static String ROLE_NAME_INDEPENDENT_RECRUITER = "ROLE_CROWDSOURCING_RECRUITER";
+	
+	public static String PROFESSIONAL = "Professional";
+	public static String INDIVIDUAL_RECRUITER = "Recruiter";
+	public static String INVITE_PROFESSIONAL = "Professional Invitation";
+	public static String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
+	
+	public static String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
+
 	public static String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
+
 
 
 
@@ -237,6 +249,8 @@ public class Constants {
 	public static  String BackOffice = "BackOffice";
 	public static  String Finance = "Finance";
 	public static  String AssetManagement = "AssetManagement";
+	public static  String Profile = "Profile";
+	
 	
 	public static  String TimeSheet_Approval = "Timesheet Approval";
 	

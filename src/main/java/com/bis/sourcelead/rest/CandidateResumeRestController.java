@@ -84,7 +84,7 @@ public class CandidateResumeRestController {
 	*/
 	
 	
-	@PreAuthorize("hasRole('ROLE_ADD_CANDIDATE_RESUMES')")
+	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE')")
 	@RequestMapping(value = "/saveCandidateResume", method = RequestMethod.POST)
 	public @ResponseBody String saveCandidateResume(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "resumeId", required = false) String resumeId,MultipartHttpServletRequest request) throws Exception {
@@ -190,7 +190,7 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	
-	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_CANDIDATE_RESUMES')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE')")
 	@RequestMapping(value = "/getResume", method = RequestMethod.POST)
 	public @ResponseBody String getResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "resumeId", required = false) String resumeId, HttpServletRequest request) throws Exception {

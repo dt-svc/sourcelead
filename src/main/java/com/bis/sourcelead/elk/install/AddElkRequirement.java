@@ -186,6 +186,31 @@ public class AddElkRequirement {
 				}
 				Integer numberOfApplicants = getNumberOfApplicants(rs.getString("ID"),conn,rs.getString("ORG_LOCATION_ID"));
 				requirementIndex.setNumberOfApplicants(numberOfApplicants.toString());
+				
+				if(null != rs.getString("IS_PUBLIC")){
+					requirementIndex.setIsPublicJob(rs.getString("IS_PUBLIC"));
+				}else{
+					requirementIndex.setIsPublicJob("N");
+				}
+				
+				if(null != rs.getString("IS_CROWD_SOURCING")){
+					requirementIndex.setIsCrowdSourcingJob(rs.getString("IS_CROWD_SOURCING"));
+				}else{
+					requirementIndex.setIsCrowdSourcingJob("N");
+				}
+				
+				if(null != rs.getString("POSTED_ORG_NAME")){
+					requirementIndex.setPostedOrg(rs.getString("POSTED_ORG_NAME"));
+				}
+				if(null != rs.getString("REQUIREMENT_UUID")){
+					requirementIndex.setRequirementUUID(rs.getString("REQUIREMENT_UUID"));
+				}
+				
+				String appliedProfessionals = rs.getString("APPLIED_PROFESSIONALS");
+				if(!("").equalsIgnoreCase(appliedProfessionals) && appliedProfessionals!=null){
+					requirementIndex.setAppliedProfessionals(appliedProfessionals.split(","));
+				}
+				
 				ResultSet statusRs =getApproverHierarchyStatus(rs.getString("ID"),conn);
 				if(null != statusRs){
 					while(statusRs.next()){
