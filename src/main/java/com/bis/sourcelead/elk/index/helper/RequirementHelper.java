@@ -194,7 +194,7 @@ public class RequirementHelper {
 				requirementIndex.setIsPublicJob("N");
 			}
 			
-			if(null != requirement.getIsPublic()){
+			if(null != requirement.getIsCrowdSourcing()){
 				requirementIndex.setIsCrowdSourcingJob(requirement.getIsCrowdSourcing());
 			}else{
 				requirementIndex.setIsCrowdSourcingJob("N");
@@ -207,6 +207,12 @@ public class RequirementHelper {
 			if (null != requirement.getAppliedProfessionals() && !"".equalsIgnoreCase(requirement.getAppliedProfessionals())) {
 				String[] appliedProfessionals = requirement.getAppliedProfessionals().split(",");
 				requirementIndex.setAppliedProfessionals(appliedProfessionals);
+			}
+			if(null != requirement.getReqlevel1ApproverStatus() && !"".equalsIgnoreCase(requirement.getReqlevel1ApproverStatus())){
+				requirementIndex.setReqLevel1ApproverStatus(requirement.getReqlevel1ApproverStatus());	
+			}
+			if(null != requirement.getReqlevel2ApproverStatus() && !"".equalsIgnoreCase(requirement.getReqlevel1ApproverStatus())){
+				requirementIndex.setReqLevel2ApproverStatus(requirement.getReqlevel2ApproverStatus());	
 			}
 
 		}
