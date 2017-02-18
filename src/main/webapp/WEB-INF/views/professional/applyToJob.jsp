@@ -19,6 +19,12 @@ function applyToJob(requirementId){
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	getRequirementSubmissionTemaplate(requirementId);
+	
+	 var searchRequirementId = document.getElementById('searchRequirementId'); 
+	 if(searchRequirementId != null) {
+		$("#refertoJobDiv"+searchRequirementId.value+"").empty(); 
+		$("#refer"+searchRequirementId.value+"").removeClass("referWrapActive"); 
+	 } 
 }
 </script>
 
