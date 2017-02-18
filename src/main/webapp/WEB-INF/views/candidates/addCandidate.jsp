@@ -190,7 +190,6 @@
              		  <c:forEach begin="0" end="24" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
-             		     <option>25+</option>
              		</select>
              </div>
              <div class="col-xs-6 col-md-6">

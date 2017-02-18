@@ -38,6 +38,8 @@ public interface ProjectMembersService {
 	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
 	
 	public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
+	
+	public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheet() throws Exception;
 
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
 	

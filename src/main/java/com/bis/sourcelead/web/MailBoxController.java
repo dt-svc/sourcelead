@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -29,6 +30,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateHotListService;
@@ -36,6 +38,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -74,6 +77,9 @@ public class MailBoxController {
 	
 	@Autowired
 	SourceleadELKBaseIndexer<CampaignIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -178,12 +184,13 @@ public class MailBoxController {
 			HttpServletRequest request) throws Exception {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    String resultJson;
 	    List<CampaignIndex> mailBoxList = new ArrayList<CampaignIndex>();
 	    Long maxResults = null;
 	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+	    df.setTimeZone(TimeZone.getTimeZone("UTC"));
 	    
 	     BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
@@ -218,7 +225,7 @@ public class MailBoxController {
 	   
 	    
 	    if(mailBoxList != null){
-			calculateDays(mailBoxList);
+			calculateDays(mailBoxList,timezone);
 		}
 	    resultJson = commonUtil.toJSON(mailBoxList);
 		return resultJson;
@@ -325,7 +332,7 @@ public class MailBoxController {
 	
 	
 	
-	public void calculateDays(List<CampaignIndex> mailBoxList) throws ParseException {
+	public void calculateDays(List<CampaignIndex> mailBoxList, Timezone timezone) throws ParseException {
 		for (CampaignIndex userMailBox : mailBoxList) {
 			long diff = commonUtil.currentDate().getTime() - userMailBox.getCreatedDate().getTime();
 			
@@ -345,7 +352,10 @@ public class MailBoxController {
 				userMailBox.setCalDays(time.append(diffDays).append(" day(s) ago").toString());
 			}else{
 				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
-				String commonDateFormat = standardFormat.format(userMailBox.getCreatedDate());
+				String currentTimeStr = Constants.TZ_DF.format(userMailBox.getCreatedDate());
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+				String commonDateFormat = standardFormat.format(converteDate);
 				userMailBox.setCalDays(commonDateFormat.toString());
 			} 
 
