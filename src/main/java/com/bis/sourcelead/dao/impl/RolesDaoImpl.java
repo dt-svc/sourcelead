@@ -367,5 +367,21 @@ public class RolesDaoImpl implements RolesDao{
 			return rolesList;
 	}
 
+	@Override
+	@Transactional
+	public Roles getRolesByRoleNameAndOrgId(String roleName, Long orgId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Roles> roles = new ArrayList<Roles>();
+		logger.debug("Roles start");
+		roles = session.createQuery("from Roles roles left join fetch roles.org where roles.roleName = :roleName and roles.org.id = :orgId" ).setString( "roleName", roleName ).setLong("orgId", orgId).setCacheable(true).list();
+		logger.debug("Roles end");
+		if (roles.size() > 0) {
+			return roles.get(0);
+		} else {
+			return null;
+		}
+   	}
+
 
 }

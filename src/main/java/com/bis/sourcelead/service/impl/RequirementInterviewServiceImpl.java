@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,6 +35,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
@@ -44,6 +47,7 @@ import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -91,6 +95,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Autowired
 	private SubmissionTemplateService submissionTemplateService;
 	
+	
+	@Autowired
+	private TimeZoneService timeZoneService;
+	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
@@ -103,7 +111,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 		int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 		RequirementInterview requirementInterview  = null;
-		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		for (long c = 1; c < maxCount; c++) {
 				if(jsonObj.has(c+"applicant") && !jsonObj.getString(c+"applicant").isEmpty()){
 						String applicantIds = jsonObj.getString(c+"applicant");
@@ -117,27 +125,37 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								requirementInterview.setSubmissionId(submission);
 								
 								if(jsonObj.has(c+"dateOfInterview") && jsonObj.getString(c+"dateOfInterview") != null && !"".equalsIgnoreCase(jsonObj.getString(c+"dateOfInterview"))){
-									requirementInterview.setDateOfInterview(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")));
+									//requirementInterview.setDateOfInterview(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")));
+									
+									// changed by prasanna vadla .. due to timezone 
+									Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
+										      jsonObj.getString(c+"startTime"));
+									String currentTimeStr = Constants.TZ_DF.format(startTime);  
+									String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+									Date converteDate = Constants.DF_YMD.parse(startTimeUTC);
+									requirementInterview.setDateOfInterview(converteDate);
 								}
 								
 								if(jsonObj.has(c+"interviewType") && !jsonObj.getString(c+"interviewType").isEmpty()){
 									requirementInterview.setInterviewType(jsonObj.getString(c+"interviewType"));
 								}
 								
-								/*if(jsonObj.has(c+"timeZone") && !jsonObj.getString(c+"timeZone").isEmpty()){
-									requirementInterview.setTimeZone(jsonObj.getString(c+"timeZone"));
-								}*/
-								
 								if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){
 									  Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
 											      jsonObj.getString(c+"startTime"));
-									   requirementInterview.setStartTime(startTime);
+										String currentTimeStr = Constants.TZ_DF.format(startTime);  
+										String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+										Date convertedDate = Constants.TZ_DF_TS.parse(startTimeUTC);
+										requirementInterview.setStartTime(convertedDate);
 								}
 								
 								if(jsonObj.has(c+"endTime") && !jsonObj.getString(c+"endTime").isEmpty()){
 									Date endTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
 										      jsonObj.getString(c+"endTime"));
-								      requirementInterview.setEndTime(endTime);
+									String currentTimeStr = Constants.TZ_DF.format(endTime);  
+									String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+									Date convertedDate = Constants.TZ_DF_TS.parse(endTimeUTC);
+								    requirementInterview.setEndTime(convertedDate);
 								}
 								
 								if(jsonObj.has(c+"location") && !jsonObj.getString(c+"location").isEmpty()){

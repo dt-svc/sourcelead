@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -91,6 +93,8 @@ public class RegistrationController {
 	 @Autowired
 	 OrgSpocService orgSpocService;
 	 
+	 @Autowired
+	 TimeZoneService timeZoneService;
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/enrolledOrgsList")
@@ -121,6 +125,9 @@ public class RegistrationController {
 			try {
 				 modulesList = modulesService.getSourceLeadModules();
 				 model.addObject("modulesList", modulesList);
+				 
+				 List<Timezone> timezoneList= timeZoneService.getAllTimeZones();
+				 model.addObject("timezoneList", timezoneList);
 				 
 				 requirementSubModulesList = moduleService.getRequirementSubModules();
 				 model.addObject("requirementSubModulesList", requirementSubModulesList);
@@ -397,6 +404,56 @@ public class RegistrationController {
 		    managerrole.setActionId(managerids);
 			rolesService.storeRoles(managerrole);
 	 }
+	 
+	 
+	 
+	  @RequestMapping(value = "/validateCrowdSourcingEmail",  method = RequestMethod.GET)
+	   public @ResponseBody String validateCrowdSourcingEmail(@RequestParam(value="email", required=false) String email,
+	   		@RequestParam(value="type", required=false) String type) throws Exception {
+		  
+		  User user = userService.getUserByEmailAndUserType(email, type);
+		  if(null == user){
+			  return "Success";
+		  }else{
+			  return "Invalid";
+		  }
+	   }
+	  
+	  
+	  @RequestMapping(value = "/validateCrowdSourcingUserName",  method = RequestMethod.GET)
+	   public @ResponseBody String validateCrowdSourcingUserName(@RequestParam(value="userName", required=false) String userName) throws Exception {
+		  
+		  User user = userService.getUserByUserName(userName);
+		  if(null != user){
+			  return "Success";
+		  }else{
+			  return "Invalid";
+		  }
+	   }
+	  
+	  @RequestMapping(value = "/validateCrowdSourcingResetUserName",  method = RequestMethod.GET)
+	   public @ResponseBody String validateCrowdSourcingResetUserName(@RequestParam(value="userName", required=false) String userName,
+			   @RequestParam(value="resetUserName", required=false) String resetUserName) throws Exception {
+		  
+		  User user = null;
+		  user = userService.getUserByUserName(userName);
+		  if(null != user){
+			  if(user.getEmail().equalsIgnoreCase(resetUserName)){
+				  return "Invalid";
+			  }else{
+				  user = userService.findByUserName(resetUserName); 
+				  if(null == user){
+					  return "Success";
+				  }else{
+					  return "Invalid";
+				  }
+			  }
+			  
+		  }else{
+			  return "Invalid";
+		  }
+	   }
+	  
 	 
 	 /**	 
 	  * checks if string is null or empty

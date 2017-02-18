@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -57,6 +58,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionCounts;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
@@ -74,6 +76,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -146,6 +149,9 @@ public class RequirementListRestController {
 	 
 	 @Autowired
 	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 private TimeZoneService timeZoneService;
 	 
 	 /**
 	   * @author sarath kumar
@@ -488,6 +494,7 @@ public class RequirementListRestController {
 				String resultJson = null;
 				
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				Timezone timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
 					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 					if(requirementId !=null && !requirementId.isEmpty()){
 						List<RequirementSubmission> requirementStatusList = null;
@@ -595,13 +602,29 @@ public class RequirementListRestController {
 											}
 											
 										}
-									
+										
+										
+										
 									if(requirementSubmission.getCreatedDate() != null){
-										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
-									}
+										String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getCreatedDate());
+										String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+										Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+										currentDateInTimezone = Constants.DMY.format(converteDate);
+										requirementSubmission.setCreatedDateStr(currentDateInTimezone);
+								    }
 									if(requirementSubmission.getUpdatedDate() != null){
+										String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getUpdatedDate());
+										String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+										Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+										currentDateInTimezone = Constants.DMY.format(converteDate);
+										requirementSubmission.setUpDatedStr(currentDateInTimezone);
+								    }
+									/*if(requirementSubmission.getCreatedDate() != null){
+										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+									}*/
+									/*if(requirementSubmission.getUpdatedDate() != null){
 										requirementSubmission.setUpDatedStr(Constants.DF_YMD.format(requirementSubmission.getUpdatedDate()));
-									}
+									}*/
 									
 									
 									submissionList.add(requirementSubmission);

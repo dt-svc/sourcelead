@@ -178,5 +178,11 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			Long orgLocationId) throws Exception {
 		return projectApproverHierarchyDao.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectId, orgLocationId);
 	}
+
+
+	@Override
+	public List<ProjectApproverHierarchy> getApproverUserIdsByOrgLocationIdAndLevelAndFrequency(Long orgLocationId, String invoiceFrequency, int managerLevel) throws Exception {
+		return projectApproverHierarchyDao.getApproverUserIdsByOrgLocationIdAndLevelAndFrequency(orgLocationId, invoiceFrequency,managerLevel);
+	}
 	
 }
