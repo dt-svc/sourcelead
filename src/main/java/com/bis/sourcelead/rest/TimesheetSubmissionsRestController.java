@@ -77,14 +77,6 @@ public class TimesheetSubmissionsRestController {
 	@Autowired
 	TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
 	
-	// sarath kumar punnana : this  controller method is for withdraw  timwsheet entries.
-	@PreAuthorize("hasRole('ROLE_MODIFY_MY_TIMESHEETS')")
-	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
-	public @ResponseBody void withDrawTimesheet(@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
-				
-		submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), Submission_Status.DRAFT.getValue());
-	}
-		
 
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')") 
 	@RequestMapping(value = "/getArrovalSubmissions",  method = RequestMethod.POST)

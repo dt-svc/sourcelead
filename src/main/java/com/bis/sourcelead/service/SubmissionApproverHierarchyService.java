@@ -31,7 +31,7 @@ public interface SubmissionApproverHierarchyService {
 
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForEmployeeIdAndStartDate(Long empId,Long approverUserId,Long submissionId);
     
-	public void updateSubmissionStatus(Long submissionId,String status);
+	public void updateSubmissionStatusByProjectMemberIdStartDateAndEndDate(Long projectMemberId,Date startDate,Date endDate,String status);
 	
 	public void updateApprovalStatusForApprover(Long empId,Long approverUserId,Date startDate,String status,String rejectedReason);
 	
@@ -62,4 +62,6 @@ public interface SubmissionApproverHierarchyService {
 	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId,Long approverUserId, Date startDate, Date endDate, String status,String rejectedReason) throws Exception;
 
 	public Boolean getCronRemainderForEmployeeByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId);
+
+	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForProjectMember(Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String approvalStatus);
 }

@@ -5,23 +5,24 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="icon" type="resources/image/png"
 	href="resources/images/fav.png" />
-<link
+<%-- <link
 	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
 	rel="stylesheet" type="text/css">
 <link rel="stylesheet"
 	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ --%>
 <script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<!-- <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/chosen.jquery.min.js"></script> 
-
+ -->
 <style>
 .user_summary_edit_cta p{
     margin: -5px 15px;
@@ -1170,7 +1171,7 @@ $("#editRoleDetailsList").empty();
 					if(json.userState == "NOT_LOGGEDIN"){
 						
 						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
-						result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
+						result = result + ' <label>Email Id<span class="text-danger">&nbsp; *</span></label>';
 						result = result + ' <input type="text" value="'+json.user.email+'"  id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100 validate_email"/>';
 						result = result + ' </div>';
 					
@@ -1459,7 +1460,7 @@ function removeUser(userId){
 							
 					result = result + '<div class="clearfix mb10 mt">';
 					  result = result + '<div class="col-md-12" id="reasonDiv">';
-						  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Terminate Reason"></textarea>';
+						  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required validate_length length2-250" field-name="Reason" placeholder="Terminate Reason"></textarea>';
 						  	result = result + '</div>';
 						  result = result + '</div>';
 					  result = result + '<div class="clearfix"></div>';
@@ -1516,6 +1517,7 @@ function cancelUser(){
 <script>
 function cancelEditRole(){
 	$("#edit_role_pop").slideToggle(100);
+	location.reload(); 
 }
 </script>
 

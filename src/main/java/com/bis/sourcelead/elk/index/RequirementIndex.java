@@ -1,5 +1,7 @@
 package com.bis.sourcelead.elk.index;
 
+import java.util.List;
+
 /**
  * 
  * @author Rajashekar and Prasanna
@@ -41,6 +43,8 @@ public class RequirementIndex {
 	
 	private String[] skills;
 	
+	private String[] appliedProfessionals;
+	
 	private String jobType;
 	
 	private String jobId;
@@ -55,7 +59,7 @@ public class RequirementIndex {
 	
 	private String priority; 
 
-   private String createdDate;
+    private String createdDate;
 
 	private String reqCreatedBy;
 
@@ -67,9 +71,7 @@ public class RequirementIndex {
 	
 	private String[] reqLevel1ApproverUserId;
 	
-	
 	private String[] reqLevel2ApproverUserId;
-	
 	
 	private String[] teamOwnerUserId;
 	
@@ -78,6 +80,29 @@ public class RequirementIndex {
 	private String releasedBy;
 	
 	private String otherJobType;
+	
+	private String requirementUUID;
+	
+	private String requirementAppliedDate;
+
+	private String isPublicJob;
+	
+	private String isCrowdSourcingJob;
+	
+	private String calDays;
+	
+	private String postedOrg;
+	
+	private List<String> skillsList;
+	
+	private String isJobApplied;
+
+	private String requirementSubmissionPreviousStatus;
+	
+	private String reqLevel1ApproverStatus;
+	
+	private String reqLevel2ApproverStatus;
+	
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -367,8 +392,105 @@ public class RequirementIndex {
 		return otherJobType;
 	}
 
+
 	public void setOtherJobType(String otherJobType) {
 		this.otherJobType = otherJobType;
 	}
 
+	public String getRequirementUUID() {
+		return requirementUUID;
+	}
+
+	public void setRequirementUUID(String requirementUUID) {
+		this.requirementUUID = requirementUUID;
+	}
+
+	public String getIsPublicJob() {
+		return isPublicJob;
+	}
+
+	public void setIsPublicJob(String isPublicJob) {
+		this.isPublicJob = isPublicJob;
+	}
+
+	public String getIsCrowdSourcingJob() {
+		return isCrowdSourcingJob;
+	}
+
+	public void setIsCrowdSourcingJob(String isCrowdSourcingJob) {
+		this.isCrowdSourcingJob = isCrowdSourcingJob;
+	}
+
+	public String getCalDays() {
+		return calDays;
+	}
+
+	public void setCalDays(String calDays) {
+		this.calDays = calDays;
+	}
+
+	public String getPostedOrg() {
+		return postedOrg;
+	}
+
+	public void setPostedOrg(String postedOrg) {
+		this.postedOrg = postedOrg;
+	}
+
+	public List<String> getSkillsList() {
+		return skillsList;
+	}
+
+	public void setSkillsList(List<String> skillsList) {
+		this.skillsList = skillsList;
+	}
+
+	public String[] getAppliedProfessionals() {
+		return appliedProfessionals;
+	}
+
+	public void setAppliedProfessionals(String[] appliedProfessionals) {
+		this.appliedProfessionals = appliedProfessionals;
+	}
+
+	public String getIsJobApplied() {
+		return isJobApplied;
+	}
+
+	public void setIsJobApplied(String isJobApplied) {
+		this.isJobApplied = isJobApplied;
+	}
+
+	public String getRequirementSubmissionPreviousStatus() {
+		return requirementSubmissionPreviousStatus;
+	}
+
+	public void setRequirementSubmissionPreviousStatus(String requirementSubmissionPreviousStatus) {
+		this.requirementSubmissionPreviousStatus = requirementSubmissionPreviousStatus;
+	}
+
+	public String getRequirementAppliedDate() {
+		return requirementAppliedDate;
+	}
+
+	public void setRequirementAppliedDate(String requirementAppliedDate) {
+		this.requirementAppliedDate = requirementAppliedDate;
+	}
+
+	public String getReqLevel1ApproverStatus() {
+		return reqLevel1ApproverStatus;
+	}
+
+	public void setReqLevel1ApproverStatus(String reqLevel1ApproverStatus) {
+		this.reqLevel1ApproverStatus = reqLevel1ApproverStatus;
+	}
+
+	public String getReqLevel2ApproverStatus() {
+		return reqLevel2ApproverStatus;
+	}
+
+	public void setReqLevel2ApproverStatus(String reqLevel2ApproverStatus) {
+		this.reqLevel2ApproverStatus = reqLevel2ApproverStatus;
+	}
+	
 }

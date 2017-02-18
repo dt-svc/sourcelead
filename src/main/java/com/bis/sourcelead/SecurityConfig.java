@@ -88,8 +88,14 @@ public class SecurityConfig  {
         	http
     		.authorizeRequests()                                                                
     			.antMatchers("/login").permitAll() 
-    			/*.antMatchers("/registration").permitAll() 
-    			.antMatchers("/companyRegistration").permitAll() */
+    			.antMatchers("/register").permitAll() 
+    			.antMatchers("/registerAsProfessional").permitAll() 
+    			.antMatchers("/registerAsIndividualRecruiter").permitAll() 
+    			.antMatchers("/resetloginCredentials").permitAll() 
+    			.antMatchers("/validateCrowdSourcingEmail").permitAll() 
+    			.antMatchers("/validateCrowdSourcingUserName").permitAll() 
+    			.antMatchers("/validateCrowdSourcingResetUserName").permitAll() 
+    			.antMatchers("/resetCredentials").permitAll() 
     			.antMatchers("/forgotPassword").permitAll() 
     			.antMatchers("/resetPasswordWithUserName").permitAll() 
     			.antMatchers("/resetPassword").permitAll() 
