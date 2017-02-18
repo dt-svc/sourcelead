@@ -82,8 +82,6 @@
                 <div class="pull-right">
                     <button type="submit" id="register_button" class="btn btn-primary btn_styles mr" title="Register">
                         <i class="fa fa-paper-plane"></i>Register</button>
-                    <button type="button" class="btn btn-default btn_styles" title="Cancel">
-                        <i class="fa fa-times"></i>Cancel</button>
                 </div>
             </div>
             </form:form>
@@ -136,8 +134,6 @@
                 <div class="pull-right">
                     <button type="submit" class="btn btn-primary btn_styles mr" id="recruiter_register" title="Register">
                         <i class="fa fa-paper-plane"></i>Register</button>
-                    <button type="button" class="btn btn-default btn_styles" title="Cancel">
-                        <i class="fa fa-times"></i>Cancel</button>
                 </div>
             </div>
       </form:form>
