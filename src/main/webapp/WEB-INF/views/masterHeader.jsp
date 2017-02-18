@@ -143,6 +143,7 @@ width: 11.5%;
     </a> </span>
     <nav class="header-nav navbar">
     <a href="javascript:void(0)" class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
+      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
       <div class="search-area col-md-offset-0 col-sm-offset-0 col-lg-offset-2">
            <form:form name ="search_form" id="search_form">
 			<div class="uasrch-selectpicker">
@@ -165,6 +166,7 @@ width: 11.5%;
 			</div>
 			</form:form>
 			</div> 
+     </c:if>
 <div class="custom-navbar">
         <!-- login User details -->
         <div class="login-user">
@@ -348,6 +350,7 @@ function notificationStatusAsRead(){
   <!-- Task related code Start -->
   
   <!-- Add Task Div -->
+		 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 		 <div class="addTask"> <span class="icon-addTask" title="Add Task"> <i class="fa fa-gears"></i> </span>
 		    <div class="clearfix col-xs-12 col-md-12 addTask-widget">
 		    <i class="fa fa-close close-div taskpop-close"></i>  
@@ -425,10 +428,10 @@ function notificationStatusAsRead(){
 			              </div>
 			              <div class="col-md-6">
 			                  <div class="row">
-				                  <div class="col-md-6">
+				                  <div class="col-md-6" id="taskDatpickerDiv" >
 					                <label>Date<span class="text-danger">*</span></label>
 						                <div class="positionRelative"> 
-						                  <input class="form-control input-sm" value="" name="taskDatpicker" id="taskDatpicker" type="text" field-name="Date"  data-validation="required">
+						                  <input class="form-control input-sm" value="" name="taskDatpicker"  readonly="readonly" id="taskDatpicker" type="text" field-name="Date"  data-validation="required">
 						                  <span class="input-group-addon input-groupAddon icon-Addon"><i class="fa fa-calendar"></i></span>
 						                </div>
 				                   </div>
@@ -487,6 +490,7 @@ function notificationStatusAsRead(){
 		      <!-- Add New Task Widget --> 
 		    </div>
 		  </div>
+		  </c:if>
 
 <div class="addtAsk_popmask"></div>
 
@@ -511,8 +515,8 @@ function notificationStatusAsRead(){
 								$("#closed-task, #my-task").hide();
 							    $("#other-task").show().css("opacity", "1");
 							assignedTasksList('assignedTasks');
-							tasksList('myTask');
-							assignTasksList();
+							/* tasksList('myTask');
+							assignTasksList(); */
 						},
 					});
 			return true;
@@ -544,8 +548,8 @@ $('#taskDatpicker').datepicker({
 	onSelect : function(selected) {
 		var dt = new Date(selected);
 		dt.setDate(dt.getDate() + 1);
+		removevalidation();
 	}
-	
 	});
 	
 $('#myTaskDatpicker').datepicker({
@@ -586,7 +590,12 @@ $('#closedTaskDatpicker').datepicker({
 $('#timepicker').timepicker();
 /* { 'timeFormat': 'h:i A' } */
 </script>
+<script>
+function removevalidation(){
+	$('#taskDatpickerDiv').find('p.jquery_form_error_message').remove();	
+}
 
+</script>
 
 <script>
 //Collapse div

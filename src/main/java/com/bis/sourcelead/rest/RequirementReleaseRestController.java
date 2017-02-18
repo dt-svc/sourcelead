@@ -1,7 +1,6 @@
 package com.bis.sourcelead.rest;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -321,10 +321,13 @@ public class RequirementReleaseRestController {
 	public String releaseJobsToClientsOrVendors(@RequestParam(value = "requirementId", required = false) Long requirementId,
 												@RequestParam(value = "contactsIds", required = false) String contactsIds,
 			                                    @RequestParam(value="vendorIds", required=false) String vendorIds,
+			                                    @RequestParam(value = "isPublic", required = false) String isPublics,
+			                                    @RequestParam(value="isCrowdScourcing", required=false) String isCrowdScourcing,
 			                                    HttpServletRequest request) throws Exception {
 			
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		 	String releasetype = null;
 			Requirement parentRequirement = requirementService.getRequirementByRequirementId(requirementId);
 			String[] contacts = contactsIds.split(",");
@@ -468,6 +471,15 @@ public class RequirementReleaseRestController {
 				}
 			}
 			
+			if(null != isPublics && !"".equalsIgnoreCase(isPublics)){
+				parentRequirement.setIsPublic(isPublics);
+				parentRequirement.setPostedOrgName(org.getOrgName());
+			}
+			if(null != isCrowdScourcing && !"".equalsIgnoreCase(isCrowdScourcing)){
+				parentRequirement.setIsCrowdSourcing(isCrowdScourcing);
+				parentRequirement.setPostedOrgName(org.getOrgName());
+			}
+			
 			if(null == parentRequirement.getReleasedBy()){
 				parentRequirement.setReleasedBy(loginUser.getId().toString());
 			}else{
@@ -482,6 +494,7 @@ public class RequirementReleaseRestController {
     				parentRequirement.setReleasedBy(parentRequirement.getReleasedBy()+releasedUser.toString());
          		}
 			}
+			parentRequirement.setUpdatedDate(new Date());
 			requirementService.addRequirement(parentRequirement);
 			
 			return "vendorsList";

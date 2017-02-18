@@ -30,10 +30,12 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -51,8 +53,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
-import com.bis.sourcelead.enums.Submission_ApprovalStatus;
-import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.rest.UserProfileRestController;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -61,6 +62,8 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -74,6 +77,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 @Component
 public class CommonUtil {
 	
+	private static final Logger logger = LoggerFactory.getLogger(CommonUtil.class);
 	@Autowired
 	private ProjectMembersService projectMembersService;
 	
@@ -88,6 +92,13 @@ public class CommonUtil {
 	
 	@Autowired
 	private ProjectsService projectsService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	
+	private UserRoleService userRoleService;
 	
 	@Autowired
 	private ProjectTasksService projectTasksService;
@@ -587,7 +598,25 @@ public class CommonUtil {
 	    	 
 	     }
 	   
-	 
+	   /**
+		 * This method is used to update USER DB and  ElasticSearch Documents for common user
+		 *
+		 * @author: Ajith Matta
+		 * 
+		 */
+		public void commonUserUpdate(User user) {
+
+			try {
+				List<UserRole> userRole = userRoleService.getUsersListByUserId(user.getId());
+				if (null != userRole) {
+					for (UserRole role : userRole) {
+						userService.saveOrUpdateUserElkDocument(role, null, user.getUserCode());
+					}
+				}
+			} catch (Exception e) {
+				logger.info("--exception--" + e);
+			}
+		}
 	   
 	
 	 /**

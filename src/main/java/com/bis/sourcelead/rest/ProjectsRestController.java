@@ -304,6 +304,16 @@ public class ProjectsRestController {
             }
 	    return status;
 	   }
+	 
+	 
+	 
+	//to validate Task Name
+	 @RequestMapping(value = "/validateTasksNameById" , method = RequestMethod.GET)
+	 public @ResponseBody  Boolean validateTasksNameById(@RequestParam(value="TaskName", required=false) String TaskName,@RequestParam(value="ProjectId", required=false) Long projectId, HttpServletRequest request) throws Exception {
+		    return projectsService.validateTasksName(TaskName,projectId);
+	   }
+	 
+	 
 	   protected static boolean isNullOrEmpty(String str) {
 			return str == null || "".equals(str.trim());
 		}

@@ -55,6 +55,7 @@ function candidateResume(candidateId){
     $("#tab-14").empty();  
     $("#tab-15").empty();  
     $("#tab-16").empty();  
+    $("#history").empty();
     $("#tab-12").append(result); 
     $("#tab-12").show(); 
 }

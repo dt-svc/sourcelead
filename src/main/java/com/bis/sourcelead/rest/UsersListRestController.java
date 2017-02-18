@@ -445,6 +445,8 @@ public class UsersListRestController {
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
+
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 
@@ -1138,32 +1140,23 @@ public class UsersListRestController {
 			employeesService.updateEmployee(employees);
 		}
 		/*
-		 * update USER DB data as ElasticSearch Documents
+		 * update common user (single user different orgs) details in  ElasticSearch Documents (User)
 		 */
-		commonUserUpdate(user);
+		commonUtil.commonUserUpdate(user);
+		/*
+		 * update spoc details in ElasticSearch Documents
+		 */
+		commonUtil.updateSpockDetails(user, orgLocations);
+		/*
+		 * Save or update the user in Elk.
+		 */
 		userService.saveOrUpdateUserElkDocument(userRole, employees, loginUser.getUserCode());
+		
 
 		return "success";
 	}
 
-	/*
-	 * Saving USER DB data as ElasticSearch Documents for common user
-	 */
-	private void commonUserUpdate(User user) {
-
-		try {
-			List<UserRole> userRole = userRoleService.getUsersListByUserId(user.getId());
-			if (null != userRole) {
-				for (UserRole role : userRole) {
-					userService.saveOrUpdateUserElkDocument(role, null, user.getUserCode());
-				}
-			}
-		} catch (Exception e) {
-			logger.info("--exception--"+e);
-		}
-
-	}
-
+	
 	/**
 	 * to get the start date and end date of the particular project by projectId
 	 * 

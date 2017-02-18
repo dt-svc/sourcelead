@@ -37,7 +37,7 @@ function candidateCertificateList(candidateId){
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result  = result +"           <th>Requirement Name</th>";
-	                     result  = result +"           <th>Applied on</th>";
+	                    //result  = result +"           <th>Applied on</th>";
 	                 	 result  = result + "           <th>Stage</th>";
 	                 	 result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -47,7 +47,7 @@ function candidateCertificateList(candidateId){
 	                    	 var sub = json[i];  
 	                    	 if(sub.requirementName != null && sub.requirementName !='' && sub.requirementName !='undefined' && sub.requirementStage != null && sub.requirementStage !='' && sub.requirementStage !='undefined'){
 	    			    		 result = result +'<tr><td><span>'+sub.requirementName+'</span></td>';
-	    			    		 result = result +'<tr><td><span>"ssss"</span></td>';
+	    			    		 //result = result +'<tr><td><span>"ssss"</span></td>';
 	    			    		 result = result +'<td><span>'+sub.requirementStage+'</span></td></tr>'; 
 	    			    	 }else{
 	    			    		 result = result +'<tr><td><span>--</span></td> <td><span>--</span></td></tr>';

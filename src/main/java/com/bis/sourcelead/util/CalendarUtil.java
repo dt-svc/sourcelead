@@ -636,6 +636,13 @@ public  class CalendarUtil {
 		  return format.format(calendar.getTime()); 
 	}
 	
+	public static String getShortDateFromLongDate(String  curDate) throws ParseException {
+		  final DateFormat format =Constants.DF_DMY;
+		  final Date date = format.parse(curDate);
+		  final DateFormat Short_Format =Constants.SHORT_DF_STD_DM;
+		  return Short_Format.format(date); 
+	}
+	
 	public static String getPreviousDateByDecrementor(String  curDate,int decrementor) throws ParseException {
 		  final DateFormat format =Constants.DF_DMY;
 		  final Date date = format.parse(curDate.replaceAll("/", "-"));

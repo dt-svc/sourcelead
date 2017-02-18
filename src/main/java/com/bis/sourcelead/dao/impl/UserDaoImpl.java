@@ -871,6 +871,36 @@ public class UserDaoImpl implements UserDao {
 	     List<User> usersList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
 	     return usersList;
 	}
+
+	@Override
+	@Transactional
+	public User getUserByEmailAndUserType(String email, String userType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> users = new ArrayList<User>();
+		logger.debug("getUserByEmailAndUserType  start");
+		users = session.createQuery("from User user where user.email = :email and user.userType = :userType" ).setCacheable(true).setString( "email", email).setString( "userType", userType).setCacheable(true).list();
+		logger.debug("getUserByEmailAndUserType  end");
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
+		}
+}
+
+	@Override
+	@Transactional
+	public User getUserByUserName(String userName) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> users = new ArrayList<User>();
+		logger.debug("getUserByUserName  start");
+		users = session.createQuery("from User user where user.userName = :userName" ).setCacheable(true).setString( "userName", userName).setCacheable(true).list();
+		logger.debug("getUserByUserName  end");
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
+		}
+}
 	
 	
 	

@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +43,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -75,6 +75,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
+import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -105,6 +106,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	TimesheetApprovalFrequencyGeneratorUtil timesheetApprovalFrequencyGeneratorUtil;
 	
 	@Autowired
 	TimeSheetPdfUtil timeSheetPdfUtil;
@@ -374,15 +378,28 @@ public class TimesheetRestController {
 				 Date endDate = format.parse(value.replaceAll("/", "-"));
 			    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 			    StringBuilder isActive = new StringBuilder("");
+			    
+			    SubmissionApproverHierarchy sahForActive =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(startDate, endDate, projectMemberId);
+			    Submission_Status submission_Status = sahForActive.getSubmissionStatus();
+				String status = submission_Status.getValue();
+			    
 			    if(isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
 			    	if(isCurrentDateBetweenDateRange(key, value)){
 			    		   isActive.append("class='current'");
+			    		   if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+			    			    isActive.delete(0, isActive.length());
+					    		isActive.append("");
+				    			isActive.append("class='current subColor'");
+						    }
 			    		   currentStartDate.append(key);
 			    		   currentEndDate.append(value);
 			    	}
 			    	else{
 			    		isActive.delete(0, isActive.length());
 			    		isActive.append("");
+			    		if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+			    			isActive.append("class='subColor'");
+					    }
 			    	}
 			    	if(startDate.equals(endDate)){
 			    	   timesheetEntriesDiv.append("<input type='hidden' name='tabDates'  id='tabDates' value='"+key+"To"+value+"' >");
@@ -396,12 +413,20 @@ public class TimesheetRestController {
 			    else{
 				    	if(count == 1){
 				    		   isActive.append("class='current'");
+				    		   if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+				    			    isActive.delete(0, isActive.length());
+						    		isActive.append("");
+					    			isActive.append("class='current subColor'");
+							    }
 			            	   currentStartDate.append(key);
 				    		   currentEndDate.append(value);
 			            }
 				    	else{
 				    		isActive.delete(0, isActive.length());
 				    		isActive.append("");
+				    		if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+				    			isActive.append("class='subColor'");
+						    }
 				    	}
 				    	if(startDate.equals(endDate)){
 				    		timesheetEntriesDiv.append("<input type='hidden' name='tabDates'  id='tabDates' value='"+key+"To"+value+"' >");
@@ -416,12 +441,15 @@ public class TimesheetRestController {
 			}
 			tabData =	projectTabDataByDates(currentStartDate.toString(), currentEndDate.toString(),projectMemberId,timesheetFrequencyEndDate,submissionStatus.getValue());
 		}
-		timesheetEntriesDiv.append("					<div class='export'> ");
+		
+		String exportPdf = "pdf";
+		String exportExcel = "excel";
+		timesheetEntriesDiv.append("					<div class='export' onClick='dropDownExport();'> ");
 		timesheetEntriesDiv.append("						<p><i class='glyphicon glyphicon-export'></i>Export<i class='fa fa-caret-down'></i></p> ");
-		timesheetEntriesDiv.append("							<ul> ");
-		timesheetEntriesDiv.append("			                	<li>PDF<i class='fa fa-file-pdf-o'></i></li> ");
-		timesheetEntriesDiv.append("			                    <li>Excel<i class='fa fa-file-excel-o'></i></li> ");
-		timesheetEntriesDiv.append("			                    <li>Word<i class='fa fa-file-word-o'></i></li> ");
+		timesheetEntriesDiv.append("							<ul id='exporrtEntries'> ");
+		timesheetEntriesDiv.append("			                	<li onClick='timesheetEntriesExport(\""+weekStartDate+"\",\""+weekEndDate+"\","+projectMemberId+",\""+exportPdf+"\");'><i class='fa fa-file-pdf-o text-danger'></i>&nbsp;PDF</li> ");
+		timesheetEntriesDiv.append("			                    <li onClick='timesheetEntriesExport(\""+weekStartDate+"\",\""+weekEndDate+"\","+projectMemberId+",\""+exportExcel+"\");'><i class='fa fa-file-excel-o text-primary'></i>&nbsp;Excel</li> ");
+		timesheetEntriesDiv.append("			                    <li class='hidden'>Word<i class='fa fa-file-word-o'></i></li> ");
 		timesheetEntriesDiv.append("							</ul>			 ");
 		timesheetEntriesDiv.append("					</div> ");
 		timesheetEntriesDiv.append("			        <div class='clearfix'></div> ");
@@ -921,63 +949,58 @@ public class TimesheetRestController {
 					tabDiv.append("</div>");
 				}
 			    
-			    
-			    
-			    tabDiv.append("		            <div class='clearfix'></div>");	
-			    
 			    tabDiv.append("</div>");
-		    
-		    
-		    tabDiv.append("		    	<div class='clearfix'></div>");	
-		    tabDiv.append("		    	<div class='timesheet_button' style='min-height: 40px;'>");	
-		    
-		    
-		    tabDiv.append("	<div class='totalText row'>");
-		    
-		    tabDiv.append("	<div class='col-md-8'>");
-		    tabDiv.append("	<span class='text-primary'>Billable Hours : </span><input type='text' name='grandBillableTotal' id='grandBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
-		    tabDiv.append("	</div>");
-		    
-		    tabDiv.append("	<div class='clearfix'></div>");	
-		    
-		    tabDiv.append("	<div class='col-md-8 mt10'>");
-		    tabDiv.append("	<span class='text-danger'>Non-Billable Hours : </span><input type='text' name='grandNonBillableTotal' id='grandNonBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
-		    tabDiv.append("	</div>");
-		    
-		    tabDiv.append("	<div class='clearfix'></div>");	
-		    
-		    tabDiv.append("<div class='col-md-8 mt10 mb'>");
-		    tabDiv.append("	<span class='text-success'>Total Hours : </span><input type='text' id='grandTotal' value='00:00' placeholder='HH/HH' readonly>");
-		    tabDiv.append("	</div>");
-		    tabDiv.append("	</div>");
-		      
-		    if(!isNullOrEmpty(approvalStatus)  && !approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
-				tabDiv.append("		        	<input type='button' onClick='newSaveTimesheet(\"Draft\",\"user\");'  value='Save' class='time_btn time_dra' />");	
-				
-				if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
-					Date frequencyEndDate = format.parse(timesheetFrequencyEndDate.replaceAll("/", "-"));
-					if(frequencyEndDate.equals(actualEndDate))
-					tabDiv.append("		            <input type='button' onClick='newSaveTimesheet(\"Submitted\",\"user\");'  value='Submit' class='time_btn' />");	
-				}
-				tabDiv.append("		            <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />");	
-		    }
-		    else{
-		    	
-		    	tabDiv.append("		       <div class='clearfix'></div>   ");
-		    }
-			
-			tabDiv.append("		        </div>   ");	     
 			tabDiv.append("		    </div>  ");	
+			tabDiv.append("</div>");      
 			
-			/*
-			tabDiv.append("		<div class='res_total_hour'>");	
-			tabDiv.append("			<i></i>");	
-			tabDiv.append("			<p>Total hours</p>");	
-			tabDiv.append("		    <h2> <input disabled type='text' id='grandTotal' name='grandTotal' class='inline_field' value='HH:MM' value='00:00' /> </h2>");	
-			tabDiv.append("		</div>   ");
-		    */
-		    
-			tabDiv.append("</div>");        	
+			
+			
+			
+			tabDiv.append("		    <div class='timesheet_bot'>");	
+	    tabDiv.append("		    	<div class='timesheet_button'>");	
+	    
+	    
+	    tabDiv.append("<div class='totalWrap'>");
+	    tabDiv.append("<ul>");
+		tabDiv.append("<li>");
+		tabDiv.append("<span>Billable Hours</span>");
+		tabDiv.append("<input type='text' name='grandBillableTotal' id='grandBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
+		tabDiv.append("</li>");
+		tabDiv.append("<li>");
+		tabDiv.append("<span>Non-Billable Hours</span>");
+		tabDiv.append("<input type='text' name='grandNonBillableTotal' id='grandNonBillableTotal' value='00:00' placeholder='HH/HH' readonly>");
+		tabDiv.append("</li>");
+		tabDiv.append(" <li>");
+		tabDiv.append("<span>Total Hours</span>");
+		tabDiv.append("<input type='text' id='grandTotal' value='00:00' placeholder='HH/HH' readonly>");
+		tabDiv.append("</li>");
+		tabDiv.append("<div class='clearfix'></div> ");                                      
+		tabDiv.append(" </ul>");
+		tabDiv.append("</div>");
+
+	      
+	    if(!isNullOrEmpty(approvalStatus)  && !approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
+			tabDiv.append("		        	<input type='button' onClick='newSaveTimesheet(\"Draft\",\"user\");'  value='Save' class='time_btn time_dra' />");	
+			
+			if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
+				Date frequencyEndDate = format.parse(timesheetFrequencyEndDate.replaceAll("/", "-"));
+				if(frequencyEndDate.equals(actualEndDate))
+				tabDiv.append("		            <input type='button' onClick='newSaveTimesheet(\"Submitted\",\"user\");'  value='Submit' class='time_btn' />");	
+			}
+			tabDiv.append("		            <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />");	
+	    }
+	    else{
+	    	
+	    	tabDiv.append("		       <div class='clearfix'></div>   ");
+	    }
+		
+		tabDiv.append("		        </div>   ");	
+		tabDiv.append("<div class='clearfix'></div> ");     
+		tabDiv.append("		    </div>  ");	
+			
+			
+			
+			
 			tabDiv.append("</div>");
 			tabDiv.append("</div>");
 		
@@ -1615,5 +1638,4 @@ public class TimesheetRestController {
 	            return "success";
 	    }
 		
- 
 }

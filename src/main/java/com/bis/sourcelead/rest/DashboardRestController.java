@@ -573,9 +573,11 @@ public class DashboardRestController {
 							for (RequirementApproverHierarchy rah : list1) {
 								if (status.equalsIgnoreCase("APPROVED")) {
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+									requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
 								} else if (status.equalsIgnoreCase("REJECTED")) {
 									rah.setRejectedReason(reason);
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+									requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 								}
 								rah.setUpdatedBy(loginUser.getUserCode());
 								rah.setUpdatedDate(commonUtil.currentDate());
@@ -597,9 +599,11 @@ public class DashboardRestController {
 								requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, null,	orgLocation);
 							}
 							requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+							requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
 						} else if (status.equalsIgnoreCase("REJECTED")) {
 							// this is for sending email to requirement initiator
 							requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+							requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 							requirementApproverHierarchy.setRejectedReason(reason);
 							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
 							requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
@@ -607,6 +611,7 @@ public class DashboardRestController {
 							// This is  to update  the level2 Approver Record For RejectedS
 						    RequirementApproverHierarchy level2approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdExcludingApproverHierarchyId(requirementApproverHierarchy.getId(), requirementId);
 						    level2approver.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+						    requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 						    level2approver.setUpdatedBy(loginUser.getUserCode());
 						    level2approver.setUpdatedDate(commonUtil.currentDate());
 							requirementApproverHierarchyService.addRequirementApproverHierarchy(level2approver);

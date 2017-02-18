@@ -405,6 +405,56 @@ public class RegistrationController {
 			rolesService.storeRoles(managerrole);
 	 }
 	 
+	 
+	 
+	  @RequestMapping(value = "/validateCrowdSourcingEmail",  method = RequestMethod.GET)
+	   public @ResponseBody String validateCrowdSourcingEmail(@RequestParam(value="email", required=false) String email,
+	   		@RequestParam(value="type", required=false) String type) throws Exception {
+		  
+		  User user = userService.getUserByEmailAndUserType(email, type);
+		  if(null == user){
+			  return "Success";
+		  }else{
+			  return "Invalid";
+		  }
+	   }
+	  
+	  
+	  @RequestMapping(value = "/validateCrowdSourcingUserName",  method = RequestMethod.GET)
+	   public @ResponseBody String validateCrowdSourcingUserName(@RequestParam(value="userName", required=false) String userName) throws Exception {
+		  
+		  User user = userService.getUserByUserName(userName);
+		  if(null != user){
+			  return "Success";
+		  }else{
+			  return "Invalid";
+		  }
+	   }
+	  
+	  @RequestMapping(value = "/validateCrowdSourcingResetUserName",  method = RequestMethod.GET)
+	   public @ResponseBody String validateCrowdSourcingResetUserName(@RequestParam(value="userName", required=false) String userName,
+			   @RequestParam(value="resetUserName", required=false) String resetUserName) throws Exception {
+		  
+		  User user = null;
+		  user = userService.getUserByUserName(userName);
+		  if(null != user){
+			  if(user.getEmail().equalsIgnoreCase(resetUserName)){
+				  return "Invalid";
+			  }else{
+				  user = userService.findByUserName(resetUserName); 
+				  if(null == user){
+					  return "Success";
+				  }else{
+					  return "Invalid";
+				  }
+			  }
+			  
+		  }else{
+			  return "Invalid";
+		  }
+	   }
+	  
+	 
 	 /**	 
 	  * checks if string is null or empty
 	  * @param str
