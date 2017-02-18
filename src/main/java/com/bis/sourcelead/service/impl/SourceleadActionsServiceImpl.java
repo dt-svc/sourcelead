@@ -57,4 +57,9 @@ public class SourceleadActionsServiceImpl implements SourceleadActionsService {
 		return sourceleadActionsDao.getSourceLeadActionsByModuleId(moduleId);
 	}
 
+	@Override
+	public List<SourceleadActions> getLoginCrowdSourcingUserRoleActionsByOrgLocationId(Long roleId) throws Exception {
+		return sourceleadActionsDao.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(roleId);
+	}
+
 }

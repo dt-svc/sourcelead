@@ -106,6 +106,32 @@ public class HomeController {
 				return "redirect:/login";
 		 }
 	}
+	
+	
+	 @RequestMapping(value = "/register")
+	 	public ModelAndView register() {
+	 			ModelAndView model = new ModelAndView();
+	 			model.setViewName("registration");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			return model;
+	 	}
+	 
+	 @RequestMapping(value = "/resetloginCredentials")
+	 	public ModelAndView resetloginCredentials(HttpServletRequest request) {
+	 			ModelAndView model = new ModelAndView();
+	 			model.setViewName("resetloginCredentials");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			
+	 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg");
+	  			if(!isNullOrEmpty(msg)){
+	  				model.addObject("msg", msg);
+	  				SourceLeadSessionManager.removeSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg");
+	  			}
+	 			return model;
+	 	}
+	
+	
+	
    @RequestMapping(value = "/forgotPassword")
  	public ModelAndView forgotPassword() {
  			ModelAndView model = new ModelAndView();

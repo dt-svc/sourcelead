@@ -108,4 +108,6 @@ public interface RequirementSubmissionDao {
 	Integer getRequirementPerCandidateCount(Long candudateId)throws Exception;
 
 	Integer getNumberOfApplicantsForRequirement(Long orgLocationId, Long requirementId)throws Exception;
+	
+	RequirementSubmission getRequirementSubmissionByRequirementIdAndCandidateId(Long requirementId,Long candidateId) throws Exception;
 }
