@@ -94,7 +94,8 @@ function getUsersSearchResult(searchValue){
       <section class="clearfix usersHeader positionRelative">
       <div class="section-action-btns clearfix">
       <div class="pull-left cand-advsrche">
-       <div id="searchElement"></div>
+       <input id="searchElement" type="hidden"></input>
+       
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
