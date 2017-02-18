@@ -3,9 +3,9 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%-- 
-     @author : David Raju.
+     @author : Laxman.
      this script is for edit Candidate.
-     1.usage     :  used in candidateProfile.
+     1.usage     :  used in professionalProfile.
      2.parameter : csrf token .
      3.ajax url implementation in CandidateListRestController.
 --%>
@@ -150,26 +150,19 @@ function editCandidate(candidateId){
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6">';
+							// If Candidate Type equals Consultant email field should be Disable mode
 							
-							if(json.candidateType == 'Consultant'){
-							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
-							}
 							
-							if(json.candidateType == 'Candidate'){
-								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100>';
-								}
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6">';
+							result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" >';
 							result = result + '</div>';
-							
-							
-					
 							
 							result = result + '<div class="col-md-6">';
 							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+mobilePhone+'" placeholder="Mobile" field-name="Mobile" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">';
 							result = result + '</div>';
 							
-							result = result + '</div>';
+							result = result + '</div>'; 
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
@@ -576,9 +569,9 @@ function getCandidateCities(){
 <!-- Country,State,City Script Ends Here -->
 
 <%-- 
-     @author : Venkat Kesav
+     @author : Laxman
      this script is for Delete Candidate.
-     1.usage     :  used in candidateProfile.
+     1.usage     :  used in professionalProfile.
      2.parameter : csrf token, candidateId
      3.ajax url implementation in CandidateListRestController.
 --%>
@@ -601,7 +594,7 @@ function deleteCandidate(candidateId){
 
 
 <%-- 
-     @author : Venkat Kesav
+     @author : Laxman
      this script is for Delete Candidate alert
      1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
 --%>
@@ -616,7 +609,7 @@ function cancelAlert(){
 
 
 <%-- 
-     @author : Venkat Kesav
+     @author : Laxman
      this script is for close alert popup.
      1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
 --%>
@@ -639,9 +632,9 @@ function removeCandidateAlertMessage(candidateId){
 
 
 <%-- 
-     @author :Sammeta David Raju
+     @author :Laxman
     
-     1.usage     : used in reActivateCandidateAlertMessage() / candidateProfile Line number 388
+     1.usage     : used in reActivateCandidateAlertMessage() / professionalProfile Line number 388
      2.parameters : candidateId
 --%>
 
@@ -670,7 +663,7 @@ function reActivateCandidateAlertMessage(candidateId){
 
 
 <%-- 
-     @author : sarath kumar.
+     @author : Laxman.
      this script is for edit Candidate.
      1.usage     :  used in candidateList.jsp.
      2.parameter : csrf token .
@@ -705,7 +698,7 @@ function professionalProfile(candidateId){
 					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
 				    	        }
 							
-							result = result +'		<div class="clearfix dashboard-widget candidate-profile">                                                                                                    ';
+							result = result +'		<div class="clearfix dashboard-widget candidate-profile mt">                                                                                                    ';
 							result = result +'		  <ul class="nav nav-tabs">                                                                                                                   ';
 							result = result +'		    <li class="active"><a data-toggle="tab" href="#skills">General View</a></li>                                                              ';
 							//result = result +'		    <li><a data-toggle="tab" href="#milestone">Milestone View</a></li>                                                                        ';
@@ -713,7 +706,7 @@ function professionalProfile(candidateId){
 							result = result +'		  <div class="tab-content">                                                                                                                   ';
 							result = result +'		    <div id="skills" class="tab-pane fade in active">                                                                                         ';
 							result = result +'		      <div class="skills-summary positionRelative">                                                                                                            ';
-							result = result +'		        <div class="design-view">                                                                                                             ';
+							result = result +'		        <div class="design-view skillsresult">                                                                                                             ';
 							
 							result = result +'		          <!-- Select Skills -->                                                                                                              ';
 							
@@ -738,7 +731,6 @@ function professionalProfile(candidateId){
 						                res = json.skillsName.split(",");
 						                res.forEach(function(item) {
 						                	if('${skill.name}' == item){
-						                		result = result + ' <option  value="${skill.name}">${skill.name}</option>';
 						                		existed = 1;
 						                	}
 						                });
@@ -747,10 +739,6 @@ function professionalProfile(candidateId){
 					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
 					                }
 			                </c:forEach>
-			                
-			                
-			                
-			                
 			                result = result + '</select>';
 							
 							result = result +'		                      </div> ';
@@ -802,10 +790,16 @@ function professionalProfile(candidateId){
 							result = result +'		          <!-- Select Skills -->                                                                                                              ';
 							
 							result = result +'<div class="clearfix mt"></div>';
-							result = result +'<div class="append_skill ">';  
+							result = result +'<div class="append_skill professinal-details">';  
 							result = result +'<ul class="list-inline list-unstyled">';
 							if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-								result = result + ' <li class="professinal-details"  value="${json.skillsName}">'+json.skillsName+'</li>'; 
+								var skillsNameArray = json.skillsName.split(',');
+								 for (i=0;i < skillsNameArray.length;i++)
+					             {
+					            	  result = result+'<li>'+skillsNameArray[i]+'</li>';
+					            	  
+					             } 
+								//result = result + ' <li class="professinal-details"  value="${json.skillsName}">'+json.skillsName+'</li>'; 
 							}else{
 								result = result + ' <li class="professinal-details">NO DATA</li>';
 							}
@@ -932,7 +926,7 @@ function professionalProfile(candidateId){
 
 
 <%-- 
-     @author : sarath kumar.
+     @author : Laxman.
      this script is for save Skils in Candidate.
      1.usage     :  used in editCandidate() function  line 13
      2.parameter : csrf token ,candidateId.
@@ -965,7 +959,7 @@ function professionalProfile(candidateId){
  
  
  <%-- 
-     @author : sarath kumar.
+     @author : Laxman.
      this script is for remove Skill PopUp.
      1.usage     :  used in saveSkils() function line number 339
      2.parameter : candidateId  .
@@ -987,7 +981,7 @@ function removeSkillPopUp(candidateId){
 </script> 
   
 <%-- 
-     @author : David Sammeta.
+     @author : Laxman.
      this script is for upDate Candidate Details .
      1.usage     :  used in editCandidate() function  line 78
      2.parameter : csrf token .
@@ -1067,7 +1061,7 @@ function cancelEdit(){
 
 
 <%-- 
-     @author : sarath Kumar.
+     @author : Laxman.
      this script is for upDate Candidate Details .
      1.usage     :  used in professionalProfile() function  line 258
      2.parameter : csrf token candidateId.
@@ -1225,9 +1219,9 @@ function candidateSkillsList(candidateId){
 
 
 <%-- 
-     @author : Venkat Kesav
+     @author : Laxman
      this script is for Remove Candidate Skill.
-     1.usage     :  used in candidateProfile.
+     1.usage     :  used in professionalProfile.
      2.parameter : csrf token, candidateId, Skill Name
      3.ajax url implementation in CandidateListRestController.
 --%>
@@ -1250,7 +1244,7 @@ function removeSkillById(candidateId, skillId){
      
           
 <%-- 
-     @author : david sammeta.
+     @author : Laxman.
      this script is for upDate Candidate Details .
      1.usage     :  used in upDateCandidate() function  line 379
 --%>         
@@ -1281,7 +1275,7 @@ function removeSkillById(candidateId, skillId){
 
 
 <%-- 
-     @author : sarath kumar.
+     @author : Laxman.
      this script is for inline edit saving .
      1.usage     :  used in  skillList(); 
      2.parameter : csrf token ,name , value.
@@ -1567,8 +1561,8 @@ $('.selectpicker').selectpicker('refresh');
   
 <script>
 function updateDesignationType(){
-	
-	if(designationType.value == 'Other'){
+	var designationType = $("#designationType").val();
+	if(designationType == 'Other'){
 		  document.getElementById("designationTypeDiv").style.display="block";
 		  $("#designationOtherType").attr("data-validation-optional", "true");
 		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");

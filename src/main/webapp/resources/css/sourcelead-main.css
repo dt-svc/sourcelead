@@ -4627,6 +4627,7 @@ import-tranhd  [class*="col-md-"]{
        background-position:90% center;
        background-color:#337ab7;
        background-size:8px;
+       height: 30px;
        }
 .cand-advsrch {
 	margin:8px 15px;

@@ -166,10 +166,100 @@ public class RequirementListRestController {
 	 @PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getRequirementListByOrgLocationID")
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
-		 String resultJson;
+		
+		 String msg = "";
+			String resultJson;
 			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
+			String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user,userRoleName);
+			
+			for(Requirement requirement : requirementList){
+				
+				Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirement.getId(), user.getId());
+				requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
+				
+				int totalApplicatsCountForRequirement = 0;
+				totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation,requirement.getId(),user,userRoleName);
+				if(totalApplicatsCountForRequirement > 0){
+					requirement.setTotalApplicantsForRequirement(totalApplicatsCountForRequirement); ;
+				}
+				
+				if(requirement.getClientId() != null){
+					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+					}
+					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+					}
+				}
+				if(requirement.getManagerUserId() != null){
+					String managerFirstName = "";
+					if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+						managerFirstName = requirement.getManagerUserId().getFirstName();
+					}
+					String managerLastName = "";
+					if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+						managerLastName = requirement.getManagerUserId().getLastName();
+					}
+					StringBuilder name = new StringBuilder();
+					requirement.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
+				}
+				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqStatusChange");
+				if(msg != null && msg != ""){
+					requirement.setMsg(msg);
+				}
+					 SourceLeadSessionManager.removeSessionAttribute(request, "reqStatusChange");
+				
+			}
+			
+			/*
+			 * filter based search for requirement  List
+			 */
+			ArrayList<Requirement>  requirementList1 = new ArrayList<Requirement>();
+			String[] status1 = status.split(",");
+			if (status1[0] != null && status1[0].length() > 0) {
+				for (String stat : status1) {
+					for(Requirement requirement : requirementList){
+						if(stat.equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
+							if(requirement.getClientId() != null){
+								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+								}
+								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+									requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+								}
+							}
+							if(requirement.getManagerUserId() != null){
+								String managerFirstName = "";
+								if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+									managerFirstName = requirement.getManagerUserId().getFirstName();
+								}
+								String managerLastName = "";
+								if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+									managerLastName = requirement.getManagerUserId().getLastName();
+								}
+								 StringBuilder managerSB = new StringBuilder();
+								requirement.setManager(managerSB.append(managerFirstName).append(" ").append(managerLastName).toString());
+							}
+							requirementList1.add(requirement);
+						}
+					}
+					
+				}
+				resultJson = commonUtil.toJSON(requirementList1);
+			}else{
+				resultJson = commonUtil.toJSON(requirementList);
+			}
+			return resultJson;
+		 
+		 
+		 /* String resultJson;
+			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");//""
+			String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user,userRoleName);
 			for(Requirement requirement : requirementList){
 				if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -231,7 +321,7 @@ public class RequirementListRestController {
 			
 			
 			
-			return resultJson;
+			return resultJson;*/
 	 }
 	 
 	 
@@ -569,7 +659,8 @@ public class RequirementListRestController {
 			Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
+			String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user,userRoleName);
 			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			File file =null;
 			
@@ -801,7 +892,7 @@ public class RequirementListRestController {
 			String resultJson;
 		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			
+			String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			TimeSheetSubmissionCount  timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 			
 			Integer newCount = 0;
@@ -811,7 +902,7 @@ public class RequirementListRestController {
 			Integer onholdCount = 0;
 			Integer cancelCount = 0;
 			
-			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocations.getId(),null,null,user.getId());
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocations.getId(),null,null,user,userRoleName);
 	        	
 	        		  for(Requirement req :requirementList){
 	        			  if("NEW".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
@@ -1212,8 +1303,8 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		List<Requirement> searchRequirementList = requirementService.searchRequirement(orgLocation, jsonObj,org,userRole,user);
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		List<Requirement> searchRequirementList = requirementService.searchRequirement(orgLocation, jsonObj,org,userRoleName,user);
 		resultJson = commonUtil.toJSON(searchRequirementList);
 		return resultJson;
 	    

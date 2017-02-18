@@ -335,6 +335,13 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String orgcode;
 
+	@Transient
+	private String reqlevel1ApproverStatus;
+	
+	@Transient
+	private String reqlevel2ApproverStatus;
+	
+
 	public String getSearchType() {
 		return searchType;
 	}
@@ -1076,4 +1083,21 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setOrgcode(String orgcode) {
 		this.orgcode = orgcode;
 	}
+	
+	public String getReqlevel1ApproverStatus() {
+		return reqlevel1ApproverStatus;
+	}
+
+	public void setReqlevel1ApproverStatus(String reqlevel1ApproverStatus) {
+		this.reqlevel1ApproverStatus = reqlevel1ApproverStatus;
+	}
+
+	public String getReqlevel2ApproverStatus() {
+		return reqlevel2ApproverStatus;
+	}
+
+	public void setReqlevel2ApproverStatus(String reqlevel2ApproverStatus) {
+		this.reqlevel2ApproverStatus = reqlevel2ApproverStatus;
+	}
+	
 }
