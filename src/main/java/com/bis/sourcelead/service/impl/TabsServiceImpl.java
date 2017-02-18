@@ -53,4 +53,9 @@ public class TabsServiceImpl implements TabsService {
 		return tabsDao.getTabAccessByRoleIdAndTabId(roleId, orgLocationId, tabId);
 	}
 
+	@Override
+	public Collection<Tabs> getCrowdSourcingTabsListByRoleId(Long roleId) throws Exception {
+		return tabsDao.getCrowdSourcingTabsListByRoleId(roleId);
+	}
+
 }

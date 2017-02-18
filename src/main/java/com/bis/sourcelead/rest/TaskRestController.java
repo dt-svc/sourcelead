@@ -1,11 +1,15 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.hibernate.type.TimestampType;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.TaskService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -45,6 +51,8 @@ public class TaskRestController {
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
+	 @Autowired
+	 TimeZoneService timeZoneService;
 	 /**
 	  * @author Laxman
 	  * this method is store tasks
@@ -86,10 +94,25 @@ public class TaskRestController {
 		
 		for(Tasks tk :taklist){
 			tk.setSubject(tk.getSubject());
-			if(null != tk.getTaskDate()){
-				tk.setTaskDateStr(Constants.DMY.format(tk.getTaskDate()));	
+			
+			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+			
+			
+			if(tk.getTaskDate() != null){
+
+				String currentTimeStr = Constants.TZ_DF.format(tk.getTaskDate());
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = Constants.DMY.format(converteDate);
+				tk.setTaskDateStr(currentDateInTimezone);
+		    }
+			if(tk.getTaskTime() != null){
+				String currentTimeStr = Constants.TZ_DF.format(tk.getTaskDate());
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = Constants.TMS.format(converteDate);
+				tk.setTaskTime(currentDateInTimezone);
 			}
-			tk.setTaskTime(tk.getTaskTime());
 			tk.setDescription(tk.getDescription());
 			tk.setAlertType(tk.getAlertType());
 			tk.setTaskStatus(tk.getTaskStatus());

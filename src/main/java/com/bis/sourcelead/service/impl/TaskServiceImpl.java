@@ -62,6 +62,9 @@ public class TaskServiceImpl implements TaskService{
 	@Autowired
 	private UserRoleService userRoleService; 
 	
+	@Autowired
+	TimeZoneService timeZoneService;
+	
 	@Override
 	public Tasks saveTasks(Tasks tasks) throws Exception {
 		return taskDao.saveTasks(tasks);
@@ -80,6 +83,7 @@ public class TaskServiceImpl implements TaskService{
 	public String saveTasks(JSONObject jsonObj) throws Exception {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 
 	 	String pattern = "dd-MM-yy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -116,14 +120,28 @@ public class TaskServiceImpl implements TaskService{
 		        	 task.setDescription(jsonObj.getString("description"));
 		        }
 
-		        if(jsonObj.has("taskDatpicker") && !jsonObj.getString("taskDatpicker").isEmpty()){
+		        /*if(jsonObj.has("taskDatpicker") && !jsonObj.getString("taskDatpicker").isEmpty()){
 		    		Date taskDate = format.parse(jsonObj.getString("taskDatpicker"));
 		    		task.setTaskDate(taskDate);
 		    	}
 
 		        if(jsonObj.has("timepicker") && !jsonObj.getString("timepicker").isEmpty()){
 		    		task.setTaskTime(jsonObj.getString("timepicker"));
-		    	}
+		    	}*/
+				
+				if(jsonObj.has("taskDatpicker") && !jsonObj.getString("taskDatpicker").isEmpty() && jsonObj.has("timepicker") && !jsonObj.getString("timepicker").isEmpty()){
+				Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString("taskDatpicker")),jsonObj.getString("timepicker"));
+				String currentTimeStr = Constants.TZ_DF.format(startTime);  
+				String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+				Date convertedDate = Constants.TZ_DF_TS.parse(startTimeUTC);
+				task.setTaskDate(convertedDate);
+						if(jsonObj.has("timepicker") && !jsonObj.getString("timepicker").isEmpty()){
+								String splitDate = convertedDate.toString();
+								String[] timeFormat = splitDate.split(" ");
+								task.setTaskTime(timeFormat[3]);
+						}
+				 }
+			
 		        
 		        if(jsonObj.has("repeat") && !jsonObj.getString("repeat").isEmpty()){
 		    		task.setTaskRepeat(jsonObj.getString("repeat"));

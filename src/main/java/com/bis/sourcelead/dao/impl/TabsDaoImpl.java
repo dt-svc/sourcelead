@@ -153,4 +153,24 @@ public class TabsDaoImpl implements TabsDao{
 	    return flag;
 	}
 
+	@Override
+	@Transactional
+	public Collection<Tabs> getCrowdSourcingTabsListByRoleId(Long roleId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		
+         List<Roles> rolesList = new ArrayList<Roles>();
+		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId" ).setLong( "roleId", roleId ).setCacheable(true).list();
+		 List<Long> roleActonList = new ArrayList<Long>();
+		 for(Roles roles : rolesList){
+			 for (String s : roles.getActionId().split(",")){
+				 roleActonList.add(Long.parseLong(s.trim()));
+			 }
+		 }
+		
+		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id = '5' and moduleActions.sourceleadActions.id IN (:roleActonList))) ORDER BY tabs.tabOrder ASC ";
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("roleActonList", roleActonList).setCacheable(true).list();
+	    return tabsList;
+	}
+
 }

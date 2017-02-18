@@ -21,9 +21,20 @@ public class Registration {
 	
 	private String verificationCode;
 	
+	private String timeZone;
 	
 	
 	
+	
+
+	public String getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
+	}
+
 	public Integer getId() {
 		return id;
 	}

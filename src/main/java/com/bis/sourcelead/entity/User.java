@@ -147,6 +147,9 @@ public class User implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private Status previousUserState;
 	
+	@Column(name = "COUNTRY")
+	private String country;
+	
 	
 	@Transient
     private int assignJobCount;
@@ -442,6 +445,14 @@ public class User implements Serializable{
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 	
 }
