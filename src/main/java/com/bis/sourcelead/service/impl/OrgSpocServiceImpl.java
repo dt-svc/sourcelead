@@ -114,26 +114,24 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					 orgSpoc.setCreatedBy(user.getUserCode());
 			     }
 				orgSpoc.setOrgRelations(orgRelation);
-				/*orgSpoc.setClientUser(spocUser);*/
-				if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				
+				/*if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgSpoc.setClientLocationId(orgRelation.getLocationId());
 				}
 				if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgSpoc.setClientLocationId(orgRelation.getResponderLocationId());
-				}
-				/*orgSpoc.setVendorLocationId(orgLocations);
-				orgSpoc.setVendorUser(ownerUser);
-				orgSpoc.setOwnerUser(ownerUser);*/
+				}*/
 				
 				//to differentiate client and vendor in ORG_SPOC Table
 				if(responderType.equalsIgnoreCase("Client")){
-					//orgSpoc.setClientLocationId(clientOrgLocations);
+					orgSpoc.setClientLocationId(respondingOrgLocation);
 					orgSpoc.setVendorLocationId(orgLocations);
 					orgSpoc.setClientUser(spocUser);
 					orgSpoc.setVendorUser(ownerUser);
 					orgSpoc.setOwnerUser(ownerUser);
 				}else if(responderType.equalsIgnoreCase("Vendor")){
-					orgSpoc.setVendorLocationId(orgLocations);
+					orgSpoc.setVendorLocationId(respondingOrgLocation);
+					orgSpoc.setClientLocationId(orgLocations);
 					orgSpoc.setClientUser(ownerUser);
 					orgSpoc.setVendorUser(spocUser);
 					orgSpoc.setOwnerUser(ownerUser);
