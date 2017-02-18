@@ -219,7 +219,7 @@ public class RegistrationRestController {
 		 registrationService.saveProfessional(jsonObj);
 		 
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
-					"Verification Code sent to your mail.");
+					"Username sent to your mail.");
 	 	
 	 	
 		 return "success";
@@ -235,7 +235,7 @@ public class RegistrationRestController {
 		 registrationService.saveIndividualRecruiter(jsonObj);
 		 
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
-					"Verification Code sent to your mail.");
+					"Username sent to your mail.");
 	 	
 	 	
 		 return "success";

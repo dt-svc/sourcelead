@@ -161,6 +161,7 @@ public class LoginSessionController {
 			model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
 		}
 		else{
+			commonUtil.highLightMenu(Constants.Dashboard, request);
 			setSessionUserAttributes(user,request,sourceleadUrl);
 			setSessionOrgAttributes(userRole.getOrgId(), request);
 			tabsList = tabsService.getCrowdSourcingTabsListByRoleId(userRole.getRoles().getId());
@@ -172,7 +173,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getUserType());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
-			SourceLeadSessionManager.setSessionAttribute(request, "country", user.getLocation());
+			SourceLeadSessionManager.setSessionAttribute(request, "country", user.getCountry());
 			
 			OrgLocations orgLocations = userRole.getOrgLocations();
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);

@@ -198,6 +198,8 @@ public class Constants {
 	public static String INDIVIDUAL_RECRUITER = "Recruiter";
 	public static String INVITE_PROFESSIONAL = "Professional Invitation";
 	public static String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
+	
+	public static String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
 
 	public static String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
 

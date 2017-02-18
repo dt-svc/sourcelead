@@ -60,4 +60,43 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','APPLIED_PROFESS
 CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','REQUIREMENT_UUID','VARCHAR(20) NULL AFTER `IS_CROWD_SOURCING`');
 
 
+
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('Applied To Requirement','Email');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'professionalName', '{{AppliedRequirement.professionalName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'employerName', '{{AppliedRequirement.employerName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'requirementTitle', '{{AppliedRequirement.requirementTitle}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'experience', '{{AppliedRequirement.experience}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'location', '{{AppliedRequirement.location}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'professionalEmail', '{{AppliedRequirement.professionalEmail}}');
+
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES 
+											('Applied To Requirement','Email', 'Applied To Requirement', 'Confirmation - Requirement Application ', 'Confirmation - Requirement Application','org', 'Best Regards,\nSourceLead.', 'Dear Professional {{AppliedRequirement.professionalName}}\n\n\n you have applied to below mentioned requirement.\n\n Requirement Title : {{AppliedRequirement.requirementTitle}}\n\n Employer Name : {{AppliedRequirement.employerName}}\n\n Experience : {{AppliedRequirement.experience}}\n Location : {{AppliedRequirement.location}}\n\n  If the recruiters at {{AppliedRequirement.employerName}} find your profile suitable, they will email you at {{AppliedRequirement.professionalEmail}}','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
+									
+
+
+											
+DROP TABLE IF EXISTS `sourcelead`.`REQUIREMENT_REFER`;
+CREATE TABLE `sourcelead`.`REQUIREMENT_REFER` (
+  ID BIGINT NOT NULL AUTO_INCREMENT,
+  REFER_FROM_USER_ID BIGINT,
+  REFER_TO_USER_ID BIGINT,
+  REFER_FROM_EMAIL varchar(100) DEFAULT NULL,
+  REFER_TO_EMAIL varchar(100) DEFAULT NULL,
+  REFER_ID BIGINT,
+  CREATED_DATE DATETIME,
+  CREATED_BY VARCHAR(10),
+  UPDATED_DATE DATETIME,
+  UPDATED_BY VARCHAR(10),
+
+  PRIMARY KEY (`ID`),
+  FOREIGN KEY(REFER_FROM_USER_ID) REFERENCES `sourcelead`.`USER`(ID),
+  FOREIGN KEY(REFER_TO_USER_ID) REFERENCES `sourcelead`.`USER`(ID),
+  FOREIGN KEY(REFER_ID) REFERENCES `sourcelead`.`REQUIREMENT_REFER`(ID),
+   FOREIGN KEY(REQUIREMENT_ID) REFERENCES `sourcelead`.`REQUIREMENT`(ID)
+ 
+) ;
+
+ALTER TABLE `sourcelead`.`REQUIREMENT_REFER` ADD INDEX `REFER_FROM_EMAIL` (`REFER_FROM_EMAIL`);
+ALTER TABLE `sourcelead`.`REQUIREMENT_REFER` ADD INDEX `REFER_TO_EMAIL` (`REFER_TO_EMAIL`);
+
  
