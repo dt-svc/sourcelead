@@ -114,6 +114,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "IS_CROWD_SOURCING")
 	private String isCrowdSourcing;
 	
+	@Column(name = "REQUIREMENT_UUID")
+	private String requirementUUID;
+	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
@@ -130,6 +133,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Column(name = "CLIENT_RATE_TYPE")
 	private String clientRateType;
+	
+	@Column(name = "POSTED_ORG_NAME")
+	private String postedOrgName;
 	
 	
 	@ManyToOne
@@ -176,6 +182,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Type(type="text")
 	private String releasedBy;
 	
+	@Column(name="APPLIED_PROFESSIONALS")
+	@Type(type="text")
+	private String appliedProfessionals;
+	
 	@Column(name="PRIORITY")
 	private String priority;
 	
@@ -199,6 +209,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Transient
 	private  Long  requirementId;
+	
+	@Transient
+	private String isJobApplied;
 	
 	@Transient
 	private String msg;
@@ -319,6 +332,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String isRequirementReleasedByuser;
 	
+	@Transient
+	private String orgcode;
+
 	@Transient
 	private String reqlevel1ApproverStatus;
 	
@@ -441,6 +457,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	}
 
 
+
+	public String getIsJobApplied() {
+		return isJobApplied;
+	}
+
+	public void setIsJobApplied(String isJobApplied) {
+		this.isJobApplied = isJobApplied;
+	}
 
 	public String getClientName() {
 		return clientName;
@@ -1028,6 +1052,38 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.isCrowdSourcing = isCrowdSourcing;
 	}
 
+	public String getRequirementUUID() {
+		return requirementUUID;
+	}
+
+	public void setRequirementUUID(String requirementUUID) {
+		this.requirementUUID = requirementUUID;
+	}
+
+	public String getPostedOrgName() {
+		return postedOrgName;
+	}
+
+	public void setPostedOrgName(String postedOrgName) {
+		this.postedOrgName = postedOrgName;
+	}
+
+	public String getAppliedProfessionals() {
+		return appliedProfessionals;
+	}
+
+	public void setAppliedProfessionals(String appliedProfessionals) {
+		this.appliedProfessionals = appliedProfessionals;
+	}
+
+	public String getOrgcode() {
+		return orgcode;
+	}
+
+	public void setOrgcode(String orgcode) {
+		this.orgcode = orgcode;
+	}
+	
 	public String getReqlevel1ApproverStatus() {
 		return reqlevel1ApproverStatus;
 	}

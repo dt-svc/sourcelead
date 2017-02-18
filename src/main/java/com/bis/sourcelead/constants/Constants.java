@@ -71,6 +71,9 @@ public class Constants {
 	public static DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
 	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd/MM");
 	
+	public static final DateFormat TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss");
+	public static final DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+	
 	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
 	public static String INVITE_USER = "Invite User";
 	public static String INVITE_CLIENT = "Invite Client";
@@ -190,7 +193,20 @@ public class Constants {
 	public static String VENDOR_ACCEPT_RATE_NEGOTIATION = "VendorAcceptRateNegotiation";
 	public static String CLIENT_REJECT_RATE_NEGOTIATION = "ClientRejectRateNegotiation";
 	public static String VENDOR_REJECT_RATE_NEGOTIATION = "VendorRejectRateNegotiation";
+
+	public static String ROLE_NAME_PROFESSIONAL = "ROLE_CROWDSOURCING_PROFESSIONAL";
+	public static String ROLE_NAME_INDEPENDENT_RECRUITER = "ROLE_CROWDSOURCING_RECRUITER";
+	
+	public static String PROFESSIONAL = "Professional";
+	public static String INDIVIDUAL_RECRUITER = "Recruiter";
+	public static String INVITE_PROFESSIONAL = "Professional Invitation";
+	public static String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
+
 	public static String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
+	public static String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
+	
+	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
+
 
 
 
@@ -237,6 +253,8 @@ public class Constants {
 	public static  String BackOffice = "BackOffice";
 	public static  String Finance = "Finance";
 	public static  String AssetManagement = "AssetManagement";
+	public static  String Profile = "Profile";
+	
 	
 	public static  String TimeSheet_Approval = "Timesheet Approval";
 	

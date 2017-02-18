@@ -164,8 +164,12 @@ public interface RequirementSubmissionService {
 	List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception;
 	
 	Integer getRequirementPerCandidateCount(Long candudateId) throws Exception;
+	
+	RequirementSubmission saveRequirementSubmissionFromCrowdSourcing(JSONObject jsonObj,User user,String jsonStringvalues) throws Exception;
 
 	void applicantAcceptMailAboutRateNegotiation(Requirement requirement, User initiatorUser, RequirementSubmission requirementSubmission,
 			OrgLocations orgLocations,StringBuilder tempHTML) throws Exception;
+	
+	RequirementSubmission getRequirementSubmissionByRequirementIdAndCandidateId(Long requirementId,Long candidateId) throws Exception;
 
 }

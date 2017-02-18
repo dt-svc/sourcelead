@@ -55,6 +55,10 @@ public class UserRole implements Serializable{
    	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
 	private OrgLocations orgLocations;
     
+    @ManyToOne(fetch = FetchType.EAGER)
+   	@JoinColumn(name = "ORG_ID", nullable = false)
+   	private Org orgId;
+    
     @Column(name = "IS_PRIMARY")
     private Integer isPrimary;
     
@@ -590,6 +594,16 @@ public class UserRole implements Serializable{
 	public void setIsMailSent(String isMailSent) {
 		this.isMailSent = isMailSent;
 	}
+
+	public Org getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Org orgId) {
+		this.orgId = orgId;
+	}
+
+	
 
 
 }

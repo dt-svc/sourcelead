@@ -22,4 +22,6 @@ public interface SourceleadActionsService {
 	List<Long> getSourceLeadActionsByTabId(Long tabId) throws Exception;
 	
 	List<Long> getSourceLeadActionsByModuleId(Long moduleId) throws Exception;
+	
+	List<SourceleadActions> getLoginCrowdSourcingUserRoleActionsByOrgLocationId(Long roleId) throws Exception;
 }
