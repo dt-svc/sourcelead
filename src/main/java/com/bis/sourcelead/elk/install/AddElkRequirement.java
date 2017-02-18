@@ -211,6 +211,16 @@ public class AddElkRequirement {
 					requirementIndex.setAppliedProfessionals(appliedProfessionals.split(","));
 				}
 				
+				ResultSet statusRs =getApproverHierarchyStatus(rs.getString("ID"),conn);
+				if(null != statusRs){
+					while(statusRs.next()){
+						if(statusRs.getInt("LEVEL") == 1){
+							requirementIndex.setReqLevel1ApproverStatus(statusRs.getString("STATUS"));	
+						}else{
+							requirementIndex.setReqLevel2ApproverStatus(statusRs.getString("STATUS"));
+						}
+					}
+				}
 				reqIndexList.add(requirementIndex);
 				
 			}
@@ -230,6 +240,23 @@ public class AddElkRequirement {
 	}
 	
 	
+	private ResultSet getApproverHierarchyStatus(String reqId, Connection conn) {
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		Long requirementId = Long.parseLong(reqId);
+		 try{
+				String sql = "SELECT * FROM sourcelead.REQUIREMENT_APPROVER_HIERARCHY where REQUIREMENT_ID = ?;";
+//				 conn = dataSource.getConnection();
+				 ps = conn.prepareStatement(sql);
+				 ps.setLong(1, requirementId);
+				 rs = ps.executeQuery();
+		 }catch(Exception e){
+			 e.printStackTrace();
+		 }
+	     return rs;
+	}
+
+
 	private Integer getNumberOfApplicants(String requirementId, Connection conn, String orgLocationId) {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
