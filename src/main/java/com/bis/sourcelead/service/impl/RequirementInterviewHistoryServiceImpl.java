@@ -168,4 +168,11 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 		return requirementInterviewHistoryDao.getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(submissionId, orgLocationsId);
 	}
 
+	@Override
+	public List<RequirementInterviewHistory> getAllProfessinalInterviews(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode,Long candidateId)
+			throws Exception {
+		List<RequirementInterviewHistory> list = requirementInterviewHistoryDao.getAllProfessinalInterviews(orgLocationsId, dateRange, currentTime, userType, userId, userCode,candidateId);
+		return list;
+
+			}
 }
