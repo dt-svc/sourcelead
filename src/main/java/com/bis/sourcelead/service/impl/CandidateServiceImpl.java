@@ -542,6 +542,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
+	public Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId, String candidateType) throws Exception {
+		return candidateDao.getProfessionalInfoByLoginUserIdAndCandidateType(userId,candidateType);
+	}
+	
+	@Override
 	public List<Object> getAllUniversalSearchCandidateList(OrgLocations orgLocation,String searchValue)throws Exception {
 		List<Object>   searchList = new ArrayList<>();
 		 Long maxResults = getCandidatesCountByOrgLocationID(orgLocation.getId(),null);

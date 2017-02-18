@@ -760,5 +760,20 @@ public class RequirementDaoImpl implements RequirementDao {
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception {
+    Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement requirement left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation  where requirement.requirementUUID =:requirementUUID";
+		List requirementList = session.createQuery(query).setString("requirementUUID", requirementUUID).setCacheable(true).list();
+		
+		Requirement requirement = null;
+		if(requirementList != null && !requirementList.isEmpty())
+		{
+			requirement = (Requirement) requirementList.iterator().next();
+		}
+		return requirement;
+	}
 	
 }

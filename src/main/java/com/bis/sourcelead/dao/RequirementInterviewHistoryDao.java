@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.Timezone;
 
 public interface RequirementInterviewHistoryDao {
 	
@@ -25,6 +26,7 @@ public interface RequirementInterviewHistoryDao {
 	 * @param userType
 	 * @param userId
 	 * @param userCode
+	 * @param timezone 
 	 * @return
 	 * @throws Exception
 	 * To get dashboard interviews
