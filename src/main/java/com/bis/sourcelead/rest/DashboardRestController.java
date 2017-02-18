@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
@@ -42,6 +44,7 @@ import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -95,6 +98,8 @@ public class DashboardRestController {
 	 @Autowired
 	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
 	 
+	 @Autowired
+	 TimeZoneService timeZoneService;
 	 
 	@Autowired
 	CommonUtil commonUtil;
@@ -409,6 +414,7 @@ public class DashboardRestController {
 			String userType = null;
 			String userCode = user.getUserCode();
 			Long userId = user.getId();
+			Timezone timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 			
 			
 			if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
@@ -444,17 +450,15 @@ public class DashboardRestController {
 				
 				interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
 				
-				//requirementInterview.setInterviewStartDateTimeStr(requirementInterview.getStartTime().toString());
-				
+				//changed as per the timezone
 				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
-				String commonDateFormat = standardFormat.format(interviewHistory.getInterviewId().getStartTime());
-				interviewHistory.setInterviewStartDateTimeStr(commonDateFormat.toString());
 				
+				String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = standardFormat.format(converteDate);
+				interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
 				
-				/*if(interviewHistory.getSubmissionId().getRequirement().getClientId() != null){
-					
-					interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
-				}*/
 				 if(interviewHistory.getSubmissionId().getRequirement().getClientId() != null){
 						if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
 							interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());

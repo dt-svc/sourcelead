@@ -194,6 +194,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 	
 	@Override
+	public List<Projects> getAllProjectsEndDateGraterthanCurrentDate() throws Exception {
+		logger.debug("In ProjectsServiceImpl class getAllProjectsEndDateGraterthanCurrentDate method...");
+		return projectsDao.getAllProjectsEndDateGraterthanCurrentDate();
+	}
+	
+	@Override
 	public Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception {
 		logger.debug("In ProjectsServiceImpl class getPrimaryProjectByOrgLocationsId method...");
 		return projectsDao.getPrimaryProjectByOrgLocationsId(orgLocationsId);
