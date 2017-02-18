@@ -168,7 +168,7 @@ a { cursor:pointer;}
     }
 .addtaskfield {
     border:0px; background-color:transparent; background-image:url(../images/addtask.png); background-repeat:no-repeat; background-position:center; margin: 0px 0px 0px 2px;
-    background-size:16px; width:23px; height:23px; position:relative; top:5px;
+    background-size:14px; width:12px; height:12px; position:relative; top:2px;
     }
 .addtaskfield.removetaskfield {
  	-moz-transform: rotate(-45deg); -webkit-transform: rotate(-45deg); -o-transform: rotate(-45deg); transform: rotate(-45deg); 
@@ -2043,7 +2043,7 @@ width: 100%;
     }   
  
 .new_side_wrap {
-    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
+    width:81%; position:fixed; right:-100%; top:0px; background-color:#fff; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
     transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
     z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
     }
@@ -2322,7 +2322,7 @@ margin-bottom:15px !important;
     text-align:center; width:75px; margin:1.5px 0px;
     } 
 .timesheet_tableNew table select {
-	width:150px; padding: 4px 8px; border:1px solid #ccc; border-radius: 2px;
+	width:140px; padding: 4px 8px; border:1px solid #ccc; border-radius: 2px;
 }
 
 .timesheetNewHead {
@@ -2658,8 +2658,16 @@ padding-right:10px;
 	border-color: rgba(136, 183, 213, 0); border-bottom-color: #0cc2aa; border-width: 13px; margin-left: -13px;
 }
 .referWrap .form-group {
-	margin:0px; padding: 0px 0px 8px;
+	margin:0px; padding: 0px 0px 8px; position: relative; height: 60px;
 }
+.referWrap .jquery_form_error_message {
+    padding: 0px 0px 0px 15px !important;
+    margin: 0px;
+    font-size: 11px;
+    color: #f12929;
+    font-weight: 500;
+    }
+
 .referWrap .form-group label {
 	text-transform: capitalize; font-size: 13px; font-weight: 500; color: #545454; margin-bottom: 1px;
 }
@@ -2759,20 +2767,20 @@ padding-right:10px;
 
 
 .timeNewSe.timeNewSe_month {
-    width:136px;
+    width:135px;
 }
 .timeNewSe.timeNewSe_week {
-    width:120px;
+    width:115px;
 }
 
 .timeNewSe.timeNewSe_week_date {
-    width:201px;
+    width:196px;
 }
 .timeNewSe.timeNewSe_client {
-    width:135px;
+    width:120px;
 }
 .timeNewSe.timeNewSe_stage {
-    width:172px;
+    width:160px;
 }
 
 

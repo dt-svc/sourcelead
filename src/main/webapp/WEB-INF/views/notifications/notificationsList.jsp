@@ -146,7 +146,7 @@ function getNotificationtLists(){
 					result = result +'			</div>';
 				    result = result +'   </td>';
 				    
-				    result = result +'   <td><div class="mailbox-date tbldata-dotdot-vsm">'+report.calDays+' days ago</div></td>';
+				    result = result +'   <td><div class="mailbox-date tbldata-dotdot-vsm">'+report.calDays+' </div></td>';
 				    result = result +'   <td>';
 				     if(report.userNotificationStatus != "Accepted"){
 				    	result = result +'<span class="mailbox-trash"><a href="'+report.actionLink+'" title="Accept"><i class="text-muted fa fa-check-circle"></i></a></span>';
@@ -245,11 +245,4 @@ function deleleteAll() {
 
  <!-- Delete Notification end  -->
  
- 
-
-  <!-- Footer Area -->
-  <footer class="footer-area clearfix">
-    <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-    <div class="powered-by"> Powered by: businessintelli.com </div>
-  </footer>
-  <!-- Footer Area -->
+ <jsp:include page="../masterFooter.jsp" />

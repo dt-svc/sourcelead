@@ -4,10 +4,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.MessageFormat;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,12 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-
 import javax.mail.internet.InternetAddress;
-import javax.servlet.http.HttpServletRequest;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
@@ -33,16 +26,13 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -76,10 +66,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -775,6 +762,7 @@ public class ClientServiceImpl implements ClientService{
 
 					Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(editUser.getId(), orgLocation.getId());
 					//Update the user details for Elk search
+					commonUtil.commonUserUpdate(editUser);
 					userService.saveOrUpdateUserElkDocument(userRole,employee, editUser.getUserCode());
 			
 				}
@@ -911,7 +899,7 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
-			 emailMessage.setToEmail(orgSpoc.getSpocUser().getEmail());
+			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
 			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -993,7 +981,7 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
-			 emailMessage.setToEmail(orgSpoc.getSpocUser().getEmail());
+			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
 			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -1089,21 +1077,21 @@ public class ClientServiceImpl implements ClientService{
 			
 			 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocation.getId(),responderType);
 				//All Keywords
-			 ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
-				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : allKeyWordArray){
-						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
-							}
-							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+			 ArrayList<String> anyKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
+			 if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+				 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+				 for(String keywd : anyKeyWordArray){
+					 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
+					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+							anyBoolSubQueryBuilder.should(matchQueryBuilder);
 						}
+						anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 					}
-					 boolQueryBuilder.must(allBoolQueryBuilder);
 				}
+				 boolQueryBuilder.must(anyBoolQueryBuilder);
+			}
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				List<Object>   searchList = new ArrayList<>();
@@ -1181,24 +1169,23 @@ public class ClientServiceImpl implements ClientService{
 				 
 				 combinedQueryBuilder.must(combinedQueryBuilder);
 				
-				ArrayList<String> allKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(serachValue);
+				ArrayList<String> anyKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(serachValue);
 					BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 					 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
-					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-						 for(String keywd : allKeyWordArray){
-							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							 // need to change for setters 
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									allBoolSubQueryBuilder.should(matchQueryBuilder);
+						if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+							 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+							 for(String keywd : anyKeyWordArray){
+								 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+								ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
+								if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+									for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+										anyBoolSubQueryBuilder.should(matchQueryBuilder);
+									}
+									anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 								}
-								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 							}
+							 boolQueryBuilder.must(anyBoolQueryBuilder);
 						}
-						 boolQueryBuilder.must(allBoolQueryBuilder);
-					}
 					
 					Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilder).getTotalHits();
 					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

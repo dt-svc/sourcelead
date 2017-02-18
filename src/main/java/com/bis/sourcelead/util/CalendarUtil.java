@@ -11,9 +11,9 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
-import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 
@@ -522,6 +522,23 @@ public  class CalendarUtil {
 		return dateList;
   	}
     
+    public static boolean isCurrentDateBetweenDateRange(String weekStartDate,String weekEndDate) {
+		Boolean flag = false;
+		if(StringUtils.isNotEmpty(weekStartDate) && StringUtils.isNotEmpty(weekEndDate)){
+			 DateFormat format = Constants.DF_STD_DMY;
+			 Date startDate = null;
+			 Date endDate = null;
+			 Date currentDate = null;
+			try {
+			 	 currentDate = format.parse(format.format(new Date()));
+				 startDate = format.parse(weekStartDate.replaceAll("-", "/"));
+				 endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				 flag =   currentDate.after(startDate) && currentDate.before(endDate);
+			} catch (ParseException e) {}
+		}
+		return flag;
+	}
+    
     public static HashMap<String,Date> getMonthStartDateByGivenDate(Date date,Integer monthPreference){
   		HashMap<String,Date> dateList = new HashMap<String,Date>();
   		Calendar calendar = Calendar.getInstance();   
@@ -634,6 +651,13 @@ public  class CalendarUtil {
 		  calendar.setTime(date);
 		  calendar.add(Calendar.DAY_OF_YEAR, 1);
 		  return format.format(calendar.getTime()); 
+	}
+	
+	public static String getShortDateFromLongDate(String  curDate) throws ParseException {
+		  final DateFormat format =Constants.DF_DMY;
+		  final Date date = format.parse(curDate);
+		  final DateFormat Short_Format =Constants.SHORT_DF_STD_DM;
+		  return Short_Format.format(date); 
 	}
 	
 	public static String getPreviousDateByDecrementor(String  curDate,int decrementor) throws ParseException {

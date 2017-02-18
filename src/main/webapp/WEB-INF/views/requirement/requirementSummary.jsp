@@ -947,8 +947,9 @@ function requirementDetails(requirementId){
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
 
-				             if(json.requirementSubmissionStatus  !='DRAFT'  &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
-               					 result = result +'<button  class="btn btn-success mr" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
+				             if(json.requirementSubmissionStatus  !='DRAFT'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null ){
+               					 
+				            	 result = result +'<button  class="btn btn-success mr" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
                		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
    				           	 }/* else if(json.requirementApproverHierarchyStatus == 'APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
       						              result = result +'<strong  id="requirementStatus" class="pull-right mr btn btn-success disabled">OPEN</strong>';
@@ -2161,8 +2162,8 @@ function requirementPipelineSL(requirementId,submissionType){
 							    	     } 
 						           
 						          
-						        	   if(report.submittedBy != null && report.submittedBy != '' && report.submittedBy != 'undefined'){ 
-						        	   result = result + '<td><div><span>'+report.submittedBy+'</span></div></td>';
+						        	   if(report.updatedUser != null && report.updatedUser != '' && report.updatedUser != 'undefined'){ 
+						        	   result = result + '<td><div><span>'+report.updatedUser+'</span></div></td>';
 						        	   }else{
 						        		   result = result + '<td><div><span>--</span></div></td>';
 						        	   }
@@ -3040,7 +3041,8 @@ function documentpaginationRejected(){
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
-	var selectBox = $('#rejectApplicantSelect'+submissionId).val();
+	$("#reasonForApplicantDiv").empty()
+	var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
     if(selectBox != "Status"){
     	var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -3186,17 +3188,10 @@ function assignedMemberList(requirementId){
         type : "POST",
          url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
          success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{ 
+        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+           				   	var json = JSON.parse(data);
 							var result = '';
-							 result = result +'     <div class="heightScroll mt10 mb">'; 
+							result = result +'     <div class="heightScroll mt10 mb">'; 
 						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
 						    result = result +'         <thead>';
 						    result = result +'         <tr>';
@@ -3234,10 +3229,8 @@ function assignedMemberList(requirementId){
 						    
 						    $("#assignedMemberList").empty();
 						    $("#assignedMemberList").append(result);
-							
-            		 }
-              }else{
-                     	 $("#assignedMemberList").removeAttr("style");
+                 }else{
+						$("#assignedMemberList").removeAttr("style");
        	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 
       					 result = result+"	<div class='col-lg-12'>"; 
@@ -3523,11 +3516,11 @@ function getActions(){
 <script>
 var candidateStatusGlobal ="";
 function clientSideBar(candidateId){
-	  var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-           success :function(data) {  
+           success :function(data) { 
                 if(data != null && data != 'undefined' && data != ""){  
                 	 var json = JSON.parse(data);
               		 if( data.indexOf('Sign In') >= 0){
@@ -3539,9 +3532,9 @@ function clientSideBar(candidateId){
               		 else{
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
-	                	 var skillsList = json.skillsList;
+	                	/*  var skillsList = json.skillsList;
 			             var skills = [];
-			             skills = skillsList.split(",");
+			             skills = skillsList.split(","); */
 			             
 			             var country = '';
 				         var state = '';
@@ -3657,11 +3650,11 @@ function clientSideBar(candidateId){
 			             
 			            
 			             result = result+'<ul class="list-inline list-unstyled">';
-			             if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
-			             for (i=0;i < skills.length;i++)
-			             {
-			            	 result = result+'<li>'+skills[i]+'</li>';
-			             }
+			             if(json.skillsName != null && json.skillsName != '' && json.skillsName != 'undefined'){
+			            // for (i=0;i < skills.length;i++)
+			            // {
+			            	 result = result+'<li>'+json.skillsName+'</li>';
+			            // }
 			             }
 			             result = result+'</ul>';
 			             
@@ -4356,6 +4349,49 @@ function customizeScore(requirementId){
 		        
 		        result = result +'		                </div>                        ';
 		        
+		        result = result +'				        <div class="clearfix mt"> ';
+		        result = result +'		                  <div class="col-md-10 lblup paddingRight">    ';
+		        result = result +'		                   <label>Notice Period</label>';
+		        result = result +'		                      <select class="chosen-select" data-placeholder="Notice" multiple id="noticeperiod" name="noticeperiod">';
+		      //split the noticeperiod
+		    	if(json.customizeNoticeperiod != null && json.customizeNoticeperiod != '' && json.customizeNoticeperiod != 'undefined'){
+		    		var customizeNoticeperiod = json.customizeNoticeperiod;
+			    	var noticeperiod = new Array();
+			    	noticeperiod =  customizeNoticeperiod.split(",");
+			        for (var j = 0; j < noticeperiod.length; j++) { 
+			        	var customnoticeperiods = noticeperiod[j];
+			        	 result = result  +' <option value="Immediately available" '+(customnoticeperiods == "Immediately" ? "selected" : '') +'>Immediately available</option>';
+			        	 result = result  +' <option value="15 Days" '+(customnoticeperiods == "15 Days" ? "selected" : '') +'>15 Days</option>';
+			        	 result = result  +' <option value="1 Month" '+(customnoticeperiods == "1 Month" ? "selected" : '') +'>1 Month</option>';
+			        	 result = result  +' <option value="2 Month" '+(customnoticeperiods == "2 Month" ? "selected" : '') +'>2 Month</option>';
+			        	 result = result  +' <option value="3 Month" '+(customnoticeperiods == "3 Month" ? "selected" : '') +'>3 Month</option>';
+			        } 
+		    	}else{
+		    		result = result  +' <option value="Immediately available" >Immediately available</option>';
+		        	 result = result  +' <option value="15 Days" >15 Days</option>';
+		        	 result = result  +' <option value="1 Month" >1 Month</option>';
+		        	 result = result  +' <option value="2 Month" >2 Month</option>';
+		        	 result = result  +' <option value="3 Month" >3 Month</option>';
+		    	}
+		        result = result +'		                    </select> ';
+		        result = result +'		                    </div>  ';
+		        
+		        result = result +'		                    <div class="col-md-2">  ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="noticeperiodScore" name="noticeperiodScore">';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "100" ? "selected" : '') +' value="100">100%</option>';
+		        result = result +'		                    </select>               ';
+		        result = result +'		                  </div>                    ';
+		        result = result +'		                </div>                      ';
 		        
 		        result = result +'		                <div class="clearfix mt">';
 		        result = result +'		                  <div class="col-md-5 lblup"> ';
@@ -4430,50 +4466,7 @@ function customizeScore(requirementId){
 		        result = result +'		                    </select>               ';
 		        result = result +'		                  </div>                    ';
 		        result = result +'		                </div>                      ';
-		        result = result +'				        <div class="clearfix mt"> ';
-		        result = result +'		                  <div class="col-md-10 lblup paddingRight">    ';
-		        result = result +'		                   <label>Notice Period</label>';
-		        result = result +'		                      <select class="chosen-select" data-placeholder="Notice" multiple id="noticeperiod" name="noticeperiod">';
-		      //split the noticeperiod
-		    	if(json.customizeNoticeperiod != null && json.customizeNoticeperiod != '' && json.customizeNoticeperiod != 'undefined'){
-		    		var customizeNoticeperiod = json.customizeNoticeperiod;
-			    	var noticeperiod = new Array();
-			    	noticeperiod =  customizeNoticeperiod.split(",");
-			        for (var j = 0; j < noticeperiod.length; j++) { 
-			        	var customnoticeperiods = noticeperiod[j];
-			        	 result = result  +' <option value="Immediately available" '+(customnoticeperiods == "Immediately" ? "selected" : '') +'>Immediately available</option>';
-			        	 result = result  +' <option value="15 Days" '+(customnoticeperiods == "15 Days" ? "selected" : '') +'>15 Days</option>';
-			        	 result = result  +' <option value="1 Month" '+(customnoticeperiods == "1 Month" ? "selected" : '') +'>1 Month</option>';
-			        	 result = result  +' <option value="2 Month" '+(customnoticeperiods == "2 Month" ? "selected" : '') +'>2 Month</option>';
-			        	 result = result  +' <option value="3 Month" '+(customnoticeperiods == "3 Month" ? "selected" : '') +'>3 Month</option>';
-			        } 
-		    	}else{
-		    		result = result  +' <option value="Immediately available" >Immediately available</option>';
-		        	 result = result  +' <option value="15 Days" >15 Days</option>';
-		        	 result = result  +' <option value="1 Month" >1 Month</option>';
-		        	 result = result  +' <option value="2 Month" >2 Month</option>';
-		        	 result = result  +' <option value="3 Month" >3 Month</option>';
-		    	}
-		        result = result +'		                    </select> ';
-		        result = result +'		                    </div>  ';
-		        
-		        result = result +'		                    <div class="col-md-2">  ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="noticeperiodScore" name="noticeperiodScore">';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select>               ';
-		        result = result +'		                  </div>                    ';
-		        result = result +'		                </div>                      ';
-		        result = result +'		                                            ';
+		       
 		        result = result +'		                  <div class="clearfix mt"> ';
 		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
 		        result = result +'		                   <label>Keywords</label>';

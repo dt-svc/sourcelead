@@ -68,6 +68,25 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		 return projectMemberSet;
 	}
 	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 List<ProjectMembers> projectMemberList = null;
+		 if(StringUtils.isEmpty(invoiceFrequency)){
+			invoiceFrequency = "Weekly";
+		 }
+		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.employee emp where proj.invoiceFrequency = :invoiceFrequency and proj.id IN (select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy where hierarchy.approverUserId.id = :approverUserId) ";
+		 projectMemberList = session.createQuery(query).setString("invoiceFrequency", invoiceFrequency).setLong("approverUserId", approverUserId).setCacheable(true).list(); 
+		 HashSet<ProjectMembers> projectMemberSet  = null;
+		 if(projectMemberList != null && !projectMemberList.isEmpty()){
+			 logger.debug("The Total Employees which are not submitted the Time sheets within a week are : ***********************"+projectMemberList.size());
+			 projectMemberSet = new HashSet<>(projectMemberList);
+		 }
+		 return projectMemberSet;
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek() {

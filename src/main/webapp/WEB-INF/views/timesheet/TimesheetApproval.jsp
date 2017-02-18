@@ -362,7 +362,14 @@ function timesheetComment(local){
 	});
 } 
 </script>	
-
+<script type="text/javascript">
+		function bodyClick(){
+		    $(".teskcomment").slideUp(200);   
+		    $("html .timesheet_comm").click(function(event){
+		        event.stopPropagation();
+		    }); 
+		 }
+</script>	
 
 <script type="text/javascript">
 function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId){ 
@@ -419,8 +426,9 @@ function newSaveTimesheet(status,savingType){
        		   var submissionIds = $("#submissionId").val();
        		   $("#timesheetPopUp").empty();
   	  	       $("#timesheetPopUp").append('<div class="loadTime" id="loadTime"></div>'); 
-       		   $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
-        	   $.ajax({
+       		   $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+        	
+       		   $.ajax({
 	      	          type : "POST",
 	          	      data: formData,
 	          	      contentType : 'application/json; charset=utf-8',
@@ -439,7 +447,7 @@ function newSaveTimesheet(status,savingType){
      	        		  
         		      }
         	      	  
-        	    }); 
+        	    });
         	   return true;
 	 	}else{ 
 			return false;
@@ -570,7 +578,6 @@ function deleteSubmissionDocument(submissionDocumentId){
 				<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
 		</div>
 	</div>
- 
  
  
  
@@ -880,6 +887,18 @@ $(document).ready(function() {
 	timesheetApprovalDiv();
 });
 </script>  
+
+ <script>
+$(document).on("mouseover", ".glyphicon-comment", function() { 
+var localId = $(this).attr('id');
+$("#rejectedMessage"+localId).addClass('app_error_mes_active');
+});	
+$(document).on("mouseleave", ".glyphicon-comment", function() { 
+var localId = $(this).attr('id');
+$("#rejectedMessage"+localId).removeClass('app_error_mes_active');
+});	
+</script> 
+
 <script>
 	function predefineProfileImage(imageId,userId){
 			$(imageId).attr('src','resources/images/userprofile-img.png');
@@ -1020,12 +1039,14 @@ $(document).ready(function() {
   	         }); 
 	}
 </script>
-<body>
+<body  onclick="bodyClick();">
       <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
             <h2>Timesheet approval</h2>
           </div>
+          <div class="clearfix"></div>
+          		
             <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; TimeSheet List</div>
         </section>
         
@@ -1111,10 +1132,10 @@ $(document).ready(function() {
 
 $(document).ready(function() {
     $(".glyphicon-comment").mouseenter(function(){
-		$(".ts_app_error_mes").addClass("ts_app_error_mes_active");
+		$(".app_error_mes").addClass("app_error_mes_active");
 	});
     $(".glyphicon-comment").mouseleave(function(){
-		$(".ts_app_error_mes").removeClass("ts_app_error_mes_active");
+		$(".app_error_mes").removeClass("app_error_mes_active");
 	});	
 });
 
@@ -1170,7 +1191,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
 	 	    	  $("#status"+projectMemberId).html("REJECTED");
 	 	    	  $("#action"+projectMemberId).empty();
-	 	    	  $("#action"+projectMemberId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='ts_app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><br>By :"+firstName+" "+lastName+"</div>");  
+	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='ts_app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+firstName+" "+lastName+"</b>");  
 	   	   }
 	   	   cancelRejectSubmission(projectMemberId);
 	   	    pagination();
@@ -1246,7 +1267,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 	        		 $("#row"+projectMemberId).empty();
 			    	 $("#row"+projectMemberId).html(rowHtmlContent);
 			    	 $("#status"+projectMemberId).html("APPROVED");
-			    	 $("#action"+projectMemberId).html("<div><h3>Approved</h3><br>By :"+firstName+" "+lastName+"</div>"); 
+			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+firstName+" "+lastName+"</b>"); 
 	        	   }
 		    	 
 		    }
@@ -1269,6 +1290,59 @@ function pagination(){
     } );
 }
 </script>
+
+
+<script>
+function exportTimeSheetToPdfOrExcel(exportType){
+		var sourceleadUrl = '${sourceleadUrl}';
+		var frequencyMonth = $("#frequencyMonth").val();
+		var timesheetFrequency = $('#timesheetFrequency').val();
+		var stage = $('#stage').val();
+		var client = $('#client').val();
+		var weekFrequency = $('#weekFrequency').val();
+		if(weekFrequency != null && weekFrequency !='undefined'){
+		var date = weekFrequency.split("To");
+		var startDate = date[0];
+		var endDate = date[1];
+		}
+		window.location.href = sourceleadUrl
+				+ "/getExportTimeSheetForApprovalMechanizm?&startDate="
+				+ startDate + "&endDate=" + endDate + "&client=" + client
+				+ "&stage=" + stage + "&timesheetFrequency="
+				+ timesheetFrequency +"&frequencyMonth="+frequencyMonth+"&weekFrequency="+weekFrequency+"&exportType=" + exportType;
+	}
+</script>
+
+<script>
+function dropDownExport(){
+	$("#exporrtEntries").slideToggle();
+}
+</script>
+
+<script>
+function dropDown(){
+	$("#exporrt").slideToggle();
+}
+</script>
+
+<!-- <script>
+    $('[data-toggle="tooltip"]').tooltip();   
+</script> -->
+
+
+<!-- this script is for Timesheet Entries Export -->
+<script>
+function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,submissionStatus){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(submissionStatus == 'SUBMITTED'){
+		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&projectMemberId="+projectMemberId;
+	}else{
+		alert("Please Submit the TimeSheets..");
+	}
+	 
+}
+</script>
+ <!-- this script is for save Timesheet -->  
 
 <jsp:include page="../masterFooter.jsp" />
  

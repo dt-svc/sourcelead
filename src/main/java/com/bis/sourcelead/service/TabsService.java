@@ -20,5 +20,7 @@ public interface TabsService {
 	List<Tabs> getTabsListByIds(List<Long> tabIds) throws Exception;
 	
 	boolean getTabAccessByRoleIdAndTabId(Long roleId,Long orgLocationId,Long tabId) throws Exception;
+	
+	Collection<Tabs> getCrowdSourcingTabsListByRoleId(Long roleId) throws Exception;
 
 }

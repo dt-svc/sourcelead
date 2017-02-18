@@ -1,4 +1,9 @@
 package com.bis.sourcelead.rest;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -10,10 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -290,14 +297,14 @@ public class TimesheetApprovalRestController {
 			    		 StringBuilder isSelected = new StringBuilder("");
 			    		try {
 			    			if(sDate == null && eDate == null&& count == 1
-			    				&& !isCurrentDateBetweenDateRange(format.format(startDate), format.format(endDate))){
+			    				&& !CalendarUtil.isCurrentDateBetweenDateRange(format.format(startDate), format.format(endDate))){
 			    				 dateList.clear();
                           	     dateList.put("STARTDATE", frequencyStartDate);
 							     dateList.put("ENDDATE",frequencyEndDate);
 							     isSelected.append("selected='selected'");
 			    			}
 			    			else if(sDate == null && eDate == null
-			    					 && isCurrentDateBetweenDateRange(k, v)){
+			    					 && CalendarUtil.isCurrentDateBetweenDateRange(k, v)){
                            	     dateList.clear();
                            	     dateList.put("STARTDATE",frequencyStartDate);
 							     dateList.put("ENDDATE", frequencyEndDate);
@@ -395,6 +402,20 @@ public class TimesheetApprovalRestController {
 				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("reopened") ? "selected='selected'" : "") : "").append("  value='reopened'>REOPENED</option>");
 			timesheetApprovalDiv.append("	                </select>");
 			timesheetApprovalDiv.append("	            </div>   ");  
+			
+			timesheetApprovalDiv.append("					<div class='export dropexport' onClick='dropDown();'> ");
+			timesheetApprovalDiv.append("						<p data-toggle='tooltip' title='Export'><i class='glyphicon glyphicon-export'></i></p> ");
+			timesheetApprovalDiv.append("							<ul id='exporrt'> ");
+			String exportPdf="pdf";
+			String exportexcel="excel";
+			timesheetApprovalDiv.append("			                	<li onClick='exportTimeSheetToPdfOrExcel(\""+exportPdf+"\");'><i class='fa fa-file-pdf-o text-danger'></i>&nbsp;PDF</li> ");
+			timesheetApprovalDiv.append("			                    <li onClick='exportTimeSheetToPdfOrExcel(\""+exportexcel+"\");'><i class='fa fa-file-excel-o text-primary'></i>&nbsp;Excel</li> ");
+			timesheetApprovalDiv.append("			                    <li class='hidden'>Word<i class='fa fa-file-word-o'></i></li> ");
+			timesheetApprovalDiv.append("							</ul>			 ");
+			timesheetApprovalDiv.append("					</div> ");
+			timesheetApprovalDiv.append("			        <div class='clearfix'></div> ");			
+			
+			
 			selectedStage.append(stage);
 			stageBuilder.put(selectedStage,timesheetApprovalDiv);
 			return stageBuilder;
@@ -490,7 +511,7 @@ public class TimesheetApprovalRestController {
 	      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
      	 timesheetApprovalDiv.append(" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>");
      	 timesheetApprovalDiv.append(" <i class='glyphicon glyphicon-comment' id='").append(projectMember.getId()).append("' onclick='rejectedMessage(\"rejectedMessage").append(projectMember.getId()).append("\");'>");
-     	 timesheetApprovalDiv.append(" <div class='ts_app_error_mes' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getRejectedReason()).append("</div>");
+     	 timesheetApprovalDiv.append(" <div class='app_error_mes' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getRejectedReason()).append("</div>");
      	 timesheetApprovalDiv.append(" </i><br>By : ").append(sah.getActionPerformedBy());
      	 timesheetApprovalDiv.append(" </div>");
      }
@@ -580,28 +601,41 @@ public class TimesheetApprovalRestController {
 					     timesheetApprovalDiv.append("	<td><div>").append(projectMember.getProjects().getProjectName()).append("</div></td>");
 					     timesheetApprovalDiv.append("	<td><div>").append(((projectMember.getProjects().getOrgRelationId() != null) ?projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName() : "--")).append("</div></td>");
 					     Float totalHours = 0f;
+					     Float estimatedTotalHours = 0f;
 					     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projectMember.getId(),actualStartDate,actualEndDate);
 					     if(displayWeeksList != null && !displayWeeksList.isEmpty()){
 					    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
-					    	    	
+					    	    	  long diff = CalendarUtil.getNumberOfDays(entry.getKey(), entry.getValue());
+					    	    	  Float weekTotal = 0f;
+					    	    	  if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 7){
+					    	    		  weekTotal = (float) ((diff)*8);
+					    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+					    	    	  }
+					    	    	  else if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 1){
+					    	    		  weekTotal = (float) ((diff-1)*8);
+					    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+					    	    	  }
+					    	    	  else if(CalendarUtil.getDayOfTheDate(entry.getKey()) == 2){
+					    	    		  weekTotal = (float) ((diff+1)*8);
+					    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+					    	    	  }
 					    	    	 if(sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty() && sah.getWeekTotals().get(entry.getKey()) != null){
 					    	    		 totalHours = totalHours+sah.getWeekTotals().get(entry.getKey());
-					    	    		 timesheetApprovalDiv.append("<td><div class='sm'>").append(sah.getWeekTotals().get(entry.getKey())).append("/40</div></td>");
+					    	    		 timesheetApprovalDiv.append("<td><div class='sm'>").append(sah.getWeekTotals().get(entry.getKey())).append("/").append(weekTotal).append("</div></td>");
 					    	    	 }
 					    	    	 else{
-					    	    		 timesheetApprovalDiv.append("<td><div class='sm'>0/40</div></td>");
+					    	    		 timesheetApprovalDiv.append("<td><div class='sm'>0/").append("/").append(weekTotal).append("</div></td>");
 					    	    	 }
 					    	    	
 					    	     }
 					     }
 					
 					    /*timesheetApprovalDiv.append("<td><div class='sm'><a href='javascript:void(0)'>").append(totalHours).append("/40</a></div></td>");*/
-					    timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\");'>"+totalHours+"/40</a></div></td>");
+					    timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\");'>").append(totalHours).append("/").append(estimatedTotalHours).append("</a></div></td>");
 					    timesheetApprovalDiv.append("<td><div class='sm' id='status").append(projectMember.getId()).append("'>").append(sah.getSubmissionApprovalStatus()).append("</div></td>");
 					    timesheetApprovalDiv.append("<td>");
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
 					    	 timesheetApprovalDiv.append("<div class='sm text-center'>--</div>");
-					    	 timesheetApprovalDiv.append("<div id='rejectedPopup'></div>");
 					     }
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
 			            	 timesheetApprovalDiv.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
@@ -612,17 +646,18 @@ public class TimesheetApprovalRestController {
 			            	                     .append("\",\"").append(format.format(actualEndDate))
 			            	                 
 			            	                     .append("\",").append(tdSpanLength).append(");'></i></div>");
-			                 timesheetApprovalDiv.append("<div id='rejectedPopup'></div>");
 			             }
 					      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 			            	 timesheetApprovalDiv.append(" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>");
 			            	 timesheetApprovalDiv.append(" <i class='glyphicon glyphicon-comment' id='").append(projectMember.getId()).append("' onclick='rejectedMessage(\"rejectedMessage").append(projectMember.getId()).append("\");'>");
-			            	 timesheetApprovalDiv.append(" <div class='ts_app_error_mes' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getRejectedReason()).append("</div>");
-			            	 timesheetApprovalDiv.append(" </i><br>By : ").append(sah.getActionPerformedBy());
+			            	 timesheetApprovalDiv.append(" <div class='app_error_mes' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getRejectedReason()).append("</div>");
+			            	 timesheetApprovalDiv.append(" </i>");
+			            	 timesheetApprovalDiv.append(" <b class='Rname' title='"+sah.getActionPerformedBy()+"'>By : ").append(sah.getActionPerformedBy());
+			            	 timesheetApprovalDiv.append(" </b>");
 			            	 timesheetApprovalDiv.append(" </div>");
 			            }
 					     if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED){
-			            	timesheetApprovalDiv.append(" <div class='sm text-center'> <h3>Approved</h3><br>By : ").append(sah.getActionPerformedBy()).append("</div>");
+			            	timesheetApprovalDiv.append(" <div class='sm text-center'> <h3>Approved</h3><b class='Rname' title='"+sah.getActionPerformedBy()+"'>By : ").append(sah.getActionPerformedBy()).append("</b></div>");
 			            }  
 			            timesheetApprovalDiv.append("    </td>");
 				        timesheetApprovalDiv.append("</tr>");
@@ -631,7 +666,7 @@ public class TimesheetApprovalRestController {
 				  timesheetApprovalDiv.append("	        </tbody>");
 				  timesheetApprovalDiv.append("	     </table> ");
 			      timesheetApprovalDiv.append("	</div>");
-			    
+			      timesheetApprovalDiv.append("<div id='rejectedPopup'></div>");
 				}
 		        else{
 		        	timesheetApprovalDiv.append("   <div class='row'>"); 
@@ -654,21 +689,56 @@ public class TimesheetApprovalRestController {
 	}
 	
 
-	boolean isCurrentDateBetweenDateRange(String weekStartDate,String weekEndDate) {
-		Boolean flag = false;
-		if(StringUtils.isNotEmpty(weekStartDate) && StringUtils.isNotEmpty(weekEndDate)){
-			Date currentDate = CommonUtil.currentDate();
-			 DateFormat format = Constants.DF_STD_DMY;
-			 Date startDate = null;
-			 Date endDate = null;
-			try {
-				startDate = format.parse(weekStartDate.replaceAll("-", "/"));
-				 endDate = format.parse(weekEndDate.replaceAll("-", "/"));
-				 flag =   currentDate.after(startDate) && currentDate.before(endDate);
-			} catch (ParseException e) {}
-		}
-		return flag;
-	}
+	
+@RequestMapping(value = "/getExportTimeSheetForApprovalMechanizm")  
+	public void getExportTimeSheetForApprovalMechanizm(HttpServletRequest request,
+			@RequestParam(value="startDate", required=false) String startDate,
+			@RequestParam(value="endDate", required=false) String endDate,
+			@RequestParam(value="exportType", required=false) String exportType,
+			@RequestParam(value="client", required=false) String client,
+			@RequestParam(value="stage", required=false) String stage,
+			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
+			@RequestParam(value="frequencyMonth", required=false) String frequencyMonth,
+			@RequestParam(value="weekFrequency", required=false) String weekFrequency,
+			HttpServletResponse response) throws Exception {
 		
-
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		DateFormat df = Constants.DMY;
+		Date stDate = null;
+		Date edDate= null;
+		if(null !=startDate && !("undefined").equalsIgnoreCase(startDate) && null !=endDate && !("undefined").equalsIgnoreCase(endDate)){
+		 stDate = df.parse(startDate);
+		 edDate = df.parse(endDate);
+		}
+		File file = null;
+		
+		  if(timesheetFrequency.equalsIgnoreCase("Monthly")){
+			  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthString(frequencyMonth.toString());
+			  
+			  stDate = dateList.get("STARTDATE");
+			  edDate = dateList.get("ENDDATE");
+		  }
+		 if("pdf".equalsIgnoreCase(exportType)){
+			file = exportTimesheetEntries.timeSheetApprovelExport(user, orgLocations, stDate, edDate, timesheetFrequency, client, stage,frequencyMonth,weekFrequency);
+	    }else{
+			file = exportTimesheetEntries.timeSheetApprovelExportExcel(user, orgLocations, stDate, edDate, timesheetFrequency, client, stage,frequencyMonth,weekFrequency);
+		}
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
 	}
+	
+
+}
