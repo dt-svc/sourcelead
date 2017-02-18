@@ -143,8 +143,16 @@ function requirementProfile(requirementUUID){
 				 result = result +'          </div>';
 				 result = result +'          <div class="col-md-3">';
 				 result = result +'         <div class="openPostBtns">';
+				 
+				 if(json.isJobApplied == 'N'){
 				 result = result +'<a href="javascript:void(0)" onclick="applyToJob('+json.id+');"  class="jobApply">Apply</a>';
+				 }else{
+					 result = result +'<a href="javascript:void(0)" class="jobApply">Applied</a>';
+				 }
+				 
+				 if(json.isCrowdSourcing == 'Y'){
 				 result = result +'         <a class="refer" href="javascript:void(0)">Refer</a>';
+				 }
 				 result = result +'          </div>';
 				 result = result +'          </div>';
 				 result = result +'          <div class="clearfix"></div>';

@@ -64,6 +64,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionXls;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
@@ -2781,9 +2782,86 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}
 			requirement.setUpdatedDate(new Date());
 			requirementDao.storeRequirement(requirement);
+			
+			
+			sendEmailToProfessionalForAppliedJob(user, requirement);
 		 
-		 return requirementSubmission;
+		    return requirementSubmission;
 		 
+	}
+	
+	
+	
+	public void sendEmailToProfessionalForAppliedJob(User user, Requirement requirement) throws Exception {
+		
+		 
+		 StringBuilder nameBuilder = new StringBuilder();
+		 StringBuilder expBuilder = new StringBuilder();
+		 StringBuilder locationBuilder = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String professionalName = null;
+		 String experience = null;
+		 String location = null;
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 professionalName = nameBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		 }else{
+			 professionalName = nameBuilder.append(user.getFirstName()).toString();
+		 }
+		 
+		 if(!isNullOrEmpty(requirement.getMinExp()) && !isNullOrEmpty(requirement.getMaxExp())){
+			 experience = expBuilder.append(requirement.getMinExp()).append(" to ").append(requirement.getMaxExp()).append(" Years").toString();
+		 }else if(!isNullOrEmpty(requirement.getMinExp())){
+			 experience = expBuilder.append(requirement.getMinExp()).append(" Years").toString();
+		 } else if(!isNullOrEmpty(requirement.getMaxExp())){
+			 experience = expBuilder.append(requirement.getMaxExp()).append(" Years").toString();
+		 }else{
+			 experience = "Not Mentioned";
+		 }
+		 
+		 if(!isNullOrEmpty(requirement.getCity())){
+			 location = locationBuilder.append(requirement.getCountry()).append(", ").append(requirement.getState()).append(", ").append(requirement.getCity()).toString();
+		 }else if(!isNullOrEmpty(requirement.getState()) && isNullOrEmpty(requirement.getCity())){
+			 location = locationBuilder.append(requirement.getCountry()).append(", ").append(requirement.getState()).append(", ").toString();
+		 }else{
+			 location = locationBuilder.append(requirement.getCountry()).toString();
+		 }
+		 
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setCreatedBy("sladmin");
+		 emailMessage.setFromName("info@sourcelead.com");
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("professionalName", professionalName);
+		 globalVarsMap.put("employerName", requirement.getPostedOrgName());
+		 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+		 globalVarsMap.put("experience", experience);
+		 globalVarsMap.put("location", location);
+		 globalVarsMap.put("professionalEmail", user.getEmail());
+		 
+		
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLIED_TO_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
 	}
 
 	@Override

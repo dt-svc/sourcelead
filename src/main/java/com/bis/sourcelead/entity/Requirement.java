@@ -211,6 +211,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private  Long  requirementId;
 	
 	@Transient
+	private String isJobApplied;
+	
+	@Transient
 	private String msg;
 	
 	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -454,6 +457,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	}
 
 
+
+	public String getIsJobApplied() {
+		return isJobApplied;
+	}
+
+	public void setIsJobApplied(String isJobApplied) {
+		this.isJobApplied = isJobApplied;
+	}
 
 	public String getClientName() {
 		return clientName;

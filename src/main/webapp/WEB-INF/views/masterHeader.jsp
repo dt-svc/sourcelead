@@ -295,7 +295,7 @@ width: 11.5%;
 	          </li>
           </c:if> --%>
           
-          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_user.country}.gif" title="${SourceLeadWeb_user.country}"></a></li>
+          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
 
         </ul>
       </div>
@@ -350,6 +350,7 @@ function notificationStatusAsRead(){
   <!-- Task related code Start -->
   
   <!-- Add Task Div -->
+		 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 		 <div class="addTask"> <span class="icon-addTask" title="Add Task"> <i class="fa fa-gears"></i> </span>
 		    <div class="clearfix col-xs-12 col-md-12 addTask-widget">
 		    <i class="fa fa-close close-div taskpop-close"></i>  
@@ -489,6 +490,7 @@ function notificationStatusAsRead(){
 		      <!-- Add New Task Widget --> 
 		    </div>
 		  </div>
+		  </c:if>
 
 <div class="addtAsk_popmask"></div>
 
