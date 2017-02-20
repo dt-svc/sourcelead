@@ -12,6 +12,7 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -85,12 +86,13 @@ public class AddElkRequirement {
 				}
 				requirementIndex.setRateType(rs.getString("RATE_TYPE"));
 				if(null != rs.getString("MIN_EXP") && !"".equalsIgnoreCase(rs.getString("MIN_EXP"))){
-					requirementIndex.setMinExperience(Integer.parseInt(rs.getString("MIN_EXP")));
+					requirementIndex.setMinExperience(rs.getString("MIN_EXP"));
 				}
 				if(null != rs.getString("MAX_EXP") && !"".equalsIgnoreCase(rs.getString("MAX_EXP"))){
-					requirementIndex.setMaxExperience(Integer.parseInt(rs.getString("MAX_EXP")));
+					requirementIndex.setMaxExperience(rs.getString("MAX_EXP"));
 				}
 				requirementIndex.setRequirementStatus(rs.getString("REQUIREMENT_SUBMISSION_STATUS"));
+				//requirementIndex.setRequirementSubmissionPreviousStatus(rs.getString("REQUIREMENT_SUBMISSION_PREVIOUS_STATUS"));
 				requirementIndex.setCountry(rs.getString("COUNTRY"));
 				requirementIndex.setState(rs.getString("STATE"));
 				requirementIndex.setCity(rs.getString("CITY"));
@@ -102,24 +104,48 @@ public class AddElkRequirement {
 				requirementIndex.setIsTemplate(rs.getString("IS_Template"));
 				requirementIndex.setManagerUserId(rs.getString("MANAGER_USER_ID"));
 				ResultSet approverSet = getApproverUserDetails(Long.parseLong(rs.getString("ID")),conn);
+				List<String> lavel1User = new ArrayList<String>();
+				List<String> lave21User = new ArrayList<String>();
 				while(approverSet.next()){
 					if(approverSet.getInt("LEVEL") == 1){
-						requirementIndex.setReqLevel1ApproverUserId(approverSet.getString("APPROVER_USER_ID").split(","));
+					   lavel1User.add(approverSet.getString("APPROVER_USER_ID"));
 					}
 					if(approverSet.getInt("LEVEL") == 2){
-						requirementIndex.setReqLevel2ApproverUserId(approverSet.getString("APPROVER_USER_ID").split(","));
+						lave21User.add(approverSet.getString("APPROVER_USER_ID"));
 					}
 				}
+				String [] lavel1UserArry = lavel1User.toArray(new String[lavel1User.size()]);
+				String [] lave21UserArry = lave21User.toArray(new String[lave21User.size()]);
+				requirementIndex.setReqLevel1ApproverUserId(lavel1UserArry);
+				requirementIndex.setReqLevel2ApproverUserId(lave21UserArry);
 				
 				ResultSet teamSet = getTeamDetails(Long.parseLong(rs.getString("ID")),conn);
-				while(teamSet.next()){
-					requirementIndex.setTeamOwnerUserId(teamSet.getString("OWNER_USER_ID").split(","));
-					requirementIndex.setTeamAssignUserId(teamSet.getString("ASSIGN_USER_ID").split(","));
+				List<String> assignTeamMembers = new ArrayList<>();
+				if(teamSet !=null){
+					while(teamSet.next()){
+						if(teamSet.getString("ASSIGN_USER_ID") !=null && !"".equalsIgnoreCase(teamSet.getString("ASSIGN_USER_ID"))){
+						assignTeamMembers.add(teamSet.getString("ASSIGN_USER_ID"));
+						}
+						
+					}
+					String [] assignTeamMembersArray = assignTeamMembers.toArray(new String[assignTeamMembers.size()]);
+					requirementIndex.setTeamAssignUserId(assignTeamMembersArray);
+				}
+				ResultSet resultTeam = getTeanOwnerIds(rs.getString("ID"),conn);
+				List<String> teamOwners = new ArrayList<>();
+				if(resultTeam != null){
+					while(resultTeam.next()){
+//						if(null!= resultTeam.getString("OWNER_USER_ID")&& !"".equalsIgnoreCase(resultTeam.getString("OWNER_USER_ID"))){
+							teamOwners.add(resultTeam.getString("OWNER_USER_ID"));
+//						}
+					}
+					String [] teamOwnerArry = teamOwners.toArray(new String[teamOwners.size()]);
+					requirementIndex.setTeamOwnerUserId(teamOwnerArry);
 				}
 				
 				ResultSet noOfApplicants = getNoOfApplicantDetails(Long.parseLong(rs.getString("ID")),rs.getString("ORG_LOCATION_ID"),conn);
 				while(noOfApplicants.next()){
-					requirementIndex.setTeamOwnerUserId(noOfApplicants.getString(1).split(","));
+					requirementIndex.setNumberOfApplicants(noOfApplicants.getString(1));
 				}
 				
 				String education = rs.getString("EDUCATION");
@@ -185,6 +211,41 @@ public class AddElkRequirement {
 				}
 				Integer numberOfApplicants = getNumberOfApplicants(rs.getString("ID"),conn,rs.getString("ORG_LOCATION_ID"));
 				requirementIndex.setNumberOfApplicants(numberOfApplicants.toString());
+				
+				if(null != rs.getString("IS_PUBLIC")){
+					requirementIndex.setIsPublicJob(rs.getString("IS_PUBLIC"));
+				}else{
+					requirementIndex.setIsPublicJob("N");
+				}
+				
+				if(null != rs.getString("IS_CROWD_SOURCING")){
+					requirementIndex.setIsCrowdSourcingJob(rs.getString("IS_CROWD_SOURCING"));
+				}else{
+					requirementIndex.setIsCrowdSourcingJob("N");
+				}
+				
+				if(null != rs.getString("POSTED_ORG_NAME")){
+					requirementIndex.setPostedOrg(rs.getString("POSTED_ORG_NAME"));
+				}
+				if(null != rs.getString("REQUIREMENT_UUID")){
+					requirementIndex.setRequirementUUID(rs.getString("REQUIREMENT_UUID"));
+				}
+				
+				String appliedProfessionals = rs.getString("APPLIED_PROFESSIONALS");
+				if(!("").equalsIgnoreCase(appliedProfessionals) && appliedProfessionals!=null){
+					requirementIndex.setAppliedProfessionals(appliedProfessionals.split(","));
+				}
+				
+				ResultSet statusRs =getApproverHierarchyStatus(rs.getString("ID"),conn);
+				if(null != statusRs){
+					while(statusRs.next()){
+						if(statusRs.getInt("LEVEL") == 1){
+							requirementIndex.setReqLevel1ApproverStatus(statusRs.getString("STATUS"));	
+						}else{
+							requirementIndex.setReqLevel2ApproverStatus(statusRs.getString("STATUS"));
+						}
+					}
+				}
 				reqIndexList.add(requirementIndex);
 				
 			}
@@ -204,6 +265,40 @@ public class AddElkRequirement {
 	}
 	
 	
+	private ResultSet getTeanOwnerIds(String reqId, Connection conn) {
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		Long requirementId = Long.parseLong(reqId);
+		try{
+				String sql = "SELECT * FROM sourcelead.TEAM team inner join REQUIREMENT_ASSIGN_TO req on team.ID = req.TEAM_ID where req.REQUIREMENT_ID = ?";
+//				 conn = dataSource.getConnection();
+				 ps = conn.prepareStatement(sql);
+				 ps.setLong(1, requirementId);
+				 rs = ps.executeQuery();
+		 }catch(Exception e){
+			 e.printStackTrace();
+		 }
+	     return rs;
+	}
+
+
+	private ResultSet getApproverHierarchyStatus(String reqId, Connection conn) {
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		Long requirementId = Long.parseLong(reqId);
+		 try{
+				String sql = "SELECT * FROM sourcelead.REQUIREMENT_APPROVER_HIERARCHY where REQUIREMENT_ID = ?;";
+//				 conn = dataSource.getConnection();
+				 ps = conn.prepareStatement(sql);
+				 ps.setLong(1, requirementId);
+				 rs = ps.executeQuery();
+		 }catch(Exception e){
+			 e.printStackTrace();
+		 }
+	     return rs;
+	}
+
+
 	private Integer getNumberOfApplicants(String requirementId, Connection conn, String orgLocationId) {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
@@ -231,7 +326,7 @@ public class AddElkRequirement {
 		ResultSet rs=null;
 		 try{
 //			 DataSource dataSource = comboPooledDataSource();
-				String sql = "select * from REQUIREMENT_ASSIGN_TO reqAssaign INNER JOIN TEAM team on reqAssaign.TEAM_ID=team.ID where reqAssaign.REQUIREMENT_ID = ? ;";
+				String sql = "select * from REQUIREMENT_ASSIGN_TO reqAssaign  where reqAssaign.REQUIREMENT_ID = ? ;";
 //				 conn = dataSource.getConnection();
 				 ps = conn.prepareStatement(sql);
 				 ps.setLong(1, requirementId);

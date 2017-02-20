@@ -581,7 +581,6 @@ function deleteSubmissionDocument(submissionDocumentId){
  
  
  
- 
  <!-- this script is for clear timesheet -->
 <script>
 function clearTimesheet(){ 
@@ -1046,6 +1045,8 @@ $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
           <div class="pull-left">
             <h2>Timesheet approval</h2>
           </div>
+          <div class="clearfix"></div>
+          		
             <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; TimeSheet List</div>
         </section>
         
@@ -1290,17 +1291,55 @@ function pagination(){
 }
 </script>
 
+
+<script>
+function exportTimeSheetToPdfOrExcel(exportType){
+		var sourceleadUrl = '${sourceleadUrl}';
+		var frequencyMonth = $("#frequencyMonth").val();
+		var timesheetFrequency = $('#timesheetFrequency').val();
+		var stage = $('#stage').val();
+		var client = $('#client').val();
+		var weekFrequency = $('#weekFrequency').val();
+		if(weekFrequency != null && weekFrequency !='undefined'){
+		var date = weekFrequency.split("To");
+		var startDate = date[0];
+		var endDate = date[1];
+		}
+		window.location.href = sourceleadUrl
+				+ "/getExportTimeSheetForApprovalMechanizm?&startDate="
+				+ startDate + "&endDate=" + endDate + "&client=" + client
+				+ "&stage=" + stage + "&timesheetFrequency="
+				+ timesheetFrequency +"&frequencyMonth="+frequencyMonth+"&weekFrequency="+weekFrequency+"&exportType=" + exportType;
+	}
+</script>
+
+<script>
+function dropDownExport(){
+	$("#exporrtEntries").slideToggle();
+}
+</script>
+
 <script>
 function dropDown(){
 	$("#exporrt").slideToggle();
 }
 </script>
 
+<!-- <script>
+    $('[data-toggle="tooltip"]').tooltip();   
+</script> -->
+
+
 <!-- this script is for Timesheet Entries Export -->
 <script>
-function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType){
+function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,submissionStatus){
 	var sourceleadUrl ='${sourceleadUrl}';
-	 window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&projectMemberId="+projectMemberId;
+	if(submissionStatus == 'SUBMITTED'){
+		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&projectMemberId="+projectMemberId;
+	}else{
+		alert("Please Submit the TimeSheets..");
+	}
+	 
 }
 </script>
  <!-- this script is for save Timesheet -->  

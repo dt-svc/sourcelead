@@ -2162,8 +2162,8 @@ function requirementPipelineSL(requirementId,submissionType){
 							    	     } 
 						           
 						          
-						        	   if(report.submittedBy != null && report.submittedBy != '' && report.submittedBy != 'undefined'){ 
-						        	   result = result + '<td><div><span>'+report.submittedBy+'</span></div></td>';
+						        	   if(report.updatedUser != null && report.updatedUser != '' && report.updatedUser != 'undefined'){ 
+						        	   result = result + '<td><div><span>'+report.updatedUser+'</span></div></td>';
 						        	   }else{
 						        		   result = result + '<td><div><span>--</span></div></td>';
 						        	   }
@@ -3041,7 +3041,8 @@ function documentpaginationRejected(){
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
-	var selectBox = $('#rejectApplicantSelect'+submissionId).val();
+	$("#reasonForApplicantDiv").empty()
+	var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
     if(selectBox != "Status"){
     	var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -3187,17 +3188,10 @@ function assignedMemberList(requirementId){
         type : "POST",
          url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
          success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{ 
+        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+           				   	var json = JSON.parse(data);
 							var result = '';
-							 result = result +'     <div class="heightScroll mt10 mb">'; 
+							result = result +'     <div class="heightScroll mt10 mb">'; 
 						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
 						    result = result +'         <thead>';
 						    result = result +'         <tr>';
@@ -3235,10 +3229,8 @@ function assignedMemberList(requirementId){
 						    
 						    $("#assignedMemberList").empty();
 						    $("#assignedMemberList").append(result);
-							
-            		 }
-              }else{
-                     	 $("#assignedMemberList").removeAttr("style");
+                 }else{
+						$("#assignedMemberList").removeAttr("style");
        	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 
       					 result = result+"	<div class='col-lg-12'>"; 

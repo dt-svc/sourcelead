@@ -167,11 +167,12 @@ a { cursor:pointer;}
     width:13%; border:none; padding:6px 5px; border-top:1px solid #dadada;
     }
 .addtaskfield {
-    border:0px; background-color:transparent; background-image:url(../images/addtask.png); background-repeat:no-repeat; background-position:center; margin: 0px 0px 0px 2px;
-    background-size:16px; width:23px; height:23px; position:relative; top:5px;
+    border:0px; background-color:transparent; background-image:url(../images/addtask.png); background-repeat:no-repeat; background-position:center; margin: 0px 0px 0px 5px;
+    background-size:14px; width:12px; height:12px; position:relative; top:2px;
     }
 .addtaskfield.removetaskfield {
- 	-moz-transform: rotate(-45deg); -webkit-transform: rotate(-45deg); -o-transform: rotate(-45deg); transform: rotate(-45deg); 
+ 	-moz-transform: rotate(-45deg); -webkit-transform: rotate(-45deg); -o-transform: rotate(-45deg); transform: rotate(-45deg);
+	top: 8px; color: #FF3F42 !important; background-image:url(../images/addtask1.png);
     }
 .timesheet_table table table select {
     appearance:none; -webkit-appearance:none; width:75%; padding:2px 18px 2px 3px; font-size:13px;
@@ -262,7 +263,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 	padding:0px 0px 12px 0px; display:inline-block; width:100%;
     }
 .timesheet_week_comm span input {
-	width:50%; display:inline-block; background-color:#367fa9; border:1px solid #1f6791; padding:4px 6px;
+	width:60%; display:inline-block; background-color:#367fa9; border:1px solid #1f6791; padding:4px 6px;
 	border-radius:2px; color:#fff;
     }
 .timesheet_week_comm span i {
@@ -288,7 +289,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     padding:0px 6px 0px 2px;
     }      
 .timesheet_button {
-	text-align:right; padding:15px 0px 0px 0px; position: relative; min-height: 40px;
+	text-align:right; padding:0px 0px; position: relative; min-height: 40px;
     }  
 .time_btn {
     border-radius:2px; padding:5px 15px; border:1px solid #367fa9; background-color:#3c8dbc; font-size:14px; font-weight:500; color:#FFF;
@@ -511,12 +512,12 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     position:relative; padding:10px;
     }
 .time_appr_side_wrap .timesheet_bot {
-    padding:10px 0px 0px 0px;
+    padding:15px;
     }  
-.time_appr_side_wrap .time_dra {
+/*.time_appr_side_wrap .time_dra {
     border: 1px solid #13aa37; background-color: #30c453;
     }
-.time_appr_side_wrap .time_dra:hover {background-color: #13aa37;}  
+.time_appr_side_wrap .time_dra:hover {background-color: #13aa37;}  */
      
     /*    Timesheet approval Css    */
   
@@ -904,7 +905,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     display:inline-block; max-width:175px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;
     }
 .clients_wrap_table .glyphicon {
-    color:#fe4556; cursor:pointer;
+    color:#368ee0; cursor:pointer;
     }  
 .td_overflow {
     display:inline-block; max-width:175px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;
@@ -1318,12 +1319,13 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
      
 .app_error_mes {
-    width:300px; background-color:#FFF; border-radius:3px; position:fixed; right:-550px; top:250px; z-index:1000;
-    padding:15px 20px; box-shadow:0px 0px 8px rgba(0,0,0,0.5); font-size:14px; border:1px solid #368ee0;
-    transition:0.3s all ease-in-out; -webkit-transition:0.3s all ease-in-out; -moz-transition:0.3s all ease-in-out;
+    width:300px; background-color:#FFF; border-radius:3px; position:fixed; z-index:1000; margin: 0px auto; left: 0px; right: 0px;
+    padding:15px 20px; box-shadow:0px 0px 8px rgba(0,0,0,0.5); font-size:14px; border:1px solid #368ee0; top: 30%;
+    transition:0.2s all ease-in-out; -webkit-transition:0.2s all ease-in-out; -moz-transition:0.2s all ease-in-out;
+	min-height: 100px; display: none; opacity: 0;
     }
 .app_error_mes.app_error_mes_active {
-    right:160px;
+    display: block; opacity: 1;
     }          
          
 .side_mask {
@@ -2156,11 +2158,14 @@ width: 100% !important;
 
 .timesheetAttachment {
 border: none !important;
-width: 60% !important;
+width: 100% !important;
 background-color: transparent !important;
 margin-bottom:15px !important;
 }
-.timesheetAttachment tr { background-color: transparent !important;}
+.timesheetAttachment tr {
+	background-color: transparent !important;
+	height: 38px;
+}
 .timesheetAttachment td {
 	padding: 0px !important;
 	border: none !important;
@@ -2322,7 +2327,7 @@ margin-bottom:15px !important;
     text-align:center; width:75px; margin:1.5px 0px;
     } 
 .timesheet_tableNew table select {
-	width:150px; padding: 4px 8px; border:1px solid #ccc; border-radius: 2px;
+	width:140px; padding: 4px 8px; border:1px solid #ccc; border-radius: 2px;
 }
 
 .timesheetNewHead {
@@ -2351,6 +2356,8 @@ margin-bottom:15px !important;
 .timeNewSe b.proj_active { background-color:#34c244; border: 1px solid #3c9a13;}
 .timeNewSe b.proj_deactivate { background-color:#ef4c4c; border: 1px solid #d72b2b;}
 .timeNewSe b.proj_process { background-color:#d98f47; border: 1px solid #c3762b;}
+.timeNewSe b.proj_withdraw { background-color:#0f9fa1; border: 1px solid  #0f9fa1; cursor:pointer;}
+
 .timeNewSe i {
 	font-size: 15px; color: #666; display: inline-block; padding: 5px 5px; margin: 0px 0px 0px 5px;
 	cursor: pointer; position: relative;
@@ -2379,15 +2386,23 @@ margin-bottom:15px !important;
     float:left; margin-right:4px; background-color:#dedede; border:none; list-style-type:none;
     border-radius:10px 10px 0px 0px; border-top:3px solid #f1f1f1;
     }
-.timesheetNewTabs .project-tabs-menu li.current {
-    position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0; top: 1px;
-    }
 .timesheetNewTabs .project-tabs-menu li a {
     padding:6px 25px; text-decoration:none; font-size:15px; color:#666; display:block;
+    }
+.timesheetNewTabs .project-tabs-menu li.current {
+    position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0; top: 1px;
     }
 .timesheetNewTabs .project-tabs-menu .current a{
     color:#1d6cb5;
     }
+
+.timesheetNewTabs .project-tabs-menu li.subColor {
+    position:relative; background-color:#fff; z-index:5; border-top:2px solid #ff6600; top: 1px;
+    }
+.timesheetNewTabs .project-tabs-menu .subColor a{
+    color:#ff6600;
+    }
+
 .timesheetNewTabs .project_tabs {
     border:none; padding: 7px 0px 0px 0px; border-top: 1px solid #dedede;
     }
@@ -2439,7 +2454,7 @@ padding-right:10px;
 	min-width: 150px;
 }
 .timesheet_appr_table table tr td div.sm {
-	min-width: 100px;
+	min-width: 105px;
 }
 .timesheet_appr_table table tr td div.xs {
 	min-width: 80px;
@@ -2658,7 +2673,10 @@ padding-right:10px;
 	border-color: rgba(136, 183, 213, 0); border-bottom-color: #0cc2aa; border-width: 13px; margin-left: -13px;
 }
 .referWrap .form-group {
-	margin:0px; padding: 0px 0px 8px;
+	margin:0px; padding: 0px 0px 8px; position: relative; height: 60px;
+}
+.referWrap .jquery_form_error_message {
+	padding: 0px 0px 0px 15px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500;
 }
 .referWrap .form-group label {
 	text-transform: capitalize; font-size: 13px; font-weight: 500; color: #545454; margin-bottom: 1px;
@@ -2756,25 +2774,30 @@ padding-right:10px;
 
 
 
-
-
 .timeNewSe.timeNewSe_month {
-    width:136px;
+    width:125px;
 }
 .timeNewSe.timeNewSe_week {
-    width:120px;
+    width:110px;
 }
+
 
 .timeNewSe.timeNewSe_week_date {
-    width:201px;
+    width:196px;
 }
 .timeNewSe.timeNewSe_client {
-    width:135px;
+    width:120px;
 }
 .timeNewSe.timeNewSe_stage {
-    width:172px;
+    width:160px;
 }
 
+.export.dropexport{
+	float: left;
+}
+.export.dropexport p{
+margin: 6px 0px 0px 0px;
+	}
 
 
 /*  Modified  */
@@ -2782,7 +2805,7 @@ padding-right:10px;
 .timeNewSe b.proj_draft { background-color:#656565; border: 1px solid  #333;}
 
 
-.app_error_mes {
+/*.app_error_mes {
     width:300px; background-color:#FFF; border-radius:3px; position:absolute; left: 0px;  top:23px; z-index:1000;
     padding:15px 20px; box-shadow:0px 0px 8px rgba(0,0,0,0.5); font-size:14px; border:1px solid #368ee0;
     transition:0.3s all ease-in-out; -webkit-transition:0.3s all ease-in-out; -moz-transition:0.3s all ease-in-out;
@@ -2790,9 +2813,9 @@ padding-right:10px;
     }
     
 .app_error_mes.app_error_mes_active {
-   /*  right:160px; */
+     right:160px; 
     display:block;
-    }
+    }*/
 
 .ts_app_error_mes {
     width: 300px; background-color: #FFF; border-radius: 3px;position: absolute;right: 0px; top: 15px;z-index: 1000;
@@ -2806,4 +2829,39 @@ padding-right:10px;
 
 .Refer {
 	font-size: 13px; font-weight: 500; color: #666;
+}
+
+
+
+.totalWrap {
+	float: left;
+}
+.totalWrap ul {
+	margin: 0px 0px; padding: 0px 0px;
+}
+.totalWrap ul li {
+	list-style-type: none; float: left; background-color:#0f9fa1; position: relative;
+	width: 150px; text-align: right; height: 42px; margin: 0px 1px 0px 0px; border-radius: 2px; 
+}
+.totalWrap ul li:first-child + li {
+	background-color:#e58339;
+}
+.totalWrap ul li:first-child + li + li {
+	background-color:#18a245;
+}
+.totalWrap ul li span {
+	position: absolute; text-align: left; display: block; width: 100%; font-size: 12px; color: #fff; padding: 2px 0px 0px 5px
+}
+.totalWrap ul li input {
+	background-color: transparent; border: none; width: 100%; display: block; text-align: right;
+	font-size: 20px; color: #fff; padding: 15px 15px 0px 0px;
+}
+
+
+.Rname {
+	font-size: 12px; display: block; font-weight: 500; width: 100px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+	text-align: center;
+}
+#timesheetPopUp {
+	min-height: 400px;
 }
