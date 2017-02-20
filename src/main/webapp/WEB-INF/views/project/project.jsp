@@ -234,7 +234,7 @@ function validateTaskName(){
 					 <c:if test="${not empty user_List}">
 						<div class="form-group">
 							<label class="col-md-3" for="Project Manager">Manager <span
-								class="text-danger">*</span></label>
+								class="text-danger">*&nbsp;<i class=" text-info fa fa-info-circle" title="Before Selecting The Manager Project Start Date is Mandatory"></i></span></label>
 							<div class="col-md-9">
 								<div class="form-icon-min">
 									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">

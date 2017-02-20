@@ -214,6 +214,7 @@ public class Constants {
 	public static String NO  = "N";
 	public static String WAIT  = "W";
 	public static String REJECT  = "R";
+	public static String REJECTED  = "REJECTED";
 	public static String TEMP    = "T";
 	public static transient DateFormat STDF = new SimpleDateFormat("MM-dd-yyyy");
 	public static transient DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");

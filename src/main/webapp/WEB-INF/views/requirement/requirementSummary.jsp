@@ -943,11 +943,10 @@ function requirementDetails(requirementId){
 				            		result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
 				            	'</sec:authorize>';
 				            }
-				            
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
 
-				             if(json.requirementSubmissionStatus  !='DRAFT'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null ){
+				             if(json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null ){
                					 
 				            	 result = result +'<button  class="btn btn-success mr" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
                		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
@@ -964,7 +963,7 @@ function requirementDetails(requirementId){
 				             result = result +'     <div class="clearfix">';
 				             
 				            result = result +'     <div class="clearfix row">';
-					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
+					        result = result +'     <div class="col-md-9 divskill divsAssigned pull-left">';
 					        
 					        result = result + '<div id="assignedMemberList"></div>';
 					        
@@ -1126,6 +1125,19 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            	}
+				            
+				            
+				            
+				            if(json.requirementApproverHierarchyStatus == 'REJECTED'){
+			            	result = result +'   <div class="col-md-3 pull-left">';
+			            	result = result +'   <div class="rejected_Reason">';
+			            	result = result +'   <h5>Rejected Reason:</h5>'; 
+			            	result = result +'   <p>'+json.rejectReason+'</p>';
+			            	result = result +'   </div>';
+			            	result = result +'   </div>';
+			            }
+				            
+				            
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            
