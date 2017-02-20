@@ -14,13 +14,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TeamDao;
-import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -240,6 +237,28 @@ public class TeamDaoImpl  implements TeamDao{
 									.setCacheable(true).list();
 		
 		return teamIdList;
+	}
+
+	@Override
+	@Transactional
+	public Team findByTeamName(String name, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Team> team = new ArrayList<Team>();
+		logger.debug("findByEmail start");
+		try{
+			team = session.createQuery("from Team tm where tm.name=:name and tm.orgLocationsId.id = :orgLocationId" )
+					.setString( "name", name ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
+			
+			logger.debug("findByEmail end");
+			if (team.size() > 0) {
+				return team.get(0);
+			} else {
+				return null;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 

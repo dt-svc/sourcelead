@@ -201,10 +201,10 @@ function teamEditDetails(teamId){
 	        	outPut = outPut+'<form role="form"  id="edit_team_form" name="team_form" method="post" > ';
 	        	outPut = outPut+ '<div class="form-horizontal clearfix teamEditDetails">';
 	        	outPut = outPut+ '<div class="clearfix mb10">';
-	        	outPut = outPut+ '<div class="col-md-6">';
+	        	outPut = outPut+ '<div class="col-md-6" id="teamNameDiv">';
 	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
 	        	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
-	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'">';
+	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'"  >';
 	        	outPut = outPut+ '                </div>';
 	        	
 	        	
@@ -342,7 +342,7 @@ function addTeam(){
 	/* outPut = outPut + '<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">'; */
 	outPut = outPut+ '<div class="col-md-12">';
 	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
-	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">';
+	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div>';
 	outPut = outPut+ '              <div class="clearfix mb10">';
@@ -1277,5 +1277,36 @@ function removeFromTeam(id){
 		$("body").css('overflow-y', 'auto');
 	});	
 </script>
+
+
+<!-- Team Name validation script starts here -->
+
+<script type="text/javascript">
+ function validateTeamName() {
+	 var name = $('#name').val(); 
+	 $('#teamNameDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(name != null && name != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateTeamName?${_csrf.parameterName}=${_csrf.token}&name="+name, 
+		        success: function(data) {
+		        	if(data == 'true'){
+						  $("input#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						  $("#add_team").removeAttr("disabled");
+		        	}
+		        	else{
+		        		 $('input#name').removeAttr("record-exist record-exist-errormsg");
+		        		 $('#teamNameDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#add_team" ).addClass('button').val('Save');
+                         $("#add_team").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 } 
+ }
+ </script>     
+ 
+ <!-- Team Name validation script ends here -->
 
 <jsp:include page="../masterFooter.jsp" />
