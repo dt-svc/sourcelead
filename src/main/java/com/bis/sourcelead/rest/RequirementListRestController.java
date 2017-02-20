@@ -182,7 +182,6 @@ public class RequirementListRestController {
 			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user,userRoleName);
 			
 			for(Requirement requirement : requirementList){
-				
 				Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirement.getId(), user.getId());
 				requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
 				

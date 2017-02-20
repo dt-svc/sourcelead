@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -12,8 +11,10 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Service
@@ -24,6 +25,8 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	@Autowired
 	OrgLocationsDao orgLocationsDao;
 	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -76,12 +79,13 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 
 	@Override
 	public OrgLocations saveOrgLocations(OrgSettings orgSettings, OrgLocations orgLocations) throws Exception {
-		
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgSettings.getTimeZone()));
 		orgLocations.setState(orgSettings.getState());
 		orgLocations.setCity(orgSettings.getCity());
 		orgLocations.setZipCode(orgSettings.getZipcode());
 		orgLocations.setPhone(orgSettings.getPhone());
 		orgLocations.setFax(orgSettings.getFax());
+		orgLocations.setTimezone(timezone);
 		orgLocationsDao.updateOrgLocations(orgLocations);
 		
 		return orgLocations;
