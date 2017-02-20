@@ -104,7 +104,7 @@ overflow-x: auto;
 		<div class="project_wrap">
 		
 		<div class="pull-left cand-advsrche">
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
 			  </a> 
@@ -112,7 +112,7 @@ overflow-x: auto;
 			  <form:form id="projectlist_form" name="projectlist_form" >
 				
 					  <a href="javascript:void(0)" class="close-div" onClick="closePop(); clearKeys();"><i class="fa fa-close"></i></a>
-					  <div class="row">
+					  <!-- <div class="row">
 						   <div class="col-md-4">
 			                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
 				                 <div class="clearfix">
@@ -137,7 +137,7 @@ overflow-x: auto;
 				            </div>
 			              </div>
 			              </div>
-			              
+			               -->
 			              <div class="row">
 			              <div class="col-md-12">
 		                	<h4>Project Details:</h4>
@@ -697,9 +697,9 @@ $(document).ready(function() {
 </script>
 <script type="text/javascript">	
 	function clearSearchKeys(){
-	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	   /*  $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
-	    $("#excludeKeyWord").val('').trigger("chosen:updated");
+	    $("#excludeKeyWord").val('').trigger("chosen:updated"); */
 	    $("#projectIdAdvanced").val('').trigger("chosen:updated");
 	    $("#projectNameAdvanced").val('').trigger("chosen:updated");
 	    $("#projectManagerAdvanced").val('').trigger("chosen:updated");
@@ -711,42 +711,14 @@ $(document).ready(function() {
 	    
 	    $("#projectStartDateAdvanced").val('');
 	    
-	    $("#anyOfKeyword").empty();
+	    /* $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
-	    $("#excludeKeyWord").empty();
+	    $("#excludeKeyWord").empty(); */
 	    $("#projectIdAdvanced").empty();
 	    $("#projectNameAdvanced").empty();
 	}
 </script>
 
-<script type="text/javascript">	
-	function loadChosenScripts(){
-
-	   /*  $("#anyOfKeyword").val('').trigger("chosen:updated");
-	    $("#allKeywords").val('').trigger("chosen:updated");
-	    $("#excludeKeyWord").val('').trigger("chosen:updated");
-	    $("#projectIdAdvanced").val('').trigger("chosen:updated");
-	    $("#projectNameAdvanced").val('').trigger("chosen:updated"); */
-	   /*  $("#projectManagerAdvanced").val('').trigger("chosen:updated");
-	    $("#invoiceFrequencyAdvanced").val('').trigger("chosen:updated");
-	    $("#clientsAdvanced").val('').trigger("chosen:updated");
-	    $("#statusAdvanced").val('').trigger("chosen:updated");
-	    $("#employeeNameAdvanced").val('').trigger("chosen:updated");
-	    $("#employeeEmailAdvanced").val('').trigger("chosen:updated"); */
-	    
-	   /*  $("#anyOfKeyword").empty();
-	    $("#allKeywords").empty();
-	    $("#excludeKeyWord").empty();
-	    $("#projectIdAdvanced").empty();
-	    $("#projectNameAdvanced").empty(); */
-	    /* $("#projectManagerAdvanced").empty();
-	    $("#invoiceFrequencyAdvanced").empty();
-	    $("#clientsAdvanced").empty();
-	    $("#statusAdvanced").empty();
-	    $("#employeeNameAdvanced").empty();
-	    $("#employeeEmailAdvanced").empty(); */
-	}
-</script>
 	
 <script type="text/javascript">
     	   var config = {
@@ -757,7 +729,7 @@ $(document).ready(function() {
     				  '.chosen-select-width'     : {width:"95%"}
     	   }
 			//Adding Customized Any Of Keyword to the list 
-		    var select, chosen;
+		   /*  var select, chosen;
 		    select = $("#anyOfKeyword");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosen = select.data('chosen');
@@ -776,10 +748,10 @@ $(document).ready(function() {
 	        		$("#anyOfKeyword").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		    
 		  //Adding Customized Any Of Keyword to the list
-		    var selectone, chosenone;
+		  /*   var selectone, chosenone;
 		    selectone = $("#allKeywords");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosenone = selectone.data('chosen');
@@ -798,9 +770,9 @@ $(document).ready(function() {
 	        		$("#allKeywords").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		    
-		    var selecttwo, chosentwo;
+		  /*   var selecttwo, chosentwo;
 		    selecttwo = $("#excludeKeyWord");
 		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosentwo = selecttwo.data('chosen');
@@ -819,7 +791,7 @@ $(document).ready(function() {
 	        		$("#excludeKeyWord").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		    
 		    
 		    var selectthree, chosenthree;
@@ -1011,6 +983,15 @@ $(document).ready(function() {
 		//dateFormat : 'dd-mm-yy',
 	      changeMonth: true,
 	      changeYear: true,
+	      showButtonPanel:true,
+	        closeText:'Clear',
+	        beforeShow: function( input ) {
+	            setTimeout(function () {
+	                $(input).datepicker("widget").find(".ui-datepicker-current").hide();
+	                var clearButton = $(input ).datepicker( "widget" ).find( ".ui-datepicker-close");
+	                clearButton.unbind("click").bind("click",function(){$.datepicker._clearDate( input );});
+	            }, 1 );
+	        },
 		onSelect : function(selected) {
 			var dt = new Date(selected);
 			dt.setDate(dt.getDate() + 1);
