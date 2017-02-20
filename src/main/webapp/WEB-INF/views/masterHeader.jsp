@@ -608,8 +608,10 @@ $('#closedTaskDatpicker').datepicker({
 	  }
 	});
 	
-$('#timepicker').timepicker();
-/* { 'timeFormat': 'h:i A' } */
+$("#timepicker").timepicker({
+	'showDuration': true,
+	'disableTextInput': true
+}); 
 </script>
 <script>
 function removevalidation(){
