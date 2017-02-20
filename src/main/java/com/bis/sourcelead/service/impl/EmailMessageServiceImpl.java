@@ -238,8 +238,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				
 
 					message.setContent(mimeMultipart);
-					Transport.send(message);
-
+				    Transport.send(message);
 				}
 			} else {
 				BodyPart messageBodyPart = new MimeBodyPart();
