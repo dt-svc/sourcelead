@@ -1012,10 +1012,10 @@ function dropDownExport(){
 <script>
 function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,submissionStatus){
 	var sourceleadUrl ='${sourceleadUrl}';
-	if(submissionStatus == 'SUBMITTED'){
+	if(submissionStatus == 'NEW'){
 		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
 	}else{
-		alert("Please Submit the TimeSheets..");
+		alert("Please fill the TimeSheets..");
 	}
 }
 </script>
