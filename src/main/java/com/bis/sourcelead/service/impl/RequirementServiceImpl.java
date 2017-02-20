@@ -777,7 +777,7 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					/*shivayogi Kadagad/rakshith mahabal*/	
 					// this logic is for assigned to team members when new team user is added for requirement-edit and saved.	
-					if(null != savedRequirement.getId() && requirementAssignToList.size()!=0){
+					if(null != savedRequirement.getId() && requirementAssignToList.size()!=0 && !savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
 						for (RequirementAssignTo newList : requirementAssignToList) {
 					       boolean found=false;
 					       if(null != oldAssigntoTeamList && oldAssigntoTeamList.size()!=0){
