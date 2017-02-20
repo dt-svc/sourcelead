@@ -214,7 +214,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
-							result = result + '<option value="">Select</option>';
+							result = result + '<option value="">Select Notice Period</option>';
 							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
 							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
 							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
@@ -462,7 +462,7 @@ function getAllCandidateCountries(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('html #candidateCountry').empty();
-        	$('html #candidateCountry').append('<option value="">---select---</option>');
+        	$('html #candidateCountry').append('<option value="">---select Country---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == countryName){
             		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -507,7 +507,7 @@ var countryName = $("html #candidateCountry").val();
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('html #candidateState').empty();
-	        	$('html #candidateState').append('<option value="">---select---</option>');
+	        	$('html #candidateState').append('<option value="">---select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
 	            		$('html #candidateState').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -555,7 +555,7 @@ function getCandidateCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('html #candidateCity').empty();
-	        	$('html #candidateCity').append('<option value="">---select---</option>');
+	        	$('html #candidateCity').append('<option value="">---select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
 	            		$('html #candidateCity').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
