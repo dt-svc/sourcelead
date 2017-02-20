@@ -25,9 +25,9 @@ public class RequirementIndex {
 	
 	private String rateType;
 	
-	private Integer minExperience;
+	private String minExperience;
 	
-	private Integer maxExperience;
+	private String maxExperience;
 	
 	private String requirementStatus;
 	
@@ -213,20 +213,20 @@ public class RequirementIndex {
 	public void setRateType(String rateType) {
 		this.rateType = rateType;
 	}
-
-	public Integer getMinExperience() {
+	
+	public String getMinExperience() {
 		return minExperience;
 	}
 
-	public void setMinExperience(Integer minExperience) {
+	public void setMinExperience(String minExperience) {
 		this.minExperience = minExperience;
 	}
 
-	public Integer getMaxExperience() {
+	public String getMaxExperience() {
 		return maxExperience;
 	}
 
-	public void setMaxExperience(Integer maxExperience) {
+	public void setMaxExperience(String maxExperience) {
 		this.maxExperience = maxExperience;
 	}
 
