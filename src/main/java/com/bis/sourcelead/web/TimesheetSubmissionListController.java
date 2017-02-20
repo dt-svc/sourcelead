@@ -122,7 +122,7 @@ public class TimesheetSubmissionListController {
 		    
 		    List<SubmissionApproverHierarchy> list  =	submissionApproverHierarchyService.getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(user.getId(), loginOrgLocations.getId(), status, userRole);
 		    StringBuilder sb = new StringBuilder();	
-	     	sb.append(" <table id='example' class='display' cellspacing='0' width='100%' >");
+	     	sb.append(" <table id='example'  style='width:100%' >");
 			sb.append(" <thead>");
 			sb.append("     <tr>");
 			sb.append("         <th>Employee</th>");

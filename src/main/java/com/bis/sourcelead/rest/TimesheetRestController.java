@@ -213,7 +213,6 @@ public class TimesheetRestController {
 			StringBuilder timesheetEntriesDiv = new StringBuilder();
 			timesheetEntriesDiv.append("");
 			
-			
 			timesheetEntriesDiv.append("		<div class='timesheet_out'> ");
 			timesheetEntriesDiv.append("		<div class='timesheet_wrap' id='timesheet_wrap'>");
 			timesheetEntriesDiv.append("		<div class='data_loading'></div>");
@@ -356,7 +355,7 @@ public class TimesheetRestController {
 			pullRightClass = "" ;
 		}
 		
-		if(isSah == null && isModifyMyTimeSheet && !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
+		if(isSah == null &&from.equalsIgnoreCase("timesheet") && isModifyMyTimeSheet && !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 			styleWidth = "style='width:120px;'";
 			innerStyleWidth = "style='width:100%;'";
 		}
@@ -371,7 +370,7 @@ public class TimesheetRestController {
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 	        	timesheetEntriesDiv.append("<b "+innerStyleWidth+"  class='proj_process "+pullRightClass+" '>").append(submissionStatus).append("</b>");
-	        	if(isSah == null && isModifyMyTimeSheet){
+	        	if(isSah == null && isModifyMyTimeSheet && from.equalsIgnoreCase("timesheet")){
 	                timesheetEntriesDiv.append("</div><div "+styleWidth+" class='timeNewSe '><b "+innerStyleWidth+" class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Modify</b>");
 	        	}
 	        }
