@@ -29,20 +29,29 @@ public class RequirementRefer implements Serializable {
 	private Long id;
 	
 	@ManyToOne
-    @JoinColumn(name="REFER_FROM_USER_ID", nullable=false )        
+    @JoinColumn(name="REFER_FROM_USER_ID")        
     private User referFromUser;
 	
 	@ManyToOne
-    @JoinColumn(name="REFER_TO_USER_ID", nullable=false )        
+    @JoinColumn(name="REFER_TO_USER_ID")        
     private User referToUser;
 	
 	@ManyToOne
-    @JoinColumn(name="REQUIREMENT_ID", nullable=false )        
+    @JoinColumn(name="REQUIREMENT_ID")        
     private Requirement requirementId;
 	
 	@ManyToOne
-    @JoinColumn(name="REFER_ID", nullable=false )        
+    @JoinColumn(name="REFER_ID")        
     private RequirementRefer referId;
+	
+	
+	@ManyToOne
+    @JoinColumn(name="ORGLOCATION_ID")        
+    private OrgLocations orgLocationId;
+	
+	
+	@Column(name = "REFER_STATUS")
+	private String referStatus;
 	
 	@Column(name = "REFER_FROM_EMAIL")
 	private String referFromEmail;
@@ -151,6 +160,22 @@ public class RequirementRefer implements Serializable {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getReferStatus() {
+		return referStatus;
+	}
+
+	public void setReferStatus(String referStatus) {
+		this.referStatus = referStatus;
+	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 	
 	
