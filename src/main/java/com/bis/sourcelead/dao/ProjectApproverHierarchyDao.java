@@ -35,4 +35,14 @@ public interface ProjectApproverHierarchyDao {
 	
 	List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,Long orgLocationId)throws Exception;
 	
+	/**
+	 * @author Prasad salina
+	 * @param orgLocationId
+	 * @param invoiceFrequency
+	 * @param managerLevel
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ProjectApproverHierarchy> getApproverUserIdsByOrgLocationIdAndLevelAndFrequency(Long orgLocationId, String invoiceFrequency, int managerLevel)throws Exception;
+	
 }

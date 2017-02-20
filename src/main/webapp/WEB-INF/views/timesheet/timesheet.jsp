@@ -192,7 +192,23 @@ $(document).ready(function() {
 </script>
 
    
-
+<script type="text/javascript">
+function withdrawMyTimesheet(projectMemberId,timesheetFrequency){ 
+	/* var frm = $('#timesheet_form').serializeFormJSON(); */
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	      type : "POST",
+     	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency,		
+	      success :function(result) {
+	    	  $("#loadTime").removeAttr("style"); 
+	    	  timesheetDivByFrequency();
+	    	  $("html").trigger('click');
+	    	  maskme();
+	      }
+   }); 
+}
+</script>
 
 
 <!-- this script is for add row functionality at Timesheet screen -->
@@ -994,9 +1010,13 @@ function dropDownExport(){
 
 <!-- this script is for Timesheet Entries Export -->
 <script>
-function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType){
+function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,submissionStatus){
 	var sourceleadUrl ='${sourceleadUrl}';
-	 window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
+	if(submissionStatus == 'SUBMITTED'){
+		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
+	}else{
+		alert("Please Submit the TimeSheets..");
+	}
 }
 </script>
  <!-- this script is for save Timesheet -->  

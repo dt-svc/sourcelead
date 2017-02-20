@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1052,4 +1053,32 @@ public class CandidateListRestController {
 				file.delete();
 			}
 		 }
+	 	 
+	 	 
+	 	 /**
+			 *  This Method is for saving Skils into Candidate table By candidateID
+			 *  
+			 * @author : venkat kesav
+			 * @param candidateId This is the first parameter to saveSkilsBycandidateID method
+			 * @param skillName   This is the second parameter to saveSkilsBycandidateID method
+			 * @param request     This is the third parameter to saveSkilsBycandidateID method
+			 * 
+			 * @return String
+			 * 
+			 * @throws NullPointerException
+			 */
+		   @RequestMapping(value = "/saveOrUpdateOnlySkillBycandidateId")
+		   public String saveOrUpdateOnlySkillBycandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="skillName", required=false) String  skillName, HttpServletRequest request) throws Exception {
+			   Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+				
+				if(null != can && StringUtils.isNotEmpty(skillName)){
+					can.setSkillsName("");
+					can.setSkillsName(skillName);
+					candidateService.saveOrUpdateCandidate(can);
+					candidateService.saveOrUpdateCandidateElkDocument(can);
+					return "success";
+				}else{
+					return "failed";
+				}
+			 }
 	}

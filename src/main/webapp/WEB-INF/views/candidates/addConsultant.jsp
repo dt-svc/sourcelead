@@ -978,12 +978,12 @@ function getUserDetails(){
 	        		
 	        		  $("#firstName").val(json[0]);
 	        		  
-	        		  if(json[1] != null && json[1] != '' && json[1] !='undefined'){
+	        		 /*  if(json[1] != null && json[1] != '' && json[1] !='undefined'){
 	        			  $("#lastName").val('');
 	        		  }else{
 	        			  $("#lastName").val(json[1]);
-	        		  }
-	        		  
+	        		  } */
+	        		  $("#lastName").val(json[1]);
 	        		  $("#email").val(json[2]);
 	        		  $("#mobilePhone").val(json[3]);
 	        		 

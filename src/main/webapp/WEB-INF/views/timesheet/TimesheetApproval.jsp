@@ -581,7 +581,6 @@ function deleteSubmissionDocument(submissionDocumentId){
  
  
  
- 
  <!-- this script is for clear timesheet -->
 <script>
 function clearTimesheet(){ 
@@ -1333,9 +1332,14 @@ function dropDown(){
 
 <!-- this script is for Timesheet Entries Export -->
 <script>
-function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType){
+function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,submissionStatus){
 	var sourceleadUrl ='${sourceleadUrl}';
-	 window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&projectMemberId="+projectMemberId;
+	if(submissionStatus == 'SUBMITTED'){
+		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&projectMemberId="+projectMemberId;
+	}else{
+		alert("Please Submit the TimeSheets..");
+	}
+	 
 }
 </script>
  <!-- this script is for save Timesheet -->  

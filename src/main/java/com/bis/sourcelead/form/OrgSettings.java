@@ -28,6 +28,8 @@ public class OrgSettings {
 	
 	private String address;
 	
+	private String timeZone;
+	
 	
 
 	public Integer getId() {
@@ -124,6 +126,14 @@ public class OrgSettings {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
 	}
 
 }
