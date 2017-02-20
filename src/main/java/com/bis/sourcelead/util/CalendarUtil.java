@@ -533,7 +533,7 @@ public  class CalendarUtil {
 			 	 currentDate = format.parse(format.format(new Date()));
 				 startDate = format.parse(weekStartDate.replaceAll("-", "/"));
 				 endDate = format.parse(weekEndDate.replaceAll("-", "/"));
-				 flag =   currentDate.after(startDate) && currentDate.before(endDate);
+				 flag =   ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
 			} catch (ParseException e) {}
 		}
 		return flag;
