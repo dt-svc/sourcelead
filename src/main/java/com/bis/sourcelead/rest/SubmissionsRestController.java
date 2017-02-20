@@ -320,6 +320,8 @@ public class SubmissionsRestController {
 			RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
 			if(pastRequirementRateSubmissionNegotiation != null){
 				requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+			}else{
+				requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 			}
 			
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());

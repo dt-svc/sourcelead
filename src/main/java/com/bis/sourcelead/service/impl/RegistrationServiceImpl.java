@@ -840,6 +840,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setOrgId(org);
 		candidate.setOrgLocationId(orgLocations);
 		candidate.setCandidateType(Constants.PROFESSIONAL);
+		candidate.setCountry(jsonObj.getString("location"));
 		
 		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
 			candidate.setFirstName(jsonObj.getString("firstName"));
@@ -965,6 +966,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setConsultantUser(user);
 		candidate.setOrgId(org);
 		candidate.setOrgLocationId(orgLocations);
+		candidate.setCountry(jsonObj.getString("location"));
 		candidate.setCandidateType(Constants.INDIVIDUAL_RECRUITER);
 		
 		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
