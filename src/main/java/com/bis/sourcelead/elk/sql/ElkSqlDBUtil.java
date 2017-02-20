@@ -1,6 +1,6 @@
 package com.bis.sourcelead.elk.sql;
 
-import java.net.InetAddress;
+/*import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -19,7 +19,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.bis.sourcelead.elk.setup.SourceleadELKTransportClient;
+import com.bis.sourcelead.elk.setup.SourceleadELKTransportClient;*/
 
 public class ElkSqlDBUtil {
 
@@ -30,12 +30,12 @@ public class ElkSqlDBUtil {
 		// createType("tableType");
 		// simpleInsert("tableType");
 		 // simpleSelect();
-		 whereSelectForString();
+		// whereSelectForString();
 		//whereSelectForInt();
 		//whereSelectForDate();
 	}
 	
-	public static void whereSelectForDate() {
+	/*public static void whereSelectForDate() {
 
 		try {
 			Statement st = createStatement(INDEX_sql4es);
@@ -129,13 +129,13 @@ public class ElkSqlDBUtil {
 			int nrCols = rsmd.getColumnCount();
 			// get other column information like type
 			while (rs.next()) {
-				/*
+				
 				 * for(int i=1; i<=nrCols; i++){
 				 * System.out.println(rsmd.getColumnType(i)+"<==>"+rs.getObject(
 				 * i));
 				 * 
 				 * }
-				 */
+				 
 				System.out.println(rs.getInt("empId") + ", " + rs.getString("empFname") + ", "
 						+ rs.getString("empLname") + ", " + rs.getDate("createdDate"));
 				count++;
@@ -192,7 +192,7 @@ public class ElkSqlDBUtil {
 		} catch (Exception exception) {
 			System.out.println(ExceptionUtils.getFullStackTrace(exception));
 		}
-	}
+	}*/
 
 	/*
 	 * public void createSimple() throws Exception{ //createIndex(index);

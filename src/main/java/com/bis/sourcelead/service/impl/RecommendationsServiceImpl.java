@@ -789,24 +789,25 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			String  expectedRate = candidateIndex.getExpectedRate().toString();
 			expectedRate = expectedRate.substring(0, expectedRate.length() - 2);
 			
-			int reqRate = Integer.parseInt(expectedRate.toString());
+			float reqRate = Float.parseFloat(expectedRate);
+			//int reqRate = Integer.parseInt(expectedRate.toString());
 			float perMonthCandidateSal = 0;
 			if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate *9;
+				float perDaySal = reqRate *9;
 				perMonthCandidateSal = perDaySal * 30;
 			}else if(Constants.RATE_TYPE_WEEKLY.equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /7;
+				float perDaySal = reqRate /7;
 				perMonthCandidateSal = perDaySal * 30;
 			}else if(Constants.RATE_TYPE_BI_WEEKLY.equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /14;
+				float perDaySal = reqRate /14;
 				perMonthCandidateSal = perDaySal * 30;
 			}else if(Constants.RATE_TYPE_SEMI_MONTHLY.equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /15;
+				float perDaySal = reqRate /15;
 				perMonthCandidateSal = perDaySal * 30;
 			}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(candidateRateType)){
 				perMonthCandidateSal = reqRate;
 			}else if(Constants.RATE_TYPE_BI_MONTHLY.equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /60;
+				float perDaySal = reqRate /60;
 				perMonthCandidateSal = perDaySal * 30;
 			}else{
 				perMonthCandidateSal = reqRate /12;

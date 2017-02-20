@@ -412,9 +412,12 @@ public class DashboardRestController {
 			
 			String currentTime = null;
 			String userType = null;
+			Timezone timezone = null;
 			String userCode = user.getUserCode();
 			Long userId = user.getId();
-			Timezone timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			if(loginOrgLocations.getTimezone() != null){
+				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			}
 			
 			
 			if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
@@ -452,12 +455,13 @@ public class DashboardRestController {
 				
 				//changed as per the timezone
 				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
-				
-				String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
-				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-				Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = standardFormat.format(converteDate);
-				interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
+				if(timezone != null){
+					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
+					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+					Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+					currentDateInTimezone = standardFormat.format(converteDate);
+					interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
+				}
 				
 				 if(interviewHistory.getSubmissionId().getRequirement().getClientId() != null){
 						if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
