@@ -1010,9 +1010,13 @@ function dropDownExport(){
 
 <!-- this script is for Timesheet Entries Export -->
 <script>
-function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType){
+function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,submissionStatus){
 	var sourceleadUrl ='${sourceleadUrl}';
-	 window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
+	if(submissionStatus == 'SUBMITTED'){
+		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
+	}else{
+		alert("Please Submit the TimeSheets..");
+	}
 }
 </script>
  <!-- this script is for save Timesheet -->  

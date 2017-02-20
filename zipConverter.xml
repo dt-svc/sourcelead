@@ -32,6 +32,10 @@
 			<directory>${project.build.directory}/sourcelead/WEB-INF/classes/com/bis/sourcelead/constants</directory>
 			<outputDirectory>Sourcelead_Db_Scripts/com/bis/sourcelead/constants</outputDirectory>
 		</fileSet>
+		<fileSet>
+			<directory>${project.build.directory}/sourcelead/WEB-INF/classes/com/bis/sourcelead/util</directory>
+			<outputDirectory>Sourcelead_Db_Scripts/com/bis/sourcelead/util</outputDirectory>
+		</fileSet>
 	</fileSets>
 	<dependencySets>
 	    <dependencySet> 
