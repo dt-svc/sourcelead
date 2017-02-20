@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,13 +45,20 @@ import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.ReferContactsService;
+import com.bis.sourcelead.service.RequirementInterviewHistoryService;
+import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -73,6 +81,12 @@ public class CrowdSourcingRequirementsRestController {
 	
 	@Autowired
 	SourceleadELKBaseIndexer<CampaignIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	RequirementInterviewHistoryService requirementInterviewHistoryService;
+	
+	@Autowired
+	RequirementReferService requirementReferService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -573,5 +587,79 @@ public class CrowdSourcingRequirementsRestController {
 				
 			return matchQueryBuilderList; 
 	 }
-	
+	 
+	 
+	 
+	 @PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_PROFILE')")
+		@RequestMapping(value = "/getProfessionalInterviews")
+		public String getProfessionalInterviews(String dateRange, HttpServletRequest request) throws Exception {
+			String resultJson;
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			List<RequirementInterviewHistory> requirementInterviewList = null;
+			String currentTime = null;
+			String userType = null;
+			String userCode = user.getUserCode();
+			Long userId = user.getId();
+			
+		   requirementInterviewList = requirementInterviewHistoryService.getAllProfessinalInterviews(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,candidateId);
+			
+			for(RequirementInterviewHistory interviewHistory : requirementInterviewList){
+				if(null != interviewHistory.getInterviewId()){
+						interviewHistory.setInterviewType(interviewHistory.getInterviewId().getInterviewType());	
+						interviewHistory.setLocation(interviewHistory.getInterviewId().getLocation());	
+				 }
+				if(null != interviewHistory.getOrgLocationId()){
+					if(null != interviewHistory.getOrgLocationId().getOrg()){
+						if(null != interviewHistory.getOrgLocationId().getOrg().getOrgName()){
+							interviewHistory.setCompanyName(interviewHistory.getOrgLocationId().getOrg().getOrgName());
+						}
+					}
+				}
+				if(null != interviewHistory.getSubmissionId()){
+					if(null != interviewHistory.getSubmissionId().getRequirement()){
+						interviewHistory.setRequirementTitle(interviewHistory.getSubmissionId().getRequirement().getJobTitle());
+						interviewHistory.setRequirementUUID(interviewHistory.getSubmissionId().getRequirement().getRequirementUUID());
+					}
+				}
+				interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
+				
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
+				String commonDateFormat = standardFormat.format(interviewHistory.getInterviewId().getStartTime());
+				interviewHistory.setInterviewStartDateTimeStr(commonDateFormat.toString());
+				
+				
+				
+				
+				
+			}
+			
+			
+			resultJson = commonUtil.toJSON(requirementInterviewList);
+			return resultJson;
+		}
+	 
+	 
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/submitReferToJob", method = RequestMethod.POST)
+		public String submitReferToJob(@RequestParam(value = "jsonData", required = false) String json,
+				HttpServletRequest request,HttpServletResponse response)
+				throws Exception {
+
+			String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			requirementReferService.saveReferCandidate(user, orgLocations, jsonObj);
+						
+			return "success";
+
+		}
 }

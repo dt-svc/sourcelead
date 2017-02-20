@@ -924,7 +924,7 @@ function referToJob(requirementId){
 	    
 	    result = result + '<form id="referToJob_form" name="referToJob_form" method="post">';
 		result = result +'<div class="form-group col-md-6">';
-		result = result +'<input type="hidden" name="searchRequirementId" id="searchRequirementId" value='+requirementId+' >';
+		result = result +'<input type="hidden" name="referRequirementId" id="referRequirementId" value='+requirementId+' >';
 		result = result +'<label class="col-md-12" for="Project Id">First Name *</label>';
 		result = result +'<div class="col-md-12">';
 		result = result +'<input type="text" class="form-control" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">';
@@ -943,14 +943,14 @@ function referToJob(requirementId){
 		result = result +'<span class="hidden">Enter Project Id</span> </div>';
 		result = result +'</div>'; 
 		result = result +'<div class="form-group col-md-6">';
-		result = result +'<label class="col-md-12" for="Project Id">Phone *</label>';
+		result = result +'<label class="col-md-12" for="Project Id">Phone</label>';
 		result = result +'<div class="col-md-12">';
-		result = result +'<input type="text" class="form-control" name="phone" id="phone" field-name="Phone" data-validation="required validate_Space validate_phone validate_length length9-20">';
+		result = result +'<input type="text" class="form-control" name="phone" id="phone" field-name="Phone" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20">';
 		result = result +'</div>';
 		result = result +'</div>'; 
 		result = result +'<div class="col-md-12 mt5 clearfix">';            
 		result = result +'<div class="pull-right">';
-		result = result +'<input type="submit" value="Refer" onclick="submitRefer();" class="btn btn-primary">';
+		result = result +'<input type="submit" value="Refer" id="submit_refer" onclick="submitRefer();" class="btn btn-primary">';
 		result = result +'<input type="button" value="Cancel" onclick="cancelReferPopUp('+requirementId+')" class="btn btn-default ml10 canBtn">';
 		result = result +'</div>';    
 		result = result +'</div>'; 
@@ -980,10 +980,10 @@ function cancelReferPopUp(requirementId){
 
  <script type="text/javascript">
 		function removeReferPopUp(){
-			var searchRequirementId = document.getElementById('searchRequirementId'); 
-			if(searchRequirementId != null) {
-				$("#refertoJobDiv"+searchRequirementId.value+"").empty(); 
-				$("#refer"+searchRequirementId.value+"").removeClass("referWrapActive"); 
+			var referRequirementId = document.getElementById('referRequirementId'); 
+			if(referRequirementId != null) {
+				$("#refertoJobDiv"+referRequirementId.value+"").empty(); 
+				$("#refer"+referRequirementId.value+"").removeClass("referWrapActive"); 
 			} 
 			
 		 }
@@ -1019,10 +1019,10 @@ $(function(){
     };
     
     function openPop(){
-    	 var searchRequirementId = document.getElementById('searchRequirementId'); 
-    	 if(searchRequirementId != null) {
-    		$("#refertoJobDiv"+searchRequirementId.value+"").empty(); 
-    		$("#refer"+searchRequirementId.value+"").removeClass("referWrapActive"); 
+    	 var referRequirementId = document.getElementById('referRequirementId'); 
+    	 if(referRequirementId != null) {
+    		$("#refertoJobDiv"+referRequirementId.value+"").empty(); 
+    		$("#refer"+referRequirementId.value+"").removeClass("referWrapActive"); 
     	 } 
     $("div.cand-advsrch-popup").toggle();
     };
@@ -1082,19 +1082,17 @@ $('body').on('submit', '#referToJob_form', function(e){
       var jsonData = encodeURIComponent(con);
       
       var sourceleadUrl ='${sourceleadUrl}';
- /*      $("#create_user").attr("disabled", "disabled");
-	$( "#create_user" ).addClass('button').val('Processing..');
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-      $.ajax({
-	    	type: "POST",
-	    	 url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-	        success: function(result) {
-	        	if((result == 'usersList')){
-	        		location.replace(sourceleadUrl+"/usersList");  
-	        	}
-		        
-	        },
-	    }); */
+   /*      $("#submit_refer").attr("disabled", "disabled");
+		$( "#submit_refer" ).addClass('button').val('Processing..');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	      $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/submitReferToJob?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(result) {
+		        	
+			        
+		        },
+		    });  */
       return true; 
     }
     else{
