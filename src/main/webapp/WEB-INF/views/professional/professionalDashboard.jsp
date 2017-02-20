@@ -13,284 +13,159 @@
     <!-- Profile Content -->
 				<section class="row mt">
 				        <div class="col-md-12">
-				          <div class="dashboard-widget">
+				          <div class="dashboard-widget crowd_dashboard">
 				            <h4 class="pull-left">Interviews <span class="dashboard-datepkr dashboarddatepkr dashboarddatepkr">
-				            <input type="text" class="input-sm hasDatepicker" id="interviewdate">
+				            <input type="text" class="input-sm" id="professionalInterviewdate">
 				            <i class="fa fa-calendar"></i></span></h4>
-				            <ul class="nav nav-tabs">
-				              <li class="active"><a data-toggle="tab" href="#today">Today</a></li>
-				              <li><a data-toggle="tab" href="#upcoming">Upcoming</a></li>
-				              <li><a data-toggle="tab" href="#previous">Previous</a></li>
+				            <ul class="nav nav-tabs ml">
+				              <li class="active" id="todayTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); interviews('today')">Today</a></li>
+				              <li id="upcomingTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); interviews('upcoming')">Upcoming</a></li>
+				              <li id="previousTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); interviews('previous')">Previous</a></li>
 				            </ul>
-				            
-				           <div class="tab-content clearfix mt">
-				               <div id="today" class="tab-pane fade in active">
-				               <div class="clearfix require_wrap_table dashboard-data">
-							  <table>
-							    <thead>
-							      <tr>
-							        <th>Requirement Title</th>
-							        <th>Interview</th>
-							        <th>Location</th>
-							        <th>Interview Type</th>
-							        <th>Date &amp; Time</th>
-							        <th>Action</th>
-							      </tr>
-							      <tr>
-							        <td>
-							          <div class="tbldata-dotdot-big">Java Developer, Hibernet, Springs, MySql, Shutter</div>
-							        </td>
-							        <td>
-							          <div class="tbldata-dotdot-vsm">
-							          6 years</div></td>
-							        <td>
-							          <div class="tbldata-dotdot-sm">Banglore, India</div>
-							        </td>
-							        <td>
-							          <div class="tbldata-dotdot-100">100 US</div>
-							        </td>
-							        <td>
-							          <div class="tbldata-dotdot-vsm">23/12/2016</div>
-							        </td>
-							        <td>Selected</td>
-							      </tr>
-							    </thead>
-							    <tbody>
-							    </tbody>
-							  </table>
-				  <!-- Pagenation -->
-				  <nav class="clearfix">
-				    <ul id="paging" class="pagination pull-right">
-				      <li><a href="#">Previous</a></li>
-				      <li class="active"><a href="#">1</a></li>
-				      <li><a href="#">2</a></li>
-				      <li><a href="#">3</a></li>
-				      <li><a href="#">4</a></li>
-				      <li><a href="#">5</a></li>
-				      <li data-page="last"><a href="#">Next</a></li>
-				    </ul>
-				  </nav>
-				</div>
+				            <div class="clearfix"></div>
+				           <div class="tab-content clearfix require_wrap_table">
+				               <div id="today" class="tab-pane fade in active"> </div>
+	                		   <div id="upcoming" class="tab-pane fade in"> </div>
+                			   <div id="previous" class="tab-pane fade in"> </div>
+	           				</div>
+	          			</div>
 	               </div>
-	                <div id="upcoming" class="tab-pane fade in">
-				      <div class="clearfix require_wrap_table dashboard-data">
-				  <table>
-				    <thead>
-				      <tr>
-				        <th>Requirement Title</th>
-				        <th>Interview</th>
-				        <th>Location</th>
-				        <th>Interview Type</th>
-				        <th>Date &amp; Time</th>
-				        <th>Action</th>
-				      </tr>
-				      <tr>
-				        <td>
-				          <div class="tbldata-dotdot-big">Java Developer, Hibernet, Springs, MySql, Shutter</div>
-				        </td>
-				        <td>
-				          <div class="tbldata-dotdot-vsm">
-				          6 years</div></td>
-				        <td>
-				          <div class="tbldata-dotdot-sm">Banglore, India</div>
-				        </td>
-				        <td>
-				          <div class="tbldata-dotdot-100">100 US</div>
-				        </td>
-				        <td>
-				          <div class="tbldata-dotdot-vsm">23/12/2016</div>
-				        </td>
-				        <td>Selected</td>
-				      </tr>
-				    </thead>
-				    <tbody>
-				    </tbody>
-				  </table>
-				  <!-- Pagenation -->
-				  <nav class="clearfix">
-				    <ul id="paging" class="pagination pull-right">
-				      <li><a href="#">Previous</a></li>
-				      <li class="active"><a href="#">1</a></li>
-				      <li><a href="#">2</a></li>
-				      <li><a href="#">3</a></li>
-				      <li><a href="#">4</a></li>
-				      <li><a href="#">5</a></li>
-				      <li data-page="last"><a href="#">Next</a></li>
-				    </ul>
-				  </nav>
-				</div>
-               </div>
-                <div id="previous" class="tab-pane fade in">
-				   <div class="clearfix require_wrap_table dashboard-data">
-				  <table>
-				    <thead>
-				      <tr>
-				        <th>Requirement Title</th>
-				        <th>Interview</th>
-				        <th>Location</th>
-				        <th>Interview Type</th>
-				        <th>Date &amp; Time</th>
-				        <th>Action</th>
-				      </tr>
-				      <tr>
-				        <td>
-				          <div class="tbldata-dotdot-big">Java Developer, Hibernet, Springs, MySql, Shutter</div>
-				        </td>
-				        <td>
-				          <div class="tbldata-dotdot-vsm">
-				          6 years</div></td>
-				        <td>
-				          <div class="tbldata-dotdot-sm">Banglore, India</div>
-				        </td>
-				        <td>
-				          <div class="tbldata-dotdot-100">100 US</div>
-				        </td>
-				        <td>
-				          <div class="tbldata-dotdot-vsm">23/12/2016</div>
-				        </td>
-				        <td>Selected</td>
-				      </tr>
-				    </thead>
-				    <tbody>
-				    </tbody>
-				  </table>
-				  <!-- Pagenation -->
-				  <nav class="clearfix">
-				    <ul id="paging" class="pagination pull-right">
-				      <li><a href="#">Previous</a></li>
-				      <li class="active"><a href="#">1</a></li>
-				      <li><a href="#">2</a></li>
-				      <li><a href="#">3</a></li>
-				      <li><a href="#">4</a></li>
-				      <li><a href="#">5</a></li>
-				      <li data-page="last"><a href="#">Next</a></li>
-				    </ul>
-				  </nav>
-				</div>
-				
-				               
-				               </div>
-				           
-				           </div>
-				           
-				            </div>
-				        </div>
-				      </section>
+	       </section>
 				      
 				      
-			      <section class="mt"> 
-			        <!-- Assigned Requirements -->
-			        <div class="clearfix dashboard-widget mb col-md-12">
-			          <h4 class="pull-left">Applied Requirements <span class="dashboard-datepkr dashboarddatepkr">
-			            <input type="text" class="input-sm hasDatepicker" id="ar">
-			            <i class="fa fa-calendar"></i></span></h4>
-			          <div class="clearfix require_wrap_table dashboard-data">
-			            <table>
-			              <thead>
-			                <tr>
-			                  <th>Requirement Title</th>
-			                  <th>Experience</th>
-			                  <th>Location</th>
-			                  <th>Rate</th>
-			                  <th>Applied on</th>
-			                  <th>Status</th>
-			                </tr>
-			                <tr>
-			                  <td>
-			                    <div class="tbldata-dotdot-big">Java Developer, Hibernet, Springs, MySql, Shutter</div>
-			                  </td>
-			                  <td>
-			                    <div class="tbldata-dotdot-vsm">
-			                    6 years</div></td>
-			                  <td>
-			                    <div class="tbldata-dotdot-sm">Banglore, India</div>
-			                  </td>
-			                  <td>
-			                    <div class="tbldata-dotdot-100">100 US</div>
-			                  </td>
-			                  <td>
-			                    <div class="tbldata-dotdot-vsm">23/12/2016</div>
-			                  </td>
-			                  <td>Selected</td>
-			                </tr>
-			              </thead>
-			              <tbody>
-			              </tbody>
-			            </table>
-			            <!-- Pagenation -->
-			            <nav class="clearfix">
-			              <ul id="paging" class="pagination pull-right">
-			                <li><a href="#">Previous</a></li>
-			                <li class="active"><a href="#">1</a></li>
-			                <li><a href="#">2</a></li>
-			                <li><a href="#">3</a></li>
-			                <li><a href="#">4</a></li>
-			                <li><a href="#">5</a></li>
-			                <li data-page="last"><a href="#">Next</a></li>
-			              </ul>
-			            </nav>
-			          </div>
-			        </div>
-			        <!-- Pagenation Ends --> 
-			      </section>
-			      
-			      
-			      <section class="mt"> 
-			        <!-- Assigned Requirements -->
-			        <div class="clearfix dashboard-widget mb col-md-12">
-			          <h4 class="pull-left">Referred Requirements <span class="dashboard-datepkr dashboarddatepkr">
-			            <input type="text" class="input-sm hasDatepicker" id="rr">
-			            <i class="fa fa-calendar"></i></span></h4>
-			          <div class="clearfix require_wrap_table dashboard-data">
-			            <table>
-			              <thead>
-			                <tr>
-			                  <th>Requirement Title</th>
-			                  <th>Experience</th>
-			                  <th>Location</th>
-			                  <th>Rate</th>
-			                  <th>Referred on</th>
-			                  <th>Status</th>
-			                </tr>
-			                <tr>
-			                  <td>
-			                    <div class="tbldata-dotdot-big">Java Developer, Hibernet, Springs, MySql, Shutter</div>
-			                  </td>
-			                  <td>
-			                    <div class="tbldata-dotdot-vsm">
-			                    6 years</div></td>
-			                  <td>
-			                    <div class="tbldata-dotdot-sm">Banglore, India</div>
-			                  </td>
-			                  <td>
-			                    <div class="tbldata-dotdot-100">100 US</div>
-			                  </td>
-			                  <td>
-			                    <div class="tbldata-dotdot-vsm">23/12/2016</div>
-			                  </td>
-			                  <td>Selected</td>
-			                </tr>
-			              </thead>
-			              <tbody>
-			              </tbody>
-			            </table>
-			            <!-- Pagenation -->
-			            <nav class="clearfix">
-			              <ul id="paging" class="pagination pull-right">
-			                <li><a href="#">Previous</a></li>
-			                <li class="active"><a href="#">1</a></li>
-			                <li><a href="#">2</a></li>
-			                <li><a href="#">3</a></li>
-			                <li><a href="#">4</a></li>
-			                <li><a href="#">5</a></li>
-			                <li data-page="last"><a href="#">Next</a></li>
-			              </ul>
-			            </nav>
-			          </div>
-			        </div>
-			        <!-- Pagenation Ends --> 
-			      </section>
     <!-- Profile Content --> 
   </section>
+<script>
+function flushDate(){
+	$("#datepicker-int").val('');
+}
+</script>
+ <script>
+window.onload = interviews('today');
+function interviews(dateRange){
+	var resultToday ="";
+	var sourceleadUrl = '${sourceleadUrl}';
+	//$("#today").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+"/getProfessionalInterviews?dateRange="+dateRange,
+			success : function(data) {
+				var json = JSON.parse(data);
+				if(data != null && data != 'undefined' && data != "" && data != '[]'){
+              
+	              			$("#today").empty();
+	        	        	$("#upcoming").empty();
+	        	        	$("#previous").empty();
+	              			$("#today").removeAttr("style");
+	              			if(json.length > 0){
+	            				resultToday = resultToday+'	<table id="requirementInterviewsPagination" class="display" cellspacing="0" width="100%">';
+	            				resultToday = resultToday+'	<thead>';
+	            				resultToday = resultToday+'	  <tr>';
+	            				resultToday = resultToday+'	    <th>Requirement Title </th>';
+	            				resultToday = resultToday+'	    <th>Company Name</th>';
+	            				resultToday = resultToday+'	    <th>Date &amp; Time</th>';
+	            				resultToday = resultToday+'	    <th>Type</th>';
+	            				resultToday = resultToday+'	    <th>Location</th>';
+	            				resultToday = resultToday+'	  </tr>';
+	            				resultToday = resultToday+'	</thead>';
+	            				resultToday = resultToday+'	<tbody>';
+	            				
+	            				for (var i=0; i<json.length; i++){
+	            		       		var report = json[i];
+	            		       		var location ="";
+	            		       		var interviewType = "";
+	            		       		if(report.location != null && report.location != '' && report.location != 'undefined'){
+	            		       			location = report.location
+	            		       		}else{
+	            		       			location = "--";
+	            		       		}
+	            		       		if(report.interviewType != null && report.interviewType != "" && report.interviewType != 'undefined'){
+	            		       			interviewType = report.interviewType;
+	            		       		}else{
+	            		       			interviewType = "--";
+	            		       		}
+	            		       		
+	            						resultToday = resultToday+'	  <tr>';
+	            						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm"> <a href="'+sourceleadUrl+'/requirementProfile/'+report.requirementUUID+'"><span title ="'+report.requirementTitle+'">'+report.requirementTitle+'</span></a></div></td>';
+	            						resultToday = resultToday+'	   <td><div><span title="'+report.companyName+'">'+report.companyName+'</span></div></td>';
+	            						resultToday = resultToday+'	   <td><div class="tblminwidth-150">'+report.interviewStartDateTimeStr+'</div></td>';
+	            						resultToday = resultToday+'	   <td><div><span title="'+interviewType+'">'+interviewType+'</span></div></td>';
+	            						resultToday = resultToday+'	   <td><div><span title="'+location+'">'+location+'</span></div></td>';
+	            						resultToday = resultToday+'	 </tr>';
+	            					}
+	            					resultToday = resultToday+'	 </tbody>';
+	            					resultToday = resultToday+'	</table>';											
+	            			}
+	            	        if(dateRange == 'today'){
+	            	            $("#today").append(resultToday);
+	            	            requirementInterviewsPagination();
+	            	            $("#today").addClass("tab-pane fade in active");
+	            				$("#upcoming").removeClass("tab-pane fade in active");
+	            				$("#previous").removeClass("tab-pane fade in active");
+	            	        }else if(dateRange == 'previous'){
+	            				$("#previous").append(resultToday);
+	            				requirementInterviewsPagination();
+	            				$("#today").removeClass("tab-pane fade in active");
+	            				$("#upcoming").removeClass("tab-pane fade in active");
+	            				$("#previous").addClass("tab-pane fade in active");
+	            	        }else if(dateRange == 'upcoming'){
+	            				$("#upcoming").append(resultToday);
+	            				requirementInterviewsPagination();
+	            				$("#today").removeClass("tab-pane fade in active");
+	            				$("#previous").removeClass("tab-pane fade in active");
+	            				$("#upcoming").addClass("tab-pane fade in active");
+	            	        }else{
+	            	        	$("#today").append(resultToday);
+	            	            requirementInterviewsPagination();
+	            	            $("#todayTab").removeClass("active");
+	            				$("#upcomingTab").removeClass("active");
+	            				$("#previousTab").removeClass("active");
+	            	        }
+					}else{
+	               	 	$("#today").removeAttr("style");
+	               	 	$("#today").empty();
+     	        		$("#upcoming").empty();
+     	        		$("#previous").empty();
+	 	    	        var result ="";
+						result = result+"			<div class='blank-pages'>";
+						result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+						result = result+"			        <p>No Interviews Found</p>";
+						result = result+"			 </div>";
+					    $("#today").append(result); 
+	               }
+			},
+	});
+	return true;
+}
+</script>
 
+<script>
+function requirementInterviewsPagination(){
+    $('#requirementInterviewsPagination').DataTable( {
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+            "sSearch": ""
+       }
+    } );
+}
+</script>
+
+<script>
+$(function() {
+   $( "#professionalInterviewdate" ).datepicker({
+     changeMonth: true,
+     changeYear: true,
+     dateFormat: 'yy-mm-dd',
+     onSelect: function(){
+    	    var dt = $(this).val();
+    	    interviews(dt);
+   		}
+   });
+ });
+ </script>
+ 
 <jsp:include page="../masterFooter.jsp" />
