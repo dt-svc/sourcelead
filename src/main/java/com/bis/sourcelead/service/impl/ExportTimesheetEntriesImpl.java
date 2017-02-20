@@ -356,7 +356,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			                 
 			
 						 StringBuilder fileName=new StringBuilder();
-						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getEmployee().getUser(),grandTotalHours.longValue(),projectMember.getProjects().getProjectName(),submissionStatusStr,billableHours.toString(),nonBillableHours.toString());
+						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getEmployee().getUser(),grandTotalHours.longValue(),projectMember.getProjects().getProjectName(),submissionStatusStr,billableHours.longValue(),nonBillableHours.longValue());
 						file = new File(fileName.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString());
 						FileOutputStream fos = new FileOutputStream(file);
 						try {
@@ -393,7 +393,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}
 	
 
-	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, String weekStartDate, String weekEndDate, User user, Long totalHours, String projectName, String submissionStatusStr, String billableHours, String nonbillableHours) {
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, String weekStartDate, String weekEndDate, User user, Long totalHours, String projectName, String submissionStatusStr, Long billableHours, Long nonbillableHours) {
 
 		CellStyle style = createExcelworkbook.createCellStyle();
 	     style.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
@@ -446,7 +446,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		 cell31.setCellStyle(style);
 		 
 		 Cell cell41 = writeRow.createCell(4);
-		 cell41.setCellValue(billableHours);
+		 cell41.setCellValue(getTotalHours(billableHours));
 		 cell41.setCellStyle(style);
 		 
 		 writeRow = createExcelsheet.createRow(3);
@@ -470,7 +470,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		 cell51.setCellStyle(style);
 		 
 		 Cell cell61 = writeRow.createCell(4);
-		 cell61.setCellValue(nonbillableHours); 
+		 cell61.setCellValue(getTotalHours(nonbillableHours)); 
 		 cell61.setCellStyle(style);
 		 
 		 writeRow = createExcelsheet.createRow(4);
