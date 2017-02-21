@@ -5,7 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
-<script src="resources/js/formvalidator.js"></script>
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -86,7 +85,7 @@ bottom:-14px;
 							</div>
 						</div>
 
-                           <div class="form-group">
+                     <%-- <div class="form-group">
 							<label class="col-md-3">Skills</label>
 							<div class="col-md-9">
 								<select multiple class="chosen-select form-control"
@@ -101,7 +100,27 @@ bottom:-14px;
 									</c:forEach>
 								</select>
 							</div>
-						</div>
+						</div>  --%>
+						
+						 <div class="form-group">
+			              <label class="col-md-3">Skills</label>
+			              <div class="col-md-9">
+			                <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
+			               <c:forEach var="skill" items="${skillsList}">
+			               		<c:set var = "NUM" value = "${0}"/>
+			               		<c:forEach var="existedSkill" items="${requirement.reqSkillsListString}">
+								    <c:if test="${existedSkill eq skill}">
+								    	<c:set var = "NUM" value = "${1}"/>
+								    	<option selected value="${skill}">${skill}</option>
+								    </c:if>
+								</c:forEach>
+								<c:if test="${NUM == 0}">
+									<option  value="${skill}">${skill}</option>
+								</c:if>
+			                </c:forEach>
+			                </select>
+			              </div>
+			            </div> 
 	                       
 							<div class="form-group">
 								<label class="col-md-3">Employment Type</label>
