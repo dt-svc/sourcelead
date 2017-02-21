@@ -65,15 +65,16 @@ public class UserIndexHelper {
 			}
 			
 			
-			if(null == userRole.getCreatedBy() || "".equalsIgnoreCase(userRole.getCreatedBy())){
+			/*if(null == userRole.getCreatedBy() || "".equalsIgnoreCase(userRole.getCreatedBy())){
 				userIndex.setCreatedBy(loginUserCode);
-			}
+			}*/
+			userIndex.setCreatedBy(userRole.getCreatedBy());
 			/*if(null != userRole.getUpdatedDate()){
 				String updatedDate  = StringDate.format(new Date(userRole.getUpdatedDate().getTime()));
 				userIndex.setUpdatedDate(updatedDate);
 			}*/
 			
-			userIndex.setUpdatedBy(loginUserCode);
+			userIndex.setUpdatedBy(userRole.getUpdatedBy());
 		}
 		
 		
