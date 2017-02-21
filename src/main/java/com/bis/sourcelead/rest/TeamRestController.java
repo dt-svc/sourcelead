@@ -437,11 +437,10 @@ public class TeamRestController {
 		}
 
 		  
-		  /**
-			  * To  validate user email
-			  * @param EmailId
+		     /**
+			  * To  validate Team Name
+			  * @param name
 			  * @return
-			  * @throws Exception
 			  */
 			 @RequestMapping(value = "/validateTeamName" , method = RequestMethod.POST)
 			 public @ResponseBody  String validateTeamName(@RequestParam(value="name", required=false) String name,HttpServletRequest request) throws Exception {
