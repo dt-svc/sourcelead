@@ -292,7 +292,7 @@ public class TimeSheetPdfUtil {
 								map.put(projectMember.getProjects().getProjectName(), hoursList);
 						  }
 					Long totalHours = monTotHours+tueTotHours+wedTotHours+thuTotHours+friTotHours+satTotHours+sunTotHours;
-					document =  prepareHeadres(projectMember.getEmployee().getUser(),frequencyStartDate,frequencyEndDate,file,submissionStatusStr,orgLocations,projectMember.getProjects().getProjectName(),billableHours.toString(),nonBillableHours.toString(),grandTotalHours.longValue());
+					document =  prepareHeadres(projectMember.getEmployee().getUser(),frequencyStartDate,frequencyEndDate,file,submissionStatusStr,orgLocations,projectMember.getProjects().getProjectName(),billableHours.longValue(),nonBillableHours.longValue(),grandTotalHours.longValue());
 					int [] width2 = new int[]{5,5,5,5,5,5,5,5,5};
 					String[] headers2 = Constants.TIMESHEET_EXCEL_HEADERS2;
 					int [] width3 = new int[]{1};
@@ -446,7 +446,7 @@ public class TimeSheetPdfUtil {
 		return table;
 	}
 
-	private Document prepareHeadres(User user, String weekStartDate, String weekEndDate, File file, String submissionStatusStr, OrgLocations orgLocations,String projectName,String billableHours,String nonbillableHours, Long totalHours) {
+	private Document prepareHeadres(User user, String weekStartDate, String weekEndDate, File file, String submissionStatusStr, OrgLocations orgLocations,String projectName,Long billableHours,Long nonbillableHours, Long totalHours) {
 		 Document document = new Document(PageSize.LETTER.rotate());
 		    try {
 		    	StringBuilder nameSb = new StringBuilder();
@@ -479,9 +479,9 @@ public class TimeSheetPdfUtil {
 	            table.addCell("Name : "+nameSb.toString());
 	            table.addCell("Status : "+submissionStatusStr);
 	            table.addCell("Email Id : "+user.getEmail());
-	            table.addCell("Billabe Hours : "+billableHours);
+	            table.addCell("Billabe Hours : "+getTotalHours(billableHours));
 	            table.addCell("Phone Number : "+user.getMobilePhone());
-	            table.addCell("Non-Billabe Hours : "+nonbillableHours);
+	            table.addCell("Non-Billabe Hours : "+getTotalHours(nonbillableHours));
 	            table.addCell("Project : "+projectName);
 	            table.addCell("Total Hours : "+getTotalHours(totalHours));
 	            table.addCell("Frequency : "+weekSb.append(weekStartDate).append("_").append(weekEndDate).toString());

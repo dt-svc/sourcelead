@@ -389,8 +389,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 requirementSubmission.setCreatedBy(user.getUserCode());
 		 requirementSubmission.setCreatedDate(new Date());
 		 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-		 RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementSubmission.getRequirement().getId());
-		 String score = recommendationsService.getCandidateScore(candidate,requirementSubmission.getRequirement(),recommendedCustomizeScore);
+		 RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
+		 String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
 		 if(null !=score){
 			 requirementSubmission.setCandidateScore(score);			 
 		 }
@@ -775,9 +775,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 if(requirement.getSpocId() != null){
     			 Long managerId = null;
     			 if(null != requirement.getParentRequirement()){
-    				 managerId = requirement.getSpocId().getOwnerUser().getId();
+    				 managerId = requirement.getSpocId().getVendorUser().getId();
     			 }else{
-    				 managerId = requirement.getSpocId().getSpocUser().getId();
+    				 managerId = requirement.getSpocId().getClientUser().getId();
     			 }
     			 
     			 User requirementManager = userDao.getUserById(managerId);
@@ -992,8 +992,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 	}else{
 			globalVarsMap.put("location",requirement.getCountry());
 			}
-		 if(null != requirementSubmissionTemplateFields.getExpectedCTC() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedCTC())){
-			 globalVarsMap.put("requirementRate", requirementSubmissionTemplateFields.getExpectedCTC());
+		 if(null != requirementSubmissionTemplateFields.getExpectedCTC() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedCTC()) && null != requirementSubmissionTemplateFields.getExpectedRatePer() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedRatePer())){
+			 StringBuilder ratebuild = new StringBuilder();
+			 globalVarsMap.put("requirementRate", ratebuild.append(requirementSubmissionTemplateFields.getExpectedCTC()).append(" / ").append(requirementSubmissionTemplateFields.getExpectedRatePer()).toString());
 			 }else{
 				 globalVarsMap.put("requirementRate","--");
 			 }

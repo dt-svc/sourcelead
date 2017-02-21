@@ -405,7 +405,7 @@ public class RequirementServiceTest {
 			spocId.setId(1l);
 			OrgLocations responderLocationId= new OrgLocations();
 			responderLocationId.setId(1l);
-			spocId.setResponderLocationId(responderLocationId);
+			spocId.setClientLocationId(responderLocationId);
 			requirement.setSpocId(spocId);;
 			
 			StringBuilder location = new StringBuilder();
@@ -422,7 +422,7 @@ public class RequirementServiceTest {
 			User spocUser = new User();
 			spocUser.setEmail("ajith@gmail.com");
 			spocUser.setId(1l);
-			orgSpoc.setSpocUser(spocUser);
+			orgSpoc.setVendorUser(spocUser);
 			orgSpoc.setId(1l);
 			
 			String releasetype="VENDORS";

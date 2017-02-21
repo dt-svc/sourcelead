@@ -99,6 +99,7 @@ public class SecurityConfig  {
     			.antMatchers("/forgotPassword").permitAll() 
     			.antMatchers("/resetPasswordWithUserName").permitAll() 
     			.antMatchers("/resetPassword").permitAll() 
+    			.antMatchers("/referRequirementToProfessional").permitAll() 
     			.antMatchers("/ws/**").permitAll() 
     			.antMatchers("/verifyResetPassword").permitAll() 
     			.antMatchers("/acceptClientOrVendorInvitation").permitAll() 

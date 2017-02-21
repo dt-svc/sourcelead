@@ -2,8 +2,15 @@
  
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
 <%-- 
-     @author : Laxman.
+     @author : David Raju.
      this script is for edit Candidate.
      1.usage     :  used in professionalProfile.
      2.parameter : csrf token .
@@ -152,10 +159,9 @@ function editCandidate(candidateId){
 							
 							// If Candidate Type equals Consultant email field should be Disable mode
 							
-							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" >';
+						    result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" >';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6">';
@@ -179,7 +185,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<select class="chosen-select form-control select-bg" name="country" id="candidateCountry" value="'+json.country+'" field-name="Country">';
+							result = result + '<select class="chosen-select form-control select-bg" name="country" id="professionalCandidateCountry" value="'+json.country+'" field-name="Country">';
 							result = result + '</select>';
 							result = result + '</div>';
 							
@@ -392,12 +398,12 @@ function editCandidate(candidateId){
 									  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 									  '.chosen-select-width'     : {width:"95%"}
 									}
-							    $("#candidateCountry").chosen();
+							    $("#professionalCandidateCountry").chosen();
 							    $("#candidateState").chosen();
 							    $("#candidateCity").chosen();
 							   
 							    
-							    $("#candidateCountry").on('change', function (e) {
+							    $("#professionalCandidateCountry").on('change', function (e) {
 							 	   getAllCandidateStates();
 							    });
 							   
@@ -449,22 +455,22 @@ function getAllCandidateCountries(){
     	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
-        	$('html #candidateCountry').empty();
-        	$('html #candidateCountry').append('<option value="">---select---</option>');
+        	$('html #professionalCandidateCountry').empty();
+        	$('html #professionalCandidateCountry').append('<option value="">---select---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == countryName){
-            		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            		$('html #professionalCandidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}else if(json[i] == '${loginCountryName}' && countryName ==null && countryName ==''){
-            		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            		$('html #professionalCandidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{ 
-            		$('html #candidateCountry').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            		$('html #professionalCandidateCountry').append('<option value="'+json[i]+'">'+json[i]+'</option>');
             	} 
             	
             }
             
             getAllCandidateStates();
-            $('html #candidateCountry').trigger("chosen:updated");
+            $('html #professionalCandidateCountry').trigger("chosen:updated");
            
         },
         error: function(e){
@@ -477,7 +483,7 @@ function getAllCandidateCountries(){
 <script>
 function getAllCandidateStates(){
 	
-var countryName = $("html #candidateCountry").val();
+var countryName = $("html #professionalCandidateCountry").val();
 	
 	//to set existing state value(Auto populate)
 	var stateName = $("html #candidateState").val();
@@ -527,7 +533,7 @@ var countryName = $("html #candidateCountry").val();
 <script>
 function getCandidateCities(){
 	
-	var countryName = $("html #candidateCountry").val();
+	var countryName = $("html #professionalCandidateCountry").val();
 	var stateName = $("html #candidateState").val();
 	
 	var cityName = $("html #candidateCity").val();
@@ -568,102 +574,9 @@ function getCandidateCities(){
 
 <!-- Country,State,City Script Ends Here -->
 
+ 
 <%-- 
-     @author : Laxman
-     this script is for Delete Candidate.
-     1.usage     :  used in professionalProfile.
-     2.parameter : csrf token, candidateId
-     3.ajax url implementation in CandidateListRestController.
---%>
-
-<script>
-function deleteCandidate(candidateId){
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  var reason = document.getElementById("rejectReason").value;
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason,        
-         success :function(data) {
-              if(data != null && data != 'undefined' && data != ""){
-            			 location.replace(sourceleadUrl+"/candidatesList");
-                }
-                 },
-              }); 
-}
-</script>
-
-
-<%-- 
-     @author : Laxman
-     this script is for Delete Candidate alert
-     1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
---%>
-<script type="text/javascript">
-$('#selector').delay(2000).fadeOut('slow');
-function cancelAlert(){ 
-	$("#removeCandidateAlert").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
-</script>
-
-
-
-<%-- 
-     @author : Laxman
-     this script is for close alert popup.
-     1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
---%>
-<script type="text/javascript">
-function removeCandidateAlertMessage(candidateId){
-	$("#profileEditPopup").fadeOut();
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
-	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteCandidate("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
-	result = result +"	</div>";
-	$("#removeCandidateAlert").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-}
-</script>
-
-
-
-<%-- 
-     @author :Laxman
-    
-     1.usage     : used in reActivateCandidateAlertMessage() / professionalProfile Line number 388
-     2.parameters : candidateId
---%>
-
-<script type="text/javascript">
-function reActivateCandidateAlertMessage(candidateId){
-	var result = "";
-	var sourceleadUrl ='${sourceleadUrl}';
-	var message = confirm("You are choosing to ReActivate the Candidate");
-	if (message == true) {
-		var reactivate = '1';
-		$.ajax({
-	        type : "POST",
-	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reActivate="+reactivate,        
-	         success :function(data) {
-	               if(data != null && data != 'undefined' && data != ""){
-	            			 location.replace(sourceleadUrl+"/candidatesList");
-	                } 
-	                 },
-	              }); 
-		
-	}
-	
-}
-</script>
-
-
-
-<%-- 
-     @author : Laxman.
+     @author : sarath kumar.
      this script is for edit Candidate.
      1.usage     :  used in candidateList.jsp.
      2.parameter : csrf token .
@@ -683,11 +596,7 @@ function professionalProfile(candidateId){
 							var result ="";
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
-							if(json.status == '0'){
-								result = result + '<div class="project_tabs_inn_head mt10"><div class="anchor-inline"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> </div>';
-							}else{
-								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"> <a href="#" onClick="editCandidate('+candidateId+');" onChange="updateDesignationType(this);" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a></div>';
-							}
+						    result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"><a href="#" onClick="editCandidate('+candidateId+');" onChange="updateDesignationType(this);" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> </div>';
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
@@ -698,7 +607,7 @@ function professionalProfile(candidateId){
 					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
 				    	        }
 							
-							result = result +'		<div class="clearfix dashboard-widget candidate-profile mt">                                                                                                    ';
+							result = result +'		<div class="clearfix dashboard-widget candidate-profile mt">';
 							result = result +'		  <ul class="nav nav-tabs">                                                                                                                   ';
 							result = result +'		    <li class="active"><a data-toggle="tab" href="#skills">General View</a></li>                                                              ';
 							//result = result +'		    <li><a data-toggle="tab" href="#milestone">Milestone View</a></li>                                                                        ';
@@ -710,18 +619,16 @@ function professionalProfile(candidateId){
 							
 							result = result +'		          <!-- Select Skills -->                                                                                                              ';
 							
-							result = result +'		          <h2 class="education  pull-left">Skills:</h2>                                                                                                  ';
-							if(window.candidateStatusGlobal == '0'){
-								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
-								result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
-
-							}else{
-								result = result +'		              <div class="addSkills clearfix pull-right mt10"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
-							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
-							}
-							result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
-							result = result +'		                    <div class="clearfix div-padding">                                                                                        ';
-							result = result +'		                      <div class="col-md-10">                                                                                                 ';
+							result = result +'		<div class="clearfix">';
+							result = result +'		          <h2 class="education  pull-left">Skills:</h2>';
+							result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
+							result = result +'		          <span id="saveSkillBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
+							result = result +'		</div>';
+							
+							result = result + '<div class="clearfix"></div> ';
+							
+							result = result +'<div class="clearfix">';
+							
 							
 							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
 							<c:forEach var="skill" items="${skillsList}">
@@ -732,6 +639,7 @@ function professionalProfile(candidateId){
 						                res.forEach(function(item) {
 						                	if('${skill.name}' == item){
 						                		existed = 1;
+						                		result = result + ' <option selected value="${skill.name}">${skill.name}</option>';
 						                	}
 						                });
 					                }
@@ -740,74 +648,11 @@ function professionalProfile(candidateId){
 					                }
 			                </c:forEach>
 			                result = result + '</select>';
-							
-							result = result +'		                      </div> ';
-							result = result +'		          <div class="">                                                                                                         ';
-							result = result +'		            <div class="">                                                                                                  ';
-							result = result +'		              <!-- Add skills div -->                                                                                                         ';
-
-							/*result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="getAllSkills('+candidateId+'); removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';*/
-
-							
-							/* if(window.candidateStatusGlobal == '0'){
-								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
-								result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
-
-							}else{
-								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
-							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
-							}
-							result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
-							result = result +'		                    <div class="clearfix div-padding">                                                                                        ';
-							result = result +'		                      <div class="col-md-10">                                                                                                 ';
-							
-							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
-			                <c:forEach var="skill" items="${skillsList}">
-			              			  result = result + ' <option value="${skill.name}">${skill.name}</option>';
-			                </c:forEach>
-			                result = result + '</select>';
-							
-							result = result +'		                      </div> '; */ 
-							result = result +'		                      <div class="col-md-2">                                                                                                  ';
-							result = result + '                              <button class="btn btn-sm btn-primary pull-right mr" type="submit" onClick="saveSkils('+candidateId+');" >Add</button>';
-							result = result +'		                      </div>                                                                                                                  ';
-							result = result +'		                    </div>                                                                                                                    ';
-							result = result +'		                  </div>                                                                                                                      ';
-							result = result +'		                </div>                                                                                                                        ';
-							result = result +'		              </div>                                                                                                                          ';
-							
-							
-							result = result + '<div class="clearfix"></div> ';
-							
-							
-							
-							/* result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> '; */
-							
-							result = result +'		              <!-- Add skills div ends -->                                                                                                    ';
-							
-							result = result +'</div> ';
-							result = result +'</div>                                                                                                                              ';
-							result = result +'		          <!-- Select Skills -->                                                                                                              ';
-							
-							result = result +'<div class="clearfix mt"></div>';
-							result = result +'<div class="append_skill professinal-details">';  
-							result = result +'<ul class="list-inline list-unstyled">';
-							if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-								var skillsNameArray = json.skillsName.split(',');
-								 for (i=0;i < skillsNameArray.length;i++)
-					             {
-					            	  result = result+'<li>'+skillsNameArray[i]+'</li>';
-					            	  
-					             } 
-								//result = result + ' <li class="professinal-details"  value="${json.skillsName}">'+json.skillsName+'</li>'; 
-							}else{
-								result = result + ' <li class="professinal-details">NO DATA</li>';
-							}
-			               	
-			               
-							result = result +'</ul>'; 
 							result = result +'</div>';
-							result = result +'		        </div>';
+							result = result +'<div class="clearfix"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div> ';
 							
 							//Employee Div
 							result = result + '<div id="employeeSubmissionProfile"></div> '; 
@@ -877,6 +722,23 @@ function professionalProfile(candidateId){
 												
 									
 									});
+								
+								var config = {
+										  '.chosen-select'           : {},
+										  '.chosen-select-deselect'  : {allow_single_deselect:true},
+										  '.chosen-select-no-single' : {disable_search_threshold:10},
+										  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+										  '.chosen-select-width'     : {width:"95%"}
+							    }
+								for (var selector in config) {
+								  $(selector).chosen(config[selector]);
+								}
+								$('.chosen-select').each(function() {
+									var $this = $(this);
+									$this.next().css({'width': '100%'});
+									})
+								$("#skillName").chosen();
+								$("#skillName").prop('disabled', true).trigger("chosen:updated");
 								$(".close-div").click(function(){
 									$(".add-skills").removeClass('add-skills-active');
 									});
@@ -924,9 +786,40 @@ function professionalProfile(candidateId){
 }
 </script>
 
+<script>
+	function editSkill(candidateId){
+		$("#skillName").prop('disabled', false).trigger("chosen:updated");
+		$("#editSkillBtn").remove();
+		$("#editSkillBtnSpan").hide();
+		window.skillCountBefore = $("#skillName :selected").length;
+		var result = '';
+		result = result + '<button type="button" id="saveSkillBtn" name="saveSkillBtn" class="btn btn-primary btn-sm" onclick="saveSkill('+candidateId+');">Save Skill</button>';
+		$("#saveSkillBtnSpan").empty();
+		$("#saveSkillBtnSpan").append(result);
+		$("#saveSkillBtnSpan").show();
+	}
+
+	function saveSkill(candidateId){
+		$("#skillName").prop('disabled', true).trigger("chosen:updated");
+		window.skillCountAfter = $("#skillName :selected").length;
+		if(skillCountBefore != skillCountAfter){
+			saveSkils(candidateId);
+		}
+		$("#saveSkillBtn").remove();
+		$("#saveSkillBtnSpan").hide();
+		var result = '';
+		result = result + '<button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button>';
+		$("#editSkillBtnSpan").empty();
+		$("#editSkillBtnSpan").append(result);
+		$("#editSkillBtnSpan").show();
+		skillCountAfter = skillCountBefore = 0;
+	}
+</script>
+
 
 <%-- 
-     @author : Laxman.
+     @author : sarath kumar.
+     @author : venkat kesav (modified on 02/18/2017)
      this script is for save Skils in Candidate.
      1.usage     :  used in editCandidate() function  line 13
      2.parameter : csrf token ,candidateId.
@@ -940,12 +833,10 @@ function professionalProfile(candidateId){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({  
 	          type : "POST",
-	          url: sourceleadUrl+"/saveSkilsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
+	          url: sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
 	          success :function(data) {
-	               if(data != null && data != 'undefined' && data != ""){
-	            	   candidateSkillsList(candidateId);
-	            	   removeSkillPopUp(candidateId);
-	            	   professionalProfile(candidateId);
+	               if(data != null && data != 'undefined' && data != "" && data == "success"){
+	            	  //professionalProfile(candidateId);
 	               }
 	        },
 	          
@@ -959,7 +850,7 @@ function professionalProfile(candidateId){
  
  
  <%-- 
-     @author : Laxman.
+     @author : sarath kumar.
      this script is for remove Skill PopUp.
      1.usage     :  used in saveSkils() function line number 339
      2.parameter : candidateId  .
@@ -981,7 +872,7 @@ function removeSkillPopUp(candidateId){
 </script> 
   
 <%-- 
-     @author : Laxman.
+     @author : David Sammeta.
      this script is for upDate Candidate Details .
      1.usage     :  used in editCandidate() function  line 78
      2.parameter : csrf token .
@@ -1061,7 +952,7 @@ function cancelEdit(){
 
 
 <%-- 
-     @author : Laxman.
+     @author : sarath Kumar.
      this script is for upDate Candidate Details .
      1.usage     :  used in professionalProfile() function  line 258
      2.parameter : csrf token candidateId.
@@ -1219,7 +1110,7 @@ function candidateSkillsList(candidateId){
 
 
 <%-- 
-     @author : Laxman
+     @author : Venkat Kesav
      this script is for Remove Candidate Skill.
      1.usage     :  used in professionalProfile.
      2.parameter : csrf token, candidateId, Skill Name
@@ -1244,7 +1135,7 @@ function removeSkillById(candidateId, skillId){
      
           
 <%-- 
-     @author : Laxman.
+     @author : david sammeta.
      this script is for upDate Candidate Details .
      1.usage     :  used in upDateCandidate() function  line 379
 --%>         
@@ -1275,7 +1166,7 @@ function removeSkillById(candidateId, skillId){
 
 
 <%-- 
-     @author : Laxman.
+     @author : sarath kumar.
      this script is for inline edit saving .
      1.usage     :  used in  skillList(); 
      2.parameter : csrf token ,name , value.

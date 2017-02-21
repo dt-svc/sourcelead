@@ -320,6 +320,8 @@ public class SubmissionsRestController {
 			RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
 			if(pastRequirementRateSubmissionNegotiation != null){
 				requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+			}else{
+				requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 			}
 			
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
@@ -662,14 +664,13 @@ public class SubmissionsRestController {
 		StringBuilder sb = new StringBuilder();
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		requirement.setSubmitToClientFromMailId(user.getEmail());
-		
-		if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
-			
-				requirement.setSubmitToClientToMailId(requirement.getSpocId().getSpocUser().getEmail());
+		requirement.setSubmitToClientToMailId(requirement.getSpocId().getClientUser().getEmail());
+		/*if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
+				requirement.setSubmitToClientToMailId(requirement.getSpocId().getClientUser().getEmail());
 		 }
 		if(requirement.getSpocId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 			requirement.setSubmitToClientToMailId(requirement.getSpocId().getOwnerUser().getEmail());
-		}
+		}*/
 		StringBuilder subjectSB = new StringBuilder();
 		requirement.setSubmitToClientMailSubject(subjectSB.append("New applicants received for the").append(" ").append(requirement.getJobTitle()).toString());
 
@@ -686,14 +687,14 @@ public class SubmissionsRestController {
 			}
 		}else{
 			if(null != requirement.getSpocId()){
-				if(null != requirement.getSpocId().getSpocUser()){
+				if(null != requirement.getSpocId().getClientUser()){
 					sb.append("<p>").append("Hi,");
-					if(user.getId().longValue() == requirement.getSpocId().getSpocUser().getId().longValue()){
+					if(user.getId().longValue() == requirement.getSpocId().getClientUser().getId().longValue()){
 						sb.append(" ").append(requirement.getSpocId().getOwnerUser().getFirstName()).append(" ")
 						.append(requirement.getSpocId().getOwnerUser().getLastName()).append("</p>").append("\n");
 					}else{
-						sb.append(" ").append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ")
-						.append(requirement.getSpocId().getSpocUser().getLastName()).append("</p>").append("\n");
+						sb.append(" ").append(requirement.getSpocId().getClientUser().getFirstName()).append(" ")
+						.append(requirement.getSpocId().getClientUser().getLastName()).append("</p>").append("\n");
 					}
 					sb.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ").append(requirement.getJobTitle()).append("</p>")
 					.append("<p>").append("Total no.of submitted applicants :").append(submissions.length).append("</p>")
