@@ -204,6 +204,8 @@ public class Constants {
 
 	public static String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
 	public static String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
+	public static String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";
+	
 	
 	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 
@@ -361,7 +363,7 @@ public class Constants {
 
     public static String[] REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS ={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","ShortListed By","ShortListed On"};
     
-    public static String[] REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS={"Name","Email","Phone No","Experience"};
+    public static String[] REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS={"Name","Email","Phone No","Experience","DateOfInterview","TimeOfInterview","Location"};
     
     public static String[] REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS={"Name","Email","Phone No","Experience","OfferDateJoining","Position","Offer Rate","Offerd Date","Attachment"};
     
