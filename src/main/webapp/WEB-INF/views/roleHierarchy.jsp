@@ -6,6 +6,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -21,7 +22,7 @@
          <div class="row">
     
     <div class="col-md-offset-9 col-md-3">
-		<a href="#" class="btn btn-sm btn-primary btn-block addLevel-pop" ><i class="fa fa-plus"></i>&nbsp;Add Level</a>
+		<a href="#popAddLevel" class="btn btn-sm btn-primary btn-block addLevel-pop" ><i class="fa fa-plus"></i>&nbsp;Add Level</a>
     </div>
     
     
