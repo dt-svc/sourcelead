@@ -243,7 +243,7 @@ function getUsersSearchResult(searchValue){
 		 <li>
 			  <a href="javascript:void(0)">
 			  <i class="fa fa-user"></i></a>
-				<span class="action-search"><input type="text" placeholder="Email" id="searchByName"></span>
+				<span class="action-search"><input type="text" placeholder="Email/Name" id="searchByName"></span>
 				<span class="action-search" onclick="getUsersList('manual');"><i class="fa fa-search"></i></span>
 		  </li> 
 		
