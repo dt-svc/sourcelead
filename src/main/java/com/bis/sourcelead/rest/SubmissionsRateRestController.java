@@ -308,6 +308,7 @@ public class SubmissionsRateRestController {
 		if(null != requirementSubmissionTemplateFields){
 				requirementRateSubmission.setRequirementName(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getJobTitle());
 				requirementRateSubmission.setExpectedRate(requirementSubmissionTemplateFields.getExpectedCTC());
+				requirementRateSubmission.setExpectedRateType(requirementSubmissionTemplateFields.getExpectedRatePer());
 				User proposedByUser = userService.getUserDetailsByUserCode(requirementSubmissionTemplateFields.getCreatedBy());
 				if(null != proposedByUser.getFirstName() && null != proposedByUser.getLastName() && !"".equalsIgnoreCase(proposedByUser.getFirstName()) && !"".equalsIgnoreCase(proposedByUser.getLastName())){
 					 StringBuilder sb = new StringBuilder();
