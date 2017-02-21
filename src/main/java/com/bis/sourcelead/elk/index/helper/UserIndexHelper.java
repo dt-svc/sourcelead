@@ -35,7 +35,9 @@ public class UserIndexHelper {
 			userIndex.setOrgLocationId(userRole.getOrgLocations().getId());
 			userIndex.setEmail(user.getEmail());
 			userIndex.setMobilePhone(user.getMobilePhone());
-			userIndex.setIsMailSent(user.getIsMailSent().toString());
+			if(null != user.getIsMailSent()){
+				userIndex.setIsMailSent(user.getIsMailSent().toString());	
+			}
 			userIndex.setUserStatus(userRole.getUserState().toString());
 			userIndex.setUserType(userRole.getUserType());
 			
@@ -65,15 +67,16 @@ public class UserIndexHelper {
 			}
 			
 			
-			if(null == userRole.getCreatedBy() || "".equalsIgnoreCase(userRole.getCreatedBy())){
+			/*if(null == userRole.getCreatedBy() || "".equalsIgnoreCase(userRole.getCreatedBy())){
 				userIndex.setCreatedBy(loginUserCode);
-			}
+			}*/
+			userIndex.setCreatedBy(userRole.getCreatedBy());
 			/*if(null != userRole.getUpdatedDate()){
 				String updatedDate  = StringDate.format(new Date(userRole.getUpdatedDate().getTime()));
 				userIndex.setUpdatedDate(updatedDate);
 			}*/
 			
-			userIndex.setUpdatedBy(loginUserCode);
+			userIndex.setUpdatedBy(userRole.getUpdatedBy());
 		}
 		
 		

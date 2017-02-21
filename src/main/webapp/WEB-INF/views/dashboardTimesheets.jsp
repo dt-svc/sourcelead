@@ -103,32 +103,32 @@ function timeSheetSubmissionStatusCount(timesheetType){
 	                      $("#savedCountAnchor").html("Saved");
 	                  }else{
 	                	  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
-	                	  $("#savedCountAnchor").html("Saved");
-	                     /*  $("#savedCountAnchor").html("<a href='/sourcelead/totalTimesheetList/DRAFT'>Saved</a>"); */
+	                	 /*  $("#savedCountAnchor").html("Saved"); */
+	                      $("#savedCountAnchor").html("<a href='/sourcelead/totalTimesheetList/DRAFT'>Saved</a>"); 
 	                  }
 		        	if(waitingTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
 		        		  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
 	                      $("#waitingCountAnchor").html("Waiting");
 	                  }else{
 	                	  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
-	                	  $("#waitingCountAnchor").html("Waiting");
-	                      /* $("#waitingCountAnchor").html('<a  href="/sourcelead/totalTimesheetList/SUBMITTED">Waiting</a>'); */
+	                	  /* $("#waitingCountAnchor").html("Waiting"); */
+	                       $("#waitingCountAnchor").html('<a  href="/sourcelead/totalTimesheetList/SUBMITTED">Waiting</a>'); 
 	                  }
 		        	if(approvalTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
 		        		  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
 	                      $("#approvedCountAnchor").html("Approved");
 	                }else{
 	                	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
-	                	  $("#approvedCountAnchor").html("Approved");
-	                      /* $("#approvedCountAnchor").html('<a  href="/sourcelead/totalTimesheetList/APPROVED">Approved</a>'); */
+	                	/*   $("#approvedCountAnchor").html("Approved"); */
+	                      $("#approvedCountAnchor").html('<a  href="/sourcelead/totalTimesheetList/APPROVED">Approved</a>'); 
 	                  }
 		        	if(rejectedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
 		        		  $("#rejectedTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
 	                      $("#rejectedCountAnchor").html("Rejected");
 	                 }else{
 	                	 $("#rejectedTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
-	                     /*  $("#rejectedCountAnchor").html('<a  href="/sourcelead/totalTimesheetList/REJECTED">Rejected</a>'); */
-	                	 $("#rejectedCountAnchor").html("Rejected");
+	                     $("#rejectedCountAnchor").html('<a  href="/sourcelead/totalTimesheetList/REJECTED">Rejected</a>'); 
+	                	/*  $("#rejectedCountAnchor").html("Rejected"); */
 	                  }
 		 		}
 		  });

@@ -102,28 +102,24 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		if(searchType !=null && !"".equalsIgnoreCase(searchType) && Constants.REQUIREMENT.equalsIgnoreCase(searchType))
 		{
 			 Long maxResults = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
-			//All Keyword
+			//Any Keyword
 			 if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
-				 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
-					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-						 for(String keywd : allKeyWordArray){
-							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForRequirementSearch(keywd);
+				 ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+					if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : anyKeyWordArray){
+							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList =universalSearchHelper.getMatchQueryBuilderListForRequirementSearch(keywd);
 							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									allBoolSubQueryBuilder.should(matchQueryBuilder);
+									anyBoolSubQueryBuilder.should(matchQueryBuilder);
 								}
-								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 							}
 						}
-						 boolQueryBuilder.must(allBoolQueryBuilder);
-					}
+						 boolQueryBuilder.must(anyBoolQueryBuilder);
+					} 
 			 }
-			 
-			 
-			 
-			 
 			 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 				
 				if(searchHits != null && searchHits.length >0){
@@ -178,22 +174,24 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 			 Long maxResults = userRoleService.getUsersCountByOrgLocationID(orgLocation.getId());
-				//All Keywords
-				ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
-				if(null != allKeyWordArray && !allKeyWordArray.isEmpty()){
-					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : allKeyWordArray){
-						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+				//Any Keywords
+				ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if (null != anyKeyWordArray && !anyKeyWordArray.isEmpty()) {
+					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					for (String keywd : anyKeyWordArray) {
+						BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
 						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getUsersMatchQueryBuilderList(keywd);
-						if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
+
+						if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
+							for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
 							}
-							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 					}
-					 boolQueryBuilder.must(allBoolQueryBuilder);
+					boolQueryBuilder.must(anyBoolQueryBuilder);
 				}
+
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
@@ -235,22 +233,23 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			 boolQueryBuilder.must(combinedQueryBuilder);
 			
 			 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocation.getId(),responderType);
-				//All Keywords
-			 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
-				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : allKeyWordArray){
-						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+				//Any Keywords
+			 ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : anyKeyWordArray){
+						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
 						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
 						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
 							}
-							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 					}
-					 boolQueryBuilder.must(allBoolQueryBuilder);
+					 boolQueryBuilder.must(anyBoolQueryBuilder);
 				}
+
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
@@ -305,22 +304,23 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		{
                 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 			    Integer maxResults = projectsService.getProjectCountByOrgLocationId(orgLocation.getId());
-				//All Keywords
-			    ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
-				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : allKeyWordArray){
-						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+				//Any Keywords
+			    ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : anyKeyWordArray){
+						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
 						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getProjectsMatchQueryBuilderList(keywd);
 						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
 							}
-							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 					}
-					 boolQueryBuilder.must(allBoolQueryBuilder);
+					 boolQueryBuilder.must(anyBoolQueryBuilder);
 				}
+
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
@@ -340,22 +340,23 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&Constants.CANDIDATE.equalsIgnoreCase(searchType))
 		{
 			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
-				//All Keywords
-			 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
-				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : allKeyWordArray){
-						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+				//Any Keywords
+			 ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : anyKeyWordArray){
+						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
 						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
 						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
 							}
-							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 					}
-					 boolQueryBuilder.must(allBoolQueryBuilder);
+					 boolQueryBuilder.must(anyBoolQueryBuilder);
 				}
+		
 				
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -472,21 +473,22 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			 Long maxResultsForRequirement = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
 			//Elk for Requirement
 			 if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
-				 ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
-					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-						 for(String keywd : allKeyWordArray){
-							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForRequirementSearch(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									allBoolSubQueryBuilder.should(matchQueryBuilder);
-								}
-								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+				 ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				 if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : anyKeyWordArray){
+						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =universalSearchHelper.getMatchQueryBuilderListForRequirementSearch(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
 							}
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
-						 boolQueryBuilder.must(allBoolQueryBuilder);
 					}
+					 boolQueryBuilder.must(anyBoolQueryBuilder);
+				} 
+			
 			 }
 			 
 			 
@@ -544,21 +546,37 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			userBoolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 			 Long maxResultsForUser = userRoleService.getUsersCountByOrgLocationID(orgLocation.getId());
 			 
-				ArrayList<String> allKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
-				if(null != allKeyWordArray && !allKeyWordArray.isEmpty()){
-					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : allKeyWordArray){
-						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+				ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if (null != anyKeyWordArray && !anyKeyWordArray.isEmpty()) {
+
+					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					for (String keywd : anyKeyWordArray) {
+						BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
 						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getUsersMatchQueryBuilderList(keywd);
-						if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
+
+						if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
+							for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
 							}
-							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 					}
-					 userBoolQueryBuilder.must(allBoolQueryBuilder);
+					userBoolQueryBuilder.must(anyBoolQueryBuilder);
 				}
+//				if(null != allKeyWordArray && !allKeyWordArray.isEmpty()){
+//					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+//					 for(String keywd : allKeyWordArray){
+//						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+//						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getUsersMatchQueryBuilderList(keywd);
+//						if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
+//							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+//								allBoolSubQueryBuilder.should(matchQueryBuilder);
+//							}
+//							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+//						}
+//					}
+//					 userBoolQueryBuilder.must(allBoolQueryBuilder);
+//				}
 			
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -582,7 +600,8 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 				 String responderTypeAsClient = Constants.CLIENT;
 				 
 				 searchListForVendor =  getSearchListForClientsVendors(searchType,orgLocation,df,searchListForVendor,searchValue,responderTypeAsClient);
-				
+			//-----------------------sart
+				 //-------------------end
 			// ELK list for the projects
 				BoolQueryBuilder projectBoolQueryBuilder = new BoolQueryBuilder();
 				projectBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
@@ -594,7 +613,21 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 				//All Keywords
 //				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
 				 ArrayList<String> allKeyWordArrayForProjects = getSearchValuesFromChosenSelectField(searchValue);
-				if(allKeyWordArrayForProjects != null && !allKeyWordArrayForProjects.isEmpty()){
+					if(allKeyWordArrayForProjects != null && !allKeyWordArrayForProjects.isEmpty()){
+						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : allKeyWordArrayForProjects){
+							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getProjectsMatchQueryBuilderList(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							}
+						}
+						 projectBoolQueryBuilder.must(anyBoolQueryBuilder);
+					}
+			/*	if(allKeyWordArrayForProjects != null && !allKeyWordArrayForProjects.isEmpty()){
 					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : allKeyWordArrayForProjects){
 						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
@@ -607,7 +640,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 						}
 					}
 					 projectBoolQueryBuilder.must(allBoolQueryBuilder);
-				}
+				}*/
 			//	List<ProjectsIndex> projectsList = new ArrayList<ProjectsIndex>();
 //				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				SearchHit[] searchHitsForProjects = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResultsForProjects.intValue(),projectBoolQueryBuilder).getHits();
@@ -630,20 +663,35 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 				candidateBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 			 Long maxResultsForCandidate = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
 			 ArrayList<String> allKeyWordArrayForCandidate = getSearchValuesFromChosenSelectField(searchValue);
+			 
 				if(allKeyWordArrayForCandidate != null && !allKeyWordArrayForCandidate.isEmpty()){
-					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : allKeyWordArrayForCandidate){
-						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
 						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
 						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
 							}
-							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 					}
-					 candidateBoolQueryBuilder.must(allBoolQueryBuilder);
+					 candidateBoolQueryBuilder.must(anyBoolQueryBuilder);
 				}
+//				if(allKeyWordArrayForCandidate != null && !allKeyWordArrayForCandidate.isEmpty()){
+//					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+//					 for(String keywd : allKeyWordArrayForCandidate){
+//						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+//						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
+//						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+//							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+//								allBoolSubQueryBuilder.should(matchQueryBuilder);
+//							}
+//							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+//						}
+//					}
+//					 candidateBoolQueryBuilder.must(allBoolQueryBuilder);
+//				}
 				
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				
@@ -718,23 +766,36 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		
 		 Integer maxResultsClientAndVendor = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId(),responderType);
 			//All Keywords
-		 ArrayList<String> allKeyWordArrayForClientAndVendor = getSearchValuesFromChosenSelectField(searchValue);
-			if(allKeyWordArrayForClientAndVendor != null && !allKeyWordArrayForClientAndVendor.isEmpty()){
-				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-				 for(String keywd : allKeyWordArrayForClientAndVendor){
-					 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-					ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
-					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-							allBoolSubQueryBuilder.should(matchQueryBuilder);
-						}
-						allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+		 ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+//			if(allKeyWordArrayForClientAndVendor != null && !allKeyWordArrayForClientAndVendor.isEmpty()){
+//				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+//				 for(String keywd : allKeyWordArrayForClientAndVendor){
+//					 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+//					ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
+//					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+//						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+//							allBoolSubQueryBuilder.should(matchQueryBuilder);
+//						}
+//						allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+//					}
+//				}
+//				 clientVendorBoolQueryBuilder.must(allBoolQueryBuilder);
+//			}
+			
+		 if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+			 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+			 for(String keywd : anyKeyWordArray){
+				 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+				ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
+				if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+					for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+						anyBoolSubQueryBuilder.should(matchQueryBuilder);
 					}
+					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}
-				 clientVendorBoolQueryBuilder.must(allBoolQueryBuilder);
 			}
-			
-			
+			 clientVendorBoolQueryBuilder.must(anyBoolQueryBuilder);
+		}
 			SearchHit[] searchHitsForClientVendor = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResultsClientAndVendor.intValue(),clientVendorBoolQueryBuilder).getHits();
 			if(searchHitsForClientVendor != null && searchHitsForClientVendor.length >0){
 				ObjectMapper mapper = new ObjectMapper();

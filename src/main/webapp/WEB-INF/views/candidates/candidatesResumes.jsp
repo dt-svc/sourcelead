@@ -230,6 +230,7 @@ function addResume(candidateId) {
 				$("#add_resume").attr("disabled", "disabled");
          		$("#add_resume" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
+				alert("addd"+sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&resumeId="+resumeId);
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
@@ -442,9 +443,8 @@ function getResume(candidateId, resumeId){
         				 document.getElementById("title").value = json.title;
         			 }
         			 if(json.description != null && json.description != "undefined" && json.description != ""){
-        				 document.getElementById("description").value = json.description;
+        				 $("textarea#description").val(json.description);
         			 }
-        			 
         			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");
    		    }
 	     });

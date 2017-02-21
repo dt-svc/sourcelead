@@ -29,6 +29,8 @@ public interface ProjectsService {
 	
 		List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
 		
+		List<Projects> getAllProjectsEndDateGraterthanCurrentDate() throws Exception;
+		
 	    Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 		
 		Boolean deleteProjectById(Long id) throws Exception;
@@ -102,5 +104,7 @@ public interface ProjectsService {
 		Integer getProjectCountByOrgLocationId(Long orgLocationId)throws Exception;
 
 		List<Object> getAllUniversalSearchProjectsList(OrgLocations orgLocations, String searchValue) throws Exception;
+		
+		Boolean validateTasksName(String taskname, Long projectId) throws Exception;
 		
 }

@@ -32,4 +32,9 @@ public class SourceLeadRandomCodeHelper {
 		String xlsCode = RandomStringUtils.randomNumeric(4);
 		return xlsCode;
 	}
+	
+	public static String generateRandomUniquUserName() {
+		String orgCode = RandomStringUtils.randomAlphanumeric(6);
+		return orgCode;
+	}
 }

@@ -168,7 +168,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     			result = result +' <a><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
     		}
     		
-    		result = result +'<div class="export_pop">';
+    		result = result +'<div class="" id="exportPop" style="display:none;">';
     		result = result +'<ul>';
     		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
     			result = result +'<li onclick="exportToPdf(\''+projectId+'\',\''+projectName+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -690,7 +690,8 @@ function flushEmployee(){
 <script>
   $('#selector').delay(2000).fadeOut('slow');
   function exportFun(){
-	  $("#export-pop").next("div.export_pop").toggle();
+	  //$("#export-pop").next("div.export_pop").toggle();
+	  $("#exportPop").toggle();
   }
 </script> 
 
@@ -758,10 +759,10 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    result = result +'</div>';
    
    result = result +'<div class="form-group">';
-   result = result +'<label class="col-lg-3">End date <span class="text-danger">*</span></label>';
+   result = result +'<label class="col-lg-3">End date</label>';
    result = result +'<div class="col-lg-9 positionRelative">';
 
-   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-EndDate" name="Re-EndDate"  field-name="End Date" data-validation="required"/>';
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-EndDate" name="Re-EndDate"  field-name="End Date" />';
 
    result = result +'</div>';
    result = result +'</div>';

@@ -239,6 +239,26 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
+							<div class="form-group">
+				            <label class="col-md-3">Time Zone ${orgLocations.timezone.timeZoneId}<span class="text-danger">&nbsp;*</span></label>
+				            <div class="col-md-9">
+								 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Timezone" data-validation="required" id="timeZone" name="timeZone">
+									 <option value="" >Select Timezone</option>
+									 <c:forEach items="${timezoneList}" var="timezone">
+			                            <c:choose>
+			                                <c:when test="${timezone.timeZoneId eq orgLocations.timezone.timeZoneId}">
+			                                    <option value= "${timezone.id}" selected="selected">${timezone.timeZoneId}</option>
+			                                </c:when>
+			                                <c:otherwise>
+			                                    <option value="${timezone.id}">${timezone.timeZoneId}</option>
+			                                </c:otherwise>
+			                            </c:choose>
+			                         </c:forEach>
+			                     </select>
+			                     <span class="hidden">Time Zone</span>
+							</div>
+							</div>
+							
 							<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
 				   </div>
 				

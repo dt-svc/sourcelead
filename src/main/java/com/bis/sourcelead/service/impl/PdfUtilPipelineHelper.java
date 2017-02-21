@@ -17,6 +17,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionCounts;
 import com.bis.sourcelead.service.RequirementService;
@@ -185,7 +186,7 @@ public class PdfUtilPipelineHelper  {
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfInterview(),Constants.INTERVIEW_COUNT,file);
 	   
 		    try {
-		    	int [] width = new int[]{3,5, 3,5};
+		    	int [] width = new int[]{3,5,3,3,3,5,5};
 		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
@@ -642,7 +643,9 @@ public class PdfUtilPipelineHelper  {
 			requirementArray[3] = "--";
 		}
 		if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
-			requirementArray[4] = requirementsub.getCreatedDate().toString();
+			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			String createdDate = date.format(requirementsub.getCreatedDate());
+			requirementArray[4] = createdDate;
 
 		}else{
 			requirementArray[4] = "--";
@@ -782,6 +785,28 @@ public class PdfUtilPipelineHelper  {
 		}else{
 			requirementArray[3] = "--";
 		}
+		
+		java.util.List<RequirementInterview> rquirementInterviews = requirementsub.getRequirementInterviewList();
+		StringBuilder interviewStringBuilder = new StringBuilder();
+		for(RequirementInterview listInterviews:rquirementInterviews){
+			if(listInterviews.getDateOfInterview() != null && !"".equalsIgnoreCase(listInterviews.getDateOfInterview().toString())){
+				requirementArray[4] = Constants.DMY.format(listInterviews.getDateOfInterview());
+			}else{
+				requirementArray[4] = "--";
+			}
+			if(listInterviews.getStartTimeStr() != null && !"".equalsIgnoreCase(listInterviews.getStartTimeStr()) && listInterviews.getEndTimeStr() != null && !"".equalsIgnoreCase(listInterviews.getEndTimeStr())){
+				requirementArray[5] = interviewStringBuilder.append(listInterviews.getStartTimeStr()).append("-").append(listInterviews.getEndTimeStr()).toString();
+			}else if(listInterviews.getStartTimeStr() != null && !"".equalsIgnoreCase(listInterviews.getEndTimeStr())){
+				requirementArray[5] = interviewStringBuilder.append(listInterviews.getStartTimeStr()).toString();
+			}else{
+				requirementArray[5] = "--";
+			}
+			if(listInterviews.getLocation() != null && !"".equalsIgnoreCase(listInterviews.getLocation())){
+				requirementArray[6] = listInterviews.getLocation();
+			}else{
+				requirementArray[6] = "--";
+				}
+		}
 		return requirementArray;
 	}
 
@@ -820,7 +845,9 @@ public class PdfUtilPipelineHelper  {
 			requirementArray[3] = "--";
 		}
 		if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
-			requirementArray[4] = requirementsub.getCreatedDate().toString();
+			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			String createdDate = date.format(requirementsub.getCreatedDate());
+			requirementArray[4] = createdDate;
 
 		}else{
 			requirementArray[4] = "--";
@@ -846,8 +873,8 @@ public class PdfUtilPipelineHelper  {
 		}else{
 			requirementArray[8] = "--";
 		}
-		if(requirementsub.getStatus() != null){
-			requirementArray[9] = requirementsub.getStatus().toString();
+		if(requirementsub.getSubmissionStatus() != null){
+			requirementArray[9] = requirementsub.getSubmissionStatus().toString();
 		}else{
 			requirementArray[9] = "--";
 		}
@@ -900,7 +927,9 @@ public class PdfUtilPipelineHelper  {
 				requirementArray[3] = "--";
 			}
 			if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
-				requirementArray[4] = requirementsub.getCreatedDate().toString();
+				DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+				String createdDate = date.format(requirementsub.getCreatedDate());
+				requirementArray[4] = createdDate;
 
 			}else{
 				requirementArray[4] = "--";
@@ -927,8 +956,8 @@ public class PdfUtilPipelineHelper  {
 			}else{
 				requirementArray[8] = "--";
 			}
-			if(requirementsub.getStatus() != null){
-				requirementArray[9] = requirementsub.getStatus().toString();
+			if(requirementsub.getSubmissionStatus() != null){
+				requirementArray[9] = requirementsub.getSubmissionStatus().toString();
 			}else{
 				requirementArray[9] = "--";
 			}

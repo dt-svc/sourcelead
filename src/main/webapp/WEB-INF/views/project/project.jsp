@@ -19,7 +19,27 @@
 	z-index: 100000 !important;
 }
 </style>
+<script>
+function validateTaskName(){
 
+		var Taskname= $("#taskName").val();
+		var checkMaxTsRowNum = $("#maxTsRowNum").val();
+		for(i = 1; i<checkMaxTsRowNum;i++){
+			var oldTaskname = $("#" + i + "taskName").val()
+			if(oldTaskname == Taskname){
+				$("#save_task").hide();			
+				$("input#taskName").after("<p class='jquery_form_error_message'>"+ Taskname+ " is Already Existed</span>");
+				document.getElementById("taskName").setAttribute('record-exist', 'yes');
+				document.getElementById("taskName").setAttribute('record-exist-errorMsg',Taskname+ ' is Already Existed');
+				break;
+			}else{
+				$("#save_task").show();
+				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
+			}
+			
+		}
+}
+</script>
 
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
@@ -67,7 +87,7 @@
 						<div class="form-group" id="ProjectIdDiv">
 							<label class="col-lg-3">Project Id</label>
 							<div class="col-lg-9">
-								<input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_Space validate_Alphanumeric validate_length length2-50"
+								<input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_Space validate_length length2-50"
 									data-validation-optional="true" class="form-control" onblur="validateProjectSequeneNumber();">
 							</div>
 						</div>
@@ -84,7 +104,7 @@
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-5000"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-500"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -146,7 +166,7 @@
 														<div class="form-group" id="taskNameDIV">
 															<label class="col-md-3">Task Name</label>
 															<div class="col-md-9">
-																<input type="text" value="" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control">
+																<input type="text" value="" id="taskName" name="taskName" onkeyup="validateTaskName();" placeholder="Enter Task Name" class="form-control">
 															</div>
 														</div>
 														<div class="form-group">
@@ -214,7 +234,7 @@
 					 <c:if test="${not empty user_List}">
 						<div class="form-group">
 							<label class="col-md-3" for="Project Manager">Manager <span
-								class="text-danger">*</span></label>
+								class="text-danger">*&nbsp;<i class=" text-info fa fa-info-circle" title="Before Selecting The Manager Project Start Date is Mandatory"></i></span></label>
 							<div class="col-md-9">
 								<div class="form-icon-min">
 									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
@@ -416,7 +436,6 @@ function getStatus(){
 <!-- Add Task Script start -->
 <script type="text/javascript">
 	function addTasks() {
-
 		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
 		$('#descriptionDiv').find('p.jquery_form_error_message').remove();
 		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200 || $("#taskName").val().length > 100) {
@@ -634,6 +653,7 @@ function getStatus(){
 <!-- Add Task Script Ends -->
 <script type="text/javascript">
 function flushProjectTasks(){
+	$("#taskName").val('');
 	$('#addTask').find('p.jquery_form_error_message').remove();	
 }
 </script>
@@ -737,7 +757,10 @@ function flushProjectTasks(){
 							output = output + ' <tbody>';
 							for (var i = 0; i < json.length; i++) {
 								var projectStartDate = $('#StartDate').val();
-								// var projectEndDate = $('#EndDate').val();
+								var projectEndDate = $('#EndDate').val();
+								if(projectEndDate == null ||  projectEndDate == "" || projectEndDate == "undefined"){
+									projectEndDate = "";
+								}
 								var opt = json[i];
 								var role = '';
 								if (opt.userType != null
@@ -775,7 +798,7 @@ function flushProjectTasks(){
 									output = output+ "<input  id='startDate"+ opt.id+ "' type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
 									output = output + "</div></span></td>";
 									output = output+ "<td><div class='input-group tblminwidth-150'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
-									output = output + "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
+									output = output + "<input id='endDate" + opt.id + "'  value='"+projectEndDate+"' type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
 									output = output + "</div></td>";
 									output = output + "</tr>";
 								}

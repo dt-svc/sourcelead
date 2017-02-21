@@ -186,16 +186,15 @@
             <div class="row exp-drop">
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
-             		  <option value="" selected disabled>Years</option>
+             		  <option value="">Years</option>
              		  <c:forEach begin="0" end="24" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
-             		     <option>25+</option>
              		</select>
              </div>
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
-             		<option value="" selected disabled>Months</option>
+             		<option value="">Months</option>
              		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>

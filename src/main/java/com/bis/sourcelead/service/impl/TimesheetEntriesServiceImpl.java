@@ -1459,7 +1459,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					    		
 				                SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionLowLevelApproverHierarchyForEmployee(timesheetSubmissions.getId());
 				                if(sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("draft"))  || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("new")) || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("rejected")) || (sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("submitted")) && "approver".equalsIgnoreCase(savingType)  ) ){
-				                submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);	
+				                //submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);	
 					    		timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
 								
 						    	timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
