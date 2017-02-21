@@ -779,7 +779,7 @@ public class RequirementServiceImpl implements RequirementService {
 					if(null != savedRequirement.getId() && requirementAssignToList.size()!=0){
 						for (RequirementAssignTo newList : requirementAssignToList) {
 					       boolean found=false;
-					       if(!oldAssigntoTeamList.isEmpty()){
+					       if(null != oldAssigntoTeamList && !oldAssigntoTeamList.isEmpty()){
 					       for (RequirementAssignTo oldList : oldAssigntoTeamList) {
 					           if ((newList.getAssignUserId().getId().equals(oldList.getAssignUserId().getId()))) {
 					               found=true;

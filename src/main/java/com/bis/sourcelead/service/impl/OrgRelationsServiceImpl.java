@@ -334,6 +334,10 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				}
 				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(),loginUserId,orgLocationId,"");
 				orgRelation.setNoOfContatcs(orgSpocs.size());
+				
+				Integer spocsCount = orgSpocService.getAllClientContactsCountForCampaignByOrgLocationId(loginUserId,orgLocationId);
+				orgRelation.setNoOfContatcsForCampaign(spocsCount);
+				
 				if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == orgLocationId.longValue()){
 					if(orgRelation.getResponderLocationId() != null){
 						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());

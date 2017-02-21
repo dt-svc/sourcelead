@@ -154,11 +154,12 @@ public class RequirementController {
 			model.addObject("requirementId",requirementId);
 			if(null != requirement.getClientId()){
 				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId(),"Client");
-				if(null != clientContactList){
+				/*commented by Prasad salina, here no need to iterate list, because in service impl we already itarated the list.
+				 * if(null != clientContactList){
 					for(OrgSpoc orgSpoc : clientContactList){
-						//orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
+						orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
 					}
-				}
+				}*/
 			    model.addObject("clientContactList", clientContactList);
 			}
 		    
