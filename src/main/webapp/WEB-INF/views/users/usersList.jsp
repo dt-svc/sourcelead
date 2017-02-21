@@ -244,7 +244,7 @@ function getUsersSearchResult(searchValue){
 			  <a href="javascript:void(0)">
 			  <i class="fa fa-user"></i></a>
 				<span class="action-search"><input type="text" placeholder="Email" id="searchByName"></span>
-				<span class="action-search" onclick="searchUser('manual');"><i class="fa fa-search"></i></span>
+				<span class="action-search" onclick="getUsersList('manual');"><i class="fa fa-search"></i></span>
 		  </li> 
 		
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
@@ -438,7 +438,7 @@ function exportToPdf(){
 			  if (e.keyCode == 13) {
 			    $('input[name = searchByName]').click();
 				 $("#user_forms")[0].reset();
-				 searchUser("manual");
+				 getUsersList("manual");
 			  }
 			});
   </script> 
@@ -555,14 +555,14 @@ function exportToPdf(){
             	$('#loadMoreDiv').empty(); 
             	$("#loading").removeAttr("style");
             	var result ="";
-	         	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No More Records..</div>';
+	         	result = result + '<div id="loadMoreDiv" >No More Records..</div>';
 	         	$('#loadMoreDiv').append(result);
             }else{
             	$("#noUsers").val("nousers")
             	$('#loadMoreDiv').empty(); 
             	$("#loading").removeAttr("style");
             	var result ="";
-	         	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No  Records..</div>';
+	         	result = result + '<div id="loadMoreDiv" >No  Records..</div>';
 	         	$('#loadMoreDiv').append(result);
             }
 	    	
@@ -610,13 +610,13 @@ var validationSettings = {
 	function searchUser(type) {
 		if(type == "scroll"){
 			offset = $("#usersOffset").val();
-			var searchByName =  document.getElementById("searchElement").innerHTML
+			var searchByName =  document.getElementById("searchElement").innerHTML 
     	}
 		
 		if(type == "manual"){
     		$('#usersListBody').empty();
     		$("#usersOffset").val(0);
-    		$("#searchElement").val("");
+    	 	$("#searchElement").val("");
     		var searchByName = document.getElementById("searchByName").value;
    		     $('#searchElement').append(searchByName);
     		 offset = 0;
@@ -774,7 +774,7 @@ function getUserSummary(userId){
 		    	$('#loadMoreDiv').empty(); 
 		    	$("#loading").removeAttr("style");
 		    	var result ="";
-		     	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No More Records..</div>';
+		     	result = result + '<div id="loadMoreDiv" >No More Records..</div>';
 		     	$('#loadMoreDiv').append(result);
 		    }
 			  else{
@@ -783,7 +783,7 @@ function getUserSummary(userId){
 		      	  $('#loadMoreDiv').empty(); 
 		          $("#loading").removeAttr("style");
 		          var result ="";
-		       	  result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No  Records..</div>';
+		       	  result = result + '<div id="loadMoreDiv" >No  Records..</div>';
 		       	  $('#usersListBody').append(result);
 		      }
   }
