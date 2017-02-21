@@ -171,11 +171,6 @@ public class OrgDocumentsRestController {
 		
 		//to fetch client contact list
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId(),"Client");
-		for (OrgSpoc orgSpoc : orgSpocsList) {
-			StringBuilder name = new StringBuilder();
-			/*orgSpoc.setSpocName(name.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());*/
-		}
 		
 		//to fetch Owners list
 		List<User> ownersList = userService.getOwnersByOrgLocationId(orgLocations.getId());

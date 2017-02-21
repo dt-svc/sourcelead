@@ -444,7 +444,7 @@ function closePopup(){
 </script>
 
 <script>
-function getSpocsList(orgRelationId){alert("hh");
+function getSpocsList(orgRelationId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
     	type: "POST",

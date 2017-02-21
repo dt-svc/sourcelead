@@ -872,7 +872,7 @@ public class ClientServiceImpl implements ClientService{
 		@Override
 		public void sendAcceptEmailToClientOrVendor(OrgSpoc orgSpoc,User loginUser,OrgLocations orgLocations) throws Exception {
 			 
-			 /*EmailMessage emailMessage = new EmailMessage();
+			 EmailMessage emailMessage = new EmailMessage();
 			 if(null != orgSpoc.getOwnerUser()){
 				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
@@ -888,8 +888,8 @@ public class ClientServiceImpl implements ClientService{
 			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
 				 globalVarsMap.put("firstName", emailMessage.getFirstName());
 				 globalVarsMap.put("lastName",emailMessage.getLastName());
-				 globalVarsMap.put("vendorFirstName",orgSpoc.getSpocUser().getFirstName());
-				 globalVarsMap.put("vendorLastName",orgSpoc.getSpocUser().getLastName());
+				 globalVarsMap.put("vendorFirstName",orgSpoc.getVendorUser().getFirstName());
+				 globalVarsMap.put("vendorLastName",orgSpoc.getVendorUser().getLastName());
 				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
 				  
 				 StringBuilder loginBuilder = new StringBuilder();
@@ -932,14 +932,14 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setOrgLocationId(orgLocations.getId());
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());*/
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		
 		}
 
 		@Override
 		public void sendRejectEmailToClientOrVendor(OrgSpoc orgSpoc, User loginUser, OrgLocations orgLocations)throws Exception {
 			
-			/*EmailMessage emailMessage = new EmailMessage();
+			EmailMessage emailMessage = new EmailMessage();
 			 if(null != orgSpoc.getOwnerUser()){
 				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
@@ -955,8 +955,8 @@ public class ClientServiceImpl implements ClientService{
 			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
 				 globalVarsMap.put("firstName", emailMessage.getFirstName());
 				 globalVarsMap.put("lastName",emailMessage.getLastName());
-				 globalVarsMap.put("vendorFirstName",orgSpoc.getSpocUser().getFirstName());
-				 globalVarsMap.put("vendorLastName",orgSpoc.getSpocUser().getLastName());
+				 globalVarsMap.put("vendorFirstName",orgSpoc.getVendorUser().getFirstName());
+				 globalVarsMap.put("vendorLastName",orgSpoc.getVendorUser().getLastName());
 				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
 				 
 			 }else if( Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
@@ -992,7 +992,7 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setOrgLocationId(orgLocations.getId());
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());*/
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		}
 
 

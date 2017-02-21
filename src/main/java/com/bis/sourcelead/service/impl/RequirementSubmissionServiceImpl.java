@@ -773,11 +773,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     	
     		 if(requirement.getSpocId() != null){
     			 Long managerId = null;
-    			/* if(null != requirement.getParentRequirement()){
-    				 managerId = requirement.getSpocId().getOwnerUser().getId();
+    			 if(null != requirement.getParentRequirement()){
+    				 managerId = requirement.getSpocId().getVendorUser().getId();
     			 }else{
-    				 managerId = requirement.getSpocId().getSpocUser().getId();
-    			 }*/
+    				 managerId = requirement.getSpocId().getClientUser().getId();
+    			 }
     			 
     			 User requirementManager = userDao.getUserById(managerId);
     			 emailMessage.setFirstName(requirementManager.getFirstName());

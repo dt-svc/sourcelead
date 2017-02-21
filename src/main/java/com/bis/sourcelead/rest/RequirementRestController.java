@@ -570,17 +570,17 @@ public class RequirementRestController {
 				user.getId(), orgLocations.getId(),"Client");
 		for (OrgSpoc orgSpoc : orgSpocsList) {
 			String ownerLastName = "";
-			/*if (null != orgSpoc.getOwnerUser() && null != orgSpoc.getOwnerUser().getLastName()) {
-				ownerLastName = orgSpoc.getOwnerUser().getLastName();
+			if (null != orgSpoc.getVendorUser() && null != orgSpoc.getVendorUser().getLastName()) {
+				ownerLastName = orgSpoc.getVendorUser().getLastName();
 			}
 			StringBuilder spocNameSB = new StringBuilder();
 			StringBuilder ownerNameSB = new StringBuilder();
-			orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+			orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+			orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
+			orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
 			orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(ownerLastName).toString());
-			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
-			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());*/
+			orgSpoc.setOwnerUserId(orgSpoc.getVendorUser().getId().toString());
+			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 		}
 		return commonUtil.toJSON(orgSpocsList);
 	}

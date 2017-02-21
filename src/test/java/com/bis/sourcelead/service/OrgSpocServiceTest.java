@@ -77,17 +77,18 @@ public class OrgSpocServiceTest {
 		/*user.setUserState(Status.ACTIVE);
 		user.setUserType("employee");*/
 		user.setWorkPhone("1233467890");
-		//orgSpoc.setSpocUser(user);
+		orgSpoc.setVendorUser(user);
 		
 		User ownerUser = userService.getUserById(3l);
-		//orgSpoc.setOwnerUser(ownerUser);
+		orgSpoc.setOwnerUser(ownerUser);
+		orgSpoc.setClientUser(ownerUser);
 		
 		orgSpoc.setInvitationStatus("New");
 		
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(3L);
-		//orgSpoc.setInitiatorLocationId(orgLocations);
+		orgSpoc.setVendorLocationId(orgLocations);
 		OrgLocations clientOrgLocations = orgLocationService.getOrgLocations(5L);
-		//orgSpoc.setResponderLocationId(clientOrgLocations);
+		orgSpoc.setClientLocationId(clientOrgLocations);
 		orgSpoc.setSpocStatus("Active");
 		orgSpoc.setStatus("Active");
 		

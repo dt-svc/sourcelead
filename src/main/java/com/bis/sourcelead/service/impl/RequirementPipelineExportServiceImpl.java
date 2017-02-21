@@ -189,6 +189,20 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		 }
 		 
 		 //client contact name related code start
+		 if(requirementsub.getRequirement().getId() != null){
+			 if(requirementsub.getRequirement().getSpocId().getId() != null){
+				 if(requirementsub.getRequirement().getSpocId().getOwnerUser().getId() != null){
+					 StringBuilder spocSB = new StringBuilder();
+					 if(requirementsub.getRequirement().getSpocId().getClientUser().getLastName() != null ){
+						 writeRow.createCell(13).setCellValue(spocSB.append(requirementsub.getRequirement().getSpocId().getClientUser().getFirstName()).append(" ").append(requirementsub.getRequirement().getSpocId().getClientUser().getLastName()).toString());
+					 }else{
+						 writeRow.createCell(13).setCellValue(spocSB.append(requirementsub.getRequirement().getSpocId().getClientUser().getFirstName()).toString());
+					 }
+				 }
+			 }
+		 }
+		 
+		 
 		 /*if(requirementsub.getRequirement().getSpocId().getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
 			 if(requirementsub.getRequirement().getId() != null){
 				 if(requirementsub.getRequirement().getSpocId().getId() != null){

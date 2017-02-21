@@ -331,106 +331,11 @@ public class RequirementReleaseRestController {
 				for(String vendor   : vendors){
 					
 					
-					/*OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(vendor));
+					OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(vendor));
 					
 					 List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),loginOrgLocation.getId(), "Client","Active",vendor,"Accepted");
 					
 					for(OrgSpoc orgSpoc : vandorsContactListByOrgLocationId){
-						
-						if(orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue() || orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
-							//if login user is spoc
-							if(orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()){
-								if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
-									StringBuilder spocNameSB = new StringBuilder();
-									orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
-								}else{
-									orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName());
-								}
-								if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
-									StringBuilder ownerNameSB = new StringBuilder();
-									orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-								}else{
-									orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName());
-								}
-			    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
-			    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-			    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-			    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
-							}
-							//if login user is Owner
-							else if(orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
-								if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
-									StringBuilder spocNameSB1 = new StringBuilder();
-									orgSpoc.setSpocName(spocNameSB1.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-								}else{
-									orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
-								}
-								if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
-									StringBuilder ownerNameSB1 = new StringBuilder();
-									 orgSpoc.setOwnerName(ownerNameSB1.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
-								}else{
-									orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
-								}     
-									 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-									 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-									 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-									 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-								}
-								
-							 
-						}else{
-							if(orgSpoc.getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
-								if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
-									StringBuilder spocNameSB2 = new StringBuilder();
-									orgSpoc.setSpocName(spocNameSB2.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-								}else{
-									orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
-								}
-								
-								if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
-									StringBuilder ownerNameSB2 = new StringBuilder();
-									orgSpoc.setOwnerName(ownerNameSB2.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
-								}else{
-									orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
-								}
-								 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-								 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-								 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-								 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-							 }
-							if(orgSpoc.getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
-								if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
-									StringBuilder spocNameSB3 = new StringBuilder();
-									orgSpoc.setSpocName(spocNameSB3.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
-								}else{
-									orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName());
-								}
-								
-								if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
-									StringBuilder ownerNameSB3 = new StringBuilder();
-									orgSpoc.setOwnerName(ownerNameSB3.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-								}else{
-									orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName());
-								}
-							    orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
-							    orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-							    orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-							    orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
-							}
-						}
-						if(orgSpoc.getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
-							orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
-							orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
-						}
-						if(orgSpoc.getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
-							orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
-							orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
-						}
-						
-						orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
-						orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
-						orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
-						
 					    Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(requirementId, orgSpoc.getId());
 					    if(isJobReleased.toString().equalsIgnoreCase("false")){
 					    	Requirement requirement  = new Requirement();
@@ -439,7 +344,7 @@ public class RequirementReleaseRestController {
 							requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype);
 
 					    }
-					}*/
+					}
 				}
 			}
 			
@@ -493,6 +398,10 @@ public class RequirementReleaseRestController {
 			requirement.setCreatedBy(orgSpoc.getSpocUser().getUserCode());
 		}*/
 		
+		requirement.setOrgLocationId(orgSpoc.getVendorLocationId());
+		requirement.setManagerUserId(orgSpoc.getClientUser());
+		requirement.setUpdatedBy(orgSpoc.getClientUser().getUserCode());
+		requirement.setCreatedBy(orgSpoc.getClientUser().getUserCode());
 		
 		requirement.setJobTitle(parentRequirement.getJobTitle());
 		requirement.setJobType(parentRequirement.getJobType());
