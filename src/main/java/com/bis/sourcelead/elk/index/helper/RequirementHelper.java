@@ -54,10 +54,10 @@ public class RequirementHelper {
 			}
 			requirementIndex.setRateType(requirement.getRateType());
 			if (requirement.getMinExp() !=null && !"".equalsIgnoreCase(requirement.getMinExp())) {
-				requirementIndex.setMinExperience(Integer.parseInt(requirement.getMinExp()));
+				requirementIndex.setMinExperience(requirement.getMinExp());
 			}
 			if (requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())) {
-				requirementIndex.setMaxExperience(Integer.parseInt(requirement.getMaxExp()));
+				requirementIndex.setMaxExperience(requirement.getMaxExp());
 			}
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
 			//requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus().toString());

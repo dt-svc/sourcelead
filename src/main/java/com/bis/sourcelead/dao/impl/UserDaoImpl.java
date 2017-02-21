@@ -553,6 +553,11 @@ public class UserDaoImpl implements UserDao {
 				 String query = "from User user where user.id IN (select "+subQuery+" ) ";
 			     List<User> userRoleListTeam = session.createQuery(query).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
 			     userRoleList.addAll(userRoleListTeam);
+			     
+			     String subQuery1 = "team.ownerUserId.id from Team team where team.id ="+teamId+" and team.orgLocationsId.id=:orgLocationsId and team.ownerUserId.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))  and  team.status != 0 ";
+				 String query1 = "from User user where user.id IN (select "+subQuery1+" ) ";
+			     List<User> userRoleListTeamOwner = session.createQuery(query1).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+			     userRoleList.addAll(userRoleListTeamOwner);
 			 }
 	     }
 		/*String query = "from User user where user.id IN (select "+subQuery+" ) ";

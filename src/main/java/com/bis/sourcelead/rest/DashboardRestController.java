@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.RequirementIndex;
-import com.bis.sourcelead.elk.index.helper.RequirementHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.DashboardCounts;
@@ -146,8 +145,12 @@ public class DashboardRestController {
 		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
    			    userRole.setUserState(Status.ACTIVE);
-   			    userRoleService.addUserRole(userRole);
+   			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
+   			   
+   			   //user update/save in user Elk
+   			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
    		      }
+				
 		     StringBuilder redirectUrl = new StringBuilder();
 		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).toString());
 			
@@ -412,9 +415,12 @@ public class DashboardRestController {
 			
 			String currentTime = null;
 			String userType = null;
+			Timezone timezone = null;
 			String userCode = user.getUserCode();
 			Long userId = user.getId();
-			Timezone timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			if(loginOrgLocations.getTimezone() != null){
+				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			}
 			
 			
 			if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
@@ -452,12 +458,13 @@ public class DashboardRestController {
 				
 				//changed as per the timezone
 				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
-				
-				String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
-				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-				Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = standardFormat.format(converteDate);
-				interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
+				if(timezone != null){
+					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
+					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+					Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+					currentDateInTimezone = standardFormat.format(converteDate);
+					interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
+				}
 				
 				 if(interviewHistory.getSubmissionId().getRequirement().getClientId() != null){
 						if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){

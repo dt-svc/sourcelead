@@ -415,7 +415,7 @@
 						result = result + '<div class="user_summary_edit_cta" id="endDateDiv">';
 						result = result + '<label>End date <span class="text-danger" id="endDateSpan" style="display: none; ">*</span></label>';
 						result = result
-								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" field-name="End Date" >';
+								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" field-name="End Date" readonly="readonly">';
 						result = result + '<input type="hidden" name="dbEndDateStr" id="dbEndDateStr" value="'+endDateStr+'" >';
 						result = result + '</div>';
 						

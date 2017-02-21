@@ -403,9 +403,13 @@ public class RequirementListRestController {
 					Integer highestLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
 					ArrayList<String> ar = new ArrayList<String>();
 					if(list !=null && list.size() >0){
+						StringBuilder sb = new StringBuilder();
 						for(RequirementApproverHierarchy approverN :list ){
 							StringBuilder approverSB = new StringBuilder();
 							ar.add(approverSB.append(approverN.getApproverUserId().getFirstName()).append(" ").append(approverN.getApproverUserId().getLastName()).toString());
+							if(Constants.REJECTED.equalsIgnoreCase(approverN.getRequirementApproverStatus().toString())){
+								requirement.setRejectReason(sb.append(requirementApproverHierarchy.getRejectedReason()).toString());
+							}
 						}
 						requirement.setHighestLevel(highestLevel);
 						requirement.setApproverNames(ar);

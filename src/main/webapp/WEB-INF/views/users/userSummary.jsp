@@ -745,7 +745,7 @@ function getChangeRole(userId,userRoleId){
 	</div> -->
 
  <div class="remove_pop" style="display: none;">
-	<i class="fa fa-trash"></i><span>User successfully terminated</span>
+	<i class="fa fa-trash"></i><span>User successfully Removed</span>
 </div> 
 
 <div id="popUp"></div>
@@ -984,7 +984,7 @@ function getChangeRole(userId,userRoleId){
                  if(data == "success"){
                 	 $("#selectoruser").removeAttr("style");
           			 $("#selectoruser").css({ display: "block" });
-          			 $("#userMsgDiv").html("Success!! User Terminated");
+          			 $("#userMsgDiv").html("Success!! User Removed");
                  	 location.replace(sourceleadUrl+"/usersList");
                  	 userMsgFadein();
                  }
@@ -1901,6 +1901,10 @@ function reActiveUser(userId){
                type: "POST",
             url: sourceleadUrl+"/reActiveUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId,        
                success: function(data) {
+            	   $("#selectoruser").removeAttr("style");
+        		   $("#selectoruser").css({ display: "block" });
+        		   $("#userMsgDiv").html("Success!! User reactivated for sourcelead");
+               	   location.replace(sourceleadUrl+"/usersList");
             	   userDetails(userId);
                }
        });

@@ -19,7 +19,6 @@ window.onload = function () {
 </script>
 
 
-
 <section class="content-wraper openJobsWrap">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -263,7 +262,8 @@ window.onload = function () {
 	 <div class="side_mask"><div class="proj_close"></div></div>
 	 <div class="new_side_wrap">
 		<div id="applytoJobDiv"></div>
-	 </div>    
+	 </div> 
+	 
             
 	  </section>
 
@@ -632,7 +632,7 @@ function requirementsList(offset){
 				 				result = result +'<div class="openPostBtns">';
 				 				
 				 				if((requirementType == "OpenJobs")|| (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
-				 					result = result +'<a href="javascript:void(0)" onclick="applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
+				 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
 				 				}
 				 				
 				 				if(requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'Y'){
@@ -641,7 +641,12 @@ function requirementsList(offset){
 				 				
 				 				
 				 				if(requirementType == "CrowdSourcingJobs"){
-				 					result = result +'<a class="refer" href="javascript:void(0)">Refer</a>';
+				 					result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+')" href="javascript:void(0)">Refer</a>';
+				 					result = result +'<div class="referWrap" id="refer'+requirements.requirementId+'">';
+					 				result = result +'<div class="referWrapInn">';
+					 				result = result +'<div id="refertoJobDiv'+requirements.requirementId+'"></div>';  
+					 				result = result +'</div>';
+					 				result = result +'</div>';
 				 				}
 				 				
 				 				result = result +'</div>';
@@ -841,7 +846,7 @@ function searchRequirement(offset){
 										 				result = result +'<div class="openPostBtns">';
 										 				
 										 				if((requirementType == "OpenJobs")|| (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
-										 					result = result +'<a href="javascript:void(0)" onclick="applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
+										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
 										 				}
 										 				
 										 				if(requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'Y'){
@@ -850,7 +855,12 @@ function searchRequirement(offset){
 										 				
 										 				
 										 				if(requirementType == "CrowdSourcingJobs"){
-										 					result = result +'<a class="refer" href="javascript:void(0)">Refer</a>';
+										 					result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+')" href="javascript:void(0)">Refer</a>';
+										 					result = result +'<div class="referWrap" id="refer'+requirements.requirementId+'">';
+											 				result = result +'<div class="referWrapInn">';
+											 				result = result +'<div id="refertoJobDiv'+requirements.requirementId+'"></div>';  
+											 				result = result +'</div>';
+											 				result = result +'</div>';
 										 				}
 										 				
 										 				result = result +'</div>';
@@ -904,6 +914,82 @@ $('body').on('blur', '#professional_requirement_search_form', function() {
 });
 </script>
 
+
+<script>
+function referToJob(requirementId){
+	   appendReferToJob(requirementId); 
+	   removeReferPopUp();
+	    
+	   var result = ''
+	    
+	    result = result + '<form id="referToJob_form" name="referToJob_form" method="post">';
+		result = result +'<div class="form-group col-md-6">';
+		result = result +'<input type="hidden" name="referRequirementId" id="referRequirementId" value='+requirementId+' >';
+		result = result +'<label class="col-md-12" for="Project Id">First Name *</label>';
+		result = result +'<div class="col-md-12">';
+		result = result +'<input type="text" class="form-control" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">';
+		result = result +'</div>';
+		result = result +'</div>'; 
+		result = result +'<div class="form-group col-md-6">';
+		result = result +'<label class="col-md-12" for="Project Id">Last Name</label>';
+		result = result +'<div class="col-md-12">';
+		result = result +'<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">';
+		result = result +'</div>';
+		result = result +'</div>'; 
+		result = result +'<div class="form-group col-md-6">';
+		result = result +'<label class="col-md-12" for="Project Id">Email Id *</label>';
+		result = result +'<div class="col-md-12">';
+		result = result +'<input type="text" class="form-control" name="email" id="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
+		result = result +'<span class="hidden">Enter Project Id</span> </div>';
+		result = result +'</div>'; 
+		result = result +'<div class="form-group col-md-6">';
+		result = result +'<label class="col-md-12" for="Project Id">Phone</label>';
+		result = result +'<div class="col-md-12">';
+		result = result +'<input type="text" class="form-control" name="phone" id="phone" field-name="Phone" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20">';
+		result = result +'</div>';
+		result = result +'</div>'; 
+		result = result +'<div class="col-md-12 mt5 clearfix">';            
+		result = result +'<div class="pull-right">';
+		result = result +'<input type="submit" value="Refer" id="submit_refer" onclick="submitRefer();" class="btn btn-primary">';
+		result = result +'<input type="button" value="Cancel" onclick="cancelReferPopUp('+requirementId+')" class="btn btn-default ml10 canBtn">';
+		result = result +'</div>';    
+		result = result +'</div>'; 
+		result = result +'<div class="clearfix"></div>'; 
+		result = result + '</form>';
+		
+		$("#refertoJobDiv"+requirementId+"").empty(); 
+	    $("#refertoJobDiv"+requirementId+"").append(result); 
+}
+</script>
+
+
+<script>	
+function appendReferToJob(requirementId){
+		$("#refer"+requirementId+"").toggleClass("referWrapActive");
+		
+}
+</script> 
+
+<script>
+function cancelReferPopUp(requirementId){
+	$("#refer"+requirementId+"").removeClass("referWrapActive");
+	$("#refertoJobDiv"+requirementId+"").empty(); 
+	
+}
+</script>
+
+ <script type="text/javascript">
+		function removeReferPopUp(){
+			var referRequirementId = document.getElementById('referRequirementId'); 
+			if(referRequirementId != null) {
+				$("#refertoJobDiv"+referRequirementId.value+"").empty(); 
+				$("#refer"+referRequirementId.value+"").removeClass("referWrapActive"); 
+			} 
+			
+		 }
+</script>
+
+
 <script type="text/javascript">
 $(function(){
 	       var config = {
@@ -931,7 +1017,13 @@ $(function(){
     function closePop(){
     $("div.cand-advsrch-popup").hide();
     };
+    
     function openPop(){
+    	 var referRequirementId = document.getElementById('referRequirementId'); 
+    	 if(referRequirementId != null) {
+    		$("#refertoJobDiv"+referRequirementId.value+"").empty(); 
+    		$("#refer"+referRequirementId.value+"").removeClass("referWrapActive"); 
+    	 } 
     $("div.cand-advsrch-popup").toggle();
     };
 	</script>	
@@ -974,4 +1066,43 @@ function loadChosenRequirementScripts(){
         return false;
     });
 </script>
+
+
+
+
+
+<script type="text/javascript">
+$('body').on('submit', '#referToJob_form', function(e){
+	  if ($(this).validate(false, validationSettings)){
+      e.preventDefault();
+     
+      var con = JSON.stringify(frm);
+      con = con.replace(/[{}]/g, "");
+      //It will escape all the special characters
+      var jsonData = encodeURIComponent(con);
+      
+      var sourceleadUrl ='${sourceleadUrl}';
+   /*      $("#submit_refer").attr("disabled", "disabled");
+		$( "#submit_refer" ).addClass('button').val('Processing..');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	      $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/submitReferToJob?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(result) {
+		        	
+			        
+		        },
+		    });  */
+      return true; 
+    }
+    else{
+    	return false;	
+       }
+  });
+
+	$('body').on('blur', '#referToJob_form', function() {
+		$("#referToJob_form").showHelpOnFocus();
+		$("#referToJob_form").validateOnBlur(false, validationSettings);
+	});
+  </script>
 
