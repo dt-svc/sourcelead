@@ -205,7 +205,7 @@ function addTimeSheetRow(projectId) {
 			cell4.innerHTML = divadttTd4Str;
 			
 			
-			var cell5= row.insertCell(4);
+			var cell5= row.insertCell(5);
 			 var isCell4Disabled = $("#1timeSheetDay4Id").prop('disabled');
 			if(isCell4Disabled){
 				$("#divadttTd6 :input").attr("disabled", "disabled");
@@ -418,7 +418,7 @@ function newSaveTimesheet(status,savingType){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	 }; 
-	 if ($('#timesheet_form').validate(false, validationSettings)){ 
+	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){ 
 				 
 		  		
                var frm = $('#timesheet_form').serializeFormJSON();
@@ -663,23 +663,27 @@ function checkHours(){
 	 }
    }
 }   
-	if(result != "" && result != null && result != 'undefined'){   
-		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
-		$("#timeSheetErrorMsg").attr('style','display:block;z-index: 10000000;top: 5px !important;');
-		$("#timeSheetErrorMsg").empty();
-		$("#timeSheetErrorMsg").append(outPut);
-		var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
-		$("#hideError").empty();
-		$("#hideError").append(error);
-	 }else{
-		$("#timeSheetErrorMsg").empty();
-		$("#hideError").empty();
-	} 
-	
-	$(".time_pop b").click(function(){
-		$("#timeSheetErrorMsg").attr('style','display:none;');
-	    $("#timeSheetErrorMsg").empty();
-	}); 
+	 if(result != "" && result != null && result != 'undefined'){   
+			var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
+			$("#timeSheetErrorMsg").removeAttr('style');
+			$("#timeSheetErrorMsg").attr('style','display:block;');
+			$("#timeSheetErrorMsg").empty();
+			$("#timeSheetErrorMsg").append(outPut);
+			var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
+			$("#hideError").empty();
+			$("#hideError").append(error);
+		 }else{
+		    $("#timeSheetErrorMsg").removeAttr('style');
+		    $("#timeSheetErrorMsg").attr('style','display:none;');
+			$("#timeSheetErrorMsg").empty();
+			$("#hideError").empty();
+		} 
+		
+		$(".time_pop b").click(function(){
+			$("#timeSheetErrorMsg").removeAttr('style');
+			$("#timeSheetErrorMsg").attr('style','display:none;');
+		    $("#timeSheetErrorMsg").empty();
+		}); 
 	
 }
 </script>
