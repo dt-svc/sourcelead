@@ -161,7 +161,7 @@ public class TimesheetSubmissionListController {
 							}
 							
 				    	  ProjectMembers projectMember = projectMembersService.getProjectMemberById(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getId());
-						 sb.append("<tr id='row").append(projectMember.getId()).append("'>");
+						 sb.append("<tr id='row").append(projectMember.getId()).append(Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getStartDate())).append("To").append(Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getEndDate())).append("'>");
 						 sb.append("  <td>");
 						 sb.append("<div class='time_appr_user'>");
 						 sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
@@ -207,7 +207,7 @@ public class TimesheetSubmissionListController {
 					     }
 					
 					    /*sb.append("<td><div class='sm'><a href='javascript:void(0)'>").append(totalHours).append("/40</a></div></td>");*/
-					     sb.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+format.format(actualStartDate)+"To"+format.format(actualEndDate)+"\" ,\""+projectMember.getId()+"\");'>").append(totalHours).append("/").append(estimatedTotalHours).append("</a></div></td>");
+					     sb.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+format.format(actualStartDate)+"To"+format.format(actualEndDate)+"\" ,\""+projectMember.getId()+"\",\"dashboard\");'>").append(totalHours).append("/").append(estimatedTotalHours).append("</a></div></td>");
 					    sb.append("<td><div class='sm' id='status").append(projectMember.getId()).append("'>").append(sah.getSubmissionApprovalStatus()).append("</div></td>");
 					    sb.append("<td>");
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){

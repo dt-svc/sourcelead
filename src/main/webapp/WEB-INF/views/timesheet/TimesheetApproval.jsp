@@ -8,20 +8,20 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!-- <link href="resources/css/jquery-ui.css" rel="stylesheet"> -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
 <script src="resources/js/bootstrap.min.js"></script>
 <script src="resources/js/jquery-fun.js"></script>
-<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
+<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" > -->
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 
-<link rel="stylesheet" href="resources/css/chosen.min.css">
+<!-- <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
+<script src="resources/js/chosen.jquery.min.js"></script>  -->
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+<!-- <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> -->
+<!-- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>  -->
 
 <script>
 // project side bar tabs
@@ -93,16 +93,10 @@ $(document).ready(function() {
           <div class="pull-left">
             <h2>Timesheet approval</h2>
           </div>
-          <div class="clearfix"></div>
-          		
             <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; TimeSheet List</div>
+           <div class="clearfix"></div>
         </section>
-        
-		<!-- Project -->
-<!-- put id here -->
 		<div id="timesheetApprovalDiv"></div>
-
-
          </section>
  </body>
     
