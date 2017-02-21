@@ -24,12 +24,16 @@ import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.ReferContactsService;
+import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -56,6 +60,53 @@ public class ProfessionalRequirementsController {
 	
 	@Autowired
 	LookUpDataService lookUpDataService;
+	
+	@Autowired
+	RequirementReferService requirementReferService;
+	
+	@Autowired
+	ReferContactsService referContactsService;
+	
+	
+	protected boolean isNullOrEmpty(String str) {
+		return str == null || "".equals(str.trim());
+	}
+	
+	
+	 @RequestMapping(value = "/register")
+	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID,
+	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception {
+	 			ModelAndView model = new ModelAndView();
+	 			model.setViewName("registration");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			if(!isNullOrEmpty(contactUUID) && !isNullOrEmpty(requirementUUID)){
+	 				ReferContacts referContacts = referContactsService.getReferContactsByUUID(contactUUID);
+	 				model.addObject("firstName",referContacts.getFirstName());
+	 				model.addObject("lastName",referContacts.getLastName());
+	 				model.addObject("email",referContacts.getContactUserEmail());
+	 				model.addObject("contactUUID", contactUUID);
+	 				model.addObject("requirementUUID", requirementUUID);
+	 			}
+	 			
+	 			return model;
+	 	}
+	 
+	 @RequestMapping(value = "/resetloginCredentials")
+	 	public ModelAndView resetloginCredentials(HttpServletRequest request) {
+	 			ModelAndView model = new ModelAndView();
+	 			model.setViewName("resetloginCredentials");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			
+	 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg");
+	  			if(!isNullOrEmpty(msg)){
+	  				model.addObject("msg", msg);
+	  				SourceLeadSessionManager.removeSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg");
+	  			}
+	 			return model;
+	 	}
+	
+	 
+	 
 	
 	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 	 @RequestMapping(value = "/professionalRequirements")
@@ -146,9 +197,8 @@ public class ProfessionalRequirementsController {
 
 		}
 	 
-	 @RequestMapping(value = "/getRequirementProfessionalProfileDetails" , method = RequestMethod.GET)
-	 @ResponseBody
-		public String getRequirementProfessionalProfileDetails(@RequestParam(value="requirementUUID", required=false) String  requirementUUID,HttpServletRequest request) throws Exception {
+	    @RequestMapping(value = "/getRequirementProfessionalProfileDetails" , method = RequestMethod.GET)
+		public  @ResponseBody String getRequirementProfessionalProfileDetails(@RequestParam(value="requirementUUID", required=false) String  requirementUUID,HttpServletRequest request) throws Exception {
 		        String resultJson;
 		        User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		        Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
@@ -194,5 +244,31 @@ public class ProfessionalRequirementsController {
 		 return model;
 			
 		}
+	 
+	 
+	 @RequestMapping(value = "/validateReferedEmail",  method = RequestMethod.GET)
+	   public @ResponseBody String validateReferedEmail(@RequestParam(value="email", required=false) String email,
+	   		@RequestParam(value="requirementId", required=false) Long requirementId,
+	   		HttpServletRequest request) throws Exception {
+		  
+		  User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  
+		  if(!user.getEmail().equalsIgnoreCase(email)){
+			  boolean isRefer = requirementReferService.isReferToRequirement(email, requirementId);
+			  if(isRefer == true){
+				  return "Invalid"; 
+			  }else{
+				  boolean flag = requirementReferService.isProfessionalReferToRequirement(email, requirementId, user.getId());
+				  if(flag == true){
+					  return "Invalid";
+				  }else{
+					  return "Success";
+				  }
+			  } 
+		  }else{
+			  return "Invalid Email";
+		  }
+		  
+	   }
 	 
 }

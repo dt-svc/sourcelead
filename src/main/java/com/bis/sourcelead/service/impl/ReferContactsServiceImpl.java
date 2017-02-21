@@ -18,4 +18,9 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		return referContactsDao.addReferContacts(referContacts);
 	}
 
+	@Override
+	public ReferContacts getReferContactsByUUID(String contactUUID) throws Exception {
+		return referContactsDao.getReferContactsByUUID(contactUUID);
+	}
+
 }

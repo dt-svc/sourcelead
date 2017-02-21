@@ -81,10 +81,10 @@ min-height:100px;
 </style>
 
 <script>
-$(document).ready(function() {
+window.onload = function () {
 	 var requirementUUID = '${requirementUUID}'; 
 	 publicRequirementProfile(requirementUUID);
-});	
+};	
 </script>
 
 <body>
@@ -114,7 +114,10 @@ $(document).ready(function() {
 
 <script>
 function publicRequirementProfile(requirementUUID){
+	
 	var sourceleadUrl ='${sourceleadUrl}';
+	var contactUUID = '${contactUUID}';
+	
 	$.ajax({
 	   	type: "GET",
 	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
@@ -184,7 +187,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +' 			 <div class="company-logo">';
-				 result = result +' 				<div class="imageParent"> <img onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/displayOrgImage/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive"> </div>';
+				 result = result +' 				<img id="orgImage" onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/displayOrgImage/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive">';
 				 result = result +' 				</div>';
 				 result = result +'              </div>';
 				 result = result +'              <div class="col-md-9">';
@@ -223,20 +226,10 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'          <div class="col-md-3">';
 				 result = result +'         <div class="openPostBtns">';
 				 
-				 if(json.isJobApplied == 'N'){
-				 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob('+json.id+');"  class="jobApply">Apply</a>';
-				 }else{
-					 result = result +'<a href="javascript:void(0)" class="jobApply">Applied</a>';
-				 }
+				 result = result +'<a href="'+sourceleadUrl+'" class="refer">Login</a>';
+				 result = result +'<a href="'+sourceleadUrl+"/register?contactUUID="+contactUUID+"&requirementUUID="+requirementUUID+'" class="jobApply">Apply</a>';
 				 
-				 if(json.isCrowdSourcing == 'Y'){
-				    result = result +'<a class="refer" onclick="referToJob('+json.id+')" href="javascript:void(0)">Refer</a>';
-				    result = result +'<div class="referWrap" id="refer">';
-	 				result = result +'<div class="referWrapInn">';
-	 				result = result +'<div id="refertoJobDiv"></div>';  
-	 				result = result +'</div>';
-	 				result = result +'</div>';
-				 }
+				
 				 result = result +'          </div>';
 				 result = result +'          </div>';
 				 result = result +'          <div class="clearfix"></div>';
