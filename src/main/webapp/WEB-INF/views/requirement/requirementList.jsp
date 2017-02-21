@@ -1201,7 +1201,7 @@ function requirementPipeline(requirementId){
   <div class="timesheet_out">
     <div class="vendor_wrap">
       <div class="timesheet_head">
-       <div class="pull-left cand-advsrch">
+       <div class="pull-left cand-advsrch advsrch_chosen">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -1324,6 +1324,7 @@ function requirementPipeline(requirementId){
                       <option>ONHOLD</option>
                       <option>FILLEDCLOSED</option>
                       <option>UNFILLEDCLOSED</option>
+                      <option>REJECTED</option>
                     </select>
                   </div>
                 </div>

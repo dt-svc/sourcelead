@@ -170,6 +170,11 @@ public class TeamServiceImpl implements TeamService {
 	public List<Long> getUserAssignedTeamIdsListByOrgLocationId(Long userId, Long orgLocationId) throws Exception {
 		return teamDao.getUserAssignedTeamIdsListByOrgLocationId(userId, orgLocationId);
 	}
+
+	@Override
+	public Team findByTeamName(String name, Long orgLocationId) throws Exception {
+		return teamDao.findByTeamName(name, orgLocationId);
+	}
 	
 }
 	 
