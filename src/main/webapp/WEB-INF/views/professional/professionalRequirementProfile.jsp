@@ -232,7 +232,7 @@ function referToJob(requirementId){
 		result = result +'<div class="form-group col-md-6">';
 		result = result +'<label class="col-md-12" for="Project Id">Phone *</label>';
 		result = result +'<div class="col-md-12">';
-		result = result +'<input type="text" class="form-control" name="phone" id="phone" field-name="Phone" data-validation="required validate_Space validate_phone validate_length length9-20">';
+		result = result +'<input type="text" class="form-control" name="phone" id="phone" field-name="Phone" data-validation-optional="true"  data-validation="validate_Space validate_phone validate_length length9-20">';
 		result = result +'</div>';
 		result = result +'</div>'; 
 		result = result +'<div class="col-md-12 mt5 clearfix">';            

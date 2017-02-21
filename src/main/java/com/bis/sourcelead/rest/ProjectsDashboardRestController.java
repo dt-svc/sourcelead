@@ -434,7 +434,7 @@ public class ProjectsDashboardRestController {
 			 Integer maxResults = projectsService.getProjectCountByOrgLocationId(loginOrgLocation.getId());
 		   	 
 			 //Exclude Keyword
-			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+			 /*ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
 			 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 				 for(String keywd : excludeKeyWordArray){
@@ -448,10 +448,10 @@ public class ProjectsDashboardRestController {
 					}
 				}
 				 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
-			  }
+			  }*/
 				
 				//Any Keyword
-				ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+				/*ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
 				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : anyKeyWordArray){
@@ -465,9 +465,9 @@ public class ProjectsDashboardRestController {
 						}
 					}
 					 boolQueryBuilder.must(anyBoolQueryBuilder);
-				}
+				}*/
 				//All Keywords
-				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				/*ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
 				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : allKeyWordArray){
@@ -481,7 +481,7 @@ public class ProjectsDashboardRestController {
 						}
 					}
 					 boolQueryBuilder.must(allBoolQueryBuilder);
-				}
+				}*/
 				
 				//project Id
 				ArrayList<String> projectIdArray = getSearchKeywordsFromChosenSelectField(jsonObj, "projectIdAdvanced");
@@ -653,12 +653,12 @@ public class ProjectsDashboardRestController {
 		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		   
 		    //Project Search
-		   // matchQueryBuilderList.add(QueryBuilders.matchQuery("id", keywd));
+		    //matchQueryBuilderList.add(QueryBuilders.matchQuery("id", keywd));
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("projectSequeneNumber", keywd));
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("projectName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("level1ManagerName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
-//			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("startDate", keywd));
+			//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("startDate", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("invoiceFrequency", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("clientName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectStatus", keywd));

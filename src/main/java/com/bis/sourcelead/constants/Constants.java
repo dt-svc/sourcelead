@@ -214,6 +214,7 @@ public class Constants {
 	public static String NO  = "N";
 	public static String WAIT  = "W";
 	public static String REJECT  = "R";
+	public static String REJECTED  = "REJECTED";
 	public static String TEMP    = "T";
 	public static transient DateFormat STDF = new SimpleDateFormat("MM-dd-yyyy");
 	public static transient DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -360,7 +361,7 @@ public class Constants {
 
     public static String[] REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS ={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","ShortListed By","ShortListed On"};
     
-    public static String[] REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS={"Name","Email","Phone No","Experience"};
+    public static String[] REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS={"Name","Email","Phone No","Experience","DateOfInterview","TimeOfInterview","Location"};
     
     public static String[] REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS={"Name","Email","Phone No","Experience","OfferDateJoining","Position","Offer Rate","Offerd Date","Attachment"};
     
