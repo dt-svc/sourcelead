@@ -241,6 +241,7 @@ function selectInterviewApplicants(){
 		<option value="Telephonic">Telephonic</option>
 		<option value="Technical">Technical</option>
 		<option value="Screening">Screening</option>
+		<option value="Skype/Webex">Skype/Webex</option>
 	</select>
 </div>
 

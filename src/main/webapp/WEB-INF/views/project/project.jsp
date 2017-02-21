@@ -87,7 +87,7 @@ function validateTaskName(){
 						<div class="form-group" id="ProjectIdDiv">
 							<label class="col-lg-3">Project Id</label>
 							<div class="col-lg-9">
-								<input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_Space validate_Alphanumeric validate_length length2-50"
+								<input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_Space validate_length length2-50"
 									data-validation-optional="true" class="form-control" onblur="validateProjectSequeneNumber();">
 							</div>
 						</div>
@@ -104,7 +104,7 @@ function validateTaskName(){
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-5000"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-500"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
