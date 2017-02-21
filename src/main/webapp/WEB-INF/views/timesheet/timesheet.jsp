@@ -6,18 +6,18 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>
-<script src="resources/js/jquery-fun.js"></script>
-<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
+<!-- <link href="resources/css/jquery-ui.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+<!-- <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script> -->
+<!-- <script src="resources/js/bootstrap.min.js"></script> -->
+<!-- <script src="resources/js/jquery-fun.js"></script> -->
+<!-- <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" > -->
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
+<!-- <link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/jquery-fun.js"></script>  -->
+<!-- <script src="resources/js/chosen.jquery.min.js"></script>  -->
 
 <script>
 // project side bar tabs
@@ -44,7 +44,7 @@ $(document).ready(function() {
 	        	   $.ajax({
 		      	          type : "POST",
 		          	      dataType : 'json',
-	        	      	  url: sourceleadUrl+"/timesheetEntries?${_csrf.parameterName}=${_csrf.token}&from=timesheet",		
+	        	      	  url: sourceleadUrl+"/timesheetEntries?${_csrf.parameterName}=${_csrf.token}&from=user",		
 	        		      success :function(data) {
 	        		    	   if(data != '' && data != 'undefined' && data != null){ 
 		        		    	    $("#timesheetEntriesDiv").removeAttr("style");
@@ -98,7 +98,7 @@ $(document).ready(function() {
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
-   	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&from=timesheet",		
+   	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&from=user",		
    		          success :function(result) {
    		        	 $("#timesheetEntriesDivByProjectMemberId").removeAttr("style");
    		        	 $("#timesheetEntriesDivByProjectMemberId").empty();
@@ -131,7 +131,7 @@ $(document).ready(function() {
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
-   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from=timesheet",		
+   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from=user",		
    		          success :function(result) {
    		        	  		
    		        	      $("#timesheetDivByFrequency").removeAttr("style");
@@ -166,7 +166,7 @@ $(document).ready(function() {
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
-  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=timesheet",		
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=user",		
   		          success :function(result) {
   		    	       
   		        	   $("#timesheetDivByTab").removeAttr("style");
@@ -275,11 +275,11 @@ function addTimeSheetRow(projectId) {
 			var isCell3Disabled = $("#1timeSheetDay3Id").prop('disabled');
 			if(isCell3Disabled){
 				$("#divadttTd5 :input").attr('disabled','disabled');
-				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon');
+				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon');
 			}
 			else{
 				$("#divadttTd5 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon glyphicon-comment');
+				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon glyphicon-comment');
 			} 
 			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
 			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
@@ -287,7 +287,7 @@ function addTimeSheetRow(projectId) {
 			cell4.innerHTML = divadttTd4Str;
 			
 			
-			var cell5= row.insertCell(4);
+			var cell5= row.insertCell(5);
 			 var isCell4Disabled = $("#1timeSheetDay4Id").prop('disabled');
 			if(isCell4Disabled){
 				$("#divadttTd6 :input").attr("disabled", "disabled");
@@ -503,6 +503,7 @@ function checkHours(){
 }   
 	if(result != "" && result != null && result != 'undefined'){   
 		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
+		$("#timeSheetErrorMsg").removeAttr('style');
 		$("#timeSheetErrorMsg").attr('style','display:block;');
 		$("#timeSheetErrorMsg").empty();
 		$("#timeSheetErrorMsg").append(outPut);
@@ -510,11 +511,14 @@ function checkHours(){
 		$("#hideError").empty();
 		$("#hideError").append(error);
 	 }else{
+	    $("#timeSheetErrorMsg").removeAttr('style');
+	    $("#timeSheetErrorMsg").attr('style','display:none;');
 		$("#timeSheetErrorMsg").empty();
 		$("#hideError").empty();
 	} 
 	
 	$(".time_pop b").click(function(){
+		$("#timeSheetErrorMsg").removeAttr('style');
 		$("#timeSheetErrorMsg").attr('style','display:none;');
 	    $("#timeSheetErrorMsg").empty();
 	}); 
@@ -780,12 +784,11 @@ function addAttachment(){
           <div class="pull-left">
             <h2>Timesheets</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Timesheets</div>
         </section>
         
-        <div class="loadTime" id="loadTime"></div>    
-        
         <div id="timesheetEntriesDiv"> 
+           <div class="loadTime" id="loadTime"></div>  
         </div>
         
         
@@ -905,7 +908,7 @@ function newSaveTimesheet(status,savingType){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	 }; 
-	 if ($('#timesheet_form').validate(false, validationSettings)){ 
+	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){ 
 				 
 		  		
                var frm = $('#timesheet_form').serializeFormJSON();
@@ -1012,10 +1015,10 @@ function dropDownExport(){
 <script>
 function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,submissionStatus){
 	var sourceleadUrl ='${sourceleadUrl}';
-	if(submissionStatus == 'SUBMITTED'){
+	if(submissionStatus == 'NEW'){
 		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
 	}else{
-		alert("Please Submit the TimeSheets..");
+		alert("Please fill the TimeSheets..");
 	}
 }
 </script>

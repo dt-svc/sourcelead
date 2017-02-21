@@ -138,6 +138,11 @@ public class SubmissionsRateController {
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+			
+			
+			requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
+			
+			
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();

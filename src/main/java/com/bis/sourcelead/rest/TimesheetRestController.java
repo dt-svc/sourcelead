@@ -186,12 +186,13 @@ public class TimesheetRestController {
 			@RequestParam(value="endDate", required=false) String endDate,
 			@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
-			@RequestParam(value="approvalStatus", required=false) String approvalStatus) throws Exception {
+			@RequestParam(value="approvalStatus", required=false) String approvalStatus,
+			@RequestParam(value="from", required=false) String from) throws Exception {
 		    StringBuilder tabDiv = new StringBuilder("");
 		     if(StringUtils.isNotEmpty(timesheetFrequency)){
 			 	 String[] frequency = timesheetFrequency.split("To");
 			  	 String weekEndDate = frequency[1].trim();
-				  tabDiv =  projectTabDataByDates(startDate, endDate,projectMemberId,weekEndDate,approvalStatus);
+				  tabDiv =  projectTabDataByDates(startDate, endDate,projectMemberId,weekEndDate,approvalStatus,from);
 		    }
 		    return tabDiv.toString();
 	}
@@ -212,7 +213,6 @@ public class TimesheetRestController {
 		
 			StringBuilder timesheetEntriesDiv = new StringBuilder();
 			timesheetEntriesDiv.append("");
-			
 			
 			timesheetEntriesDiv.append("		<div class='timesheet_out'> ");
 			timesheetEntriesDiv.append("		<div class='timesheet_wrap' id='timesheet_wrap'>");
@@ -329,8 +329,6 @@ public class TimesheetRestController {
 	
 	public StringBuilder timesheetEntriesDivByFrequnecy(String weekStartDate,String weekEndDate,Long projectMemberId,String from) throws Exception{
 		
-		Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
-		Boolean isExportMyTimeSheet = commonUtil.hasRole("ROLE_EXPORT_MY_TIMESHEETS");
 		Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
@@ -352,11 +350,11 @@ public class TimesheetRestController {
 		String pullRightClass = "pull-right";
 		String styleWidth = "";
 		String innerStyleWidth = "";
-		if(from != null && !from.isEmpty() && from.equalsIgnoreCase("timesheet")){
+		if(from != null && !from.isEmpty() && from.equalsIgnoreCase("user")){
 			pullRightClass = "" ;
 		}
 		
-		if(isSah == null && isModifyMyTimeSheet && !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
+		if(isSah == null &&from.equalsIgnoreCase("user") && isModifyMyTimeSheet && !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 			styleWidth = "style='width:120px;'";
 			innerStyleWidth = "style='width:100%;'";
 		}
@@ -371,7 +369,7 @@ public class TimesheetRestController {
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 	        	timesheetEntriesDiv.append("<b "+innerStyleWidth+"  class='proj_process "+pullRightClass+" '>").append(submissionStatus).append("</b>");
-	        	if(isSah == null && isModifyMyTimeSheet){
+	        	if(isSah == null && isModifyMyTimeSheet && from.equalsIgnoreCase("user")){
 	                timesheetEntriesDiv.append("</div><div "+styleWidth+" class='timeNewSe '><b "+innerStyleWidth+" class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Modify</b>");
 	        	}
 	        }
@@ -473,7 +471,7 @@ public class TimesheetRestController {
 			    count++;
 			    timesheetFrequencyEndDate = format.format(endDate);
 			}
-			tabData =	projectTabDataByDates(currentStartDate.toString(), currentEndDate.toString(),projectMemberId,timesheetFrequencyEndDate,submissionStatus.getValue());
+			tabData =	projectTabDataByDates(currentStartDate.toString(), currentEndDate.toString(),projectMemberId,timesheetFrequencyEndDate,submissionStatus.getValue(),from);
 		}
 		
 		String exportPdf = "pdf";
@@ -505,7 +503,7 @@ public class TimesheetRestController {
 	}
 	
 	
-	public StringBuilder projectTabDataByDates(String startDate ,String endDate,Long projectMemberId,String timesheetFrequencyEndDate,String approvalStatus) throws Exception{
+	public StringBuilder projectTabDataByDates(String startDate ,String endDate,Long projectMemberId,String timesheetFrequencyEndDate,String approvalStatus,String from) throws Exception{
 		
 		ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemberId);
 		Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
@@ -545,6 +543,12 @@ public class TimesheetRestController {
 		String weekStartDate = startDate;
 		switch (dayOfTheDateWithStartDate) {
 	        case 1:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,6);
+	                 disbleCondition1.setLength(0);
+	                 disbleCondition2.setLength(0);
+	                 disbleCondition3.setLength(0);
+	                 disbleCondition4.setLength(0);
+	                 disbleCondition5.setLength(0);
+	                 disbleCondition6.setLength(0);
 	                 disbleCondition1.append("disabled");
 	                 disbleCondition2.append("disabled");
 	                 disbleCondition3.append("disabled");
@@ -555,24 +559,39 @@ public class TimesheetRestController {
 	        case 2:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,0);
 	                 break;
 	        case 3:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,1);
+	                  disbleCondition1.setLength(0);
 	                 disbleCondition1.append("disabled");
 	             break;
 	        case 4:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,2);
+	                 disbleCondition1.setLength(0);
+                     disbleCondition2.setLength(0);
 			         disbleCondition1.append("disabled");
 		             disbleCondition2.append("disabled");
 	            break;
 	        case 5: weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,3);
+			        disbleCondition1.setLength(0);
+		            disbleCondition2.setLength(0);
+		            disbleCondition3.setLength(0);
 			        disbleCondition1.append("disabled");
 		            disbleCondition2.append("disabled");
 		            disbleCondition3.append("disabled");
 	            break;
 	        case 6:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,4);
+			         disbleCondition1.setLength(0);
+		             disbleCondition2.setLength(0);
+		             disbleCondition3.setLength(0);
+		             disbleCondition4.setLength(0);
 			         disbleCondition1.append("disabled");
 		             disbleCondition2.append("disabled");
 		             disbleCondition3.append("disabled");
 		             disbleCondition4.append("disabled");
 	              break;
 	        case 7: weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,5);
+			        disbleCondition1.setLength(0);
+		            disbleCondition2.setLength(0);
+		            disbleCondition3.setLength(0);
+		            disbleCondition4.setLength(0);
+		            disbleCondition5.setLength(0);
 			        disbleCondition1.append("disabled");
 		            disbleCondition2.append("disabled");
 		            disbleCondition3.append("disabled");
@@ -584,7 +603,14 @@ public class TimesheetRestController {
        }
 		int dayOfTheDateWithEndDate = CalendarUtil.getDayOfTheDate(format.parse(endDate));
 		switch (dayOfTheDateWithEndDate) {
-			case 2:    disbleCondition2.append("disabled");
+			case 2:   
+			           disbleCondition2.setLength(0);
+			           disbleCondition3.setLength(0);
+			           disbleCondition4.setLength(0);
+			           disbleCondition5.setLength(0);
+			           disbleCondition6.setLength(0);
+			           disbleCondition7.setLength(0);
+				       disbleCondition2.append("disabled");
 	                   disbleCondition3.append("disabled");
 	                   disbleCondition4.append("disabled");
 	                   disbleCondition5.append("disabled");
@@ -592,25 +618,44 @@ public class TimesheetRestController {
 	                   disbleCondition7.append("disabled");
 	                   break;
 	                   
-	        case 3:  disbleCondition3.append("disabled");
+	        case 3:  
+		             disbleCondition3.setLength(0);
+		             disbleCondition4.setLength(0);
+		             disbleCondition5.setLength(0);
+		             disbleCondition6.setLength(0);
+		             disbleCondition7.setLength(0);
+	        	     disbleCondition3.append("disabled");
 			         disbleCondition4.append("disabled");
 			         disbleCondition5.append("disabled");
 			         disbleCondition6.append("disabled");
 			         disbleCondition7.append("disabled");
 			          break;
-	        case 4:  disbleCondition4.append("disabled");
+	        case 4: 
+		        	 disbleCondition4.setLength(0);
+		        	 disbleCondition5.setLength(0);
+		        	 disbleCondition6.setLength(0);
+		        	 disbleCondition7.setLength(0);
+	        	     disbleCondition4.append("disabled");
 			         disbleCondition5.append("disabled");
 			         disbleCondition6.append("disabled");
 			         disbleCondition7.append("disabled");
 			         break;
-	        case 5:  disbleCondition5.append("disabled");
+	        case 5: 
+			       	 disbleCondition5.setLength(0);
+			       	 disbleCondition6.setLength(0);
+			       	 disbleCondition7.setLength(0);
+	        	     disbleCondition5.append("disabled");
 		             disbleCondition6.append("disabled");
 		             disbleCondition7.append("disabled");
 	                 break;
-	        case 6:   disbleCondition6.append("disabled");
+	        case 6:  
+	       	         disbleCondition6.setLength(0);
+	       	         disbleCondition7.setLength(0);
+	        	     disbleCondition6.append("disabled");
 		             disbleCondition7.append("disabled");
 	                 break;
-	        case 7:  disbleCondition7.append("disabled");
+	        case 7:  disbleCondition7.setLength(0);
+	        	     disbleCondition7.append("disabled");
 	                 break;
         }
 		
@@ -649,24 +694,31 @@ public class TimesheetRestController {
 		 
 		
 		if( (!isFillMyTimeSheet) || (!pmhDateList.contains(actualWeekStartDate)) || !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+			disbleCondition1.setLength(0);
 			disbleCondition1.append("disabled");
 		}
         if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE").getTime())) || !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
-    	   disbleCondition2.append("disabled");
+        	disbleCondition2.setLength(0);
+        	disbleCondition2.append("disabled");
 		}
         if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED").getTime())) || !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+        	disbleCondition3.setLength(0);
         	disbleCondition3.append("disabled");
 		}
         if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU").getTime())) || !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+        	disbleCondition4.setLength(0);
         	disbleCondition4.append("disabled");
 		} 
         if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI").getTime())) || !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+        	disbleCondition5.setLength(0);
         	disbleCondition5.append("disabled");
 		}
         if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT").getTime())) || !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+        	disbleCondition6.setLength(0);
         	disbleCondition6.append("disabled");
 		}
         if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SUN").getTime())) || !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+        	disbleCondition7.setLength(0);
         	disbleCondition7.append("disabled");
 		} 
 		
@@ -689,23 +741,46 @@ public class TimesheetRestController {
 									  tabDiv.append("                 <td>");
 									  tabDiv.append("                      <div> ");
 									  
-									  //Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasks();
 									  Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
-									  tabDiv.append("                       <select id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasks(\""+rowCount+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
-									  tabDiv.append("<option value=''>--select task--</option>");
-						              for(ProjectTasks pt   : ProjectTasksList){
-								    	       if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
-								    	    	   tabDiv.append("<option value='"+pt.getId()+"' selected>").append(pt.getTaskName()).append("</option>");
-								    	       }
-								    	       else{
-								    	    	   if(isFillMyTimeSheet){
-								    	    		   tabDiv.append("<option value='"+pt.getId()+"'>").append(pt.getTaskName()).append("</option>");
-								    	    	   }
-								    	       }
-										                
-									  }
-						              tabDiv.append(" </select>"); 
-								              if(isFillMyTimeSheet){
+									  if(isFillMyTimeSheet 
+										    		&&!isNullOrEmpty(approvalStatus)
+										    		&&!approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) 
+										    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
+										 
+												 //Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasks();
+												  tabDiv.append("                       <select id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasks(\""+rowCount+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
+												  tabDiv.append("<option value=''>--select task--</option>");
+									              for(ProjectTasks pt   : ProjectTasksList){
+											    	       if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
+											    	    	   tabDiv.append("<option value='"+pt.getId()+"' selected>").append(pt.getTaskName()).append("</option>");
+											    	       }
+											    	       else{
+											    	    		   tabDiv.append("<option value='"+pt.getId()+"'>").append(pt.getTaskName()).append("</option>");
+											    	       }
+													                
+												  }
+									              tabDiv.append(" </select>"); 
+										 
+										 }
+										 else{
+											 if(timesheetEntries.getProjectTask() != null){
+												 for(ProjectTasks pt   : ProjectTasksList){
+										    	       if(pt.getId().equals(timesheetEntries.getProjectTask().getId())){
+										    	    	   tabDiv.append("<p>").append(pt.getTaskName()).append("</p>");
+										    	       }
+												 }
+											 }
+											 else {
+												 tabDiv.append("<p>").append("--").append("</p>");
+											 }
+											
+										 }
+									 
+						              
+						 			     if(isFillMyTimeSheet 
+									    		&&!isNullOrEmpty(approvalStatus)
+									    		&&!approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) 
+									    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
 									              if(rowCount == 1){
 									            	  tabDiv.append("<input type='button' value='' onClick='addTimeSheetRow("+ts.getProjectMembers().getProjects().getId()+")' class='addtaskfield'/>");
 									              }else{
@@ -949,7 +1024,7 @@ public class TimesheetRestController {
 				tabDiv.append("		    <div class='timesheet_bot'>");	
 				tabDiv.append("		    	<div class='timesheet_week_comm'>");
 				/*if(projectMember.getProjects().getIsTimesheetAttachmentRequired() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() != 0){*/
-					  StringBuilder attachmentDiv = attachmentsAndComments(startDate, endDate,ts,projectMember.getProjects().getIsTimesheetAttachmentRequired());
+					  StringBuilder attachmentDiv = attachmentsAndComments(approvalStatus,startDate, endDate,ts,projectMember.getProjects().getIsTimesheetAttachmentRequired());
 					  tabDiv.append(attachmentDiv);
 				/*}*/
 			    
@@ -998,13 +1073,15 @@ public class TimesheetRestController {
 
 	      
 	    if(!isNullOrEmpty(approvalStatus)  && !approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
-			tabDiv.append("		        	<input type='button' onClick='newSaveTimesheet(\"Draft\",\"user\");'  value='Save' class='time_btn time_dra' />");	
+			tabDiv.append("		        	<input type='button' onClick='newSaveTimesheet(\"Draft\",\""+from+"\");'  value='Save' class='time_btn time_dra' />");	
 			
 			if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
 				Date frequencyEndDate = format.parse(timesheetFrequencyEndDate.replaceAll("/", "-"));
 				if(frequencyEndDate.equals(actualEndDate))
-				tabDiv.append("		            <input type='button' onClick='newSaveTimesheet(\"Submitted\",\"user\");'  value='Submit' class='time_btn' />");	
+				tabDiv.append("		            <input type='button' onClick='newSaveTimesheet(\"Submitted\",\""+from+"\");'  value='Submit' class='time_btn' />");	
 			}
+			
+			if(!isNullOrEmpty(approvalStatus)  && approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("New").getValue()))
 			tabDiv.append("		            <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />");	
 	    }
 	    else{
@@ -1026,8 +1103,9 @@ public class TimesheetRestController {
 		    return tabDiv;
 	}
 	
-	public StringBuilder attachmentsAndComments(String startDate ,String endDate,TimesheetSubmissions ts, Integer isTimesheetAttachmentRequired) throws Exception{
+	public StringBuilder attachmentsAndComments(String approvalStatus,String startDate ,String endDate,TimesheetSubmissions ts, Integer isTimesheetAttachmentRequired) throws Exception{
 			
+		    Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
 			StringBuilder timesheetEntriesDiv = new StringBuilder();	
 			List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = null;
 			StringBuilder documentBuffer = new StringBuilder();	
@@ -1044,17 +1122,21 @@ public class TimesheetRestController {
 									documentBuffer.append(" <input type='button' value='"+tsd.getFileName()+"'>");
 									documentBuffer.append("</a>");
 									
-									/*if( (!isFillMyTimeSheet ) ||  ( !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))  ) ){
-									}else{*/
+								    if(isFillMyTimeSheet 
+								    		&&!isNullOrEmpty(approvalStatus)
+								    		&&!approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) 
+								    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
 										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\");' >");
-									/*}*/
+									}
 									documentBuffer.append("</strong>");
 							} 
 						}
 					} 
 			}
-			/*if( (!isFillMyTimeSheet ) || ( !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))  ) ){
-			}else{*/
+			 if(isFillMyTimeSheet 
+			    		&&!isNullOrEmpty(approvalStatus)
+			    		&&!approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) 
+			    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
             	documentBuffer.append("<div class='commentFile'>"); 
 				documentBuffer.append("<span>"); 
 				documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
@@ -1071,7 +1153,7 @@ public class TimesheetRestController {
 				documentBuffer.append("</table>");
 				documentBuffer.append("</span>");
 				documentBuffer.append("</div>");
-			/*}*/
+			}
 		documentBuffer.append("</div>"); 
 		return documentBuffer;
 	}
