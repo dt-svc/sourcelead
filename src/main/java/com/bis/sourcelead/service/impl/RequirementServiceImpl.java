@@ -2488,7 +2488,7 @@ public class RequirementServiceImpl implements RequirementService {
 				String updatedOn =  jsonObj.getString("updatedOn");
 				String upOn = UpdateOnToDate(updatedOn);
 				if(!Constants.ALL_RECORDS.equalsIgnoreCase(upOn)){
-				 RangeQueryBuilder qb = QueryBuilders.rangeQuery("reqCreatedDate").gte(upOn);
+				 RangeQueryBuilder qb = QueryBuilders.rangeQuery("createdDate").gte(upOn);
 				boolQueryBuilder.must(qb);
 				}
 			}
