@@ -341,6 +341,8 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String reqlevel2ApproverStatus;
 	
+	@Transient
+	private String rejectReason;
 
 	public String getSearchType() {
 		return searchType;
@@ -388,6 +390,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setJobType(String jobType) {
 		this.jobType = jobType;
+	}
+
+	public String getRejectReason() {
+		return rejectReason;
+	}
+
+	public void setRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
 	}
 
 	public String getClientSubmissionTemplate() {

@@ -523,6 +523,8 @@ function EditEducation(candidateId,candidateEducationId) {
 	
 	$('#startDateEdit').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
@@ -532,7 +534,9 @@ function EditEducation(candidateId,candidateEducationId) {
 	  
 	  $('#endDateEdit').datepicker({
 	      dateFormat: 'yy-mm-dd',
-	        onSelect: function (selected) {
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDateEdit").datepicker("option", "maxDate", dt);
