@@ -35,7 +35,9 @@ public class UserIndexHelper {
 			userIndex.setOrgLocationId(userRole.getOrgLocations().getId());
 			userIndex.setEmail(user.getEmail());
 			userIndex.setMobilePhone(user.getMobilePhone());
-			userIndex.setIsMailSent(user.getIsMailSent().toString());
+			if(null != user.getIsMailSent()){
+				userIndex.setIsMailSent(user.getIsMailSent().toString());	
+			}
 			userIndex.setUserStatus(userRole.getUserState().toString());
 			userIndex.setUserType(userRole.getUserType());
 			
