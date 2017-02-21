@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -14,13 +15,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TeamDao;
-import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -242,6 +239,27 @@ public class TeamDaoImpl  implements TeamDao{
 		return teamIdList;
 	}
 
+	@Override
+	@Transactional
+	public Team findByTeamName(String name, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Team> team = new ArrayList<Team>();
+		logger.debug("findByTeamName start");
+		try{
+			team = session.createQuery("from Team tm where tm.name=:name and tm.orgLocationsId.id = :orgLocationId" )
+					.setString( "name", name ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
+			
+			logger.debug("findByTeamName end");
+			if (team.size() > 0) {
+				return team.get(0);
+			} else {
+				return null;
+			}
+		}catch(Exception e){
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return null;
+	}
 
 	/*@Override
 	@Transactional(rollbackFor = { Exception.class })

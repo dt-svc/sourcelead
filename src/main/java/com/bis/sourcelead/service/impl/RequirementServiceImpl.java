@@ -94,6 +94,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
  * 
@@ -448,7 +449,7 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			requirement.setStatus(Constants.TEAM_ACTIVE);
-			
+			requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			
 			//requirement status 
 			if(jsonObj.has("saveType")){            
@@ -776,10 +777,11 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					/*shivayogi Kadagad/rakshith mahabal*/	
 					// this logic is for assigned to team members when new team user is added for requirement-edit and saved.	
-					if(null != savedRequirement.getId() && requirementAssignToList.size()!=0){
+					if(null != savedRequirement.getId() && requirementAssignToList.size()!=0 && !savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
 						for (RequirementAssignTo newList : requirementAssignToList) {
 					       boolean found=false;
-					       if(null != oldAssigntoTeamList && !oldAssigntoTeamList.isEmpty()){
+
+					       if(null != oldAssigntoTeamList && oldAssigntoTeamList.size()!=0){
 					       for (RequirementAssignTo oldList : oldAssigntoTeamList) {
 					           if ((newList.getAssignUserId().getId().equals(oldList.getAssignUserId().getId()))) {
 					               found=true;
@@ -858,8 +860,8 @@ public class RequirementServiceImpl implements RequirementService {
 	*/
 
 	@Override
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,Long  userId) throws Exception {
-		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients, userId);
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User  user,String userRoleName) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients,user,userRoleName);
 	}
 
 	
@@ -2210,10 +2212,14 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			if(jsonObj.has("maxExp") && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
 				reqTemplate.setMaxExp(jsonObj.getString("maxExp"));
+				}else{
+					reqTemplate.setMaxExp(null);
 				}
 				
 				if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp"))){
 					reqTemplate.setMinExp(jsonObj.getString("minExp"));
+				}else{
+					reqTemplate.setMinExp(null);
 				}
 				
 				if(jsonObj.has("rate") && !"".equalsIgnoreCase(jsonObj.getString("rate"))){
@@ -2349,66 +2355,70 @@ public class RequirementServiceImpl implements RequirementService {
 		 
 		 Long maxResults = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
 	   	 //Exclude Keyword
-		 if(jsonObj.has("excludeKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("excludeKeyWord"))){
-			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
-			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
-			 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
-				 for(String keywd : excludeKeyWordArray){
-					 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-					ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-							excludeBoolSubQueryBuilder.should(matchQueryBuilder);
-						}
-						excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
-					}
-				}
-				 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
-			  } 
-		 }
+//		 if(jsonObj.has("excludeKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("excludeKeyWord"))){
+//			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+//			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+//			 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+//				 for(String keywd : excludeKeyWordArray){
+//					 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+//					ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+//					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+//						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+//							excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+//						}
+//						excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+//					}
+//				}
+//				 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+//			  } 
+//		 }
 			
 			//Any Keyword
-		 if(jsonObj.has("anyKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("anyKeyWord"))){
-			 ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyKeyWord");
-				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
-					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : anyKeyWordArray){
-						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
-							}
-							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
-						}
-					}
-					 boolQueryBuilder.must(anyBoolQueryBuilder);
-				} 
-		 }
+//		 if(jsonObj.has("anyKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("anyKeyWord"))){
+//			 ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyKeyWord");
+//				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+//					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+//					 for(String keywd : anyKeyWordArray){
+//						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+//						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+//						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+//							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+//								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+//							}
+//							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+//						}
+//					}
+//					 boolQueryBuilder.must(anyBoolQueryBuilder);
+//				} 
+//		 }
 		
 		//All Keywords
-		 if(jsonObj.has("allKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("allKeyWord"))){
-				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeyWord");
-				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : allKeyWordArray){
-						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
-							}
-							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
-						}
-					}
-					 boolQueryBuilder.must(allBoolQueryBuilder);
-				}
-		 }
+//		 if(jsonObj.has("allKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("allKeyWord"))){
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeyWord");
+//				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+//					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+//					 for(String keywd : allKeyWordArray){
+//						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+//						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+//						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+//							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+//								allBoolSubQueryBuilder.should(matchQueryBuilder);
+//							}
+//							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+//						}
+//					}
+//					 boolQueryBuilder.must(allBoolQueryBuilder);
+//				}
+//		 }
 			
 			
 			//Requirement Title
 			if(jsonObj.has("requirementTitle") && !"".equalsIgnoreCase(jsonObj.getString("requirementTitle"))){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", jsonObj.getString("requirementTitle")));
+		    }
+			// jobId
+			if(jsonObj.has("jobId") && !"".equalsIgnoreCase(jsonObj.getString("jobId"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("jobId", jsonObj.getString("jobId")));
 		    }
 		 //Country
 			if(jsonObj.has("country") && !"".equalsIgnoreCase(jsonObj.getString("country"))){
@@ -2424,51 +2434,51 @@ public class RequirementServiceImpl implements RequirementService {
 		    }
 			
 			// currency
-		    if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("currentRateCurrency", jsonObj.getString("currencyCode")));
-		    }
+//		    if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
+//				boolQueryBuilder.must(QueryBuilders.matchQuery("currentRateCurrency", jsonObj.getString("currencyCode")));
+//		    }
 		    
 		     //rate
-		    if(jsonObj.has("rate") && !"".equalsIgnoreCase(jsonObj.getString("rate"))){
-		    	String rate= jsonObj.getString("rate").replaceAll("[^0-9\\.]+", "");
-		    	try{
-		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("rate").gte(new Float(rate)));
-		    	}
-		    	catch(NumberFormatException e){}
-		    }
+//		    if(jsonObj.has("rate") && !"".equalsIgnoreCase(jsonObj.getString("rate"))){
+//		    	String rate= jsonObj.getString("rate").replaceAll("[^0-9\\.]+", "");
+//		    	try{
+//		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("rate").gte(new Float(rate)));
+//		    	}
+//		    	catch(NumberFormatException e){}
+//		    }
 			
 			
 		   //Rate Type
-			if(jsonObj.has("rateType") && !"".equalsIgnoreCase(jsonObj.getString("rateType"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
-		    }
+//			if(jsonObj.has("rateType") && !"".equalsIgnoreCase(jsonObj.getString("rateType"))){
+//				boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
+//		    }
 			
 			
 			//minExpYears && maxExpYears
-		    if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp")) && jsonObj.has("maxExp")  && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
-		    	String minYears= jsonObj.getString("minExp").replaceAll("[^0-9\\.]+", "");
-		    	String maxYears= jsonObj.getString("maxExp").replaceAll("[^0-9\\.]+", "");
-		    	try{
-		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(new Integer(minYears)).lte(new Integer(maxYears)));
-		    	}
-		    	catch(NumberFormatException e){}
-		    }
+//		    if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp")) && jsonObj.has("maxExp")  && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
+//		    	String minYears= jsonObj.getString("minExp").replaceAll("[^0-9\\.]+", "");
+//		    	String maxYears= jsonObj.getString("maxExp").replaceAll("[^0-9\\.]+", "");
+//		    	try{
+//		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(new Integer(minYears)).lte(new Integer(maxYears)));
+//		    	}
+//		    	catch(NumberFormatException e){}
+//		    }
 			//minExpYears
-		    else if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp"))){
-		    	String minYears= jsonObj.getString("minExp").replaceAll("[^0-9\\.]+", "");
-		    	try{
-		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(new Integer(minYears)));
-		    	}
-		    	catch(NumberFormatException e){}
-		    }
+//		    else if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp"))){
+//		    	String minYears= jsonObj.getString("minExp").replaceAll("[^0-9\\.]+", "");
+//		    	try{
+//		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(new Integer(minYears)));
+//		    	}
+//		    	catch(NumberFormatException e){}
+//		    }
 		    //maxExpYears
-		    else if(jsonObj.has("maxExp") && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
-           	String maxYears= jsonObj.getString("maxExp").replaceAll("[^0-9\\.]+", "");
-           	try{
-		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").lte(new Integer(maxYears)));
-		    	}
-		    	catch(NumberFormatException e){}
-		    }
+//		    else if(jsonObj.has("maxExp") && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
+//           	String maxYears= jsonObj.getString("maxExp").replaceAll("[^0-9\\.]+", "");
+//           	try{
+//		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").lte(new Integer(maxYears)));
+//		    	}
+//		    	catch(NumberFormatException e){}
+//		    }
 			
 		    //requirementStatu
 			if(jsonObj.has("requirementStatus") && !"".equalsIgnoreCase(jsonObj.getString("requirementStatus"))){
@@ -2479,21 +2489,21 @@ public class RequirementServiceImpl implements RequirementService {
 				String updatedOn =  jsonObj.getString("updatedOn");
 				String upOn = UpdateOnToDate(updatedOn);
 				if(!Constants.ALL_RECORDS.equalsIgnoreCase(upOn)){
-				 RangeQueryBuilder qb = QueryBuilders.rangeQuery("reqCreatedDate").gte(upOn);
+				 RangeQueryBuilder qb = QueryBuilders.rangeQuery("createdDate").gte(upOn);
 				boolQueryBuilder.must(qb);
 				}
 			}
 			//Educations
-			if(jsonObj.has("education") && !"".equalsIgnoreCase(jsonObj.getString("education"))){
-				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
-				if(educationArray != null && !educationArray.isEmpty()){
-					BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
-					for(String keywd : educationArray){
-						edunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("education", keywd));
-					}
-					boolQueryBuilder.must(edunBoolQueryBuilder);
-				} 
-			}
+//			if(jsonObj.has("education") && !"".equalsIgnoreCase(jsonObj.getString("education"))){
+//				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
+//				if(educationArray != null && !educationArray.isEmpty()){
+//					BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
+//					for(String keywd : educationArray){
+//						edunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("education", keywd));
+//					}
+//					boolQueryBuilder.must(edunBoolQueryBuilder);
+//				} 
+//			}
 			
 			//client
 			if(jsonObj.has("client") && !"".equalsIgnoreCase(jsonObj.getString("client"))){
@@ -2507,16 +2517,16 @@ public class RequirementServiceImpl implements RequirementService {
 				}
 			}
 			//Requirement Skills
-			if(jsonObj.has("skills") && !"".equalsIgnoreCase(jsonObj.getString("skills"))){
-				ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "skills");
-				if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
-					BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
-					for(String keywd : candidateSkillsArray){
-						skillBoolQueryBuilder.should(QueryBuilders.matchQuery("skills", keywd));
-					}
-					boolQueryBuilder.must(skillBoolQueryBuilder);
-				} 	
-			}
+//			if(jsonObj.has("skills") && !"".equalsIgnoreCase(jsonObj.getString("skills"))){
+//				ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "skills");
+//				if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
+//					BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
+//					for(String keywd : candidateSkillsArray){
+//						skillBoolQueryBuilder.should(QueryBuilders.matchQuery("skills", keywd));
+//					}
+//					boolQueryBuilder.must(skillBoolQueryBuilder);
+//				} 	
+//			}
 			
 			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 			List<Requirement>   reqList = new ArrayList<>();
@@ -2528,47 +2538,49 @@ public class RequirementServiceImpl implements RequirementService {
 						Requirement requirement = null;
 						RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
 		            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
 		            	{
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	
 		            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
-		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel1ApproverStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			)){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
-		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus()))
 		            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
-		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			)){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	
 		            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	
 		            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
-		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex);
+		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+		            		//&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())
+		            		requirement = getData(requirementIndex,user);
 		            	}
-		            	
-		            	reqList.add(requirement);
+		            	if(requirement !=null){
+		            		reqList.add(requirement);
+		            	}
 		            }
 				}
 			}
-			
+			logger.info("*****************============="+reqList.size());
 		return reqList;
 		
 	}
-	 private Requirement getData(RequirementIndex requirementIndex) {
+	 private Requirement getData(RequirementIndex requirementIndex, User user) throws Exception {
 		 Requirement requirement = new Requirement();
 		requirement.setId(requirementIndex.getRequirementId());
      	requirement.setJobId(requirementIndex.getJobId());
@@ -2591,11 +2603,18 @@ public class RequirementServiceImpl implements RequirementService {
      	requirement.setCity(requirementIndex.getCity());
      	requirement.setSearchType("Requirement");
      	requirement.setPositions(requirementIndex.getNumberOfPositions());
-     	requirement.setNoOfApplicants(requirementIndex.getNumberOfApplicants());
+     	if(null != requirementIndex.getNumberOfApplicants()){
+     		requirement.setTotalApplicantsForRequirement(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
+     	}
      	requirement.setManager(requirementIndex.getManager());
      	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
          	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
-     	}	
+     	}
+     	Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementIndex.getRequirementId(), user.getId());
+		requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
+ 
+//     	if(user.getId().toString())
+//     	isLoginUserAsTeamMember
      	return requirement;
 	}
 
@@ -2765,36 +2784,36 @@ public class RequirementServiceImpl implements RequirementService {
 						Requirement requirement = null;
 						RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
 		            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
 		            	{
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	
 		            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
-		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel1ApproverStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			)){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
-		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus()))
 		            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
-		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 		            			)){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	
 		            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	
 		            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex);
+		            		requirement = getData(requirementIndex,user);
 		            	}
 		            	searchList.add(requirement);
 		            }
@@ -2809,4 +2828,10 @@ public class RequirementServiceImpl implements RequirementService {
 	public Long getRequirementsListById(Long orgLocationId) throws Exception {
 		return requirementDao.getRequirementListByOrgLocationID(orgLocationId);
 	}
+
+	@Override
+	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception {
+		return requirementDao.getRequirementByRequirementUUID(requirementUUID);
+	}
+
 }

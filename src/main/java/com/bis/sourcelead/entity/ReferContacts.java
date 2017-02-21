@@ -1,0 +1,177 @@
+package com.bis.sourcelead.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+@Entity
+@Table(name = "REFER_CONTACTS", catalog = "sourcelead")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "referContacts")
+public class ReferContacts implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+	private Long id;
+	
+	@ManyToOne
+    @JoinColumn(name="REFER_FROM_USER_ID")        
+    private User referFromUser;
+	
+	@ManyToOne
+    @JoinColumn(name="CONTACT_USER_ID")        
+    private User contactUser;
+	
+	@ManyToOne
+    @JoinColumn(name="ORGLOCATION_ID")        
+    private OrgLocations orgLocationId;
+
+	@Column(name = "CONTACT_USER_FIRSTNAME")
+	private String firstName;
+	
+	@Column(name = "CONTACT_USER_LASTNAME")
+	private String lastName;
+	
+	@Column(name = "CONTACT_USER_EMAIL")
+	private String contactUserEmail;
+	
+	@Column(name = "CONTACT_USER_PHONE")
+	private String contactUserPhone;
+	
+	@Column(name = "CONTACT_USER_UUID")
+	private String contactUserUUID;
+	
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+	
+	@Column(name = "CREATED_BY")
+	private String createdBy;
+	
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+	
+	@Column(name = "UPDATED_BY")
+	private String updatedBy;
+	
+	
+	
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public User getReferFromUser() {
+		return referFromUser;
+	}
+
+	public void setReferFromUser(User referFromUser) {
+		this.referFromUser = referFromUser;
+	}
+
+	public User getContactUser() {
+		return contactUser;
+	}
+
+	public void setContactUser(User contactUser) {
+		this.contactUser = contactUser;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getContactUserEmail() {
+		return contactUserEmail;
+	}
+
+	public void setContactUserEmail(String contactUserEmail) {
+		this.contactUserEmail = contactUserEmail;
+	}
+
+	public String getContactUserPhone() {
+		return contactUserPhone;
+	}
+
+	public void setContactUserPhone(String contactUserPhone) {
+		this.contactUserPhone = contactUserPhone;
+	}
+
+	public String getContactUserUUID() {
+		return contactUserUUID;
+	}
+
+	public void setContactUserUUID(String contactUserUUID) {
+		this.contactUserUUID = contactUserUUID;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+	
+
+}

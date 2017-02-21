@@ -43,6 +43,12 @@ public class OrgLocations implements Serializable{
 	@JoinColumn(name = "ORG_ID")
     private Org org;
 	
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@Fetch(FetchMode.SELECT)
+	@JoinColumn(name = "TIMEZONE_ID")
+    private Timezone timezone;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
@@ -99,6 +105,16 @@ public class OrgLocations implements Serializable{
 	
     @Column(name = "UPDATED_DATE")
 	private Date updatedDate;
+
+    
+
+	public Timezone getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(Timezone timezone) {
+		this.timezone = timezone;
+	}
 
 	public Long getId() {
 		return id;

@@ -382,6 +382,24 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                     globalVarsMap.put("organizationName", "--");
             }
             
+            if (requirementOffers.getPositionType() != null && !"".equalsIgnoreCase(requirementOffers.getPositionType())) {
+                globalVarsMap.put("positionType",requirementOffers.getPositionType());
+	        } else {
+	                globalVarsMap.put("positionType", "--");
+	        }
+            
+            if (applicant.getRequirement().getJobTitle() != null && !"".equalsIgnoreCase(applicant.getRequirement().getJobTitle())) {
+                globalVarsMap.put("requirementTitle",applicant.getRequirement().getJobTitle());
+	        } else {
+	                globalVarsMap.put("requirementTitle", "--");
+	        }
+            
+            if (requirementOffers.getAmount() != null && !"".equalsIgnoreCase(requirementOffers.getAmount())) {
+            	StringBuilder sb =new StringBuilder();
+            	globalVarsMap.put("finalRate",sb.append(requirementOffers.getAmount()).append(" / ").append(requirementOffers.getPaymentMode()).toString());
+	        } else {
+	                globalVarsMap.put("finalRate", "--");
+	        }
             
             if (null != requirementSubmissionTemplateFields.getFirstName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && requirementSubmissionTemplateFields.getLastName()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName()))  {
                 StringBuilder sb = new StringBuilder();   
@@ -423,8 +441,10 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
          StringBuilder acceptLinkBuilder=new StringBuilder();
          StringBuilder rejectLinkBuilder=new StringBuilder();
-         globalVarsMap.put("acceptLink",acceptLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirementOffer?offerStatus=Accepted&offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-         globalVarsMap.put("rejectLink",rejectLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirementOffer?offerStatus=Rejected&offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+         StringBuilder negotiationLinkBuilder=new StringBuilder();
+         globalVarsMap.put("acceptLink",acceptLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirementOffer?offerStatus=Accepted&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+         globalVarsMap.put("rejectLink",rejectLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirementOffer?offerStatus=Rejected&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+         globalVarsMap.put("negotiationLink",negotiationLinkBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateUserRates?rateStatus=Negotiate&submissionId=").append(requirementOffers.getSubmissionId().getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>").toString());
         
         StringBuilder attachmentLinkBuilder=new StringBuilder();
         if(requirementOffers.getFileName() != null && !requirementOffers.getFileName().isEmpty() ){

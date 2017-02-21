@@ -82,7 +82,7 @@ public class ModulesDaoImpl implements ModulesDao{
 	public List<Modules> getSourceLeadModules() throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from Modules modules where modules.parentModule.id IS NULL ";
+	    String query = "from Modules modules where modules.parentModule.id IS NULL and modules.id <> '5' ";
 	    List<Modules> modulesList = session.createQuery(query.toString()).setCacheable(true).list();
       
 	    return modulesList;

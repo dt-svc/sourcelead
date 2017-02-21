@@ -6,18 +6,18 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>
-<script src="resources/js/jquery-fun.js"></script>
-<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
+<!-- <link href="resources/css/jquery-ui.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+<!-- <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script> -->
+<!-- <script src="resources/js/bootstrap.min.js"></script> -->
+<!-- <script src="resources/js/jquery-fun.js"></script> -->
+<!-- <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" > -->
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
+<!-- <link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/jquery-fun.js"></script>  -->
+<!-- <script src="resources/js/chosen.jquery.min.js"></script>  -->
 
 <script>
 // project side bar tabs
@@ -44,7 +44,7 @@ $(document).ready(function() {
 	        	   $.ajax({
 		      	          type : "POST",
 		          	      dataType : 'json',
-	        	      	  url: sourceleadUrl+"/timesheetEntries?${_csrf.parameterName}=${_csrf.token}&from=timesheet",		
+	        	      	  url: sourceleadUrl+"/timesheetEntries?${_csrf.parameterName}=${_csrf.token}&from=user",		
 	        		      success :function(data) {
 	        		    	   if(data != '' && data != 'undefined' && data != null){ 
 		        		    	    $("#timesheetEntriesDiv").removeAttr("style");
@@ -98,7 +98,7 @@ $(document).ready(function() {
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
-   	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&from=timesheet",		
+   	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&from=user",		
    		          success :function(result) {
    		        	 $("#timesheetEntriesDivByProjectMemberId").removeAttr("style");
    		        	 $("#timesheetEntriesDivByProjectMemberId").empty();
@@ -131,7 +131,7 @@ $(document).ready(function() {
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
-   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from=timesheet",		
+   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from=user",		
    		          success :function(result) {
    		        	  		
    		        	      $("#timesheetDivByFrequency").removeAttr("style");
@@ -166,7 +166,7 @@ $(document).ready(function() {
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
-  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=timesheet",		
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=user",		
   		          success :function(result) {
   		    	       
   		        	   $("#timesheetDivByTab").removeAttr("style");
@@ -192,7 +192,23 @@ $(document).ready(function() {
 </script>
 
    
-
+<script type="text/javascript">
+function withdrawMyTimesheet(projectMemberId,timesheetFrequency){ 
+	/* var frm = $('#timesheet_form').serializeFormJSON(); */
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	      type : "POST",
+     	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency,		
+	      success :function(result) {
+	    	  $("#loadTime").removeAttr("style"); 
+	    	  timesheetDivByFrequency();
+	    	  $("html").trigger('click');
+	    	  maskme();
+	      }
+   }); 
+}
+</script>
 
 
 <!-- this script is for add row functionality at Timesheet screen -->
@@ -764,12 +780,11 @@ function addAttachment(){
           <div class="pull-left">
             <h2>Timesheets</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Timesheets</div>
         </section>
         
-        <div class="loadTime" id="loadTime"></div>    
-        
         <div id="timesheetEntriesDiv"> 
+           <div class="loadTime" id="loadTime"></div>  
         </div>
         
         
@@ -994,9 +1009,13 @@ function dropDownExport(){
 
 <!-- this script is for Timesheet Entries Export -->
 <script>
-function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType){
+function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,submissionStatus){
 	var sourceleadUrl ='${sourceleadUrl}';
-	 window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
+	if(submissionStatus == 'NEW'){
+		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
+	}else{
+		alert("Please fill the TimeSheets..");
+	}
 }
 </script>
  <!-- this script is for save Timesheet -->  

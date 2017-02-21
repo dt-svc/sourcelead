@@ -943,11 +943,10 @@ function requirementDetails(requirementId){
 				            		result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
 				            	'</sec:authorize>';
 				            }
-				            
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
 
-				             if(json.requirementSubmissionStatus  !='DRAFT'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null ){
+				             if(json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null ){
                					 
 				            	 result = result +'<button  class="btn btn-success mr" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
                		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
@@ -964,7 +963,7 @@ function requirementDetails(requirementId){
 				             result = result +'     <div class="clearfix">';
 				             
 				            result = result +'     <div class="clearfix row">';
-					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
+					        result = result +'     <div class="col-md-9 divskill divsAssigned pull-left">';
 					        
 					        result = result + '<div id="assignedMemberList"></div>';
 					        
@@ -1126,6 +1125,19 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            	}
+				            
+				            
+				            
+				            if(json.requirementApproverHierarchyStatus == 'REJECTED'){
+			            	result = result +'   <div class="col-md-3 pull-left">';
+			            	result = result +'   <div class="rejected_Reason">';
+			            	result = result +'   <h5>Rejected Reason:</h5>'; 
+			            	result = result +'   <p>'+json.rejectReason+'</p>';
+			            	result = result +'   </div>';
+			            	result = result +'   </div>';
+			            }
+				            
+				            
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            
@@ -3041,7 +3053,8 @@ function documentpaginationRejected(){
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
-	var selectBox = $('#rejectApplicantSelect'+submissionId).val();
+	$("#reasonForApplicantDiv").empty()
+	var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
     if(selectBox != "Status"){
     	var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -3187,17 +3200,10 @@ function assignedMemberList(requirementId){
         type : "POST",
          url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
          success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{ 
+        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+           				   	var json = JSON.parse(data);
 							var result = '';
-							 result = result +'     <div class="heightScroll mt10 mb">'; 
+							result = result +'     <div class="heightScroll mt10 mb">'; 
 						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
 						    result = result +'         <thead>';
 						    result = result +'         <tr>';
@@ -3235,10 +3241,8 @@ function assignedMemberList(requirementId){
 						    
 						    $("#assignedMemberList").empty();
 						    $("#assignedMemberList").append(result);
-							
-            		 }
-              }else{
-                     	 $("#assignedMemberList").removeAttr("style");
+                 }else{
+						$("#assignedMemberList").removeAttr("style");
        	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 
       					 result = result+"	<div class='col-lg-12'>"; 

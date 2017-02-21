@@ -1,9 +1,12 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -437,7 +440,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		float expPercentage = 0; //  experience = 20%
 		String reqSkills = "";
 		String candidateScore = null; 
-		if(null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
+		if(null != recommendedCustomizeScore && null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
 		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
 		     String [] numOfKeyWords = null;
 		     if(null != recommendedCustomizeScore.getCustomizeKeywords()){
@@ -481,12 +484,12 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				 }
 		    	    CandidateIndex candidateIndex = getCandidateIndex(candidate);
 					int matchedSkillCount = 0;
-					String candidateSkill = candidate.getSkillsName();
 					
 					
-					if(null  != candidateSkill){
-						String[] skills = candidateSkill.split(",");
-						skillPercentage = getSkillPercentage(skills,percentPerSkill,matchedSkillCount,reqSkills);
+					if(null  != candidate.getSkillsName()){
+						String[] skills = candidate.getSkillsName().split(",");
+						Set<String> set = new HashSet<String>(Arrays.asList(skills));
+						skillPercentage = getSkillPercentage(set,percentPerSkill,matchedSkillCount,reqSkills);
 					}
 					
 					
@@ -526,8 +529,12 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 
 	private CandidateIndex getCandidateIndex(Candidate candidate) {
 		CandidateIndex canIndex = new CandidateIndex();
-		canIndex.setExperienceMonths(candidate.getExperienceMonths());
-		canIndex.setExperienceYears(candidate.getExperienceYears());
+		if(null != candidate.getExperienceMonths()){
+			canIndex.setExperienceMonths(candidate.getExperienceMonths());
+		}
+		if(null != candidate.getExperienceYears()){
+			canIndex.setExperienceYears(candidate.getExperienceYears());
+		}
 		canIndex.setRateType(candidate.getRateType());
 		if(null != candidate.getExpectedRate() && !"".equalsIgnoreCase(candidate.getExpectedRate())){
 			canIndex.setExpectedRate(Float.parseFloat(candidate.getExpectedRate()));
@@ -626,18 +633,19 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					boolean isCandidateAdded = false;
 					
 					int matchedSkillCount = 0;
-					String candidateSkill = candidateIndex.getSkillsName();
+					
 					
 					
 					//List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
 					Integer reqListCount = requirementSubmissionService.getRequirementPerCandidateCount(candidateIndex.getCandidateId());
 					
 					//get the skillPercentage method
-					
-					if(null  != candidateSkill){
-						String[] skills = candidateSkill.split(",");
-//						ArrayList<String> candidateSkillList = new ArrayList<String>(Arrays.asList(skills));
-						skillPercentage = getSkillPercentage(skills,percentPerSkill,matchedSkillCount,reqSkills);
+					 				 
+					 
+					if(null  != candidateIndex.getSkillsName()){
+						String[] skills = candidateIndex.getSkillsName().split(",");
+						Set<String> set = new HashSet<String>(Arrays.asList(skills));
+						skillPercentage = getSkillPercentage(set,percentPerSkill,matchedSkillCount,reqSkills);
 					}
 					
 					
@@ -702,15 +710,15 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	
 	/**
 	 * this method is used to calculate the skillPercentage
-	 * @param candidateSkillList
+	 * @param set
 	 * @param percentPerSkill
 	 * @param matchedSkillCount
 	 * @param reqSkills
 	 * @return float
 	 */
-	private float getSkillPercentage(String[] candidateSkillList, float percentPerSkill, int matchedSkillCount, String reqSkills) {
-		if(candidateSkillList != null && candidateSkillList.length >0){
-			for(String skill : candidateSkillList){
+	private float getSkillPercentage(Set<String> set, float percentPerSkill, int matchedSkillCount, String reqSkills) {
+		if(set != null && set.size() >0){
+			for(String skill : set){
 					if(reqSkills.contains(skill)){
 						matchedSkillCount++;
 					}
@@ -731,11 +739,37 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 * @return float
 	 */
 	private float getExperiencePercentage(CandidateIndex candidateIndex, RecommendedCustomizeScore recommendedCustomizeScore, int reqMinExp, float expPercentage, float percentPerMonthExp, int reqMaxExp) {
-		if(null != candidateIndex.getExperienceYears()  && null != candidateIndex.getExperienceMonths() ){
+
+		Integer Months = 0;
+		Integer Years = 0;
+		int recommendationExpMonthsMin = 0;
+		int recommendationExpMonthsMax = 0;
+		if(null != candidateIndex.getExperienceYears() && !"".equalsIgnoreCase(candidateIndex.getExperienceYears())){
+			 Years = Integer.parseInt(candidateIndex.getExperienceYears());	
+		}
+		if(candidateIndex.getExperienceMonths() != null && !"".equalsIgnoreCase(candidateIndex.getExperienceMonths())){
+			 Months = Integer.parseInt(candidateIndex.getExperienceMonths());
+		}
+		
+		if(null != candidateIndex.getExperienceYears()  && null != candidateIndex.getExperienceMonths() && Years > 0 && Months > 0 ){
+
 			int  candidateExpMonths = (Integer.parseInt(candidateIndex.getExperienceYears()))*12 + (Integer.parseInt(candidateIndex.getExperienceMonths()));
 			
 			if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) && null != recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
-				 if(candidateExpMonths >= Integer.parseInt(recommendedCustomizeScore.getCustomizeMinExperience()) *12 && candidateExpMonths <= Integer.parseInt(recommendedCustomizeScore.getCustomizeMaxExperience()) *12){
+				
+				 String recommendationYearAndMonth[] = recommendedCustomizeScore.getCustomizeMinExperience().split("\\.");
+				 if(recommendationYearAndMonth.length == 2){
+				   recommendationExpMonthsMin = (Integer.parseInt(recommendationYearAndMonth[0]))*12 + (Integer.parseInt(recommendationYearAndMonth[1]));
+				 }else{
+				   recommendationExpMonthsMin = (Integer.parseInt(recommendationYearAndMonth[0]))*12;	 
+				 }
+				 String recommendationYearAndMonthMax[] = recommendedCustomizeScore.getCustomizeMaxExperience().split("\\.");
+				 if(recommendationYearAndMonthMax.length == 2){
+				   recommendationExpMonthsMax = (Integer.parseInt(recommendationYearAndMonthMax[0]))*12 + (Integer.parseInt(recommendationYearAndMonthMax[1]));
+				 }else{
+				   recommendationExpMonthsMax = (Integer.parseInt(recommendationYearAndMonthMax[0]))*12 ;
+				 }
+			if(candidateExpMonths >= recommendationExpMonthsMin && candidateExpMonths <= recommendationExpMonthsMax){
 					 expPercentage = Float.parseFloat(recommendedCustomizeScore.getCustomizeExperienceScore());
 				 }
 			}else if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience())){
@@ -774,24 +808,25 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			String  expectedRate = candidateIndex.getExpectedRate().toString();
 			expectedRate = expectedRate.substring(0, expectedRate.length() - 2);
 			
-			int reqRate = Integer.parseInt(expectedRate.toString());
+			float reqRate = Float.parseFloat(expectedRate);
+			//int reqRate = Integer.parseInt(expectedRate.toString());
 			float perMonthCandidateSal = 0;
 			if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate *9;
+				float perDaySal = reqRate *9;
 				perMonthCandidateSal = perDaySal * 30;
 			}else if(Constants.RATE_TYPE_WEEKLY.equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /7;
+				float perDaySal = reqRate /7;
 				perMonthCandidateSal = perDaySal * 30;
 			}else if(Constants.RATE_TYPE_BI_WEEKLY.equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /14;
+				float perDaySal = reqRate /14;
 				perMonthCandidateSal = perDaySal * 30;
 			}else if(Constants.RATE_TYPE_SEMI_MONTHLY.equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /15;
+				float perDaySal = reqRate /15;
 				perMonthCandidateSal = perDaySal * 30;
 			}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(candidateRateType)){
 				perMonthCandidateSal = reqRate;
 			}else if(Constants.RATE_TYPE_BI_MONTHLY.equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /60;
+				float perDaySal = reqRate /60;
 				perMonthCandidateSal = perDaySal * 30;
 			}else{
 				perMonthCandidateSal = reqRate /12;

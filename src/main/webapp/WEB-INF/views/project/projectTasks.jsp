@@ -213,7 +213,8 @@ function updateTakBillableType(taskId){
 
 <script type="text/javascript">
 	function flushTasks() {
-		$('#taskName').val();
+		$("#save_task").show();
+		$('#taskName').val('');
 		$('#taskNamesDIV').find('p.jquery_form_error_message').remove();
 		$("#taskBillableType").val('Billable');
 		$('#taskBillableType').selectpicker('refresh');

@@ -93,21 +93,22 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 
 	@Override
-	public void updateSubmissionStatus(Long submissionId, String status) {
-		submissionApproverHierarchyDao.updateSubmissionStatus(submissionId, status);
+	public void updateSubmissionStatusByProjectMemberIdStartDateAndEndDate(Long projectMemberId,Date startDate,Date endDate,String status) {
+		submissionApproverHierarchyDao.updateSubmissionStatusByProjectMemberIdStartDateAndEndDate(projectMemberId, startDate, endDate, status);
 		
-	}
-
-	@Override
-	public void updateApprovalStatusForApprover(Long empId, Long approverUserId, Date startDate, String status,
-			String rejectedReason) {
-		submissionApproverHierarchyDao.updateApprovalStatusForApprover(empId, approverUserId, startDate, status, rejectedReason);
 	}
 
 	@Override
 	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForTheSubmission(Long submissionId,String approvalStatus) {
 		return submissionApproverHierarchyDao.isThereAnyApproverChangesStatusForTheSubmission(submissionId,approvalStatus);
 	}
+	
+	
+	@Override
+    public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForProjectMember(Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String approvalStatus) {
+		return submissionApproverHierarchyDao.isThereAnyApproverChangesStatusForProjectMember(projectMemberId,frequencyStartDate,frequencyEndDate,approvalStatus);
+	}
+	
 
 	@Override
 	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(Long userId, Long projectId,
@@ -164,9 +165,6 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	@Override
 	public List<SubmissionApproverHierarchy> getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(
 			Long userId, Long orgLocationId, String status,String userRole) throws Exception {
-	
-		
-		
 		List<SubmissionApproverHierarchy> list = new ArrayList<SubmissionApproverHierarchy>();
 		
          if(status != null){
