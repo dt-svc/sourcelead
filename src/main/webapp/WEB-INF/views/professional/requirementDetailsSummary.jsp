@@ -20,7 +20,8 @@
 <link rel="stylesheet" href="resources/css/style.css" />
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link rel="stylesheet" href="resources/css/jquery-ui.css" type="text/css" >
-
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <style type="text/css">
 .viewTemplate .sjfb-field{
@@ -74,8 +75,17 @@ padding-right: 15px;
 	background-color: #f5f5f5;
 	padding:0;
 }
+.require_wrap_details {
+min-height:100px;
+}
 </style>
 
+<script>
+$(document).ready(function() {
+	 var requirementUUID = '${requirementUUID}'; 
+	 publicRequirementProfile(requirementUUID);
+});	
+</script>
 
 <body>
 <div class="clearfix"> 
@@ -89,129 +99,8 @@ padding-right: 15px;
     <nav class="header-nav navbar">
     </nav>
    </header>
+   <div id="publicRequirementProfileDiv"></div>
    
-   <div class="timesheet_out">
-    <div class="clients_side_wrap_inn no_pad">
-      <div class="profile_details requirement_details requirement_details_a clearfix">
-        <h4 id="id1">SL 201 - Business Analyst - Full Time</h4>
-        <div class="hide-row" style="display: block;">
-          <div class="col-md-9">
-            <div class="row">
-              <div class="col-md-3">
-                <div class="company-logo">
-                  <div class="imageParent"> <img src="./images/dell-logo.png" alt="Company" title="Company Logo" class="img-responsive"> </div>
-                  <span class="hidden"> TATA Consulting Private Limited, Hyderebad. </span> </div>
-              </div>
-              <div class="col-md-9">
-                <div class="canDetails clearfix">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <ul class="list-unstyled can-perdt">
-                        <li><i class="fa fa-black-tie"></i><span>Experience - 4 years</span></li>
-                        <li><i class="fa fa-rupee"></i><span>200 Per Hour</span></li>
-                        <li><i class="fa fa-map-marker"></i><span>Hyderabad, TS, India</span></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div class="pro-detials">
-                  <div class="professinal-details">
-                    <ul class="list-inline list-unstyled">
-                      <li>BA</li>
-                      <li>BRS</li>
-                      <li>SRS</li>
-                      <li>Agile</li>
-                      <li>SDLC</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-		<div class="col-md-3">
-			<div class="shareJ">
-				Share
-			  <span>
-				  <a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>
-				  <a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>				  
-				  <a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>
-				  <a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>
-			  </span>
-			</div>	
-           <div class="openPostBtns">
-				  <a href="javascript:void(0)" class="jobApply">Apply</a>
-				  <a class="refer" href="javascript:void(0)">Refer</a>
-					  <div class="referWrap">
-					  <div class="referWrapInn">
-								<div class="form-group col-md-6">
-								  <label class="col-md-12" for="Project Id">First Name</label>
-								  <div class="col-md-12">
-									<input type="text" class="form-control" name="" value="">
-									<span class="hidden">Enter Project Id</span> </div>
-								</div> 
-								<div class="form-group col-md-6">
-								  <label class="col-md-12" for="Project Id">Last Name</label>
-								  <div class="col-md-12">
-									<input type="text" class="form-control" name="" value="">
-									<span class="hidden">Enter Project Id</span> </div>
-								</div> 
-								<div class="form-group col-md-6">
-								  <label class="col-md-12" for="Project Id">Email Id *</label>
-								  <div class="col-md-12">
-									<input type="text" class="form-control" name="" value="">
-									<span class="hidden">Enter Project Id</span> </div>
-								</div> 
-								<div class="form-group col-md-6">
-								  <label class="col-md-12" for="Project Id">Phone *</label>
-								  <div class="col-md-12">
-									<input type="text" class="form-control" name="" value="">
-									<span class="hidden">Enter Project Id</span> </div>
-								</div> 
-								<div class="col-md-12 mt5 clearfix">            
-								<div class="pull-right">
-								  <input type="button" value="Refer" class="btn btn-primary">
-								  <input type="button" value="Cancel" class="btn btn-default ml10 canBtn">
-								</div>    
-								</div> 
-            
-						  <div class="clearfix"></div>
-						  </div>                                      					  	
-					  </div>
-			  </div>			  			
-		</div>
-          <div class="clearfix"></div>
-        </div>
-      </div>
-      <div class="project_side_wrap_inn_tabs" id="new-id">
-        <div class="project_tabs">
-          <div id="tab-1" class="project_tabs_inn" style="display: block;">
-            <div class="require_wrap_details"> 
-              
-              <h2>Descriptions:</h2>
-              <textarea placeholder="Enter description">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</textarea>
-              <h2>Other details:</h2>
-              <div class="require_one">
-                <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>10</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Education:</b> <span>MBA</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>file name<i class="glyphicon glyphicon-save"></i></span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="clearfix"></div>
-              </div>
-              
-              
-            </div>
-          </div>
-
-        </div>
-        
-      </div>
-    </div>
-  </div>
   
    
    <footer class="clearfix stickyfooter">
@@ -223,8 +112,178 @@ padding-right: 15px;
 </div>
 
 
+<script>
+function publicRequirementProfile(requirementUUID){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	   	type: "GET",
+	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
+		    success: function(data) {
+		    	var json = JSON.parse(data);
+		    	var result = "";
+		    	if(json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
+		    		minExp = json.minExp +'&nbsp;Years';
+		    	}else{
+		    		minExp = "";
+		    	}
+		    	if(json.maxExp != null && json.maxExp != '' && json.maxExp != 'undefined'){
+		    		maxExp = json.maxExp + '&nbsp;Years';
+		    	}else{
+		    		maxExp = "";
+		    	}
+		    	if(json.rate != null && json.rate != '' && json.rate != 'undefined'){
+		    		rate = json.rate;
+		    	}else{
+		    		rate = "";
+		    	}
+		    	if(json.rateType != null && json.rateType != '' && json.rateType != 'undefined'){
+		    		rateType = json.rateType;
+		    	}else{
+		    		rateType = "";
+		    	}
+		    	
+		    	if(json.city != null && json.city != '' && json.city != 'undefined'){
+		    		city = json.city +' , ';
+		    	}else{
+		    		city = "";
+		    	}
+		    	if(json.state != null && json.state != '' && json.state != 'undefined'){
+		    		state = json.state + ' , ';
+		    	}else{
+		    		state = "";
+		    	}
+		    	if(json.country != null && json.country != '' && json.country != 'undefined'){
+		    		country = json.country;
+		    	}else{
+		    		country = "";
+		    	}
+		    	if(json.description != null && json.description != '' && json.description != 'undefined'){
+		    		description = json.description;
+		    	}else{
+		    		description = "NO DATA";
+		    	}
+		    	if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
+		    		positions = json.positions;
+		    	}else{
+		    		positions = "";
+		    	}
+		    	
+		    	if(json.education != null && json.education != '' && json.education != 'undefined'){
+		    		education = json.education;
+		    	}else{
+		    		education = "NO DATA";
+		    	}
+		    	
+		    	
+				 result = result +'	<div class="container-fluid">';
+				 result = result +'    <div class="clients_side_wrap_inn">';
+				 result = result +'      <div class="profile_details requirement_details requirement_details_a clearfix">';
+				 result = result +'        <h4 id="id1">'+json.jobTitle+'</h4>';
+				 result = result +'        <div class="hide-row" style="display: block;">';
+				 result = result +'          <div class="col-md-9">';
+				 result = result +'            <div class="row">';
+				 result = result +'              <div class="col-md-3">';
+				 result = result +' 			 <div class="company-logo">';
+				 result = result +' 				<div class="imageParent"> <img onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/displayOrgImage/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive"> </div>';
+				 result = result +' 				</div>';
+				 result = result +'              </div>';
+				 result = result +'              <div class="col-md-9">';
+				 result = result +'                <div class="canDetails clearfix">';
+				 result = result +'                  <div class="row">';
+				 result = result +'                    <div class="col-md-12">';
+				 result = result +'                      <ul class="list-unstyled can-perdt">';
+				 result = result +'                        <li><i class="fa fa-black-tie"></i><span>Min Experience - '+minExp+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-black-tie"></i><span>Max Experience - '+maxExp+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-rupee"></i><span>'+rate+' '+rateType+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-map-marker"></i><span>'+city+' '+state+' '+country+'</span></li>';
+				 result = result +'                      </ul>';
+				 result = result +'                    </div>';
+				 result = result +'                  </div>';
+				 result = result +'                </div>';
+				 result = result +'                <div class="pro-detials">';
+				 result = result +'                  <div class="professinal-details">';
+				 result = result +'                    <ul class="list-inline list-unstyled">';
+				 if(json.skills != null  && json.skills != '' && json.skills != 'undefiend'){
+			    		var requirmentSkills = json.skills;
+				    	var skills = new Array();
+				    	skills = requirmentSkills.split(",");
+				        for (var i = 0; i < skills.length; i++) { 
+				        	 var customSkill = skills[i];
+				        	 result = result +'<li>'+customSkill+'</li>';
+				        }
+			    	}else{
+	 					result = result +'<li>No Data</li>';
+	 				}
+				 result = result +'                    </ul>';
+				 result = result +'                  </div>';
+				 result = result +'                </div>';
+				 result = result +'              </div>';
+				 result = result +'            </div>';
+				 result = result +'          </div>';
+				 result = result +'          <div class="col-md-3">';
+				 result = result +'         <div class="openPostBtns">';
+				 
+				 if(json.isJobApplied == 'N'){
+				 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob('+json.id+');"  class="jobApply">Apply</a>';
+				 }else{
+					 result = result +'<a href="javascript:void(0)" class="jobApply">Applied</a>';
+				 }
+				 
+				 if(json.isCrowdSourcing == 'Y'){
+				    result = result +'<a class="refer" onclick="referToJob('+json.id+')" href="javascript:void(0)">Refer</a>';
+				    result = result +'<div class="referWrap" id="refer">';
+	 				result = result +'<div class="referWrapInn">';
+	 				result = result +'<div id="refertoJobDiv"></div>';  
+	 				result = result +'</div>';
+	 				result = result +'</div>';
+				 }
+				 result = result +'          </div>';
+				 result = result +'          </div>';
+				 result = result +'          <div class="clearfix"></div>';
+				 result = result +'        </div>';
+				 result = result +'      </div>';
+				 result = result +'      <div class="project_side_wrap_inn_tabs mt" id="new-id">';
+				 result = result +'        <div class="project_tabs">';
+				 result = result +'          <div id="tab-1" class="project_tabs_inn" style="display: block;">';
+				 result = result +'            <div class="require_wrap_details"> ';
+				 result = result +'              <h2>Descriptions:</h2>';
+				 result = result +'              <textarea placeholder="Enter description">'+description+'</textarea>';
+				 result = result +'              <h2>Other details:</h2>';
+				 result = result +'              <div class="require_one">';
+				 result = result +'                <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+positions+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Education:</b> <span title="'+education+'">'+education+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
+		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
+		            }
+		            else{
+		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
+		            }
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+				 result = result +'                <div class="clearfix"></div>';
+				 result = result +'              </div>';
+				 result = result +'            </div>';
+				 result = result +'          </div>';
+				 result = result +'        </div>';
+				 result = result +'      </div>';
+				 result = result +'    </div>';
+				 result = result +'  </div>';
+				 $("#publicRequirementProfileDiv").empty();
+				 $("#publicRequirementProfileDiv").append(result); 
+		    }
+	});
+}
 
-
+</script>
+<script>
+	function predefineProfileImage(imageId){   
+		$(imageId).attr('src','resources/images/office-image.jpg');
+	}
+</script>
 </body>
 </html>
 
