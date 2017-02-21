@@ -741,23 +741,46 @@ public class TimesheetRestController {
 									  tabDiv.append("                 <td>");
 									  tabDiv.append("                      <div> ");
 									  
-									  //Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasks();
 									  Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
-									  tabDiv.append("                       <select id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasks(\""+rowCount+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
-									  tabDiv.append("<option value=''>--select task--</option>");
-						              for(ProjectTasks pt   : ProjectTasksList){
-								    	       if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
-								    	    	   tabDiv.append("<option value='"+pt.getId()+"' selected>").append(pt.getTaskName()).append("</option>");
-								    	       }
-								    	       else{
-								    	    	   if(isFillMyTimeSheet){
-								    	    		   tabDiv.append("<option value='"+pt.getId()+"'>").append(pt.getTaskName()).append("</option>");
-								    	    	   }
-								    	       }
-										                
-									  }
-						              tabDiv.append(" </select>"); 
-								              if(isFillMyTimeSheet){
+									  if(isFillMyTimeSheet 
+										    		&&!isNullOrEmpty(approvalStatus)
+										    		&&!approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) 
+										    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
+										 
+												 //Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasks();
+												  tabDiv.append("                       <select id='"+rowCount+"task1Id' name='"+rowCount+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasks(\""+rowCount+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
+												  tabDiv.append("<option value=''>--select task--</option>");
+									              for(ProjectTasks pt   : ProjectTasksList){
+											    	       if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
+											    	    	   tabDiv.append("<option value='"+pt.getId()+"' selected>").append(pt.getTaskName()).append("</option>");
+											    	       }
+											    	       else{
+											    	    		   tabDiv.append("<option value='"+pt.getId()+"'>").append(pt.getTaskName()).append("</option>");
+											    	       }
+													                
+												  }
+									              tabDiv.append(" </select>"); 
+										 
+										 }
+										 else{
+											 if(timesheetEntries.getProjectTask() != null){
+												 for(ProjectTasks pt   : ProjectTasksList){
+										    	       if(pt.getId().equals(timesheetEntries.getProjectTask().getId())){
+										    	    	   tabDiv.append("<p>").append(pt.getTaskName()).append("</p>");
+										    	       }
+												 }
+											 }
+											 else {
+												 tabDiv.append("<p>").append("--").append("</p>");
+											 }
+											
+										 }
+									 
+						              
+						 			     if(isFillMyTimeSheet 
+									    		&&!isNullOrEmpty(approvalStatus)
+									    		&&!approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) 
+									    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
 									              if(rowCount == 1){
 									            	  tabDiv.append("<input type='button' value='' onClick='addTimeSheetRow("+ts.getProjectMembers().getProjects().getId()+")' class='addtaskfield'/>");
 									              }else{
