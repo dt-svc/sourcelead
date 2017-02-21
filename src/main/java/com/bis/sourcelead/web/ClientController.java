@@ -146,7 +146,7 @@ public class ClientController {
 					StringBuilder userNameSB = new StringBuilder();
 					orgRelation.setVendorCreateduserName(userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 				}
-				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLocations.getId());
+				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLocations.getId(),"");
 
 				orgRelation.setNoOfContatcs(orgSpocs.size());
 
