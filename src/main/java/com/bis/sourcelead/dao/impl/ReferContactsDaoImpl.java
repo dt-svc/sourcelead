@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.entity.ReferContacts;
@@ -34,6 +35,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 	private static final Logger logger = LoggerFactory.getLogger(ReferContactsDaoImpl.class);
 
 	@Override
+	@Transactional
 	public ReferContacts addReferContacts(ReferContacts referContacts) throws Exception {
 		logger.debug("Adding addReferContacts");
 		Session session = this.sessionFactory.getCurrentSession();

@@ -646,7 +646,7 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 		@RequestMapping(value = "/submitReferToJob", method = RequestMethod.POST)
-		public String submitReferToJob(@RequestParam(value = "jsonData", required = false) String json,
+		public String submitReferToJob(@RequestParam(value = "json", required = false) String json,
 				HttpServletRequest request,HttpServletResponse response)
 				throws Exception {
 
