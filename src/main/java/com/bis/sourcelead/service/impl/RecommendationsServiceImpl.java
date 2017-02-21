@@ -437,7 +437,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		float expPercentage = 0; //  experience = 20%
 		String reqSkills = "";
 		String candidateScore = null; 
-		if(null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
+		if(null != recommendedCustomizeScore && null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
 		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
 		     String [] numOfKeyWords = null;
 		     if(null != recommendedCustomizeScore.getCustomizeKeywords()){

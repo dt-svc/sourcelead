@@ -20,9 +20,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RequirementService;
@@ -174,4 +179,20 @@ public class ProfessionalRequirementsController {
 		        resultJson = commonUtil.toJSON(requirement);
 				return resultJson;
 	}
+	 
+	 
+	 
+	 @RequestMapping(value = "/referRequirementToProfessional")
+		public ModelAndView referRequirementToProfessional(@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
+				@RequestParam(value = "contactUUID", required = false) String contactUUID) {
+			
+		 ModelAndView model = new ModelAndView();
+		 model.setViewName("professional/requirementDetailsSummary");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("contactUUID", contactUUID);
+		 model.addObject("requirementUUID", requirementUUID);
+		 return model;
+			
+		}
+	 
 }
