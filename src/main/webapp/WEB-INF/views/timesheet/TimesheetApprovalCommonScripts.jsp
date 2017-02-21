@@ -1057,7 +1057,7 @@ $(document).ready(function() {
 
 </script>	
 <script>
-function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize){
+function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
 	
 	 var msg = $("#reject"+projectMemberId+"message").val(); 
 	 if(msg.match(/^[^\s-](.*)*$/) != null){
@@ -1082,10 +1082,10 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	    success: function(data) {    
 	   	   // approvalList();
 	   	   var uniqueSepartor = startDate.replace('-','').replace('-','');
-	   	   if(projectMemberId.indexOf(uniqueSepartor) >= 0){
-	   		   var table = $('#example').DataTable();
-	   		   table.row('#row'+projectMemberId+'').remove().draw( false );
-	   	   }
+	       if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
+			    	 var table = $('#example').DataTable();
+		   		 table.row('#row'+projectMemberId+'').remove().draw( false );
+		   }
 	   	   else{
 	   		  $("#row"+projectMemberId).empty();
 	 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
@@ -1122,14 +1122,14 @@ function cancelRejectSubmission(projectMemberId){
 		 $("#reject"+projectMemberId+"panel").slideUp(200);
 }
 
-function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize){ 
+function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){ 
 	    $("#rejectReasonDiv").empty();
 	    $("#reject"+projectMemberId+"message").val(''); 
         var result = "";
         result = result +'<div class="time_appr_rejct_pop" id="reject'+projectMemberId+'panel" style="top:25%">';
 		result = result +'<textarea placeholder="Enter comment here" id="reject'+projectMemberId+'message" ></textarea>';
 		result = result + ' <div id="rejectReasonDiv"/>';
-		result = result +'<a href="#" onClick="saveRejectSubmissionByProjectMemberId(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\','+tdSpanSize+');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+projectMemberId+'\');">Cancel</a>';
+		result = result +'<a href="#" onClick="saveRejectSubmissionByProjectMemberId(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+projectMemberId+'\');">Cancel</a>';
 		result = result +'</div>';
 		result = result +'</div>';
 		$("#rejectedPopup").append(result);
@@ -1137,7 +1137,7 @@ function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 		$("#reject"+projectMemberId+"panel").slideToggle(200);
 		
 }
-function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize){
+function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
 		//$("#timesheetApprList").empty();
 		var rowHtmlContent =  $("#row"+projectMemberId).html();
 		 var firstName =  '${SourceLeadWeb_user.firstName}';
@@ -1158,10 +1158,9 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 		    success: function(data) {
 		    	 var uniqueSepartor = startDate.replace('-','').replace('-','');
-	        	 if(projectMemberId.indexOf(uniqueSepartor) >= 0){
+	        	 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			    	 var table = $('#example').DataTable();
 	        		 table.row('#row'+projectMemberId+'').remove().draw( false );
-	        		   
 	        	 }
 	        	 else{
 	        		 $("#row"+projectMemberId).empty();

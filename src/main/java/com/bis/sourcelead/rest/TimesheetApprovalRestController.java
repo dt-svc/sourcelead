@@ -511,12 +511,11 @@ public class TimesheetApprovalRestController {
 	     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
      	 timesheetApprovalDiv.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
      	                     .append(projectMember.getId()).append("\",\"").append(format.format(actualStartDate)).append("\",\"").append(format.format(actualEndDate)).
-     	                     append("\",").append(tdSpanLength).append(");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
+     	                     append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
      	                     .append(projectMember.getId()).append("\",\"")
      	                      .append(format.format(actualStartDate))
      	                     .append("\",\"").append(format.format(actualEndDate))
-     	                 
-     	                     .append("\",").append(tdSpanLength).append(");'></i></div>");
+     	                     .append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i></div>");
       }
 	      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
      	 timesheetApprovalDiv.append(" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>");
@@ -650,12 +649,11 @@ public class TimesheetApprovalRestController {
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
 			            	 timesheetApprovalDiv.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
 			            	                     .append(projectMember.getId()).append("\",\"").append(format.format(actualStartDate)).append("\",\"").append(format.format(actualEndDate)).
-			            	                     append("\",").append(tdSpanLength).append(");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
+			            	                     append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
 			            	                     .append(projectMember.getId()).append("\",\"")
 			            	                      .append(format.format(actualStartDate))
 			            	                     .append("\",\"").append(format.format(actualEndDate))
-			            	                 
-			            	                     .append("\",").append(tdSpanLength).append(");'></i></div>");
+			            	                     .append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i></div>");
 			             }
 					      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 			            	 timesheetApprovalDiv.append(" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>");
