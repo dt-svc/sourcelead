@@ -160,9 +160,9 @@ function editCandidate(candidateId){
 							// If Candidate Type equals Consultant email field should be Disable mode
 							
 							result = result + '<div class="clearfix mb10">';
-							result = result + '<div class="col-md-6">';
+							result = result + '<div class="col-md-6" id="emailDiv">';
 							if(json.candidateType == "Candidate"){
-								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" >';
+								result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
 							}
 							
 							if(json.candidateType == "Consultant"){
@@ -214,7 +214,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
-							result = result + '<option value="">Select Notice Period</option>';
+							result = result + '<option value="">--Select Notice Period--</option>';
 							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
 							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
 							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
@@ -1532,3 +1532,36 @@ function updateDesignationType(){
 }
 </script>
 
+
+<!-- Candidate Email validation script starts here -->
+
+<script type="text/javascript">
+ function validateCandidateEmail() {
+	 var email = $('#email').val(); 
+	 $('#emailDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(email != null && email != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		 
+						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+						  $("#update_candidate").attr("disabled", "disabled");
+						  $("#update_candidate").addClass('button').val('Processing..');
+		        	}
+		        	else{
+		        		
+		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#update_candidate" ).addClass('button').val('Save');
+                         $("#update_candidate").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     
+ 
+ <!-- Candidate Email validation script ends here -->

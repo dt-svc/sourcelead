@@ -749,8 +749,8 @@ function storeTeam(){
 		     var jsonData = encodeURIComponent(con);
 			
 			 var sourceleadUrl = '${sourceleadUrl}';
-			
-			 $("#add_team").attr("disabled", "disabled");
+			  $("#add_team").attr("disabled", "disabled");
+			 
 			
 			$.ajax({
 					type : "POST",
@@ -1292,10 +1292,13 @@ function removeFromTeam(id){
 		        url: sourceleadUrl+"/validateTeamName?${_csrf.parameterName}=${_csrf.token}&name="+name, 
 		        success: function(data) {
 		        	if(data == 'true'){
-						  $("input#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
-						  $("#add_team").removeAttr("disabled");
+						  
+		        		  $("input#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						  $("#add_team").attr("disabled", "disabled");
+						  $("#add_team").addClass('button').val('Processing..');
 		        	}
 		        	else{
+		        		
 		        		 $('input#name').removeAttr("record-exist record-exist-errormsg");
 		        		 $('#teamNameDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#add_team" ).addClass('button').val('Save');
