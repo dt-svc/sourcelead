@@ -23,4 +23,9 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		return referContactsDao.getReferContactsByUUID(contactUUID);
 	}
 
+	@Override
+	public ReferContacts getReferContactsByEmails(Long userID, String toEmail) throws Exception {
+		return referContactsDao.getReferContactsByEmails(userID, toEmail);
+	}
+
 }

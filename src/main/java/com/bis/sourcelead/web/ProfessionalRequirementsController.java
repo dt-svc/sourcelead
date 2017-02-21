@@ -20,22 +20,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
-import com.bis.sourcelead.entity.Notifications;
-import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.StatesService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -67,6 +62,9 @@ public class ProfessionalRequirementsController {
 	@Autowired
 	ReferContactsService referContactsService;
 	
+	@Autowired
+	UserService userservie;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
@@ -74,18 +72,29 @@ public class ProfessionalRequirementsController {
 	
 	
 	 @RequestMapping(value = "/register")
-	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID,
-	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception {
+	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID) throws Exception {
 	 			ModelAndView model = new ModelAndView();
-	 			model.setViewName("registration");
 	 			model.addObject("sourceleadUrl", sourceleadUrl);
-	 			if(!isNullOrEmpty(contactUUID) && !isNullOrEmpty(requirementUUID)){
+	 			if(!isNullOrEmpty(contactUUID)){
 	 				ReferContacts referContacts = referContactsService.getReferContactsByUUID(contactUUID);
-	 				model.addObject("firstName",referContacts.getFirstName());
-	 				model.addObject("lastName",referContacts.getLastName());
-	 				model.addObject("email",referContacts.getContactUserEmail());
-	 				model.addObject("contactUUID", contactUUID);
-	 				model.addObject("requirementUUID", requirementUUID);
+	 				if(null == referContacts.getContactUser()){
+	 					model.addObject("firstName",referContacts.getFirstName());
+		 				model.addObject("lastName",referContacts.getLastName());
+		 				model.addObject("email",referContacts.getContactUserEmail());
+		 				model.addObject("contactUUID", contactUUID);
+		 				model.setViewName("registration");
+	 				}else{
+	 					User user = userservie.getUserById(referContacts.getContactUser().getId());
+	 					if(null == user.getPassword()){
+	 						model.addObject("userName", user.getUserName());
+			 				model.setViewName("resetloginCredentials");
+	 					}else{
+	 						model.setViewName("login");
+	 					}
+	 				}
+	 				
+	 			}else{
+	 				model.setViewName("registration");
 	 			}
 	 			
 	 			return model;

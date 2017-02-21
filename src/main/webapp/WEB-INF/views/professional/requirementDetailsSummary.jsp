@@ -227,7 +227,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'         <div class="openPostBtns">';
 				 
 				 result = result +'<a href="'+sourceleadUrl+'" class="refer">Login</a>';
-				 result = result +'<a href="'+sourceleadUrl+"/register?contactUUID="+contactUUID+"&requirementUUID="+requirementUUID+'" class="jobApply">Apply</a>';
+				 result = result +'<a href="'+sourceleadUrl+"/register?contactUUID="+contactUUID+'" class="jobApply">Apply</a>';
 				 
 				
 				 result = result +'          </div>';
