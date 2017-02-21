@@ -317,6 +317,18 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
+//						for(String keywd : invoiceFrequencyArray){
+						if(keywd.equalsIgnoreCase("Weekly")){
+							anyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Weekly"));
+							anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Bi-Weekly"));
+						}else if(keywd.equalsIgnoreCase("Monthly")){
+							anyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Monthly"));
+							anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Semi-Monthly"));
+						}
+//						else{
+//							invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", keywd));
+//						}
+//					}
 					}
 					 boolQueryBuilder.must(anyBoolQueryBuilder);
 				}
@@ -623,6 +635,13 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 									anyBoolSubQueryBuilder.should(matchQueryBuilder);
 								}
 								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							}
+							if(Constants.WEEKLY.equalsIgnoreCase(keywd)){
+								anyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Weekly"));
+								anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Bi-Weekly"));
+							}else if(Constants.MONTHLY.equalsIgnoreCase(keywd)){
+								anyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Monthly"));
+								anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Semi-Monthly"));
 							}
 						}
 						 projectBoolQueryBuilder.must(anyBoolQueryBuilder);
