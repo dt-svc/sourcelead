@@ -61,8 +61,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
-import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -82,12 +80,6 @@ public class CandidateListRestController {
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
 		
-	 
-	 @Autowired
-	 private OrgService orgService;
-	 
-	 @Autowired
-	 private OrgLocationService orgLocationService;
 	
 	 @Autowired
 	 CommonUtil commonUtil;
@@ -1052,4 +1044,32 @@ public class CandidateListRestController {
 				file.delete();
 			}
 		 }
+	 	 
+	 	 
+	 	 /**
+			 *  This Method is for saving Skils into Candidate table By candidateID
+			 *  
+			 * @author : venkat kesav
+			 * @param candidateId This is the first parameter to saveSkilsBycandidateID method
+			 * @param skillName   This is the second parameter to saveSkilsBycandidateID method
+			 * @param request     This is the third parameter to saveSkilsBycandidateID method
+			 * 
+			 * @return String
+			 * 
+			 * @throws NullPointerException
+			 */
+		   @RequestMapping(value = "/saveOrUpdateOnlySkillBycandidateId")
+		   public String saveOrUpdateOnlySkillBycandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="skillName", required=false) String  skillName, HttpServletRequest request) throws Exception {
+			   Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+				
+				if(null != can && StringUtils.isNotEmpty(skillName)){
+					can.setSkillsName("");
+					can.setSkillsName(skillName);
+					candidateService.saveOrUpdateCandidate(can);
+					candidateService.saveOrUpdateCandidateElkDocument(can);
+					return "success";
+				}else{
+					return "failed";
+				}
+			 }
 	}
