@@ -11,5 +11,11 @@ public interface RequirementReferService {
 	RequirementRefer addRequirementRefer(RequirementRefer requirementRefer) throws Exception;
 	
 	public void saveReferCandidate(User user, OrgLocations orgLocations,JSONObject jsonObj) throws Exception;
+	
+	public Boolean isProfessionalReferToRequirement(String email, Long requirementId,Long userId) throws Exception;
+	
+	public Boolean isReferToRequirement(String fromEmail, Long requirementId) throws Exception;
+	
+	public RequirementRefer getProfessionalReferToRequirement(String email, Long requirementId,Long userId) throws Exception;
 
 }

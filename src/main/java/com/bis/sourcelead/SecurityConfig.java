@@ -100,6 +100,7 @@ public class SecurityConfig  {
     			.antMatchers("/resetPasswordWithUserName").permitAll() 
     			.antMatchers("/resetPassword").permitAll() 
     			.antMatchers("/referRequirementToProfessional").permitAll() 
+    			.antMatchers("/getRequirementProfessionalProfileDetails").permitAll() 
     			.antMatchers("/ws/**").permitAll() 
     			.antMatchers("/verifyResetPassword").permitAll() 
     			.antMatchers("/acceptClientOrVendorInvitation").permitAll() 

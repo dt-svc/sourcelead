@@ -936,10 +936,10 @@ function referToJob(requirementId){
 		result = result +'<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">';
 		result = result +'</div>';
 		result = result +'</div>'; 
-		result = result +'<div class="form-group col-md-6">';
+		result = result +'<div class="form-group col-md-6" id="emailDiv">';
 		result = result +'<label class="col-md-12" for="Project Id">Email Id *</label>';
 		result = result +'<div class="col-md-12">';
-		result = result +'<input type="text" class="form-control" name="email" id="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
+		result = result +'<input type="text" class="form-control" name="email" id="email" onblur="validateProfessionalEmail('+requirementId+')"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
 		result = result +'<span class="hidden">Enter Project Id</span> </div>';
 		result = result +'</div>'; 
 		result = result +'<div class="form-group col-md-6">';
@@ -1106,4 +1106,52 @@ $('body').on('submit', '#referToJob_form', function(e){
 		$("#referToJob_form").validateOnBlur(false, validationSettings);
 	});
   </script>
+  
+  
+  <script>
+  function validateProfessionalEmail(requirementId){
+	  
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  var email = document.getElementById('email').value; 
+	  if(email != null && email != ''){
+		  $("#submit_refer").attr("disabled", "disabled");
+		$.ajax({
+		   	type: "GET",
+		       url: sourceleadUrl+"/validateReferedEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId,
+		       success: function(data) {
+		    		if(data != null && data != ''){
+					     if(data == 'Invalid'){
+					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#email").after("<p class='jquery_form_error_message'>"+email+" is already refered</span>");
+			    				$('input#email').attr('record-exist','yes');
+			    				$('input#email').attr('record-exist-errorMsg',email+' is already refered'); 
+					     } 
+					     
+					     else if(data == 'Invalid Email'){
+					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#email").after("<p class='jquery_form_error_message'> you can't refer user self</span>");
+			    				$('input#email').attr('record-exist','yes');
+			    				$('input#email').attr('record-exist-errorMsg'," you can't refer user self"); 
+					     } 
+					     
+				       	else{
+				       		 $("#submit_refer").removeAttr("disabled");
+							 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+							 $( "#submit_refer" ).removeAttr("style");
+							 $( "#submit_refer" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+				       	}
+			       	}
+		    	   
+		      },
+		       
+		}); 
+	   }
+  }
+  
+  </script>
+  
 
