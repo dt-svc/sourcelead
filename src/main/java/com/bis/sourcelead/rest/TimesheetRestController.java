@@ -267,15 +267,21 @@ public class TimesheetRestController {
 				StringBuilder selectedStartDate = new StringBuilder("");
 				StringBuilder selectedEndDate =  new StringBuilder("");
 				int count = 1;
+				 DateFormat format = Constants.DF_DMY;
 				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
 					    String key = entry.getKey();
 					    String value =entry.getValue();
+					    Date currentStartDate = format.parse(key.replaceAll("/", "-"));
+					    Date currentEndDate = format.parse(value.replaceAll("/", "-"));
+					    HashSet<Date> pmhDateList =  projectMembersHistoryService.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(projectMember.getId(), currentStartDate, currentEndDate);
+					    if(pmhDateList.isEmpty() || pmhDateList == null)
+					    continue;
 					    StringBuilder isSelected = new StringBuilder("");
 					    if(count == 1){
 					    	selectedStartDate.append(key.replaceAll("/", "-"));
 					    	selectedEndDate.append(value.replaceAll("/", "-"));
 					    }
-					    if(isCurrentDateBetweenDateRange(key, value)){
+					    if(CalendarUtil.isCurrentDateBetweenDateRange(key, value)){
 					    	selectedStartDate.setLength(0);
 					    	selectedEndDate.setLength(0);
 					    	isSelected.append("selected='selected'");
@@ -304,7 +310,28 @@ public class TimesheetRestController {
 		
 	}
 	
+	@PreAuthorize("hasRole('ROLE_MODIFY_MY_TIMESHEETS')")
+	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
+	public @ResponseBody void withDrawTimesheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency) throws Exception {
+			
+			DateFormat format = Constants.DF_DMY;
+			if(StringUtils.isNotEmpty(timesheetFrequency)){
+			 	 String[] frequency = timesheetFrequency.split("To");
+			 	 String weekStartDate = frequency[0].trim();
+			  	 String weekEndDate = frequency[1].trim();
+			  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
+				 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
+			  	submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDate(projectMemberId, startDate, endDate, Submission_Status.DRAFT.getValue());;
+			}
+		
+	}
+	
 	public StringBuilder timesheetEntriesDivByFrequnecy(String weekStartDate,String weekEndDate,Long projectMemberId,String from) throws Exception{
+		
+		Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
+		Boolean isExportMyTimeSheet = commonUtil.hasRole("ROLE_EXPORT_MY_TIMESHEETS");
+		Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
 		DateFormat format = Constants.DF_DMY;
@@ -321,17 +348,21 @@ public class TimesheetRestController {
 		timesheetEntriesDiv.append("<input type='hidden' name='projectMemberId'  id='projectMemberId' value='"+projectMemberId+"' >");
 		timesheetEntriesDiv.append("<input type='hidden' name='timesheetFrequency'  id='timesheetFrequency' value='"+weekStartDate+"To"+weekEndDate+"' >");
 		
+		 SubmissionApproverHierarchy isSah = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForProjectMember(projectMemberId, frequencyStartDate, frequencyEndDate, "APPROVED");
 		String pullRightClass = "pull-right";
+		String styleWidth = "";
+		String innerStyleWidth = "";
 		if(from != null && !from.isEmpty() && from.equalsIgnoreCase("timesheet")){
 			pullRightClass = "" ;
 		}
 		
+		if(isSah == null && isModifyMyTimeSheet && !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
+			styleWidth = "style='width:120px;'";
+			innerStyleWidth = "style='width:100%;'";
+		}
 		/*timesheetEntriesDiv.append("			<div id='timesheetDivByFrequency'> ");*/
 		
-		timesheetEntriesDiv.append("					<div class='timeNewSe "+pullRightClass+"'>");
-		
-			
-		    
+	 	    timesheetEntriesDiv.append("					<div "+styleWidth+" class='timeNewSe "+pullRightClass+"'>");
 			if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
 		    	timesheetEntriesDiv.append("<b class='proj_new "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
@@ -339,13 +370,16 @@ public class TimesheetRestController {
 	        	timesheetEntriesDiv.append("<b class='proj_draft "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-	        	timesheetEntriesDiv.append("<b class='proj_process "+pullRightClass+" '>").append(submissionStatus).append("</b></td>");
+	        	timesheetEntriesDiv.append("<b "+innerStyleWidth+"  class='proj_process "+pullRightClass+" '>").append(submissionStatus).append("</b>");
+	        	if(isSah == null && isModifyMyTimeSheet){
+	                timesheetEntriesDiv.append("</div><div "+styleWidth+" class='timeNewSe '><b "+innerStyleWidth+" class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Modify</b>");
+	        	}
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
-	        	timesheetEntriesDiv.append("<b class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b> </td>");
+	        	timesheetEntriesDiv.append("<b class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
-	        	timesheetEntriesDiv.append("<b class='proj_closed "+pullRightClass+"'>").append(submissionStatus).append("</b> </td>");
+	        	timesheetEntriesDiv.append("<b class='proj_closed "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        	timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'>");
 	        	timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getRejectedReason()).append("</div>");
 	        	timesheetEntriesDiv.append(" </i>");
@@ -383,8 +417,8 @@ public class TimesheetRestController {
 			    Submission_Status submission_Status = sahForActive.getSubmissionStatus();
 				String status = submission_Status.getValue();
 			    
-			    if(isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
-			    	if(isCurrentDateBetweenDateRange(key, value)){
+			    if(CalendarUtil.isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
+			    	if(CalendarUtil.isCurrentDateBetweenDateRange(key, value)){
 			    		   isActive.append("class='current'");
 			    		   if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
 			    			    isActive.delete(0, isActive.length());
@@ -447,8 +481,8 @@ public class TimesheetRestController {
 		timesheetEntriesDiv.append("					<div class='export' onClick='dropDownExport();'> ");
 		timesheetEntriesDiv.append("						<p><i class='glyphicon glyphicon-export'></i>Export<i class='fa fa-caret-down'></i></p> ");
 		timesheetEntriesDiv.append("							<ul id='exporrtEntries'> ");
-		timesheetEntriesDiv.append("			                	<li onClick='timesheetEntriesExport(\""+weekStartDate+"\",\""+weekEndDate+"\","+projectMemberId+",\""+exportPdf+"\");'><i class='fa fa-file-pdf-o text-danger'></i>&nbsp;PDF</li> ");
-		timesheetEntriesDiv.append("			                    <li onClick='timesheetEntriesExport(\""+weekStartDate+"\",\""+weekEndDate+"\","+projectMemberId+",\""+exportExcel+"\");'><i class='fa fa-file-excel-o text-primary'></i>&nbsp;Excel</li> ");
+		timesheetEntriesDiv.append("			                	<li onClick='timesheetEntriesExport(\""+weekStartDate+"\",\""+weekEndDate+"\","+projectMemberId+",\""+exportPdf+"\",\""+submissionStatus+"\");'><i class='fa fa-file-pdf-o text-danger'></i>&nbsp;PDF</li> ");
+		timesheetEntriesDiv.append("			                    <li onClick='timesheetEntriesExport(\""+weekStartDate+"\",\""+weekEndDate+"\","+projectMemberId+",\""+exportExcel+"\",\""+submissionStatus+"\");'><i class='fa fa-file-excel-o text-primary'></i>&nbsp;Excel</li> ");
 		timesheetEntriesDiv.append("			                    <li class='hidden'>Word<i class='fa fa-file-word-o'></i></li> ");
 		timesheetEntriesDiv.append("							</ul>			 ");
 		timesheetEntriesDiv.append("					</div> ");
@@ -470,22 +504,6 @@ public class TimesheetRestController {
 		
 	}
 	
-	
-	boolean isCurrentDateBetweenDateRange(String weekStartDate,String weekEndDate) {
-		Boolean flag = false;
-		if(StringUtils.isNotEmpty(weekStartDate) && StringUtils.isNotEmpty(weekEndDate)){
-			Date currentDate = CommonUtil.currentDate();
-			 DateFormat format = Constants.DF_STD_DMY;
-			 Date startDate = null;
-			 Date endDate = null;
-			try {
-				startDate = format.parse(weekStartDate.replaceAll("-", "/"));
-				 endDate = format.parse(weekEndDate.replaceAll("-", "/"));
-				 flag =   currentDate.after(startDate) && currentDate.before(endDate);
-			} catch (ParseException e) {}
-		}
-		return flag;
-	}
 	
 	public StringBuilder projectTabDataByDates(String startDate ,String endDate,Long projectMemberId,String timesheetFrequencyEndDate,String approvalStatus) throws Exception{
 		
@@ -718,7 +736,7 @@ public class TimesheetRestController {
 					            	  if(!isNullOrEmpty(timesheetEntries.getMoncomments())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment1Id\");'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"comment1Id' >").append(timesheetEntries.getMoncomments()).append("</textarea></span></div>");
-					            	  }else{
+					            	  }else if(StringUtils.isEmpty(disbleCondition1.toString())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment1Id\");'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"comment1Id'  id='"+rowCount+"textArea1Id' ></textarea></span></div>");
 					            	  }
@@ -730,7 +748,7 @@ public class TimesheetRestController {
 						              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
 						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment2Id\");'></i>");
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"comment2Id'>").append(timesheetEntries.getTuecomments()).append("</textarea></span></div>");
-						              }else{
+						              }else  if(StringUtils.isEmpty(disbleCondition2.toString())){
 						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment2Id\");'></i>");
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"comment2Id' id='"+rowCount+"textArea2Id'></textarea></span></div>");
 						              }
@@ -742,7 +760,7 @@ public class TimesheetRestController {
 						              if(!isNullOrEmpty(timesheetEntries.getWedcomments())){
 						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment3Id\");'></i>");  
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"comment3Id'>").append(timesheetEntries.getWedcomments()).append("</textarea></span></div>");
-						              }else{
+						              }else if(StringUtils.isEmpty(disbleCondition3.toString())){
 						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment3Id\");'></i>");
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"comment3Id' id='"+rowCount+"textArea3Id'></textarea></span></div>");
 						              }
@@ -756,7 +774,7 @@ public class TimesheetRestController {
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment4Id\");'></i>"); 
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"comment4Id'>").append(timesheetEntries.getThucomments()).append("</textarea></span></div>");
 					            	  }
-						              else{
+						              else if(StringUtils.isEmpty(disbleCondition4.toString())){
 						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment4Id\");'></i>");
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"comment4Id' id='"+rowCount+"textArea4Id'></textarea></span></div>");
 						              }
@@ -768,7 +786,7 @@ public class TimesheetRestController {
 					            	  if(!isNullOrEmpty(timesheetEntries.getFricomments())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"comment5Id'>").append(timesheetEntries.getFricomments()).append("</textarea></span></div>");
-					            	  }else{
+					            	  }else if(StringUtils.isEmpty(disbleCondition5.toString())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"comment5Id' id='"+rowCount+"textArea5Id'></textarea></span></div>");
 					            	  }
@@ -780,7 +798,7 @@ public class TimesheetRestController {
 					            	  if(!isNullOrEmpty(timesheetEntries.getSatcomments())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment6Id\");'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"comment6Id'>").append(timesheetEntries.getSatcomments()).append("</textarea></span></div>");
-					            	  }else{
+					            	  }else if(StringUtils.isEmpty(disbleCondition6.toString())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment6Id\");'></i>");
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"comment6Id' id='"+rowCount+"textArea6Id'></textarea></span></div>");
 					            	  }
@@ -792,7 +810,7 @@ public class TimesheetRestController {
 					            	  if(!isNullOrEmpty(timesheetEntries.getSuncomments())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment7Id\");'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"comment7Id' >").append(timesheetEntries.getSuncomments()).append("</textarea></span></div>");
-					            	  }else{
+					            	  }else if(StringUtils.isEmpty(disbleCondition7.toString())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment7Id\");'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"comment7Id' id='"+rowCount+"textArea7Id'></textarea></span></div>");
 					            	  }

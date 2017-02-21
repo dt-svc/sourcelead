@@ -2,6 +2,13 @@
  
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
 <%-- 
      @author : David Raju.
      this script is for edit Candidate.
@@ -151,7 +158,6 @@ function editCandidate(candidateId){
 							result = result + '		        </div>';
 							
 							// If Candidate Type equals Consultant email field should be Disable mode
-							
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
@@ -706,7 +712,7 @@ function candidateProfile(candidateId){
 					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
 				    	        }
 							
-							result = result +'		<div class="clearfix dashboard-widget candidate-profile mt">                                                                                                    ';
+							result = result +'		<div class="clearfix dashboard-widget candidate-profile mt">';
 							result = result +'		  <ul class="nav nav-tabs">                                                                                                                   ';
 							result = result +'		    <li class="active"><a data-toggle="tab" href="#skills">General View</a></li>                                                              ';
 							//result = result +'		    <li><a data-toggle="tab" href="#milestone">Milestone View</a></li>                                                                        ';
@@ -718,18 +724,14 @@ function candidateProfile(candidateId){
 							
 							result = result +'		          <!-- Select Skills -->                                                                                                              ';
 							
-							result = result +'		          <h2 class="education  pull-left">Skills:</h2>                                                                                                  ';
-							if(window.candidateStatusGlobal == '0'){
-								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
-								result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
-
-							}else{
-								result = result +'		              <div class="addSkills clearfix pull-right mt10"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
-							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
-							}
-							result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
-							result = result +'		                    <div class="clearfix div-padding">                                                                                        ';
-							result = result +'		                      <div class="col-md-10">                                                                                                 ';
+							result = result +'		<div class="clearfix">';
+							result = result +'		          <h2 class="education  pull-left">Skills:</h2>';
+							result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
+							result = result +'		          <span id="saveSkillBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
+							result = result +'		</div>';
+							result = result + '<div class="clearfix"></div> ';
+							
+							result = result +'<div class="clearfix">';
 							
 							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
 							<c:forEach var="skill" items="${skillsList}">
@@ -740,6 +742,7 @@ function candidateProfile(candidateId){
 						                res.forEach(function(item) {
 						                	if('${skill.name}' == item){
 						                		existed = 1;
+						                		result = result + ' <option selected value="${skill.name}">${skill.name}</option>';
 						                	}
 						                });
 					                }
@@ -748,74 +751,11 @@ function candidateProfile(candidateId){
 					                }
 			                </c:forEach>
 			                result = result + '</select>';
-							
-							result = result +'		                      </div> ';
-							result = result +'		          <div class="">                                                                                                         ';
-							result = result +'		            <div class="">                                                                                                  ';
-							result = result +'		              <!-- Add skills div -->                                                                                                         ';
-
-							/*result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="getAllSkills('+candidateId+'); removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';*/
-
-							
-							/* if(window.candidateStatusGlobal == '0'){
-								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
-								result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
-
-							}else{
-								result = result +'		              <div class="addSkills clearfix"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
-							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
-							}
-							result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
-							result = result +'		                    <div class="clearfix div-padding">                                                                                        ';
-							result = result +'		                      <div class="col-md-10">                                                                                                 ';
-							
-							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
-			                <c:forEach var="skill" items="${skillsList}">
-			              			  result = result + ' <option value="${skill.name}">${skill.name}</option>';
-			                </c:forEach>
-			                result = result + '</select>';
-							
-							result = result +'		                      </div> '; */ 
-							result = result +'		                      <div class="col-md-2">                                                                                                  ';
-							result = result + '                              <button class="btn btn-sm btn-primary pull-right mr" type="submit" onClick="saveSkils('+candidateId+');" >Add</button>';
-							result = result +'		                      </div>                                                                                                                  ';
-							result = result +'		                    </div>                                                                                                                    ';
-							result = result +'		                  </div>                                                                                                                      ';
-							result = result +'		                </div>                                                                                                                        ';
-							result = result +'		              </div>                                                                                                                          ';
-							
-							
-							result = result + '<div class="clearfix"></div> ';
-							
-							
-							
-							/* result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> '; */
-							
-							result = result +'		              <!-- Add skills div ends -->                                                                                                    ';
-							
-							result = result +'</div> ';
-							result = result +'</div>                                                                                                                              ';
-							result = result +'		          <!-- Select Skills -->                                                                                                              ';
-							
-							result = result +'<div class="clearfix mt"></div>';
-							result = result +'<div class="append_skill professinal-details">';  
-							result = result +'<ul class="list-inline list-unstyled">';
-							if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-								var skillsNameArray = json.skillsName.split(',');
-								 for (i=0;i < skillsNameArray.length;i++)
-					             {
-					            	  result = result+'<li>'+skillsNameArray[i]+'</li>';
-					            	  
-					             } 
-								//result = result + ' <li class="professinal-details"  value="${json.skillsName}">'+json.skillsName+'</li>'; 
-							}else{
-								result = result + ' <li class="professinal-details">NO DATA</li>';
-							}
-			               	
-			               
-							result = result +'</ul>'; 
 							result = result +'</div>';
-							result = result +'		        </div>';
+							result = result +'<div class="clearfix"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div> ';
 							
 							//Employee Div
 							result = result + '<div id="employeeSubmissionProfile"></div> '; 
@@ -885,6 +825,23 @@ function candidateProfile(candidateId){
 												
 									
 									});
+								
+								var config = {
+										  '.chosen-select'           : {},
+										  '.chosen-select-deselect'  : {allow_single_deselect:true},
+										  '.chosen-select-no-single' : {disable_search_threshold:10},
+										  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+										  '.chosen-select-width'     : {width:"95%"}
+							    }
+								for (var selector in config) {
+								  $(selector).chosen(config[selector]);
+								}
+								$('.chosen-select').each(function() {
+									var $this = $(this);
+									$this.next().css({'width': '100%'});
+									})
+								$("#skillName").chosen();
+								$("#skillName").prop('disabled', true).trigger("chosen:updated");
 								$(".close-div").click(function(){
 									$(".add-skills").removeClass('add-skills-active');
 									});
@@ -932,9 +889,40 @@ function candidateProfile(candidateId){
 }
 </script>
 
+<script>
+	function editSkill(candidateId){
+		$("#skillName").prop('disabled', false).trigger("chosen:updated");
+		$("#editSkillBtn").remove();
+		$("#editSkillBtnSpan").hide();
+		window.skillCountBefore = $("#skillName :selected").length;
+		var result = '';
+		result = result + '<button type="button" id="saveSkillBtn" name="saveSkillBtn" class="btn btn-primary btn-sm" onclick="saveSkill('+candidateId+');">Save Skill</button>';
+		$("#saveSkillBtnSpan").empty();
+		$("#saveSkillBtnSpan").append(result);
+		$("#saveSkillBtnSpan").show();
+	}
+
+	function saveSkill(candidateId){
+		$("#skillName").prop('disabled', true).trigger("chosen:updated");
+		window.skillCountAfter = $("#skillName :selected").length;
+		if(skillCountBefore != skillCountAfter){
+			saveSkils(candidateId);
+		}
+		$("#saveSkillBtn").remove();
+		$("#saveSkillBtnSpan").hide();
+		var result = '';
+		result = result + '<button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button>';
+		$("#editSkillBtnSpan").empty();
+		$("#editSkillBtnSpan").append(result);
+		$("#editSkillBtnSpan").show();
+		skillCountAfter = skillCountBefore = 0;
+	}
+</script>
+
 
 <%-- 
      @author : sarath kumar.
+     @author : venkat kesav (modified on 02/18/2017)
      this script is for save Skils in Candidate.
      1.usage     :  used in editCandidate() function  line 13
      2.parameter : csrf token ,candidateId.
@@ -948,12 +936,10 @@ function candidateProfile(candidateId){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({  
 	          type : "POST",
-	          url: sourceleadUrl+"/saveSkilsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
+	          url: sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
 	          success :function(data) {
-	               if(data != null && data != 'undefined' && data != ""){
-	            	   candidateSkillsList(candidateId);
-	            	   removeSkillPopUp(candidateId);
-	            	   candidateProfile(candidateId);
+	               if(data != null && data != 'undefined' && data != "" && data == "success"){
+	            	  //candidateProfile(candidateId);
 	               }
 	        },
 	          
@@ -965,19 +951,7 @@ function candidateProfile(candidateId){
  }  
 </script>
  
- 
- <%-- 
-     @author : sarath kumar.
-     this script is for remove Skill PopUp.
-     1.usage     :  used in saveSkils() function line number 339
-     2.parameter : candidateId  .
---%>
-<script>  
-function removeSkillPopUp(candidateId){           
-		/* $(".add-skills").removeClass('add-skills-active'); */
-		$(".add-skills").css({"display":"none","opacity":"0"});
-}
-</script>             
+             
             
  <script type="text/javascript">
         var validationSettings = {
@@ -1528,30 +1502,6 @@ function certificationSubmissionProfile(candidateId){
 </script>
 <script>
 $('.selectpicker').selectpicker('refresh');
-
-/* function getAllSkills(candidateId){
-	
-	 var sourceleadUrl ='${sourceleadUrl}';
-		$.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getSkillsExcludeExistingSkills?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	var output = "";
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.name+ "'>"+opt.name+"</option>";
-				}
-	        	$("#skillName").empty();
-		        $("#skillName").append(output);
-		        $('#skillName').trigger("chosen:updated");
-	        },
-	    });
-	
-} */
-
-
 </script>    
      
 <script>

@@ -161,6 +161,22 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	
 	
 	/**
+	 * This method for get all project EndDate Graterthan CurrentDate
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Projects> getAllProjectsEndDateGraterthanCurrentDate() throws Exception {
+		logger.debug("In ProjectsDaoImpl class getAllProjectsEndDateGraterthanCurrentDate method");
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+		String query = "from Projects project where  project.endDate < :currentDate";
+		List<Projects> projectsList =  session.createQuery(query.toString()).setParameter("currentDate", currentDate).setCacheable(true).list();
+		
+		return projectsList;
+	}
+	
+	
+	/**
 	 * This method for get primary project by orgLocationsId
 	 */
 	@Override

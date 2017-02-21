@@ -605,6 +605,8 @@ function addCertification(candidateId) {
 
 							  $('#StartDateEdit').datepicker({
 							      dateFormat: 'yy-mm-dd',
+							      changeMonth: true,
+							  	  changeYear: true, 
 							      onSelect: function (selected) {
 							            var dt = new Date(selected);
 							            dt.setDate(dt.getDate() + 1);
@@ -614,7 +616,9 @@ function addCertification(candidateId) {
 							  
 							  $('#EndDateEdit').datepicker({
 							      dateFormat: 'yy-mm-dd',
-							        onSelect: function (selected) {
+							      changeMonth: true,
+							  	  changeYear: true, 
+							      onSelect: function (selected) {
 							            var dt = new Date(selected);
 							            dt.setDate(dt.getDate() - 1);
 							            $("#StartDateEdit").datepicker("option", "maxDate", dt);

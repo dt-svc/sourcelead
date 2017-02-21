@@ -5,23 +5,24 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="icon" type="resources/image/png"
 	href="resources/images/fav.png" />
-<link
+<%-- <link
 	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
 	rel="stylesheet" type="text/css">
 <link rel="stylesheet"
 	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ --%>
 <script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<!-- <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/chosen.jquery.min.js"></script> 
-
+ -->
 <style>
 .user_summary_edit_cta p{
     margin: -5px 15px;
@@ -744,7 +745,7 @@ function getChangeRole(userId,userRoleId){
 	</div> -->
 
  <div class="remove_pop" style="display: none;">
-	<i class="fa fa-trash"></i><span>User successfully terminated</span>
+	<i class="fa fa-trash"></i><span>User successfully Removed</span>
 </div> 
 
 <div id="popUp"></div>
@@ -983,7 +984,7 @@ function getChangeRole(userId,userRoleId){
                  if(data == "success"){
                 	 $("#selectoruser").removeAttr("style");
           			 $("#selectoruser").css({ display: "block" });
-          			 $("#userMsgDiv").html("Success!! User Terminated");
+          			 $("#userMsgDiv").html("Success!! User Removed");
                  	 location.replace(sourceleadUrl+"/usersList");
                  	 userMsgFadein();
                  }
@@ -1170,7 +1171,7 @@ $("#editRoleDetailsList").empty();
 					if(json.userState == "NOT_LOGGEDIN"){
 						
 						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
-						result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
+						result = result + ' <label>Email Id<span class="text-danger">&nbsp; *</span></label>';
 						result = result + ' <input type="text" value="'+json.user.email+'"  id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100 validate_email"/>';
 						result = result + ' </div>';
 					
@@ -1516,6 +1517,7 @@ function cancelUser(){
 <script>
 function cancelEditRole(){
 	$("#edit_role_pop").slideToggle(100);
+	location.reload(); 
 }
 </script>
 
@@ -1899,6 +1901,10 @@ function reActiveUser(userId){
                type: "POST",
             url: sourceleadUrl+"/reActiveUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId,        
                success: function(data) {
+            	   $("#selectoruser").removeAttr("style");
+        		   $("#selectoruser").css({ display: "block" });
+        		   $("#userMsgDiv").html("Success!! User reactivated for sourcelead");
+               	   location.replace(sourceleadUrl+"/usersList");
             	   userDetails(userId);
                }
        });

@@ -859,6 +859,21 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					return count;
 		}
 
+		@Override
+		@Transactional
+		public RequirementSubmission getRequirementSubmissionByRequirementIdAndCandidateId(Long requirementId,
+				Long candidateId) throws Exception {
+			 Session session = this.sessionFactory.getCurrentSession();
+		     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate "
+		     		+ "where rs.requirement.id = :requirementId and rs.candidate.id =:candidateId ";
+		     List<RequirementSubmission> submissionList = session.createQuery(query).setLong( "requirementId", requirementId).setLong( "candidateId", candidateId).setCacheable(true).list();
+		   
+		     if(submissionList != null && submissionList.size() >0){
+					return submissionList.get(0);
+				}
+		  return null;
+	}
+
   }
 
 

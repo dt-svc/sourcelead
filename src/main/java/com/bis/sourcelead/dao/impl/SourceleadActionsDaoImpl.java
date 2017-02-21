@@ -166,4 +166,26 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 	    return actionIds;
 	}
 
+	@Override
+	@Transactional
+	public List<SourceleadActions> getLoginCrowdSourcingUserRoleActionsByOrgLocationId(Long roleId) throws Exception {
+
+		 Session session = this.sessionFactory.getCurrentSession();
+        List<Roles> rolesList = new ArrayList<Roles>();
+		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId" ).setLong( "roleId", roleId ).setCacheable(true).list();
+		 List<Long> roleActonList = new ArrayList<Long>();
+		 for(Roles roles : rolesList){
+			 for (String s : roles.getActionId().split(",")){
+				 roleActonList.add(Long.parseLong(s));
+			 }
+		 }
+		
+	    String query = "from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id = '5' "
+	    		+ "and moduleActions.sourceleadActions.id IN (:roleActonList)) ";
+	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("roleActonList", roleActonList).setCacheable(true).list();
+     
+     
+	    return actionsList;
+	}
+
 }

@@ -1,0 +1,665 @@
+package com.bis.sourcelead.rest;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.search.SearchHit;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CampaignIndex;
+import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.setup.RequirementElkUtil;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ReferContacts;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementRefer;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.ReferContactsService;
+import com.bis.sourcelead.service.RequirementInterviewHistoryService;
+import com.bis.sourcelead.service.RequirementReferService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+@RestController
+public class CrowdSourcingRequirementsRestController {
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+
+	@Autowired
+	RequirementElkUtil requirementElkUtil;
+	
+	@Autowired
+	SourceleadELKBaseIndexer<CampaignIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	RequirementInterviewHistoryService requirementInterviewHistoryService;
+	
+	@Autowired
+	RequirementReferService requirementReferService;
+	
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
+
+	
+	@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	@RequestMapping(value = "/getCrowdSourcingRequirements")
+	public @ResponseBody String getCrowdSourcingRequirements(@RequestParam(value = "requirementType", required = false) String requirementType,
+			@RequestParam(value = "offset", required = false) Integer offset,
+			@RequestParam(value = "postedOn", required = false) String postedOn,
+			@RequestParam(value = "jobTitleSearch", required = false) String jobTitleSearch,
+			@RequestParam(value = "jobLocationSearch", required = false) String jobLocationSearch,
+			HttpServletRequest request) throws Exception {
+
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		
+	    String resultJson;
+	    List<RequirementIndex> requirementList = new ArrayList<RequirementIndex>();
+	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+	    
+	     BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+	     if(requirementType.equalsIgnoreCase("OpenJobs")){
+	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isPublicJob", "Y"));
+	    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
+	     }
+	     else if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
+	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+	     }
+	     else if (requirementType.equalsIgnoreCase("AppliedJobs")){
+	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
+	     }
+	     
+	     if(!isNullOrEmpty(postedOn)){
+				String upOn = UpdateOnToDate(postedOn);
+				if(!Constants.ALL_RECORDS.equalsIgnoreCase(upOn)){
+				 RangeQueryBuilder qb = QueryBuilders.rangeQuery("createdDate").gte(upOn);
+				boolQueryBuilder.must(qb);
+				}
+			}
+	     
+	     if(!isNullOrEmpty(jobTitleSearch)){
+	    	 BoolQueryBuilder anyJobSearchBoolQueryBuilder = QueryBuilders.boolQuery();
+	    	 anyJobSearchBoolQueryBuilder.should(QueryBuilders.matchQuery("jobTitle", jobTitleSearch));
+	    	 anyJobSearchBoolQueryBuilder.should(QueryBuilders.matchQuery("jobId", jobTitleSearch));
+	    	 boolQueryBuilder.must(anyJobSearchBoolQueryBuilder);
+	     }
+	     
+	     if(!isNullOrEmpty(jobLocationSearch)){
+	    	 BoolQueryBuilder anyLocationBoolQueryBuilder = QueryBuilders.boolQuery();
+	    	 anyLocationBoolQueryBuilder.should(QueryBuilders.matchQuery("country", jobLocationSearch));
+	    	 anyLocationBoolQueryBuilder.should(QueryBuilders.matchQuery("state", jobLocationSearch));
+	    	 anyLocationBoolQueryBuilder.should(QueryBuilders.matchQuery("city", jobLocationSearch));
+	    	 boolQueryBuilder.must(anyLocationBoolQueryBuilder);
+	     }
+		 
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+		
+	   
+	    try {
+	    	 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,offset, Constants.MAX_RESULTS_TEN,boolQueryBuilder).getHits();
+	 	     if(null != searchHits && searchHits.length >0){
+	 	    	ObjectMapper mapper = new ObjectMapper();
+	 	    	for (SearchHit hit : searchHits) {
+	 	    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
+	 	    		mapper.setDateFormat(df);
+	 	    	    RequirementIndex requirementIndex = mapper.readValue(json.toString(), RequirementIndex.class);
+	 	    	    
+	 	    	   if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
+	 	    		   if(null !=  requirementIndex.getAppliedProfessionals()){
+	 	    			  List<Long> userId = new ArrayList<Long>();
+		 					for (String s : requirementIndex.getAppliedProfessionals()){
+		 						userId.add(Long.parseLong(s));
+		 					 }
+		 					boolean flag = userId.contains(user.getId());
+		 					if(flag == true){
+		 						requirementIndex.setIsJobApplied(Constants.YES);
+		 					}else{
+		 						requirementIndex.setIsJobApplied(Constants.NO);
+		 					} 
+	 	    		     }else{
+	 	    			    requirementIndex.setIsJobApplied(Constants.NO);
+	 	    		      }
+	 	    	   }
+	 	    	    
+	 	    	   if (requirementType.equalsIgnoreCase("AppliedJobs")){
+	 	    		   RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+	 	    		   if(null != submission){
+	 	    			  requirementIndex.setRequirementAppliedDate(Constants.DF_YMD.format(submission.getCreatedDate()));
+	 	    		   }
+	 	    	   }
+	 	    	    
+	 	    	    requirementList.add(requirementIndex);
+	 	    	}
+	 	    }
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	     
+	    if(requirementList != null){
+			calculateDaysAndSkills(requirementList);
+		}
+	    resultJson = commonUtil.toJSON(requirementList);
+		return resultJson;
+	}
+	
+	 public String UpdateOnToDate(String updatedOn){
+			
+		 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	     Calendar cal = Calendar.getInstance();
+	     if((Constants.ONE_DAY_AGO).equalsIgnoreCase(updatedOn)){
+	        cal.add(Calendar.DATE, -1);    
+	        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.THREE_DAY_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -3);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.ONE_WEEK_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -7);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.TWO_WEEK_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -14);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.ONE_MONTH_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -30);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.THREE_MONTH_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -90);    
+		        return  dateFormat.format(cal.getTime());
+		 }else{
+			 return updatedOn;
+		 }
+	 }
+	
+	
+	public void calculateDaysAndSkills(List<RequirementIndex> requirementList) throws ParseException {
+		 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		for (RequirementIndex requirement : requirementList) {
+			long diff = commonUtil.currentDate().getTime() - formatter.parse(requirement.getCreatedDate()).getTime();
+			
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			StringBuilder  time = new StringBuilder();
+			
+			if(diffDays == 0){
+				requirement.setCalDays("Today");
+			}
+			else if(diffDays < 7){
+				requirement.setCalDays(time.append(diffDays).append(" day(s) ago").toString());
+			}else{
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+				String commonDateFormat = standardFormat.format(requirement.getCreatedDate());
+				requirement.setCalDays(commonDateFormat.toString());
+			} 
+			
+			
+			if(null != requirement.getSkills()){
+				List<String> skillsList = new ArrayList<String>();
+				String[] skills = requirement.getSkills();
+				for(int i=0; i< skills.length; i++){
+					skillsList.add(skills[i]);
+				}
+				requirement.setSkillsList(skillsList);
+			}
+
+		}
+
+	}
+	
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	@RequestMapping(value = "/applyToJobFromCrowdSourcing", method = RequestMethod.POST)
+	public String applyToJobFromCrowdSourcing(@RequestParam(value = "jsonData", required = false) String json,
+			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request)
+			throws Exception {
+
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+
+		
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmissionFromCrowdSourcing(jsonObj,user, con);
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+		requirementSubmissionHistory.setFromStage("NEW");
+		
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+		Requirement requirement = requirementSubmission.getRequirement();
+		Integer count = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
+		requirement.setTotalApplicantsForRequirement(count);
+		requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
+		return "success";
+
+	}
+	
+	
+	 @RequestMapping(value = "/searchCrowdSourcingRequiremets",method = RequestMethod.GET)
+		public @ResponseBody  String searchCrowdSourcingRequiremets(@RequestParam(value = "json", required = false) String json,
+				@RequestParam(value = "requirementType", required = false) String requirementType,
+				@RequestParam(value = "offset", required = false) Integer offset,
+				HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String resultJson = "";
+		String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		    List<RequirementIndex> requirementList = new ArrayList<RequirementIndex>();
+		    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		    
+		     if(requirementType.equalsIgnoreCase("OpenJobs")){
+		    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isPublicJob", "Y"));
+		    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
+		     }
+		     else if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
+		    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+		     }
+		     
+		     boolQueryBuilder = getSearchRequirementsResults(boolQueryBuilder,jsonObj);   
+		     
+		     boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+				
+			   
+			    try {
+			    	 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,offset, Constants.MAX_RESULTS_TEN,boolQueryBuilder).getHits();
+			 	     if(null != searchHits && searchHits.length >0){
+			 	    	ObjectMapper mapper = new ObjectMapper();
+			 	    	for (SearchHit hit : searchHits) {
+			 	    		StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
+			 	    		mapper.setDateFormat(df);
+			 	    	    RequirementIndex requirementIndex = mapper.readValue(json1.toString(), RequirementIndex.class);
+			 	    	    
+			 	    	   if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
+			 	    		   if(null !=  requirementIndex.getAppliedProfessionals()){
+			 	    			  List<Long> userId = new ArrayList<Long>();
+				 					for (String s : requirementIndex.getAppliedProfessionals()){
+				 						userId.add(Long.parseLong(s));
+				 					 }
+				 					boolean flag = userId.contains(user.getId());
+				 					if(flag == true){
+				 						requirementIndex.setIsJobApplied(Constants.YES);
+				 					}else{
+				 						requirementIndex.setIsJobApplied(Constants.NO);
+				 					} 
+			 	    		     }else{
+			 	    			    requirementIndex.setIsJobApplied(Constants.NO);
+			 	    		      }
+			 	    	   }
+			 	    	    
+			 	    	   if (requirementType.equalsIgnoreCase("AppliedJobs")){
+			 	    		   RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+			 	    		   if(null != submission){
+			 	    			  requirementIndex.setRequirementAppliedDate(Constants.DF_YMD.format(submission.getCreatedDate()));
+			 	    		   }
+			 	    	   }
+			 	    	    
+			 	    	    requirementList.add(requirementIndex);
+			 	    	}
+			 	    }
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			     
+			    if(requirementList != null){
+					calculateDaysAndSkills(requirementList);
+				}
+			    resultJson = commonUtil.toJSON(requirementList);
+				return resultJson;
+	    
+	    
+     }
+	 
+	 
+	 BoolQueryBuilder getSearchRequirementsResults(BoolQueryBuilder boolQueryBuilder,JSONObject jsonObj){
+			
+			 try {
+			
+			 if(jsonObj.has("excludeKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("excludeKeyWord"))){
+				 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+				 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+				 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : excludeKeyWordArray){
+						 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+				  } 
+			 }
+				
+				//Any Keyword
+			 if(jsonObj.has("anyKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("anyKeyWord"))){
+				 ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyKeyWord");
+					if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : anyKeyWordArray){
+							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(anyBoolQueryBuilder);
+					} 
+			 }
+			
+			//All Keywords
+			 if(jsonObj.has("allKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("allKeyWord"))){
+					ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeyWord");
+					if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : allKeyWordArray){
+							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									allBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(allBoolQueryBuilder);
+					}
+			 }
+				
+				
+				//Requirement Title
+				if(jsonObj.has("requirementTitle") && !"".equalsIgnoreCase(jsonObj.getString("requirementTitle"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", jsonObj.getString("requirementTitle")));
+			    }
+			 //Country
+				if(jsonObj.has("country") && !"".equalsIgnoreCase(jsonObj.getString("country"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+			    }
+				 //State
+				if(jsonObj.has("state") && !"".equalsIgnoreCase(jsonObj.getString("state"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
+			    }
+				//City
+				if(jsonObj.has("city")  && !"".equalsIgnoreCase(jsonObj.getString("city"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
+			    }
+				
+				// currency
+			    if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("currentRateCurrency", jsonObj.getString("currencyCode")));
+			    }
+			    
+			  //minRate && maxRate
+			    if(jsonObj.has("minRate") && !"".equalsIgnoreCase(jsonObj.getString("minRate")) && jsonObj.has("maxRate")  && !"".equalsIgnoreCase(jsonObj.getString("maxRate"))){
+			    	String minRate= jsonObj.getString("minRate").replaceAll("[^0-9\\.]+", "");
+			    	String maxRate= jsonObj.getString("maxRate").replaceAll("[^0-9\\.]+", "");
+			    	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("rate").gte(new Integer(minRate)).lte(new Integer(maxRate)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
+				
+				
+			   //Rate Type
+				if(jsonObj.has("rateType") && !"".equalsIgnoreCase(jsonObj.getString("rateType"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
+			    }
+				
+				
+				//minExpYears && maxExpYears
+			    if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp")) && jsonObj.has("maxExp")  && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
+			    	String minYears= jsonObj.getString("minExp").replaceAll("[^0-9\\.]+", "");
+			    	String maxYears= jsonObj.getString("maxExp").replaceAll("[^0-9\\.]+", "");
+			    	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(new Integer(minYears)).lte(new Integer(maxYears)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
+				//minExpYears
+			    else if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp"))){
+			    	String minYears= jsonObj.getString("minExp").replaceAll("[^0-9\\.]+", "");
+			    	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(new Integer(minYears)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
+			    //maxExpYears
+			    else if(jsonObj.has("maxExp") && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
+	           	String maxYears= jsonObj.getString("maxExp").replaceAll("[^0-9\\.]+", "");
+	           	try{
+			    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").lte(new Integer(maxYears)));
+			    	}
+			    	catch(NumberFormatException e){}
+			    }
+				
+			   
+				
+				//Requirement Skills
+				if(jsonObj.has("skills") && !"".equalsIgnoreCase(jsonObj.getString("skills"))){
+					ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "skills");
+					if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
+						BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : candidateSkillsArray){
+							skillBoolQueryBuilder.should(QueryBuilders.matchQuery("skills", keywd));
+						}
+						boolQueryBuilder.must(skillBoolQueryBuilder);
+					} 	
+				}
+				
+				//Requirement Skills
+				if(jsonObj.has("organizations") && !"".equalsIgnoreCase(jsonObj.getString("organizations"))){
+					ArrayList<String> organizationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "organizations");
+					if(organizationArray != null && !organizationArray.isEmpty()){
+						BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : organizationArray){
+							skillBoolQueryBuilder.should(QueryBuilders.matchQuery("postedOrg", keywd));
+						}
+						boolQueryBuilder.must(skillBoolQueryBuilder);
+					} 	
+				}
+				
+				
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				
+			return boolQueryBuilder;
+			
+		}
+	 
+	 
+	 
+	 private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
+		 ArrayList<String> keyWordList = null;
+		 if(jsonObj.has(param)){
+			 String searchKeywordString = null;
+			 try{
+	   		   JSONArray jsonArray = jsonObj.getJSONArray(param);
+	   		   searchKeywordString = jsonArray.toString();
+		   	  }
+		   	  catch(JSONException e){
+		   		  searchKeywordString= jsonObj.getString(param);
+		   	  }
+			 
+		     searchKeywordString = searchKeywordString.replaceAll("\\[", "").replaceAll("\\]","");
+		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+		 }
+		 else{
+			 keyWordList = new ArrayList<String>();
+		 }
+         return keyWordList;
+     }
+	 
+	 
+	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+		   
+		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
+			
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactEmail", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("numberOfPositions", keywd));
+			
+			
+			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			if(matcher.find()){
+				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+			}
+
+				
+			return matchQueryBuilderList; 
+	 }
+	 
+	 
+	 
+	 @PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_PROFILE')")
+		@RequestMapping(value = "/getProfessionalInterviews")
+		public String getProfessionalInterviews(String dateRange, HttpServletRequest request) throws Exception {
+			String resultJson;
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			List<RequirementInterviewHistory> requirementInterviewList = null;
+			String currentTime = null;
+			String userType = null;
+			String userCode = user.getUserCode();
+			Long userId = user.getId();
+			
+		   requirementInterviewList = requirementInterviewHistoryService.getAllProfessinalInterviews(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,candidateId);
+			
+			for(RequirementInterviewHistory interviewHistory : requirementInterviewList){
+				if(null != interviewHistory.getInterviewId()){
+						interviewHistory.setInterviewType(interviewHistory.getInterviewId().getInterviewType());	
+						interviewHistory.setLocation(interviewHistory.getInterviewId().getLocation());	
+				 }
+				if(null != interviewHistory.getOrgLocationId()){
+					if(null != interviewHistory.getOrgLocationId().getOrg()){
+						if(null != interviewHistory.getOrgLocationId().getOrg().getOrgName()){
+							interviewHistory.setCompanyName(interviewHistory.getOrgLocationId().getOrg().getOrgName());
+						}
+					}
+				}
+				if(null != interviewHistory.getSubmissionId()){
+					if(null != interviewHistory.getSubmissionId().getRequirement()){
+						interviewHistory.setRequirementTitle(interviewHistory.getSubmissionId().getRequirement().getJobTitle());
+						interviewHistory.setRequirementUUID(interviewHistory.getSubmissionId().getRequirement().getRequirementUUID());
+					}
+				}
+				interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
+				
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
+				String commonDateFormat = standardFormat.format(interviewHistory.getInterviewId().getStartTime());
+				interviewHistory.setInterviewStartDateTimeStr(commonDateFormat.toString());
+				
+				
+				
+				
+				
+			}
+			
+			
+			resultJson = commonUtil.toJSON(requirementInterviewList);
+			return resultJson;
+		}
+	 
+	 
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/submitReferToJob", method = RequestMethod.POST)
+		public String submitReferToJob(@RequestParam(value = "jsonData", required = false) String json,
+				HttpServletRequest request,HttpServletResponse response)
+				throws Exception {
+
+			String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			requirementReferService.saveReferCandidate(user, orgLocations, jsonObj);
+						
+			return "success";
+
+		}
+}

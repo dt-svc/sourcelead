@@ -642,7 +642,9 @@ public class PdfUtilPipelineHelper  {
 			requirementArray[3] = "--";
 		}
 		if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
-			requirementArray[4] = requirementsub.getCreatedDate().toString();
+			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			String createdDate = date.format(requirementsub.getCreatedDate());
+			requirementArray[4] = createdDate;
 
 		}else{
 			requirementArray[4] = "--";
@@ -820,7 +822,9 @@ public class PdfUtilPipelineHelper  {
 			requirementArray[3] = "--";
 		}
 		if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
-			requirementArray[4] = requirementsub.getCreatedDate().toString();
+			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			String createdDate = date.format(requirementsub.getCreatedDate());
+			requirementArray[4] = createdDate;
 
 		}else{
 			requirementArray[4] = "--";
@@ -846,8 +850,8 @@ public class PdfUtilPipelineHelper  {
 		}else{
 			requirementArray[8] = "--";
 		}
-		if(requirementsub.getStatus() != null){
-			requirementArray[9] = requirementsub.getStatus().toString();
+		if(requirementsub.getSubmissionStatus() != null){
+			requirementArray[9] = requirementsub.getSubmissionStatus().toString();
 		}else{
 			requirementArray[9] = "--";
 		}
@@ -900,7 +904,9 @@ public class PdfUtilPipelineHelper  {
 				requirementArray[3] = "--";
 			}
 			if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
-				requirementArray[4] = requirementsub.getCreatedDate().toString();
+				DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+				String createdDate = date.format(requirementsub.getCreatedDate());
+				requirementArray[4] = createdDate;
 
 			}else{
 				requirementArray[4] = "--";
@@ -927,8 +933,8 @@ public class PdfUtilPipelineHelper  {
 			}else{
 				requirementArray[8] = "--";
 			}
-			if(requirementsub.getStatus() != null){
-				requirementArray[9] = requirementsub.getStatus().toString();
+			if(requirementsub.getSubmissionStatus() != null){
+				requirementArray[9] = requirementsub.getSubmissionStatus().toString();
 			}else{
 				requirementArray[9] = "--";
 			}
