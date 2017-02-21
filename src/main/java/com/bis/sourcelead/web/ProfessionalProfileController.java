@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,10 +16,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -38,11 +44,16 @@ public class ProfessionalProfileController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
+	@Autowired
+	CountriesService countriesService;
+	
+	@Autowired
+	StatesService statesService;
 	
 	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_PROFILE')")
 	 @RequestMapping(value = "/professionalProfile")
 		public ModelAndView professionalProfile(HttpServletRequest request) throws Exception {
-		    
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				ModelAndView model = new ModelAndView();
 				
@@ -55,6 +66,15 @@ public class ProfessionalProfileController {
 				
 				request.getSession().setAttribute("sessionData",sessionData);
 				
+				if(null != orgLocations && StringUtils.isNotEmpty(orgLocations.getCountry())){
+					
+					Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+					if(null != countries){
+					   model.addObject("loginCountryName", countries.getName());
+					}
+			        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
+			        model.addObject("statesList", statesList);
+				}
 				List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 				model.addObject("educationsList", educationsList);
 				
