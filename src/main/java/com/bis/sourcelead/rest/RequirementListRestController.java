@@ -615,17 +615,22 @@ public class RequirementListRestController {
 										
 									if(requirementSubmission.getCreatedDate() != null){
 										String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getCreatedDate());
-										String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-										Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
-										currentDateInTimezone = Constants.DMY.format(converteDate);
-										requirementSubmission.setCreatedDateStr(currentDateInTimezone);
+										if(null != timezone && null != timezone.getTimeZoneId()){
+											String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+											Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+											currentDateInTimezone = Constants.DMY.format(converteDate);
+											requirementSubmission.setCreatedDateStr(currentDateInTimezone);	
+										}
 								    }
 									if(requirementSubmission.getUpdatedDate() != null){
 										String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getUpdatedDate());
-										String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-										Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
-										currentDateInTimezone = Constants.DMY.format(converteDate);
-										requirementSubmission.setUpDatedStr(currentDateInTimezone);
+										if(null !=timezone && null != timezone.getTimeZoneId()){
+											String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+											Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+											currentDateInTimezone = Constants.DMY.format(converteDate);
+											requirementSubmission.setUpDatedStr(currentDateInTimezone);
+										}
+										
 								    }
 									/*if(requirementSubmission.getCreatedDate() != null){
 										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
