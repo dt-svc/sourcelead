@@ -283,6 +283,11 @@ width: 11.5%;
 	            </div>
 	          </li>
          </sec:authorize>
+         
+         <sec:authorize access="hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')">
+            	<li><a href="#" title="Settings" class="settings"><i class="fa fa-cog fa-spin fa-fw"></i></a></li>
+         </sec:authorize>
+         
           <%-- <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y' && SourceLeadWeb_enrollOrgVisible != 'Y'}">
 	          <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
