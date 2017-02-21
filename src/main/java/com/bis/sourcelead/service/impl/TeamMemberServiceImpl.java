@@ -96,6 +96,8 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		  	     }
 		}
 		
+		if(null != userList){
+		
 		userList = userList.replaceAll("\\[", "").replaceAll("\\]","");
 		userList = userList.replaceAll("\"", "");
 		String[] usersIds = userList.split(",");
@@ -121,7 +123,7 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	        teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
 		}
 	   
-	
+		}
 }
 
 	@Override
