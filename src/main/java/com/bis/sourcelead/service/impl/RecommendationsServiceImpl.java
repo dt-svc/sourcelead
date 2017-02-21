@@ -1,9 +1,12 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -485,7 +488,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					
 					if(null  != candidate.getSkillsName()){
 						String[] skills = candidate.getSkillsName().split(",");
-						skillPercentage = getSkillPercentage(skills,percentPerSkill,matchedSkillCount,reqSkills);
+						Set<String> set = new HashSet<String>(Arrays.asList(skills));
+						skillPercentage = getSkillPercentage(set,percentPerSkill,matchedSkillCount,reqSkills);
 					}
 					
 					
@@ -640,8 +644,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					 
 					if(null  != candidateIndex.getSkillsName()){
 						String[] skills = candidateIndex.getSkillsName().split(",");
-//						ArrayList<String> candidateSkillList = new ArrayList<String>(Arrays.asList(skills));
-						skillPercentage = getSkillPercentage(skills,percentPerSkill,matchedSkillCount,reqSkills);
+						Set<String> set = new HashSet<String>(Arrays.asList(skills));
+						skillPercentage = getSkillPercentage(set,percentPerSkill,matchedSkillCount,reqSkills);
 					}
 					
 					
@@ -706,15 +710,15 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	
 	/**
 	 * this method is used to calculate the skillPercentage
-	 * @param candidateSkillList
+	 * @param set
 	 * @param percentPerSkill
 	 * @param matchedSkillCount
 	 * @param reqSkills
 	 * @return float
 	 */
-	private float getSkillPercentage(String[] candidateSkillList, float percentPerSkill, int matchedSkillCount, String reqSkills) {
-		if(candidateSkillList != null && candidateSkillList.length >0){
-			for(String skill : candidateSkillList){
+	private float getSkillPercentage(Set<String> set, float percentPerSkill, int matchedSkillCount, String reqSkills) {
+		if(set != null && set.size() >0){
+			for(String skill : set){
 					if(reqSkills.contains(skill)){
 						matchedSkillCount++;
 					}
@@ -740,10 +744,10 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		Integer Years = null;
 		int recommendationExpMonthsMin = 0;
 		int recommendationExpMonthsMax = 0;
-		if(null != candidateIndex.getExperienceYears()){
+		if(null != candidateIndex.getExperienceYears() && !"".equalsIgnoreCase(candidateIndex.getExperienceYears())){
 			 Years = Integer.parseInt(candidateIndex.getExperienceYears());	
 		}
-		if(candidateIndex.getExperienceMonths() != null){
+		if(candidateIndex.getExperienceMonths() != null && !"".equalsIgnoreCase(candidateIndex.getExperienceMonths())){
 			 Months = Integer.parseInt(candidateIndex.getExperienceMonths());
 		}
 		
