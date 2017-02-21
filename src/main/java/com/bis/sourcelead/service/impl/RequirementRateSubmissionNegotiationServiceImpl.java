@@ -90,8 +90,8 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 			         tempHTML.append("<tr>");
 			         tempHTML.append("<td>").append(requirement.getJobTitle()).append("</td>");
 //			         tempHTML.append("<td>").append(requirement.getRate()).append("</td>");
-			         if(null != negotiations.getExpectedRate() && "" != negotiations.getExpectedRate()){
-			        	 tempHTML.append("<td>").append(negotiations.getExpectedRate()).append(negotiations.getExpectedRateType()).append("</td>");
+			         if(null != negotiations.getExpectedRate() && "" != negotiations.getExpectedRate() && null != negotiations.getExpectedRateType() && "" != negotiations.getExpectedRateType()){
+			        	 tempHTML.append("<td>").append(negotiations.getExpectedRate()).append("/").append(negotiations.getExpectedRateType()).append("</td>");
 			         }else{
 			        	 tempHTML.append("<td>---</td>");
 			         }

@@ -107,6 +107,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	@Override
 	public OrgLocations orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception {
 		String locationCode = orgLocations.getLocationCode();
+		Timezone timezone = null;
 		OrgLocations clientOrgLocations = new OrgLocations();
 			clientOrgLocations.setOrg(addOrg);
 			if(jsonObj.has("phone")){
@@ -132,6 +133,29 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 			}else if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
 				clientOrgLocations.setCity(jsonObj.getString("orgCity"));
 			}
+			
+			if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+				if("Australia".equalsIgnoreCase(jsonObj.getString("country"))){
+					timezone = timeZoneService.getTimezone(298l);
+					clientOrgLocations.setTimezone(timezone);
+				}else if("India".equalsIgnoreCase(jsonObj.getString("country"))){
+					timezone = timeZoneService.getTimezone(246l);
+					clientOrgLocations.setTimezone(timezone);
+				}else if("France".equalsIgnoreCase(jsonObj.getString("country"))){
+					timezone = timeZoneService.getTimezone(342l);
+					clientOrgLocations.setTimezone(timezone);
+				}else if("Singapore".equalsIgnoreCase(jsonObj.getString("country"))){
+					timezone = timeZoneService.getTimezone(272l);
+					clientOrgLocations.setTimezone(timezone);
+				}else if("United Kingdom".equalsIgnoreCase(jsonObj.getString("country"))){
+					timezone = timeZoneService.getTimezone(333l);
+					clientOrgLocations.setTimezone(timezone);
+				}else if("United States".equalsIgnoreCase(jsonObj.getString("country"))){
+					timezone = timeZoneService.getTimezone(87l);
+					clientOrgLocations.setTimezone(timezone);
+				}
+			}
+			
 			String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
 			clientOrgLocations.setLocationCode(addOrg.getOrgCode() + clientCountry);
 			clientOrgLocations.setCreatedDate(commonUtil.currentDate());
