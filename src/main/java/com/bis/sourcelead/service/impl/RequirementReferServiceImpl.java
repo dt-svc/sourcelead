@@ -1,20 +1,34 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.mail.internet.InternetAddress;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ReferContactsDao;
+import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementReferDao;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementReferService;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -28,6 +42,18 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 	@Autowired
 	ReferContactsDao referContactsDao;
 	
+	@Autowired
+	RequirementDao requirementDao;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
+	
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -43,6 +69,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 	public void saveReferCandidate(User user, OrgLocations orgLocations, JSONObject jsonObj) throws Exception {
 		
 		RequirementRefer requirementRefer = new RequirementRefer();
+		Requirement requirement = null;
 		
 		requirementRefer.setReferFromEmail(user.getEmail());
 		requirementRefer.setReferFromUser(user);
@@ -52,8 +79,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		}
 		
 		if(jsonObj.has("referRequirementId") && !isNullOrEmpty(jsonObj.getString("referRequirementId"))){
-			Requirement requirement = new Requirement();
-			requirement.setId(Long.valueOf(jsonObj.getString("referRequirementId")));
+			requirement = requirementDao.getRequirementByRequirementId(Long.valueOf(jsonObj.getString("referRequirementId")));
 			requirementRefer.setRequirementId(requirement);
 		}
 		
@@ -93,6 +119,56 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		referContacts.setUpdatedBy(user.getUserCode());
 		
 		referContactsDao.addReferContacts(referContacts);
+		
+		sendEmailToReferedProfessional(user,jsonObj,requirement,contactUUID);
+	}
+	
+	
+	public void sendEmailToReferedProfessional(User user,JSONObject jsonObj,Requirement requirement,String contactUUID) throws Exception {
+		
+		 
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String professionalName = null;
+		 
+		 if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+			 professionalName = sb.append(jsonObj.getString("firstName")).append(" ").append(jsonObj.getString("lastName")).toString();
+		 }else{
+			 professionalName = sb.append(jsonObj.getString("firstName")).toString();
+		 }
+		 
+		 emailMessage.setToEmail(jsonObj.getString("email"));
+		 emailMessage.setFromName(user.getEmail());
+		 emailMessage.setCreatedBy(user.getUserCode());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+		 globalVarsMap.put("professinalName", professionalName);
+		 globalVarsMap.put("referedProfessionalName", user.getUserName());
+		 StringBuilder loginBuilder = new StringBuilder();
+		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REFER_REQUIREMENT_TO_PROFESSIONAL,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
 	}
 
 }
