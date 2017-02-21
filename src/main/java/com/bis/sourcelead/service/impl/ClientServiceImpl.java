@@ -784,6 +784,9 @@ public class ClientServiceImpl implements ClientService{
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
 						orgSpoc.setVendorUser(spocUser);
+						
+						//new owner filed updated when owner updated
+						orgSpoc.setOwnerUser(spocUser);
 					}
 					orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 					
