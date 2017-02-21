@@ -1324,6 +1324,7 @@ function requirementPipeline(requirementId){
                       <option>ONHOLD</option>
                       <option>FILLEDCLOSED</option>
                       <option>UNFILLEDCLOSED</option>
+                      <option>REJECTED</option>
                     </select>
                   </div>
                 </div>
