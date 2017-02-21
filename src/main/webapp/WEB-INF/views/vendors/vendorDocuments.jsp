@@ -444,7 +444,7 @@ function closePopup(){
 </script>
 
 <script>
-function getSpocsList(orgRelationId){
+function getSpocsList(orgRelationId){alert("hh");
 	 var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
     	type: "POST",
@@ -475,7 +475,7 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
 	var sourceLeadUserId = '${SourceLeadWeb_userId}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getOrgDocument?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&orgRelationId="+orgRelationId, 	   
+	    url: sourceleadUrl+"/getOrgDocument?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&orgRelationId="+orgRelationId+"&type=Vendor", 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var spoc = "";
@@ -501,7 +501,7 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     		         $('#spoc').append('<option value="">Client Contact</option>');
     		            for(var i=0; i<json.orgSpocsList.length; i++){
     		            	 spoc = json.orgSpocsList[i];
-	    		 	    	  if(json.spocUser != null && json.spocUser != "" && json.spocUser != 'undefined' && json.spocUser.id == spoc.spocUser.id){
+	    		 	    	  if(json.spocUser != null && json.spocUser != "" && json.spocUser != 'undefined' && json.spocUser.id == spoc.vendorUser.id){
 	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'" selected>'+spoc.spocName+'</option>');
 	    		 	    	  }else{
 	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'">'+spoc.spocName+'</option>');
