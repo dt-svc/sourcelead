@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.entity.RequirementRefer;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -100,4 +101,36 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 			return null;
 		}
    	}
+
+	@Override
+	@Transactional
+	public List<Long> getReferByMeRequirementsByUserId(Long userId,Integer offset,Integer maxResults) throws Exception {
+		
+		logger.debug("In getReferByMeRequirementsByUserId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "select distinct refer.requirementId.id from RequirementRefer refer  where refer.referFromUser.id = :userId ";
+		List<Long> modulesIdList =  session.createQuery(query.toString()).setLong("userId", userId)
+									.setCacheable(true).list();
+		
+
+		/*if(modulesIdList.size() >= offset){
+			if(modulesIdList.size() > offset + maxResults){
+				return   modulesIdList.subList(offset, (offset+maxResults));
+			}else{
+				return   modulesIdList.subList(offset, (offset + (modulesIdList.size() - offset)));
+			}
+		}*/
+		
+		return modulesIdList;
+	}
+
+	@Override
+	@Transactional
+	public List<RequirementRefer> getRequirementReferListByEmail(String email) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = " from RequirementRefer refer where refer.referToEmail = :email ";
+		List<RequirementRefer> referList = session.createQuery(query.toString()).setString("email", email).setCacheable(true).list();
+        return referList;
+	}
 }

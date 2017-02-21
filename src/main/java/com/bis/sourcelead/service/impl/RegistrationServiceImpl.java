@@ -799,7 +799,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 
 	@Override
-	public void saveProfessional(JSONObject jsonObj,String contactUUID,String requirementUUID) throws Exception {
+	public void saveProfessional(JSONObject jsonObj,String contactUUID) throws Exception {
 		
 		User user = new User();
 		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
@@ -875,7 +875,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidateService.addCandidate(candidate);
 		
 		
-		if(!isNullOrEmpty(contactUUID) &&  !isNullOrEmpty(requirementUUID)){
+		if(!isNullOrEmpty(contactUUID)){
 			
 			ReferContacts referContacts = referContactsService.getReferContactsByUUID(contactUUID); 
 			String referToEmail = referContacts.getContactUserEmail();
@@ -885,12 +885,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 			referContacts.setContactUser(user);
 			referContactsService.addReferContacts(referContacts);
 			
-            Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
-			RequirementRefer  requirementRefer = requirementReferService.getProfessionalReferToRequirement(referToEmail, requirement.getId(), referContacts.getReferFromUser().getId());
+			List<RequirementRefer>  requirementReferList = requirementReferService.getRequirementReferListByEmail(referToEmail);
+			if(null != requirementReferList && requirementReferList.size() > 0){
+				for(RequirementRefer requirementRefer : requirementReferList){
+					requirementRefer.setReferToUser(user);
+					requirementRefer.setReferToEmail(referContacts.getContactUserEmail());
+					requirementReferService.addRequirementRefer(requirementRefer);
+					
+				}
+			}
 			
-			requirementRefer.setReferToUser(user);
-			requirementRefer.setReferToEmail(referContacts.getContactUserEmail());
-			requirementReferService.addRequirementRefer(requirementRefer);
 			
 		}
 		

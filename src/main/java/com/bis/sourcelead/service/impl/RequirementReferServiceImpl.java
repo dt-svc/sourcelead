@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
@@ -16,6 +17,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementReferDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -38,6 +40,8 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 	@Autowired
 	RequirementReferDao requirementReferDao;
 	
+	@Autowired
+	UserDao userDao;
 	
 	@Autowired
 	ReferContactsDao referContactsDao;
@@ -70,12 +74,17 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		
 		RequirementRefer requirementRefer = new RequirementRefer();
 		Requirement requirement = null;
+		User referToUser = null;
 		
 		requirementRefer.setReferFromEmail(user.getEmail());
 		requirementRefer.setReferFromUser(user);
 		
 		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
 			requirementRefer.setReferToEmail(jsonObj.getString("email"));
+			referToUser = userDao.getUserByEmailAndUserType(jsonObj.getString("email"), Constants.PROFESSIONAL);
+			if(null != referToUser){
+				requirementRefer.setReferToUser(referToUser);
+			}
 		}
 		
 		if(jsonObj.has("referRequirementId") && !isNullOrEmpty(jsonObj.getString("referRequirementId"))){
@@ -91,36 +100,47 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		
 		requirementReferDao.addRequirementRefer(requirementRefer);
 		
-		ReferContacts referContacts = new ReferContacts();
-		
-		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-			referContacts.setFirstName(jsonObj.getString("firstName"));
+		ReferContacts referContacts = referContactsDao.getReferContactsByEmails(user.getId(), jsonObj.getString("email"));
+		String contactUUID = null;
+		if(null == referContacts){
+			
+			referContacts = new ReferContacts();
+			if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+				referContacts.setFirstName(jsonObj.getString("firstName"));
+			}
+			
+			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+				referContacts.setLastName(jsonObj.getString("lastName"));
+			}
+			
+			if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
+				referContacts.setContactUserEmail(jsonObj.getString("email"));
+				if(null != referToUser){
+					referContacts.setContactUser(referToUser);
+				}
+			}
+			
+			if(jsonObj.has("phone") && !isNullOrEmpty(jsonObj.getString("phone"))){
+				referContacts.setContactUserPhone(jsonObj.getString("phone"));
+			}
+			
+			referContacts.setReferFromUser(user);
+			contactUUID = SourceLeadRandomCodeHelper.generateUUID();
+			referContacts.setContactUserUUID(contactUUID);
+			referContacts.setOrgLocationId(orgLocations);
+			referContacts.setCreatedDate(new Date());
+			referContacts.setUpdatedDate(new Date());
+			referContacts.setCreatedBy(user.getUserCode());
+			referContacts.setUpdatedBy(user.getUserCode());
+			
+			referContactsDao.addReferContacts(referContacts);
+			
+		}else{
+			contactUUID = referContacts.getContactUserUUID();
 		}
-		
-		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-			referContacts.setLastName(jsonObj.getString("lastName"));
-		}
-		
-		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-			referContacts.setContactUserEmail(jsonObj.getString("email"));
-		}
-		
-		if(jsonObj.has("phone") && !isNullOrEmpty(jsonObj.getString("phone"))){
-			referContacts.setContactUserPhone(jsonObj.getString("phone"));
-		}
-		
-		referContacts.setReferFromUser(user);
-		String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
-		referContacts.setContactUserUUID(contactUUID);
-		referContacts.setOrgLocationId(orgLocations);
-		referContacts.setCreatedDate(new Date());
-		referContacts.setUpdatedDate(new Date());
-		referContacts.setCreatedBy(user.getUserCode());
-		referContacts.setUpdatedBy(user.getUserCode());
-		
-		referContactsDao.addReferContacts(referContacts);
 		
 		sendEmailToReferedProfessional(user,jsonObj,requirement,contactUUID);
+		
 	}
 	
 	
@@ -185,6 +205,16 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 	public RequirementRefer getProfessionalReferToRequirement(String email, Long requirementId, Long userId)
 			throws Exception {
 		return requirementReferDao.getProfessionalReferToRequirement(email, requirementId, userId);
+	}
+
+	@Override
+	public List<Long> getReferByMeRequirementsByUserId(Long userId,Integer offset,Integer maxResults) throws Exception {
+		return requirementReferDao.getReferByMeRequirementsByUserId(userId,offset,maxResults);
+	}
+
+	@Override
+	public List<RequirementRefer> getRequirementReferListByEmail(String email) throws Exception {
+		return requirementReferDao.getRequirementReferListByEmail(email);
 	}
 
 }

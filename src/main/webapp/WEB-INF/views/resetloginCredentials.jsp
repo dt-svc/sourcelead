@@ -44,7 +44,7 @@
                 <div class="col-xs-12 col-md-6" id="userNameDiv">
                     <i class="fa fa-user-circle"></i>
                     <label>User Name <span class="text-danger">*</span></label>
-                    <input type="text" id="userName" name="userName" onblur="validateUserName();" data-validation="required" field-name="User Name">
+                    <input type="text" id="userName" name="userName" onblur="validateUserName();" value='${userName}' data-validation="required" field-name="User Name">
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-6" id="resetUserNameDiv">

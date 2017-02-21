@@ -101,10 +101,12 @@ public class CrowdSourcingRequirementsRestController {
 			@RequestParam(value = "postedOn", required = false) String postedOn,
 			@RequestParam(value = "jobTitleSearch", required = false) String jobTitleSearch,
 			@RequestParam(value = "jobLocationSearch", required = false) String jobLocationSearch,
+			@RequestParam(value = "referJobType", required = false) String referJobType,
 			HttpServletRequest request) throws Exception {
 
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		boolean isELKSearchEnable = true;
 		
 	    String resultJson;
 	    List<RequirementIndex> requirementList = new ArrayList<RequirementIndex>();
@@ -118,6 +120,26 @@ public class CrowdSourcingRequirementsRestController {
 	     }
 	     else if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+	    	 
+	    	 if(!isNullOrEmpty(referJobType)){
+	    		 if(referJobType.equalsIgnoreCase("ReferredByMe")){
+	    			 List<Long> referedRequirementList = requirementReferService.getReferByMeRequirementsByUserId(user.getId(), offset,Constants.MAX_RESULTS_TEN);
+	    			 if(referedRequirementList.size() > 0){
+	    				 BoolQueryBuilder subBoolQueryBuilder = new BoolQueryBuilder();
+	    				 for(int i=0; i<referedRequirementList.size(); i++){
+	    					 subBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementId", referedRequirementList.get(i)));
+		    			 } 
+	    				 
+	    				 boolQueryBuilder.must(subBoolQueryBuilder);
+	    				 
+	    			 }else{
+	    				 isELKSearchEnable = false;
+	    			 }
+	    			 
+	    		 }
+	    	 }
+	    	
+	    	 
 	     }
 	     else if (requirementType.equalsIgnoreCase("AppliedJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
@@ -150,7 +172,11 @@ public class CrowdSourcingRequirementsRestController {
 		
 	   
 	    try {
-	    	 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,offset, Constants.MAX_RESULTS_TEN,boolQueryBuilder).getHits();
+	    	SearchHit[] searchHits = null;
+	    	if(isELKSearchEnable){
+	    		 searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,offset, Constants.MAX_RESULTS_TEN,boolQueryBuilder).getHits();
+	    	}
+	    	
 	 	     if(null != searchHits && searchHits.length >0){
 	 	    	ObjectMapper mapper = new ObjectMapper();
 	 	    	for (SearchHit hit : searchHits) {
