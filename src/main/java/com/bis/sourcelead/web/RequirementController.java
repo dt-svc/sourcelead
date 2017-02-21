@@ -451,8 +451,30 @@ public class RequirementController {
 		    List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
 			
-			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-			model.addObject("skillsList", skillsList);
+			/*List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);*/
+			
+			
+			
+			if(requirement != null && requirement.getId() != null){
+
+				List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
+					List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+					List<String> totSkils = new ArrayList<String>();
+					if(!allReqSkills.contains(null)){
+						totSkils.addAll(skillsList);
+						totSkils.addAll(allReqSkills);
+						model.addObject("skillsList", totSkils);
+					}else{
+						model.addObject("skillsList", skillsList);
+					}
+
+			}else{
+				//List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				model.addObject("skillsList", skillsList);
+			}
+			
 			
 		
 		   return model;
