@@ -868,7 +868,7 @@ public class ClientRestController {
 			tabType = Long.valueOf(Constants.TAB_CLIENT);
 		}
 		
-		List<Long> existingOwnerUserIds = orgSpocService.getOwnerUserIdsbySpocEmailAndOrgRelationId(email,orgRelationId);
+		List<Long> existingOwnerUserIds = orgSpocService.getOwnerUserIdsbySpocEmailAndOrgRelationId(email,orgRelationId,type);
 		List<User> userList = userService.getUserListExceptExistedUsersList(existingOwnerUserIds,orgLocations.getId(),tabType);
 		resultJson = commonUtil.toJSON(userList);
 		return resultJson;

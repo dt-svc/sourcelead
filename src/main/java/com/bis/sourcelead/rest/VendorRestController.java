@@ -1442,6 +1442,7 @@ public class VendorRestController {
 							if(clientVendor.getInitiatorLevel()!=null){
 								clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
 							}
+							clientVendor.setResponderLocationId(clientVendor.getResponderLocationId());
 						}
 					  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
 						 
@@ -1450,7 +1451,7 @@ public class VendorRestController {
 						  clientVendor.setCountry(clientVendor.getInitiatorCountry());
 						  clientVendor.setState(clientVendor.getInitiatorState());
 						  clientVendor.setCity(clientVendor.getInitiatorCity());
-						  
+						  clientVendor.setResponderLocationId(clientVendor.getOrgLocationId());
 						  if(clientVendor.getResponderLevel()!=null){
 							  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
 						  }
@@ -1546,7 +1547,7 @@ public class VendorRestController {
 									StringBuilder spocNameSB = new StringBuilder();
 									clientVendorContactsIndex.setSpocName(spocNameSB.append(clientVendorContactsIndex.getVendorUserFirstName()).append(" ").append(clientVendorContactsIndex.getVendorUserLastName()).toString());
 								}else{
-									clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getVendorUserLastName());
+									clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getVendorUserFirstName());
 								}
 								if(clientVendorContactsIndex.getClientUserFirstName() != null && clientVendorContactsIndex.getClientUserFirstName() != "" && clientVendorContactsIndex.getClientUserLastName()!= null && clientVendorContactsIndex.getClientUserLastName() != "" ){
 									StringBuilder ownerNameSB = new StringBuilder();
@@ -1577,7 +1578,7 @@ public class VendorRestController {
 										StringBuilder spocNameSB = new StringBuilder();
 										clientVendorContactsIndex.setSpocName(spocNameSB.append(clientVendorContactsIndex.getClientUserFirstName()).append(" ").append(clientVendorContactsIndex.getClientUserLastName()).toString());
 									}else{
-										clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getVendorUserLastName());
+										clientVendorContactsIndex.setSpocName(clientVendorContactsIndex.getClientUserFirstName());
 									}
 									if(clientVendorContactsIndex.getVendorUserFirstName() != null && clientVendorContactsIndex.getVendorUserFirstName() != "" && clientVendorContactsIndex.getVendorUserLastName()!= null && clientVendorContactsIndex.getVendorUserLastName() != "" ){
 										StringBuilder ownerNameSB = new StringBuilder();
