@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.entity.RequirementRefer;
@@ -34,6 +35,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 	private static final Logger logger = LoggerFactory.getLogger(RequirementReferDaoImpl.class);
 
 	@Override
+	@Transactional
 	public RequirementRefer addRequirementRefer(RequirementRefer requirementRefer) throws Exception {
 		logger.debug("Adding addRequirementRefer");
 		Session session = this.sessionFactory.getCurrentSession();
