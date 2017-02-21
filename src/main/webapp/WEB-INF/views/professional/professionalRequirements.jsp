@@ -950,7 +950,7 @@ function referToJob(requirementId){
 		result = result +'</div>'; 
 		result = result +'<div class="col-md-12 mt5 clearfix">';            
 		result = result +'<div class="pull-right">';
-		result = result +'<input type="submit" value="Refer" id="submit_refer" onclick="submitRefer();" class="btn btn-primary">';
+		result = result +'<input type="submit" value="Refer" id="submit_refer"  class="btn btn-primary">';
 		result = result +'<input type="button" value="Cancel" onclick="cancelReferPopUp('+requirementId+')" class="btn btn-default ml10 canBtn">';
 		result = result +'</div>';    
 		result = result +'</div>'; 
@@ -1076,23 +1076,24 @@ $('body').on('submit', '#referToJob_form', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
      
+      var frm = $('#referToJob_form').serializeFormJSON();
       var con = JSON.stringify(frm);
       con = con.replace(/[{}]/g, "");
+      
       //It will escape all the special characters
       var jsonData = encodeURIComponent(con);
-      
       var sourceleadUrl ='${sourceleadUrl}';
-   /*      $("#submit_refer").attr("disabled", "disabled");
+      
+        $("#submit_refer").attr("disabled", "disabled");
 		$( "#submit_refer" ).addClass('button').val('Processing..');
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	      $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/submitReferToJob?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
 		        success: function(result) {
-		        	
-			        
+		        	removeReferPopUp();
 		        },
-		    });  */
+		    });  
       return true; 
     }
     else{
