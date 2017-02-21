@@ -2856,12 +2856,16 @@ margin: 6px 0px 0px 0px;
 	background-color: transparent; border: none; width: 100%; display: block; text-align: right;
 	font-size: 20px; color: #fff; padding: 15px 15px 0px 0px;
 }
-
-
-.Rname {
+ssss.Rname {
 	font-size: 12px; display: block; font-weight: 500; width: 100px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
 	text-align: center;
 }
 #timesheetPopUp {
 	min-height: 400px;
+}
+.user_exp {
+right: -35px !important;
+}
+ul.ul_padding li {
+padding: 2px 10px !important;
 }
