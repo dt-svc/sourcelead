@@ -5,7 +5,6 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<script src="resources/js/bootstrap.min.js"></script>
 
 <section class="content-wraper">
     <section class="content-header clearfix">

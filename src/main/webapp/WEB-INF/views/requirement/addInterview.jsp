@@ -241,6 +241,7 @@ function selectInterviewApplicants(){
 		<option value="Telephonic">Telephonic</option>
 		<option value="Technical">Technical</option>
 		<option value="Screening">Screening</option>
+		<option value="Skype/Webex">Skype/Webex</option>
 	</select>
 </div>
 
@@ -549,7 +550,7 @@ function cancelInterviewPopup(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";
 					}
 		        	
 		        	var isFlushRequired = $("#isFlushRequired").val();
