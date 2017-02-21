@@ -17,7 +17,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,8 +61,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
-import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -83,12 +80,6 @@ public class CandidateListRestController {
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
 		
-	 
-	 @Autowired
-	 private OrgService orgService;
-	 
-	 @Autowired
-	 private OrgLocationService orgLocationService;
 	
 	 @Autowired
 	 CommonUtil commonUtil;
