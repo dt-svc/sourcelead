@@ -20,6 +20,15 @@
     <%@page session="true"%>
 </head>
 
+<script>
+window.onload = function () {
+		var contactUUID = '${contactUUID}';
+		if(contactUUID != null && contactUUID != '' && contactUUID != 'undefined'){
+			validateEmail('Professional');
+		}
+	};
+</script>
+
 <body>
 <div class="regis_bg">
   <div class="container">
@@ -29,7 +38,9 @@
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials()"><i class="fa fa-user"></i>&nbsp;&nbsp;Professional</a></li>
-        <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials()"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
+          <c:if test="${empty contactUUID}">
+          <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials()"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
+          </c:if>
       </ul>
         <div class="regis_wrap_styles">
         <div class="tab-content">
@@ -41,13 +52,13 @@
                 <div class="col-xs-12 col-md-6">
                     <i class="fa fa-user-circle"></i>
                     <label>First Name <span class="text-danger">*</span></label>
-                    <input type="text" name="firstName" field-name="First Name" id="firstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+                    <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-6">
                     <i class="fa fa-user-circle"></i>
                     <label>Last Name</label>
-                    <input type="text" name="lastName" field-name="Last Name" id="lastName" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+                    <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
                     <b></b>
                 </div>
                 </div>
@@ -55,7 +66,7 @@
                 <div class="col-xs-12 col-md-6" id="emailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
-                    <input type="text" name="email" field-name="Email" onblur="validateEmail('Professional');" id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
+                    <input type="text" name="email" field-name="Email" value='${email}' onblur="validateEmail('Professional');" id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-6 select-field">
@@ -80,7 +91,7 @@
                     <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a>
                 </div>
                 <div class="pull-right">
-                    <button type="submit" id="register_button" class="btn btn-primary btn_styles mr" title="Register">
+                    <button type="submit" id="register_button"  class="btn btn-primary btn_styles mr" title="Register">
                         <i class="fa fa-paper-plane"></i>Register</button>
                 </div>
             </div>
@@ -107,7 +118,7 @@
                 <div class="col-xs-12 col-md-6" id="recruiterEmailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
-                    <input type="text" name="email" field-name="Email" onblur="validateRecruiterEmail('Recruiter');" id="recruiterEmail"  data-validation="required validate_Space validate_length length2-100 validate_email" >
+                    <input type="text" name="email" field-name="Email"  id="recruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-6 select-field">
@@ -260,6 +271,9 @@ var validationSettings = {
 		        var jsonData = encodeURIComponent(con);
 			    
          		var sourceleadUrl ='${sourceleadUrl}';
+         		var contactUUID = '${contactUUID}';
+         		var requirementUUID = '${requirementUUID}';
+         		
          	 	$("#register_button").attr("disabled", "disabled");
          		
            	 
@@ -267,8 +281,7 @@ var validationSettings = {
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: sourceleadUrl+"/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-                			  
+                	  url: sourceleadUrl+"/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&contactUUID="+contactUUID+"&requirementUUID="+requirementUUID,		  
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		location.replace(sourceleadUrl+"/resetloginCredentials");  

@@ -226,7 +226,7 @@ function referToJob(requirementId){
 		result = result +'<div class="form-group col-md-6">';
 		result = result +'<label class="col-md-12" for="Project Id">Email Id *</label>';
 		result = result +'<div class="col-md-12">';
-		result = result +'<input type="text" class="form-control" name="email" id="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
+		result = result +'<input type="text" class="form-control" name="email" id="email" onblur="validateProfessionalEmail('+requirementId+')"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
 		result = result +'<span class="hidden">Enter Project Id</span> </div>';
 		result = result +'</div>'; 
 		result = result +'<div class="form-group col-md-6">';

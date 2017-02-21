@@ -138,7 +138,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 }
 		 
 		 emailMessage.setToEmail(jsonObj.getString("email"));
-		 emailMessage.setFromName(user.getEmail());
+		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 
 		//setting the class filed values
@@ -169,6 +169,22 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
 		
+	}
+
+	@Override
+	public Boolean isProfessionalReferToRequirement(String email, Long requirementId, Long userId) throws Exception {
+		return requirementReferDao.isProfessionalReferToRequirement(email, requirementId, userId);
+	}
+
+	@Override
+	public Boolean isReferToRequirement(String fromEmail, Long requirementId) throws Exception {
+		return requirementReferDao.isReferToRequirement(fromEmail, requirementId);
+	}
+
+	@Override
+	public RequirementRefer getProfessionalReferToRequirement(String email, Long requirementId, Long userId)
+			throws Exception {
+		return requirementReferDao.getProfessionalReferToRequirement(email, requirementId, userId);
 	}
 
 }

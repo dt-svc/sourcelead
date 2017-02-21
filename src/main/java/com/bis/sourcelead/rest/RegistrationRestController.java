@@ -213,13 +213,16 @@ public class RegistrationRestController {
 	
 	
 	 @RequestMapping(value = "/registerAsProfessional" , method = RequestMethod.POST)
-	 public  String registerAsProfessional(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+	 public  String registerAsProfessional(@RequestParam(value="json", required=false) String json,
+			 @RequestParam(value="contactUUID", required=false) String contactUUID,
+			 @RequestParam(value="requirementUUID", required=false) String requirementUUID,
+			 HttpServletRequest request) throws Exception {
 		 	
 		 json = "{"+json+"}";
 		 
 		 JSONObject jsonObj = new JSONObject(json);
 		 	
-		 registrationService.saveProfessional(jsonObj);
+		 registrationService.saveProfessional(jsonObj,contactUUID,requirementUUID);
 		 
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
 					"Username sent to your mail.");

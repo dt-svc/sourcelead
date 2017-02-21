@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.entity.ReferContacts;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -50,5 +53,21 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		}
 		return referContacts;
 	}
+
+	@Override
+	@Transactional
+	public ReferContacts getReferContactsByUUID(String contactUUID) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ReferContacts> referContacts = new ArrayList<ReferContacts>();
+		logger.debug("getReferContactsByUUID start");
+		referContacts = session.createQuery("from ReferContacts contacts left join fetch contacts.referFromUser where contacts.contactUserUUID =:contactUUID" ).setString( "contactUUID", contactUUID ).setCacheable(true).list();
+		logger.debug("getReferContactsByUUID end");
+		if (referContacts.size() > 0) {
+			return referContacts.get(0);
+		} else {
+			return null;
+		}
+   	}
 
 }
