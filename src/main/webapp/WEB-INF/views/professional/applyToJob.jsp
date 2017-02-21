@@ -118,6 +118,7 @@ function getCandidateDetails(){
 		 $("input[name=LastName]").val('${SourceLeadWeb_user.lastName}');
 	 }
 	 
+	 $("input[name=EmailId]").attr('readonly', true);
 	 $("input[name=EmailId]").val('${SourceLeadWeb_user.email}');
 	 $("input[name=PhoneNumber]").val('${SourceLeadWeb_user.mobilePhone}');
 	 
@@ -140,6 +141,17 @@ function getCandidateDetails(){
 }
 </script>
 
+
+<script>
+function getExpYears(){
+	var expYears = $("select[name=WorkExperience]").val();
+	 if(expYears == "25+"){
+		 $("#monthExp").attr("disabled", "disabled");
+	 }else{
+		 $("#monthExp").removeAttr("disabled");
+	 }
+}
+</script>
 
  <script>
  function validateCurrentCTC(){
