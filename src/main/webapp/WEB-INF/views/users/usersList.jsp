@@ -253,8 +253,8 @@ function getUsersSearchResult(searchValue){
 		  
 		   <sec:authorize access="hasRole('ROLE_EXPORT_USERS')"> 
 		   <li><a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
-			    <div class="export_pop">
-				   <ul>
+			    <div id="exportPop" class="user_exp">
+				   <ul class="ul_padding">
 				   <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
 				   <li onclick="exportUserData();"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
 				   </ul>
@@ -807,17 +807,15 @@ function getUserSummary(userId){
 <script>
   $("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');
-  $(document).ready(function() {
 	   $("#export-pop").click(function(){
-	               $(".export_pop").slideToggle(200);
+	               $("#exportPop").toggle();
 	       });
 	   $("html").click(function() {
-	       $(".export_pop").slideUp(200);
+	       $("#exportPop").hide();
 	   });
-	   $(".export_pop, #export-pop").click(function(e) {
+	   $("#exportPop, #export-pop").click(function(e) {
 	       e.stopPropagation();
 	   });        
-	});  
 </script> 
 <script type="text/javascript">
     	   var config = {
