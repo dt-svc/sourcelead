@@ -5,7 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -33,11 +36,14 @@ import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -89,6 +95,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	@Autowired
 	private UserRoleService userRoleService;
 	
+	@Value("${sourceLeadBlockedSocialDomains}")
+	private String sourceLeadBlockedSocialDomains;
+	
 	
 	@Override
 	public String clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org,String isMailSent,String responderType) throws Exception {
@@ -97,7 +106,8 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		  boolean isUserFound = false;
 		  
 		  String isFileCreated = "failure";
-		  String fname = multipartFile.getOriginalFilename();
+		  String fn = multipartFile.getOriginalFilename();
+		  String fname = getFileName(fn);
 		  if(!fname.contains("clients_contacts_Import") && !fname.contains("vendors_contacts_Import") && !fname.contains("clients_import_template") && !fname.contains("vendors_import_template")){
 			  return "worngFileName";
 		  }
@@ -249,7 +259,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			       }
 			       if (!isValidated || isUserFound) {
 			    	   FileOutputStream fos = null;
-			    	   if(!fname.endsWith("xlsx")){
+			    	   if(!fname.endsWith("xls")){
 			    		   fos = new FileOutputStream(fname);
 			    	   }else{
 			    		   fos = new FileOutputStream(fname);
@@ -842,9 +852,42 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		 * @param domainName
 		 * @return
 		 */
-		private boolean isValidDomainName(String domainName){
-			Pattern pDomainNameOnly = Pattern.compile("^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$");
-			return pDomainNameOnly.matcher(domainName).find();
+		private boolean isValidDomainName(String webSite){
+	                  String flag = null;
+	                  boolean isValid = true;
+	                 if(!webSite.startsWith("http") && !webSite.startsWith("https")){
+	                        webSite = "http://" + webSite;
+	                    }    
+	                    URL netUrl = null;
+	                    try {
+	                        netUrl = new URL(webSite);
+	                    } catch (MalformedURLException e) {
+	                        e.printStackTrace();;
+	                    }
+	                    String host = netUrl.getHost();
+	                    if(host.startsWith("www.")){
+	                        if(host.length()>3){
+	                            host = host.substring("www".length()+1);
+	                        }else{
+	                            flag="Website Duplicated";
+	                        }
+	                    }else{
+	                        flag ="Invalid Website";
+	                    }
+	                   
+	                    //for Blocked Websites Domains
+	                    String[] SourceLead_BLOCKED_SOCIAL_DOMAINS = sourceLeadBlockedSocialDomains.split(",");
+	                    if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
+	                    	 flag ="Invalid Website";
+	                    	 
+	                     }
+	                    
+	                    	 if ("Website Duplicated".equalsIgnoreCase(flag)) {
+	                             isValid = false;
+	                         }else if("Invalid Website".equalsIgnoreCase(flag)){
+	                        	  isValid = false;
+	                         }
+	        	    return isValid;
 		}
 		
 		
@@ -972,4 +1015,18 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			 return roleList;
 		}
 		
+		private String getFileName(String file) {
+			String finalName;
+			if(file.contains("(")){
+					StringBuilder sb = new StringBuilder();
+				    String fileArray [] = file.split("\\.");
+				    String fileName1 = fileArray[0].substring(0, fileArray[0].indexOf("("));
+				    sb.append(fileName1).append(".").append(fileArray[1]);
+				    finalName = sb.toString().replaceAll("\\s", "");
+			}else{
+				finalName = file;
+			}
+			return finalName; 
+			
+		}
 }

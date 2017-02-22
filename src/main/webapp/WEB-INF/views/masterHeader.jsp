@@ -12,7 +12,6 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css" type="text/css" >
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/font-awesome.min.css">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
