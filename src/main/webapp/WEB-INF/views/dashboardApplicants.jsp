@@ -63,7 +63,7 @@ function ApplicantAuthorization(status){
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
                                       if(report.requirementName != '' && report.requirementName != null && report.requirementName !='undefined'){
-                                          resultToday = resultToday +'<td><div class="tbldata-dotdot-sm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementId='+report.requirementId+'"><span title='+report.requirementName+'>'+report.requirementName+'</span></a></div></td>';
+                                          resultToday = resultToday +'<td><div class="tbldata-dotdot-sm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+report.requirementUUID+'"><span title='+report.requirementName+'>'+report.requirementName+'</span></a></div></td>';
 
                                       }else{
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';

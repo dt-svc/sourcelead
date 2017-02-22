@@ -30,6 +30,7 @@ import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * 
@@ -432,6 +433,7 @@ public class RequirementReleaseRestController {
 		requirement.setClientCurrencyCode(parentRequirement.getClientCurrencyCode());
 		requirement.setClientRate(parentRequirement.getClientRate());
 		requirement.setClientRateType(parentRequirement.getClientRateType());
+		requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		
 		if(parentRequirement.getClientSubmissionTemplateId()!=null){
 			requirement.setClientSubmissionTemplateId(parentRequirement.getClientSubmissionTemplateId());
