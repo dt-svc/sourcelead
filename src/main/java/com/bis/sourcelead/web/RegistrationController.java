@@ -209,11 +209,11 @@ public class RegistrationController {
 						 notificationsService.saveNotification(notifications);
 					 }
 					 
-					 OrgSpoc orgSpoc = orgSpocService.getSpocListByResponderLocationId(initiatingPartyOrgLocationId,respondingPartyOrgLocationId,respondingOrgType);
+					 /*OrgSpoc orgSpoc = orgSpocService.getSpocListByResponderLocationId(initiatingPartyOrgLocationId,respondingPartyOrgLocationId,respondingOrgType);
 					 if(null != orgSpoc ){
 						 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
 						 orgSpocService.addOrgSpoc(orgSpoc);
-					 }
+					 }*/
 					 
 		    	}
 				 

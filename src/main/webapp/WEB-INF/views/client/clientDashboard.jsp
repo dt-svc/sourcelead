@@ -1562,6 +1562,9 @@ function listChange(sel){
 		 document.getElementById("vendorContactList_paginate").style.display="none";
 		 document.getElementById("vendorContactList_info").style.display="none";
 		 document.getElementById("vendorContactList_filter").style.display="none";
+		 document.getElementById("filter1ApprovePop").style.display="none";
+		 document.getElementById("filter3ApprovePop").style.display="none";
+		 document.getElementById("filter4ApprovePop").style.display="none";
 		 
 		/*  getClientDetails(); */
 		 getClientDetailsELK();
@@ -1582,6 +1585,9 @@ function listChange(sel){
 		'<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENT_CONTACTS\')">'; 
 		 document.getElementById("ContactImports").style.display="block";
 		'</sec:authorize> ';	 
+		document.getElementById("filter1ApprovePop").style.display="block";
+		 document.getElementById("filter3ApprovePop").style.display="block";
+		 document.getElementById("filter4ApprovePop").style.display="block";
 		 
 		/*  getVendorContactLists(); */
 		 getVendorContactListsELK();
