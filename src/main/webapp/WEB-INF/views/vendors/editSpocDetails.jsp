@@ -15,7 +15,7 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId,
+					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Vendor",
 					success : function(data) {
 						
 						var json = JSON.parse(data);
@@ -120,7 +120,7 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId,
+						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Vendor",
 						success : function(data) {
 						var json = JSON.parse(data);
 						var result = "";
@@ -208,13 +208,17 @@
 						
 						result = result + ' <div class="user_summary_edit_cta" >';
 						result = result + '<label>Spoc Status :</label>';
-						result = result + ' <select id="spocStatus" name="spocStatus">';
-						result = result + ' <option '+selected1+'>Active</option>';
-						result = result + ' <option '+selected2+'>In-Active</option>';
-						result = result + ' <option '+selected3+'>New</option>';
-						result = result + ' <option '+selected4+'>Negotiation</option>';
-						result = result + ' <option '+selected5+'>Contracted</option>';
-						result = result + ' </select>';
+						if(json.invitationStatus == 'Rejected'){
+		        			result = result + '<span>'+json.spocStatus+'</span>';
+		        		}else{
+		        			result = result + ' <select id="spocStatus" name="spocStatus">';
+							result = result + ' <option '+selected1+'>Active</option>';
+							result = result + ' <option '+selected2+'>In-Active</option>';
+							result = result + ' <option '+selected3+'>New</option>';
+							result = result + ' <option '+selected4+'>Negotiation</option>';
+							result = result + ' <option '+selected5+'>Contracted</option>';
+							result = result + ' </select>';
+		        		}
 						result = result + ' </div>'
 						
 						/* result = result + '<div class="user_summary_edit_cta" id="owner">';
