@@ -76,13 +76,7 @@
             url: sourceleadUrl+"/getHotListCandidates?${_csrf.parameterName}=${_csrf.token}&candidateType="+candidateType,       
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
+               		
 			    	     $("#candidateList").removeAttr("style");
 	                	 $("#candidateList").empty();
 	                	 var result = "";
@@ -158,7 +152,6 @@
 	                     $("#noCandidates").val('');
 	                     $("#candidateList").append(result);
 	                     cpagination(); 
-			    	} 
                  }else{
                 	 $("#candidateList").removeAttr("style");
   	    	         var result ="";
@@ -181,7 +174,7 @@
 function cpagination(){ 
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[1, 15, 20, -1], [1, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -299,7 +292,9 @@ function assignHotListToTeam(){
 					if(result == "success"){
 						
 						for (i = 0; i < hotlist.length; i++) { 
+							$("#loading"+hotlist[i]).removeAttr("style");
 							document.getElementById("hotList"+hotlist[i]).remove();
+							
 							
 						}
 						selectedHotList();

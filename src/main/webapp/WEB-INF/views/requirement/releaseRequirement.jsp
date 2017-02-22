@@ -204,7 +204,7 @@ function releaseTo(){
 	    	$("#releaseCancelBtn").prop('disabled', true);
 			$("#releaseBtn").prop('value', 'Processing');
 		    var sourceleadUrl ='${sourceleadUrl}';
-		    var requirementId = '${param.requirementId}';
+		    var requirementId = '${requirementId}';
 			$.ajax({
 		           type : "POST",
 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds+"&isCrowdScourcing="+isCrowdScourcing+"&isPublic="+isPublic,    
@@ -239,7 +239,7 @@ function getContactsLists(){
 	var vendors = "Client";
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
-	var requirementId = '${param.requirementId}';
+	var requirementId = '${requirementId}';
 	  $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getAllContactsbyOrgLocationIdAndUserIdForRequirement?requirementId="+requirementId+"&vendors="+vendors+"&status="+status, 	   
@@ -353,7 +353,7 @@ function getVendorLists(){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
-	var requirementId = '${param.requirementId}';
+	var requirementId = '${requirementId}';
 	
 	  $.ajax({
 		   	type: "GET",
@@ -613,7 +613,7 @@ function isCrowdScourcing(){
 <script>
 function opennetwork(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var requirementId = '${param.requirementId}';
+	var requirementId = '${requirementId}';
 	  $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getOpenNetworkStatus?requirementId="+requirementId, 	   
