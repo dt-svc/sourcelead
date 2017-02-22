@@ -161,6 +161,7 @@ public class LoginSessionController {
 			model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
 		}
 		else{
+			commonUtil.highLightMenu(Constants.Dashboard, request);
 			setSessionUserAttributes(user,request,sourceleadUrl);
 			setSessionOrgAttributes(userRole.getOrgId(), request);
 			tabsList = tabsService.getCrowdSourcingTabsListByRoleId(userRole.getRoles().getId());
@@ -172,7 +173,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getUserType());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
-			SourceLeadSessionManager.setSessionAttribute(request, "country", user.getLocation());
+			SourceLeadSessionManager.setSessionAttribute(request, "country", user.getCountry());
 			
 			OrgLocations orgLocations = userRole.getOrgLocations();
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
@@ -339,7 +340,7 @@ public class LoginSessionController {
 		 * commented by Prasad salina
 		 */
 		//commonUtil.storeTimesheetSubmissionRecords(user);
-		commonUtil.terminateAllProjectMembersByUser(user);
+		/*commonUtil.terminateAllProjectMembersByUser(user);
 		
 		try {
 			List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(orgLocations.getId(), loginUser.getId());
@@ -349,7 +350,7 @@ public class LoginSessionController {
 			projectsService.saveAllProjects(projectsList);
 		} catch (Exception e) {
 			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-		}
+		}*/
 		
 		
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
@@ -380,7 +381,7 @@ public class LoginSessionController {
 						Date d2 = dateFormat.parse(strDate);
 						long diff = d2.getTime() - d1.getTime();
 						long diffDays = diff / (24 * 60 * 60 * 1000);
-						notifications.setCalDays(diffDays);
+						notifications.setCalDays(String.valueOf(diffDays));
 					
 				}
 		

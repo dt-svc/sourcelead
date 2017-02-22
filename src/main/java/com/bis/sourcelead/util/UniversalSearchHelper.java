@@ -107,6 +107,19 @@ public class UniversalSearchHelper {
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
 //		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("startDate", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("invoiceFrequency", keywd));
+//		for(String keywd : invoiceFrequencyArray){
+//			if(keywd.equalsIgnoreCase("Weekly")){
+//				invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Weekly"));
+//				invoiceFrequencyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Bi-Weekly"));
+//			}else if(keywd.equalsIgnoreCase("Monthly")){
+//				invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Monthly"));
+//				invoiceFrequencyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Semi-Monthly"));
+//			}
+//			else{
+//				invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", keywd));
+//			}
+//		}
+		
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("clientName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectStatus", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMembers", keywd));

@@ -921,8 +921,21 @@ function requirementDetails(requirementId){
 							var result ="";
 				            result = result +' <div class="require_wrap_details">';
 				           
+				            
+				            
+				            if(json.requirementApproverHierarchyStatus == 'REJECTED'){
+				            	result = result +'   <div class="anchor-inline">';
+				            	result = result +'   <div class="rejected_Reason">';
+				            	result = result +'   <h5>Rejected Reason:</h5>'; 
+				            	result = result +'   <div>'+json.rejectReason+'</div>';
+				            	result = result +'   </div>';
+				            	result = result +'   </div>';
+				          	   }
+				            
+				            
 				            result = result+'<div id="rejectRequirementAlert" ></div>  ';
 				            
+				           
 				            result = result +' <div class="clearfix">';
 				            
 				            result = result +' <div class="pull-left">';
@@ -943,11 +956,10 @@ function requirementDetails(requirementId){
 				            		result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
 				            	'</sec:authorize>';
 				            }
-				            
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
 
-				             if(json.requirementSubmissionStatus  !='DRAFT'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null ){
+				             if(json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null ){
                					 
 				            	 result = result +'<button  class="btn btn-success mr" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
                		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
@@ -964,7 +976,7 @@ function requirementDetails(requirementId){
 				             result = result +'     <div class="clearfix">';
 				             
 				            result = result +'     <div class="clearfix row">';
-					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
+					        result = result +'     <div class="col-md-9 divskill divsAssigned pull-left">';
 					        
 					        result = result + '<div id="assignedMemberList"></div>';
 					        
@@ -1019,6 +1031,9 @@ function requirementDetails(requirementId){
 				            result = result +'   </div>';
 				            if(json.isClientJob  == 'Y')
 				            	{
+				            	
+				            result = result +'     <div class="clearfix"></div>';
+				            result = result +'     </br>';
 				            result = result +'   <h2>Client details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            
@@ -1059,6 +1074,9 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            */
+				            
+				            
+				            
 				            if(json.parentRequirement == null || json.parentRequirement == "" || json.parentRequirement == "undefined"){
 					        	 if(json.clientCurrencyCode == 'INR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined' && null !=json.clientRate && null !=json.clientRateType && json.clientRateType != 'undefined' && json.clientRateType != ''){
 						        result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ' +json.clientRate+'  '+json.clientRateType+'</span>';
@@ -1126,6 +1144,8 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            	}
+				            
+				            
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            
@@ -1432,15 +1452,20 @@ function requirementPipeline(requirementId,submissionType){
 						        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 						        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
+								       else if(report.needApplicantPermit == 'N'){
+								    	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">---</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							    	     }else{
+								        	result = result + '         <td><div><span>---</span></div></td>';
 							    	     }
 						            }else{
 						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
 							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 								           }
+						        	   else if(report.needApplicantPermit == 'N'){
+						        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">---</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+						        	   }
 								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
+								    	   result = result + '         <td><div><span>---</span></div></td>';
 							    	     }
 						            }
 							          
@@ -1455,7 +1480,7 @@ function requirementPipeline(requirementId,submissionType){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 							        	   }else{
-							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        		   result = result + '         <td><div><span>---</span></div></td>';
 							        	   }
 							           }
 							       }
@@ -3041,7 +3066,8 @@ function documentpaginationRejected(){
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
-	var selectBox = $('#rejectApplicantSelect'+submissionId).val();
+	$("#reasonForApplicantDiv").empty()
+	var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
     if(selectBox != "Status"){
     	var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -3187,17 +3213,10 @@ function assignedMemberList(requirementId){
         type : "POST",
          url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
          success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{ 
+        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+           				   	var json = JSON.parse(data);
 							var result = '';
-							 result = result +'     <div class="heightScroll mt10 mb">'; 
+							result = result +'     <div class="heightScroll mt10 mb">'; 
 						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
 						    result = result +'         <thead>';
 						    result = result +'         <tr>';
@@ -3235,10 +3254,8 @@ function assignedMemberList(requirementId){
 						    
 						    $("#assignedMemberList").empty();
 						    $("#assignedMemberList").append(result);
-							
-            		 }
-              }else{
-                     	 $("#assignedMemberList").removeAttr("style");
+                 }else{
+						$("#assignedMemberList").removeAttr("style");
        	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 
       					 result = result+"	<div class='col-lg-12'>"; 
@@ -3892,22 +3909,6 @@ function getRateListDiv(submissionId, candidateId){
       			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
       			         result = result + '<p><strong>Rate Negotiation History</strong></p>';
          			     result = result + '<section class="tbl-scroll require_wrap_table">';
-         			     /*result = result + ' <ul class="nav nav-tabs">';
-	         			  result = result + ' <li class="active"><a data-toggle="tab" href="#tab1">Tab1</a></li>';
-	         			  result = result + ' <li><a data-toggle="tab" href="#tab2">Tab2</a></li>';
-	         			  result = result + ' </ul>';
-	         			  result = result + ' <div class="tab-content">';
-		         			  
-	         			 //Tab1 Data    
-	         			  result = result + ' <div id="tab1" class="tab-pane fade in active">';
-		         			 
-		         			  result = result + ' <h3>HOME</h3>';
-		         			  result = result + ' <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
-		         			  
-		         			  result = result + ' </div>';
-			         			
-		         			  //Tab2 Data  
-		         			  result = result + ' <div id="tab2" class="tab-pane fade">';*/
 	                     result = result + '  <table>';
 	                     result = result + '    <thead>';
 	                     result = result + '      <tr>';
@@ -3932,66 +3933,62 @@ function getRateListDiv(submissionId, candidateId){
 		                    		 isLastNegotiator = "false";
 		                    	 }
 	                    	 }
-		                     result = result + '      <tr class="redtxt">';
-		                     if(report.proposeByName != null && report.proposeByName != 'undefined' && report.proposeByName !=''){
-		                    	 result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
-		                     }else{
-		                    	 result = result + '        <td><div class="tbldata-dotdot-sm">---</div></td>';
-		                     }
-		                     
-		                     if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
-		                    	 result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
-		                     }else if(report.expectedRate != null && report.expectedRate != 'undefined' && report.expectedRate !=''){
-		                    	 result = result + '        <td><div class="tblminwidth-75">'+report.expectedRate+'</div></td>';
-		                     }else{
-		                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
-		                     }
-		                     
-		                     if(report.rateReason != null && report.rateReason != 'undefined' && report.rateReason !=''){
-		                    	 result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
-		                     }else{
-		                    	 result = result + '        <td><div class="tbldata-dotdot">---</div></td>';
-		                     }
-		                     
-		                     if(report.createdDateStr != null && report.createdDateStr != 'undefined' && report.createdDateStr !=''){
-		                    	 result = result + '        <td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
-		                     }else{
-		                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
-		                     }
-		                     result = result + '        <td id="loading">';
-		                     
-		                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
-		                    	 var Accepted = 'Accepted';
-		                    	 var Rejected = 'Rejected';
-		                    	 if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){
-		                    		 result = result + '<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';
-		                    	 }
-		                     	
-		                     }else{
-		                    	 if(report.rateStage == 'ACCEPTED'){
-		                     		result = result + '<b class="text-primary"> Accepted </b>';
-		                     	}else if(report.rateStage == 'REJECTED'){
-		                     		result = result + '<b class="text-danger"> Rejected </b>';
-		                     	}
-		                     }
-		                     result = result + '		</td>';
-		                     result = result + '      </tr>';
+						    	 if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){
+				                     result = result + '      <tr class="redtxt">';
+				                     if(report.proposeByName != null && report.proposeByName != 'undefined' && report.proposeByName !=''){
+				                    	 result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
+				                     }else{
+				                    	 result = result + '        <td><div class="tbldata-dotdot-sm">---</div></td>';
+				                     }
+				                     
+				                     if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+				                    	 result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
+				                     }else if(report.expectedRate != null && report.expectedRate != 'undefined' && report.expectedRate !=''){
+				                    	 result = result + '        <td><div class="tblminwidth-75">'+report.expectedRate+'</div></td>';
+				                     }else{
+				                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
+				                     }
+				                     
+				                     if(report.rateReason != null && report.rateReason != 'undefined' && report.rateReason !=''){
+				                    	 result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
+				                     }else{
+				                    	 result = result + '        <td><div class="tbldata-dotdot">---</div></td>';
+				                     }
+				                     
+				                     if(report.createdDateStr != null && report.createdDateStr != 'undefined' && report.createdDateStr !=''){
+				                    	 result = result + '        <td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
+				                     }else{
+				                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
+				                     }
+				                     result = result + '        <td id="loading">';
+				                     
+				                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
+				                    	 var Accepted = 'Accepted';
+				                    	 var Rejected = 'Rejected';
+				                    	 if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){
+				                    		 result = result + '<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';
+				                    	 }
+				                     	
+				                     }else{
+				                    	 if(report.rateStage == 'ACCEPTED'){
+				                     		result = result + '<b class="text-primary"> Accepted </b>';
+				                     	}else if(report.rateStage == 'REJECTED'){
+				                     		result = result + '<b class="text-danger"> Rejected </b>';
+				                     	}
+				                     }
+				                     result = result + '		</td>';
+				                     result = result + '      </tr>';
+						    	 }
 			   				}
 	                     result = result + '    </tbody>';
 	                     result = result + '  </table>';
-	                     /*  result = result + ' </div>';
-    			  		 result = result + ' </div>'; */
 	                     result = result + '</section>';
 	                     if(isLastNegotiator=="false"){
-	                    	 if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){
+	                    	 if(report.isNeedApplicantPermit=="N" || (null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus)){
 		                     result = result + '<div class="clearfix row">';
 		                     result = result + '<form name="rate_form" id="rate_form" method="post">';
 		                     result = result + '  <div class="form-group col-md-6">';
 		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required  validate_Space validate_float validate_length length1-10">';
-		                     /* result = result + '    <div class="clearfix mt10 pull-right">';
-		                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr">';
-		                     result = result + '      <input type="button" value="Cancel" class="btn btn-default btn-sm">';
-		                     result = result + '    </div>'; */
 		                     result = result + '  </div>';
 		                     
 		                     result = result + '<div class="form-group col-md-6 select-field">';
@@ -4045,10 +4042,6 @@ function getRateListDiv(submissionId, candidateId){
 		    	     result = result + '<form name="rate_form" id="rate_form" method="post">';
                      result = result + '  <div class="form-group col-md-6">';
                      result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required">';
-                     /* result = result + '    <div class="clearfix mt10 pull-right">';
-                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr">';
-                     result = result + '      <input type="button" value="Cancel" class="btn btn-default btn-sm">';
-                     result = result + '    </div>'; */
                      result = result + '  </div>';
                      
                      result = result + '<div class="form-group col-md-6 select-field">';

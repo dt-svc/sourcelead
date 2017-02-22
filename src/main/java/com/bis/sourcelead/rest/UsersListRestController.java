@@ -156,7 +156,7 @@ public class UsersListRestController {
 	 * @return
 	 */
 
-	/* this method is not at used */
+	/* this method is used to display the users list onload */
 	@RequestMapping(value = "/getUsersList")
 	@JsonInclude(value = JsonInclude.Include.NON_NULL)
 	@ResponseBody
@@ -168,54 +168,41 @@ public class UsersListRestController {
 			@RequestParam(value = "offset", required = false) Integer offset) throws Exception {
 
 		String resultJson = null;
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
-		Long userRoleType;
-
-		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
-		if (null != userState && !"".equalsIgnoreCase(userState)) {
-			boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userStatus", userState));
-		}
-		if (null != userRole && !"".equalsIgnoreCase(userRole)) {
-			boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("userRoleId", userRole));
-		}
-
-		boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
-		Integer maxResults = offset + Constants.MAX_RESULTS_TEN;
-
-		if (null != searchByName && !"".equalsIgnoreCase(searchByName)) {
-			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("email", searchByName));
-		}
-
-		List<UserIndex> usersList = new ArrayList<UserIndex>();
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-		SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX,
-				Constants.ELK_USER_TYPE, offset, maxResults.intValue(), boolQueryBuilder).getHits();
-		if (searchHits != null && searchHits.length > 0) {
-			ObjectMapper mapper = new ObjectMapper();
-			for (SearchHit hit : searchHits) {
-				String json = hit.getSourceAsString();
-				json = hit.getSourceAsString();
-				mapper.setDateFormat(df);
-				UserIndex userIndex = mapper.readValue(json, UserIndex.class);
-				usersList.add(userIndex);
+		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
+//		List<UserRole> rolesList = new ArrayList<UserRole>();
+		
+			Long userRoleType ;
+			
+			if(!"".equalsIgnoreCase(userRole)){
+				 userRoleType = Long.parseLong(userRole);
+			}else{
+				 userRoleType = null;
 			}
-		}
-
-		/*
-		 * List<UserRole> rolesList =
-		 * userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType,
-		 * searchByName,
-		 * orgLocations.getId(),userState,user.getId(),loginUserRole,user.
-		 * getUserCode(),offset);
-		 */
-		resultJson = toJSON(usersList);
-		return resultJson;
+			
+			List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset);
+	
+			if(null != rolesList){
+				for(UserRole role : rolesList){
+					StringBuilder userName = new StringBuilder();
+					role.setUserRoleName(role.getRoles().getDisplayName());
+					if(!isNullOrEmpty(role.getUser().getLastName())){
+						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
+						role.setUserName(userName.toString());
+						
+					}else{
+						role.setUserName(role.getUser().getFirstName());
+					}
+					role.setUserEmail(role.getUser().getEmail());
+					role.setUserId(role.getUser().getId());
+					role.setIsMailSent(role.getUser().getIsMailSent().toString());
+					userRolesList.add(role);
+				}
+			
+			}	
+		 resultJson = toJSON(userRolesList);
+		 return resultJson;
 
 	}
 
@@ -758,10 +745,10 @@ public class UsersListRestController {
 					for (OrgSpoc orgSpoc : orgSpocList) {
 						if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
 								.longValue()) {
-							orgSpoc.setOwnerUser(clientOwnerOrUser);
+							//orgSpoc.setOwnerUser(clientOwnerOrUser);
 						} else if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId()
 								.longValue()) {
-							orgSpoc.setSpocUser(clientOwnerOrUser);
+							//orgSpoc.setSpocUser(clientOwnerOrUser);
 						}
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
@@ -780,10 +767,10 @@ public class UsersListRestController {
 					for (OrgSpoc orgSpoc : orgSpocList) {
 						if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
 								.longValue()) {
-							orgSpoc.setOwnerUser(vendorOwnerOrUser);
+							//orgSpoc.setOwnerUser(vendorOwnerOrUser);
 						} else if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId()
 								.longValue()) {
-							orgSpoc.setSpocUser(vendorOwnerOrUser);
+							//orgSpoc.setSpocUser(vendorOwnerOrUser);
 						}
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
@@ -947,9 +934,9 @@ public class UsersListRestController {
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
 						if (orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()) {
-							orgSpoc.setOwnerUser(clientOwnerOrUser);
+							//orgSpoc.setOwnerUser(clientOwnerOrUser);
 						} else if (orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()) {
-							orgSpoc.setSpocUser(clientOwnerOrUser);
+							//orgSpoc.setSpocUser(clientOwnerOrUser);
 						}
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
@@ -967,9 +954,9 @@ public class UsersListRestController {
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
 						if (orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()) {
-							orgSpoc.setOwnerUser(vendorOwnerOrUser);
+							//orgSpoc.setOwnerUser(vendorOwnerOrUser);
 						} else if (orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()) {
-							orgSpoc.setSpocUser(vendorOwnerOrUser);
+							//orgSpoc.setSpocUser(vendorOwnerOrUser);
 						}
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());

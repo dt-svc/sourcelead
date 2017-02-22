@@ -35,6 +35,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
@@ -56,6 +57,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -134,6 +136,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	
 	
+	@Autowired
+	private TimeZoneService timeZoneService;
+	
+	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 	}
@@ -179,6 +185,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		//For saving of orgLocation Details which location has choose in the registration
 		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user);
+		Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
+		orgLocations.setTimezone(timeZone);
 		try {
 			orgLocationService.addOrgLocations(orgLocations);
 		} catch (Exception e) {
@@ -832,6 +840,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setOrgId(org);
 		candidate.setOrgLocationId(orgLocations);
 		candidate.setCandidateType(Constants.PROFESSIONAL);
+		candidate.setCountry(jsonObj.getString("location"));
 		
 		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
 			candidate.setFirstName(jsonObj.getString("firstName"));
@@ -957,6 +966,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setConsultantUser(user);
 		candidate.setOrgId(org);
 		candidate.setOrgLocationId(orgLocations);
+		candidate.setCountry(jsonObj.getString("location"));
 		candidate.setCandidateType(Constants.INDIVIDUAL_RECRUITER);
 		
 		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){

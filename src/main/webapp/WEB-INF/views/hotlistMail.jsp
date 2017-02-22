@@ -464,6 +464,7 @@ function getClientContacts(){
   
   <script>
 function getClientList(){ 
+	alert("hi");
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
@@ -519,7 +520,7 @@ function getClientList(){
 		                    	 result = result +'             <td>'+website+'</td>';
 		                    	 result = result +'             <td>'+location+'</td>';
 		                    	 result = result +'             <td>'+opt.level+'</td>';
-		                    	 result = result +'             <td>'+opt.noOfContatcs+'</td>';
+		                    	 result = result +'             <td>'+opt.noOfContatcsForCampaign+'</td>';
 		                    	 result = result +'           </tr>';
 		                    	
 	                     }

@@ -114,6 +114,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "IS_CROWD_SOURCING")
 	private String isCrowdSourcing;
 	
+	@Column(name = "REQUIREMENT_UUID")
+	private String requirementUUID;
+	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
@@ -206,6 +209,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Transient
 	private  Long  requirementId;
+	
+	@Transient
+	private String isJobApplied;
 	
 	@Transient
 	private String msg;
@@ -326,7 +332,17 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String isRequirementReleasedByuser;
 	
+	@Transient
+	private String orgcode;
+
+	@Transient
+	private String reqlevel1ApproverStatus;
 	
+	@Transient
+	private String reqlevel2ApproverStatus;
+	
+	@Transient
+	private String rejectReason;
 
 	public String getSearchType() {
 		return searchType;
@@ -374,6 +390,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setJobType(String jobType) {
 		this.jobType = jobType;
+	}
+
+	public String getRejectReason() {
+		return rejectReason;
+	}
+
+	public void setRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
 	}
 
 	public String getClientSubmissionTemplate() {
@@ -443,6 +467,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	}
 
 
+
+	public String getIsJobApplied() {
+		return isJobApplied;
+	}
+
+	public void setIsJobApplied(String isJobApplied) {
+		this.isJobApplied = isJobApplied;
+	}
 
 	public String getClientName() {
 		return clientName;
@@ -1030,6 +1062,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.isCrowdSourcing = isCrowdSourcing;
 	}
 
+	public String getRequirementUUID() {
+		return requirementUUID;
+	}
+
+	public void setRequirementUUID(String requirementUUID) {
+		this.requirementUUID = requirementUUID;
+	}
+
 	public String getPostedOrgName() {
 		return postedOrgName;
 	}
@@ -1044,6 +1084,30 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setAppliedProfessionals(String appliedProfessionals) {
 		this.appliedProfessionals = appliedProfessionals;
+	}
+
+	public String getOrgcode() {
+		return orgcode;
+	}
+
+	public void setOrgcode(String orgcode) {
+		this.orgcode = orgcode;
+	}
+	
+	public String getReqlevel1ApproverStatus() {
+		return reqlevel1ApproverStatus;
+	}
+
+	public void setReqlevel1ApproverStatus(String reqlevel1ApproverStatus) {
+		this.reqlevel1ApproverStatus = reqlevel1ApproverStatus;
+	}
+
+	public String getReqlevel2ApproverStatus() {
+		return reqlevel2ApproverStatus;
+	}
+
+	public void setReqlevel2ApproverStatus(String reqlevel2ApproverStatus) {
+		this.reqlevel2ApproverStatus = reqlevel2ApproverStatus;
 	}
 	
 }

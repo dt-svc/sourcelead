@@ -187,6 +187,18 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		
 		List orgList = session.createQuery(query).setString("orgCode", orgCode).setCacheable(true).list();
 		return orgList;}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgLocations> getAllOrgLocationsByOrgId(Long orgId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "from OrgLocations orgLocations where orgLocations.org.id IN (select org.id from Org org where org.id = :orgId and org.orgCode != 'slead') ";
+		
+		List orgList = session.createQuery(query).setLong("orgId", orgId).setCacheable(true).list();
+		return orgList;
+	}
 
 	@Override
 	@Transactional

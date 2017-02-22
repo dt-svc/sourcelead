@@ -25,9 +25,9 @@ public class RequirementIndex {
 	
 	private String rateType;
 	
-	private Integer minExperience;
+	private String minExperience;
 	
-	private Integer maxExperience;
+	private String maxExperience;
 	
 	private String requirementStatus;
 	
@@ -81,6 +81,9 @@ public class RequirementIndex {
 	
 	private String otherJobType;
 	
+	private String requirementUUID;
+	
+	private String requirementAppliedDate;
 
 	private String isPublicJob;
 	
@@ -95,6 +98,11 @@ public class RequirementIndex {
 	private String isJobApplied;
 
 	private String requirementSubmissionPreviousStatus;
+	
+	private String reqLevel1ApproverStatus;
+	
+	private String reqLevel2ApproverStatus;
+	
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -205,20 +213,20 @@ public class RequirementIndex {
 	public void setRateType(String rateType) {
 		this.rateType = rateType;
 	}
-
-	public Integer getMinExperience() {
+	
+	public String getMinExperience() {
 		return minExperience;
 	}
 
-	public void setMinExperience(Integer minExperience) {
+	public void setMinExperience(String minExperience) {
 		this.minExperience = minExperience;
 	}
 
-	public Integer getMaxExperience() {
+	public String getMaxExperience() {
 		return maxExperience;
 	}
 
-	public void setMaxExperience(Integer maxExperience) {
+	public void setMaxExperience(String maxExperience) {
 		this.maxExperience = maxExperience;
 	}
 
@@ -384,8 +392,17 @@ public class RequirementIndex {
 		return otherJobType;
 	}
 
+
 	public void setOtherJobType(String otherJobType) {
 		this.otherJobType = otherJobType;
+	}
+
+	public String getRequirementUUID() {
+		return requirementUUID;
+	}
+
+	public void setRequirementUUID(String requirementUUID) {
+		this.requirementUUID = requirementUUID;
 	}
 
 	public String getIsPublicJob() {
@@ -451,4 +468,29 @@ public class RequirementIndex {
 	public void setRequirementSubmissionPreviousStatus(String requirementSubmissionPreviousStatus) {
 		this.requirementSubmissionPreviousStatus = requirementSubmissionPreviousStatus;
 	}
+
+	public String getRequirementAppliedDate() {
+		return requirementAppliedDate;
+	}
+
+	public void setRequirementAppliedDate(String requirementAppliedDate) {
+		this.requirementAppliedDate = requirementAppliedDate;
+	}
+
+	public String getReqLevel1ApproverStatus() {
+		return reqLevel1ApproverStatus;
+	}
+
+	public void setReqLevel1ApproverStatus(String reqLevel1ApproverStatus) {
+		this.reqLevel1ApproverStatus = reqLevel1ApproverStatus;
+	}
+
+	public String getReqLevel2ApproverStatus() {
+		return reqLevel2ApproverStatus;
+	}
+
+	public void setReqLevel2ApproverStatus(String reqLevel2ApproverStatus) {
+		this.reqLevel2ApproverStatus = reqLevel2ApproverStatus;
+	}
+	
 }

@@ -153,12 +153,13 @@ public class RequirementController {
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirementId);
 			if(null != requirement.getClientId()){
-				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId());
-				if(null != clientContactList){
+				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId(),"Client");
+				/*commented by Prasad salina, here no need to iterate list, because in service impl we already itarated the list.
+				 * if(null != clientContactList){
 					for(OrgSpoc orgSpoc : clientContactList){
 						orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
 					}
-				}
+				}*/
 			    model.addObject("clientContactList", clientContactList);
 			}
 		    
@@ -451,8 +452,30 @@ public class RequirementController {
 		    List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
 			
-			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-			model.addObject("skillsList", skillsList);
+			/*List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);*/
+			
+			
+			
+			if(requirement != null && requirement.getId() != null){
+
+				List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
+					List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+					List<String> totSkils = new ArrayList<String>();
+					if(!allReqSkills.contains(null)){
+						totSkils.addAll(skillsList);
+						totSkils.addAll(allReqSkills);
+						model.addObject("skillsList", totSkils);
+					}else{
+						model.addObject("skillsList", skillsList);
+					}
+
+			}else{
+				//List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				model.addObject("skillsList", skillsList);
+			}
+			
 			
 		
 		   return model;

@@ -11,9 +11,9 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
-import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 
@@ -521,6 +521,23 @@ public  class CalendarUtil {
 		} catch (ParseException e) {}
 		return dateList;
   	}
+    
+    public static boolean isCurrentDateBetweenDateRange(String weekStartDate,String weekEndDate) {
+		Boolean flag = false;
+		if(StringUtils.isNotEmpty(weekStartDate) && StringUtils.isNotEmpty(weekEndDate)){
+			 DateFormat format = Constants.DF_STD_DMY;
+			 Date startDate = null;
+			 Date endDate = null;
+			 Date currentDate = null;
+			try {
+			 	 currentDate = format.parse(format.format(new Date()));
+				 startDate = format.parse(weekStartDate.replaceAll("-", "/"));
+				 endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				 flag =   ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
+			} catch (ParseException e) {}
+		}
+		return flag;
+	}
     
     public static HashMap<String,Date> getMonthStartDateByGivenDate(Date date,Integer monthPreference){
   		HashMap<String,Date> dateList = new HashMap<String,Date>();

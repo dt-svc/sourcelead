@@ -54,10 +54,10 @@ public class RequirementHelper {
 			}
 			requirementIndex.setRateType(requirement.getRateType());
 			if (requirement.getMinExp() !=null && !"".equalsIgnoreCase(requirement.getMinExp())) {
-				requirementIndex.setMinExperience(Integer.parseInt(requirement.getMinExp()));
+				requirementIndex.setMinExperience(requirement.getMinExp());
 			}
 			if (requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())) {
-				requirementIndex.setMaxExperience(Integer.parseInt(requirement.getMaxExp()));
+				requirementIndex.setMaxExperience(requirement.getMaxExp());
 			}
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
 			//requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus().toString());
@@ -148,19 +148,19 @@ public class RequirementHelper {
 					if (requirement1.getClientId().getResponderLocationId() !=null) {
 						requirementIndex
 								.setClient(requirement1.getClientId().getResponderLocationId().getOrg().getOrgName());
-						if (requirement1.getSpocId().getSpocUser() !=null &&requirement1.getSpocId().getSpocUser() !=null) {
+						/*if (requirement1.getSpocId().getSpocUser() !=null &&requirement1.getSpocId().getSpocUser() !=null) {
 							sb.append(requirement1.getSpocId().getSpocUser().getFirstName()).append(" ")
 									.append(requirement1.getSpocId().getSpocUser().getLastName());
 						} else {
 							sb.append(requirement1.getSpocId().getSpocUser().getFirstName());
 						}
 						requirementIndex.setClientContactName(sb.toString());
-						requirementIndex.setClientContactEmail(requirement1.getSpocId().getSpocUser().getEmail());
+						requirementIndex.setClientContactEmail(requirement1.getSpocId().getSpocUser().getEmail());*/
 					}
 				}
 				if (Constants.VENDOR.equalsIgnoreCase(requirement1.getClientId().getResponderType())) {
 					requirementIndex.setClient(requirement1.getClientId().getLocationId().getOrg().getOrgName());
-					if (requirement1.getSpocId().getSpocUser() !=null && requirement1.getSpocId().getSpocUser()!=null) {
+					/*if (requirement1.getSpocId().getSpocUser() !=null && requirement1.getSpocId().getSpocUser()!=null) {
 						sb.append(requirement1.getSpocId().getSpocUser().getFirstName()).append(" ")
 								.append(requirement1.getSpocId().getSpocUser().getLastName());
 					} else {
@@ -169,8 +169,20 @@ public class RequirementHelper {
 					requirementIndex.setClientContactName(sb.toString());
 					requirementIndex
 							.setClientContactEmail(requirement1.getClientId().getLocationId().getUser().getEmail());
-				}
+				}*/
 			}
+				
+			//Prasad salina	
+			if (requirement1.getSpocId().getClientUser() !=null && requirement1.getSpocId().getClientUser()!=null) {
+				sb.append(requirement1.getSpocId().getClientUser().getFirstName()).append(" ")
+						.append(requirement1.getSpocId().getClientUser().getLastName());
+			} else {
+				sb.append(requirement1.getSpocId().getClientUser().getFirstName());
+			}
+			requirementIndex.setClientContactName(sb.toString());
+			requirementIndex.setClientContactEmail(requirement1.getClientId().getLocationId().getUser().getEmail());
+		}
+				
 			// requirementIndex.setClient(requirement.getClientName());
 			// skill pending
 			if (null != requirement.getSkills() && !"".equalsIgnoreCase(requirement.getSkills())) {
@@ -186,13 +198,15 @@ public class RequirementHelper {
 			}
 			requirementIndex.setReleasedBy(requirement.getReleasedBy());
 			
+			requirementIndex.setRequirementUUID(requirement.getRequirementUUID());
+			
 			if(null != requirement.getIsPublic()){
 				requirementIndex.setIsPublicJob(requirement.getIsPublic());
 			}else{
 				requirementIndex.setIsPublicJob("N");
 			}
 			
-			if(null != requirement.getIsPublic()){
+			if(null != requirement.getIsCrowdSourcing()){
 				requirementIndex.setIsCrowdSourcingJob(requirement.getIsCrowdSourcing());
 			}else{
 				requirementIndex.setIsCrowdSourcingJob("N");
@@ -205,6 +219,12 @@ public class RequirementHelper {
 			if (null != requirement.getAppliedProfessionals() && !"".equalsIgnoreCase(requirement.getAppliedProfessionals())) {
 				String[] appliedProfessionals = requirement.getAppliedProfessionals().split(",");
 				requirementIndex.setAppliedProfessionals(appliedProfessionals);
+			}
+			if(null != requirement.getReqlevel1ApproverStatus() && !"".equalsIgnoreCase(requirement.getReqlevel1ApproverStatus())){
+				requirementIndex.setReqLevel1ApproverStatus(requirement.getReqlevel1ApproverStatus());	
+			}
+			if(null != requirement.getReqlevel2ApproverStatus() && !"".equalsIgnoreCase(requirement.getReqlevel1ApproverStatus())){
+				requirementIndex.setReqLevel2ApproverStatus(requirement.getReqlevel2ApproverStatus());	
 			}
 
 		}

@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 
 public interface RequirementInterviewHistoryService {
@@ -11,7 +12,7 @@ public interface RequirementInterviewHistoryService {
 	
 	RequirementInterviewHistory getRequirementInterviewHistoryById(Long Id);
 	
-	List<RequirementInterviewHistory> getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
+	List<RequirementInterviewHistory> getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, OrgLocations orgLocationsId) throws Exception;
 	
 	List<RequirementInterviewHistory> getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 	
@@ -30,6 +31,8 @@ public interface RequirementInterviewHistoryService {
 	 * To get dashboard interviews
 	 */
 	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception;
+	
+	List<RequirementInterviewHistory> getAllProfessinalInterviews(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode,Long candidateId)throws Exception;
 	
 	Integer getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 

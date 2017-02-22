@@ -104,14 +104,9 @@ public class SubmissionApproverHierarchyServiceTest {
 		logger.info("getSubmissionApproverHierarchyForEmployeeIdAndStartDate added successfully"+SubmissionApproverHierarchyForEmployeeId.size());
 	}
 	@Test
-	public void updateSubmissionStatus() throws Exception{
-		submissionApproverHierarchyService.updateSubmissionStatus(1l,"ACTIVE");
+	public void updateSubmissionStatusByProjectMemberIdStartDateAndEndDate() throws Exception{
+		submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDate(1l,new Date(),new Date(),"APPROVED");
 		logger.info("updateSubmissionStatus added successfully");
-	}
-	@Test
-	public void updateApprovalStatusForApprover() throws Exception{
-		submissionApproverHierarchyService.updateApprovalStatusForApprover(20l, 1l, new Date(), "ACTIVE","Rejected Reason");
-		logger.info("updateApprovalStatusForApprover added successfully");
 	}
 	@Test
 	public void isThereAnyApproverChangesStatusForTheSubmission() throws Exception{

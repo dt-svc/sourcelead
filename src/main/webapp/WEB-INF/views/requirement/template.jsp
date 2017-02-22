@@ -88,11 +88,25 @@ function requirementTemplateList(){
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 		                     
-		                     if(opt.minExp!=null && opt.minExp !='' && opt.minExp !='undefined'){
-		                    	 result = result +"<td><div>"+opt.minExp+"-"+opt.maxExp+"</div></td>";
+		                     
+		                    if(opt.maxExp != null && opt.maxExp !='' && opt.maxExp !='undefined'){
+		                    	 maxExp = opt.maxExp;
 		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
+		                    	 maxExp =''; 
 		                     }
+		                    
+		                    if(opt.maxExp != null && opt.maxExp !='' && opt.maxExp !='undefined' && opt.minExp!=null && opt.minExp !='' && opt.minExp !='undefined'){
+		                    	maxExp = "-"+maxExp;
+		                    }
+		                     
+		                     if(opt.minExp!=null && opt.minExp !='' && opt.minExp !='undefined'){
+		                    	 minExp = opt.minExp
+		                     }else{
+		                    	 minExp='';
+		                     } 
+		                     
+		                     
+		                     result = result +"<td><div>"+minExp+""+maxExp+"</div></td>";
 		                     
 		                     if(opt.skills!=null && opt.skills !='' && opt.skills !='undefined'){
 		                    	 result = result +"<td><div><span title='"+opt.skills+"'>"+opt.skills+"</span></div></td>";

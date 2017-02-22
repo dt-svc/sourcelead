@@ -38,6 +38,7 @@
 <script src="resources/js/jquery.timepicker.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/bootstrap-select.min.js"></script>
+<script src="resources/js/themeswitcher.js"></script>
 <style>
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;
@@ -282,6 +283,11 @@ width: 11.5%;
 	            </div>
 	          </li>
          </sec:authorize>
+         
+         <sec:authorize access="hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')">
+            	<li><a href="#" title="Settings" class="settings"><i class="fa fa-cog fa-spin fa-fw"></i></a></li>
+         </sec:authorize>
+         
           <%-- <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y' && SourceLeadWeb_enrollOrgVisible != 'Y'}">
 	          <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
@@ -295,7 +301,7 @@ width: 11.5%;
 	          </li>
           </c:if> --%>
           
-          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_user.country}.gif" title="${SourceLeadWeb_user.country}"></a></li>
+          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
 
         </ul>
       </div>
@@ -324,6 +330,9 @@ width: 11.5%;
 		 document.getElementById("spockLinksList").style.display="block";
 	 }
   }
+  $('html').click(function(){
+	  $('#spockLinksList').hide();
+  });
   </script>
   
   <script>
@@ -350,6 +359,7 @@ function notificationStatusAsRead(){
   <!-- Task related code Start -->
   
   <!-- Add Task Div -->
+		 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 		 <div class="addTask"> <span class="icon-addTask" title="Add Task"> <i class="fa fa-gears"></i> </span>
 		    <div class="clearfix col-xs-12 col-md-12 addTask-widget">
 		    <i class="fa fa-close close-div taskpop-close"></i>  
@@ -435,9 +445,9 @@ function notificationStatusAsRead(){
 						                </div>
 				                   </div>
 				                  <div class="col-md-6">
-					                <label>Time</label>
+					                <label>Time<span class="text-danger">*</span></label>
 						                <div class="positionRelative">
-						                  <input class="form-control input-sm"  name="timepicker" id="timepicker" type="text">
+						                  <input class="form-control input-sm"  name="timepicker" id="timepicker"  field-name="Time" type="text" data-validation="required">
 						                  <span class="input-group-addon input-groupAddon icon-Addon" ><i class="fa fa-clock-o"></i></span>
 						                </div>
 				                  </div>
@@ -489,9 +499,27 @@ function notificationStatusAsRead(){
 		      <!-- Add New Task Widget --> 
 		    </div>
 		  </div>
+		  </c:if>
 
 <div class="addtAsk_popmask"></div>
 
+
+<!--  Theme Switcher div -->
+  <div class="theme-color">
+      <span class="icon-theme theme-styels" title="click here">
+          <figure class="rotate">
+            <img src="resources/images/theme-icon.png" class="img-responsive" title="Themes">
+          </figure>
+      </span>
+    <ul class="list-unstyled">
+      <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
+      <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
+      <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
+      <li><a href="#" class="" id="btn4"><span class="hdr-grey"></span><span class="dark-grey"></span></a></li>
+      <li><a href="#" class="" id="btn5"><span class="hdr-greydrk"></span><span class="sidenav-purle"></span></a></li>
+    </ul>
+  </div>
+<!--  Theme Swithcer div ends  -->
 
 
 <script type="text/javascript">
@@ -539,7 +567,7 @@ function notificationStatusAsRead(){
 
 <script type="text/javascript">
 $('#taskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	//dateFormat : 'dd-mm-yy',
 	 changeMonth: true,
 	changeYear: true, 
 	minDate : 0,
@@ -551,7 +579,7 @@ $('#taskDatpicker').datepicker({
 	});
 	
 $('#myTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	//dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
@@ -563,7 +591,7 @@ $('#myTaskDatpicker').datepicker({
 	});
 	
 $('#assignedTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	//dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
@@ -574,7 +602,7 @@ $('#assignedTaskDatpicker').datepicker({
 	   }
 	});
 $('#closedTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	//dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
@@ -585,7 +613,10 @@ $('#closedTaskDatpicker').datepicker({
 	  }
 	});
 	
-$('#timepicker').timepicker({ 'timeFormat': 'h:i A' });
+$("#timepicker").timepicker({
+	'showDuration': true,
+	'disableTextInput': true
+}); 
 </script>
 <script>
 function removevalidation(){

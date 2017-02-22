@@ -176,8 +176,9 @@ public class RequirementServiceTest {
 			String status="OPEN";
 			String client = "INFOSYS";
 			Long orgLocationId=1l;
-			Long userId=1l;
-			List<Requirement> req = requirementService.getRequirementListByOrgLocationID(orgLocationId, status, client, userId);
+			User user = new User();
+			String userRoleName = "ROLE_SOURCELEAD_ADMIN";
+			List<Requirement> req = requirementService.getRequirementListByOrgLocationID(orgLocationId, status, client, user,userRoleName);
 			for (Requirement requirement : req) {
 				requirement.getId();
 				logger.info("Successfully retrived!!!!");
@@ -404,7 +405,7 @@ public class RequirementServiceTest {
 			spocId.setId(1l);
 			OrgLocations responderLocationId= new OrgLocations();
 			responderLocationId.setId(1l);
-			spocId.setResponderLocationId(responderLocationId);
+			spocId.setClientLocationId(responderLocationId);
 			requirement.setSpocId(spocId);;
 			
 			StringBuilder location = new StringBuilder();
@@ -421,7 +422,7 @@ public class RequirementServiceTest {
 			User spocUser = new User();
 			spocUser.setEmail("ajith@gmail.com");
 			spocUser.setId(1l);
-			orgSpoc.setSpocUser(spocUser);
+			orgSpoc.setVendorUser(spocUser);
 			orgSpoc.setId(1l);
 			
 			String releasetype="VENDORS";
