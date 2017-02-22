@@ -86,9 +86,9 @@ function getSearchResults(searchType,searchValue){
 	   			    	
 	   			    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 	   			    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
-	   			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
+	   			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
 	   			    	}else{
-	   			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label></p>';	
+	   			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label></p>';	
 	   			    	}
 	   			    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 	   			    		location = location + report.city;
@@ -454,9 +454,9 @@ function getSearchResultsForAll(searchType,searchValue){
 						            	 
 									    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 									    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
-									    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
+									    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
 									    	}else{
-									    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementId='+report.id+'">'+report.jobTitle+'</a></strong></label>';	
+									    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>';	
 									    	}
 									    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 									    		location = location + report.city;

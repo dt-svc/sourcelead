@@ -66,7 +66,7 @@ function interviews(dateRange){
 	            						resultToday = resultToday+'	  <tr>';
 
 	            						resultToday = resultToday+'	   <td><div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div></td>';
-	            						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementId='+report.requirementId+'"><span title ="'+report.requirementTitle+'">'+report.requirementTitle+'</span></a></div></td>';
+	            						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+report.requirementUUID+'"><span title ="'+report.requirementTitle+'">'+report.requirementTitle+'</span></a></div></td>';
 	            						resultToday = resultToday+'	   <td><div class="tblminwidth-150"><span title="'+report.interviewStartDateTimeStr+'">'+report.interviewStartDateTimeStr+'</span></div></td>';
 	            						resultToday = resultToday+'	   <td><div><span title="'+clientName+'">'+clientName+'</span></div></td>';
 
