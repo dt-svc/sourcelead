@@ -1331,7 +1331,7 @@ function requirementPipeline(requirementId){
                 <div class="col-md-4">
                   <label>Posted On</label>
                   <div class="clearfix">
-                    <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Updated On">
+                    <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Posted On">
                       <option>All</option>
                       <option>1 Day Ago</option>
                       <option>3 Days Ago</option>

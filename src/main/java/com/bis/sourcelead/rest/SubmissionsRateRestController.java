@@ -131,17 +131,17 @@ public class SubmissionsRateRestController {
 				requirementRateSubmissionNegotiation.setUpdatedDate(new Date());
 				requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);
 				requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
-				/*//to update requirement submission
+				//to update requirement submission
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
-				requirementSubmission.setSubmissionRateComment(rejectreason);*/
+				requirementSubmission.setSubmissionRateComment(rejectreason);
 			}else{
 				if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
 					requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 					requirementSubmission.setRejectedReason(rejectreason);
 				}
-				/*requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
-				requirementSubmission.setSubmissionRateComment(rejectreason);*/
+				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
+				requirementSubmission.setSubmissionRateComment(rejectreason);
 			}
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
@@ -319,6 +319,7 @@ public class SubmissionsRateRestController {
 				DateFormat date = new SimpleDateFormat( "yyyy-MM-dd");
 				String commonDate = date.format(requirementSubmissionTemplateFields.getCreatedDate());
 				requirementRateSubmission.setCreatedDateStr(commonDate.toString());
+				requirementRateSubmission.setIsNeedApplicantPermit(requirementSubmissionTemplateFields.getRequirementSubmission().getNeedApplicantPermit());
 		}
 		
 		//to get rate history of a requirement
@@ -374,6 +375,8 @@ public class SubmissionsRateRestController {
 			if(null != requirementRateSubmissionNegotiation.getRequirementsubmissionId() && null != requirementRateSubmissionNegotiation.getRequirementsubmissionId().getSubmissionStatus()){
 				requirementRateSubmissionNegotiation.setSubmissionRateStatus(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getSubmissionStatus().toString());
 			}
+			
+			requirementRateSubmissionNegotiation.setIsNeedApplicantPermit(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getNeedApplicantPermit());
 		}
 		
 		

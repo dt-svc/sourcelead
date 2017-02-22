@@ -839,8 +839,8 @@ function getClientDetails(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
-   		    	/* preparedClientDetails(data); */
-   		    	preparedClientListFromElk(data);
+   		    	preparedClientDetails(data); 
+   		    	/* preparedClientListFromElk(data); */
    		    }
 	 }); 
 	
@@ -1036,7 +1036,6 @@ function preparedClientContacts(data){
 				result = result + ' <option '+selected5+'>Contracted</option>';
 				result = result + ' </select>';
 				result = result + ' </div></td>';
-				
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
 		     		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
 		     		}
@@ -1182,7 +1181,6 @@ function preparedClientContactListFromElk(data){
 				result = result + ' <option '+selected5+'>Contracted</option>';
 				result = result + ' </select>';
 				result = result + ' </div></td>';
-		   			
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
 		   		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
 		   		}

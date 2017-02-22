@@ -369,24 +369,16 @@ public class RequirementListRestController {
 								requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 							}
 						}
-					//requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
-					
-					if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
 						
-						if(requirement.getSpocId().getSpocUser().getFirstName() != null && requirement.getSpocId().getSpocUser().getFirstName() != "" && requirement.getSpocId().getSpocUser().getLastName() != null && requirement.getSpocId().getSpocUser().getLastName() != "" ){
+						if(requirement.getSpocId().getClientUser().getFirstName() != null && requirement.getSpocId().getClientUser().getFirstName() != "" && requirement.getSpocId().getClientUser().getLastName() != null && requirement.getSpocId().getClientUser().getLastName() != "" ){
 							StringBuilder spocSB = new StringBuilder();
-							requirement.setSpocName(spocSB.append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName()).toString());
+							requirement.setSpocName(spocSB.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).toString());
 						}else{
-							requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName());
+							requirement.setSpocName(requirement.getSpocId().getClientUser().getFirstName());
 						}
-					 }
-					if(requirement.getSpocId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
-						StringBuilder spocSB1 = new StringBuilder();
-						requirement.setSpocName(spocSB1.append(requirement.getSpocId().getOwnerUser().getFirstName()).append(" ").append(requirement.getSpocId().getOwnerUser().getLastName()).toString());
-					}
-					requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
-					requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
-					/*requirement.setClientSubmissionTemplate(requirement.getClientSubmissionTemplateId().getTemplateName());*/
+					
+					requirement.setSpocEmail(requirement.getSpocId().getClientUser().getEmail());
+					requirement.setSpocMobilePhone(requirement.getSpocId().getClientUser().getMobilePhone());
 					}
 					if(requirement.getManagerUserId() != null && requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getLastName() != null ){
 						StringBuilder managerSB = new StringBuilder();
@@ -615,17 +607,22 @@ public class RequirementListRestController {
 										
 									if(requirementSubmission.getCreatedDate() != null){
 										String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getCreatedDate());
-										String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-										Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
-										currentDateInTimezone = Constants.DMY.format(converteDate);
-										requirementSubmission.setCreatedDateStr(currentDateInTimezone);
+										if(null != timezone && null != timezone.getTimeZoneId()){
+											String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+											Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+											currentDateInTimezone = Constants.DMY.format(converteDate);
+											requirementSubmission.setCreatedDateStr(currentDateInTimezone);	
+										}
 								    }
 									if(requirementSubmission.getUpdatedDate() != null){
 										String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getUpdatedDate());
-										String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-										Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
-										currentDateInTimezone = Constants.DMY.format(converteDate);
-										requirementSubmission.setUpDatedStr(currentDateInTimezone);
+										if(null !=timezone && null != timezone.getTimeZoneId()){
+											String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+											Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+											currentDateInTimezone = Constants.DMY.format(converteDate);
+											requirementSubmission.setUpDatedStr(currentDateInTimezone);
+										}
+										
 								    }
 									/*if(requirementSubmission.getCreatedDate() != null){
 										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
@@ -701,17 +698,20 @@ public class RequirementListRestController {
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
 						if(requirement.getClientId().getResponderLocationId() != null){
 							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
-							if(requirement.getSpocId().getSpocUser().getFirstName() !=null && requirement.getSpocId().getSpocUser().getLastName() !=null){
-								sb.append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName());
+							if(requirement.getSpocId().getClientUser().getFirstName() !=null && requirement.getSpocId().getClientUser().getLastName() !=null){
+								sb.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName());
 							}else{
-								sb.append(requirement.getSpocId().getSpocUser().getFirstName());
+								sb.append(requirement.getSpocId().getClientUser().getFirstName());
 							}
 							
 							requirement.setClientContactName(sb.toString());
-							requirement.setClientContactEmail(requirement.getSpocId().getSpocUser().getEmail());
+							requirement.setClientContactEmail(requirement.getSpocId().getClientUser().getEmail());
 						}
 					}
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+					}
+					/*if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
 						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
 						
 						if(requirement.getSpocId().getSpocUser().getFirstName() !=null && requirement.getSpocId().getSpocUser().getLastName() !=null){
@@ -721,7 +721,7 @@ public class RequirementListRestController {
 						}
 						requirement.setClientContactName(sb.toString());
 						requirement.setClientContactEmail(requirement.getSpocId().getSpocUser().getEmail());
-					}
+					}*/
 				}
 				if(requirement.getManagerUserId() != null){
 					String managerFirstName = "";
@@ -746,25 +746,25 @@ public class RequirementListRestController {
 							if(requirement.getClientId() != null){
 								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
 									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
-									if(requirement.getSpocId().getSpocUser().getFirstName() !=null && requirement.getSpocId().getSpocUser().getLastName() !=null){
-										sb.append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName());
+									if(requirement.getSpocId().getClientUser().getFirstName() !=null && requirement.getSpocId().getClientUser().getLastName() !=null){
+										sb.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName());
 									}else{
-										sb.append(requirement.getSpocId().getSpocUser().getFirstName());
+										sb.append(requirement.getSpocId().getClientUser().getFirstName());
 									}
 									
 									requirement.setClientContactName(sb.toString());
-									requirement.setClientContactEmail(requirement.getSpocId().getSpocUser().getEmail());
+									requirement.setClientContactEmail(requirement.getSpocId().getClientUser().getEmail());
 								}
 								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
 									requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
-									if(requirement.getSpocId().getSpocUser().getFirstName() !=null && requirement.getSpocId().getSpocUser().getLastName() !=null){
+									/*if(requirement.getSpocId().getSpocUser().getFirstName() !=null && requirement.getSpocId().getSpocUser().getLastName() !=null){
 										sb.append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName());
 									}else{
 										sb.append(requirement.getSpocId().getSpocUser().getFirstName());
 									}
 									
 									requirement.setClientContactName(sb.toString());
-									requirement.setClientContactEmail(requirement.getSpocId().getSpocUser().getEmail());
+									requirement.setClientContactEmail(requirement.getSpocId().getSpocUser().getEmail());*/
 								}
 							}
 							if(requirement.getManagerUserId() != null){

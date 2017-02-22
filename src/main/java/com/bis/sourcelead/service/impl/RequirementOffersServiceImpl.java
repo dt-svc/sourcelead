@@ -280,7 +280,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             EmailMessage emailMessage = new EmailMessage();
             emailMessage.setFirstName(loginUser.getFirstName());
             emailMessage.setLastName(loginUser.getLastName());
-            emailMessage.setToEmail(clientrequirement.getSpocId().getSpocUser().getEmail());
+            emailMessage.setToEmail(clientrequirement.getSpocId().getVendorUser().getEmail());
             emailMessage.setFromEmail("peopleaxisindia@gmail.com");
             emailMessage.setCreatedBy(loginUser.getUserCode());
             StringBuilder nameBuilder=new StringBuilder();
@@ -295,8 +295,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                     globalVarsMap.put("OrgnanizationName", "--");
             }
             
-            if (clientrequirement.getSpocId().getSpocUser().getFirstName() != null && !"".equalsIgnoreCase(clientrequirement.getSpocId().getSpocUser().getFirstName())) {
-                globalVarsMap.put("vendorContact",clientrequirement.getSpocId().getSpocUser().getFirstName());
+            if (clientrequirement.getSpocId().getVendorUser().getFirstName() != null && !"".equalsIgnoreCase(clientrequirement.getSpocId().getVendorUser().getFirstName())) {
+                globalVarsMap.put("vendorContact",clientrequirement.getSpocId().getVendorUser().getFirstName());
             } else {
                 globalVarsMap.put("vendorContact", "--");
             }
@@ -351,7 +351,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
                 String actionLink="";
                OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
-				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getVendorUser(), vendorLocation, notificationScenario);
         		}catch (MessagingException e) {
         			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
         		} catch (UnsupportedEncodingException e) {

@@ -109,7 +109,7 @@ public class MailBoxRestController {
 		for(int i=0 ; i < relationsId.length; i++){
 			List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.valueOf(relationsId[i]));
 			for(OrgSpoc orgSpoc :orgSpocList){
-				emails.append(orgSpoc.getSpocUser().getEmail()).append(",");
+				emails.append(orgSpoc.getClientUser().getEmail()).append(",");
 			}
 		}
 		emails.toString();
