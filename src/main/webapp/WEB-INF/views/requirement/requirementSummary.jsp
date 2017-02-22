@@ -923,11 +923,11 @@ function requirementDetails(requirementId){
 				           
 				            
 				            
-				            if(json.requirementApproverHierarchyStatus == 'REJECTED'){
+				            if(json.requirementSubmissionStatus == 'REJECTED'){
 				            	result = result +'   <div class="anchor-inline">';
 				            	result = result +'   <div class="rejected_Reason">';
 				            	result = result +'   <h5>Rejected Reason:</h5>'; 
-				            	result = result +'   <div>'+json.rejectReason+'</div>';
+				            	result = result +'   <div>'+json.rejectReasonForRequirement+'</div>';
 				            	result = result +'   </div>';
 				            	result = result +'   </div>';
 				          	   }
