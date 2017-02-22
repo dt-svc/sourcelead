@@ -922,7 +922,7 @@ function getVendorLists(){
 		    url: sourceleadUrl+"/getVendorFilterLists?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
    		    	//preparedVendorsLists(data);
-   		    	preparedVendorsListFromElk(data);
+   		    	preparedVendorsLists(data);
    		    }
 	 });
 	

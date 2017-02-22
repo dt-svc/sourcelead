@@ -921,8 +921,21 @@ function requirementDetails(requirementId){
 							var result ="";
 				            result = result +' <div class="require_wrap_details">';
 				           
+				            
+				            
+				            if(json.requirementApproverHierarchyStatus == 'REJECTED'){
+				            	result = result +'   <div class="anchor-inline">';
+				            	result = result +'   <div class="rejected_Reason">';
+				            	result = result +'   <h5>Rejected Reason:</h5>'; 
+				            	result = result +'   <div>'+json.rejectReason+'</div>';
+				            	result = result +'   </div>';
+				            	result = result +'   </div>';
+				          	   }
+				            
+				            
 				            result = result+'<div id="rejectRequirementAlert" ></div>  ';
 				            
+				           
 				            result = result +' <div class="clearfix">';
 				            
 				            result = result +' <div class="pull-left">';
@@ -1018,6 +1031,9 @@ function requirementDetails(requirementId){
 				            result = result +'   </div>';
 				            if(json.isClientJob  == 'Y')
 				            	{
+				            	
+				            result = result +'     <div class="clearfix"></div>';
+				            result = result +'     </br>';
 				            result = result +'   <h2>Client details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            
@@ -1058,6 +1074,9 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            */
+				            
+				            
+				            
 				            if(json.parentRequirement == null || json.parentRequirement == "" || json.parentRequirement == "undefined"){
 					        	 if(json.clientCurrencyCode == 'INR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined' && null !=json.clientRate && null !=json.clientRateType && json.clientRateType != 'undefined' && json.clientRateType != ''){
 						        result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ' +json.clientRate+'  '+json.clientRateType+'</span>';
@@ -1125,17 +1144,6 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            	}
-				            
-				            
-				            
-				            if(json.requirementApproverHierarchyStatus == 'REJECTED'){
-			            	result = result +'   <div class="col-md-3 pull-left">';
-			            	result = result +'   <div class="rejected_Reason">';
-			            	result = result +'   <h5>Rejected Reason:</h5>'; 
-			            	result = result +'   <p>'+json.rejectReason+'</p>';
-			            	result = result +'   </div>';
-			            	result = result +'   </div>';
-			            }
 				            
 				            
 				            result = result +'     <div class="clearfix"></div>';

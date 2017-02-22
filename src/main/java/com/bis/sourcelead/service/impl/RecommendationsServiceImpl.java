@@ -740,8 +740,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 */
 	private float getExperiencePercentage(CandidateIndex candidateIndex, RecommendedCustomizeScore recommendedCustomizeScore, int reqMinExp, float expPercentage, float percentPerMonthExp, int reqMaxExp) {
 
-		Integer Months = null;
-		Integer Years = null;
+		Integer Months = 0;
+		Integer Years = 0;
 		int recommendationExpMonthsMin = 0;
 		int recommendationExpMonthsMax = 0;
 		if(null != candidateIndex.getExperienceYears() && !"".equalsIgnoreCase(candidateIndex.getExperienceYears())){
