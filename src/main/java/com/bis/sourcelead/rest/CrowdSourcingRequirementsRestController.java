@@ -88,6 +88,9 @@ public class CrowdSourcingRequirementsRestController {
 	@Autowired
 	RequirementReferService requirementReferService;
 	
+	@Autowired
+	ReferContactsService referContactsService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -660,6 +663,40 @@ public class CrowdSourcingRequirementsRestController {
 			requirementReferService.saveReferCandidate(user, orgLocations, jsonObj);
 						
 			return "success";
+
+		}
+	 
+	 
+		@RequestMapping(value = "/getRefercontactList", method = RequestMethod.POST)
+		public String getRefercontactList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			String resultJson = null;
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<ReferContacts> referContactList = referContactsService.getReferContactsListByUserIdAndOrglocationId(user.getId(), orgLocations.getId());
+			for(ReferContacts rc :referContactList){
+				if(null != rc.getContactUser()){
+					StringBuilder username = new StringBuilder();
+					if(null != rc.getContactUser().getLastName()){
+						rc.setContactUserName(username.append(rc.getContactUser().getFirstName()).append(" ").append(rc.getContactUser().getLastName()).toString());	
+					}else{
+						rc.setContactUserName(username.append(rc.getContactUser().getLastName()).toString());
+					}
+					rc.setContactUserEmail(rc.getContactUser().getEmail());
+					rc.setContactUserPhone(rc.getContactUser().getMobilePhone());
+				}else{
+					StringBuilder contactName = new StringBuilder();
+					if(null != rc.getLastName()){
+						rc.setContactUserName(contactName.append(rc.getFirstName()).append(" ").append(rc.getLastName()).toString());
+					}else{
+						rc.setContactUserName(contactName.append(rc.getLastName()).toString());
+					}
+					rc.setContactUserEmail(rc.getContactUserEmail());
+					rc.setContactUserPhone(rc.getContactUserPhone());
+				}
+				
+			}
+			resultJson = commonUtil.toJSON(referContactList);
+			return resultJson;
 
 		}
 }

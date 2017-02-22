@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -66,9 +67,9 @@ public class ReferContacts implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Transient
+	private String contactUserName;
 	
-	
-
 	public Long getId() {
 		return id;
 	}
@@ -172,6 +173,13 @@ public class ReferContacts implements Serializable{
 	public void setOrgLocationId(OrgLocations orgLocationId) {
 		this.orgLocationId = orgLocationId;
 	}
-	
+
+	public String getContactUserName() {
+		return contactUserName;
+	}
+
+	public void setContactUserName(String contactUserName) {
+		this.contactUserName = contactUserName;
+	}
 
 }

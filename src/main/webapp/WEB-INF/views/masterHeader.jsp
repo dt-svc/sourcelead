@@ -288,7 +288,7 @@ width: 11.5%;
             	<li id="settingArea"><a href="#" title="Settings" class="settings"><i class="fa fa-cog fa-spin fa-fw"></i></a>
             	<div class="setting-area">
             	<ul class="list-unstyled">
-            	<li><a href="<c:url value="/referList" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Refer List</a></li>
+            	<li><a href="<c:url value="/referRequirementList" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Refer List</a></li>
             	</ul>
             	</div>
             	</li>

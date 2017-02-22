@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ReferContactsDao;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -69,5 +71,14 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 			return null;
 		}
    	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<ReferContacts> getReferContactsListByUserIdAndOrglocationId(Long userId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  ReferContacts contacts  where contacts.referFromUser.id =:userId and contacts.orgLocationId.id =:orgLocationId ";
+		List<ReferContacts> referContactsList  =   session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true) .list();
+		return referContactsList;
+	}
 
 }
