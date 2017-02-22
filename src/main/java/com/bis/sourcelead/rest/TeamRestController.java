@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
+import org.jsoup.select.Evaluator.IsEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -209,10 +210,12 @@ public class TeamRestController {
 			ids.add(team.getOwnerUserId().getId());
 		}
 		String[] existedTeamMemberUserIds = existedTeamMembersIds.split(",");
+		
+		if(null != existedTeamMemberUserIds && existedTeamMemberUserIds.length>0 && !existedTeamMembersIds.isEmpty()){
 		for(String id  : existedTeamMemberUserIds){
 			ids.add(Long.parseLong(id));
 		}
-		
+		}
 		List<User> userList = userService.getUserListExceptExistedTeamMembersList(ids, loginOrgLocation.getId());
 		resultJson = commonUtil.toJSON(userList);
 		return resultJson;
@@ -457,5 +460,5 @@ public class TeamRestController {
 					return result;
 			   }
 			 
-		  
+		      
 }
