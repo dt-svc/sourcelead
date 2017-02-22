@@ -359,17 +359,9 @@ function getVendorLists(){
 		   	type: "GET",
 		    url: sourceleadUrl+"/getVendorListsForReleaseRequirement?requirementId="+requirementId+"&vendorStatus="+vendorStatus, 	   
    		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
-   		    		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
+   		    	/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 	               			var json = JSON.parse(data);
 	           	        	var result = "";
-	           	        	
 	                        result = result +'<div class="require_wrap_table release-jobs-tbl">';
 	                        result = result +'<table id="vendorPagination" class="display" cellspacing="0" width="100%">';
 	           	        	result = result +'<thead>';
@@ -442,9 +434,8 @@ function getVendorLists(){
 	           	    	 	$("#vendor").empty();
 	           	    	    $("#vendor").append(result);
 	           	    	 	vendorPagination();
-               		 }
    		    		
-	   		    	}else{
+	   		    	/* }else{
 	               	 $("#vendor").removeAttr("style");
 		    	     var result ="";
 					 result = result+"	<div class='blank-pages'>";
@@ -455,7 +446,7 @@ function getVendorLists(){
 					 $("#vendorStatus").hide();
 					 $("#vendor").empty();
 				     $("#vendor").append(result); 
-	            }
+	            } */
    		    },
 	 });
 }	
