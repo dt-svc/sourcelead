@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -154,6 +155,22 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		//String subQueryForUserIdChecking = "project.id IN ( select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)) OR project.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
 		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.endDate < :currentDate";
 		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("currentDate", currentDate).setCacheable(true).list();
+		
+		return projectsList;
+	}
+	
+	
+	/**
+	 * This method for get all project EndDate Graterthan CurrentDate
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Projects> getAllProjectsEndDateGraterthanCurrentDate() throws Exception {
+		logger.debug("In ProjectsDaoImpl class getAllProjectsEndDateGraterthanCurrentDate method");
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+		String query = "from Projects project where  project.endDate < :currentDate";
+		List<Projects> projectsList =  session.createQuery(query.toString()).setParameter("currentDate", currentDate).setCacheable(true).list();
 		
 		return projectsList;
 	}
@@ -696,6 +713,26 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 					count = projectsCount.get(0).intValue();
 			}
 			return count;
+	}
+
+	@Override
+	@Transactional
+	public Boolean validateTasksName(String taskname, Long projectId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(taskname != null && projectId != null){
+				String query = "from ProjectTasks projectTasks where projectTasks.projectId = :projectId and projectTasks.taskName = :taskname ";
+				Collection<ProjectTasks> projectTaskList = session.createQuery(query.toString())
+						                                   .setLong("projectId", projectId)
+						                                   .setString("taskname", taskname)
+						                                   .setCacheable(true)
+						                                   .list();
+
+				if (projectTaskList != null && projectTaskList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
 	}
 
 }

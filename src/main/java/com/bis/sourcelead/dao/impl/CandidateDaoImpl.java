@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -281,19 +281,19 @@ public class CandidateDaoImpl implements CandidateDao {
 	public Candidate findByCandidateEmail(String email, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Candidate> candidate = new ArrayList<Candidate>();
-		logger.debug("findByEmail start");
+		logger.debug("findByCandidateEmail start");
 		try{
 			candidate = session.createQuery("from Candidate can where can.email=:email and can.orgLocationId.id = :orgLocationId ORDER BY can.id DESC" )
 					.setString( "email", email ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
 			
-			logger.debug("findByEmail end");
+			logger.debug("findByCandidateEmail end");
 			if (candidate.size() > 0) {
 				return candidate.get(0);
 			} else {
 				return null;
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return null;
 	}
@@ -471,6 +471,21 @@ public class CandidateDaoImpl implements CandidateDao {
 				               .list();
 	  /*  System.err.println("das"+candidateList.size());*/
 	return candidateList;
+	}
+
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId, String candidateType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.consultantUser =:userId and candidate.candidateType =:candidateType ";  
+		List<Candidate> candidateList =  session.createQuery(query).setLong("userId", userId).setString("candidateType", candidateType).setCacheable(true).list();
+		Candidate candidate = null;
+		if (candidateList != null && candidateList.size() > 0) {
+			candidate = (Candidate) candidateList.iterator().next();
+		}
+		return candidate;
 	}
 
 	

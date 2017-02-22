@@ -1093,7 +1093,7 @@ function cancel(candidateId){
 							  <label>Experience</label>
 							  <div class="clearfix row">
 							  <div class="col-md-6">
-								  <select class="chosen-select"  id="minExpYears" name="minExpYears" data-placeholder="Years">
+								  <select class="chosen-select"  id="minExpYears" name="minExpYears" data-placeholder="Years" onblur="minMaxExperience();">
 									  <option selected value="">Min Years</option>
 									 <c:forEach begin="0" end="24" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
@@ -1101,15 +1101,20 @@ function cancel(candidateId){
 								  </select>
 							  </div>
 							  <div class="col-md-6">
-								  <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months">
+								  <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months" onblur="minMaxExperience();">
 									  <option selected value="">Max Years</option>
-									  <c:forEach begin="0" end="24" varStatus="loop">
+									  <c:forEach begin="0" end="25" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
 								  </select>
 							  </div>
 							  </div>
+							  <div class="row" id="expId">
+				                  <input type="hidden" name="expValidation" id="expValidation">
+				              </div>
+							  
 						  </div>
+						  
 						  <div class="col-md-4">
 							  <label>Notice Period</label>
 							  <div class="clearfix">
@@ -1718,7 +1723,6 @@ function savedCommentAndCount(candidateId){
 		}
 		function openPop(){
 		  $("div.cand-advsrch-popup").toggle();
-		  
 		}
 	</script>
 <script>
@@ -1840,6 +1844,8 @@ function getCities(){
     				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
     				  '.chosen-select-width'     : {width:"95%"}
     	   }
+    	   
+    	   
 			//Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#anyOfKeyword");
@@ -2017,6 +2023,12 @@ function getCities(){
 		       $("#state").on('change', function (e) {
 		    	   getCities();
 		       });
+		       
+		       // here call experience validation
+		       $("#maxExpYears").on('change', function (e) {
+		    	   minMaxExperience();
+		       });
+		       
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
@@ -2208,5 +2220,26 @@ function getCities(){
 		$("#candidatelist_form").showHelpOnFocus();
 		$("#candidatelist_form").validateOnBlur(false, validationSettings);
 	});
+</script>
+
+<script>
+//Function to validate if maxExpYears  value is more the minExpYears  value
+function minMaxExperience(){
+     var maxExpYears = ($('#maxExpYears').val());
+     var minExpYears = ($('#minExpYears').val());
+    
+    if (parseFloat(maxExpYears) <= parseFloat(minExpYears)){
+        $('#expId').find('p.jquery_form_error_message').remove(); 
+		$('input#expValidation').attr('class','error signin_fild');
+		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
+		$('input#expValidation').attr('record-exist','yes');
+		$('input#expValidation').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+    }  else{
+    	$('#expId').find('p.jquery_form_error_message').remove(); 
+    	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#expId').find('p.jquery_form_error_message').remove();
+    } 
+}
+
 </script>
 <jsp:include page="../masterFooter.jsp" /> 

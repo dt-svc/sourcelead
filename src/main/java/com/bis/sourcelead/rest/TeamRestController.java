@@ -437,4 +437,25 @@ public class TeamRestController {
 		}
 
 		  
+		     /**
+			  * To  validate Team Name
+			  * @param name
+			  * @return
+			  */
+			 @RequestMapping(value = "/validateTeamName" , method = RequestMethod.POST)
+			 public @ResponseBody  String validateTeamName(@RequestParam(value="name", required=false) String name,HttpServletRequest request) throws Exception {
+				 	
+				 	String result = null;
+				 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 	Team team = teamService.findByTeamName(name,orgLocation.getId());
+				 	
+				 	if (null != team) {
+						result = "true";
+					}else{
+						result = "false";
+					}
+					return result;
+			   }
+			 
+		  
 }

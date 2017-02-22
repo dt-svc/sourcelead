@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -104,5 +103,6 @@ public interface CandidateService {
 
 	List<Object> getAllUniversalSearchCandidateList(OrgLocations orgLocation, String searchValue) throws Exception;
 
+	Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId,String candidateType) throws Exception;
 	
 }

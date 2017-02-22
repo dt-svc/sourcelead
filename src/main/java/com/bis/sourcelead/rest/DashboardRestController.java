@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.RequirementIndex;
-import com.bis.sourcelead.elk.index.helper.RequirementHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.DashboardCounts;
@@ -31,6 +31,7 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -95,6 +97,8 @@ public class DashboardRestController {
 	 @Autowired
 	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
 	 
+	 @Autowired
+	 TimeZoneService timeZoneService;
 	 
 	@Autowired
 	CommonUtil commonUtil;
@@ -141,8 +145,12 @@ public class DashboardRestController {
 		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
    			    userRole.setUserState(Status.ACTIVE);
-   			    userRoleService.addUserRole(userRole);
+   			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
+   			   
+   			   //user update/save in user Elk
+   			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
    		      }
+				
 		     StringBuilder redirectUrl = new StringBuilder();
 		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).toString());
 			
@@ -407,8 +415,12 @@ public class DashboardRestController {
 			
 			String currentTime = null;
 			String userType = null;
+			Timezone timezone = null;
 			String userCode = user.getUserCode();
 			Long userId = user.getId();
+			if(loginOrgLocations.getTimezone() != null){
+				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			}
 			
 			
 			if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
@@ -444,17 +456,16 @@ public class DashboardRestController {
 				
 				interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
 				
-				//requirementInterview.setInterviewStartDateTimeStr(requirementInterview.getStartTime().toString());
-				
+				//changed as per the timezone
 				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
-				String commonDateFormat = standardFormat.format(interviewHistory.getInterviewId().getStartTime());
-				interviewHistory.setInterviewStartDateTimeStr(commonDateFormat.toString());
+				if(timezone != null){
+					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
+					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+					Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+					currentDateInTimezone = standardFormat.format(converteDate);
+					interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
+				}
 				
-				
-				/*if(interviewHistory.getSubmissionId().getRequirement().getClientId() != null){
-					
-					interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
-				}*/
 				 if(interviewHistory.getSubmissionId().getRequirement().getClientId() != null){
 						if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
 							interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
@@ -569,9 +580,11 @@ public class DashboardRestController {
 							for (RequirementApproverHierarchy rah : list1) {
 								if (status.equalsIgnoreCase("APPROVED")) {
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+									requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
 								} else if (status.equalsIgnoreCase("REJECTED")) {
 									rah.setRejectedReason(reason);
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+									requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 								}
 								rah.setUpdatedBy(loginUser.getUserCode());
 								rah.setUpdatedDate(commonUtil.currentDate());
@@ -593,9 +606,11 @@ public class DashboardRestController {
 								requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, null,	orgLocation);
 							}
 							requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+							requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
 						} else if (status.equalsIgnoreCase("REJECTED")) {
 							// this is for sending email to requirement initiator
 							requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+							requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 							requirementApproverHierarchy.setRejectedReason(reason);
 							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
 							requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
@@ -603,6 +618,7 @@ public class DashboardRestController {
 							// This is  to update  the level2 Approver Record For RejectedS
 						    RequirementApproverHierarchy level2approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdExcludingApproverHierarchyId(requirementApproverHierarchy.getId(), requirementId);
 						    level2approver.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+						    requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 						    level2approver.setUpdatedBy(loginUser.getUserCode());
 						    level2approver.setUpdatedDate(commonUtil.currentDate());
 							requirementApproverHierarchyService.addRequirementApproverHierarchy(level2approver);

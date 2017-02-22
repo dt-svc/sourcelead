@@ -3,7 +3,6 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.Team;
 
 public interface CandidateDao {
 
@@ -39,5 +38,7 @@ public interface CandidateDao {
 	public Integer getAllCandidatesCountForCampaignByTeam(List<Long> teamId,String type,Long orgLocationId)throws Exception;
 
 	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId,Integer datRange)throws Exception;
+	
+	Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId,String candidateType) throws Exception;
 
 }

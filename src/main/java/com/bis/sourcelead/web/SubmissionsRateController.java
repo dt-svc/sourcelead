@@ -97,8 +97,6 @@ public class SubmissionsRateController {
 		String permission = "YES";
 		if(pastRequirementRateSubmissionNegotiation != null && pastRequirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE){
 			permission = "NO";
-		}else if((requirementSubmission != null && requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.REJECTED)) || (rateStatus.equalsIgnoreCase("Accepted") && requirementSubmission != null && requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.SUBMISSION))){
-			permission = "NO";
 		}
 		model.addObject("permission",permission);
 		model.addObject("rateStatus",rateStatus);
@@ -140,6 +138,11 @@ public class SubmissionsRateController {
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+			
+			
+			requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
+			
+			
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
@@ -151,7 +154,9 @@ public class SubmissionsRateController {
 			Requirement requirement = requirementSubmission.getRequirement();
 			Candidate candidate = requirementSubmission.getCandidate();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
-			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations);
+			List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidate.getId());
+			StringBuilder tempHTML = requirementRateSubmissionNegotiationService.buildNegotiationHistory(negotiationList,requirement,candidate,submissionId,type);
+			requirementSubmissionService.applicantAcceptMailAboutRateNegotiation(requirement,userRole.getUser(),requirementSubmission,orgLocations,tempHTML);
 			
 		}
 		return model;
@@ -219,7 +224,10 @@ public class SubmissionsRateController {
 			Requirement requirement = requirementSubmission.getRequirement();
 			Candidate candidate = requirementSubmission.getCandidate();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
-			requirementSubmissionService.userAcceptRateNegotiation(requirement,userRole.getUser(),candidate,orgLocations,requirementRateSubmissionNegotiation);
+			
+			List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, requirementSubmission.getCandidate().getId());
+			StringBuilder tempHtml = requirementRateSubmissionNegotiationService.buildNegotiationHistory(negotiationList, requirement, candidate, submissionId, type);
+			requirementSubmissionService.userAcceptRateNegotiation(requirement,userRole.getUser(),candidate,orgLocations,requirementRateSubmissionNegotiation,tempHtml);
 			
 		}
 		return model;

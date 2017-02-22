@@ -923,7 +923,7 @@ $(document).ready(function () {
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
 				
-                  <input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow();">
+                  <input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow(${requirement.id});">
 
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
@@ -978,11 +978,19 @@ $(document).ready(function () {
      <div class="form-footer clearfix">
     <div class="col-lg-12">   
       <div class="pull-right">
-        <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
+	      <c:if test="${ requirement.requirementSubmissionStatus != 'OPEN'}">
+	      		  <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
+	      </c:if>
+          
         <c:if test="${empty requirement.requirementSubmissionStatus || requirement.requirementSubmissionStatus == 'DRAFT' || requirement.requirementSubmissionStatus == 'REJECTED'}">
         	<input type="button" value="Draft" id="draft" onclick="storeRequirement('draft'); " class="btn btn-danger ml">
         </c:if>
-        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >    
+         <c:if test="${requirement.requirementSubmissionStatus == 'OPEN'}">
+       			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
+         </c:if>
+          <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'}">
+       			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
+         </c:if>
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
@@ -1589,7 +1597,7 @@ function setTemplateValues(){
 			            $('#education').trigger("chosen:updated");
 					}
 			    	
-			    	$("#description").val(json.description);
+			    	$("textarea#description").val(json.description);
 			    	$("#rate").val(json.rate);
 			    	
 			    	if(json.currencyCode != null && json.currencyCode != '' && json.currencyCode != 'undefined'){
@@ -1764,9 +1772,13 @@ function approvalType(type){
 	    	$("#parallelApprover").val('');
 			$('#parallelApprover').trigger("chosen:updated");
 	    	
-			$("#submitForApproval").removeAttr("style");
-		    $("#save").attr("style","display:none"); 
-		    
+			var requiremenStatus  = '${requirement.requirementSubmissionStatus}';
+			
+			if(requiremenStatus !='OPEN'){
+				$("#submitForApproval").removeAttr("style");
+			    $("#save").attr("style","display:none"); 
+			}
+			
 		    $(".parallel, #parallel, .apprverReq").show();
 			$(".sequential").hide();
 			$("#parallel i").addClass("apprverReq-active");
@@ -1774,7 +1786,6 @@ function approvalType(type){
 			
 			
 			if(type == "Default" || type == "Parallel"){
-				
 				$("#parallel i").show();
 			    $("#sequential i").show();
 				 
@@ -1813,7 +1824,6 @@ function approvalType(type){
 		  
 		}
 		else{
-		    
 			$("#save").removeAttr("style");
 		    $("#submitForApproval").attr("style","display:none"); 
 		    
@@ -1845,11 +1855,13 @@ function approvalType(type){
 --%>
 
 <script>
-function popupWindow(){  
+function popupWindow(reqId){ 
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#popupWindow").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $("#popupWindow").removeAttr("style");
-	  getTeamsList();
+	  getTeamsList(reqId);
+	 // var teamType = $("#rolesDiv").val();
+	 // getUserList(teamType);
 	  getUserList();
 	  var result = '';
 	    result = result +'<div class="modal-body clearfix">';
@@ -1936,8 +1948,11 @@ function getUserList(teamType){
 		                    	 }else{
 		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    	 }
-		                    	 
-		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+' '+opt.lastName+'">'+opt.firstName+' '+opt.lastName+'</span></td>';
+		                    	 var lastName = '';
+		                    	 if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+		                    		 lastName = ' '+opt.lastName;
+		                    	 }
+		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+''+lastName+'">'+opt.firstName+''+lastName+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot" title="'+opt.email+'">'+opt.email+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.userType+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.assignJobCount+'</span></td>';
@@ -1949,9 +1964,10 @@ function getUserList(teamType){
 	                       result = result +"</table>"; 
 	                       result = result +'   <div class="clearfix"></div>'; 
 	                 	   result = result +'   </div>'; 
+	                 	   result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a member</span>';
 	                 	   result = result +'   <div class="modal-footer mt">';
 	                 	   result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="assignMembers();">Assign</button>';
-	                 	   result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Cancel</button>';
+	                 	   result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Clear</button>';
 	                 	   result = result +'   </div>'; 
 	                 	   $("#usersGrid").empty(); 
 	                       $("#usersGrid").append(result); 
@@ -2002,6 +2018,21 @@ function handleClick() {
 }
 </script>
 
+<%-- 
+     @author : venkat kesav
+     this script is for get selected team(s) and role(s).
+     1.usage     : onload.
+     declared 'teamRoleIds' as a global variable for keep all selected role and teams
+--%>
+<script>
+window.teamRoleIds = new Array();
+function handleTeamRoleClick() {
+	teamRoleIds = [];
+	$("option[name=TeamAndRole]:selected").each(function(){
+		teamRoleIds.push($(this).val());
+	});
+}
+</script>
 
 <%-- 
      @author : venkat kesav
@@ -2012,11 +2043,14 @@ function handleClick() {
      append Roles and Teams list to AssignedTo model dialog box
 --%>
 <script>
-function getTeamsList(teamType){ 
+function getTeamsList(reqId){
+	if(reqId == '' || reqId == 'undefined' || reqId == null){
+		reqId = '';
+	}
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getTeamsList?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getTeamsList?${_csrf.parameterName}=${_csrf.token}&reqId="+reqId,    
             success :function(data) {
             	var json = JSON.parse(data);
 				var output = "";
@@ -2033,10 +2067,12 @@ function getTeamsList(teamType){
 				  output = output + "<optgroup label='Teams'>";
 				  for (var i = 0; i < json.teams.length; i++) {
 						var opt = json.teams[i];
-						if(teamType == opt.id){
-							output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
-						}else{
-							output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
+						if('Y' == opt.isTeamAssigned){
+							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected disabled>"+ opt.name + "</option>";
+						}else if($.inArray(''+opt.id, teamRoleIds) > -1){
+							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected>"+ opt.name + "</option>";	
+					    }else{
+							output = output + "<option name='TeamAndRole' value='"+opt.id+"'>"+ opt.name + "</option>";	
 						}
 
 					}
@@ -2048,10 +2084,12 @@ function getTeamsList(teamType){
 				  output = output + "<optgroup label='Roles'>"; 
 					for (var i = 0; i < json.roles.length; i++) {
 						var opt = json.roles[i];
-						if(teamType == opt.id){
-							output = output + "<option value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
+						if('Y' == opt.isRoleAssigned){
+							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected disabled>"+ opt.displayName + "</option>";
+						}else if($.inArray(''+opt.id+'role', teamRoleIds) > -1){
+							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
 						}else{
-							output = output + "<option value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
+							output = output + "<option name='TeamAndRole' value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
 						}
 					}
 					output = output + "</optgroup>";
@@ -2083,6 +2121,10 @@ function getTeamsList(teamType){
 		$('#cancelbtnId').attr("data-dismiss","modal");
 		$('#closebtnId').attr("data-dismiss","modal");
 		ids = [];
+		$("#assignedToSavingDiv").empty();
+		teamRoleIds = [];
+		//$("#rolesDiv").empty();
+		//assignMembers();
 	}
 </script>
 
@@ -2110,14 +2152,15 @@ function pagination(){
 
 <script>
 function assignMembers() {
+	handleTeamRoleClick();
 	var result = "";
 	var oTable = $('#example').dataTable();
 	var rowcollection =  oTable.$(".myCheckbox:checked", {"page": "all"});
 	var totalCount = $("[type='checkbox']:checked").length;
 	var count = 1;
-	/* if(totalCount == 0){
-		alert("Please Select atleast one Check-Box.")
-	}else{ */
+	if(totalCount == 0){
+		$('span.jquery_form_error_message').show();
+	}else{
 		$('#assignbtnId').attr("data-dismiss","modal");
 		rowcollection.each(function(index,elem){
 		    var checkbox_value = $(elem).val();
@@ -2128,7 +2171,8 @@ function assignMembers() {
 		$("#assignedToSavingDiv").empty();
 		$("#assignedToSavingDiv").append(result);
 		assignedToValidation();
-	/* } */
+		$("#assignedTeamId").val($("#rolesDiv").val());
+	}
 }
 </script>
 

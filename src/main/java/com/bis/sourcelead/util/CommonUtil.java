@@ -13,8 +13,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.hibernate.Session;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,10 +29,12 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -47,8 +52,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
-import com.bis.sourcelead.enums.Submission_ApprovalStatus;
-import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.rest.UserProfileRestController;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -57,6 +61,8 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -70,6 +76,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 @Component
 public class CommonUtil {
 	
+	private static final Logger logger = LoggerFactory.getLogger(CommonUtil.class);
 	@Autowired
 	private ProjectMembersService projectMembersService;
 	
@@ -84,6 +91,13 @@ public class CommonUtil {
 	
 	@Autowired
 	private ProjectsService projectsService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	
+	private UserRoleService userRoleService;
 	
 	@Autowired
 	private ProjectTasksService projectTasksService;
@@ -267,6 +281,29 @@ public class CommonUtil {
 		List<ProjectMembers> projectMembers;
 		try {
 			projectMembers = projectMembersService.getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(user.getId());
+			if(projectMembers != null && !projectMembers.isEmpty()){
+				for(ProjectMembers projectMember :projectMembers){
+					terminateProjectMemberByProjectMemberId(projectMember.getId(),Primary.NO);
+				}
+				
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+	}
+	
+	
+	/**
+	 * This method is used to terminate all projectmembers whose project is closed
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public void terminateAllProjectMembers(){
+		List<ProjectMembers> projectMembers;
+		try {
+			projectMembers = projectMembersService.getAllTerminatedProjectMembersIdsByTimesheet();
 			if(projectMembers != null && !projectMembers.isEmpty()){
 				for(ProjectMembers projectMember :projectMembers){
 					terminateProjectMemberByProjectMemberId(projectMember.getId(),Primary.NO);
@@ -583,7 +620,25 @@ public class CommonUtil {
 	    	 
 	     }
 	   
-	 
+	   /**
+		 * This method is used to update USER DB and  ElasticSearch Documents for common user
+		 *
+		 * @author: Ajith Matta
+		 * 
+		 */
+		public void commonUserUpdate(User user) {
+
+			try {
+				List<UserRole> userRole = userRoleService.getUsersListByUserId(user.getId());
+				if (null != userRole) {
+					for (UserRole role : userRole) {
+						userService.saveOrUpdateUserElkDocument(role, null, user.getUserCode());
+					}
+				}
+			} catch (Exception e) {
+				logger.info("--exception--" + e);
+			}
+		}
 	   
 	
 	 /**
@@ -715,4 +770,19 @@ public class CommonUtil {
 	        return false;
 	    }
 		
+		/**
+		 * convertTimeZones is used to convert one timezone to anothet timezone 
+		 * @author: Prasanna Vadla
+		 * 
+		 */
+		public static String convertTimeZones(final String fromTimeZoneString, 
+		        final String toTimeZoneString, final String fromDateTime) {
+		    final DateTimeZone fromTimeZone = DateTimeZone.forID(fromTimeZoneString);
+		    final DateTimeZone toTimeZone = DateTimeZone.forID(toTimeZoneString);
+		    final DateTime dateTime = new DateTime(fromDateTime, fromTimeZone);
+
+		    final DateTimeFormatter outputFormatter 
+		        = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").withZone(toTimeZone);
+		    return outputFormatter.print(dateTime);
+		}
 }

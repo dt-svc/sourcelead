@@ -118,9 +118,6 @@ display: inline;
 .require_wrap_table {
 overflow: visible;
 }
-.timesheet_head ul {
-padding: 1px 280px 2px 0;
-}
 .require_wrap_table select {
 width:100% !important;
 }
@@ -1204,49 +1201,52 @@ function requirementPipeline(requirementId){
   <div class="timesheet_out">
     <div class="vendor_wrap">
       <div class="timesheet_head">
-       <div class="pull-left cand-advsrch">
+       <div class="pull-left cand-advsrch advsrch_chosen">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
             <div class="row">
-              <div class="col-md-4">
+             <!--  <div class="col-md-4">
                 <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
                 
                 <div class="clearfix">
 				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyKeyWord" name="anyKeyWord"></select>
-					<!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> -->
+					<input type="text" class="form-control input-sm" placeholder="Any of Keyword">
 				 </div>
-              </div>
-              <div class="col-md-4">
+              </div> -->
+            <!--   <div class="col-md-4">
                 <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
                 <div class="clearfix">
 				 <select class="chosen-select form-control input-sm" multiple data-placeholder="All KeyWord" id="allReqKeyWord" name="allKeyWord"></select>
-					<!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> -->
+					<input type="text" class="form-control input-sm" placeholder="Any of Keyword">
 				 </div>
                 
-              </div>
-              <div class="col-md-4">
+              </div> -->
+          <!--     <div class="col-md-4">
                 <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
                 <div class="clearfix">
 				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude KeyWord" id="excludeReqKeyWord" name="excludeKeyWord"></select>
-					<!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> -->
+					<input type="text" class="form-control input-sm" placeholder="Any of Keyword">
 				 </div>
                 
                 
-              </div>
+              </div> -->
             </div>
             <div class="row">
-              <div class="col-md-12">
-                <h4>Details:</h4>
-              </div>
               <div class="clearfix">
-                <div class="col-md-4">
-                  <label>Requirement Title</label>
+                <div class="col-md-8">
+                  <label>Job Title</label>
                   <div class="clearfix">
                     <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Requirement Title">
                   </div>
                 </div>
-               <div class="form-group">
+                  <div class="col-md-4">
+                  <label>Job Id</label>
+                  <div class="clearfix">
+                    <input type="text" id="jobId" name="jobId" class="form-control input-sm" placeholder="job Id">
+                  </div>
+                </div>
+            <%--    <div class="form-group">
             <label class="col-md-3">Pay Rate/Salary${SourceLeadWeb_currencyCode}</label>
             <div class="col-md-6">
              <div class="input-group">
@@ -1288,10 +1288,10 @@ function requirementPipeline(requirementId){
                 </div>
               </div>
             </div>
-          </div>
+          </div> --%>
               </div>
               <div class="clearfix">
-                <div class="col-md-4">
+             <%--    <div class="col-md-4">
                   <label>Experience</label>
                   <div class="clearfix row">
                     <div class="col-md-6">
@@ -1311,7 +1311,7 @@ function requirementPipeline(requirementId){
                       </select>
                     </div>
                   </div>
-                </div>
+                </div> --%>
                 <div class="col-md-4">
                   <label>Requirement status </label>
                   <div class="clearfix">
@@ -1324,13 +1324,14 @@ function requirementPipeline(requirementId){
                       <option>ONHOLD</option>
                       <option>FILLEDCLOSED</option>
                       <option>UNFILLEDCLOSED</option>
+                      <option>REJECTED</option>
                     </select>
                   </div>
                 </div>
                 <div class="col-md-4">
-                  <label>Updated On</label>
+                  <label>Posted On</label>
                   <div class="clearfix">
-                    <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Updated On">
+                    <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Posted On">
                       <option>All</option>
                       <option>1 Day Ago</option>
                       <option>3 Days Ago</option>
@@ -1341,6 +1342,25 @@ function requirementPipeline(requirementId){
                     </select>
                   </div>
                 </div>
+                
+                <div class="col-md-4">
+                  <label>Client<i class="fa fa-info-circle" title="CLient"></i></label>
+                  <div class="clearfix">
+                    <select class="chosen-select" id="client" name="client" data-placeholder="Client" multiple>
+                      <c:forEach var="report" items="${add_clientList}">
+							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
+			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
+			                    </c:if>  
+			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
+			                  	 	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+			                    </c:if>
+							</c:forEach>
+                    </select>
+                  </div>
+                </div>
+                
+                
+                
               </div>
               <div class="clearfix">
 						   <div class="col-md-4">
@@ -1375,7 +1395,7 @@ function requirementPipeline(requirementId){
 						  </div>
 						  </div>
               <div class="clearfix">
-                <div class="col-md-4">
+              <%--   <div class="col-md-4">
                   <label>Education</label>
                   <div class="clearfix">
                     <select class="chosen-select" id="education" name="education" data-placeholder="Education" multiple>
@@ -1389,9 +1409,9 @@ function requirementPipeline(requirementId){
                 </c:forEach>
                     </select>
                   </div>
-                </div>
+                </div> --%>
 
-                <div class="col-md-4">
+                <div class="col-md-4 hidden">
                   <label>Client<i class="fa fa-info-circle" title="CLient"></i></label>
                   <div class="clearfix">
                     <select class="chosen-select" id="client" name="client" data-placeholder="Client" multiple>
@@ -1407,7 +1427,7 @@ function requirementPipeline(requirementId){
                   </div>
                 </div>
               </div>
-              <div class="clearfix">
+           <%--    <div class="clearfix">
                 <div class="col-md-12">
                   <label>Skills</label>
                   <div class="clearfix">
@@ -1423,7 +1443,7 @@ function requirementPipeline(requirementId){
                     </select>
                   </div>
                 </div>
-              </div>
+              </div> --%>
             </div>
             <div class="row form-footer">
               <div class="pull-right mr"> 

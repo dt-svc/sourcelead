@@ -62,6 +62,19 @@
 	            </div>
             </div>
        
+               <div class="form-group">
+	            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
+	            <div class="col-md-9">
+					 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Timezone" data-validation="required" id="timeZone" name="timeZone">
+					 <option value="" >Select Timezone</option>
+                        <c:forEach var="option" items="${timezoneList}">
+	                          <option value="${option.id}">${option.timeZoneId}</option>
+                         </c:forEach>
+                     </select>
+                     <span class="hidden">Time Zone</span>
+				</div>
+				</div>
+       
           <div class="form-group">
             <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
             <div class="col-md-9 checkbox">

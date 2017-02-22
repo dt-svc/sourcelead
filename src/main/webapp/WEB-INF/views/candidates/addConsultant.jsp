@@ -214,10 +214,10 @@
         <div class="form-group">
           <label class="col-md-3">Experience</label>
           <div class="col-md-9">
-            <div class="row">
+            <div class="row exp-drop">
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
-             		  <option selected >Years</option>
+             		  <option value="" >Years</option>
              		  <c:forEach begin="0" end="24" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -225,9 +225,10 @@
              		</select>
              </div>
              
+             
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
-             		<option selected >Months</option>
+             		<option value="">Months</option>
              		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -977,12 +978,12 @@ function getUserDetails(){
 	        		
 	        		  $("#firstName").val(json[0]);
 	        		  
-	        		  if(json[1] != null && json[1] != '' && json[1] !='undefined'){
+	        		 /*  if(json[1] != null && json[1] != '' && json[1] !='undefined'){
 	        			  $("#lastName").val('');
 	        		  }else{
 	        			  $("#lastName").val(json[1]);
-	        		  }
-	        		  
+	        		  } */
+	        		  $("#lastName").val(json[1]);
 	        		  $("#email").val(json[2]);
 	        		  $("#mobilePhone").val(json[3]);
 	        		 
