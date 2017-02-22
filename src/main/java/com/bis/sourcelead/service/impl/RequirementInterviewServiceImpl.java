@@ -158,6 +158,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								    requirementInterview.setEndTime(convertedDate);
 								}
 								
+								if(jsonObj.has(c+"timeZone") && !jsonObj.getString(c+"timeZone").isEmpty()){
+									Timezone zone = timeZoneService.getTimezone(Long.parseLong(jsonObj.getString(c+"timeZone")));
+									requirementInterview.setTimezone(zone);
+								}
+								
 								if(jsonObj.has(c+"location") && !jsonObj.getString(c+"location").isEmpty()){
 									requirementInterview.setLocation(jsonObj.getString(c+"location"));
 								}
