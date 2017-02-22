@@ -574,7 +574,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Interview Location</strong>';
+	                    	 result = result + '<strong>Interview Details</strong>';
 	                    	 result = result + '</label>';
 	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
 	                    	 result = result + '</div>';
@@ -598,7 +598,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<strong>Time</strong>';
 	                    	 result = result + '</label>';
                              if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
-                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'</p>';
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'('+report.interviewId.timezone.timeZoneId+')</p>';
 	                    	 }else{
 	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
 	                    	 }
@@ -808,7 +808,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Interview Location</strong>';
+	                    	 result = result + '<strong>Interview Details</strong>';
 	                    	 result = result + '</label>';
 	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
 	                    	 result = result + '</div>';
@@ -832,7 +832,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 result = result + '<strong>Time</strong>';
 	                    	 result = result + '</label>';
                              if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
-                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'</p>';
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'('+report.interviewId.timezone.timeZoneId+')</p>';
 	                    	 }else{
 	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
 	                    	 }
