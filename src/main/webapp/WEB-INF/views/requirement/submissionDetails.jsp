@@ -333,9 +333,6 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
 
 		       result = result + '<div class="require_wrap_details">';
-		       if(json.submissionStatus == 'REJECTED'){
-		    	   result = result + '<div ><a href="javascript:void(0)" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
-		       }
 		       result = result + '<div class="clearfix">';
 			   result = result + '</div> ';        
 				   
@@ -410,27 +407,6 @@ $(".new-tabs a").click(function(event) {
  $(".side_mask").fadeIn(200);
  $("body").css('overflow-y', 'hidden');
   
-}
-</script>
-
-<script type="text/javascript">
-function reActivateApplicant(submissionId,candidateId,requirementId){
-	var result = "";
-	var sourceleadUrl ='${sourceleadUrl}';
-	var message = confirm("You are choosing to ReActivate the Applicant");
-	if (message == true) {
-		$.ajax({
-	        type : "POST",
-	         url: sourceleadUrl+"/reActivateRejectedApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
-	         success :function(data) {
-	               if(data != null && data != 'undefined' && data != ""){
-	            	   getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
-	                } 
-	                 },
-	              }); 
-		
-	}
-	
 }
 </script>
 
@@ -580,7 +556,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Interview Details</strong>';
+	                    	 result = result + '<strong>Interview Location</strong>';
 	                    	 result = result + '</label>';
 	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
 	                    	 result = result + '</div>';
