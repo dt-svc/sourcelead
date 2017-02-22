@@ -164,9 +164,9 @@ overflow-x: auto;
 		                  <div class="clearfix">
 		                  		<!-- <input type="text" class="form-control input-sm" placeholder="Project manager" value = "" id="projectManagerAdvanced" name="projectManagerAdvanced"> -->
 						  		<select class="chosen-select form-control input-sm" multiple data-placeholder="Project manager" id="projectManagerAdvanced" name="projectManagerAdvanced">
-                                    <c:forEach var="report" items="${add_projectManagersList}">
+                                    <%-- <c:forEach var="report" items="${add_projectManagersList}">
 				                    	<option value="${report.fullName}">${report.fullName}</option>
-			                		</c:forEach>
+			                		</c:forEach> --%>
                                 </select>
 		                  </div>
 		                </div>
@@ -187,9 +187,9 @@ overflow-x: auto;
 			                <label>Clients</label>
 			                  <div class="clearfix">
 									 <select class="chosen-select form-control input-sm" multiple data-placeholder="Clients" id="clientsAdvanced" name="clientsAdvanced">
-                                       <c:forEach var="report" items="${add_client}">
+                                       <%-- <c:forEach var="report" items="${add_client}">
 							                     <option value="${report.clientName}">${report.clientName}</option>
-						                </c:forEach>
+						                </c:forEach> --%>
                                     </select>
 							 </div>
 			            </div>
@@ -219,9 +219,9 @@ overflow-x: auto;
 		                  <div class="clearfix">
 		                  	<!-- <input type="text" class="form-control input-sm" placeholder="Employee Name" id="employeeNameAdvanced" name="employeeNameAdvanced"> -->
 		                  	<select class="chosen-select form-control input-sm" multiple data-placeholder="Employee Name" id="employeeNameAdvanced" name="employeeNameAdvanced">
-                                    <c:forEach var="report" items="${add_projectMembersList}">
+                                    <%-- <c:forEach var="report" items="${add_projectMembersList}">
 				                    	<option value="${report.empName}">${report.empName}</option>
-			                		</c:forEach>
+			                		</c:forEach> --%>
                             </select>
 		                  </div>
 		                </div>
@@ -231,9 +231,9 @@ overflow-x: auto;
 		                  <div class="clearfix">
 		                  	<!-- <input type="text" class="form-control input-sm" placeholder="Employee Email" id="employeeEmailAdvanced" name="employeeEmailAdvanced"> -->
 		                  	<select class="chosen-select form-control input-sm" multiple data-placeholder="Employee Email" id="employeeEmailAdvanced" name="employeeEmailAdvanced">
-                                    <c:forEach var="report" items="${add_projectMembersList}">
+                                    <%-- <c:forEach var="report" items="${add_projectMembersList}">
 				                    	<option value="${report.empEmail}">${report.empEmail}</option>
-			                		</c:forEach>
+			                		</c:forEach> --%>
                             </select>
 		                  </div>
 		                </div>
@@ -716,6 +716,10 @@ $(document).ready(function() {
 	    $("#excludeKeyWord").empty(); */
 	    $("#projectIdAdvanced").empty();
 	    $("#projectNameAdvanced").empty();
+	    $("#projectManagerAdvanced").empty();
+	    $("#clientsAdvanced").empty();
+	    $("#employeeNameAdvanced").empty();
+	    $("#employeeEmailAdvanced").empty();
 	}
 </script>
 
@@ -838,7 +842,7 @@ $(document).ready(function() {
 		    });
 		    
 		    
-		    /* var selectfive, chosenfive;
+		    var selectfive, chosenfive;
 		    selectfive = $("#projectManagerAdvanced");
 		    selectfive.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosenfive = selectfive.data('chosen');
@@ -860,7 +864,7 @@ $(document).ready(function() {
 		    });
 		    
 		    
-		    var selectsix, chosensix;
+		    /* var selectsix, chosensix;
 		    selectsix = $("#invoiceFrequencyAdvanced");
 		    selectsix.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosensix = selectsix.data('chosen');
@@ -879,7 +883,7 @@ $(document).ready(function() {
 	        		$("#invoiceFrequencyAdvanced").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		    
 		    
 		    var selectseven, chosenseven;
@@ -903,7 +907,7 @@ $(document).ready(function() {
 		        }
 		    });
 		    
-		    
+		    /* 
 		    var selecteight, choseneight;
 		    selecteight = $("#statusAdvanced");
 		    selecteight.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
@@ -923,7 +927,7 @@ $(document).ready(function() {
 	        		$("#statusAdvanced").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		    
 		    
 		    var selectnine, chosennine;
@@ -967,7 +971,7 @@ $(document).ready(function() {
 	        		$("#employeeEmailAdvanced").trigger("chosen:updated");
 	        		
 		        }
-		    }); */
+		    });
 		    
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);

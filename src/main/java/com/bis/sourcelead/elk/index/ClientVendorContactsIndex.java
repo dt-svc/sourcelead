@@ -23,27 +23,31 @@ public class ClientVendorContactsIndex implements Serializable {
 	
 	private Long orgRelationId;
 	
-	private Long initiatorLocationId;
+	private Long vendorLocationId;
 	
 	private Long spocUserId;
 	
-	private String  spocUserFirstName;
-	
-	private String  spocUserLastName;
-	
-	private String  spocUserEmail;
-	
-	private String  spocUserPhNo;
-	
 	private Long ownerUserId;
 	
-	private String  ownerUserFirstName;
+	private String  clientUserFirstName;
 	
-	private String  ownerUserLastName;
+	private String  clientUserLastName;
 	
-	private String  ownerUserEmail;
+	private String  clientUserEmail;
 	
-	private String  ownerUserPhNo;
+	private Long  clientUserId;
+	
+	private String  clientUserPhNo;
+	
+	private String  vendorUserFirstName;
+	
+	private String  vendorUserLastName;
+	
+	private String  vendorUserEmail;
+	
+	private Long  vendorUserId;
+	
+	private String  vendorUserPhNo;
 	
 	private String  spocName;
 	
@@ -51,13 +55,13 @@ public class ClientVendorContactsIndex implements Serializable {
 	
 	private Long tempOwnerId;
 	
-	private Long responderLocationId;
+	private Long clientLocationId;
 	
 	private Long userId;
 	
-	private String  initiatorOrgName;
+	private String  vendorOrgName;
 	
-	private String  responderOrgName;
+	private String  clientOrgName;
     
 	private String initiatorType;
 	
@@ -74,6 +78,30 @@ public class ClientVendorContactsIndex implements Serializable {
 	
 	
 	
+	public Long getOwnerUserId() {
+		return ownerUserId;
+	}
+
+	public void setOwnerUserId(Long ownerUserId) {
+		this.ownerUserId = ownerUserId;
+	}
+
+	public String getClientUserPhNo() {
+		return clientUserPhNo;
+	}
+
+	public void setClientUserPhNo(String clientUserPhNo) {
+		this.clientUserPhNo = clientUserPhNo;
+	}
+
+	public String getVendorUserPhNo() {
+		return vendorUserPhNo;
+	}
+
+	public void setVendorUserPhNo(String vendorUserPhNo) {
+		this.vendorUserPhNo = vendorUserPhNo;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -139,6 +167,15 @@ public class ClientVendorContactsIndex implements Serializable {
 		this.orgRelationId = orgRelationId;
 	}
 
+
+	public Long getVendorLocationId() {
+		return vendorLocationId;
+	}
+
+	public void setVendorLocationId(Long vendorLocationId) {
+		this.vendorLocationId = vendorLocationId;
+	}
+
 	public Long getSpocUserId() {
 		return spocUserId;
 	}
@@ -147,12 +184,12 @@ public class ClientVendorContactsIndex implements Serializable {
 		this.spocUserId = spocUserId;
 	}
 
-	public Long getOwnerUserId() {
-		return ownerUserId;
+	public Long getClientLocationId() {
+		return clientLocationId;
 	}
 
-	public void setOwnerUserId(Long ownerUserId) {
-		this.ownerUserId = ownerUserId;
+	public void setClientLocationId(Long clientLocationId) {
+		this.clientLocationId = clientLocationId;
 	}
 
 	public String getSpocName() {
@@ -171,45 +208,12 @@ public class ClientVendorContactsIndex implements Serializable {
 		this.tempOwnerId = tempOwnerId;
 	}
 
-
 	public Long getUserId() {
 		return userId;
 	}
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
-	}
-
-	public String getSpocUserFirstName() {
-		return spocUserFirstName;
-	}
-
-	public void setSpocUserFirstName(String spocUserFirstName) {
-		this.spocUserFirstName = spocUserFirstName;
-	}
-
-	public String getSpocUserLastName() {
-		return spocUserLastName;
-	}
-
-	public void setSpocUserLastName(String spocUserLastName) {
-		this.spocUserLastName = spocUserLastName;
-	}
-
-	public String getOwnerUserFirstName() {
-		return ownerUserFirstName;
-	}
-
-	public void setOwnerUserFirstName(String ownerUserFirstName) {
-		this.ownerUserFirstName = ownerUserFirstName;
-	}
-
-	public String getOwnerUserLastName() {
-		return ownerUserLastName;
-	}
-
-	public void setOwnerUserLastName(String ownerUserLastName) {
-		this.ownerUserLastName = ownerUserLastName;
 	}
 
 	public String getOwnerNames() {
@@ -220,68 +224,84 @@ public class ClientVendorContactsIndex implements Serializable {
 		this.ownerNames = ownerNames;
 	}
 
-	public String getSpocUserEmail() {
-		return spocUserEmail;
+	public String getClientUserFirstName() {
+		return clientUserFirstName;
 	}
 
-	public void setSpocUserEmail(String spocUserEmail) {
-		this.spocUserEmail = spocUserEmail;
+	public void setClientUserFirstName(String clientUserFirstName) {
+		this.clientUserFirstName = clientUserFirstName;
 	}
 
-	public String getSpocUserPhNo() {
-		return spocUserPhNo;
+	public String getClientUserLastName() {
+		return clientUserLastName;
 	}
 
-	public void setSpocUserPhNo(String spocUserPhNo) {
-		this.spocUserPhNo = spocUserPhNo;
+	public void setClientUserLastName(String clientUserLastName) {
+		this.clientUserLastName = clientUserLastName;
 	}
 
-	public String getOwnerUserEmail() {
-		return ownerUserEmail;
+	public String getClientUserEmail() {
+		return clientUserEmail;
 	}
 
-	public void setOwnerUserEmail(String ownerUserEmail) {
-		this.ownerUserEmail = ownerUserEmail;
+	public void setClientUserEmail(String clientUserEmail) {
+		this.clientUserEmail = clientUserEmail;
 	}
 
-	public String getOwnerUserPhNo() {
-		return ownerUserPhNo;
+	public Long getClientUserId() {
+		return clientUserId;
 	}
 
-	public void setOwnerUserPhNo(String ownerUserPhNo) {
-		this.ownerUserPhNo = ownerUserPhNo;
+	public void setClientUserId(Long clientUserId) {
+		this.clientUserId = clientUserId;
 	}
 
-	public String getInitiatorOrgName() {
-		return initiatorOrgName;
+	public String getVendorUserFirstName() {
+		return vendorUserFirstName;
 	}
 
-	public void setInitiatorOrgName(String initiatorOrgName) {
-		this.initiatorOrgName = initiatorOrgName;
+	public void setVendorUserFirstName(String vendorUserFirstName) {
+		this.vendorUserFirstName = vendorUserFirstName;
 	}
 
-	public String getResponderOrgName() {
-		return responderOrgName;
+	public String getVendorUserLastName() {
+		return vendorUserLastName;
 	}
 
-	public void setResponderOrgName(String responderOrgName) {
-		this.responderOrgName = responderOrgName;
+	public void setVendorUserLastName(String vendorUserLastName) {
+		this.vendorUserLastName = vendorUserLastName;
 	}
 
-	public Long getInitiatorLocationId() {
-		return initiatorLocationId;
+	public String getVendorUserEmail() {
+		return vendorUserEmail;
 	}
 
-	public void setInitiatorLocationId(Long initiatorLocationId) {
-		this.initiatorLocationId = initiatorLocationId;
+	public void setVendorUserEmail(String vendorUserEmail) {
+		this.vendorUserEmail = vendorUserEmail;
 	}
 
-	public Long getResponderLocationId() {
-		return responderLocationId;
+	public Long getVendorUserId() {
+		return vendorUserId;
 	}
 
-	public void setResponderLocationId(Long responderLocationId) {
-		this.responderLocationId = responderLocationId;
+	public void setVendorUserId(Long vendorUserId) {
+		this.vendorUserId = vendorUserId;
+	}
+
+	public String getVendorOrgName() {
+		return vendorOrgName;
+	}
+
+	public void setVendorOrgName(String vendorOrgName) {
+		this.vendorOrgName = vendorOrgName;
+	}
+
+	public String getClientOrgName() {
+		return clientOrgName;
+	}
+
+	public void setClientOrgName(String clientOrgName) {
+		this.clientOrgName = clientOrgName;
 	}
 
 	public String getInitiatorType() {
@@ -331,6 +351,5 @@ public class ClientVendorContactsIndex implements Serializable {
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
 	}
-
 	
 }

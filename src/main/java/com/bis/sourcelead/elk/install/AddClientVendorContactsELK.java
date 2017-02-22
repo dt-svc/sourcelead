@@ -77,23 +77,23 @@ public class AddClientVendorContactsELK {
 			    	
 			    	ClientVendorContactsIndex clientVendorContactsIndex = new ClientVendorContactsIndex();
                        String createdBy =  rs.getString("CREATED_BY");
-			    	   Long  responderLocationId = rs.getLong("RESPONDER_LOCATION_ID");
-			    	   Long  initiatorLocationId = rs.getLong("INITIATOR_LOCATION_ID");
+			    	   Long  responderLocationId = rs.getLong("CLIENT_LOCATION_ID");
+			    	   Long  initiatorLocationId = rs.getLong("VENDOR_LOCATION_ID");
 			    	   
 			    	   Long  orgRelationId = rs.getLong("ORG_RELATION_ID");
-			    	   Long  ownerUserId = rs.getLong("OWNER_USER_ID");
-			    	   Long  spockUserId = rs.getLong("SPOC_USER_ID");
+			    	   Long  ownerUserId = rs.getLong("VENDOR_USER_ID");
+			    	   Long  spockUserId = rs.getLong("CLIENT_USER_ID");
 			    	   
 			    	   clientVendorContactsIndex.setId(rs.getLong("ID"));
 
-						clientVendorContactsIndex.setInitiatorLocationId(rs.getLong("INITIATOR_LOCATION_ID"));
+						clientVendorContactsIndex.setVendorLocationId(rs.getLong("VENDOR_LOCATION_ID"));
 						clientVendorContactsIndex.setOrgRelationId(rs.getLong("ORG_RELATION_ID"));
-						clientVendorContactsIndex.setResponderLocationId(rs.getLong("RESPONDER_LOCATION_ID"));
+						clientVendorContactsIndex.setClientLocationId(rs.getLong("CLIENT_LOCATION_ID"));
 						clientVendorContactsIndex.setInvitationStatus(rs.getString("INVITATION_STATUS"));
 						clientVendorContactsIndex.setSpocStatus(rs.getString("SPOC_STATUS"));
-						clientVendorContactsIndex.setSpocUserId(rs.getLong("SPOC_USER_ID"));
+						clientVendorContactsIndex.setSpocUserId(rs.getLong("CLIENT_USER_ID"));
 						clientVendorContactsIndex.setStatus(rs.getString("STATUS"));
-						
+						clientVendorContactsIndex.setOwnerUserId(rs.getLong("OWNER_USER_ID"));
 						
 						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 						clientVendorContactsIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
@@ -114,7 +114,7 @@ public class AddClientVendorContactsELK {
 									if(rs2 != null){
 										 while(rs2.next()){
 											   if(null != rs2.getString("ORG_NAME")){
-												   clientVendorContactsIndex.setResponderOrgName(rs2.getString("ORG_NAME"));
+												   clientVendorContactsIndex.setClientOrgName(rs2.getString("ORG_NAME"));
 												   clientVendorContactsIndex.setOrgName(rs2.getString("ORG_NAME"));
 
 											   }
@@ -136,7 +136,7 @@ public class AddClientVendorContactsELK {
 									if(rs6 != null){
 										 while(rs6.next()){
 											   if(null != rs6.getString("ORG_NAME")){
-												   clientVendorContactsIndex.setInitiatorOrgName(rs6.getString("ORG_NAME"));
+												   clientVendorContactsIndex.setVendorOrgName(rs6.getString("ORG_NAME"));
 											   }
 									    }
 				    	           }
@@ -167,15 +167,15 @@ public class AddClientVendorContactsELK {
 						if(rs3 != null){
 							 while(rs3.next()){
 								 
-									clientVendorContactsIndex.setOwnerUserFirstName(rs3.getString("FIRST_NAME"));
+									clientVendorContactsIndex.setVendorUserFirstName(rs3.getString("FIRST_NAME"));
 									if(null != rs3.getString("LAST_NAME")){
-										clientVendorContactsIndex.setOwnerUserLastName(rs3.getString("LAST_NAME"));
+										clientVendorContactsIndex.setVendorUserLastName(rs3.getString("LAST_NAME"));
 									}
 									if(null != rs3.getString("MOBILE_PHONE")){
-										clientVendorContactsIndex.setOwnerUserPhNo(rs3.getString("MOBILE_PHONE"));
+										clientVendorContactsIndex.setVendorUserPhNo(rs3.getString("MOBILE_PHONE"));
 									}
-									clientVendorContactsIndex.setOwnerUserId(rs3.getLong("ID"));
-									clientVendorContactsIndex.setOwnerUserEmail(rs3.getString("EMAIL"));
+									clientVendorContactsIndex.setVendorUserId(rs3.getLong("ID"));
+									clientVendorContactsIndex.setVendorUserEmail(rs3.getString("EMAIL"));
 							        }
 						     }
 						
@@ -185,15 +185,15 @@ public class AddClientVendorContactsELK {
   						Statement stmt4 = conn.createStatement();
 						ResultSet rs4 = stmt4.executeQuery(sql4);
 							 while(rs4.next()){
-									clientVendorContactsIndex.setSpocUserFirstName(rs4.getString("FIRST_NAME"));
+									clientVendorContactsIndex.setClientUserFirstName(rs4.getString("FIRST_NAME"));
 									if(null != rs4.getString("LAST_NAME")){
-										clientVendorContactsIndex.setSpocUserLastName(rs4.getString("LAST_NAME"));
+										clientVendorContactsIndex.setClientUserLastName(rs4.getString("LAST_NAME"));
 									}
 									if(null != rs4.getString("MOBILE_PHONE")){
-										clientVendorContactsIndex.setSpocUserPhNo(rs4.getString("MOBILE_PHONE"));
+										clientVendorContactsIndex.setClientUserPhNo(rs4.getString("MOBILE_PHONE"));
 									}
-									clientVendorContactsIndex.setSpocUserId(rs4.getLong("ID"));
-									clientVendorContactsIndex.setSpocUserEmail(rs4.getString("EMAIL"));
+									clientVendorContactsIndex.setClientUserId(rs4.getLong("ID"));
+									clientVendorContactsIndex.setClientUserEmail(rs4.getString("EMAIL"));
 							        }
 							 
 							 
