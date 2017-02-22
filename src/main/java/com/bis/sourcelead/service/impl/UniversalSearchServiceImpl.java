@@ -400,6 +400,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 	 private Requirement getData(RequirementIndex requirementIndex) {
 		 Requirement requirement = new Requirement();
 		requirement.setId(requirementIndex.getRequirementId());
+		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());
      	requirement.setJobId(requirementIndex.getJobId());
      	requirement.setJobType(requirementIndex.getJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());

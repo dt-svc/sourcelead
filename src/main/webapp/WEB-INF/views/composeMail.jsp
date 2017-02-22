@@ -44,7 +44,7 @@ display: none;
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
-            <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) To Add New Email" id="emailsList" name="Toemails">
+            <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" name="Toemails">
             </select>
             <span class="select-multiple" data-target="#multiplemail" onclick="getUserList('All');" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
@@ -506,32 +506,29 @@ function getEmails(){
 			  //Adding Customized Emails to the list
 	        var select, chosen;
 		    select = $("#emailsList");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Email:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
 		    chosen = select.data('chosen');
 		    chosen.search_field.on('keyup', function(e)
 		    {
-		    	var newEmail = this.value.replace(","," ");
-		        if ((e.which == 13 || e.which == 188) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
-		        {
-		        	var par = this.parent;
-		        	var  tagArray = newEmail.split(" ");
-		        	 if(tagArray.length == 1){
-		        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
-		        		 select.append(option);
-				            select.find(option).prop('selected', true);
-			        		$("#emailsList").trigger("chosen:updated");
-		        	 }else if(tagArray.length > 1){
-		        		 var emailArray = this.value.split(',')
-		        		 for (var i=0; i < emailArray.length; i++) {
-		        			 var option = $("<option>").val(emailArray[i].replace(",","")).text(emailArray[i].replace(",",""));
-		        			 select.append(option);
-		 		             select.find(option).prop('selected', true);
-		 	        		 $("#emailsList").trigger("chosen:updated");
-		                 }
-		        	 }
-		           
-	        		
-		        }
+		    	 var enterEmailArray = this.value.split(",");
+		    	 if(enterEmailArray.length > 1){
+	        		 for (var i=0; i < enterEmailArray.length; i++) {
+	        			 var option = $("<option>").val(enterEmailArray[i].replace(",","")).text(enterEmailArray[i].replace(",",""));
+	        			 select.append(option);
+	 		             select.find(option).prop('selected', true);
+	 	        		 $("#emailsList").trigger("chosen:updated");
+	                 }
+		    	 }else{
+			    	var newEmail = this.value.replace(","," ");
+			        if ((e.which == 13 || e.which == 32 || e.which == 188) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
+			        {
+			        	var par = this.parent;
+			        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
+			        		 select.append(option);
+					            select.find(option).prop('selected', true);
+				        		$("#emailsList").trigger("chosen:updated");
+			        }
+		    	 }
 		    });
 		    
 			for (var selector in config) {

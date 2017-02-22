@@ -73,9 +73,9 @@ function requirementApproverList(statusType){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
-		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title = '"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
+		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title = '"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
 		                     }else{
-		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title = '"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
+		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title = '"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 		                     }
 	                    	 
 		                     if(opt.rate!=null && opt.rate !='' && opt.rate !='undefined'){
