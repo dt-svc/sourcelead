@@ -3526,15 +3526,14 @@ function recommendationpagination(){
 
 <script>
 function getActions(){
-	$(".action-pop").slideToggle(200);
-	$(".export_pipline").slideUp(200);
+	$(".action-pop").toggle();
+	/* $(".export_pipline").slideUp(200);
 	$("html").click(function(){
 		$(".action-pop").slideUp(200);
 	});
 	$(".action, .action-pop").click(function(e){
 	 	e.stopPropagation();
- 	});	
-
+ 	}); */	
 }
 </script>
 
