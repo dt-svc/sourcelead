@@ -22,10 +22,10 @@ import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
 public class ReferContactsDaoImpl implements ReferContactsDao {
-	
+
 	@Autowired
 	private SessionFactory sessionFactory;
-	
+
 	@Value("${SourceLead.100}")
 	private String notFound;
 	@Value("${SourceLead.101}")
@@ -36,7 +36,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 	private String statusDelete;
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ReferContactsDaoImpl.class);
 
 	@Override
@@ -50,8 +50,8 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 			}
 			logger.debug("addReferContacts Added Successfully");
 		} catch (Exception exception) {
-			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"REFER_CONTACTS"));
-				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "REFER_CONTACTS"));
+			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
 		}
 		return referContacts;
 	}
@@ -59,18 +59,39 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 	@Override
 	@Transactional
 	public ReferContacts getReferContactsByUUID(String contactUUID) throws Exception {
-		
+
 		Session session = this.sessionFactory.getCurrentSession();
 		List<ReferContacts> referContacts = new ArrayList<ReferContacts>();
 		logger.debug("getReferContactsByUUID start");
-		referContacts = session.createQuery("from ReferContacts contacts left join fetch contacts.referFromUser where contacts.contactUserUUID =:contactUUID" ).setString( "contactUUID", contactUUID ).setCacheable(true).list();
+		referContacts = session
+				.createQuery(
+						"from ReferContacts contacts left join fetch contacts.referFromUser where contacts.contactUserUUID =:contactUUID")
+				.setString("contactUUID", contactUUID).setCacheable(true).list();
 		logger.debug("getReferContactsByUUID end");
 		if (referContacts.size() > 0) {
 			return referContacts.get(0);
 		} else {
 			return null;
 		}
-   	}
+	}
+
+	@Override
+	@Transactional
+	public ReferContacts getReferContactsByEmails(Long userId, String toEmail) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ReferContacts> referContacts = new ArrayList<ReferContacts>();
+		logger.debug("getReferContactsByEmails start");
+		referContacts = session
+				.createQuery("from ReferContacts contacts left join fetch contacts.referFromUser user where user.id =:userId and contacts.contactUserEmail = :toEmail")
+				.setLong("userId", userId).setString("toEmail", toEmail).setCacheable(true).list();
+		logger.debug("getReferContactsByEmails end");
+		if (referContacts.size() > 0) {
+			return referContacts.get(0);
+		} else {
+			return null;
+		}
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	

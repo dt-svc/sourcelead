@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import java.util.List;
+
 import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.OrgLocations;
@@ -17,5 +19,9 @@ public interface RequirementReferService {
 	public Boolean isReferToRequirement(String fromEmail, Long requirementId) throws Exception;
 	
 	public RequirementRefer getProfessionalReferToRequirement(String email, Long requirementId,Long userId) throws Exception;
+	
+	List<Long> getReferByMeRequirementsByUserId(Long userId,Integer offset,Integer maxResults) throws Exception;
+	
+	List<RequirementRefer> getRequirementReferListByEmail(String email) throws Exception;
 
 }

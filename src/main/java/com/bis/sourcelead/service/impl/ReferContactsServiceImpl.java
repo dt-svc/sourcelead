@@ -28,6 +28,11 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 	@Override
 	public List<ReferContacts> getReferContactsListByUserIdAndOrglocationId(Long userId, Long orgLocationId) throws Exception {
 		return referContactsDao.getReferContactsListByUserIdAndOrglocationId(userId,orgLocationId);
+
+	@Override
+	public ReferContacts getReferContactsByEmails(Long userID, String toEmail) throws Exception {
+		return referContactsDao.getReferContactsByEmails(userID, toEmail);
+
 	}
 
 }

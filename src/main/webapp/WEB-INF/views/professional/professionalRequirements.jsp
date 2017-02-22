@@ -30,7 +30,7 @@ window.onload = function () {
           </select>
           </span>
 			<div class="timeNewSe timeNewSe_h" id="referredJobType" style="display: none;">
-                <select class="form-control chosen-select">
+                <select class="form-control chosen-select" id="referJobType" onchange="requirementsList('0');">
                   <option selected="selected" disabled="disabled" value="">Select Job Type</option>
                   <option value="ReferredToMe">Referred to me</option>
                   <option value="ReferredByMe">Referred by me</option>
@@ -525,8 +525,15 @@ function requirementsList(offset){
 	else if(requirementType == "OpenJobs"){
 		document.getElementById("referredJobType").style.display="none";
 		document.getElementById("advancedSearch").style.display="";
+		 $("#referJobType").val('').trigger("chosen:updated");
 	}else{
 		document.getElementById("referredJobType").style.display="none";
+		document.getElementById("advancedSearch").style.display="none";
+		 $("#referJobType").val('').trigger("chosen:updated");
+	}
+	
+	var referJobType = document.getElementById("referJobType").value;
+	if(null != referJobType && referJobType != '' && referJobType != 'undefined'){
 		document.getElementById("advancedSearch").style.display="none";
 	}
 	
@@ -536,7 +543,7 @@ function requirementsList(offset){
 	
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType+"&offset="+offset+"&postedOn="+postedOn+"&jobTitleSearch="+jobTitleSearch+"&jobLocationSearch="+jobLocationSearch,
+	   	url: sourceleadUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType+"&offset="+offset+"&postedOn="+postedOn+"&jobTitleSearch="+jobTitleSearch+"&jobLocationSearch="+jobLocationSearch+"&referJobType="+referJobType,
 	   			
 	    success: function(data) {
        	 var json = JSON.parse(data);

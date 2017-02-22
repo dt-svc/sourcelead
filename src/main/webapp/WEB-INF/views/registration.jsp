@@ -272,7 +272,6 @@ var validationSettings = {
 			    
          		var sourceleadUrl ='${sourceleadUrl}';
          		var contactUUID = '${contactUUID}';
-         		var requirementUUID = '${requirementUUID}';
          		
          	 	$("#register_button").attr("disabled", "disabled");
          		
@@ -281,7 +280,7 @@ var validationSettings = {
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: sourceleadUrl+"/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&contactUUID="+contactUUID+"&requirementUUID="+requirementUUID,		  
+                	  url: sourceleadUrl+"/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&contactUUID="+contactUUID,		  
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		location.replace(sourceleadUrl+"/resetloginCredentials");  
