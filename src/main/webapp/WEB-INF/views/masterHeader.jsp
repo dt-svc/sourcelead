@@ -29,7 +29,7 @@
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
 </head>
-<script src="resources/js/jquery-1.11.1.min.js"></script>
+<!-- <script src="resources/js/jquery-1.11.1.min.js"></script> -->
 <script src="resources/js/chosen.jquery.min.js"></script>
 <script src="resources/js/jquery-ui.js"></script>
 <script src="resources/js/jquery-fun.js"></script>
