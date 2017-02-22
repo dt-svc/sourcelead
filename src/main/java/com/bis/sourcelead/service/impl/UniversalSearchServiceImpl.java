@@ -676,7 +676,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 					}
-					 boolQueryBuilder.must(anyBoolQueryBuilder);
+					 candidateBoolQueryBuilder.must(anyBoolQueryBuilder);
 				}
 //				if(allKeyWordArrayForCandidate != null && !allKeyWordArrayForCandidate.isEmpty()){
 //					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();

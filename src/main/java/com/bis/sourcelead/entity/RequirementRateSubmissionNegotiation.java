@@ -100,6 +100,9 @@ public class RequirementRateSubmissionNegotiation {
 	@Transient
 	private String submissionRateStatus;
 	
+	@Transient
+	private String isNeedApplicantPermit;
+	
 
 	public Long getId() {
 		return id;
@@ -123,6 +126,14 @@ public class RequirementRateSubmissionNegotiation {
 
 	public void setRateInitiatorType(SubmissionRateStatus rateInitiatorType) {
 		this.rateInitiatorType = rateInitiatorType;
+	}
+
+	public String getIsNeedApplicantPermit() {
+		return isNeedApplicantPermit;
+	}
+
+	public void setIsNeedApplicantPermit(String isNeedApplicantPermit) {
+		this.isNeedApplicantPermit = isNeedApplicantPermit;
 	}
 
 	public OrgLocations getInitiatorOrgLocationId() {

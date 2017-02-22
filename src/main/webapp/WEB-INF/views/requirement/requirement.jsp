@@ -978,11 +978,19 @@ $(document).ready(function () {
      <div class="form-footer clearfix">
     <div class="col-lg-12">   
       <div class="pull-right">
-        <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
+	      <c:if test="${ requirement.requirementSubmissionStatus != 'OPEN'}">
+	      		  <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
+	      </c:if>
+          
         <c:if test="${empty requirement.requirementSubmissionStatus || requirement.requirementSubmissionStatus == 'DRAFT' || requirement.requirementSubmissionStatus == 'REJECTED'}">
         	<input type="button" value="Draft" id="draft" onclick="storeRequirement('draft'); " class="btn btn-danger ml">
         </c:if>
-        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >    
+         <c:if test="${requirement.requirementSubmissionStatus == 'OPEN'}">
+       			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
+         </c:if>
+          <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'}">
+       			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
+         </c:if>
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
@@ -1764,9 +1772,13 @@ function approvalType(type){
 	    	$("#parallelApprover").val('');
 			$('#parallelApprover').trigger("chosen:updated");
 	    	
-			$("#submitForApproval").removeAttr("style");
-		    $("#save").attr("style","display:none"); 
-		    
+			var requiremenStatus  = '${requirement.requirementSubmissionStatus}';
+			
+			if(requiremenStatus !='OPEN'){
+				$("#submitForApproval").removeAttr("style");
+			    $("#save").attr("style","display:none"); 
+			}
+			
 		    $(".parallel, #parallel, .apprverReq").show();
 			$(".sequential").hide();
 			$("#parallel i").addClass("apprverReq-active");
@@ -1774,7 +1786,6 @@ function approvalType(type){
 			
 			
 			if(type == "Default" || type == "Parallel"){
-				
 				$("#parallel i").show();
 			    $("#sequential i").show();
 				 
@@ -1813,7 +1824,6 @@ function approvalType(type){
 		  
 		}
 		else{
-		    
 			$("#save").removeAttr("style");
 		    $("#submitForApproval").attr("style","display:none"); 
 		    
