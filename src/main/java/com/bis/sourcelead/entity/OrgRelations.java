@@ -107,6 +107,9 @@ public class OrgRelations implements Serializable{
 	private Integer noOfContatcs;
 	
 	@Transient
+	private Integer noOfContatcsForCampaign;
+	
+	@Transient
 	private Integer noOfReleasedJobs;
 	
 	@Transient
@@ -399,6 +402,14 @@ public class OrgRelations implements Serializable{
 
 	public String getLocationState() {
 		return locationState;
+	}
+
+	public Integer getNoOfContatcsForCampaign() {
+		return noOfContatcsForCampaign;
+	}
+
+	public void setNoOfContatcsForCampaign(Integer noOfContatcsForCampaign) {
+		this.noOfContatcsForCampaign = noOfContatcsForCampaign;
 	}
 
 	public void setLocationState(String locationState) {

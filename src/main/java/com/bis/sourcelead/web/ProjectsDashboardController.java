@@ -114,7 +114,7 @@ public class ProjectsDashboardController {
 		}
 
         
-        List<Long> projectIds = projectsService.getProjectIdsByOrgLocationsId(loginOrgLocations.getId());
+       /* List<Long> projectIds = projectsService.getProjectIdsByOrgLocationsId(loginOrgLocations.getId());
         
 
         if(null != projectIds && !projectIds.isEmpty()){
@@ -143,7 +143,7 @@ public class ProjectsDashboardController {
                   
             }
           
-        }
+        }*/
         
         
         /*List<Long> projectIds = projectApproverHierarchyService.getProjectIdsByLoginUserId(user.getId());

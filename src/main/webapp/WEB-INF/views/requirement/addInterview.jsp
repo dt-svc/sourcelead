@@ -551,7 +551,7 @@ function cancelInterviewPopup(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";
 					}
 		        	
 		        	var isFlushRequired = $("#isFlushRequired").val();
