@@ -57,7 +57,7 @@ function addInterview(requirementId){
 			result = result + '<th>Interview Date</th>';
 			result = result + '<th>Start Time/End Time</th>';
 			/* result = result + '<th>Time Zone</th>'; */
-			result = result + '<th>Location</th>';
+			result = result + '<th>Details</th>';
 			result = result + '<th>Interviewer</th>';
 			/* result = result + '<th>Action</th>'; */
 		result = result + '</tr>';
@@ -241,7 +241,8 @@ function selectInterviewApplicants(){
 		<option value="Telephonic">Telephonic</option>
 		<option value="Technical">Technical</option>
 		<option value="Screening">Screening</option>
-		<option value="Skype/Webex">Skype/Webex</option>
+		<option value="Skype">Skype</option>
+		<option value="Webex/GoToMeeting">Webex/GoTo Meeting</option>
 	</select>
 </div>
 

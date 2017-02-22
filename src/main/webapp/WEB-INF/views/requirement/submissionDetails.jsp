@@ -580,7 +580,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Interview Location</strong>';
+	                    	 result = result + '<strong>Interview Details</strong>';
 	                    	 result = result + '</label>';
 	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
 	                    	 result = result + '</div>';
