@@ -275,11 +275,11 @@ function addTimeSheetRow(projectId) {
 			var isCell3Disabled = $("#1timeSheetDay3Id").prop('disabled');
 			if(isCell3Disabled){
 				$("#divadttTd5 :input").attr('disabled','disabled');
-				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon');
+				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon');
 			}
 			else{
 				$("#divadttTd5 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon glyphicon-comment');
+				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon glyphicon-comment');
 			} 
 			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
 			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
@@ -287,7 +287,7 @@ function addTimeSheetRow(projectId) {
 			cell4.innerHTML = divadttTd4Str;
 			
 			
-			var cell5= row.insertCell(4);
+			var cell5= row.insertCell(5);
 			 var isCell4Disabled = $("#1timeSheetDay4Id").prop('disabled');
 			if(isCell4Disabled){
 				$("#divadttTd6 :input").attr("disabled", "disabled");
@@ -503,6 +503,7 @@ function checkHours(){
 }   
 	if(result != "" && result != null && result != 'undefined'){   
 		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
+		$("#timeSheetErrorMsg").removeAttr('style');
 		$("#timeSheetErrorMsg").attr('style','display:block;');
 		$("#timeSheetErrorMsg").empty();
 		$("#timeSheetErrorMsg").append(outPut);
@@ -510,11 +511,14 @@ function checkHours(){
 		$("#hideError").empty();
 		$("#hideError").append(error);
 	 }else{
+	    $("#timeSheetErrorMsg").removeAttr('style');
+	    $("#timeSheetErrorMsg").attr('style','display:none;');
 		$("#timeSheetErrorMsg").empty();
 		$("#hideError").empty();
 	} 
 	
 	$(".time_pop b").click(function(){
+		$("#timeSheetErrorMsg").removeAttr('style');
 		$("#timeSheetErrorMsg").attr('style','display:none;');
 	    $("#timeSheetErrorMsg").empty();
 	}); 
@@ -904,7 +908,7 @@ function newSaveTimesheet(status,savingType){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	 }; 
-	 if ($('#timesheet_form').validate(false, validationSettings)){ 
+	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){ 
 				 
 		  		
                var frm = $('#timesheet_form').serializeFormJSON();
