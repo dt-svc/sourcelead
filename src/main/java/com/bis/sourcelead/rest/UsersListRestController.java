@@ -745,10 +745,10 @@ public class UsersListRestController {
 					for (OrgSpoc orgSpoc : orgSpocList) {
 						if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
 								.longValue()) {
-							orgSpoc.setOwnerUser(clientOwnerOrUser);
+							//orgSpoc.setOwnerUser(clientOwnerOrUser);
 						} else if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId()
 								.longValue()) {
-							orgSpoc.setSpocUser(clientOwnerOrUser);
+							//orgSpoc.setSpocUser(clientOwnerOrUser);
 						}
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
@@ -767,10 +767,10 @@ public class UsersListRestController {
 					for (OrgSpoc orgSpoc : orgSpocList) {
 						if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
 								.longValue()) {
-							orgSpoc.setOwnerUser(vendorOwnerOrUser);
+							//orgSpoc.setOwnerUser(vendorOwnerOrUser);
 						} else if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId()
 								.longValue()) {
-							orgSpoc.setSpocUser(vendorOwnerOrUser);
+							//orgSpoc.setSpocUser(vendorOwnerOrUser);
 						}
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
@@ -934,9 +934,9 @@ public class UsersListRestController {
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
 						if (orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()) {
-							orgSpoc.setOwnerUser(clientOwnerOrUser);
+							//orgSpoc.setOwnerUser(clientOwnerOrUser);
 						} else if (orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()) {
-							orgSpoc.setSpocUser(clientOwnerOrUser);
+							//orgSpoc.setSpocUser(clientOwnerOrUser);
 						}
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
@@ -954,9 +954,9 @@ public class UsersListRestController {
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
 						if (orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()) {
-							orgSpoc.setOwnerUser(vendorOwnerOrUser);
+							//orgSpoc.setOwnerUser(vendorOwnerOrUser);
 						} else if (orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()) {
-							orgSpoc.setSpocUser(vendorOwnerOrUser);
+							//orgSpoc.setSpocUser(vendorOwnerOrUser);
 						}
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());

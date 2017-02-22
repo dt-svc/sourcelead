@@ -196,7 +196,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			writeRow.createCell(4).setCellValue(orgSpoc.getOwnerName());
 		}
 		
-		UserRole userRole = userRoleService.getUserRoleByUserId(orgSpoc.getSpocUser().getId());
+		UserRole userRole = userRoleService.getUserRoleByUserId(orgSpoc.getVendorUser().getId());
 		if(null != userRole){
 			if (userRole.getRoles().getDisplayName() != null && !"".equalsIgnoreCase(userRole.getRoles().getDisplayName())) {
 				writeRow.createCell(5).setCellValue(userRole.getRoles().getDisplayName());

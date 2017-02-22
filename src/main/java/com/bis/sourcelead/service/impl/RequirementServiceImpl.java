@@ -780,6 +780,7 @@ public class RequirementServiceImpl implements RequirementService {
 					if(null != savedRequirement.getId() && requirementAssignToList.size()!=0 && !savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
 						for (RequirementAssignTo newList : requirementAssignToList) {
 					       boolean found=false;
+
 					       if(null != oldAssigntoTeamList && oldAssigntoTeamList.size()!=0){
 					       for (RequirementAssignTo oldList : oldAssigntoTeamList) {
 					           if ((newList.getAssignUserId().getId().equals(oldList.getAssignUserId().getId()))) {
@@ -1708,10 +1709,10 @@ public class RequirementServiceImpl implements RequirementService {
 		User  vendorContactUser = null;
 		
 		if(releasetype.equalsIgnoreCase("VENDORS")){
-			vendorContactUser = userService.getUserById(orgSpoc.getSpocUser().getId());
+			vendorContactUser = userService.getUserById(orgSpoc.getVendorUser().getId());
 
 		}else if(releasetype.equalsIgnoreCase("CONTACTS")){
-			vendorContactUser = userService.getUserById(orgSpoc.getSpocUser().getId());
+			vendorContactUser = userService.getUserById(orgSpoc.getVendorUser().getId());
 		}
 	 
 		EmailMessage emailMessage = new EmailMessage();
@@ -1809,7 +1810,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 notificationScenario.setBody(notificationbody);
 
 		 
-		 OrgLocations vendorOrgLoc = requirement.getSpocId().getResponderLocationId();
+		 OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
 
 		 
 		 //construct HTML template using required data
