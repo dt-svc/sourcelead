@@ -211,6 +211,22 @@ public class RequirementListRestController {
 					StringBuilder name = new StringBuilder();
 					requirement.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
 				}
+				
+				
+				if(null != requirement.getReleasedBy()){
+					List<Long> userId = new ArrayList<Long>();
+					for (String s : requirement.getReleasedBy().split(",")){
+						userId.add(Long.parseLong(s));
+					 }
+					boolean flag = userId.contains(user.getId());
+	         		if(flag == true){
+	         			requirement.setIsRequirementReleasedByuser("Y");
+	         		}else{
+	         			requirement.setIsRequirementReleasedByuser("N");
+	         		}
+				}
+				
+         		
 				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqStatusChange");
 				if(msg != null && msg != ""){
 					requirement.setMsg(msg);
