@@ -861,7 +861,7 @@ public class TimesheetRestController {
 						              
 						              
 									  tabDiv.append("				<td> <div> ");   
-						              tabDiv.append(" <input type='text' "+disbleCondition1+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay1Id' name='"+rowCount+"timeSheetDay1Id' class='inline_field' value='"+timesheetEntries.getMonHours()+"'  placeholder='HH:MM' />	"); 
+						              tabDiv.append(" <input type='text' "+disbleCondition1+"  onblur='editMe(this);'  id='"+rowCount+"timeSheetDay1Id' name='"+rowCount+"timeSheetDay1Id' class='inline_field' value='"+timesheetEntries.getMonHours()+"'  placeholder='HH:MM' />	"); 
 						              tabDiv.append(" <div class='timesheet_comm'>"); 
 					            	  if(!isNullOrEmpty(timesheetEntries.getMoncomments())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment1Id\");'></i>");
@@ -873,7 +873,7 @@ public class TimesheetRestController {
 					            	  tabDiv.append(" </div> </td>"); 
 						              
 					            	  tabDiv.append(" <td> <div>"); 
-					            	  tabDiv.append(" <input type='text' "+disbleCondition2+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay2Id' name='"+rowCount+"timeSheetDay2Id' class='inline_field' value='"+timesheetEntries.getTueHours()+"' placeholder='HH:MM' />	"); 
+					            	  tabDiv.append(" <input type='text' "+disbleCondition2+"  onblur='editMe(this);'  id='"+rowCount+"timeSheetDay2Id' name='"+rowCount+"timeSheetDay2Id' class='inline_field' value='"+timesheetEntries.getTueHours()+"' placeholder='HH:MM' />	"); 
 					            	  tabDiv.append(" <div class='timesheet_comm'>");
 						              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
 						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment2Id\");'></i>");
@@ -885,7 +885,7 @@ public class TimesheetRestController {
 						              tabDiv.append(" </div> </td>"); 
 						              
 						              tabDiv.append(" <td> <div>"); 
-						              tabDiv.append(" <input type='text' "+disbleCondition3+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay3Id' name='"+rowCount+"timeSheetDay3Id' class='inline_field' value='"+timesheetEntries.getWedHours()+"' placeholder='HH:MM' />	"); 
+						              tabDiv.append(" <input type='text' "+disbleCondition3+"  onblur='editMe(this);'  id='"+rowCount+"timeSheetDay3Id' name='"+rowCount+"timeSheetDay3Id' class='inline_field' value='"+timesheetEntries.getWedHours()+"' placeholder='HH:MM' />	"); 
 						              tabDiv.append(" <div class='timesheet_comm'>"); 
 						              if(!isNullOrEmpty(timesheetEntries.getWedcomments())){
 						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment3Id\");'></i>");  
@@ -898,7 +898,7 @@ public class TimesheetRestController {
 						              tabDiv.append(" </td>"); 
 					
 						              tabDiv.append(" <td> <div>"); 
-						    		  tabDiv.append(" <input type='text' "+disbleCondition4+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay4Id' name='"+rowCount+"timeSheetDay4Id' class='inline_field' value='"+timesheetEntries.getThuHours()+"' placeholder='HH:MM' />"); 	
+						    		  tabDiv.append(" <input type='text' "+disbleCondition4+"  onblur='editMe(this);'  id='"+rowCount+"timeSheetDay4Id' name='"+rowCount+"timeSheetDay4Id' class='inline_field' value='"+timesheetEntries.getThuHours()+"' placeholder='HH:MM' />"); 	
 						    		  tabDiv.append(" <div class='timesheet_comm'>"); 
 					            	  if(!isNullOrEmpty(timesheetEntries.getThucomments())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment4Id\");'></i>"); 
@@ -911,7 +911,7 @@ public class TimesheetRestController {
 					            	  tabDiv.append(" </div> </td>"); 
 						              
 					            	  tabDiv.append(" <td> <div>"); 
-					            	  tabDiv.append(" <input type='text'  "+disbleCondition5+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay5Id' name='"+rowCount+"timeSheetDay5Id' class='inline_field' value='"+timesheetEntries.getFriHours()+"' placeholder='HH:MM' />	"); 
+					            	  tabDiv.append(" <input type='text'  "+disbleCondition5+"  onblur='editMe(this);'  id='"+rowCount+"timeSheetDay5Id' name='"+rowCount+"timeSheetDay5Id' class='inline_field' value='"+timesheetEntries.getFriHours()+"' placeholder='HH:MM' />	"); 
 					            	  tabDiv.append(" <div class='timesheet_comm'>"); 
 					            	  if(!isNullOrEmpty(timesheetEntries.getFricomments())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>");
@@ -923,7 +923,7 @@ public class TimesheetRestController {
 					            	  tabDiv.append(" </div> </td>"); 
 						              
 					            	  tabDiv.append("<td> <div>"); 
-					            	  tabDiv.append(" <input type='text' "+disbleCondition6+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay6Id' name='"+rowCount+"timeSheetDay6Id' class='inline_field' value='"+timesheetEntries.getSatHours()+"'  placeholder='HH:MM' />	"); 
+					            	  tabDiv.append(" <input type='text' "+disbleCondition6+"  onblur='editMe(this);'  id='"+rowCount+"timeSheetDay6Id' name='"+rowCount+"timeSheetDay6Id' class='inline_field' value='"+timesheetEntries.getSatHours()+"'  placeholder='HH:MM' />	"); 
 					            	  tabDiv.append(" <div class='timesheet_comm'>"); 
 					            	  if(!isNullOrEmpty(timesheetEntries.getSatcomments())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment6Id\");'></i>");
@@ -935,7 +935,7 @@ public class TimesheetRestController {
 					            	  tabDiv.append(" </div> </td>"); 
 						              
 					            	  tabDiv.append("						<td> <div>"); 
-					            	  tabDiv.append(" <input type='text' "+disbleCondition7+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay7Id' name='"+rowCount+"timeSheetDay7Id' class='inline_field' placeholder='HH:MM' value='"+timesheetEntries.getSunHours()+"' />	"); 
+					            	  tabDiv.append(" <input type='text' "+disbleCondition7+"  onblur='editMe(this);'  id='"+rowCount+"timeSheetDay7Id' name='"+rowCount+"timeSheetDay7Id' class='inline_field' placeholder='HH:MM' value='"+timesheetEntries.getSunHours()+"' />	"); 
 					            	  tabDiv.append(" <div class='timesheet_comm'>");
 					            	  if(!isNullOrEmpty(timesheetEntries.getSuncomments())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment7Id\");'></i>");
@@ -985,7 +985,7 @@ public class TimesheetRestController {
 	             tabDiv.append("				</td> </div> ");   
 	             
 	             tabDiv.append("				<td> <div> ");   
-	             tabDiv.append(" <input type='text'  "+disbleCondition1+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay1Id' name='"+rowCount+"timeSheetDay1Id' class='inline_field' value=''  placeholder='HH:MM' />	"); 
+	             tabDiv.append(" <input type='text'  "+disbleCondition1+"  onblur='editMe(this);'  id='"+rowCount+"timeSheetDay1Id' name='"+rowCount+"timeSheetDay1Id' class='inline_field' value=''  placeholder='HH:MM' />	"); 
 		            tabDiv.append(" <div class='timesheet_comm'>");
 		          if(isNullOrEmpty(disbleCondition1.toString()))
 		        	  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment1Id\");'></i>"); 
@@ -993,7 +993,7 @@ public class TimesheetRestController {
 		          tabDiv.append(" </div> </td>"); 
 		          
 		          tabDiv.append(" <td> <div>"); 
-		          tabDiv.append(" <input type='text' "+disbleCondition2+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay2Id' name='"+rowCount+"timeSheetDay2Id' class='inline_field' value='' placeholder='HH:MM' />	"); 
+		          tabDiv.append(" <input type='text' "+disbleCondition2+"  onblur='editMe(this);'  id='"+rowCount+"timeSheetDay2Id' name='"+rowCount+"timeSheetDay2Id' class='inline_field' value='' placeholder='HH:MM' />	"); 
 		          tabDiv.append(" <div class='timesheet_comm'>"); 
 		          if(isNullOrEmpty(disbleCondition2.toString()))
 		          tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment2Id\");'></i>"); 
@@ -1001,7 +1001,7 @@ public class TimesheetRestController {
 		          tabDiv.append(" </div> </td>"); 
 		          
 				  tabDiv.append(" <td> <div>");  
-		          tabDiv.append(" <input type='text' "+disbleCondition3+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay3Id' name='"+rowCount+"timeSheetDay3Id' class='inline_field' value='' placeholder='HH:MM' />	"); 
+		          tabDiv.append(" <input type='text' "+disbleCondition3+"  onblur='editMe(this);'  id='"+rowCount+"timeSheetDay3Id' name='"+rowCount+"timeSheetDay3Id' class='inline_field' value='' placeholder='HH:MM' />	"); 
 		          tabDiv.append(" <div class='timesheet_comm'>"); 
 		          if(isNullOrEmpty(disbleCondition3.toString()))
 		          tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment3Id\");'></i>"); 
@@ -1010,7 +1010,7 @@ public class TimesheetRestController {
 		          tabDiv.append(" </td>"); 
 		
 				  tabDiv.append(" <td> <div>"); 
-		          tabDiv.append(" <input type='text' "+disbleCondition4+" onblur='checkHours()' id='"+rowCount+"timeSheetDay4Id' name='"+rowCount+"timeSheetDay4Id' class='inline_field' value='' placeholder='HH:MM' />"); 	
+		          tabDiv.append(" <input type='text' "+disbleCondition4+" onblur='editMe(this);'   id='"+rowCount+"timeSheetDay4Id' name='"+rowCount+"timeSheetDay4Id' class='inline_field' value='' placeholder='HH:MM' />"); 	
 		          tabDiv.append(" <div class='timesheet_comm'>"); 
 		          if(isNullOrEmpty(disbleCondition4.toString()))
 		          tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment4Id\");'></i>"); 
@@ -1018,7 +1018,7 @@ public class TimesheetRestController {
 		          tabDiv.append(" </div> </td>"); 
 		          
 		          tabDiv.append(" <td> <div>"); 
-		          tabDiv.append(" <input type='text' "+disbleCondition5+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay5Id' name='"+rowCount+"timeSheetDay5Id' class='inline_field' value='' placeholder='HH:MM' />	"); 
+		          tabDiv.append(" <input type='text' "+disbleCondition5+"  onblur='editMe(this);'  id='"+rowCount+"timeSheetDay5Id' name='"+rowCount+"timeSheetDay5Id' class='inline_field' value='' placeholder='HH:MM' />	"); 
 		          tabDiv.append(" <div class='timesheet_comm'>"); 
 		          if(isNullOrEmpty(disbleCondition5.toString()))
 		          tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>"); 
@@ -1026,7 +1026,7 @@ public class TimesheetRestController {
 		          tabDiv.append(" </div> </td>"); 
 		          
 				  tabDiv.append("<td> <div>"); 
-		          tabDiv.append(" <input type='text' "+disbleCondition6+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay6Id' name='"+rowCount+"timeSheetDay6Id' class='inline_field' value=''  placeholder='HH:MM' />	"); 
+		          tabDiv.append(" <input type='text' "+disbleCondition6+"  onblur='editMe(this);'  id='"+rowCount+"timeSheetDay6Id' name='"+rowCount+"timeSheetDay6Id' class='inline_field' value=''  placeholder='HH:MM' />	"); 
 		          tabDiv.append(" <div class='timesheet_comm'>"); 
 		          if(isNullOrEmpty(disbleCondition6.toString()))
 		          tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment6Id\");'></i>"); 
@@ -1034,7 +1034,7 @@ public class TimesheetRestController {
 		          tabDiv.append(" </div> </td>"); 
 		          
 				  tabDiv.append("						<td> <div>"); 
-		          tabDiv.append(" <input type='text' "+disbleCondition7+"  onblur='checkHours()' id='"+rowCount+"timeSheetDay7Id' name='"+rowCount+"timeSheetDay7Id' class='inline_field' placeholder='HH:MM' value='' />	"); 
+		          tabDiv.append(" <input type='text' "+disbleCondition7+"  onblur='editMe(this);'  id='"+rowCount+"timeSheetDay7Id' name='"+rowCount+"timeSheetDay7Id' class='inline_field' placeholder='HH:MM' value='' />	"); 
 		          tabDiv.append(" <div class='timesheet_comm'>"); 
 		          if(isNullOrEmpty(disbleCondition7.toString()))
 		          tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment7Id\");'></i>"); 
