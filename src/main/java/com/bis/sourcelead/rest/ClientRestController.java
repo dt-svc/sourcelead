@@ -985,7 +985,25 @@ public class ClientRestController {
 		resultJson = commonUtil.toJSON(uniClientList);
 		return resultJson;
 	 }
-	 
+	/**
+	 * to get owners list in addcontact 
+	 * @param email
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	 @RequestMapping(value = " /getOwnersList")
+	 @ResponseBody
+	 public String  getOwnersList(@RequestParam(value="email", required=false) String  email,@RequestParam(value="type", required=false) String  type,HttpServletRequest request) throws Exception {
+		String resultJson;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = userService.findByEmail(email);
+		List<Long> ownersList= orgSpocService.getOwnerListByUserIdAndOrglocationId(user,orgLocations,type);
+		List<User> orginaluserList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
+		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT),ownersList);
+		resultJson = commonUtil.toJSON(userList);
+		return resultJson;
+	 }
 	/**
 	 * check given string empty or null
 	 * @param str

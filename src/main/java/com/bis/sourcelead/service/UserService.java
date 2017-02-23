@@ -175,6 +175,8 @@ public interface UserService  {
 	
 	User getUserByUserName(String userName) throws Exception;
 
+	List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long id, Long valueOf, List<Long> ownersList) throws Exception;
+
 }	
 		
 	

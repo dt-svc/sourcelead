@@ -17,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -473,5 +475,21 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			
 			return spocsList;
 			
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Long> getOwnerListByUserIdAndOrglocationId(User user, OrgLocations orgLocations,String type) {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Long> spocsList;
+			Query query;
+			if(type.equalsIgnoreCase("Client")){
+				 query= session.createQuery("select spoc.vendorUser.id from OrgSpoc spoc where (spoc.orgRelations.locationId = :orgLocationId or spoc.orgRelations.responderLocationId = :orgLocationId) and spoc.status <> '0' and spoc.clientUser.id = :userId ");
+			}
+			else{
+				 query= session.createQuery("select spoc.clientUser.id from OrgSpoc spoc where (spoc.orgRelations.locationId = :orgLocationId or spoc.orgRelations.responderLocationId = :orgLocationId) and spoc.status <> '0' and spoc.vendorUser.id = :userId ");
+			}
+	            spocsList = query.setLong("orgLocationId", orgLocations.getId()).setLong("userId", user.getId()).setCacheable(true).list();
+			return spocsList;
 		}
 }

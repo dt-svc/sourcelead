@@ -462,5 +462,10 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	public List<OrgSpoc> getOrgSpocByUserIdAndOrgLocationCode(Long userId, Long orgLocationId) throws Exception {
 		return orgSpocDao.getOrgSpocByUserIdAndOrgLocationCode(userId,orgLocationId);
 	}
+
+	@Override
+	public List<Long> getOwnerListByUserIdAndOrglocationId(User user, OrgLocations orgLocations,String type) {
+		return  orgSpocDao.getOwnerListByUserIdAndOrglocationId(user,orgLocations,type);
+	}
 	
 }

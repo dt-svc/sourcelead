@@ -103,4 +103,6 @@ public interface OrgSpocService {
 	void saveOrUpdateClientVendorContactElkDocument(OrgSpoc orgSpoc) throws Exception;
 
 	List<OrgSpoc> getOrgSpocByUserIdAndOrgLocationCode(Long userId, Long orgLocationId) throws Exception;
+
+	List<Long> getOwnerListByUserIdAndOrglocationId(User user, OrgLocations orgLocations, String type);
 }
