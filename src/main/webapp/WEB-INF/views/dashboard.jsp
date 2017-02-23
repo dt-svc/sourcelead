@@ -69,6 +69,19 @@ overflow-x: auto;
   
 <section class="content-wraper">
 	    <section class="content-header clearfix">
+	      
+	      <c:if test="${!empty param.invitation}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>You accepted invitation successfully.</span>
+			</div>
+	     </c:if>
+	     
+	     <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector1"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
+	    
 	      <div class="pull-left">
 	        <h2>Dashboard</h2>
 	      </div>
@@ -246,3 +259,12 @@ function dasboardTasksPagination(){
 }
 </script>
 
+<script>
+  $("#selector").fadeIn(300);
+  $('#selector').delay(3000).fadeOut('slow');
+</script> 
+
+<script>
+  $("#selector1").fadeIn(300);
+  $('#selector1').delay(3000).fadeOut('slow');
+</script> 

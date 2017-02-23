@@ -235,11 +235,6 @@ public class UserServiceImpl implements UserService {
 				sendEmail(user,loginuser,password,orgLocations.getId());
 			}
 			
-			if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
-					&& jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) 
-					&& ("Y".equals(jsonObj.getString("isMailSent")))){
-				sendEmailToClientOrVendor(user,loginuser,password,responderType,loginOrg,orgLocations.getOrg(),orgLocations);
-			}
 			/**
 			 * This method is used to newly added admin as a level2 manager for all existing projectmembers
 			 * @author: Naresh Bolisetty
@@ -253,7 +248,7 @@ public class UserServiceImpl implements UserService {
 			 * Saving USER DB data as ElasticSearch Documents
 			 */
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
-
+			user1.setTempPwd(password);
         return user1;
 				
 		
@@ -696,9 +691,12 @@ public class UserServiceImpl implements UserService {
 	
 	
 	@Override
-	public void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType,Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation)	throws Exception {
+	public void sendEmailToClientOrVendor(String spocUUID,User user,User ownerUser, User loginUser, String password, String responderType,Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation)	throws Exception {
 		 
-		 
+		if(null == ownerUser){
+			ownerUser = loginUser;
+		}
+		
 		 boolean isUserActive = false;
 		 isUserActive = userRoleService.isUserActive(user.getId());
 		
@@ -708,10 +706,10 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(ownerUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder emailMsgBuilder = new StringBuilder();
-		 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 emailMessage.setFromName(emailMsgBuilder.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).toString());
 		 OrgLocations loginOrgLocation = orglocationsDao.getOrgLocationByOrgId(loginOrg.getId());
 		 
 		//setting the class filed values
@@ -720,14 +718,14 @@ public class UserServiceImpl implements UserService {
 		 if("Client".equals(responderType)){
 			 globalVarsMap.put("firstName", emailMessage.getFirstName());
 			 globalVarsMap.put("lastName",emailMessage.getLastName());
-			 globalVarsMap.put("vendorFirstName", loginUser.getFirstName());
-			 globalVarsMap.put("vendorLastName",loginUser.getLastName());
+			 globalVarsMap.put("vendorFirstName", ownerUser.getFirstName());
+			 globalVarsMap.put("vendorLastName",ownerUser.getLastName());
 			 globalVarsMap.put("clientFirstName", user.getFirstName());
 			 globalVarsMap.put("clientlastName",user.getLastName());
 			 globalVarsMap.put("clientOrgName",respondingPartyOrg.getOrgName());
 			 globalVarsMap.put("vendorOrgName",loginOrg.getOrgName());
 			 StringBuilder urlBuilder = new StringBuilder();
-			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 			 
 		     if(null != password){
 			    globalVarsMap.put("userName",user.getEmail());
@@ -744,7 +742,7 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
 			 } 
 		     StringBuilder actionUrlBuilder = new StringBuilder();
-			 actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append(" ").toString();
+			 actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append(" ").toString();
 			 
 			 
 		 }else if("Vendor".equals(responderType)){
@@ -752,12 +750,12 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("lastName",emailMessage.getLastName());
 			 globalVarsMap.put("vendorFirstName", user.getFirstName());
 			 globalVarsMap.put("vendorLastName",user.getLastName());
-			 globalVarsMap.put("clientFirstName", loginUser.getFirstName());
-			 globalVarsMap.put("clientLastName",loginUser.getLastName());
+			 globalVarsMap.put("clientFirstName", ownerUser.getFirstName());
+			 globalVarsMap.put("clientLastName",ownerUser.getLastName());
 			 globalVarsMap.put("vendorOrgName",respondingPartyOrg.getOrgName());
 			 globalVarsMap.put("clientOrgName",loginOrg.getOrgName());
 			 StringBuilder actionUrlBuilder = new StringBuilder();
-			 globalVarsMap.put("acceptURL",actionUrlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+			 globalVarsMap.put("acceptURL",actionUrlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 			
 			 if(null != password){
 			    globalVarsMap.put("userName",user.getEmail());
@@ -775,7 +773,7 @@ public class UserServiceImpl implements UserService {
 			 }
 			 
 			 StringBuilder actionLinkBuilder = new StringBuilder();
-			 actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("").toString();
+			 actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("").toString();
 			 
 		 }
 		 
@@ -806,12 +804,13 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setOrgLocationId(respondingPartyOrgLocation.getId());
 		 
 		 //calling the sendEmail method of emailScenerioUtil
+		 emailMessage.setEmailType(Constants.CLIENTORVENDORMAIL);
 		 emailScenerioUtil.sendEmail(emailMessage,respondingPartyOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
 		 noificationEmailScenario.setUUID(UUID);
 		 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, user, respondingPartyOrgLocation, noificationEmailScenario);
+		 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink, loginUser,ownerUser, user, respondingPartyOrgLocation, noificationEmailScenario);
 	}
 	
 	@Override
@@ -964,6 +963,22 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserByUserName(String userName) throws Exception {
 		return userDao.getUserByUserName(userName);
+	}
+
+	@Override
+	public List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long orgLocationsId, Long tabId,
+			List<Long> ownersList) throws Exception {
+		List<User> userList = null;
+		userList = userDao.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLocationsId, tabId,ownersList);
+		if(null != userList && !userList.isEmpty()){
+			for (User user : userList) {
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationsId);
+				if(null != userRole){
+					user.setUserType(userRole.getUserType());
+				}
+			}
+		}
+		return userList;
 	}
 	
 }
