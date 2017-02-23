@@ -153,6 +153,8 @@ public class User implements Serializable{
 	@Column(name = "COUNTRY")
 	private String country;
 	
+	@Transient
+	private String isPrimaryAdmin;
 	
 	@Transient
     private int assignJobCount;
@@ -466,4 +468,11 @@ public class User implements Serializable{
 		this.userUUID = userUUID;
 	}
 	
+	public String getIsPrimaryAdmin() {
+		return isPrimaryAdmin;
+	}
+
+	public void setIsPrimaryAdmin(String isPrimaryAdmin) {
+		this.isPrimaryAdmin = isPrimaryAdmin;
+	}
 }

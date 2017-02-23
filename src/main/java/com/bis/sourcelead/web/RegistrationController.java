@@ -311,6 +311,11 @@ public class RegistrationController {
 					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 					user.setUserState(userRole.getUserState());
 					user.setRole(userRole.getRoles().getDisplayName());
+					
+					if(null != userRole.getOrgLocations().getUser() && user.getId().equals(userRole.getOrgLocations().getUser().getId())){
+						user.setIsPrimaryAdmin("Y");
+					}
+					
 					orgUsersList.add(user);
 				}
 			}
