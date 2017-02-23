@@ -141,37 +141,46 @@ public class RequirementListController {
 	}
 
 	@RequestMapping(value = "/releaseRequirementToClientOrVendors")
-	public ModelAndView releaseRequirementToClientOrVendors(String requirementId,HttpServletRequest request) throws Exception {
+	public ModelAndView releaseRequirementToClientOrVendors(String requirementUUID,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("requirement/releaseRequirement");
 		
-		
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
-		{
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.Requirement);
-		
-		//List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
-		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLoc.getId(), "");
-		
-		for(OrgRelations orgRelation :vendorsList){
-			if(orgRelation.getLocationId().getId() == orgLoc.getId()){
-				orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLoc.getId())){
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("requirement/releaseRequirement");
+			
+			
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
 			}
-			if(orgRelation.getResponderLocationId().getId() == orgLoc.getId()){
-				orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
+			sessionData.setNav(Constants.Requirement);
+			
+			//List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
+			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLoc.getId(), "");
+			
+			for(OrgRelations orgRelation :vendorsList){
+				if(orgRelation.getLocationId().getId() == orgLoc.getId()){
+					orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+				}
+				if(orgRelation.getResponderLocationId().getId() == orgLoc.getId()){
+					orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
+				}
 			}
+			model.addObject("vendor_list", vendorsList);
+	        model.addObject(vendorsList);
+	        model.addObject("requirementId",requirement.getId());
+			
+			request.getSession().setAttribute("sessionData",sessionData);
+		}else{
+			model.setViewName("registration/persmissionDenied");
 		}
-		model.addObject("vendor_list", vendorsList);
-        model.addObject(vendorsList);
 		
-		request.getSession().setAttribute("sessionData",sessionData);
+		
 		return model;
 
 	}

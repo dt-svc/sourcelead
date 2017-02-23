@@ -89,6 +89,8 @@ public class AddClientVendorELK {
 			    	clientVendorIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
 			    	if(null != rs.getDate("UPDATED_DATE")){
 			    		clientVendorIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
+			    	}else{
+			    		clientVendorIndex.setUpdatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
 			    	}
 			    	
 			    	

@@ -204,7 +204,7 @@ function releaseTo(){
 	    	$("#releaseCancelBtn").prop('disabled', true);
 			$("#releaseBtn").prop('value', 'Processing');
 		    var sourceleadUrl ='${sourceleadUrl}';
-		    var requirementId = '${param.requirementId}';
+		    var requirementId = '${requirementId}';
 			$.ajax({
 		           type : "POST",
 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds+"&isCrowdScourcing="+isCrowdScourcing+"&isPublic="+isPublic,    
@@ -239,7 +239,7 @@ function getContactsLists(){
 	var vendors = "Client";
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
-	var requirementId = '${param.requirementId}';
+	var requirementId = '${requirementId}';
 	  $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getAllContactsbyOrgLocationIdAndUserIdForRequirement?requirementId="+requirementId+"&vendors="+vendors+"&status="+status, 	   
@@ -353,23 +353,15 @@ function getVendorLists(){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
-	var requirementId = '${param.requirementId}';
+	var requirementId = '${requirementId}';
 	
 	  $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getVendorListsForReleaseRequirement?requirementId="+requirementId+"&vendorStatus="+vendorStatus, 	   
    		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
-   		    		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
+   		    	/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 	               			var json = JSON.parse(data);
 	           	        	var result = "";
-	           	        	
 	                        result = result +'<div class="require_wrap_table release-jobs-tbl">';
 	                        result = result +'<table id="vendorPagination" class="display" cellspacing="0" width="100%">';
 	           	        	result = result +'<thead>';
@@ -442,9 +434,8 @@ function getVendorLists(){
 	           	    	 	$("#vendor").empty();
 	           	    	    $("#vendor").append(result);
 	           	    	 	vendorPagination();
-               		 }
    		    		
-	   		    	}else{
+	   		    	/* }else{
 	               	 $("#vendor").removeAttr("style");
 		    	     var result ="";
 					 result = result+"	<div class='blank-pages'>";
@@ -455,7 +446,7 @@ function getVendorLists(){
 					 $("#vendorStatus").hide();
 					 $("#vendor").empty();
 				     $("#vendor").append(result); 
-	            }
+	            } */
    		    },
 	 });
 }	
@@ -622,7 +613,7 @@ function isCrowdScourcing(){
 <script>
 function opennetwork(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var requirementId = '${param.requirementId}';
+	var requirementId = '${requirementId}';
 	  $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getOpenNetworkStatus?requirementId="+requirementId, 	   

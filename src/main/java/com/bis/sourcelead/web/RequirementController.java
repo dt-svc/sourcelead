@@ -308,67 +308,72 @@ public class RequirementController {
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummary")
-	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
+	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
-		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		
 		ModelAndView model = new ModelAndView();
-		model.setViewName("requirement/requirementSummary");
-		model.addObject("requirementId",requirementId);
 		
-		Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-		model.addObject("isTeamMember",isTeamMember);
-		
-		Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
-		model.addObject("isManager",isManager);
-
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		
-		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-		model.addObject("skillsList", skillsList);
-		
-		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
-		model.addObject("educationsList", educationsList);
-
-		// This code is commented as not in use 
-
-		//to get time zone list
-		/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		if(countries != null){
-			String[] timezonesList = com.ibm.icu.util.TimeZone.getAvailableIDs(countries.getCode2());
-			model.addObject("timezonesList", timezonesList);
-		}*/
-		
-		if(null != requirement.getIsClientJob() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
-			model.addObject("clientSubmissions","Y");
-		}else{
-			model.addObject("clientSubmissions","N");
-		}
-		
-		Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
-        if(null != parentRequirement){
-            model.addObject("parentRequirement","Y");
-        }else{
-            model.addObject("parentRequirement","N");
-        }
-        
-        if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
-			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
-			if(null != orgSpoc && null != orgSpoc.getSpocStatus() && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
-				model.addObject("isSpocActive", Constants.NO);
+		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
+			Long requirementId = requirement.getId();
+			
+			model.setViewName("requirement/requirementSummary");
+			model.addObject("requirementId",requirementId);
+			
+			Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+			model.addObject("isTeamMember",isTeamMember);
+			
+			Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
+			model.addObject("isManager",isManager);
+	
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);
+			
+			List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+	
+			// This code is commented as not in use 
+	
+			//to get time zone list
+			/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(countries != null){
+				String[] timezonesList = com.ibm.icu.util.TimeZone.getAvailableIDs(countries.getCode2());
+				model.addObject("timezonesList", timezonesList);
+			}*/
+			
+			if(null != requirement.getIsClientJob() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
+				model.addObject("clientSubmissions","Y");
 			}else{
-				model.addObject("isSpocActive", Constants.YES);
+				model.addObject("clientSubmissions","N");
 			}
-		}
-		
-		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
-		if(!isNullOrEmpty(msg)){
-			model.addObject("msg", msg);
-			SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
+			
+			Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
+	        if(null != parentRequirement){
+	            model.addObject("parentRequirement","Y");
+	        }else{
+	            model.addObject("parentRequirement","N");
+	        }
+	        
+	        if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
+				OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+				if(null != orgSpoc && null != orgSpoc.getSpocStatus() && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
+					model.addObject("isSpocActive", Constants.NO);
+				}else{
+					model.addObject("isSpocActive", Constants.YES);
+				}
+			}
+			
+			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
+			if(!isNullOrEmpty(msg)){
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
+			}
+		}else{
+			model.setViewName("registration/persmissionDenied");
 		}
 		return model;
 	}

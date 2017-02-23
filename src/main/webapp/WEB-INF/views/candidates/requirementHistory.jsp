@@ -77,7 +77,7 @@ function requirementHistoryList(candidateId){
            		clientName = "--"
            	 }
 	           	result = result  +'	          <tr>';
-	    		result = result  +'	            <td><div><span class="mid-span ReqClick" onclick="requirementHistoryDetails('+candidateId+',\''+report.positionType+'\',\''+report.requirement.id+'\',\''+report.id+'\');">'+report.positionType+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span ReqClick" onclick="requirementHistoryDetails('+candidateId+',\''+report.positionType+'\',\''+report.requirement.id+'\',\''+report.requirement.requirementUUID+'\',\''+report.id+'\');">'+report.positionType+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span">'+jobType+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span">'+report.country+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span">'+rate+'</span></div></td>';
@@ -124,7 +124,7 @@ function requirementHistoryPagination(){
 </script>
 
 <script>
-function requirementHistoryDetails(candidateId,positionType,requirementId,submissionId){
+function requirementHistoryDetails(candidateId,positionType,requirementId,requirementUUID,submissionId){
 	var loginUserId = '${SourceLeadWeb_userId}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
@@ -138,7 +138,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,submis
      		result = result  +'		<div class="reqClose">';
      		result = result  +'			<span><i class="fa fa-angle-double-left"></i>Go Back</span><b class="fa fa-close"></b>';
      		result = result  +'		</div>';
-     		result = result  +'		<h3 title="'+positionType+'"><a href="'+sourceleadUrl+'/requirementSummary?requirementId='+requirementId+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
+     		result = result  +'		<h3 title="'+positionType+'"><a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+requirementUUID+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
      		result = result  +'		<ul>';
      		   
      		    var report2 = json[0];
