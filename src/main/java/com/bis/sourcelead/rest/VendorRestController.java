@@ -630,10 +630,6 @@ public class VendorRestController {
 					if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
 						boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderCountry", jsonObj.getString("country")));
 						boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorCountry", jsonObj.getString("country")));
-						boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
-				    }
-					if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
-						
 				    }
 					
 					
