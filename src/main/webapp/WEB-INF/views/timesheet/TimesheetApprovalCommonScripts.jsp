@@ -21,6 +21,25 @@
 
 
 <style type="text/css">
+
+#frequencyMonth_chosen .chosen-drop {
+width: 159px  !important;;
+border-radius: 0 4px 0 0 !important;
+} 
+#client_chosen .chosen-drop {
+min-width:100%;
+max-width: 350px  !important;
+border-radius: 0 4px 0 0 !important;
+} 
+#stage_chosen .chosen-drop {
+width: 210px !important;
+border-radius: 0 4px 0 0 !important;
+} 
+
+
+
+
+
 .glyphicon-none:before {
     content: "\2122";
     color: transparent !important;
@@ -427,6 +446,9 @@ function newSaveTimesheet(status,savingType){
                var startdate;
            	   var navigation;
                
+           	   var startDate = $("#tabStartDate").val();
+        	   var endDate = $("#tabEndDate").val();
+        	  
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
        		   mydata = encodeURIComponent(mydata);
@@ -452,7 +474,10 @@ function newSaveTimesheet(status,savingType){
         		    		  timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId,savingType);
         		    	  }
         		    	  else{
-        		    		  timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,savingType);
+        		    		  
+        		    		  timesheetDivAfterSaving(startDate,endDate,approvalStatus)
+        		    		  
+        		    		  //timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,savingType);
         		    	  }
      	        		  
         		      }
@@ -538,44 +563,44 @@ function deleteSubmissionDocument(submissionDocumentId){
   	 </div>
 	 
 	 <div id="divadttTd3" style="display:none;">
-	  <input type="text" onblur='checkHours()'  id="REPLACEROWIDtimeSheetDay1Id" name="REPLACEROWIDtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
+	  <input type="text" onblur='editMe(this);'  id="REPLACEROWIDtimeSheetDay1Id" name="REPLACEROWIDtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
 	        <div class="timesheet_comm">
 	         <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment1Id');"></i>
 	           <span class="teskcomment" id="REPLACEROWIDcomment1Id" ><textarea name="REPLACEROWIDcomment1Id" id="REPLACEROWIDtextArea1Id" ></textarea></span>
 	          </div>
 	</div>
 	<div id="divadttTd4" style="display:none;">
-	<input type="text" onblur='checkHours()'  id="REPLACEROWIDtimeSheetDay2Id" name="REPLACEROWIDtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
+	<input type="text" onblur='editMe(this);'  id="REPLACEROWIDtimeSheetDay2Id" name="REPLACEROWIDtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
 	           <div class="timesheet_comm">
 	               <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment2Id');"></i>
 	           <span class="teskcomment" id="REPLACEROWIDcomment2Id" ><textarea name="REPLACEROWIDcomment2Id" id="REPLACEROWIDtextArea2Id" ></textarea></span></div>
 	 </div>
  	<div id="divadttTd5" style="display:none;">
-		<input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay3Id" name="REPLACEROWIDtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
+		<input type="text" onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay3Id" name="REPLACEROWIDtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
 	           <div class="timesheet_comm">
 	           <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment3Id');"></i>
 	           <span class="teskcomment" id="REPLACEROWIDcomment3Id" ><textarea name="REPLACEROWIDcomment3Id" id="REPLACEROWIDtextArea3Id"></textarea></span></div>
 	 </div>
 	 <div id="divadttTd6" style="display:none;">
-	<input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay4Id" name="REPLACEROWIDtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
+	<input type="text" onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay4Id" name="REPLACEROWIDtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
 	           <div class="timesheet_comm">
 	           <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment4Id');"></i>
 	           <span class="teskcomment" id="REPLACEROWIDcomment4Id" ><textarea name="REPLACEROWIDcomment4Id" id="REPLACEROWIDtextArea4Id"></textarea></span></div>           
 	 </div>
 	 <div id="divadttTd7" style="display:none;">
-	<input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay5Id" name="REPLACEROWIDtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
+	<input type="text" onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay5Id" name="REPLACEROWIDtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
 	           <div class="timesheet_comm">
 	           <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment5Id');"></i>
 	            <span class="teskcomment" id="REPLACEROWIDcomment5Id" ><textarea name="REPLACEROWIDcomment5Id" id="REPLACEROWIDtextArea5Id"></textarea></span></div>  
 	</div>
 	<div id="divadttTd8" style="display:none;">
-	   <input type="text" onblur='checkHours()'   id="REPLACEROWIDtimeSheetDay6Id" name="REPLACEROWIDtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
+	   <input type="text" onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay6Id" name="REPLACEROWIDtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
 	          <div class="timesheet_comm">
 	          <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment6Id');"></i>
 	          <span class="teskcomment" id="REPLACEROWIDcomment6Id" ><textarea name="REPLACEROWIDcomment6Id" id="REPLACEROWIDtextArea6Id"></textarea></span></div>
 	</div>
 	<div id="divadttTd9" style="display:none;">
-		<input type="text" onblur='checkHours()'  id="REPLACEROWIDtimeSheetDay7Id" name="REPLACEROWIDtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
+		<input type="text" onblur='editMe(this);'  id="REPLACEROWIDtimeSheetDay7Id" name="REPLACEROWIDtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
 	          <div class="timesheet_comm">
 	          <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment7Id');"></i>
 	           <span class="teskcomment" id="REPLACEROWIDcomment7Id" ><textarea name="REPLACEROWIDcomment7Id" id="REPLACEROWIDtextArea7Id"></textarea></span></div>            
@@ -594,18 +619,105 @@ function deleteSubmissionDocument(submissionDocumentId){
  <!-- this script is for clear timesheet -->
 <script>
 function clearTimesheet(){ 
-	for (var i = 1; i < 8; i++){
-		 for (var j = 1; j < 50; j++){
-			    $("#"+j+"timeSheetDay"+i+"Id").val("00:00");
-			    $("#"+j+"textArea"+i+"Id").val("");  
-		 }
-	}
-	$("#weekComment").val('');
+	  var startDate = $("#tabStartDate").val();
+	  var endDate = $("#tabEndDate").val();
+	 if(startDate != null && startDate != '' && startDate != 'undefined' && 
+			  endDate != null && endDate != '' && endDate != 'undefined'){
+		   timesheetDivAfterSaving(startDate,endDate,"new");
+	  }
+	  else{
+		  timesheetDivByFrequency();
+	  }
 }
+</script>
+
+<script>
+	function timesheetDivAfterSaving(startDate,endDate,approvalStatus){ 
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         var projectMemberId = $("#projectMemberId").val();
+	         var timesheetFrequency = $("#frequencyDates").val();
+	         $("#timesheetDivByTab").empty();
+	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+    	          type : "POST",
+        	      dataType : 'json',
+  	      	  	  url: sourceleadUrl+"/timesheetDivAfterSaving?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=approver",		
+  		          success :function(result) {
+  		        	   $("#timesheetDivByTab").removeAttr("style");
+  		        	   if(result != null){
+  		        		   var statusDivWidth = result["statusDivWidth"];
+  		        		   $("#timesheetSubmissionStatusDiv").empty();
+	  		    	  	   $("#timesheetSubmissionStatusDiv").append(result["StatusDiv"]); 
+	  		    	  	   if(statusDivWidth != null && statusDivWidth != '' && statusDivWidth != 'undefined'){
+	  		    	  		   $("#timesheetSubmissionStatusDiv").attr("style","width:244px;"); 
+	  		    	  	   }
+	  		    	  	   $("#timesheetDivByTab").empty();
+	  		    	  	   $("#timesheetDivByTab").append(result["TabDiv"]);
+	  		    	  	   maskme();
+	  		    	  	   $("html").trigger('click');
+	  		    	  	   
+	  			    	   $("#tab-1").show();
+	  	 		    	   $(".project-tabs-menu a").click(function(event) {
+	  	 		    	        event.preventDefault();
+	  	 		    	        $(this).parent().addClass("current");
+	  	 		    	        $(this).parent().siblings().removeClass("current");
+	  	 		    	        var tab = $(this).attr("href");
+	  	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+	  	 		    	        $(tab).fadeIn();
+	  	 		    	   });
+  		        	   }
+  		    	      
+		    	  	   
+  		          }
+  	         }); 
+	}
 </script>
 
 <!-- this script is for validation of 24 hours -->
 <script>
+function editMe(local){
+	 var id = local.id;
+	 var inputValue =  $("#"+id).val();
+	 var split = inputValue.split(':');
+	 var hours = split[0];
+	 var minutes = split[1];
+	 var hours1 = hours.charAt(0);
+	 var hours2 = hours.charAt(1);
+	 var min1 = minutes.charAt(0);
+	 var min2 = minutes.charAt(1);
+	
+	 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val("0"+hours1+":00");
+	 }
+	 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val("0"+hours2+":00");
+	 }
+	 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val(hours+":00");
+	 }
+	 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val(hours+":"+"0"+min1);
+	 }
+	 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
+		 $("#"+id).val(hours+":"+"0"+min2);
+	 }
+	 else if(!isNaN(hours)&& !isNaN(minutes)){
+		
+		  var hrmin= hours * 60;
+		  var totalMin = parseInt(hrmin) + parseInt(minutes);
+		  hours = Math.floor(totalMin / 60); 
+		  minutes = totalMin % 60;
+		  if(hours<=9){
+			  hours = "0"+hours;
+		  }
+		  if(minutes<=9){
+			  minutes = "0"+minutes;
+		  }
+		  $("#"+id).val(hours+":"+minutes);
+	 }
+	 setTotals();
+	 checkHours();
+}
 function checkHours(){ 
 	 var result = "";		
 	 var total; 
@@ -690,7 +802,11 @@ function checkHours(){
 
 <script>
 /* this script is for calculate total hours */
-$(document).click(function(){ 
+$(document).click(function(){
+	setTotals();
+});
+		
+function setTotals(){ 
 	 var total;
 	 var billableTotal;
 	 var billableSum = 0;
@@ -713,7 +829,6 @@ $(document).click(function(){
 					 var finalmin = parseInt(minute) + parseInt(minute1);
 			    	 
 				     bsum = parseFloat(bsum) + parseInt(finalmin);
-				     
 				     
 				     var billableType = $("#"+j+"task1IdBillableTypeId").text();
 				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Billable') {
@@ -763,7 +878,7 @@ $(document).click(function(){
 	 $("#rowTotal"+i+"Id").val(total);
 }	
 	 
-	//for calculate billable count
+	   //for calculate billable count
 	    var t1 = billableSum; 
 		var billableHours = Math.floor(t1 / 60); 
 		var billableMinutes = t1 % 60;
@@ -799,9 +914,9 @@ $(document).click(function(){
 			nonBillableTotal =  "00:00";
 		}
 	    $("#grandNonBillableTotal").val(nonBillableTotal);
-	
+	    
 	 grandTotal();		
-});
+ }
 
 function grandTotal(){
     var total;
@@ -838,7 +953,6 @@ function grandTotal(){
 	 $("#grandTotal").val(total);
     
 }
-
 </script>
 
 <!-- this script is for mask for each entity  -->	
