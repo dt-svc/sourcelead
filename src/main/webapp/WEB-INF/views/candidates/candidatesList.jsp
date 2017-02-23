@@ -1052,12 +1052,12 @@ function cancel(candidateId){
 										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
 										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
 										        <option value="">Currency</option>
-										        <option value="INR">INR</option>
-											    <option value="AUD">AUD</option>
-												<option value="USD">USD</option>
-												<option value="GPB">GPB</option>
-												<option value="SGD">SGD</option>
-												<option value="EUR">EUR</option>
+										         <option ${currency  == 'INR' ? 'selected' : ''}>INR</option>
+								                 <option ${currency  == 'AUD' ? 'selected' : ''}>AUD</option>
+								                 <option ${currency  == 'USD' ? 'selected' : ''}>USD</option>
+								                 <option ${currency  == 'GPB' ? 'selected' : ''}>GPB</option>
+								                 <option ${currency  == 'SGD' ? 'selected' : ''}>SGD</option>
+								                 <option ${currency  == 'EUR' ? 'selected' : ''}>EUR</option>
 				                            </select>
 										</div>
 										 <div id="minRateDiv">
