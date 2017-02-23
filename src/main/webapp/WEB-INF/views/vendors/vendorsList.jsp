@@ -1783,6 +1783,9 @@ function listChange(sel){
 		'<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="none";
 		 '</sec:authorize> ';
+		 document.getElementById("filter1ApprovePop").style.display="none";
+		 document.getElementById("filter3ApprovePop").style.display="none";
+		 document.getElementById("filter4ApprovePop").style.display="none";
 		 //getVendorLists();
 		 getVendorListsElk();
 	 }
@@ -1802,6 +1805,10 @@ function listChange(sel){
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="block";
 		 '</sec:authorize> ';
+		 document.getElementById("filter1ApprovePop").style.display="block";
+		 document.getElementById("filter3ApprovePop").style.display="block";
+		 document.getElementById("filter4ApprovePop").style.display="block";
+		
 		 //getVendorContactLists();
 		 getVendorContactListsELK();
 	 }

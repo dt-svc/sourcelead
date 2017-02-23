@@ -211,6 +211,22 @@ public class RequirementListRestController {
 					StringBuilder name = new StringBuilder();
 					requirement.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
 				}
+				
+				
+				if(null != requirement.getReleasedBy()){
+					List<Long> userId = new ArrayList<Long>();
+					for (String s : requirement.getReleasedBy().split(",")){
+						userId.add(Long.parseLong(s));
+					 }
+					boolean flag = userId.contains(user.getId());
+	         		if(flag == true){
+	         			requirement.setIsRequirementReleasedByuser("Y");
+	         		}else{
+	         			requirement.setIsRequirementReleasedByuser("N");
+	         		}
+				}
+				
+         		
 				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqStatusChange");
 				if(msg != null && msg != ""){
 					requirement.setMsg(msg);
@@ -349,6 +365,7 @@ public class RequirementListRestController {
 			String resultJson = null;
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
 
 			if(requirementId !=null && !requirementId.isEmpty()){
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
@@ -399,8 +416,9 @@ public class RequirementListRestController {
 						for(RequirementApproverHierarchy approverN :list ){
 							StringBuilder approverSB = new StringBuilder();
 							ar.add(approverSB.append(approverN.getApproverUserId().getFirstName()).append(" ").append(approverN.getApproverUserId().getLastName()).toString());
-							if(Constants.REJECTED.equalsIgnoreCase(approverN.getRequirementApproverStatus().toString())){
-								requirement.setRejectReason(sb.append(requirementApproverHierarchy.getRejectedReason()).toString());
+							if(null != approverN.getRejectedReason() && !approverN.getRejectedReason().equalsIgnoreCase("") && Constants.REJECTED.equalsIgnoreCase(approverN.getRequirementApproverStatus().toString())){
+								requirement.setRejectReasonForRequirement(sb.append(approverN.getRejectedReason()).toString());
+								break;
 							}
 						}
 						requirement.setHighestLevel(highestLevel);
@@ -417,8 +435,6 @@ public class RequirementListRestController {
 					
 					Boolean isLoginUserAsManager =   requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
 					requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString());
-					
-					
 					
 					resultJson = commonUtil.toJSON(requirement);
 				 
@@ -490,7 +506,6 @@ public class RequirementListRestController {
 				String resultJson = null;
 				
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-				 
 				Timezone timezone = null;
 				if(null != loginOrgLocation.getTimezone()){
 			    	 timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
@@ -568,7 +583,6 @@ public class RequirementListRestController {
 									}else{
 										requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 									}
-									
 									
 									requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
@@ -1353,6 +1367,13 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
    		resultJson = commonUtil.toJSON(uniRequirementList);
    		return resultJson;
    	 }
-        
+     
+        @RequestMapping(value = "/getTimezonesList")
+		public @ResponseBody String getTimezonesList(HttpServletRequest request) throws Exception {
+		 String resultJson = null;
+		 List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+		 resultJson = commonUtil.toJSON(timezoneList);
+		 return resultJson;
+		}
 }
 

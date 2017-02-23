@@ -470,13 +470,7 @@ function getInternalInterviewsList(submissionId){
          url: sourceleadUrl+"/getAllInternalInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
+            		
 	                	 $("#internalInterviewsList").empty();
 	                	 var result = "";
                     	 result = result + '<div class="clearfix">';
@@ -580,7 +574,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Interview Location</strong>';
+	                    	 result = result + '<strong>Interview Details</strong>';
 	                    	 result = result + '</label>';
 	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
 	                    	 result = result + '</div>';
@@ -604,7 +598,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<strong>Time</strong>';
 	                    	 result = result + '</label>';
                              if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
-                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'</p>';
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'('+report.interviewId.timezone.timeZoneId+')</p>';
 	                    	 }else{
 	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
 	                    	 }
@@ -670,7 +664,6 @@ function getInternalInterviewsList(submissionId){
 	                             $(this).toggleClass('active').next().slideDown('slow');
 	                         }
 	                     });
-			    	} 
               }/* else{
 	    	         var result ="";
 					 $("#internalInterviewsList").empty();
@@ -756,13 +749,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
          url: sourceleadUrl+"/getAllCustomerInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementId="+requirementId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
+            		 
 	                	 $("#customerInterviewsList").empty();
 	                	 var result = "";
                     	 result = result + '<div class="clearfix">';
@@ -821,7 +808,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Interview Location</strong>';
+	                    	 result = result + '<strong>Interview Details</strong>';
 	                    	 result = result + '</label>';
 	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
 	                    	 result = result + '</div>';
@@ -845,7 +832,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 result = result + '<strong>Time</strong>';
 	                    	 result = result + '</label>';
                              if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
-                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'</p>';
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'('+report.interviewId.timezone.timeZoneId+')</p>';
 	                    	 }else{
 	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
 	                    	 }
@@ -882,7 +869,6 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                             $(this).toggleClass('active').next().slideDown('slow');
 	                         }
 	                     });
-			    	} 
               }/* else{
 	    	         var result ="";
 					 $("#customerInterviewsList").empty();
@@ -906,13 +892,7 @@ function getOfferDetails(submissionId){
          url: sourceleadUrl+"/getOfferDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
          success :function(data) {
          if(data != null && data != 'undefined' && data != "" && data != '{}'){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
+            		
             			 $("#offerDetails").empty();
             			 var json = JSON.parse(data);
             			 for (var i = 0; i < json.length; i++) { 
@@ -1089,7 +1069,6 @@ function getOfferDetails(submissionId){
 		                         }
 		                     });
 			    	} 
-                }
          } else{
 				  $("#offerDetails").empty();
                }
@@ -1368,13 +1347,7 @@ function attachmentValidationFun(){
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/acceptRejectCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
-							 if( result.indexOf('Sign In') >= 0){
-					    		location.replace(sourceleadUrl);
-					    	 }
-		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
-		            		 }
-		            		 else{
+							
 						 		/* $("#popUpDivResume").removeClass("edit-details-active");
 						 		candidateResumesList(candidateId); */
 						 		 
@@ -1383,7 +1356,6 @@ function attachmentValidationFun(){
 		            			 $("#statusDiv").empty();
 		            			 $("#statusDiv").append("ACCEPTED");
 		            				
-		            		 }
 						},
 					});
 					return true;
@@ -1435,17 +1407,10 @@ function attachmentValidationFun(){
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/acceptRejectCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
-							 if( result.indexOf('Sign In') >= 0){
-					    		location.replace(sourceleadUrl);
-					    	 }
-		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
-		            		 }
-		            		 else{
+							
 		            			 $('#accpet-div').fadeOut();
 		            			 $('#reject').fadeOut();
 		            			 $('#request').fadeOut();
-		            		 }
 						},
 					});
 					return true;
@@ -1489,13 +1454,7 @@ function attachmentValidationFun(){
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/acceptRejectCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
-							 if( result.indexOf('Sign In') >= 0){
-					    		location.replace(sourceleadUrl);
-					    	 }
-		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
-		            		 }
-		            		 else{
+							
 						 		/* $("#popUpDivResume").removeClass("edit-details-active");
 						 		candidateResumesList(candidateId); */
 		            			 $('#accpet-div').fadeOut();
@@ -1504,7 +1463,6 @@ function attachmentValidationFun(){
 		            			 $("#statusDiv").empty();
 		            			 $("#statusDiv").append("REJECTED");
 		            				
-		            		 }
 						},
 					});
 					return true;
@@ -1599,13 +1557,7 @@ function savedCommentAndCount(candidateId,submissionId){
         	 var result = "";
               if(data != null && data != 'undefined' && data != ""){
               	 	 var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
+            		
             			 var totalComments = 0;
             			 if(json.length>0){
             				totalComments = json.length;
@@ -1642,7 +1594,6 @@ function savedCommentAndCount(candidateId,submissionId){
 	 			           $("#latestMessage").append(result);
             			 }
             			 
-            		 }
               }
 			},
       });
