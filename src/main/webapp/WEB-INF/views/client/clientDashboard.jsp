@@ -1028,13 +1028,18 @@ function preparedClientContacts(data){
 		   		result = result +'<td><div><span title='+report.orgName+'>'+report.orgName+'</span></div></td>';
 		   		
 		   		result = result + ' <td><div>';
-				result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
-				result = result + ' <option '+selected1+'>Active</option>';
-				result = result + ' <option '+selected2+'>In-Active</option>';
-				result = result + ' <option '+selected3+'>New</option>';
-				result = result + ' <option '+selected4+'>Negotiation</option>';
-				result = result + ' <option '+selected5+'>Contracted</option>';
-				result = result + ' </select>';
+		   		if(report.invitationStatus == 'Rejected'){
+        			result = result + '<span>'+report.spocStatus+'</span>';
+	    		}else{
+	    			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
+					result = result + ' <option '+selected1+'>Active</option>';
+					result = result + ' <option '+selected2+'>In-Active</option>';
+					result = result + ' <option '+selected3+'>New</option>';
+					result = result + ' <option '+selected4+'>Negotiation</option>';
+					result = result + ' <option '+selected5+'>Contracted</option>';
+					result = result + ' </select>';
+	    		}
+				
 				result = result + ' </div></td>';
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
 		     		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
@@ -1173,13 +1178,17 @@ function preparedClientContactListFromElk(data){
 		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		result = result + ' <td><div>';
-				result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
-				result = result + ' <option '+selected1+'>Active</option>';
-				result = result + ' <option '+selected2+'>In-Active</option>';
-				result = result + ' <option '+selected3+'>New</option>';
-				result = result + ' <option '+selected4+'>Negotiation</option>';
-				result = result + ' <option '+selected5+'>Contracted</option>';
-				result = result + ' </select>';
+		   		if(report.invitationStatus == 'Rejected'){
+        			result = result + '<span>'+report.spocStatus+'</span>';
+	    		}else{
+	    			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
+					result = result + ' <option '+selected1+'>Active</option>';
+					result = result + ' <option '+selected2+'>In-Active</option>';
+					result = result + ' <option '+selected3+'>New</option>';
+					result = result + ' <option '+selected4+'>Negotiation</option>';
+					result = result + ' <option '+selected5+'>Contracted</option>';
+					result = result + ' </select>';
+	    		}
 				result = result + ' </div></td>';
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
 		   		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
@@ -1418,7 +1427,6 @@ function getVendorContactListsELK(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var responderType = "Client";
-
 	
 	  $.ajax({
 		   	type: "POST",
@@ -2202,6 +2210,27 @@ $('#selector').delay(2000).fadeOut('slow');
 	});
 </script>
  -->
+ 
+ <script type="text/javascript">	
+	function clearSearchKeys(){
+	 
+	    $("#tierAdvanced").val('').trigger("chosen:updated");
+	    $("#phoneNumberAdvanced").val('').trigger("chosen:updated");
+	    $("#ownerAdvanced").val('').trigger("chosen:updated");
+	    $("#clientsAdvanced").val('').trigger("chosen:updated");
+	    $("#orgAdvanced").val('').trigger("chosen:updated");
+	    $("#statusAdvanced").val('').trigger("chosen:updated");
+	    $("#invitationAdvanced").val('').trigger("chosen:updated");
+	    $("#contactNameAdvanced").val('').trigger("chosen:updated");
+	    $("#emailAdvanced").val('').trigger("chosen:updated");
+	    $("#orgNameAdvanced").val('').trigger("chosen:updated");
+	    $("#citySearch").empty();
+	    $("#stateSearch").empty();
+	    $("#countrySearch").empty();
+	}
+</script>
+
+
 
 <script type="text/javascript">
 	function searchClient() {
@@ -2247,8 +2276,9 @@ $('#selector').delay(2000).fadeOut('slow');
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
-						document.getElementById("search_client").reset();
+						document.getElementById("clientlist_form").reset();
 						closePop();
+						clearSearchKeys();
 						preparedClientListFromElk(data);
 					},
 				}); 
@@ -2267,8 +2297,11 @@ $('#selector').delay(2000).fadeOut('slow');
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
-						document.getElementById("search_client").reset();
-						closePop();
+						/*  $('#clientlist_form').closest('form').find("input[type=text], textarea").val(""); */
+						/* document.getElementById("search_client").reset(); */
+						closePop(); 
+						clearSearchKeys();
+					
 						preparedClientContactListFromElk(data);
 					},
 				}); 
