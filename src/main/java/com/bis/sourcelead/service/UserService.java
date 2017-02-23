@@ -99,7 +99,7 @@ public interface UserService  {
 
 	List<User> getOwnersByOrgLocationIdAndNotExistedOwnerId(Long id, Long ownerId, List<Long> ownerListOfSpoc);
 	
-	void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType, Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation) throws Exception;
+	void sendEmailToClientOrVendor(String spocUUID, User spocUser,User ownerUser, User loginUser, String password, String responderType, Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation) throws Exception;
 
 	/**
 	 * @author Sammeta David
@@ -174,6 +174,8 @@ public interface UserService  {
 	User getUserByEmailAndUserType(String email,String userType) throws Exception;
 	
 	User getUserByUserName(String userName) throws Exception;
+
+	List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long id, Long valueOf, List<Long> ownersList) throws Exception;
 
 }	
 		

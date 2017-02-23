@@ -116,7 +116,7 @@ public class AddElkCandidate{
 						candidateIndex.setCurrentRate(rs.getString("CURRENT_RATE"));
 					}
 					
-					if(NumberUtils.isCreatable(rs.getString("EXPECTED_RATE"))){
+					if(NumberUtils.isParsable(rs.getString("EXPECTED_RATE"))){
 						candidateIndex.setExpectedRate(Float.parseFloat(rs.getString("EXPECTED_RATE")));
 					}
 					candidateIndex.setRateType(rs.getString("RATE_TYPE"));
