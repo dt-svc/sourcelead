@@ -641,11 +641,15 @@ $(document).ready(function () {
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
 			   				<select class="chosen-select form-control" disabled="disabled" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
-                      			 <option value=''>-- Select Contact --</option>
-                      			 <c:forEach var="report" items="${clientContactList}">
+                      			 <c:if test="${fn:length(clientContactList) gt 0}">
+								   <c:forEach var="report" items="${clientContactList}">
 			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
 			         				<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option> 
 					    		 </c:forEach>
+								</c:if>
+                      			 <c:if test="${fn:length(clientContactList) lt 1}">
+					    		 	<option value=''>${clientContactWithOwner}</option>
+					    		 </c:if>
                     		</select>
 						 </c:when>
 					<c:otherwise>
