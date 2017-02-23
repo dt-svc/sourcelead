@@ -62,9 +62,9 @@ public class JobSchedulerConfig implements AsyncConfigurer {
 	public Executor getAsyncExecutor() {
 		
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(5);
+        executor.setCorePoolSize(10);
         executor.setMaxPoolSize(10);
-        executor.setQueueCapacity(50);
+        executor.setQueueCapacity(1000);
         executor.setThreadNamePrefix("SourceLeadAsyncSendMail-");
         executor.initialize();
         return executor;
