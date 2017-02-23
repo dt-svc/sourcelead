@@ -204,7 +204,7 @@ function teamEditDetails(teamId){
 	        	outPut = outPut+ '<div class="col-md-6" id="teamNameDiv">';
 	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
 	        	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
-	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'"  >';
+	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'"  onblur="validateTeamName();">';
 	        	outPut = outPut+ '                </div>';
 	        	
 	        	

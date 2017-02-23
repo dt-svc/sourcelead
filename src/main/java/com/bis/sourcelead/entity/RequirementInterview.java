@@ -52,8 +52,9 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name = "END_TIME")
 	private Date endTime;
 	
-	@Column(name = "TIME_ZONE", columnDefinition = "TEXT default NULL")
-	private String timeZone;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="TIME_ZONE", nullable=false )
+	private Timezone timezone;
 	
 	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
@@ -181,12 +182,12 @@ import org.hibernate.annotations.FetchMode;
 		this.endTime = endTime;
 	}
 
-	public String getTimeZone() {
-		return timeZone;
+	public Timezone getTimezone() {
+		return timezone;
 	}
 
-	public void setTimeZone(String timeZone) {
-		this.timeZone = timeZone;
+	public void setTimezone(Timezone timezone) {
+		this.timezone = timezone;
 	}
 
 	public String getLocation() {
