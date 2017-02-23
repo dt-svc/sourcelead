@@ -152,9 +152,9 @@ public class TimeSheetPdfUtil {
 		
 		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(frequencyStartDate, frequencyEndDate);
 		if(tabFrequency != null && !tabFrequency.isEmpty()){
-			 Double billableHours = 0d;
-			 Double nonBillableHours =  0d;
-			 Double grandTotalHours = 0d;
+			 String billableHours = "";
+			 String nonBillableHours =  "";
+			 String grandTotalHours = "";
 			for (Map.Entry<String, String> entry : tabFrequency.entrySet()) {
 				 String key = entry.getKey();
 			     String value = entry.getValue();
@@ -169,13 +169,13 @@ public class TimeSheetPdfUtil {
 				 TimesheetSubmissions ts = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(weekStartDate, weekEndDate, projectMember.getId());
 				 if(null != ts){
 				 if(null != ts.getBillableHours()){
-					 billableHours = billableHours+(Double.parseDouble(ts.getBillableHours())*60);
+					 billableHours = ts.getBillableHours();
 				 }
 				 if(null != ts.getNonBillableHours()){
-					 nonBillableHours = nonBillableHours+(Double.parseDouble(ts.getNonBillableHours())*60);
+					 nonBillableHours = ts.getNonBillableHours();
 				 }
 				 if(null != ts.getTotalHours()){
-					 grandTotalHours = grandTotalHours+(Double.parseDouble(ts.getTotalHours())*60);
+					 grandTotalHours =ts.getTotalHours();
 				 }
 				 
 				 Long monTotHours = 0L;
@@ -292,7 +292,7 @@ public class TimeSheetPdfUtil {
 								map.put(projectMember.getProjects().getProjectName(), hoursList);
 						  }
 					Long totalHours = monTotHours+tueTotHours+wedTotHours+thuTotHours+friTotHours+satTotHours+sunTotHours;
-					document =  prepareHeadres(projectMember.getEmployee().getUser(),frequencyStartDate,frequencyEndDate,file,submissionStatusStr,orgLocations,projectMember.getProjects().getProjectName(),billableHours.longValue(),nonBillableHours.longValue(),grandTotalHours.longValue());
+					document =  prepareHeadres(projectMember.getEmployee().getUser(),frequencyStartDate,frequencyEndDate,file,submissionStatusStr,orgLocations,projectMember.getProjects().getProjectName(),billableHours,nonBillableHours,grandTotalHours);
 					int [] width2 = new int[]{5,5,5,5,5,5,5,5,5};
 					String[] headers2 = Constants.TIMESHEET_EXCEL_HEADERS2;
 					int [] width3 = new int[]{1};
@@ -446,7 +446,7 @@ public class TimeSheetPdfUtil {
 		return table;
 	}
 
-	private Document prepareHeadres(User user, String weekStartDate, String weekEndDate, File file, String submissionStatusStr, OrgLocations orgLocations,String projectName,Long billableHours,Long nonbillableHours, Long totalHours) {
+	private Document prepareHeadres(User user, String weekStartDate, String weekEndDate, File file, String submissionStatusStr, OrgLocations orgLocations,String projectName,String billableHours,String nonbillableHours, String totalHours) {
 		 Document document = new Document(PageSize.LETTER.rotate());
 		    try {
 		    	StringBuilder nameSb = new StringBuilder();
@@ -479,11 +479,11 @@ public class TimeSheetPdfUtil {
 	            table.addCell("Name : "+nameSb.toString());
 	            table.addCell("Status : "+submissionStatusStr);
 	            table.addCell("Email Id : "+user.getEmail());
-	            table.addCell("Billabe Hours : "+getTotalHours(billableHours));
+	            table.addCell("Billabe Hours : "+billableHours);
 	            table.addCell("Phone Number : "+user.getMobilePhone());
-	            table.addCell("Non-Billabe Hours : "+getTotalHours(nonbillableHours));
+	            table.addCell("Non-Billabe Hours : "+nonbillableHours);
 	            table.addCell("Project : "+projectName);
-	            table.addCell("Total Hours : "+getTotalHours(totalHours));
+	            table.addCell("Total Hours : "+totalHours);
 	            table.addCell("Frequency : "+weekSb.append(weekStartDate).append("_").append(weekEndDate).toString());
 	            table.addCell(" ");
 	            document.add(table);
