@@ -740,13 +740,14 @@ public class ClientRestController {
 	@RequestMapping(value = "/vendorContactDetailsUpdateUsingId", method = RequestMethod.POST)
 	 String vendorContactDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "spocId", required = false) Long spocId,
-			@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId) throws Exception {
+			@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,
+			@RequestParam(value = "type", required = false) String type) throws Exception {
 		
 	       String jsonVal = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(jsonVal);
 	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation);
+	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation,type);
 	       
 	       StringBuilder editSpocMsg = new StringBuilder();
 		   //SourceLeadSessionManager.setSessionAttribute(request, "editSpocMsg", editSpocMsg.append("Success !! ").append(orgSpoc.getSpocUser().getFirstName()).append(" details updated.").toString());
@@ -997,10 +998,14 @@ public class ClientRestController {
 	 public String  getOwnersList(@RequestParam(value="email", required=false) String  email,@RequestParam(value="type", required=false) String  type,HttpServletRequest request) throws Exception {
 		String resultJson;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = userService.findByEmail(email);
-		List<Long> ownersList= orgSpocService.getOwnerListByUserIdAndOrglocationId(user,orgLocations,type);
-		List<User> orginaluserList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
-		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT),ownersList);
+		List<User> userList = null;
+		if(null != email && !"".equalsIgnoreCase(email)){
+			User user = userService.findByEmail(email);
+			List<Long> ownersList= orgSpocService.getOwnerListByUserIdAndOrglocationId(user,orgLocations,type);
+			userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT),ownersList);
+		}else{
+			userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
+		}
 		resultJson = commonUtil.toJSON(userList);
 		return resultJson;
 	 }

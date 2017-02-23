@@ -324,7 +324,7 @@
              var sourceleadUrl ='${sourceleadUrl}';
 	 	 $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId, 	   
+			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Vendor", 	   
 	   		    success: function(data) {
 	   		    	$("#spocDetailsId").removeAttr("onClick")
 	   		    	$("#spocDetailsId").attr("onclick","vendorDetailsbySpocId('"+spocId+"', '"+ownerId+"', '"+spocUserId+"', '"+ownerId+"')");

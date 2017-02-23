@@ -71,7 +71,15 @@ public interface OrgSpocService {
 	 * @param spocUserId
 	 * @return
 	 */
-	OrgSpoc getSpocUserByUserId(Long spocUserId) throws Exception;
+	OrgSpoc getSpocByClientOrVendorUserId(Long spocUserId) throws Exception;
+	
+	/**
+	 * @author Prasad Salina
+	 * @param spocUUID
+	 * @return
+	 * @throws Exception
+	 */
+	OrgSpoc getSpocBySpocUUID(String spocUUID) throws Exception;
 	
 	/**To get Spoc user Contact List for requirement
 	 * @author David Raju

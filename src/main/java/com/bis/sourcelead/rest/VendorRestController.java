@@ -390,7 +390,7 @@ public class VendorRestController {
 		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
 		 			orgSpocService.addOrgSpoc(spoc);
 		 			
-		 			userService.sendEmailToClientOrVendor(user, loginUser, password, responderType, loginOrg,orgRelations.getResponderLocationId().getOrg(),orgRelations.getResponderLocationId());
+		 			userService.sendEmailToClientOrVendor(spoc.getUUID(),user, null,loginUser, password, responderType, loginOrg,orgRelations.getResponderLocationId().getOrg(),orgRelations.getResponderLocationId());
 		 		}
 			
 		 	  return "success";

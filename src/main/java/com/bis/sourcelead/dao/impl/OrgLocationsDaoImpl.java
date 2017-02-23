@@ -69,11 +69,20 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public OrgLocations getOrgLocations(Long id) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
+		/*Session session = this.sessionFactory.getCurrentSession();
 		OrgLocations orgLocations = session.get(OrgLocations.class, id);
-		return orgLocations;
-		
-		
+		return orgLocations;*/
+		   Session session = this.sessionFactory.getCurrentSession();
+	       String query = ("from OrgLocations orgLocations left join fetch orgLocations.org where orgLocations.id =:id");
+		  
+	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setLong("id", id).list();
+	       OrgLocations orgLocation = null;
+			if(orgLocations != null && !orgLocations.isEmpty())
+			{
+				orgLocation = (OrgLocations) orgLocations.iterator().next();
+			}
+			
+			return orgLocation;
 	}
 
 	@Override
