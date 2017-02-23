@@ -383,7 +383,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("interviewDate", dateOfInterviewValue);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
 			 globalVarsMap.put("applicantName",candidateName);
-			 globalVarsMap.put("Location",requirementInterview.getLocation());
+			 globalVarsMap.put("Details",requirementInterview.getLocation());
 			 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -470,7 +470,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("interviewDate", dateOfInterviewStr);
 			 globalVarsMap.put("interviewTime",time);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
-			 globalVarsMap.put("Location",requirementInterview.getLocation());
+			 globalVarsMap.put("Details",requirementInterview.getLocation());
 			 StringBuilder acceptBuilder = new StringBuilder();
 			 StringBuilder rejectBuilder = new StringBuilder();
 			 StringBuilder tentativeBuilder = new StringBuilder();
@@ -690,7 +690,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("interviewDate", dateOfInterviewStr);
 			 globalVarsMap.put("interviewTime",time);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
-			 globalVarsMap.put("location",requirementInterview.getLocation());
+			 globalVarsMap.put("Details",requirementInterview.getLocation());
 			 
 			 StringBuilder applicantNameBuilder=new StringBuilder();
 			 RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
