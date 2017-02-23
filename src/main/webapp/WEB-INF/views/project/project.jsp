@@ -307,7 +307,7 @@ function validateTaskName(){
 												<button data-dismiss="modal" class="btn btn-primary"
 													type="button" onclick="assignEmployee();">Assign</button>
 												<button data-dismiss="modal" class="btn btn-default"
-													type="button" onclick="assignEmployee();">Cancel</button>
+													type="button" onclick="assignEmployeeCancel();">Cancel</button>
 											</div>
 										</div>
 									</div>
@@ -926,6 +926,12 @@ function assignEmployeespagination(){
 		$('#newClient').find('p.jquery_form_error_message').remove();
 	}
 </script>
+<script>
+function assignEmployeeCancel(){
+	$('#assignEmployeePagination tbody input[type="checkbox"]').prop('checked', false);
+}
+</script>
+
 
 <script>
 	$(function() {

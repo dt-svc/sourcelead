@@ -77,6 +77,16 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 		
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy) throws Exception {
+		logger.debug("In ProjectApproverHierarchy delete method");
+		Session session = this.sessionFactory.getCurrentSession();
+		if(projectApproverHierarchy != null){
+			session.delete(projectApproverHierarchy);
+			logger.info("Record deleted successfully..!");
+		}
+	}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	

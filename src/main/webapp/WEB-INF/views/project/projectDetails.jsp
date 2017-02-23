@@ -146,7 +146,7 @@
 						result = result + '<div class="clearfix"></div>';
 
 						result = result	+ '<div class="project_details_cta">';
-						result = result	+ '<strong>Created By:</strong><span title="'+json.createdBy+'">'+json.createdBy+'</span><div class="clearfix"></div>';
+						result = result	+ '<strong>Created By:</strong><span title="'+json.createdByName+'">'+json.createdByName+'</span><div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result	+ '<div class="project_details_cta">';
 						result = result	+ '<strong>Created date:</strong><span title="'+json.createdDateStr+'">'+json.createdDateStr+'</span><div class="clearfix"></div>';
