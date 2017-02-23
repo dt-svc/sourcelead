@@ -6237,6 +6237,69 @@ Header icon border */
     font-size: 13px;
     line-height: 16px;
 }
+/* Export and pdf buttons from data tables */
+div.dt-buttons {
+position: absolute !important;
+float: left;
+top: -35px;
+left: 15px;
+z-index: 9;
+}
+#requirementSideDiv
+div.dt-buttons {
+top: 0px;
+left: 15px;
+z-index: 99;
+}
+button.dt-button, div.dt-button, a.dt-button{
+   line-height: 15px;
+   padding: 5px 10px 0 15px !important;
+   min-height: 20px;
+}
+.buttons-excel:before {
+       content: '\f1c3';
+font-family: Fontawesome;
+color: #368ee0;
+position: relative;
+top: -5px;
+left: -6px;
+}
+.buttons-pdf:before {
+       content: '\f1c1';
+font-family: Fontawesome;
+color: red;
+position: relative;
+top: -5px;
+left: -6px;
+}
+/* Export and pdf buttons from data tables */
+.timeZone {
+    width: 155px;
+}
+.timeZone .positionRelative{
+    width: 75px !important;
+}
+#addInterviewTbl .chosen-container-single .chosen-single {
+height: 30px !important;
+line-height: 30px !important;
+}
+#addInterviewTbl .chosen-container-single .chosen-single div{
+    top: -3px;
+}
+.interview-form .form-control{
+    height: 34px !important;
+}
+.orgrole-switch .slider.round {
+width: 50px;
+background:#babdb6;
+height: 20px; 
+}
+.orgrole-switch input:checked + .slider {
+background-color: #8f5902;
+}
+.orgrole-switch .switch {
+margin-top: 10px;
+}
 /* media 320px */
 @media (max-width: 320px) {
     .universalSrch {
