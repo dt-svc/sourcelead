@@ -1,14 +1,11 @@
-ALTER TABLE `sourcelead`.`REQUIREMENT_INTERVIEW` 
-CHANGE COLUMN `TIME_ZONE` `TIME_ZONE` BIGINT(20) NULL DEFAULT NULL ,
-ADD INDEX `requirement_interview_ibfk_2_idx` (`TIME_ZONE` ASC);
-ALTER TABLE `sourcelead`.`REQUIREMENT_INTERVIEW` 
-ADD CONSTRAINT `requirement_interview_ibfk_2`
-  FOREIGN KEY (`TIME_ZONE`)
-  REFERENCES `sourcelead`.`timezone` (`ID`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
 
-  
+ALTER TABLE `sourcelead`.`requirement_interview` 
+DROP COLUMN `TIME_ZONE`;
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_INTERVIEW','TIME_ZONE','BIGINT NULL AFTER `END_TIME`');
+ALTER TABLE `sourcelead`.`REQUIREMENT_INTERVIEW`  ADD FOREIGN KEY(TIME_ZONE) REFERENCES TIMEZONE(ID);
+
+
 INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((select  id  from `ENTITY_TYPE` where  `ENTITY_NAME`='ApplicantInterview' and `ENTITY_TYPE`='Email'), 'Details', '{{ApplicantInterview.Details}}');
 
 INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((select  id  from `ENTITY_TYPE` where  `ENTITY_NAME`='InterviewerInvitation' and `ENTITY_TYPE`='Email'), 'Details', '{{InterviewerInvitation.Details}}');
