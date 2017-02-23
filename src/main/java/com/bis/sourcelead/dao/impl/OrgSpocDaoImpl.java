@@ -332,7 +332,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 					   .setCacheable(true).list();*/
 			
 			
-			if(null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)){
+			if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
 				   query = "from OrgSpoc spoc where spoc.clientUser.id = :userId ";
 			   }else{
 				   query = "from OrgSpoc spoc where spoc.vendorUser.id = :userId ";
