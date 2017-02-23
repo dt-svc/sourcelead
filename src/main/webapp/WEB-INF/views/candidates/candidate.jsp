@@ -711,7 +711,7 @@ function getCities(){
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
+		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Candidate", 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
