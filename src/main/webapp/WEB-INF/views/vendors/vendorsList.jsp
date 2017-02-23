@@ -381,6 +381,25 @@ overflow-x: auto;
 <!-- Client Side Nav Div Ends -->
 </section>
 
+ <script type="text/javascript">	
+	function clearSearchKeys(){
+	 
+	    $("#tierAdvanced").val('').trigger("chosen:updated");
+	    $("#phoneNumberAdvanced").val('').trigger("chosen:updated");
+	    $("#ownerAdvanced").val('').trigger("chosen:updated");
+	    $("#clientsAdvanced").val('').trigger("chosen:updated");
+	    $("#orgAdvanced").val('').trigger("chosen:updated");
+	    $("#statusAdvanced").val('').trigger("chosen:updated");
+	    $("#invitationAdvanced").val('').trigger("chosen:updated");
+	    $("#contactNameAdvanced").val('').trigger("chosen:updated");
+	    $("#emailAdvanced").val('').trigger("chosen:updated");
+	    $("#orgNameAdvanced").val('').trigger("chosen:updated");
+	    $("#citySearch").empty();
+	    $("#stateSearch").empty();
+	    $("#countrySearch").empty();
+	}
+</script>
+
 
 <script type="text/javascript">
 	function searchVendor() {
@@ -422,7 +441,7 @@ overflow-x: auto;
 						$("#search_vendor").addClass('button').val('Search');
 						$("#search_vendor").removeAttr("disabled");
 						closePop();
-						document.getElementById("vendorList_form").reset();
+						clearSearchKeys();
 						//prepareCandidateList(data);
 						preparedVendorsListFromElk(data);
 					},
@@ -444,6 +463,7 @@ overflow-x: auto;
 						$("#search_vendor").removeAttr("disabled");
 						document.getElementById("vendorList_form").reset();
 						closePop();
+						clearSearchKeys();
 						preparedVendorContactListFromElk(data);
 					},
 				}); 
@@ -1783,6 +1803,9 @@ function listChange(sel){
 		'<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="none";
 		 '</sec:authorize> ';
+		 document.getElementById("filter1ApprovePop").style.display="none";
+		 document.getElementById("filter3ApprovePop").style.display="none";
+		 document.getElementById("filter4ApprovePop").style.display="none";
 		 //getVendorLists();
 		 getVendorListsElk();
 	 }
@@ -1802,6 +1825,10 @@ function listChange(sel){
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="block";
 		 '</sec:authorize> ';
+		 document.getElementById("filter1ApprovePop").style.display="block";
+		 document.getElementById("filter3ApprovePop").style.display="block";
+		 document.getElementById("filter4ApprovePop").style.display="block";
+		
 		 //getVendorContactLists();
 		 getVendorContactListsELK();
 	 }

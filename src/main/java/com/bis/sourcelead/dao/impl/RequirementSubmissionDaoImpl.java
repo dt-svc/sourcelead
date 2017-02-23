@@ -188,6 +188,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		
 		Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,loginOrgLocation.getId(),requirement.getId());
 		if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag){
+			
+			
 			List<String> userCodes = new ArrayList<>();
 			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
 				User usercode= userDao.getUserById(requirementAssignTo.getAssignUserId().getId());
@@ -211,6 +213,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					+ "left join fetch reqSub.candidateResumes where (reqSub.orgLocations.id =:loginOrgLocation or "
 					+ "reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId ORDER BY reqSub.id DESC";
 		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).setCacheable(true).list();
+		}else if(!isadmin && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && !flag && !teamFlag){
+			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId and  reqSub.requirement.id  IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId) ORDER BY reqSub.candidateScore DESC ";
+			requirementSubmission = session.createQuery(query).setLong("userId", user.getId()).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
+
 		}
 		
 		
