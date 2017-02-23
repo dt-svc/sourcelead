@@ -698,7 +698,6 @@ function getRolesList(){
 <script type="text/javascript">
  function getOwnersList() {
 	 var email = document.getElementById("email").value; 
-	 alert("email"+email);
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
