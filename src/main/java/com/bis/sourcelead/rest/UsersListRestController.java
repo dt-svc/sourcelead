@@ -382,7 +382,17 @@ public class UsersListRestController {
 
 		// Rate Per
 		if (jsonObj.has("ratePer") && StringUtils.isNotEmpty(jsonObj.getString("ratePer"))) {
-			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("ratePer", jsonObj.getString("ratePer")));
+			//boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("ratePer", jsonObj.getString("ratePer")));
+			if(jsonObj.getString("ratePer").equalsIgnoreCase("Weekly")){
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("ratePer", "Weekly"));
+				boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("ratePer", "Bi-Weekly"));
+			}else if(jsonObj.getString("ratePer").equalsIgnoreCase("Monthly")){
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("ratePer", "Monthly"));
+				boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("ratePer", "Semi-Monthly"));
+			}else{
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("ratePer", jsonObj.getString("ratePer")));
+			}
+			
 		}
 
 		List<UserIndex> usersList = new ArrayList<UserIndex>();
