@@ -1094,7 +1094,7 @@ function cancel(candidateId){
 							  <div class="clearfix row">
 							  <div class="col-md-6">
 								  <select class="chosen-select"  id="minExpYears" name="minExpYears" data-placeholder="Years" onblur="minMaxExperience();">
-									  <option selected value="">Min Years</option>
+									  <option  selected value="">Min Years</option>
 									 <c:forEach begin="0" end="24" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
@@ -1102,7 +1102,7 @@ function cancel(candidateId){
 							  </div>
 							  <div class="col-md-6">
 								  <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months" onblur="minMaxExperience();">
-									  <option selected value="">Max Years</option>
+									  <option  value="">Max Years</option>
 									  <c:forEach begin="0" end="25" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
@@ -1245,10 +1245,8 @@ function cancel(candidateId){
 					  </div>
 					  <div class="row form-footer mt">
 						  <div class="pull-right mr">
-							 <!--  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
-							  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> -->
 							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
-                               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
+                               <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-default ml10"/>
 						  </div>
 					  </div>
 				  </div>
@@ -2242,4 +2240,64 @@ function minMaxExperience(){
 }
 
 </script>
+
+<!-- This  clearCandidateSearchKeys() method for clear search data-->
+
+<script type="text/javascript">	
+	function clearCandidateSearchKeys(){
+		
+	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	    $("#allKeywords").val('').trigger("chosen:updated");
+	    $("#excludeKeyWord").val('').trigger("chosen:updated");
+	    $("#designation").val('').trigger("chosen:updated");
+	    $("#noticePeriod").val('').trigger("chosen:updated");
+	    $("#minExpYears").val('').trigger("chosen:updated");
+	    $("#maxExpYears").val('').trigger("chosen:updated");
+	    $("#country").val('').trigger("chosen:updated");
+	    $("#state").val('').trigger("chosen:updated");
+	    $("#city").val('').trigger("chosen:updated");
+	    $("#education").val('').trigger("chosen:updated");
+	    $("#excludeEducation").val('').trigger("chosen:updated");
+	    $("#certification").val('').trigger("chosen:updated");
+	    $("#employers").val('').trigger("chosen:updated");
+	    $("#excludeEmployers").val('').trigger("chosen:updated");
+	    $("#applicantType").val('').trigger("chosen:updated");
+	    $("#candidateSkills").val('').trigger("chosen:updated");
+	    
+	     $("#anyOfKeyword").empty();
+	     $("#allKeywords").empty();
+	     $("#excludeKeyWord").empty();
+	     $("#designation").empty();
+	      $("#minRate").val(''); 
+	      
+	     $("#currency").val('');
+	     $('.selectpicker').selectpicker('refresh');
+	     
+	     $("#maxRate").val(''); 
+	     
+	     $("#rateType").val(''); 
+	     $('.selectpicker').selectpicker('refresh');
+	     
+	     $("#minExpYears").val(''); 
+	     $("#maxExpYears").val(''); 
+	     $("#noticePeriod").empty(); 
+	     
+	     $("#country").val(''); 
+	     $("#state").val(''); 
+	     $("#city").val(''); 
+	     
+	     $("#education").val(''); 
+	     $("#excludeEducation").val('');
+	     $("#certification").val(''); 
+	     
+	     $("#employers").val(''); 
+	     $("#excludeEmployers").val(''); 
+	     $("#applicantType").val('');
+	     $("#candidateSkills").val('');
+	    
+	}
+</script>
+
+<!-- End  clearCandidateSearchKeys() method for clear search data-->
+
 <jsp:include page="../masterFooter.jsp" /> 
