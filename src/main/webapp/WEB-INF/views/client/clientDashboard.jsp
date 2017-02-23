@@ -1427,7 +1427,6 @@ function getVendorContactListsELK(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var responderType = "Client";
-
 	
 	  $.ajax({
 		   	type: "POST",
@@ -2211,6 +2210,27 @@ $('#selector').delay(2000).fadeOut('slow');
 	});
 </script>
  -->
+ 
+ <script type="text/javascript">	
+	function clearSearchKeys(){
+	 
+	    $("#tierAdvanced").val('').trigger("chosen:updated");
+	    $("#phoneNumberAdvanced").val('').trigger("chosen:updated");
+	    $("#ownerAdvanced").val('').trigger("chosen:updated");
+	    $("#clientsAdvanced").val('').trigger("chosen:updated");
+	    $("#orgAdvanced").val('').trigger("chosen:updated");
+	    $("#statusAdvanced").val('').trigger("chosen:updated");
+	    $("#invitationAdvanced").val('').trigger("chosen:updated");
+	    $("#contactNameAdvanced").val('').trigger("chosen:updated");
+	    $("#emailAdvanced").val('').trigger("chosen:updated");
+	    $("#orgNameAdvanced").val('').trigger("chosen:updated");
+	    $("#citySearch").empty();
+	    $("#stateSearch").empty();
+	    $("#countrySearch").empty();
+	}
+</script>
+
+
 
 <script type="text/javascript">
 	function searchClient() {
@@ -2256,8 +2276,9 @@ $('#selector').delay(2000).fadeOut('slow');
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
-						document.getElementById("search_client").reset();
+						document.getElementById("clientlist_form").reset();
 						closePop();
+						clearSearchKeys();
 						preparedClientListFromElk(data);
 					},
 				}); 
@@ -2276,8 +2297,11 @@ $('#selector').delay(2000).fadeOut('slow');
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
-						document.getElementById("search_client").reset();
-						closePop();
+						/*  $('#clientlist_form').closest('form').find("input[type=text], textarea").val(""); */
+						/* document.getElementById("search_client").reset(); */
+						closePop(); 
+						clearSearchKeys();
+					
 						preparedClientContactListFromElk(data);
 					},
 				}); 
