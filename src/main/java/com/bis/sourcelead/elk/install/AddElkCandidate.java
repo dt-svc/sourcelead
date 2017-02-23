@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -115,7 +116,7 @@ public class AddElkCandidate{
 						candidateIndex.setCurrentRate(rs.getString("CURRENT_RATE"));
 					}
 					
-					if(StringUtils.isNotEmpty(rs.getString("EXPECTED_RATE"))){
+					if(NumberUtils.isCreatable(rs.getString("EXPECTED_RATE"))){
 						candidateIndex.setExpectedRate(Float.parseFloat(rs.getString("EXPECTED_RATE")));
 					}
 					candidateIndex.setRateType(rs.getString("RATE_TYPE"));
