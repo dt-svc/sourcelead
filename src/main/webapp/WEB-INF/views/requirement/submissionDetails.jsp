@@ -185,12 +185,12 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
 			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED'){   
-								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept" onClick="acceptFun('+submissionId+');"></i>';
+								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptFun('+submissionId+');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
 								result = result + '	</li>';
 								
-								result = result + '	<li><i class="fa fa-close labeldanger" title="Reject" onClick="rejectFun('+submissionId+');"></i>';
+								result = result + '	<li><i class="fa fa-close labeldanger" title="Reject Applicant Authorization" onClick="rejectFun('+submissionId+');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="reject">';
 								result = result + '		</div>';
 								result = result + '	</li>';
