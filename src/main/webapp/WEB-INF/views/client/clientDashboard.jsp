@@ -1028,13 +1028,18 @@ function preparedClientContacts(data){
 		   		result = result +'<td><div><span title='+report.orgName+'>'+report.orgName+'</span></div></td>';
 		   		
 		   		result = result + ' <td><div>';
-				result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
-				result = result + ' <option '+selected1+'>Active</option>';
-				result = result + ' <option '+selected2+'>In-Active</option>';
-				result = result + ' <option '+selected3+'>New</option>';
-				result = result + ' <option '+selected4+'>Negotiation</option>';
-				result = result + ' <option '+selected5+'>Contracted</option>';
-				result = result + ' </select>';
+		   		if(report.invitationStatus == 'Rejected'){
+        			result = result + '<span>'+report.spocStatus+'</span>';
+	    		}else{
+	    			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
+					result = result + ' <option '+selected1+'>Active</option>';
+					result = result + ' <option '+selected2+'>In-Active</option>';
+					result = result + ' <option '+selected3+'>New</option>';
+					result = result + ' <option '+selected4+'>Negotiation</option>';
+					result = result + ' <option '+selected5+'>Contracted</option>';
+					result = result + ' </select>';
+	    		}
+				
 				result = result + ' </div></td>';
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
 		     		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
@@ -1173,13 +1178,17 @@ function preparedClientContactListFromElk(data){
 		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		result = result + ' <td><div>';
-				result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
-				result = result + ' <option '+selected1+'>Active</option>';
-				result = result + ' <option '+selected2+'>In-Active</option>';
-				result = result + ' <option '+selected3+'>New</option>';
-				result = result + ' <option '+selected4+'>Negotiation</option>';
-				result = result + ' <option '+selected5+'>Contracted</option>';
-				result = result + ' </select>';
+		   		if(report.invitationStatus == 'Rejected'){
+        			result = result + '<span>'+report.spocStatus+'</span>';
+	    		}else{
+	    			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
+					result = result + ' <option '+selected1+'>Active</option>';
+					result = result + ' <option '+selected2+'>In-Active</option>';
+					result = result + ' <option '+selected3+'>New</option>';
+					result = result + ' <option '+selected4+'>Negotiation</option>';
+					result = result + ' <option '+selected5+'>Contracted</option>';
+					result = result + ' </select>';
+	    		}
 				result = result + ' </div></td>';
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
 		   		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
@@ -1553,6 +1562,9 @@ function listChange(sel){
 		 document.getElementById("vendorContactList_paginate").style.display="none";
 		 document.getElementById("vendorContactList_info").style.display="none";
 		 document.getElementById("vendorContactList_filter").style.display="none";
+		 document.getElementById("filter1ApprovePop").style.display="none";
+		 document.getElementById("filter3ApprovePop").style.display="none";
+		 document.getElementById("filter4ApprovePop").style.display="none";
 		 
 		/*  getClientDetails(); */
 		 getClientDetailsELK();
@@ -1573,6 +1585,9 @@ function listChange(sel){
 		'<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENT_CONTACTS\')">'; 
 		 document.getElementById("ContactImports").style.display="block";
 		'</sec:authorize> ';	 
+		document.getElementById("filter1ApprovePop").style.display="block";
+		 document.getElementById("filter3ApprovePop").style.display="block";
+		 document.getElementById("filter4ApprovePop").style.display="block";
 		 
 		/*  getVendorContactLists(); */
 		 getVendorContactListsELK();
