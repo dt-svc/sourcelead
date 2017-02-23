@@ -153,6 +153,8 @@ public class User implements Serializable{
 	@Column(name = "COUNTRY")
 	private String country;
 	
+	@Transient
+    private String tempPwd;
 	
 	@Transient
     private int assignJobCount;
@@ -371,6 +373,14 @@ public class User implements Serializable{
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public String getTempPwd() {
+		return tempPwd;
+	}
+
+	public void setTempPwd(String tempPwd) {
+		this.tempPwd = tempPwd;
 	}
 
 	public String getFullName() {
