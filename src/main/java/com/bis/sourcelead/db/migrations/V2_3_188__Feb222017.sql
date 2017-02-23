@@ -3,7 +3,7 @@ ALTER TABLE `sourcelead`.`requirement_interview`
 DROP COLUMN `TIME_ZONE`;
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_INTERVIEW','TIME_ZONE','BIGINT NULL AFTER `END_TIME`');
-ALTER TABLE `sourcelead`.`REQUIREMENT_INTERVIEW`  ADD FOREIGN KEY(TIME_ZONE) REFERENCES TIMEZONE(ID);
+ALTER TABLE `sourcelead`.`requirement_interview` ADD CONSTRAINT `FK3_TIME_ZONE` FOREIGN KEY (`TIME_ZONE`) REFERENCES `TIMEZONE` (`ID`);
 
 
 INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((select  id  from `ENTITY_TYPE` where  `ENTITY_NAME`='ApplicantInterview' and `ENTITY_TYPE`='Email'), 'Details', '{{ApplicantInterview.Details}}');
