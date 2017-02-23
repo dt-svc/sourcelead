@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,7 +11,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -197,6 +195,59 @@ public class TimesheetRestController {
 		    return tabDiv.toString();
 	}
 	
+	
+	@RequestMapping(value = "/timesheetDivAfterSaving", method = RequestMethod.POST ) 
+	public @ResponseBody  HashMap<String,String> timesheetDivAfterSaving(HttpServletRequest request,
+			@RequestParam(value="startDate", required=false) String startDate,
+			@RequestParam(value="endDate", required=false) String endDate,
+			@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
+			@RequestParam(value="approvalStatus", required=false) String approvalStatus,
+			@RequestParam(value="from", required=false) String from) throws Exception {
+		    StringBuilder tabDiv = new StringBuilder("");
+		    StringBuilder statusDiv = new StringBuilder("");
+		    Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
+		    HashMap<String,String> result = new HashMap<>();
+		     if(StringUtils.isNotEmpty(timesheetFrequency)){
+			 	 String[] frequency = timesheetFrequency.split("To");
+			 	 String actualStartDate = frequency[0].trim();
+			  	 String actualEndDate = frequency[1].trim();
+				 tabDiv =  projectTabDataByDates(startDate, endDate,projectMemberId,actualEndDate,approvalStatus,from);
+				 result.put("TabDiv",tabDiv.toString());
+				 
+				 DateFormat format = Constants.DF_DMY;
+				 Date frequencyStartDate = format.parse(actualStartDate.replaceAll("/", "-"));
+				 Date frequencyEndDate = format.parse(actualEndDate.replaceAll("/", "-"));
+				  
+				 SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
+				 Submission_Status submissionStatus = sah.getSubmissionStatus();
+			 	 String submissionStatusStr = submissionStatus.getValue();
+			 	 
+			     String pullRightClass = "pull-right";
+			     String styleWidth = "";
+			     String innerStyleWidth = "";
+			     String statusDivWidth = "";
+			     if(from != null && !from.isEmpty() && from.equalsIgnoreCase("user")){
+				   pullRightClass = "" ;
+			     }
+			    SubmissionApproverHierarchy isSah = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForProjectMember(projectMemberId, frequencyStartDate, frequencyEndDate, "APPROVED");
+			    boolean isSahApproved = false;
+			    if(isSah == null &&from.equalsIgnoreCase("user") && isModifyMyTimeSheet && !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
+			    	isSahApproved = true;
+			    	styleWidth = "style='width:244px;'";
+				   innerStyleWidth = "style='width:40%;'";
+				   statusDivWidth = "244";
+			     }
+				 StringBuilder submissionStatusDiv = getSubmissionStatusDiv(sah ,projectMemberId,frequencyStartDate,frequencyEndDate,startDate,endDate,from,isSahApproved,pullRightClass,styleWidth,innerStyleWidth);
+				 statusDiv.append("<div>");
+				 statusDiv.append(submissionStatusDiv);
+			     result.put("StatusDiv",statusDiv.toString());
+			     
+			     result.put("statusDivWidth",statusDivWidth);
+		    }
+		    return result;
+	}
+	
 	 
 	@RequestMapping(value = "/timesheetEntries", method = RequestMethod.POST )   
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
@@ -345,55 +396,29 @@ public class TimesheetRestController {
 		
 		timesheetEntriesDiv.append("<input type='hidden' name='projectMemberId'  id='projectMemberId' value='"+projectMemberId+"' >");
 		timesheetEntriesDiv.append("<input type='hidden' name='timesheetFrequency'  id='timesheetFrequency' value='"+weekStartDate+"To"+weekEndDate+"' >");
+		timesheetEntriesDiv.append("<input type='hidden' name='frequencyDates'  id='frequencyDates' value='"+weekStartDate+"To"+weekEndDate+"' >");
+		   String pullRightClass = "pull-right";
+		   String styleWidth = "";
+		   String innerStyleWidth = "";
+		   if(from != null && !from.isEmpty() && from.equalsIgnoreCase("user")){
+			   pullRightClass = "" ;
+		   }
+		   SubmissionApproverHierarchy isSah = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForProjectMember(projectMemberId, frequencyStartDate, frequencyEndDate, "APPROVED");
+		   boolean isSahApproved = false;
+		   if(isSah == null &&from.equalsIgnoreCase("user") && isModifyMyTimeSheet && !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
+			 isSahApproved = true;
+			 styleWidth = "style='width:244px;'";
+			 innerStyleWidth = "style='width:40%;'";
+		   }
 		
-		 SubmissionApproverHierarchy isSah = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForProjectMember(projectMemberId, frequencyStartDate, frequencyEndDate, "APPROVED");
-		String pullRightClass = "pull-right";
-		String styleWidth = "";
-		String innerStyleWidth = "";
-		if(from != null && !from.isEmpty() && from.equalsIgnoreCase("user")){
-			pullRightClass = "" ;
-		}
-		
-		if(isSah == null &&from.equalsIgnoreCase("user") && isModifyMyTimeSheet && !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-			styleWidth = "style='width:120px;'";
-			innerStyleWidth = "style='width:100%;'";
-		}
-		/*timesheetEntriesDiv.append("			<div id='timesheetDivByFrequency'> ");*/
-		
-	 	    timesheetEntriesDiv.append("					<div "+styleWidth+" class='timeNewSe "+pullRightClass+"'>");
-			if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
-		    	timesheetEntriesDiv.append("<b class='proj_new "+pullRightClass+"'>").append(submissionStatus).append("</b>");
-	        }
-	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
-	        	timesheetEntriesDiv.append("<b class='proj_draft "+pullRightClass+"'>").append(submissionStatus).append("</b>");
-	        }
-	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-	        	timesheetEntriesDiv.append("<b "+innerStyleWidth+"  class='proj_process "+pullRightClass+" '>").append(submissionStatus).append("</b>");
-	        	if(isSah == null && isModifyMyTimeSheet && from.equalsIgnoreCase("user")){
-	                timesheetEntriesDiv.append("</div><div "+styleWidth+" class='timeNewSe '><b "+innerStyleWidth+" class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Modify</b>");
-	        	}
-	        }
-	        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
-	        	timesheetEntriesDiv.append("<b class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b>");
-	        }
-	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
-	        	timesheetEntriesDiv.append("<b class='proj_closed "+pullRightClass+"'>").append(submissionStatus).append("</b>");
-	        	timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'>");
-	        	timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getRejectedReason()).append("</div>");
-	        	timesheetEntriesDiv.append(" </i>");
-	        
-	        
-	        }
-	        
-		/*timesheetEntriesDiv.append("						<b class='proj_active'>Active</b><i class='glyphicon glyphicon-comment com_active' >");
-		timesheetEntriesDiv.append("							<div class='timeNewSeMess'><p>Rejected message here Rejected message here Rejected message here</p></div>");
-		timesheetEntriesDiv.append("						</i>");*/
-		timesheetEntriesDiv.append("					</div>");
-		timesheetEntriesDiv.append("					<div class='clearfix'></div>   ");
-		
+	 	  timesheetEntriesDiv.append("					<div id='timesheetSubmissionStatusDiv' "+styleWidth+" class='timeNewSe "+pullRightClass+"'>");
+	 	 
+		   StringBuilder submissionStatusDiv = getSubmissionStatusDiv(sah ,projectMemberId,frequencyStartDate,frequencyEndDate,weekStartDate,weekEndDate,from,isSahApproved,pullRightClass,styleWidth,innerStyleWidth);
+	      timesheetEntriesDiv.append(submissionStatusDiv); 
+	      timesheetEntriesDiv.append("					</div>   ");
+		  timesheetEntriesDiv.append("					<div class='clearfix'></div>   ");
 		StringBuilder tabData = new StringBuilder();
 		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(weekStartDate, weekEndDate);
-		
 		timesheetEntriesDiv.append("			<div class='timesheetNewTabs'> ");
 		timesheetEntriesDiv.append("			<div class='project_side_wrap_inn_tabs'> ");
 		timesheetEntriesDiv.append("			    <ul class='project-tabs-menu'> ");
@@ -503,12 +528,42 @@ public class TimesheetRestController {
 	}
 	
 	
+	public StringBuilder getSubmissionStatusDiv(SubmissionApproverHierarchy sah ,Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String weekStartDate,String weekEndDate,String from,boolean isSahApproved,String pullRightClass,String styleWidth,String innerStyleWidth){
+		
+		   Submission_Status submissionStatus = sah.getSubmissionStatus();
+		   String submissionStatusStr = submissionStatus.getValue();
+		   StringBuilder timesheetEntriesDiv = new StringBuilder();
+		   Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
+		   
+		    timesheetEntriesDiv.append("<input type='hidden' name='timesheetSubmissionStatus'  id='timesheetSubmissionStatus' value='"+submissionStatusStr+"' >");
+			if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+		    	timesheetEntriesDiv.append("<b class='proj_new "+pullRightClass+"'>").append(submissionStatus).append("</b>");
+	        }
+	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
+	        	timesheetEntriesDiv.append("<b class='proj_draft "+pullRightClass+"'>").append(submissionStatus).append("</b>");
+	        }
+	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
+	        	timesheetEntriesDiv.append("<b "+innerStyleWidth+"  class='proj_process "+pullRightClass+" '>").append(submissionStatus).append("</b>");
+	        	if(isSahApproved && isModifyMyTimeSheet && from.equalsIgnoreCase("user")){
+	                timesheetEntriesDiv.append("&nbsp;&nbsp;<b "+innerStyleWidth+" class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Modify</b>");
+	        	}
+	        }
+	        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
+	        	timesheetEntriesDiv.append("<b class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b>");
+	        }
+	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
+	        	timesheetEntriesDiv.append("<b class='proj_closed "+pullRightClass+"'>").append(submissionStatus).append("</b>");
+	        	timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'>");
+	        	timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getRejectedReason()).append("</div>");
+	        	timesheetEntriesDiv.append(" </i>");
+	        }
+	        return timesheetEntriesDiv;
+	}
+	
 	public StringBuilder projectTabDataByDates(String startDate ,String endDate,Long projectMemberId,String timesheetFrequencyEndDate,String approvalStatus,String from) throws Exception{
 		
 		ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemberId);
 		Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
-		Boolean isExportMyTimeSheet = commonUtil.hasRole("ROLE_EXPORT_MY_TIMESHEETS");
-		Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 			
 		StringBuilder tabDiv = new StringBuilder();
 		

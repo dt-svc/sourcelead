@@ -425,7 +425,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	            	 sah.setActionPerformedBy(""+loginUser.getFullName());
 	             }
 	    		 try {
-					session.update(sah);
+	    			 updateSubmissionApproverHierarchy(sah);
 				} catch (Exception e) {
 				}
 	    		
@@ -453,7 +453,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
 	                		  }
                 	        try {
-                	        	session.update(approver);
+                	        	updateSubmissionApproverHierarchy(approver);
              				} catch (Exception e) {
              				}
                 	   }
@@ -758,7 +758,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
 		}
 		
-		Query submissionApproverHierarchyListQuery= session.createQuery("from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user where pm.id = :projectMemberId and  (ts.startDate between :startDate and :endDate OR ts.startDate = :startDate) and sah.submissionApprovalStatus = :approvalStatus");
+		Query submissionApproverHierarchyListQuery= session.createQuery("from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user where pm.id = :projectMemberId and  sah.frequencyStartDate = :startDate and sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus = :approvalStatus");
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setString("approvalStatus", approvalStatus).setCacheable(true).list();
 		SubmissionApproverHierarchy sah = null;

@@ -21,6 +21,25 @@
 
 
 <style type="text/css">
+
+#frequencyMonth_chosen .chosen-drop {
+width: 159px  !important;;
+border-radius: 0 4px 0 0 !important;
+} 
+#client_chosen .chosen-drop {
+min-width:100%;
+max-width: 350px  !important;
+border-radius: 0 4px 0 0 !important;
+} 
+#stage_chosen .chosen-drop {
+width: 210px !important;
+border-radius: 0 4px 0 0 !important;
+} 
+
+
+
+
+
 .glyphicon-none:before {
     content: "\2122";
     color: transparent !important;
@@ -427,6 +446,9 @@ function newSaveTimesheet(status,savingType){
                var startdate;
            	   var navigation;
                
+           	   var startDate = $("#tabStartDate").val();
+        	   var endDate = $("#tabEndDate").val();
+        	  
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
        		   mydata = encodeURIComponent(mydata);
@@ -452,7 +474,10 @@ function newSaveTimesheet(status,savingType){
         		    		  timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId,savingType);
         		    	  }
         		    	  else{
-        		    		  timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,savingType);
+        		    		  
+        		    		  timesheetDivAfterSaving(startDate,endDate,approvalStatus)
+        		    		  
+        		    		  //timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,savingType);
         		    	  }
      	        		  
         		      }
@@ -594,14 +619,58 @@ function deleteSubmissionDocument(submissionDocumentId){
  <!-- this script is for clear timesheet -->
 <script>
 function clearTimesheet(){ 
-	for (var i = 1; i < 8; i++){
-		 for (var j = 1; j < 50; j++){
-			    $("#"+j+"timeSheetDay"+i+"Id").val("00:00");
-			    $("#"+j+"textArea"+i+"Id").val("");  
-		 }
-	}
-	$("#weekComment").val('');
+	  var startDate = $("#tabStartDate").val();
+	  var endDate = $("#tabEndDate").val();
+	 if(startDate != null && startDate != '' && startDate != 'undefined' && 
+			  endDate != null && endDate != '' && endDate != 'undefined'){
+		   timesheetDivAfterSaving(startDate,endDate,"new");
+	  }
+	  else{
+		  timesheetDivByFrequency();
+	  }
 }
+</script>
+
+<script>
+	function timesheetDivAfterSaving(startDate,endDate,approvalStatus){ 
+	         var sourceleadUrl ='${sourceleadUrl}';
+	         var projectMemberId = $("#projectMemberId").val();
+	         var timesheetFrequency = $("#frequencyDates").val();
+	         $("#timesheetDivByTab").empty();
+	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+    	          type : "POST",
+        	      dataType : 'json',
+  	      	  	  url: sourceleadUrl+"/timesheetDivAfterSaving?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=approver",		
+  		          success :function(result) {
+  		        	   $("#timesheetDivByTab").removeAttr("style");
+  		        	   if(result != null){
+  		        		   var statusDivWidth = result["statusDivWidth"];
+  		        		   $("#timesheetSubmissionStatusDiv").empty();
+	  		    	  	   $("#timesheetSubmissionStatusDiv").append(result["StatusDiv"]); 
+	  		    	  	   if(statusDivWidth != null && statusDivWidth != '' && statusDivWidth != 'undefined'){
+	  		    	  		   $("#timesheetSubmissionStatusDiv").attr("style","width:244px;"); 
+	  		    	  	   }
+	  		    	  	   $("#timesheetDivByTab").empty();
+	  		    	  	   $("#timesheetDivByTab").append(result["TabDiv"]);
+	  		    	  	   maskme();
+	  		    	  	   $("html").trigger('click');
+	  		    	  	   
+	  			    	   $("#tab-1").show();
+	  	 		    	   $(".project-tabs-menu a").click(function(event) {
+	  	 		    	        event.preventDefault();
+	  	 		    	        $(this).parent().addClass("current");
+	  	 		    	        $(this).parent().siblings().removeClass("current");
+	  	 		    	        var tab = $(this).attr("href");
+	  	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
+	  	 		    	        $(tab).fadeIn();
+	  	 		    	   });
+  		        	   }
+  		    	      
+		    	  	   
+  		          }
+  	         }); 
+	}
 </script>
 
 <!-- this script is for validation of 24 hours -->
