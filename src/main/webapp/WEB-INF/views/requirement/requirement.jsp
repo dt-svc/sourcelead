@@ -1390,69 +1390,64 @@ function getCities(){
 	       $("#state").on('change', function (e) {
 	    	   getCities();
 	       });
-		       
+	       
+	       
 	     //Adding Customized Skills to the list
-           var select, chosen;
-           select = $("#skills");
-           select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-           chosen = select.data('chosen');
-           chosen.search_field.on('keyup', function(e)
-           {
-        	   var newSkill = this.value.replace(",","");
-               if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-               {
-                   var option = $("<option>").val(newSkill).text(newSkill);
-                   select.append(option);
-                   select.find(option).prop('selected', true);
-                   //to doesn't allow duplicates
-                   $("#skills option").each(function(){
-                         $(this).siblings("[value='"+ this.value+"']").remove();
-                   });
-                   //end
-                   $("#skills").trigger("chosen:updated");
-               }
-           });
-           //Adding Customized Skills to the list
-           
-            //Adding Customized Educations to the list
-	        var selectone, chosenone;
-	        selectone = $("#education");
-	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
-	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keyup', function(e1)
+	       var select, chosen;
+		    select = $("#skills");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Email:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keyup', function(e)
+		    {
+		    	   var skillsArray = this.value.split(",");
+			    	 if(skillsArray.length > 1){
+		        		 for (var i=0; i < skillsArray.length; i++) {
+		        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+		        			 select.append(option);
+		 		             select.find(option).prop('selected', true);
+		 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+		 	        		 $("#skills").trigger("chosen:updated");
+		                 }
+			    	 }else{
+		    			var newSkill = this.value.replace(","," ");
+		    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		                {
+		    				 var option = $("<option>").val(newSkill).text(newSkill);
+		                     select.append(option);
+		                     select.find(option).prop('selected', true);
+		                     $("#skills option").each(function(){
+		                         $(this).siblings("[value='"+ this.value+"']").remove();
+		                   });
+		                   $("#skills").trigger("chosen:updated");
+		                }
+				       
+	    	         }
+		    });
+		    
+		    
+		    
+		    //Adding Customized Educations to the list 
+		    var selectone, chosenone;
+		    selectone = $("#education");
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
+		    chosenone = selectone.data('chosen');
+		    chosenone.search_field.on('keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(newEducation).text(newEducation);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-		            
-		          //to doesn't allow duplicates
-	                   $("#education option").each(function(){
+		    	   if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+			        {
+		    		   var par = this.parent;
+			            var option = $("<option>").val(newEducation).text(newEducation);
+			            selectone.append(option);
+			            selectone.find(option).prop('selected', true);
+			            $("#education option").each(function(){
 	                         $(this).siblings("[value='"+ this.value+"']").remove();
 	                   });
-	                   //end
-		            
-	        		$("#education").trigger("chosen:updated");
-	        		
-		        }
-		    }); 
-		    //Adding Customized Educations to the list
-            
-	        
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			})
-			
-			
-			 
-            
+			            $("#education").trigger("chosen:updated");
+			        }
+		    
+		    });
+		    
             
 			/* upload file script */
 			document.getElementById("uploadBtn").onchange = function () {
