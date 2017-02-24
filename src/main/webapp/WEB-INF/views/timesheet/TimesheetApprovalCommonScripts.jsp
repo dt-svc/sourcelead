@@ -692,6 +692,12 @@ function editMe(local){
 	 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
 		 $("#"+id).val("0"+hours2+":00");
 	 }
+	 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val("00:"+min1+"0");
+	 }
+	 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
+		 $("#"+id).val("00:0"+min2);
+	 }
 	 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
 		 $("#"+id).val(hours+":00");
 	 }
