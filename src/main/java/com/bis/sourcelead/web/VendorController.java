@@ -291,12 +291,12 @@ public class VendorController {
 					}*/else if("worngFileName".equalsIgnoreCase(isFileCreated)){
 						model.addAttribute("fileNameWrong", "File name should follow as vendors_contacts_Import/vendors_import_template with .xls or .xlsx");
 			            model.addAttribute("fileName", "xls");
-						return "upload/uploadClientForm";
+						return "upload/uploadVendorForm";
 					}
 				}else{
 					model.addAttribute("fileNameWrong", "Oops.! It's Not Vendor template");
 		            model.addAttribute("fileName", "xls");
-					return "upload/uploadClientForm";
+					return "upload/uploadVendorForm";
 				}
 				
 			}else{
