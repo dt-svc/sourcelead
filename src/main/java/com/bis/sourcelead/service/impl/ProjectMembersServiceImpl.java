@@ -336,7 +336,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				/**
 			     * This method for send Email to team member while assign employee from project dashboard
 			     */
-				ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.getLevelOneProjectApproverByProjectId(projects.getId());
+				ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.getProjectApproverByProjectId(projects.getId());
 				
 				if(!isNullOrEmpty(mailtoMembers) && ("YES".equals(mailtoMembers))){
 					if(user.getId() != projectApproverHierarchy.getApproverUserId().getId()){

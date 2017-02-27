@@ -190,5 +190,11 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	public void deleteProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy) throws Exception {
 		 projectApproverHierarchyDao.deleteProjectApproverHierarchy(projectApproverHierarchy);
 	}
+
+
+	@Override
+	public ProjectApproverHierarchy getProjectApproverByProjectId(Long ProjectId) throws Exception {
+		return projectApproverHierarchyDao.getProjectApproverByProjectId(ProjectId);
+	}
 	
 }

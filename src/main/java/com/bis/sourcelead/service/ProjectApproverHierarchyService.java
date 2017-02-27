@@ -52,4 +52,6 @@ public interface ProjectApproverHierarchyService {
 	List<ProjectApproverHierarchy> getProjectApproversListByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
 
 	List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,Long orgLocationId) throws Exception;
+	
+	public ProjectApproverHierarchy getProjectApproverByProjectId(Long ProjectId) throws Exception;
 }
