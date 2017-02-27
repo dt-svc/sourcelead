@@ -446,8 +446,8 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	}
 
 	@Override
-	public Integer getAllClientContactsCountForCampaignByOrgLocationId(Long userId,Long orgLocationId) throws Exception {
-		return orgSpocDao.getAllClientContactsCountForCampaignByOrgLocationId(userId,orgLocationId);
+	public Integer getAllClientContactsCountForCampaignByOrgLocationId(Long orgRelationId,Long userId,Long orgLocationId) throws Exception {
+		return orgSpocDao.getAllClientContactsCountForCampaignByOrgLocationId(orgRelationId,userId,orgLocationId);
 	}
 	
 	@Override
