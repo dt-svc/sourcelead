@@ -62,8 +62,11 @@ public class CandidateResumes implements Serializable{
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
 	
-	@Column(name = "  RESUME_STATUS ")
+	@Column(name = "RESUME_STATUS ")
 	private String resumeStatus;
+	
+	@Column(name = "RESUME_UUID ")
+	private String resumeUUID;
 	
 	@Column(name = "STATUS ")
 	private Integer status;
@@ -201,6 +204,14 @@ public class CandidateResumes implements Serializable{
 
 	public void setMsg(String msg) {
 		this.msg = msg;
+	}
+
+	public String getResumeUUID() {
+		return resumeUUID;
+	}
+
+	public void setResumeUUID(String resumeUUID) {
+		this.resumeUUID = resumeUUID;
 	}
 
 	
