@@ -589,13 +589,16 @@ function sideBar(requirementId){
               			
               			
               			result = result+'    <div class="profile_details requirement_details clearfix reqrementsummary">';
-              			if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType != '' && json.jobType != null && json.jobType != 'undefined'){
+              			if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType != 'Other'){
     				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'</span><i></i></h4></a>';
-               			}else if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined'){
+               			}else if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType != 'Other'){
     				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobId+'">'+json.jobTitle+'-'+json.jobId+'</span><i></i></h4></a>';
                			}
-               			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined'){
+               			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType != 'Other'){
      				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
+               			}else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType == 'Other' ){
+        			     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'-'+json.otherJobType+'">'+json.jobTitle+'-'+json.jobType+'-'+json.otherJobType+'</span><i></i></h4></a>';
+	
                			}else{
                				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'">'+json.jobTitle+'</span><i></i></h4></a>';
 
