@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -64,7 +65,6 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionXls;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
@@ -76,6 +76,7 @@ import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionXlsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -157,6 +158,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	RecommendedCustomizeScoreService recommendedCustomizeScoreService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -2948,7 +2952,86 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			Long candidateId) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionByRequirementIdAndCandidateId(requirementId, candidateId);
 	}
+	
+	@Override
+	public void sendRejectionMailToVendorContact(User user, String reason,Long submissionId,OrgLocations orgLocations) throws Exception {
+		
+		RequirementSubmission submission = getRequirementSubmissionById(submissionId);
+		if(!submission.getCreatedBy().equalsIgnoreCase(submission.getUpdatedBy())){
+		  User userVendor = userService.getUserByUserCode(submission.getCreatedBy());
+		  User userClient  = userService.getUserByUserCode(submission.getUpdatedBy());
+    	 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(userVendor.getFirstName());
+		 emailMessage.setLastName(userVendor.getLastName());
+		 emailMessage.setToEmail(userVendor.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(user.getUserCode());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(userClient.getFirstName()).append(" ").append(userClient.getLastName()).toString());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 if(null!= userVendor.getFirstName()  && !"".equalsIgnoreCase(userVendor.getFirstName())){
+		 globalVarsMap.put("vendorContactName", userVendor.getFirstName()); 
+		 }else{
+		 globalVarsMap.put("vendorContactName", "--");	 
+		 }
+		 
+		 if(null !=submission.getCandidate().getFirstName()  && !"".equalsIgnoreCase(submission.getCandidate().getFirstName())){
+		 globalVarsMap.put("applicantName", submission.getCandidate().getFirstName());	 
+		 }else{
+	     globalVarsMap.put("applicantName","--"); 
+		 }
+		 if(userClient.getFirstName()!= null  && !"".equalsIgnoreCase(userClient.getFirstName())){
+		 globalVarsMap.put("clientContactName", userClient.getFirstName());	 
+		 }else{
+		 globalVarsMap.put("clientContactName","--"); 
+		 }
+		 
+		 if(null != submission.getRequirement().getJobTitle()  && !"".equalsIgnoreCase(submission.getRequirement().getJobTitle())){
+		 globalVarsMap.put("requirementName", submission.getRequirement().getJobTitle()); 
+		 }else{
+		 globalVarsMap.put("requirementName","--"); 
+		 }
+		 if(null != reason && !"".equalsIgnoreCase(reason)){
+		 globalVarsMap.put("reason", reason);
+		 }else{
+		 globalVarsMap.put("reason","--"); 
+		 }
+		 
+		 if(null != submission.getOrgLocations().getOrg().getOrgName() && !"".equalsIgnoreCase(submission.getOrgLocations().getOrg().getOrgName())){
+		 globalVarsMap.put("clientOrgName", submission.getOrgLocations().getOrg().getOrgName());
+		 }else{
+		 globalVarsMap.put("clientOrgName","--"); 
+		 }
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 StringBuilder recipBuild = new StringBuilder();
+		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+		 emailRecipientList.add(emailRecipient);
+	
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTMAILFROMCLIENT_TO_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	   }
+	}
 
 }
-
 
