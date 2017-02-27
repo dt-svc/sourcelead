@@ -154,6 +154,9 @@ public class User implements Serializable{
 	private String country;
 	
 	@Transient
+	private String isPrimaryAdmin;
+
+	@Transient
     private String tempPwd;
 	
 	@Transient
@@ -476,4 +479,11 @@ public class User implements Serializable{
 		this.userUUID = userUUID;
 	}
 	
+	public String getIsPrimaryAdmin() {
+		return isPrimaryAdmin;
+	}
+
+	public void setIsPrimaryAdmin(String isPrimaryAdmin) {
+		this.isPrimaryAdmin = isPrimaryAdmin;
+	}
 }

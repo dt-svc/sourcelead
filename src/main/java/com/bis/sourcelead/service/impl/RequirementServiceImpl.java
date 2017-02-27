@@ -226,6 +226,7 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setCreatedBy(user.getUserCode());
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
+				requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			}
 		    
 			if(orgLocations != null){
@@ -449,7 +450,7 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			requirement.setStatus(Constants.TEAM_ACTIVE);
-			requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			
 			
 			//requirement status 
 			if(jsonObj.has("saveType")){            
