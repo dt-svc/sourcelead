@@ -762,6 +762,7 @@ function preparedVendorsListFromElk(data){
 		   	result = result +' <th>Website</th>';
 		   	result = result +'<th>Location</th>';
 		   	result = result +'<th>Tier</th>';
+		 	result = result +'<th>Created By</th>';
 		   	result = result +'<th>Released Jobs</th>';
 		   	result = result +'<th>No.of Contacts</th>';
 		   	/* result = result +'<th>Actions</th>'; */
@@ -825,6 +826,12 @@ function preparedVendorsListFromElk(data){
 		   		}
 				
 		   	    result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
+		   	    
+		   	 if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
+					result = result +' <td><div>'+report.createdBy+'</div></td>';
+			   	}else{
+			   		result = result +'<td><div>---</div></td>';
+			   	}
 				result = result +' <td><div id="releasedJobsCount'+report.orgRelationId+'">---</div></td>';
 				result = result +'<td><div >'+report.noContacts+'</div></td>';
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */

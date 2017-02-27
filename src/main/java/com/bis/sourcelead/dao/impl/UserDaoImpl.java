@@ -913,6 +913,8 @@ public class UserDaoImpl implements UserDao {
 			List<Long> ownersList) {
 		Session session = this.sessionFactory.getCurrentSession();
 		
+		List<User> userRoleList = null;
+		
 		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
 	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).setCacheable(true).list();
 	     
@@ -935,9 +937,13 @@ public class UserDaoImpl implements UserDao {
 	    	 
 	     }
 		 
-		 
-	     String query = "from User user where user.id NOT IN (:ownersList)and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))  ";
-	     List<User> userRoleList = session.createQuery(query.toString()).setParameterList("ownersList", ownersList).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
+	     if(null != ownersList && !ownersList.isEmpty()){
+	    	 String query = "from User user where user.id NOT IN (:ownersList) and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))  ";
+		     userRoleList = session.createQuery(query.toString()).setParameterList("ownersList", ownersList).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
+	     }else{
+	    	 String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))  ";
+		     userRoleList = session.createQuery(query.toString()).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
+	     }
 	     return userRoleList;
 	}
 	
