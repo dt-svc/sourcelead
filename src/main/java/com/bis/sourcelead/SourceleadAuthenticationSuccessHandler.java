@@ -15,9 +15,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
+import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserService;
 
@@ -34,13 +40,36 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 	@Autowired
 	UserService userService;
 	
+	 @Autowired
+	 NotificationsService notificationsService;
+	 
+	 @Autowired
+	 OrgSpocService orgSpocService;
+	
 	@Autowired
 	UserLoginLogoutSessionService userLoginLogoutSessionService;
 	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
+		ModelAndView model = new ModelAndView();
+		 String UUID = request.getParameter("UUID");
+		 String spocUUID = request.getParameter("spocUUID");
 		try{
+			 if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
+				 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
+				 if(null != notifications){
+					 notifications.setUserNotificationStatus("Accepted");
+					 notificationsService.saveNotification(notifications);
+				 }
+				 
+				 OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
+				 if(null != orgSpoc ){
+					 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+					 orgSpocService.addOrgSpoc(orgSpoc);
+				 }
+			 }
+			 
 			User loginUser = userService.findByUserName(authentication.getName());
 		    if(loginUser != null){
 		    	UserLoginLogoutSession userLoginSession = new UserLoginLogoutSession();
@@ -51,12 +80,16 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 			    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
 			    request.getSession().setAttribute("userLoginSession", userLoginSession);
 		    }
-		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 	    finally{
-	    	response.sendRedirect("/sourcelead/dashboard");
+	    	if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
+	    		response.sendRedirect("/sourcelead/dashboard?invitation=true");
+	    	}else{
+	    		response.sendRedirect("/sourcelead/dashboard");
+	    	}
 	    }
-	    
-		
 	}
 
 	public static String getClientIpAddr(HttpServletRequest request) {  

@@ -143,8 +143,8 @@ public class OrgSpocServiceTest {
 	}
 	
 	@Test
-	public void getSpocUserByUserId() throws Exception{
-		OrgSpoc orgSpoc = orgSpocService.getSpocUserByUserId(4l);
+	public void getSpocByClientOrVendorUserId() throws Exception{
+		OrgSpoc orgSpoc = orgSpocService.getSpocByClientOrVendorUserId(4l);
 		logger.info("retrieved sucessfully...."+orgSpoc.getSpocStatus());
 	}
 
