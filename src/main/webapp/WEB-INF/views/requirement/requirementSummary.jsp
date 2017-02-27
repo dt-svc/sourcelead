@@ -911,6 +911,10 @@ function sideBar(requirementId){
 function requirementDetails(requirementId){ 
 	$("#actionsDiv" ).hide();
 	  var sourceleadUrl = '${sourceleadUrl}';
+	  
+	  var isLoginUserAsTeamMember = '${isTeamMember}';
+	  var isLoginUserAsManager = '${isManager}';
+	  
 	  var requirementUUID = '${requirementUUID}'
 	  $.ajax({
         type : "POST",
@@ -952,7 +956,7 @@ function requirementDetails(requirementId){
 				            }
 				             */
 				             
-				            if( (json.requirementSubmissionStatus =='NEW'  || json.requirementSubmissionStatus =='DRAFT' || json.requirementSubmissionStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementSubmissionStatus =='REJECTED'  ||  json.requirementSubmissionStatus  == "OPEN" ||  json.requirementSubmissionStatus  == "ONHOLD" ) && ( json.isLoginUserAsTeamMember == "false" || ( json.isLoginUserAsTeamMember == "true" && json.isLoginUserAsApprover  == "true") || ( json.isLoginUserAsTeamMember == "true" && json.isLoginUserAsManager  == "true") ) ){ 
+				            if( (json.requirementSubmissionStatus =='NEW'  || json.requirementSubmissionStatus =='DRAFT' || json.requirementSubmissionStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementSubmissionStatus =='REJECTED'  ||  json.requirementSubmissionStatus  == "OPEN" ||  json.requirementSubmissionStatus  == "ONHOLD" ) && ( isLoginUserAsTeamMember == "false" || (isLoginUserAsTeamMember == "true" && json.isLoginUserAsApprover  == "true") || (isLoginUserAsTeamMember == "true" && isLoginUserAsManager  == "true") ) ){ 
 				            	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
 				            		result = result +' <a href="<c:url value="/requirement?requirementUUID='+requirementUUID+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
 				            	'</sec:authorize>';
@@ -1164,33 +1168,37 @@ function requirementDetails(requirementId){
 					            }
 				            }
 				            result = result +'     </div>';
-				            if(json.highestLevel == '1'){
-				            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view"> <b>Approvers:</b> <span>';
-				            	for (var i=0; i<json.approverNames.length; i++)
-				   				{
-				            	    if(json.approverNames[i] == json.approverNames[0]){
-				            	    	result = result +json.approverNames[i]; 
-				            	    }else{
-				            	    	result = result +","+json.approverNames[i]; 
-				            	    }
-				   				}
-				            	result = result +'</span>';
-				            	result = result +'</div>';
-				            }else{
-				            	for (var i=0; i<json.approverNames.length; i++)
-				   				{
-				            		var level = 1;
+				            
+				            //  Checking  for approval mechanism type  Parallel or Sequential
+				            if(json.approvalMechanismType != null && json.approvalMechanismType !='' && json.approvalMechanismType !='undefined'){
+				           
+					            if(json.approvalMechanismType == 'PARALLEL'){
+					            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view"> <b>Approvers:</b> <span>';
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
-					            		result = result +'<div class="require_wrap_details_cta require_wrap_details_view"> <b>Approvers '+level+':</b> <span>'; 
-					            		result = result +json.approverNames[i];
-					            		result = result +'</span>';
-					            		result = result +'</div>';
-					            		level = level+1;
+					            	    if(json.approverNames[i] == json.approverNames[0]){
+					            	    	result = result +json.approverNames[i]; 
+					            	    }else{
+					            	    	result = result +","+json.approverNames[i]; 
+					            	    }
 					   				}
-				   				}
-				            }
-				            
+					            	result = result +'</span>';
+					            	result = result +'</div>';
+					            }else{
+					            	for (var i=0; i<json.approverNames.length; i++)
+					   				{
+					            		var level = 1;
+						            	for (var i=0; i<json.approverNames.length; i++)
+						   				{
+						            		result = result +'<div class="require_wrap_details_cta require_wrap_details_view"> <b>Approvers '+level+':</b> <span>'; 
+						            		result = result +json.approverNames[i];
+						            		result = result +'</span>';
+						            		result = result +'</div>';
+						            		level = level+1;
+						   				}
+					   				}
+					            }
+				            }  
 				            
 				           /*  if(json.approverNames != null && json.approverNames != '' && json.approverNames != 'undefined'){
 					            result = result +'     <div class="require_wrap_details_cta"> <b>Approver1:</b> <span>'+json.approverNames+'</span>';
