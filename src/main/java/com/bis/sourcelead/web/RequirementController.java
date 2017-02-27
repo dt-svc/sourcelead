@@ -163,7 +163,17 @@ public class RequirementController {
 						orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
 					}
 				}*/
-			    model.addObject("clientContactList", clientContactList);
+				if(clientContactList.size() == 0 && null != requirement.getSpocId()){
+				OrgSpoc clientContactOrgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+				StringBuilder clientContactWithOwner = new StringBuilder();
+				if(null != clientContactOrgSpoc.getClientUser().getLastName() && !"".contentEquals(clientContactOrgSpoc.getClientUser().getLastName())){
+				    clientContactWithOwner.append(clientContactOrgSpoc.getClientUser().getFirstName()).append(clientContactOrgSpoc.getClientUser().getLastName()).append("(").append(clientContactOrgSpoc.getVendorUser().getFirstName()).append(")");
+				}else{
+					clientContactWithOwner.append(clientContactOrgSpoc.getClientUser().getFirstName()).append("(").append(clientContactOrgSpoc.getVendorUser().getFirstName()).append(")");
+				}
+				model.addObject("clientContactWithOwner", clientContactWithOwner);
+			   }
+				model.addObject("clientContactList", clientContactList);
 			}
 		    
 		    

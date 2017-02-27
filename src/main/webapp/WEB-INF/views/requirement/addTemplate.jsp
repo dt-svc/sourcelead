@@ -199,7 +199,7 @@ bottom:-14px;
 			<div class="form-footer clearfix">
 				<div class="col-lg-12">
 					<div class="pull-right">
-						<input type="button" value="Save" id="save"
+						<input type="button" value="Save" id="store_RequirementTemplate"
 							onclick="storeRequiremetTemplate();" class="btn btn-primary ml">
 						<input type="button" value="Cancel"
 							onClick="javascript:location.href = '<c:url value='/template'/>'"
@@ -240,6 +240,7 @@ bottom:-14px;
 			//It will escape all the special characters
 			$("#store_RequirementTemplate").attr("disabled", "disabled");
 			$("#store_RequirementTemplate").addClass('button').val('Processing..');
+			
 
 			$.ajax({
 						type : "POST",

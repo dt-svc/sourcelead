@@ -154,6 +154,8 @@ public class CandidateController {
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(null != countries){
 			   model.addObject("loginCountryName", countries.getName());
+			   model.addObject("currency", countries.getCurrency());
+			   
 			}
 	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 	        model.addObject("statesList", statesList);
