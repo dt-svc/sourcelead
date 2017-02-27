@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -147,20 +148,22 @@ public class RegistrationController {
 	 
 	 
 	 /**
-	  * @author Venkat I
+	  * @author Venkat I and Prasad salina(Modified)
 	  * This method calls when client or vendor accept the invitation or accept the notification.
 	  * @param respondingOrgType
 	  * @param actionLink
 	  * @param respondingPartyOrgLocationId
 	  * @return
+	 * @throws Exception 
 	  */
 	 
 	 @RequestMapping(value = "/acceptClientOrVendorInvitation")
-		public String acceptClientOrVendorInvitation(@RequestParam(value = "respondingOrgType", required = false) String respondingOrgType,
+		public void acceptClientOrVendorInvitation(@RequestParam(value = "respondingOrgType", required = false) String respondingOrgType,
 				@RequestParam(value = "actionLink", required = false) String actionLink,
 				@RequestParam(value = "UUID", required = false) String UUID,
 				@RequestParam(value = "respondingPartyOrgLocationId", required = false) Long respondingPartyOrgLocationId,
-				@RequestParam(value = "initiatingPartyOrgLocationId", required = false) Long initiatingPartyOrgLocationId) {
+				@RequestParam(value = "initiatingPartyOrgLocationId", required = false) Long initiatingPartyOrgLocationId,
+				@RequestParam(value = "spocUUID", required = false) String spocUUID,HttpServletResponse response) throws Exception {
 			
 		    Org org = null;
 		    OrgLocations orgLocations = null;
@@ -202,19 +205,6 @@ public class RegistrationController {
 			    	org.setModulesId(modules);
 			    	org.setStatus(Status.ACTIVE);
 					orgService.updateOrg(org);
-					
-					 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
-					 if(null != notifications){
-						 notifications.setUserNotificationStatus("Accepted");
-						 notificationsService.saveNotification(notifications);
-					 }
-					 
-					 /*OrgSpoc orgSpoc = orgSpocService.getSpocListByResponderLocationId(initiatingPartyOrgLocationId,respondingPartyOrgLocationId,respondingOrgType);
-					 if(null != orgSpoc ){
-						 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
-						 orgSpocService.addOrgSpoc(orgSpoc);
-					 }*/
-					 
 		    	}
 				 
 				
@@ -224,11 +214,23 @@ public class RegistrationController {
 		    
 		    
 			if(null == actionLink){
-				return "redirect:/login";
+				StringBuilder redirectUrl = new StringBuilder();
+				//return "redirect:/login";
+				response.sendRedirect(redirectUrl.append("/sourcelead/Inlogin?spocUUID=").append(spocUUID).append("&UUID=").append(UUID).toString());
 			}else{
 				 StringBuilder redirectUrl = new StringBuilder();
-				//return "redirect:/dashboard/"+respondingPartyOrgLocationId+"";
-				 return redirectUrl.append("redirect:/dashboard/").append(respondingPartyOrgLocationId).toString();
+				 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
+				 if(null != notifications){
+					 notifications.setUserNotificationStatus("Accepted");
+					 notificationsService.saveNotification(notifications);
+				 }
+				 
+				 OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
+				 if(null != orgSpoc ){
+					 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+					 orgSpocService.addOrgSpoc(orgSpoc);
+				 }
+				 response.sendRedirect(redirectUrl.append("/sourcelead/dashboard/").append(respondingPartyOrgLocationId).toString());
 			}
 			
 		}
@@ -311,6 +313,11 @@ public class RegistrationController {
 					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 					user.setUserState(userRole.getUserState());
 					user.setRole(userRole.getRoles().getDisplayName());
+					
+					if(null != userRole.getOrgLocations().getUser() && user.getId().equals(userRole.getOrgLocations().getUser().getId())){
+						user.setIsPrimaryAdmin("Y");
+					}
+					
 					orgUsersList.add(user);
 				}
 			}

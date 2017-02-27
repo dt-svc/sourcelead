@@ -1023,8 +1023,8 @@ function getVendorContactLists(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
-   		    	//preparedVendorContactList(data);
-   		    	preparedVendorContactListFromElk(data);
+   		    	preparedVendorContactList(data);
+   		    	//preparedVendorContactListFromElk(data);
    		    }
    		    	
 	 });

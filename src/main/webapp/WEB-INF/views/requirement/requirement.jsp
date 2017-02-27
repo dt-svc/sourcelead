@@ -417,7 +417,7 @@ $(document).ready(function () {
                  </c:if>
                 </select>
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
@@ -640,7 +640,7 @@ $(document).ready(function () {
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
-			   				<select class="chosen-select form-control" disabled="disabled" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
+			   				<select class="chosen-select form-control" disabled="disabled" data-validation-optional="true" field-name = "Client Contact" >
                       			 <c:if test="${fn:length(clientContactList) gt 0}">
 								   <c:forEach var="report" items="${clientContactList}">
 			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
@@ -648,7 +648,7 @@ $(document).ready(function () {
 					    		 </c:forEach>
 								</c:if>
                       			 <c:if test="${fn:length(clientContactList) lt 1}">
-					    		 	<option value=''>${clientContactWithOwner}</option>
+					    		 	<option >${clientContactWithOwner}</option>
 					    		 </c:if>
                     		</select>
 						 </c:when>
@@ -688,7 +688,7 @@ $(document).ready(function () {
 	                </select>
 	                
 	                </div>
-	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
+	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
 	                 <select disabled="disabled" class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Type" value="${requirement.clientRateType}" name="clientRateType">
 	                    
@@ -728,7 +728,7 @@ $(document).ready(function () {
                 </select>
 	                
 	                </div>
-	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
+	                <input type="text" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
 	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Type" value="${requirement.clientRateType}" name="clientRateType">
 	                    
@@ -1107,7 +1107,15 @@ $(document).ready(function () {
 			 $('#rateType').attr("data-validation","required"); 
 		 }else{
 			 $('#rateType').removeAttr('data-validation');
-			 $('#ratePer').attr("data-validation-optional","true"); 
+			 $('#rateType').attr("data-validation-optional","true"); 
+		 }
+		 var rateType = document.getElementById("rateType").value; 
+		 if(rateType != null && rateType != ""){
+			 $('#rate').removeAttr('data-validation-optional');
+			 $('#rate').attr("data-validation","required"); 
+		 }else{
+			 $('#rate').removeAttr('data-validation');
+			 $('#rate').attr("data-validation-optional","true"); 
 		 }
 		 
 		 var clientRate = document.getElementById("clientRate").value; 
@@ -1116,7 +1124,15 @@ $(document).ready(function () {
 			 $('#clientRateType').attr("data-validation","required"); 
 		 }else{
 			 $('#clientRateType').removeAttr('data-validation');
-			 $('#ratePer').attr("data-validation-optional","true"); 
+			 $('#clientRateType').attr("data-validation-optional","true"); 
+		 }
+		 var clientRateType = document.getElementById("clientRateType").value; 
+		 if(clientRateType != null && clientRateType != ""){
+			 $('#clientRate').removeAttr('data-validation-optional');
+			 $('#clientRate').attr("data-validation","required"); 
+		 }else{
+			 $('#clientRate').removeAttr('data-validation');
+			 $('#clientRate').attr("data-validation-optional","true"); 
 		 }
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			
@@ -1394,69 +1410,64 @@ function getCities(){
 	       $("#state").on('change', function (e) {
 	    	   getCities();
 	       });
-		       
+	       
+	       
 	     //Adding Customized Skills to the list
-           var select, chosen;
-           select = $("#skills");
-           select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-           chosen = select.data('chosen');
-           chosen.search_field.on('keyup', function(e)
-           {
-        	   var newSkill = this.value.replace(",","");
-               if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-               {
-                   var option = $("<option>").val(newSkill).text(newSkill);
-                   select.append(option);
-                   select.find(option).prop('selected', true);
-                   //to doesn't allow duplicates
-                   $("#skills option").each(function(){
-                         $(this).siblings("[value='"+ this.value+"']").remove();
-                   });
-                   //end
-                   $("#skills").trigger("chosen:updated");
-               }
-           });
-           //Adding Customized Skills to the list
-           
-            //Adding Customized Educations to the list
-	        var selectone, chosenone;
-	        selectone = $("#education");
-	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
-	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keyup', function(e1)
+	       var select, chosen;
+		    select = $("#skills");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Email:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keyup', function(e)
+		    {
+		    	   var skillsArray = this.value.split(",");
+			    	 if(skillsArray.length > 1){
+		        		 for (var i=0; i < skillsArray.length; i++) {
+		        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+		        			 select.append(option);
+		 		             select.find(option).prop('selected', true);
+		 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+		 	        		 $("#skills").trigger("chosen:updated");
+		                 }
+			    	 }else{
+		    			var newSkill = this.value.replace(","," ");
+		    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		                {
+		    				 var option = $("<option>").val(newSkill).text(newSkill);
+		                     select.append(option);
+		                     select.find(option).prop('selected', true);
+		                     $("#skills option").each(function(){
+		                         $(this).siblings("[value='"+ this.value+"']").remove();
+		                   });
+		                   $("#skills").trigger("chosen:updated");
+		                }
+				       
+	    	         }
+		    });
+		    
+		    
+		    
+		    //Adding Customized Educations to the list 
+		    var selectone, chosenone;
+		    selectone = $("#education");
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
+		    chosenone = selectone.data('chosen');
+		    chosenone.search_field.on('keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(newEducation).text(newEducation);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-		            
-		          //to doesn't allow duplicates
-	                   $("#education option").each(function(){
+		    	   if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+			        {
+		    		   var par = this.parent;
+			            var option = $("<option>").val(newEducation).text(newEducation);
+			            selectone.append(option);
+			            selectone.find(option).prop('selected', true);
+			            $("#education option").each(function(){
 	                         $(this).siblings("[value='"+ this.value+"']").remove();
 	                   });
-	                   //end
-		            
-	        		$("#education").trigger("chosen:updated");
-	        		
-		        }
-		    }); 
-		    //Adding Customized Educations to the list
-            
-	        
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			})
-			
-			
-			 
-            
+			            $("#education").trigger("chosen:updated");
+			        }
+		    
+		    });
+		    
             
 			/* upload file script */
 			document.getElementById("uploadBtn").onchange = function () {

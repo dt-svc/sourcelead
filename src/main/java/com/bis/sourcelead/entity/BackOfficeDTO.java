@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 
 public class BackOfficeDTO implements Serializable{
@@ -12,9 +13,19 @@ public class BackOfficeDTO implements Serializable{
 	private List<BoPaymentTypes> boPaymentTypesList;
 	
 	private List<Object> finalcialInstituesList;
+	
+	private HashMap<String,String> timesheetDivMap;
 
 	public List<BoPaymentTypes> getBoPaymentTypesList() {
 		return boPaymentTypesList;
+	}
+
+	public HashMap<String, String> getTimesheetDivMap() {
+		return timesheetDivMap;
+	}
+
+	public void setTimesheetDivMap(HashMap<String, String> timesheetDivMap) {
+		this.timesheetDivMap = timesheetDivMap;
 	}
 
 	public void setBoPaymentTypesList(List<BoPaymentTypes> boPaymentTypesList) {
@@ -28,7 +39,7 @@ public class BackOfficeDTO implements Serializable{
 	public void setFinalcialInstituesList(List<Object> finalcialInstituesList) {
 		this.finalcialInstituesList = finalcialInstituesList;
 	}
-
+ 
 	
     
 }

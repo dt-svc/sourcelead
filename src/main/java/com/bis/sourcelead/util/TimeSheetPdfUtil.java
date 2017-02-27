@@ -152,9 +152,9 @@ public class TimeSheetPdfUtil {
 		
 		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(frequencyStartDate, frequencyEndDate);
 		if(tabFrequency != null && !tabFrequency.isEmpty()){
-			 String billableHours = "";
-			 String nonBillableHours =  "";
-			 String grandTotalHours = "";
+			Double billableHours = 0d;
+			Double nonBillableHours =  0d;
+			Double grandTotalHours = 0d;
 			for (Map.Entry<String, String> entry : tabFrequency.entrySet()) {
 				 String key = entry.getKey();
 			     String value = entry.getValue();
@@ -168,15 +168,15 @@ public class TimeSheetPdfUtil {
 				 
 				 TimesheetSubmissions ts = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(weekStartDate, weekEndDate, projectMember.getId());
 				 if(null != ts){
-				 if(null != ts.getBillableHours()){
-					 billableHours = ts.getBillableHours();
-				 }
-				 if(null != ts.getNonBillableHours()){
-					 nonBillableHours = ts.getNonBillableHours();
-				 }
-				 if(null != ts.getTotalHours()){
-					 grandTotalHours =ts.getTotalHours();
-				 }
+					 if(null != ts.getBillableHours()){
+						 billableHours = billableHours+(Double.parseDouble(ts.getBillableHours())*60);
+					 }
+					 if(null != ts.getNonBillableHours()){
+						 nonBillableHours = nonBillableHours+(Double.parseDouble(ts.getNonBillableHours())*60);
+					 }
+					 if(null != ts.getTotalHours()){
+						 grandTotalHours = grandTotalHours+(Double.parseDouble(ts.getTotalHours())*60);
+					 }
 				 
 				 Long monTotHours = 0L;
 				 Long tueTotHours = 0L;
@@ -292,7 +292,11 @@ public class TimeSheetPdfUtil {
 								map.put(projectMember.getProjects().getProjectName(), hoursList);
 						  }
 					Long totalHours = monTotHours+tueTotHours+wedTotHours+thuTotHours+friTotHours+satTotHours+sunTotHours;
-					document =  prepareHeadres(projectMember.getEmployee().getUser(),frequencyStartDate,frequencyEndDate,file,submissionStatusStr,orgLocations,projectMember.getProjects().getProjectName(),billableHours,nonBillableHours,grandTotalHours);
+//					grandTotalHours = getTotalHours(totalHours);
+					String billable = getTotalHours(billableHours.longValue());
+					String nonBillable = getTotalHours(nonBillableHours.longValue());
+					String grandtotal = getTotalHours(grandTotalHours.longValue());
+					document =  prepareHeadres(projectMember.getEmployee().getUser(),frequencyStartDate,frequencyEndDate,file,submissionStatusStr,orgLocations,projectMember.getProjects().getProjectName(),billable,nonBillable,grandtotal);
 					int [] width2 = new int[]{5,5,5,5,5,5,5,5,5};
 					String[] headers2 = Constants.TIMESHEET_EXCEL_HEADERS2;
 					int [] width3 = new int[]{1};

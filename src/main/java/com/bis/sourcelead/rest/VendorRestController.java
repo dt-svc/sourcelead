@@ -390,7 +390,7 @@ public class VendorRestController {
 		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
 		 			orgSpocService.addOrgSpoc(spoc);
 		 			
-		 			userService.sendEmailToClientOrVendor(user, loginUser, password, responderType, loginOrg,orgRelations.getResponderLocationId().getOrg(),orgRelations.getResponderLocationId());
+		 			userService.sendEmailToClientOrVendor(spoc.getUUID(),user, null,loginUser, password, responderType, loginOrg,orgRelations.getResponderLocationId().getOrg(),orgRelations.getResponderLocationId());
 		 		}
 			
 		 	  return "success";
@@ -1146,12 +1146,13 @@ public class VendorRestController {
 		 @RequestMapping(value = "/getVendorFilterListsElK", method = RequestMethod.POST)
 		 public String getVendorFilterListsElK(@RequestParam(value = "responderType", required = false) String responderType,@RequestParam(value = "values", required = false) String values, HttpServletRequest request) throws Exception {
 
-			   
+				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		  
+			 
 				 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				
 				 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 				 
-				 
+				 String type= responderType;
 				 if("Vendor".equalsIgnoreCase(responderType)){
 					 responderType = "Client";
 				 }else if("Client".equalsIgnoreCase(responderType)){
@@ -1190,9 +1191,16 @@ public class VendorRestController {
 						//  This is to get the number of Contacts based  on Org Relation Id
 						 BoolQueryBuilder forNumberOfContacts= QueryBuilders.boolQuery();
 						 forNumberOfContacts.must(QueryBuilders.matchQuery("orgRelationId", clientVendor.getOrgRelationId()));
-						 
-						 Long numberOfContacts = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,0,forNumberOfContacts).getTotalHits();
-						 clientVendor.setNoContacts(numberOfContacts);
+						 List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(clientVendor.getOrgRelationId(), loginUser.getId(),loginOrgLocation.getId(),type);
+						if(!orgSpocsList.isEmpty()){
+							 Long contactSize = (long) orgSpocsList.size();
+							 clientVendor.setNoContacts(contactSize);
+						}
+						else{
+							clientVendor.setNoContacts(0L);
+						}
+						/* Long numberOfContacts = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,0,forNumberOfContacts).getTotalHits();
+						 clientVendor.setNoContacts(numberOfContacts);*/
 						 
 						if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 							
