@@ -502,7 +502,7 @@ function getInternalInterviewsList(submissionId){
 	   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
 	   					     }
 	   					  }
-	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
+	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.interviewTimezoneDateStr+' '+report.interviewTimeZoneStartTimeStr+' </span></h2>';
 	                    	result = result + '<div class="content clearfix">';
 	                    	
 	                    	 result = result + '<div id="feedbackdiv'+report.interviewId.id+'" class="require_wrap_table demo" style="display:none;">';
