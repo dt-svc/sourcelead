@@ -446,13 +446,7 @@ function getInternalInterviewsList(submissionId){
          url: sourceleadUrl+"/getAllInternalInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
+            	
 	                	 $("#internalInterviewsList").empty();
 	                	 var result = "";
                     	 result = result + '<div class="clearfix">';
@@ -580,7 +574,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<strong>Time</strong>';
 	                    	 result = result + '</label>';
                              if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
-                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'('+report.interviewId.timezone.timeZoneId+')</p>';
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'</p>';
 	                    	 }else{
 	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
 	                    	 }
@@ -646,7 +640,6 @@ function getInternalInterviewsList(submissionId){
 	                             $(this).toggleClass('active').next().slideDown('slow');
 	                         }
 	                     });
-			    	} 
               }/* else{
 	    	         var result ="";
 					 $("#internalInterviewsList").empty();
@@ -732,13 +725,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
          url: sourceleadUrl+"/getAllCustomerInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementId="+requirementId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
+            		
 	                	 $("#customerInterviewsList").empty();
 	                	 var result = "";
                     	 result = result + '<div class="clearfix">';
@@ -821,7 +808,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 result = result + '<strong>Time</strong>';
 	                    	 result = result + '</label>';
                              if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
-                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'('+report.interviewId.timezone.timeZoneId+')</p>';
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'</p>';
 	                    	 }else{
 	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
 	                    	 }
@@ -858,7 +845,6 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                             $(this).toggleClass('active').next().slideDown('slow');
 	                         }
 	                     });
-			    	} 
               }/* else{
 	    	         var result ="";
 					 $("#customerInterviewsList").empty();
@@ -882,13 +868,7 @@ function getOfferDetails(submissionId){
          url: sourceleadUrl+"/getOfferDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
          success :function(data) {
          if(data != null && data != 'undefined' && data != "" && data != '{}'){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
+            		
             			 $("#offerDetails").empty();
             			 var json = JSON.parse(data);
             			 for (var i = 0; i < json.length; i++) { 
@@ -1065,7 +1045,6 @@ function getOfferDetails(submissionId){
 		                         }
 		                     });
 			    	} 
-                }
          } else{
 				  $("#offerDetails").empty();
                }
