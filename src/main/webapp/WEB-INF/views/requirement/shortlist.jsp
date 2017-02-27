@@ -7,7 +7,7 @@
 
 <script>
 function candidateShortList(requirementId){
-	
+	$('.action-pop').slideUp();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var result = "";
 	var status = "SUBMISSION";

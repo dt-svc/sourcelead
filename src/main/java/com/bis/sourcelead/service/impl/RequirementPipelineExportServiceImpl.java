@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionCounts;
 import com.bis.sourcelead.service.RequirementPipelineExportService;
@@ -191,7 +192,21 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		 }
 		 
 		 //client contact name related code start
-		 if(requirementsub.getRequirement().getSpocId().getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
+		 if(requirementsub.getRequirement().getId() != null){
+			 if(requirementsub.getRequirement().getSpocId().getId() != null){
+				 if(requirementsub.getRequirement().getSpocId().getOwnerUser().getId() != null){
+					 StringBuilder spocSB = new StringBuilder();
+					 if(requirementsub.getRequirement().getSpocId().getClientUser().getLastName() != null ){
+						 writeRow.createCell(13).setCellValue(spocSB.append(requirementsub.getRequirement().getSpocId().getClientUser().getFirstName()).append(" ").append(requirementsub.getRequirement().getSpocId().getClientUser().getLastName()).toString());
+					 }else{
+						 writeRow.createCell(13).setCellValue(spocSB.append(requirementsub.getRequirement().getSpocId().getClientUser().getFirstName()).toString());
+					 }
+				 }
+			 }
+		 }
+		 
+		 
+		 /*if(requirementsub.getRequirement().getSpocId().getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
 			 if(requirementsub.getRequirement().getId() != null){
 				 if(requirementsub.getRequirement().getSpocId().getId() != null){
 					 if(requirementsub.getRequirement().getSpocId().getOwnerUser().getId() != null){
@@ -221,7 +236,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			 }
 			
 				
-		}
+		}*/
 		 //client contact name related code end
 	}
 		return createExcelsheet;
@@ -407,6 +422,22 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		if (requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())) {
 			writeRow.createCell(3).setCellValue(requirementsub.getWorkExperience());
 		}
+		
+		java.util.List<RequirementInterview> rquirementInterviews = requirementsub.getRequirementInterviewList();
+		StringBuilder interviewStringBuilder = new StringBuilder();
+		for(RequirementInterview listInterviews:rquirementInterviews){
+			if(listInterviews.getDateOfInterview() != null && !"".equalsIgnoreCase(listInterviews.getDateOfInterview().toString())){
+				writeRow.createCell(4).setCellValue( Constants.DMY.format(listInterviews.getDateOfInterview()));
+			}
+			if(listInterviews.getStartTimeStr() != null && !"".equalsIgnoreCase(listInterviews.getStartTimeStr()) && listInterviews.getEndTimeStr() != null && !"".equalsIgnoreCase(listInterviews.getEndTimeStr())){
+				writeRow.createCell(5).setCellValue(  interviewStringBuilder.append(listInterviews.getStartTimeStr()).append("-").append(listInterviews.getEndTimeStr()).toString());
+			}else if(listInterviews.getStartTimeStr() != null && !"".equalsIgnoreCase(listInterviews.getEndTimeStr())){
+				writeRow.createCell(5).setCellValue(  interviewStringBuilder.append(listInterviews.getStartTimeStr()).toString());
+			}
+			if(listInterviews.getLocation() != null && !"".equalsIgnoreCase(listInterviews.getLocation())){
+				writeRow.createCell(6).setCellValue( listInterviews.getLocation());
+			}
+	}
 		return createExcelsheet;
 
 	}

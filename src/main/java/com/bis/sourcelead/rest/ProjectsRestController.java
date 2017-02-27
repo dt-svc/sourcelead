@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -97,6 +98,9 @@ public class ProjectsRestController {
 	 @Autowired
 	 SourceleadELKBaseIndexer<ProjectsIndex> sourceleadELKBaseIndexer;
 	 
+	 @Autowired
+	 ProjectTasksService projectTasksService;
+	 
 	 /**
 	  * This method for save the  project by json
 	  * @param json
@@ -157,7 +161,20 @@ public class ProjectsRestController {
 			return resultJson;
 	    }
 		
-
+  //to validate Task Name
+	 @RequestMapping(value = "/taskNameValidation" , method = RequestMethod.GET)
+	 public @ResponseBody  Boolean taskNameValidation(@RequestParam(value="TaskName", required=false) String TaskName,@RequestParam(value="ProjectId", required=false) Long projectId,
+			 @RequestParam(value="taskId", required=false) Long taskId,HttpServletRequest request) throws Exception {
+		    ProjectTasks projectTasks = null;
+	       if(null != projectId){
+	    	   projectTasks = projectTasksService.validateTaskNameByTaskId(taskId, TaskName, projectId);
+	       }
+	       Boolean flag = false;
+	       if(null == projectTasks){
+	    	   flag = projectsService.validateTasksName(TaskName,projectId);
+	       }
+			return flag;
+	   }
 
 	@RequestMapping(value = "/sourceLeadTasks")
 	public String sourceLeadTasks() throws Exception {
@@ -312,7 +329,6 @@ public class ProjectsRestController {
 	 public @ResponseBody  Boolean validateTasksNameById(@RequestParam(value="TaskName", required=false) String TaskName,@RequestParam(value="ProjectId", required=false) Long projectId, HttpServletRequest request) throws Exception {
 		    return projectsService.validateTasksName(TaskName,projectId);
 	   }
-	 
 	 
 	   protected static boolean isNullOrEmpty(String str) {
 			return str == null || "".equals(str.trim());

@@ -39,8 +39,8 @@ function usersListCheck(searchValue,searchResult){
 	if(searchResult == 'searchresult'){
 		getUsersSearchResult(searchValue);
 	}else{
-		//getUsersList('manual');
-		searchUser("manual");
+		getUsersList('manual');
+		//searchUser("manual");
 	}
 }
 </script>
@@ -217,7 +217,7 @@ function getUsersSearchResult(searchValue){
        
        
        
-       <div class="positionRelative pull-left mt10">
+       <div class="positionRelative pull-left">
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           <li><i class="fa fa-filter"></i>&nbsp;
@@ -243,8 +243,8 @@ function getUsersSearchResult(searchValue){
 		 <li>
 			  <a href="javascript:void(0)">
 			  <i class="fa fa-user"></i></a>
-				<span class="action-search"><input type="text" placeholder="Email" id="searchByName"></span>
-				<span class="action-search" onclick="searchUser('manual');"><i class="fa fa-search"></i></span>
+				<span class="action-search"><input type="text" placeholder="Email/Name" id="searchByName"></span>
+				<span class="action-search" onclick="getUsersList('manual');"><i class="fa fa-search"></i></span>
 		  </li> 
 		
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
@@ -253,8 +253,8 @@ function getUsersSearchResult(searchValue){
 		  
 		   <sec:authorize access="hasRole('ROLE_EXPORT_USERS')"> 
 		   <li><a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
-			    <div class="export_pop">
-				   <ul>
+			    <div id="exportPop" class="user_exp">
+				   <ul class="ul_padding">
 				   <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
 				   <li onclick="exportUserData();"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
 				   </ul>
@@ -325,7 +325,7 @@ function cancel(){
 <script>
 function flushAdvancedData(){
 	 $("#user_forms")[0].reset();
-	 searchUser("manual");
+	 getUsersList("manual");
 }
 </script>
   
@@ -422,8 +422,8 @@ function exportToPdf(){
 	    	
 	    	avilableCount = parseInt(avilableCount) + parseInt(10); 
 	    	$("#usersOffset").val(avilableCount);
-	    	searchUser("scroll");
-	    	 //getUsersList("scroll");
+	    	//searchUser("scroll");
+	    	 getUsersList("scroll");
 	    }
 	});
 </script>
@@ -438,7 +438,7 @@ function exportToPdf(){
 			  if (e.keyCode == 13) {
 			    $('input[name = searchByName]').click();
 				 $("#user_forms")[0].reset();
-				 searchUser("manual");
+				 getUsersList("manual");
 			  }
 			});
   </script> 
@@ -457,12 +457,16 @@ function exportToPdf(){
 		
 		if(type == "scroll"){
 			offset = $("#usersOffset").val();
+			var searchByName =  document.getElementById("searchElement").innerHTML
     	}
 		
 		if(type == "manual"){
-    		$('#usersListBody').empty();
+			$('#usersListBody').empty();
     		$("#usersOffset").val(0);
-    		offset = 0;
+    		$("#searchElement").val("");
+    		var searchByName = document.getElementById("searchByName").value;
+   		     $('#searchElement').append(searchByName);
+    		 offset = 0;
     	}
 		
 		type
@@ -476,100 +480,98 @@ function exportToPdf(){
             	 var json = JSON.parse(data);
             	 var result = "";
           if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
-        	  if(json.length > 0)	
-  	   		{
-  	    		$('#loadMoreDiv').empty(); 
-  	 			for(var i=0; i<json.length; i++){
-  	 				
-  			 				var userRole = json[i];
-  			 				var mobilePhone = ""
-  			 				var lastName = ""
-  			 			    if(userRole.mobilePhone != null && userRole.mobilePhone != ''){
-  			 			    	mobilePhone = userRole.mobilePhone;
-  			 			    }else{
-  			 			    	mobilePhone = "No Data"
-  			 			    }
-  			 				if(userRole.lastName != null && userRole.lastName != ''){
-  			 					lastName = userRole.lastName;
-  			 			    }else{
-  			 			    	lastName = " "
-  			 			    }
-  			       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
-  			       	    	result = result +"<div class='user-profile'>";
-  			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
-  			       	    	result = result +"<div class='text-center image-parent'>";
-  			       	    	result = result +"<div class='imageParent'>";
-  			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
-  			       	    	result = result +"</div>";
-  			       	    	
-  			       	    	
-  			       	    	result = result +"</div>";
-  			       	    	result = result +"</div>";
-  			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
-  			       	    	
-  			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-  			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
-  			       	    	'</sec:authorize>';
-  			       	    	
-  			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-  		       	         	   result = result +"<h4><a href='#'> "+userRole.firstName+" " " "+lastName+"</a> </h4>";
-  		       	    	    '</sec:authorize>';
-  			       	    	
-  			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.email+"'> "+userRole.email+"</span></lable></p>";
-  			       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
-  			       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp;<span title='"+userRole.userType+"'> "+userRole.userType+"</span></label></p>";
-  			       	        
-  			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N' && userRole.userStatus != 'INACTIVE'){
-  			       	    	  result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p>";
-  			 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
-  			 			    		(userRole.userStatus != null && userRole.userStatus != "" && userRole.userStatus == 'NOT_LOGGEDIN') ){
-  			 			    	 result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p>";
-  			 			    }else if(userRole.userStatus != null && userRole.userStatus != "" && userRole.userStatus == 'ACTIVE'){
-  			 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
-  			 			    }else if(userRole.userStatus != null && userRole.userStatus != "" && userRole.userStatus == 'INACTIVE'){
-  			 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
-  			 			    } 
-  			       	    	
-  			       	    	result = result +"</div>";
-  			       	    	result = result +"<div class='clearfix'></div>";
-  			       	    	result = result +"</div>";
-  			       	    	result = result +"</div>";
-  			       	    	$("#loading").removeAttr("style"); 
-  			       	    	$('#usersListBody').append(result);
-  		            		$("#searchByName").val("");
-  			       	    	/* if(type == "manual"){
-  			            		$('#usersListBody').append(result);
-  			            		 $("#searchByName").val("");
-  			            	}else{
-  			            		$('#usersListBody').append(result);
-  			            		 $("#searchByName").val("");
-  			            	} */
+	       	
+	    	if(json.length > 0)	
+	   		{
+	    		$('#loadMoreDiv').empty(); 
+	 			for(var i=0; i<json.length; i++){
+	 				
+			 				var userRole = json[i];
+			 				var mobilePhone = ""
+			 			    
+			 			    if(userRole.user.mobilePhone != null && userRole.user.mobilePhone != ''){
+			 			    	mobilePhone = userRole.user.mobilePhone;
+			 			    }else{
+			 			    	mobilePhone = "No Data"
+			 			    }
+			 				
+			       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
+			       	    	result = result +"<div class='user-profile'>";
+			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
+			       	    	result = result +"<div class='text-center image-parent'>";
+			       	    	result = result +"<div class='imageParent'>";
+			       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
+			       	    	result = result +"</div>";
+			       	    	
+			       	    	
+			       	    	result = result +"</div>";
+			       	    	result = result +"</div>";
+			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
+			       	    	
+			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
+			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.userName+"'> "+userRole.userName+"</span> </a> </h4>";
+			       	    	'</sec:authorize>';
+			       	    	
+			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
+		       	         	   result = result +"<h4><a href='#'> "+userRole.userName+" </a> </h4>";
+		       	    	    '</sec:authorize>';
+			       	    	
+			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.userEmail+"'> "+userRole.userEmail+"</span></lable></p>";
+			       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
+			       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp;<span title='"+userRole.userRoleName+"'> "+userRole.userRoleName+"</span></label></p>";
+			       	        
+			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N' && userRole.userState != 'INACTIVE'){
+			       	    	  result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p>";
+			 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
+			 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
+			 			    	 result = result +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p>";
+			 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
+			 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
+			 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
+			 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
+			 			    } 
+			       	    	
+			       	    	result = result +"</div>";
+			       	    	result = result +"<div class='clearfix'></div>";
+			       	    	result = result +"</div>";
+			       	    	result = result +"</div>";
+			       	    	$("#loading").removeAttr("style"); 
+			       	    	if(type == "manual"){
+			            		$('#usersListBody').append(result);
+			            		 $("#searchByName").val("");
+			            	}else{
+			            		$('#usersListBody').append(result);
+			            		 $("#searchByName").val("");
+			            	}
+			
+	       	    	
 
-  				   }
-  	 			result = result + '<div class="clear"></div>';
-  	 			$("#noUsers").val("")
-  	   		    }
-            } else if(type == "scroll"){
+				   }
+	 			result = result + '<div class="clear"></div>';
+	 			$("#noUsers").val("")
+	   		    }
+            }else if(type == "scroll"){
             	$("#noUsers").val("nousers")
             	$('#loadMoreDiv').empty(); 
             	$("#loading").removeAttr("style");
-	         	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No More Records..</div>';
+            	var result ="";
+	         	result = result + '<div id="loadMoreDiv" >No More Records..</div>';
 	         	$('#loadMoreDiv').append(result);
-            } else{
-            	  $("#usersListBody").removeAttr("style");
-              	  $('#usersListBody').empty();
-	              $('#loadMoreDiv').empty(); 
-	              $("#loading").removeAttr("style");
-                  var result ="";
-               	  result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No  Records..</div>';
-               	  $('#usersListBody').append(result);
-              }
+            }else{
+            	$("#noUsers").val("nousers")
+            	$('#loadMoreDiv').empty(); 
+            	$("#loading").removeAttr("style");
+            	var result ="";
+	         	result = result + '<div id="loadMoreDiv" >No  Records..</div>';
+	         	$('#loadMoreDiv').append(result);
+            }
 	    	
 			 },
 	        error: function(e){
 	        }
 	    });  
-	}
+
+ }
 </script>
 
 
@@ -608,18 +610,17 @@ var validationSettings = {
 	function searchUser(type) {
 		if(type == "scroll"){
 			offset = $("#usersOffset").val();
-			var searchByName =  document.getElementById("searchElement").innerHTML
+			var searchByName =  document.getElementById("searchElement").innerHTML 
     	}
 		
 		if(type == "manual"){
     		$('#usersListBody').empty();
     		$("#usersOffset").val(0);
-    		$("#searchElement").val("");
+    	 	$("#searchElement").val("");
     		var searchByName = document.getElementById("searchByName").value;
    		     $('#searchElement').append(searchByName);
     		 offset = 0;
     	}
-		
 		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	    var userRole = document.getElementById("userRole").value;
 		/* var searchByName = document.getElementById("searchByName").value; */
@@ -773,7 +774,7 @@ function getUserSummary(userId){
 		    	$('#loadMoreDiv').empty(); 
 		    	$("#loading").removeAttr("style");
 		    	var result ="";
-		     	result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No More Records..</div>';
+		     	result = result + '<div id="loadMoreDiv" >No More Records..</div>';
 		     	$('#loadMoreDiv').append(result);
 		    }
 			  else{
@@ -782,7 +783,7 @@ function getUserSummary(userId){
 		      	  $('#loadMoreDiv').empty(); 
 		          $("#loading").removeAttr("style");
 		          var result ="";
-		       	  result = result + '<div id="loadMoreDiv" ><i class="fa fa-spinner"></i>No  Records..</div>';
+		       	  result = result + '<div id="loadMoreDiv" >No  Records..</div>';
 		       	  $('#usersListBody').append(result);
 		      }
   }
@@ -806,17 +807,15 @@ function getUserSummary(userId){
 <script>
   $("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');
-  $(document).ready(function() {
 	   $("#export-pop").click(function(){
-	               $(".export_pop").slideToggle(200);
+	               $("#exportPop").toggle();
 	       });
 	   $("html").click(function() {
-	       $(".export_pop").slideUp(200);
+	       $("#exportPop").hide();
 	   });
-	   $(".export_pop, #export-pop").click(function(e) {
+	   $("#exportPop, #export-pop").click(function(e) {
 	       e.stopPropagation();
 	   });        
-	});  
 </script> 
 <script type="text/javascript">
     	   var config = {

@@ -97,6 +97,8 @@ public class Constants {
 	public static String EMAIL_TO_USERS = "EmailToUsers";
 	public static String EMAIL_CAMPAIGN = "EmailCampaign";
 	
+	public static String CLIENTORVENDORMAIL = "ClientOrVendorMail";
+	
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
 
@@ -275,7 +277,7 @@ public class Constants {
 	public static String UPDATE_PASSWORD = "Update Password";
 	public static String MAIL_PROJECT_MANAGER = "Mail To Project Manager";
 	
-
+	public static String REJECTMAILFROMCLIENT_TO_VENDOR = "RejectMailFromClient_To_Vendor";
 
 	public static String CONTACTS = "CONTACTS";
 	public static String VENDORSTYPE = "VENDORS";
@@ -363,7 +365,7 @@ public class Constants {
 
     public static String[] REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS ={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","ShortListed By","ShortListed On"};
     
-    public static String[] REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS={"Name","Email","Phone No","Experience"};
+    public static String[] REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS={"Name","Email","Phone No","Experience","DateOfInterview","TimeOfInterview","Location"};
     
     public static String[] REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS={"Name","Email","Phone No","Experience","OfferDateJoining","Position","Offer Rate","Offerd Date","Attachment"};
     
@@ -490,10 +492,13 @@ public class Constants {
     public static String USERS = "Users"; 
 
     public static String CLIENTS_CONTACTS_IMPORT_XLS = "clients_contacts_Import.xls";
+    public static String CLIENTS_CONTACTS_IMPORT_XLSX = "clients_contacts_Import.xlsx";
     public static String CLIENTS_IMPORT_TEMPLATE_XLS = "clients_import_template.xls";
     public static String CLIENTS_IMPORT_TEMPLATE_XLSX = "clients_import_template.xlsx";
+    
     public static String VENDORS_CONTACTS_IMPORT_XLS = "vendors_contacts_Import.xls";
+    public static String VENDORS_CONTACTS_IMPORT_XLSX = "vendors_contacts_Import.xlsx";
     public static String VENDORS_IMPORT_TEMPLATE_XLS = "vendors_import_template.xls";
     public static String VENDORS_IMPORT_TEMPLATE_XLSX = "vendors_import_template.xlsx";
    
-}
+}	

@@ -21,6 +21,7 @@
 
 <script>
 function submitToClient(requirementId){
+	$('.action-pop').slideUp();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var result = "";
 	'<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
@@ -321,7 +322,7 @@ function addEmailtemplate(requirementId){
 		        success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	result = result +'<section class="clearfix">';
-		        	result = result +'<div id="loading"></div>';
+		        	result = result +'<div id="loadingDiv"></div>';
 		        	result = result +'<form id="submitToClientMailTemplate" name="submitToClient" enctype="multipart/form-data">';
 		        	result = result +'<section class="content-header clearfix">';	
 					result = result +'  <div class="pull-left">';
@@ -553,7 +554,7 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate){
     		var formData = new FormData(form); 
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#sendMail").addClass('button').val('Processing..');
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+     		$("#loadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 				$.ajax({
 					 type : "POST",
 					 data: formData,

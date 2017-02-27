@@ -317,6 +317,18 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
+//						for(String keywd : invoiceFrequencyArray){
+						if(keywd.equalsIgnoreCase("Weekly")){
+							anyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Weekly"));
+							anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Bi-Weekly"));
+						}else if(keywd.equalsIgnoreCase("Monthly")){
+							anyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Monthly"));
+							anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Semi-Monthly"));
+						}
+//						else{
+//							invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", keywd));
+//						}
+//					}
 					}
 					 boolQueryBuilder.must(anyBoolQueryBuilder);
 				}
@@ -400,6 +412,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 	 private Requirement getData(RequirementIndex requirementIndex) {
 		 Requirement requirement = new Requirement();
 		requirement.setId(requirementIndex.getRequirementId());
+		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());
      	requirement.setJobId(requirementIndex.getJobId());
      	requirement.setJobType(requirementIndex.getJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
@@ -624,6 +637,13 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 								}
 								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 							}
+							if(Constants.WEEKLY.equalsIgnoreCase(keywd)){
+								anyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Weekly"));
+								anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Bi-Weekly"));
+							}else if(Constants.MONTHLY.equalsIgnoreCase(keywd)){
+								anyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Monthly"));
+								anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Semi-Monthly"));
+							}
 						}
 						 projectBoolQueryBuilder.must(anyBoolQueryBuilder);
 					}
@@ -676,7 +696,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 					}
-					 boolQueryBuilder.must(anyBoolQueryBuilder);
+					 candidateBoolQueryBuilder.must(anyBoolQueryBuilder);
 				}
 //				if(allKeyWordArrayForCandidate != null && !allKeyWordArrayForCandidate.isEmpty()){
 //					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();

@@ -123,4 +123,7 @@ public interface UserDao {
 	User getUserByEmailAndUserType(String email,String userType) throws Exception;
 	
 	User getUserByUserName(String userName) throws Exception;
+
+	List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long orgLocationsId, Long tabId,
+			List<Long> ownersList);
 }

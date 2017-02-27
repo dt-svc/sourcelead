@@ -172,6 +172,28 @@ public class RegistrationRestController {
 	   }
 	 
 	 
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @RequestMapping(value = "/changePrimaryAdmin" , method = RequestMethod.POST)
+	 public  String changePrimaryAdmin(@RequestParam(value="userId", required=false) Long userId,
+			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
+		 	
+		 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		 User user = new User();
+		 user.setId(userId);
+		 
+		 orgLocations.setUser(user);
+		 
+		 Org org = orgLocations.getOrg();
+		 org.setUser(user);
+		 
+		 orgLocationService.updateOrgLocations(orgLocations);
+		 orgService.addOrganization(org);
+		 	
+		 return "success";
+	   }
+	 
+	 
+	 
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/editOrgPrimaryUser" , method = RequestMethod.POST)
