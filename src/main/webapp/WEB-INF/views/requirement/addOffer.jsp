@@ -17,7 +17,7 @@
 <!-- For add New Interview -->
 <script>
 function addOffer(requirementId){
-	
+	$('.action-pop').slideUp();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var clientSubmissions = '${clientSubmissions}';
 	

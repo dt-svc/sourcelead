@@ -43,6 +43,11 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	}
 
 	@Override
+	public ProjectTasks validateTaskNameByTaskId(Long taskId, String taskName,Long projectId) throws Exception {
+		return tasksDao.validateTaskNameByTaskId(taskId,taskName,projectId);
+	}
+	
+	@Override
 	public Boolean deleteTask(String id) throws Exception {
 		Boolean status = tasksDao.deleteTask(id);
 		return status;

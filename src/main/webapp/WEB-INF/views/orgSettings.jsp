@@ -240,7 +240,7 @@ function cancelOrgImg(){
 							</div>
 							
 							<div class="form-group">
-				            <label class="col-md-3">Time Zone ${orgLocations.timezone.timeZoneId}<span class="text-danger">&nbsp;*</span></label>
+				            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
 				            <div class="col-md-9">
 								 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Timezone" data-validation="required" id="timeZone" name="timeZone">
 									 <option value="" >Select Timezone</option>
