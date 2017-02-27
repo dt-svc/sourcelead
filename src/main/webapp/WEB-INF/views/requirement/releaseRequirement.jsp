@@ -77,57 +77,9 @@
 	  <!-- Accordion First Tab Ends -->
 
       <!-- Accordion second Tab -->
-        <div class="clearfix">
+        <!-- <div class="clearfix">
           <h2 onclick="opennetwork();">Open Network</h2>
           <div class="content clearfix" >
-            <!-- <div class="row">
-              <div class="col-md-12">
-                <div class="panel panel-success">
-                  <div class="panel-heading ">Selected Job Boards</div>
-                  <div class="panel-body">
-                    <ul class="list-unstyled list-inline sl-jobboard">
-                      <li class="bg-dice">
-                        <label class="radio-inline">
-                          <input type="radio" name="optradio">
-                          <span><img src="images/dice.jpg" alt="dice" title="Dice"></span> </label>
-                      </li>
-                      <li>
-                        <label class="radio-inline">
-                          <input type="radio" name="optradio">
-                          <span><img src="images/monster.jpg" alt="Monster" title="Monster"></span> </label>
-                      </li>
-                      <li>
-                        <label class="radio-inline">
-                          <input type="radio" name="optradio">
-                          <span><img src="images/naukri.jpg" alt="Naukri" title="Naukri"></span> </label>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="panel panel-info">
-                  <div class="panel-heading">Select Social Networks</div>
-                  <div class="panel-body">
-                    <ul class="list-unstyled list-inline connet-socialicons">
-                      <li class="bg-facebook">
-                        <label class="checkbox-inline">
-                          <input type="checkbox" name="checkbox">
-                          <span><i class="fa fa-facebook-square"></i>FaceBook</span> </label>
-                      </li>
-                      <li class="bg-linked">
-                        <label class="checkbox-inline">
-                          <input type="checkbox" name="checkbox">
-                          <span><i class="fa fa-linkedin-square"></i>LinkedIn</span> </label>
-                      </li>
-                      <li class="bg-twitter">
-                        <label class="checkbox-inline">
-                          <input type="checkbox" name="checkbox">
-                          <span><i class="fa fa-twitter-square"></i>Twitter</span> </label>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div> -->
             <div class="row">
               <div class="col-md-6">
                 <div class="row">
@@ -155,7 +107,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       <!-- Accordion second Tab Ends -->
       </div>
       <div class="form-footer clearfix row mt">
