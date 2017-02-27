@@ -78,4 +78,6 @@ public interface CandidateResumesService {
 	
 	public void saveOrUpdateCandidateElkDocumentWithResumeDetails(Candidate candidate) throws Exception;
 	
+	public CandidateResumes getCandidateResumeByResumeUUID(String resumeUUID) throws Exception;
+	
 }
