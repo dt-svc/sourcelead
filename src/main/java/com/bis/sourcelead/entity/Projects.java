@@ -191,6 +191,9 @@ public class Projects implements Serializable{
     
     @Transient
 	private Integer assignedEmpCount;
+    
+    @Transient
+    private String createdByName;
 
 	public Long getId() {
 		return id;
@@ -567,5 +570,13 @@ public class Projects implements Serializable{
 
 	public void setManagerLevel2UserType(String managerLevel2UserType) {
 		this.managerLevel2UserType = managerLevel2UserType;
+	}
+
+	public String getCreatedByName() {
+		return createdByName;
+	}
+
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
 	}
 }

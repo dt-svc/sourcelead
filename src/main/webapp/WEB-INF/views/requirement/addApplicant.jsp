@@ -24,7 +24,7 @@
 <!-- For add New Applicant -->
 <script>
 function getAddApplicant(requirementId){
-	
+	$('.action-pop').slideUp();
 	var sourceleadUrl ='${sourceleadUrl}';
 	generateOrgSubmissionForm(sourceleadUrl,requirementId)
 	var result = "";

@@ -146,7 +146,7 @@
 						result = result + '<div class="clearfix"></div>';
 
 						result = result	+ '<div class="project_details_cta">';
-						result = result	+ '<strong>Created By:</strong><span title="'+json.createdBy+'">'+json.createdBy+'</span><div class="clearfix"></div>';
+						result = result	+ '<strong>Created By:</strong><span title="'+json.createdByName+'">'+json.createdByName+'</span><div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result	+ '<div class="project_details_cta">';
 						result = result	+ '<strong>Created date:</strong><span title="'+json.createdDateStr+'">'+json.createdDateStr+'</span><div class="clearfix"></div>';
@@ -369,18 +369,16 @@
 						result = result + "<option value=''>Select</option>";
 						for (var i = 0; i < json.clientName.length; i++) {
 							var managers = json.clientName[i];
-							var projrctmanager = managers.split('&');
+							var projrctmanager = managers.split(',');
 							var name = projrctmanager[0];
 							var id = projrctmanager[1];
 							var selected = '';
+							alert("json.relationId>>>>>>>"+managers);
 							if (json.relationId == id) {
 								selected = 'selected';
-								result = result
-										+ "<option value="+id+" "+selected+" >"
-										+ name + "</option>";
+								result = result + "<option value="+id+" "+selected+" >"+name+ "</option>";
 							} else {
-								result = result + "<option value="+id+" >"
-										+ name + "</option>";
+								result = result + "<option value="+id+" >"+name+ "</option>";
 							}
 
 						}

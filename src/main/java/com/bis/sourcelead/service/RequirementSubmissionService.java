@@ -172,4 +172,6 @@ public interface RequirementSubmissionService {
 	
 	RequirementSubmission getRequirementSubmissionByRequirementIdAndCandidateId(Long requirementId,Long candidateId) throws Exception;
 
+	void sendRejectionMailToVendorContact(User user, String reason, Long submissionId, OrgLocations orgLocations) throws Exception;
+
 }

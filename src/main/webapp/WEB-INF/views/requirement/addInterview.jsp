@@ -28,6 +28,7 @@ padding:0!important;
 
 <script>
 function addInterview(requirementId){
+	$('.action-pop').slideUp();
 	interviewTemplate();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
@@ -247,11 +248,7 @@ function selectInterviewApplicants(){
 </div>
 
 <div id="divTaskTd5" style="display: none; float: left;">
-   	 <select class="form-control" id="REPLACEROWIDtimeZone" name="REPLACEROWIDtimeZone" field-name="timezone">
-		<%-- <option value="">--Select Time Zone--</option>
-		  <c:forEach var="option" items="${timezoneList}">
-				<option value="${option.id}">${option.timeZoneId}</option>
-		 </c:forEach> --%>
+   	 <select class="form-control" id="REPLACEROWIDtimeZone" name="REPLACEROWIDtimeZone" field-name="Timezone" data-validation="required">
 	</select>
 </div>
 
