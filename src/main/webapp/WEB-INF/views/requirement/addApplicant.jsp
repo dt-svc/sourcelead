@@ -205,6 +205,13 @@ function ApplicantPermit(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType != 'New' && candidateType != 'parseCandidate'){
 		 $("#selectCandidateDiv").css("display","block");
+		
+		 var skillsDiv = document.getElementById('skillsDiv'); 
+		 if(skillsDiv != null){
+			 document.getElementById("skillsDiv").style.display="none";
+			 $("#candidateSkills").val('').trigger("chosen:updated");
+		 }
+		 
 		 if(requirementId != null && requirementId != "" && requirementId != 'undefined'){
 			 $.ajax({
 			    	type: "POST",
@@ -256,6 +263,7 @@ function ApplicantPermit(){
 			 
 			 document.getElementById("newResumeDiv").style.display="none";
 			 document.getElementById("skillsDiv").style.display="";
+			 $("#candidateSkills").val('').trigger("chosen:updated");
 			 $('#newUploadFile').removeAttr('data-validation');
 			 $('#newUploadFile').attr("data-validation-optional","true"); 
 	     }else if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'New'){
@@ -265,6 +273,7 @@ function ApplicantPermit(){
 	    	 
 	    	 document.getElementById("newResumeDiv").style.display="";
 	    	 document.getElementById("skillsDiv").style.display="";
+	    	 $("#candidateSkills").val('').trigger("chosen:updated");
 			 $('#newUploadFile').removeAttr('data-validation-optional');
 			 $("#newUploadFile").attr("data-validation", "required validatedoc");
 			 
