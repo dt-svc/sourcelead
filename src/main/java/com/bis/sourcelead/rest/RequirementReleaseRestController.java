@@ -350,11 +350,11 @@ public class RequirementReleaseRestController {
 				}
 			}
 			
-			if(null != isPublics && !"".equalsIgnoreCase(isPublics)){
+			if(null != isPublics && !"".equalsIgnoreCase(isPublics) && "undefined" == isPublics){
 				parentRequirement.setIsPublic(isPublics);
 				parentRequirement.setPostedOrgName(org.getOrgName());
 			}
-			if(null != isCrowdScourcing && !"".equalsIgnoreCase(isCrowdScourcing)){
+			if(null != isCrowdScourcing && !"".equalsIgnoreCase(isCrowdScourcing) && "undefined" == isCrowdScourcing){
 				parentRequirement.setIsCrowdSourcing(isCrowdScourcing);
 				parentRequirement.setPostedOrgName(org.getOrgName());
 			}
