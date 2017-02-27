@@ -3016,7 +3016,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTMAILTOCLIENT_FROM_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTMAILFROMCLIENT_TO_VENDOR,Constants.ENTITY_TYPE_EMAIL);
 
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
