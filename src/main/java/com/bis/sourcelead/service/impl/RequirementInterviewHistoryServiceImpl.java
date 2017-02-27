@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -62,8 +63,8 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	public List<RequirementInterviewHistory> getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,OrgLocations orgLocation) throws Exception {
 		logger.debug("In RequirementInterviewServiceImpl class getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId method...");
 		
-		List<RequirementInterviewHistory> interviewslist = null;
-		interviewslist = requirementInterviewHistoryDao.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocation.getId());
+		List<RequirementInterviewHistory> ineterviewList = new ArrayList<RequirementInterviewHistory>();
+		List<RequirementInterviewHistory> interviewslist  = requirementInterviewHistoryDao.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocation.getId());
 		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		if (interviewslist != null && !interviewslist.isEmpty() ) {
 			for (RequirementInterviewHistory interviewHistory : interviewslist) {
@@ -169,9 +170,10 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 					i++;
 				}
 				interviewHistory.setInterviewersList(InterviewersList);
+				ineterviewList.add(interviewHistory);
 			}
 		}
-		return interviewslist;
+		return ineterviewList;
 	}
 	
 	@Override

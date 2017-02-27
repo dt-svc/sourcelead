@@ -189,6 +189,10 @@ public class RequirementSubmission implements Serializable{
    	private Long resumeId;
     
     @Transient
+   	private String resumeUUID;
+    
+    
+    @Transient
    	private ApplicantSubmissionStatus requirementStage;
     
 	@Transient
@@ -943,5 +947,13 @@ public class RequirementSubmission implements Serializable{
 
 	public void setUpdatedUser(String updatedUser) {
 		this.updatedUser = updatedUser;
+	}
+
+	public String getResumeUUID() {
+		return resumeUUID;
+	}
+
+	public void setResumeUUID(String resumeUUID) {
+		this.resumeUUID = resumeUUID;
 	}
 }
