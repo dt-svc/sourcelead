@@ -472,9 +472,9 @@ public class DashboardRestController {
 				
 				//changed as per the timezone
 				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
-				if(null != interviewHistory.getInterviewId().getTimezone().getTimeZoneId()){
+				if(null != timezone.getTimeZoneId()){
 					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
-					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,interviewHistory.getInterviewId().getTimezone().getTimeZoneId(), currentTimeStr);
+					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 					Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
 					currentDateInTimezone = standardFormat.format(converteDate);
 					interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);

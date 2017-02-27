@@ -123,6 +123,43 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Transient
 	private String  requirementUUID;
 	
+	@Transient
+	private String interviewTimeZoneStartTimeStr;
+	
+	@Transient
+	private String interviewTimeZoneEndTimeStr;
+	
+	@Transient
+	private String interviewTimezoneDateStr;
+	
+	
+	
+	public String getInterviewTimeZoneStartTimeStr() {
+		return interviewTimeZoneStartTimeStr;
+	}
+
+	public void setInterviewTimeZoneStartTimeStr(String interviewTimeZoneStartTimeStr) {
+		this.interviewTimeZoneStartTimeStr = interviewTimeZoneStartTimeStr;
+	}
+
+	public String getInterviewTimeZoneEndTimeStr() {
+		return interviewTimeZoneEndTimeStr;
+	}
+
+	public void setInterviewTimeZoneEndTimeStr(String interviewTimeZoneEndTimeStr) {
+		this.interviewTimeZoneEndTimeStr = interviewTimeZoneEndTimeStr;
+	}
+
+
+
+	public String getInterviewTimezoneDateStr() {
+		return interviewTimezoneDateStr;
+	}
+
+	public void setInterviewTimezoneDateStr(String interviewTimezoneDateStr) {
+		this.interviewTimezoneDateStr = interviewTimezoneDateStr;
+	}
+
 	public Long getId() {
 		return id;
 	}
