@@ -391,17 +391,17 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 		
 		@Override
 		@Transactional
-		public Integer getAllClientContactsCountForCampaignByOrgLocationId(Long userId,Long orgLocationId) throws Exception {
+		public Integer getAllClientContactsCountForCampaignByOrgLocationId(Long orgRelationId,Long userId,Long orgLocationId) throws Exception {
 		   
 			Session session = this.sessionFactory.getCurrentSession();
 			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(userId,orgLocationId);
 			List<Long> spocsList = null;
 			if (isadmin) {
-				 Query query= session.createQuery(" select count(*) from OrgSpoc spoc where ((spoc.orgRelations.locationId = :orgLocationId and spoc.orgRelations.initiatorType = :relationType ) or (spoc.orgRelations.responderLocationId = :orgLocationId and spoc.orgRelations.responderType = :relationType )) and spoc.status = '1' and (spoc.spocStatus = 'Active' OR spoc.spocStatus = 'Contracted') ");
-	              spocsList = query.setLong("orgLocationId", orgLocationId).setString("relationType", "Vendor").setCacheable(true).list();
+				 Query query= session.createQuery(" select count(*) from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and ((spoc.orgRelations.locationId = :orgLocationId and spoc.orgRelations.initiatorType = :relationType ) or (spoc.orgRelations.responderLocationId = :orgLocationId and spoc.orgRelations.responderType = :relationType )) and spoc.status = '1' and (spoc.spocStatus = 'Active' OR spoc.spocStatus = 'Contracted') ");
+	              spocsList = query.setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setString("relationType", "Vendor").setCacheable(true).list();
 			}else{
-				 Query query= session.createQuery("select count(*) from OrgSpoc spoc where (spoc.vendorUser.id = :loginUserId OR spoc.clientUser.id =:loginUserId) and ((spoc.orgRelations.locationId = :orgLocationId and spoc.orgRelations.initiatorType = :relationType ) or (spoc.orgRelations.responderLocationId = :orgLocationId and spoc.orgRelations.responderType = :relationType ))  and spoc.status = '1' and (spoc.spocStatus = 'Active' OR spoc.spocStatus = 'Contracted') ");
-	              spocsList = query.setLong("orgLocationId", orgLocationId).setString("relationType", "Vendor").setLong("loginUserId", userId).setCacheable(true).list();
+				 Query query= session.createQuery("select count(*) from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and (spoc.vendorUser.id = :loginUserId OR spoc.clientUser.id =:loginUserId) and ((spoc.orgRelations.locationId = :orgLocationId and spoc.orgRelations.initiatorType = :relationType ) or (spoc.orgRelations.responderLocationId = :orgLocationId and spoc.orgRelations.responderType = :relationType ))  and spoc.status = '1' and (spoc.spocStatus = 'Active' OR spoc.spocStatus = 'Contracted') ");
+	              spocsList = query.setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setString("relationType", "Vendor").setLong("loginUserId", userId).setCacheable(true).list();
 			}
                  
 	        	Integer count = 0;
