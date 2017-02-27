@@ -269,7 +269,7 @@ public class RolesDaoImpl implements RolesDao{
         String subQuery = "";
 		
         if("slead".equalsIgnoreCase(org.getOrgCode())){
-			subQuery = "and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' ";
+			subQuery = "and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' and roles.roleName != 'ROLE_CROWDSOURCING_PROFESSIONAL' and roles.roleName != 'ROLE_CROWDSOURCING_RECRUITER' ";
 		}
         
 	    String query = "from Roles roles where roles.orgLocations.id = :orgLocationId and roles.status = '1'  "+subQuery+" ";
