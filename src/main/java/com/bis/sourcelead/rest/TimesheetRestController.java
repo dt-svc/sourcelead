@@ -1377,12 +1377,16 @@ public class TimesheetRestController {
 								String timesheetEntriesId = jsonObj.getString(c+"timesheetEntriesId");
 								if(!isNullOrEmpty(timesheetEntriesId)){
 									timesheetEntries.setId(Long.parseLong(timesheetEntriesId));
-								}	
+								}
+								else{
+									timesheetEntries.setCreatedBy(loginUser.getCreatedBy());
+								}
 						    } 
 							timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
 							timesheetEntries.setStartDate(startDate);
 							timesheetEntries.setEndDate(startDate);
 							timesheetEntries.setCreatedDate(CommonUtil.currentDate());
+							timesheetEntries.setUpdatedBy(loginUser.getCreatedBy());
 							timesheetEntries.setUpdatedDate(CommonUtil.currentDate());
 							ProjectTasks projectTasks = new ProjectTasks();
 						   if (jsonObj.has(c+"task1Id")){
