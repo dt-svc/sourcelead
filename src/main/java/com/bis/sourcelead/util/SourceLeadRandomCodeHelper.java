@@ -28,6 +28,11 @@ public class SourceLeadRandomCodeHelper {
 		return UUID;
 	}
 	
+	public static String generateRandomUUID() {
+		String UUID = RandomStringUtils.randomAlphanumeric(8);
+		return UUID;
+	}
+	
 	public static String generateSubmissionXlsRandomCode() {
 		String xlsCode = RandomStringUtils.randomNumeric(4);
 		return xlsCode;
