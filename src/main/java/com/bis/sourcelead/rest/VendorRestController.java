@@ -1152,7 +1152,7 @@ public class VendorRestController {
 				
 				 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 				 
-				 String repType1= responderType;
+				 String type= responderType;
 				 if("Vendor".equalsIgnoreCase(responderType)){
 					 responderType = "Client";
 				 }else if("Client".equalsIgnoreCase(responderType)){
@@ -1191,7 +1191,7 @@ public class VendorRestController {
 						//  This is to get the number of Contacts based  on Org Relation Id
 						 BoolQueryBuilder forNumberOfContacts= QueryBuilders.boolQuery();
 						 forNumberOfContacts.must(QueryBuilders.matchQuery("orgRelationId", clientVendor.getOrgRelationId()));
-						 List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(clientVendor.getOrgRelationId(), loginUser.getId(),loginOrgLocation.getId(),repType1);
+						 List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(clientVendor.getOrgRelationId(), loginUser.getId(),loginOrgLocation.getId(),type);
 						if(!orgSpocsList.isEmpty()){
 							 Long contactSize = (long) orgSpocsList.size();
 							 clientVendor.setNoContacts(contactSize);
