@@ -204,30 +204,34 @@ public class ProjectsDashboardRestController {
 	 }
 	 
 
-	/**
-	 * update project task by task id	 
-	 * @author David Sammeta
-	 * @param taskId
-	 * @param fieldName
-	 * @param fieldValue
-	 * @return String
-	 * @throws Exception
-	 */
-	 
+	 /**
+	  * @author Laxman
+	  * update the tasks
+	  * @param json
+	  * @param taskId
+	  * @return success
+	  * @throws Exception
+	  */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT_TASKS')")
-	 @RequestMapping(value = "/updateProjectTaskById", method = RequestMethod.POST)
-	 public String updateProjectTaskById(@RequestParam(value="taskId", required=false) String taskId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue) throws Exception{ 
-		    
+	 @RequestMapping(value = "/updateEditProjectTask", method = RequestMethod.POST)
+	 public String updateEditProjectTask(@RequestParam(value="json", required=false) String json,
+			 @RequestParam(value="taskId", required=false) String taskId) throws Exception{ 
+		    String  json1 = "{"+json+"}";	
+		    JSONObject jsonObj = new JSONObject(json1);
 		    ProjectTasks projectTasks = tasksService.getTasksId(taskId);
-		    if("taskName".equalsIgnoreCase(fieldName)){  
-		    	projectTasks.setTaskName(fieldValue);
+		    if(jsonObj.has("taskName")){
+		    	projectTasks.setTaskName(jsonObj.getString("taskName"));
 		    }
-		    else if ("description".equalsIgnoreCase(fieldName)) {
-		    	projectTasks.setDescription(fieldValue);
-			}     
+		    if(jsonObj.has("description")){
+		    	projectTasks.setDescription(jsonObj.getString("description"));
+		    }
+		    if(jsonObj.has("billableType")){
+		    	projectTasks.setBillableType(jsonObj.getString("billableType"));	
+		    }
 		    tasksService.updateTasks(projectTasks);
-		    return null;
+		    return "success";
 	  }
+	 
 	 
 	 /**
 	  * save the projects task
@@ -265,24 +269,6 @@ public class ProjectsDashboardRestController {
 			 return resultJson;
 		 	
 	 }
-	 
-	 /** update billableType of project task
-	  * @author Prasad Salina
-	  * @param taskId
-	  * @param billableType
-	  * @return
-	  * @throws Exception
-	  */
-	 @RequestMapping(value = "/updateTakBillableType", method = RequestMethod.POST)
-	 @ResponseBody String updateTakBillableType(@RequestParam(value = "taskId", required = false) String taskId,@RequestParam(value="billableType", required=false) String billableType) throws Exception{
-		    ProjectTasks projectTasks = tasksService.getTasksId(taskId);
-		    if(null != projectTasks){
-		    	projectTasks.setBillableType(billableType);
-		    	tasksService.updateTasks(projectTasks);
-		    }
-		    return "success";
-		}
-	 
 	 
 	/**
 	 * Get Employees list based on project id

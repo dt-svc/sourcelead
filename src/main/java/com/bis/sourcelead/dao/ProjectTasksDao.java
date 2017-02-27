@@ -25,4 +25,6 @@ public interface ProjectTasksDao {
     public List<ProjectTasks> getAllTasksByProjectIdAndExistedProjectTaskIds(Long projectId,List<Long> avilableProjectTaskIds)throws Exception;
      
     public List<ProjectTasks> getAllSourceleadTasks()throws Exception;
+    
+    public ProjectTasks validateTaskNameByTaskId(Long taskId,String taskName,Long projectId)throws Exception;
 }

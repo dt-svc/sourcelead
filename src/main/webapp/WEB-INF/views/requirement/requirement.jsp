@@ -640,7 +640,7 @@ $(document).ready(function () {
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
-			   				<select class="chosen-select form-control" disabled="disabled" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
+			   				<select class="chosen-select form-control" disabled="disabled" data-validation-optional="true" field-name = "Client Contact" >
                       			 <c:if test="${fn:length(clientContactList) gt 0}">
 								   <c:forEach var="report" items="${clientContactList}">
 			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
@@ -648,7 +648,7 @@ $(document).ready(function () {
 					    		 </c:forEach>
 								</c:if>
                       			 <c:if test="${fn:length(clientContactList) lt 1}">
-					    		 	<option value=''>${clientContactWithOwner}</option>
+					    		 	<option >${clientContactWithOwner}</option>
 					    		 </c:if>
                     		</select>
 						 </c:when>
