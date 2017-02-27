@@ -1427,7 +1427,6 @@ function getVendorContactListsELK(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var responderType = "Client";
-
 	
 	  $.ajax({
 		   	type: "POST",
@@ -1562,6 +1561,9 @@ function listChange(sel){
 		 document.getElementById("vendorContactList_paginate").style.display="none";
 		 document.getElementById("vendorContactList_info").style.display="none";
 		 document.getElementById("vendorContactList_filter").style.display="none";
+		 document.getElementById("filter1ApprovePop").style.display="none";
+		 document.getElementById("filter3ApprovePop").style.display="none";
+		 document.getElementById("filter4ApprovePop").style.display="none";
 		 
 		/*  getClientDetails(); */
 		 getClientDetailsELK();
@@ -1582,6 +1584,9 @@ function listChange(sel){
 		'<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENT_CONTACTS\')">'; 
 		 document.getElementById("ContactImports").style.display="block";
 		'</sec:authorize> ';	 
+		document.getElementById("filter1ApprovePop").style.display="block";
+		 document.getElementById("filter3ApprovePop").style.display="block";
+		 document.getElementById("filter4ApprovePop").style.display="block";
 		 
 		/*  getVendorContactLists(); */
 		 getVendorContactListsELK();
@@ -2205,6 +2210,27 @@ $('#selector').delay(2000).fadeOut('slow');
 	});
 </script>
  -->
+ 
+ <script type="text/javascript">	
+	function clearSearchKeys(){
+	 
+	    $("#tierAdvanced").val('').trigger("chosen:updated");
+	    $("#phoneNumberAdvanced").val('').trigger("chosen:updated");
+	    $("#ownerAdvanced").val('').trigger("chosen:updated");
+	    $("#clientsAdvanced").val('').trigger("chosen:updated");
+	    $("#orgAdvanced").val('').trigger("chosen:updated");
+	    $("#statusAdvanced").val('').trigger("chosen:updated");
+	    $("#invitationAdvanced").val('').trigger("chosen:updated");
+	    $("#contactNameAdvanced").val('').trigger("chosen:updated");
+	    $("#emailAdvanced").val('').trigger("chosen:updated");
+	    $("#orgNameAdvanced").val('').trigger("chosen:updated");
+	    $("#citySearch").empty();
+	    $("#stateSearch").empty();
+	    $("#countrySearch").empty();
+	}
+</script>
+
+
 
 <script type="text/javascript">
 	function searchClient() {
@@ -2250,8 +2276,9 @@ $('#selector').delay(2000).fadeOut('slow');
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
-						document.getElementById("search_client").reset();
+						document.getElementById("clientlist_form").reset();
 						closePop();
+						clearSearchKeys();
 						preparedClientListFromElk(data);
 					},
 				}); 
@@ -2270,8 +2297,11 @@ $('#selector').delay(2000).fadeOut('slow');
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
-						document.getElementById("search_client").reset();
-						closePop();
+						/*  $('#clientlist_form').closest('form').find("input[type=text], textarea").val(""); */
+						/* document.getElementById("search_client").reset(); */
+						closePop(); 
+						clearSearchKeys();
+					
 						preparedClientContactListFromElk(data);
 					},
 				}); 

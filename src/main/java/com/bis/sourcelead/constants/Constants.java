@@ -492,9 +492,12 @@ public class Constants {
     public static String USERS = "Users"; 
 
     public static String CLIENTS_CONTACTS_IMPORT_XLS = "clients_contacts_Import.xls";
+    public static String CLIENTS_CONTACTS_IMPORT_XLSX = "clients_contacts_Import.xlsx";
     public static String CLIENTS_IMPORT_TEMPLATE_XLS = "clients_import_template.xls";
     public static String CLIENTS_IMPORT_TEMPLATE_XLSX = "clients_import_template.xlsx";
+    
     public static String VENDORS_CONTACTS_IMPORT_XLS = "vendors_contacts_Import.xls";
+    public static String VENDORS_CONTACTS_IMPORT_XLSX = "vendors_contacts_Import.xlsx";
     public static String VENDORS_IMPORT_TEMPLATE_XLS = "vendors_import_template.xls";
     public static String VENDORS_IMPORT_TEMPLATE_XLSX = "vendors_import_template.xlsx";
    

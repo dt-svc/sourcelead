@@ -851,6 +851,32 @@ function init(){
 }
 </script>
 
+
+<script type="text/javascript">
+function setRateTypesByLocation(){
+	var country = '${SourceLeadWeb_country}';
+	if(country == 'India'){
+		$('#currentCTCRateType').val('INR');
+		$('#expectedCTCRateType').val('INR');
+	}else if(country == 'Australia'){
+		$('#currentCTCRateType').val('AUD');
+		$('#expectedCTCRateType').val('AUD');
+	}else if(country == 'United States'){
+		$('#currentCTCRateType').val('USD');
+		$('#expectedCTCRateType').val('USD');
+	}else if(country == 'Singapore'){
+		$('#currentCTCRateType').val('SGD');
+		$('#expectedCTCRateType').val('SGD');
+	}else if(country == 'United Kingdom'){
+		$('#currentCTCRateType').val('GBP');
+		$('#expectedCTCRateType').val('GBP');
+	}else if(country == 'France'){
+		$('#currentCTCRateType').val('EUR');
+		$('#expectedCTCRateType').val('EUR');
+	}
+}
+</script>
+
 <script>
   function dobDatePicker() {
 	  $('#DOB').datepicker({
