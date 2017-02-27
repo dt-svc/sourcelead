@@ -133,4 +133,23 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		List<RequirementRefer> referList = session.createQuery(query.toString()).setString("email", email).setCacheable(true).list();
         return referList;
 	}
+
+	@Override
+	@Transactional
+	public List<RequirementRefer> getReferedToMeRequirementsByUserId(Long userId,Integer offset,Integer maxResults) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = " from RequirementRefer refer left join fetch refer.referToUser left join fetch refer.referFromUser left join fetch refer.requirementId requirement "
+				+ "where refer.referToUser.id = :userId and requirement.requirementSubmissionStatus = 'OPEN' ";
+		List<RequirementRefer> referList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+		
+		if(referList.size() >= offset){
+				if(referList.size() > offset + maxResults){
+					return   referList.subList(offset, (offset+maxResults));
+				}else{
+					return   referList.subList(offset, (offset + (referList.size() - offset)));
+				}
+		}
+		
+        return referList;
+	}
 }

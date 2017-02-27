@@ -217,4 +217,9 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		return requirementReferDao.getRequirementReferListByEmail(email);
 	}
 
+	@Override
+	public List<RequirementRefer> getReferedToMeRequirementsByUserId(Long userId,Integer offset,Integer maxResults) throws Exception {
+		return requirementReferDao.getReferedToMeRequirementsByUserId(userId,offset,maxResults);
+	}
+
 }

@@ -116,7 +116,9 @@ public class CrowdSourcingRequirementsRestController {
 	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	    df.setTimeZone(TimeZone.getTimeZone("GMT"));
 	    
-	     BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+	    if(isNullOrEmpty(referJobType) || (!isNullOrEmpty(referJobType) && !referJobType.equalsIgnoreCase("ReferredToMe"))){
+	    
+	    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 	     if(requirementType.equalsIgnoreCase("OpenJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isPublicJob", "Y"));
 	    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
@@ -210,7 +212,7 @@ public class CrowdSourcingRequirementsRestController {
 	 	    			  requirementIndex.setRequirementAppliedDate(Constants.DF_YMD.format(submission.getCreatedDate()));
 	 	    		   }
 	 	    	   }
-	 	    	    
+	 	    	    requirementIndex.setNoOfSearchHits(searchHits.length);
 	 	    	    requirementList.add(requirementIndex);
 	 	    	}
 	 	    }
@@ -218,10 +220,82 @@ public class CrowdSourcingRequirementsRestController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	     
+	    
+	    
+	    }else{
+	    	
+	    	 if(referJobType.equalsIgnoreCase("ReferredToMe")){
+    			 List<RequirementRefer> referedToRequirementList = requirementReferService.getReferedToMeRequirementsByUserId(user.getId(), offset,Constants.MAX_RESULTS_TEN);
+    			 if(null != referedToRequirementList && referedToRequirementList.size() > 0){
+    				 for(RequirementRefer refer : referedToRequirementList){
+    					 RequirementIndex requirementIndex = new RequirementIndex();
+    					 requirementIndex.setRequirementId(refer.getRequirementId().getId());
+    					 requirementIndex.setJobTitle(refer.getRequirementId().getJobTitle());
+    					 requirementIndex.setJobId(refer.getRequirementId().getJobId());
+    					 requirementIndex.setPostedOrg(refer.getRequirementId().getPostedOrgName());
+    					 requirementIndex.setJobType(refer.getRequirementId().getJobType());
+    					 requirementIndex.setJobId(refer.getRequirementId().getJobId());
+    					 requirementIndex.setMinExperience(refer.getRequirementId().getMinExp());
+    					 requirementIndex.setMaxExperience(refer.getRequirementId().getMaxExp());
+    					 requirementIndex.setCountry(refer.getRequirementId().getCountry());
+    					 requirementIndex.setState(refer.getRequirementId().getState());
+    					 requirementIndex.setCity(refer.getRequirementId().getCity());
+    					 if(!isNullOrEmpty(refer.getRequirementId().getRate())){
+    						 requirementIndex.setRate(Float.parseFloat(refer.getRequirementId().getRate()));
+    					 }
+    					
+    					 requirementIndex.setRateType(refer.getRequirementId().getRateType());
+    					 
+    					 if(!isNullOrEmpty(refer.getRequirementId().getSkills())){
+    						 String[] skills = refer.getRequirementId().getSkills().split(",");
+    						 List<String> skillsList = new ArrayList<String>();
+    						 for(int i = 0 ; i < skills.length; i++ ){
+    							 skillsList.add(skills[i]);
+    						 }
+        					 requirementIndex.setSkillsList(skillsList);
+    					 }
+    					 
+    					  if(!isNullOrEmpty(refer.getRequirementId().getAppliedProfessionals())){
+    	 	    			  List<Long> userId = new ArrayList<Long>();
+    		 					for (String s : refer.getRequirementId().getAppliedProfessionals().split(",")){
+    		 						userId.add(Long.parseLong(s));
+    		 					 }
+    		 					boolean flag = userId.contains(user.getId());
+    		 					if(flag == true){
+    		 						requirementIndex.setIsJobApplied(Constants.YES);
+    		 					}else{
+    		 						requirementIndex.setIsJobApplied(Constants.NO);
+    		 					} 
+    	 	    		     }else{
+    	 	    			    requirementIndex.setIsJobApplied(Constants.NO);
+    	 	    		      }
+    					  
+    					  StringBuilder referedUser = new StringBuilder();
+    					  if(!isNullOrEmpty(refer.getReferFromUser().getLastName())){
+    						  referedUser = referedUser.append(refer.getReferFromUser().getFirstName()).append(" ").append(refer.getReferFromUser().getLastName());
+    					  }else{
+    						  referedUser = referedUser.append(refer.getReferFromUser().getFirstName());
+    					  }
+    					  requirementIndex.setReferedUser(referedUser.toString());
+    					  requirementIndex.setReferId(refer.getId());
+    					  
+    					  requirementIndex.setNoOfSearchHits(referedToRequirementList.size());
+    					  DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    					  requirementIndex.setCreatedDate(dateFormat.format(refer.getRequirementId().getCreatedDate()));
+    					 
+    					 requirementList.add(requirementIndex);
+	    			 } 
+    			 }else{
+    				 isELKSearchEnable = false;
+    			 }
+    			 
+    		 }
+	    }
+	    
 	    if(requirementList != null){
 			calculateDaysAndSkills(requirementList);
 		}
+	   
 	    resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
 	}
@@ -379,7 +453,7 @@ public class CrowdSourcingRequirementsRestController {
 			 	    			  requirementIndex.setRequirementAppliedDate(Constants.DF_YMD.format(submission.getCreatedDate()));
 			 	    		   }
 			 	    	   }
-			 	    	    
+			 	    	    requirementIndex.setNoOfSearchHits(searchHits.length);
 			 	    	    requirementList.add(requirementIndex);
 			 	    	}
 			 	    }

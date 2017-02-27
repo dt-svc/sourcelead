@@ -257,6 +257,7 @@ window.onload = function () {
 	    <input type="hidden" name="requirementSearchOffset" id="requirementSearchOffset" value="0"/>
 	  <div id="requirementsList"></div> 
 	  <a href="#" id="loadMoreSection" style="display: none;"><section class="loadJob" onclick="getViewMoreRecords();"><i id="viewMoreLoading"></i><span id="viewMore">View more</span></section></a>
+	   <a href="#" id="noMoreRecordsSection" style="display: none;"><section class="loadJob"><span id="viewMore">No Records Found</span></section></a>
 	  <a href="#" id="loadMoreSearchSection" style="display: none;"><section class="loadJob" onclick="getViewMoreSearchRecords();"><i id="viewMoreSearchLoading"></i><span id="viewSearchMore">View more</span></section></a>
 	  
 	 <div class="side_mask"><div class="proj_close"></div></div>
@@ -648,7 +649,7 @@ function requirementsList(offset){
 				 				
 				 				
 				 				if(requirementType == "CrowdSourcingJobs"){
-				 					result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+')" href="javascript:void(0)">Refer</a>';
+				 					result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+','+requirements.referId+')" href="javascript:void(0)">Refer</a>';
 				 					result = result +'<div class="referWrap" id="refer'+requirements.requirementId+'">';
 					 				result = result +'<div class="referWrapInn">';
 					 				result = result +'<div id="refertoJobDiv'+requirements.requirementId+'"></div>';  
@@ -660,7 +661,13 @@ function requirementsList(offset){
 				 				result = result +'<div class="openPostDate">';
 				 				result = result +'Posted :';
 				 				result = result +'<b><i class="fa fa-clock-o"></i> '+requirements.calDays+'</b>';
-				 				result = result +'</div>';			  
+				 				result = result +'</div>';
+				 				if(referJobType == 'ReferredToMe'){
+				 					result = result +'<div class="applShare Refer">';
+					 				result = result +'Referred by : '+requirements.referedUser+'';
+					 				result = result +'</div>';
+				 				}
+				 				
 				 				result = result +'</div>';
 			 				}
 			 				else if(requirementType == "AppliedJobs"){
@@ -680,7 +687,14 @@ function requirementsList(offset){
 			 				
 			       	    	$('#requirementsList').append(result);
 			       	    	document.getElementById("viewMoreLoading").removeAttribute("class");
-			       	    	document.getElementById("loadMoreSection").style.display="";
+			       	    	
+			       	    	if(requirements.noOfSearchHits >= 10){
+			       	    		document.getElementById("loadMoreSection").style.display="";
+			       	    	}else{
+			       	    		document.getElementById("loadMoreSection").style.display="none";
+			       	    		document.getElementById("noMoreRecordsSection").style.display="";
+			       	    	}
+			       	    	
 			       	    	document.getElementById("loadMoreSearchSection").style.display="none";
 		            		
 				   }
@@ -702,10 +716,13 @@ function requirementsList(offset){
 			    $("#requirementsList").append(result); 
 			    document.getElementById("loadMoreSection").style.display="none";
 			    document.getElementById("loadMoreSearchSection").style.display="none";
+			    document.getElementById("noMoreRecordsSection").style.display="none";
    		    }else{
    		    	
-   		    	$('#viewMore').html("No Records Found");
    		    	document.getElementById("viewMoreLoading").removeAttribute("class");
+   		    	document.getElementById("loadMoreSection").style.display="none";
+   		    	document.getElementById("noMoreRecordsSection").style.display="";
+   		    	
    		    }
    	
 		 },
@@ -882,7 +899,14 @@ function searchRequirement(offset){
 									 				result = result +'</section>';
 									       	     $('#requirementsList').append(result);
 									       	     document.getElementById("loadMoreSection").style.display="none";
-									       	     document.getElementById("loadMoreSearchSection").style.display="";
+									       	     
+									       	    if(requirements.noOfSearchHits >= 10){
+								       	    		document.getElementById("loadMoreSearchSection").style.display="";
+								       	    	}else{
+								       	    		document.getElementById("loadMoreSearchSection").style.display="none";
+								       	    		document.getElementById("noMoreRecordsSection").style.display="";
+								       	    	}
+									       	  
 									       	     document.getElementById("viewMoreSearchLoading").removeAttribute("class");
 								            		
 										   }
@@ -904,9 +928,11 @@ function searchRequirement(offset){
 				    			    $("#requirementsList").append(result); 
 				    			    document.getElementById("loadMoreSection").style.display="none";
 				    			    document.getElementById("loadMoreSearchSection").style.display="none";
+				    			    document.getElementById("noMoreRecordsSection").style.display="";
 		               		 }else{
-		               			$('#viewSearchMore').html("No Records Found");
 		           		    	document.getElementById("viewMoreSearchLoading").removeAttribute("class");
+		           		    	document.getElementById("noMoreRecordsSection").style.display="none";
+		           		    	document.getElementById("noMoreRecordsSection").style.display="none";
 		               		 }
 						},
 					});  
@@ -923,7 +949,7 @@ $('body').on('blur', '#professional_requirement_search_form', function() {
 
 
 <script>
-function referToJob(requirementId){
+function referToJob(requirementId,referId){
 	   appendReferToJob(requirementId); 
 	   removeReferPopUp();
 	    
@@ -932,6 +958,11 @@ function referToJob(requirementId){
 	    result = result + '<form id="referToJob_form" name="referToJob_form" method="post">';
 		result = result +'<div class="form-group col-md-6">';
 		result = result +'<input type="hidden" name="referRequirementId" id="referRequirementId" value='+requirementId+' >';
+		
+		if(referId != null && referId != 'undefined' && referId != ''){
+			result = result +'<input type="hidden" name="referId" id="referId" value='+referId+' >';
+		}
+		
 		result = result +'<label class="col-md-12" for="Project Id">First Name *</label>';
 		result = result +'<div class="col-md-12">';
 		result = result +'<input type="text" class="form-control" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">';

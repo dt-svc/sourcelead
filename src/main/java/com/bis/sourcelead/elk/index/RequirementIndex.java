@@ -103,6 +103,14 @@ public class RequirementIndex {
 	
 	private String reqLevel2ApproverStatus;
 	
+	private Long referId;
+	
+	private String referedUser;
+	
+	private Integer noOfSearchHits;
+	
+	
+	
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -491,6 +499,30 @@ public class RequirementIndex {
 
 	public void setReqLevel2ApproverStatus(String reqLevel2ApproverStatus) {
 		this.reqLevel2ApproverStatus = reqLevel2ApproverStatus;
+	}
+
+	public Long getReferId() {
+		return referId;
+	}
+
+	public void setReferId(Long referId) {
+		this.referId = referId;
+	}
+
+	public String getReferedUser() {
+		return referedUser;
+	}
+
+	public void setReferedUser(String referedUser) {
+		this.referedUser = referedUser;
+	}
+
+	public Integer getNoOfSearchHits() {
+		return noOfSearchHits;
+	}
+
+	public void setNoOfSearchHits(Integer noOfSearchHits) {
+		this.noOfSearchHits = noOfSearchHits;
 	}
 	
 }

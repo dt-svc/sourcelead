@@ -77,7 +77,7 @@
 	  <!-- Accordion First Tab Ends -->
 
       <!-- Accordion second Tab -->
-        <!-- <div class="clearfix">
+         <div class="clearfix">
           <h2 onclick="opennetwork();">Open Network</h2>
           <div class="content clearfix" >
             <div class="row">
@@ -107,7 +107,7 @@
               </div>
             </div>
           </div>
-        </div> -->
+        </div> 
       <!-- Accordion second Tab Ends -->
       </div>
       <div class="form-footer clearfix row mt">

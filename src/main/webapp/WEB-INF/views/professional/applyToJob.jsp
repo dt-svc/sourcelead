@@ -11,6 +11,11 @@
 <script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 
+<style>
+.viewTemplate {
+background-color: #fff !important;
+}
+</style>
 
 
 <script>
@@ -123,6 +128,7 @@ function getCandidateDetails(){
 	 $("input[name=PhoneNumber]").val('${SourceLeadWeb_user.mobilePhone}');
 	 
 	 getAllSubmissionCandidateCountries();
+	 setRateTypesByLocation();
      
      $("#submissionCountry").on('change', function (e) {
   	   getCandidateStates();
@@ -481,6 +487,31 @@ $('body').on('submit', '#applyToJob_form', function(e){
 	  });
 	  
   } );
+</script>
+
+<script type="text/javascript">
+function setRateTypesByLocation(){
+	var country = '${SourceLeadWeb_country}';
+	if(country == 'India'){
+		$('#currentCTCRateType').val('INR');
+		$('#expectedCTCRateType').val('INR');
+	}else if(country == 'Australia'){
+		$('#currentCTCRateType').val('AUD');
+		$('#expectedCTCRateType').val('AUD');
+	}else if(country == 'United States'){
+		$('#currentCTCRateType').val('USD');
+		$('#expectedCTCRateType').val('USD');
+	}else if(country == 'Singapore'){
+		$('#currentCTCRateType').val('SGD');
+		$('#expectedCTCRateType').val('SGD');
+	}else if(country == 'United Kingdom'){
+		$('#currentCTCRateType').val('GBP');
+		$('#expectedCTCRateType').val('GBP');
+	}else if(country == 'France'){
+		$('#currentCTCRateType').val('EUR');
+		$('#expectedCTCRateType').val('EUR');
+	}
+}
 </script>
 
 
