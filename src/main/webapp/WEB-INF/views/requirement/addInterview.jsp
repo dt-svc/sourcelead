@@ -28,6 +28,7 @@ padding:0!important;
 
 <script>
 function addInterview(requirementId){
+	$('.action-pop').slideUp();
 	interviewTemplate();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';

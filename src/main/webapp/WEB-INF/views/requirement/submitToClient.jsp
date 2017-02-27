@@ -21,6 +21,7 @@
 
 <script>
 function submitToClient(requirementId){
+	$('.action-pop').slideUp();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var result = "";
 	'<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';

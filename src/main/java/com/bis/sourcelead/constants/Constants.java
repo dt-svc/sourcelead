@@ -206,6 +206,8 @@ public class Constants {
 	public static String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
 	public static String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";
 	
+	public static String REJECTMAILTOCLIENT_FROM_VENDOR = "RejectMailToClient_From_Vendor";
+	
 	
 	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 
