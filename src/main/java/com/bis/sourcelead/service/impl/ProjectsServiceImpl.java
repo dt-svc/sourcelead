@@ -816,13 +816,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 			if(null != ocl.getLocationId() && null != ocl.getLocationId().getId() && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 				if(null != ocl.getResponderLocationId()){
 					StringBuilder approverHierarchiesSB=new StringBuilder();
-					clientList[j] = approverHierarchiesSB.append(ocl.getResponderLocationId().getOrg().getOrgName()).append("&").append(ocl.getId()).toString();
+					clientList[j] = approverHierarchiesSB.append(ocl.getResponderLocationId().getOrg().getOrgName()).append(",").append(ocl.getId()).toString();
 				}
 			}
 			if(null != ocl.getResponderLocationId() && null != ocl.getResponderLocationId().getId() && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 				if(null != ocl.getLocationId()){
 					StringBuilder approverHierarchiesSB=new StringBuilder();
-					clientList[j] = approverHierarchiesSB.append(ocl.getLocationId().getOrg().getOrgName()).append("&").append(ocl.getId()).toString();
+					clientList[j] = approverHierarchiesSB.append(ocl.getLocationId().getOrg().getOrgName()).append(",").append(ocl.getId()).toString();
 				}
 			}
 			j++;
