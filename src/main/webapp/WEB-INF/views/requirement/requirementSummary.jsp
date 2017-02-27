@@ -1435,7 +1435,7 @@ function requirementPipeline(requirementId,submissionType){
 						    	     }
 						           
 						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"></a></span></div></td>';
 							           }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
@@ -1674,7 +1674,7 @@ function requirementPipelineDA(requirementId,submissionType){
 						    	    }
 						           
 						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"></a></span></div></td>';
 							           }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
@@ -1906,7 +1906,7 @@ function requirementPipelineRS(requirementId,submissionType){
 						    	   }
 						           
 						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"></a></span></div></td>';
 							       }else{
 							    	   result = result + '         <td><div>--</div></td>';
 						    	   }
@@ -2135,7 +2135,7 @@ function requirementPipelineSL(requirementId,submissionType){
 						    	     }
 						           
 						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"></a></span></div></td>';
 							        }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
@@ -2372,7 +2372,7 @@ function requirementPipelineSC(requirementId,submissionType){
 						    	     }
 						           
 						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"></a></span></div></td>';
 							           }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
@@ -2581,7 +2581,7 @@ function requirementPipelineIN(requirementId,submissionType){
 						    	     }
 						           
 						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"></a></span></div></td>';
 							           }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
@@ -2751,7 +2751,7 @@ function requirementPipelineOffer(requirementId,submissionType){
 						    	    }
 						           
 						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"></a></span></div></td>';
 							       }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
@@ -2937,7 +2937,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 						    	     }
 						           
 						           if(report.resumeId != null && report.resumeId != '' && report.resumeId != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"></a></span></div></td>';
 							        }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
