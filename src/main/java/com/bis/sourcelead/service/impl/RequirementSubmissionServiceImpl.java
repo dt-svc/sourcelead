@@ -57,7 +57,6 @@ import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
@@ -70,7 +69,6 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
@@ -146,9 +144,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
 	RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 	
-	@Autowired
-	UserService userService;
-	
 	/*@Autowired
 	CandidateSkillsService candidateSkillsService;*/
 	
@@ -163,6 +158,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	RecommendedCustomizeScoreService recommendedCustomizeScoreService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -369,6 +367,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 candidateResumes.setTitle(multiFile.getOriginalFilename());
 				 candidateResumes.setFileContentType(multiFile.getContentType());
 				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
+				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				 candidateResumes.setCreatedDate(new Date());
 				 candidateResumes.setCreatedBy(user.getUserCode());
 				 candidateResumes.setUpdatedDate(new Date());
@@ -2953,7 +2952,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			Long candidateId) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionByRequirementIdAndCandidateId(requirementId, candidateId);
 	}
-
+	
 	@Override
 	public void sendRejectionMailToVendorContact(User user, String reason,Long submissionId,OrgLocations orgLocations) throws Exception {
 		
@@ -3034,7 +3033,5 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	   }
 	}
 
-
 }
-
 

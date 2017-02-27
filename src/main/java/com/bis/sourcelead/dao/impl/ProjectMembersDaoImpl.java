@@ -291,11 +291,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String dateQuery = "";
 		String clientQuery = "";
 		String statusQuery = "";
-		String statusQueryForAdmin = "";
 		if(startDate != null && endDate != null){
-	    	 
-				 //startdate and enddate comparison with projectmemberhistory table
-				 
 			   dateQuery =  " and pm.id IN ( "
                 + "    select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  "
                 + "    ( pmh.projectTerminationDate IS NOT NULL and :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
@@ -306,33 +302,23 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		if(clientId != null){
 			clientQuery = " and projects.orgRelationId.id = :clientId ";
 		}
-		
-	  /* if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
-			statusQuery = " and  sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.getNameByValue(status)+"'";
-		}
-	   
-	    //Status Query For Admin
-		if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
-			statusQueryForAdmin = " projects.id IN ( "
-					             + " select subsah.hierarchyId.projectId.id from SubmissionApproverHierarchy subsah "
-					             + " where   subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.getNameByValue(status)+"'  and subsah.submissionId.startDate between :startDate and :endDate "
-					             		+ " and (subsah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id)))  ";
-		}
-		else{*/
-			statusQueryForAdmin = Constants.loginUserAsAdminForProjects;
-		//}
+	  
+	     if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
+			 statusQuery = " and pm.projects.id IN(select sah.hierarchyId.projectId.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.getNameByValue(status)+"' )";
+         }
+	     else if(!(status.equalsIgnoreCase("All"))){
+	    	 statusQuery = " and pm.projects.id NOT IN(select sah.hierarchyId.projectId.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"') )";
+	     }
 		
 		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.employee emp left join fetch emp.user  user "
 				+ " where projects.invoiceFrequency = :timesheetFrequency and projects.orgLocationsId.id = :locationsId  "
+				    + statusQuery
 				    +clientQuery
 				    + dateQuery
-	                 /*
-	 				 *  approverUserId comparison
-	 				 */
 					+ " and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE')  "
 					+ " and ( "
 					+  "      (  projects.id IN ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId  ))"
-					 + "       OR "+statusQueryForAdmin+""
+					 + "       OR "+Constants.loginUserAsAdminForProjects+""
 					+ "     ) ";
 		
 		

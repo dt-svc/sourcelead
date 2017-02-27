@@ -116,15 +116,18 @@ public class RequirementController {
 	@SuppressWarnings("unchecked")
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirement")
-	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
+	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID) throws Exception {
 		Requirement requirement ;
 		ModelAndView model = new ModelAndView();
 		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		if(null != requirementId && !requirementId.isEmpty()){
-			requirement = this.requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
+		if(null != requirementUUID && !requirementUUID.isEmpty()){
+			requirement = this.requirementService.getRequirementByRequirementUUID(requirementUUID);
+			
+			if(requirement != null && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
+			
 			if(null != requirement.getEducation()){
 					String[] educationList = requirement.getEducation().split(",");
 					requirement.setReqEducationList(educationList);
@@ -138,7 +141,7 @@ public class RequirementController {
 			}
 			String requirementAssignedIds = "";
 			if(null != requirement.getRequirementAssignTo()){
-				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
+				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(requirement.getId());
 				for(RequirementAssignTo rat : requirementAssignToList){
 					if(null != requirementAssignedIds && !requirementAssignedIds.isEmpty()  && "" != requirementAssignedIds ){
 						StringBuilder assignUserIdsSB = new StringBuilder();
@@ -151,7 +154,7 @@ public class RequirementController {
 			}
 			model.addObject("requirementAssignedIds",requirementAssignedIds);
 			model.addObject("requirement",requirement);
-			model.addObject("requirementId",requirementId);
+			model.addObject("requirementId",requirement.getId());
 			if(null != requirement.getClientId()){
 				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId(),"Client");
 				/*commented by Prasad salina, here no need to iterate list, because in service impl we already itarated the list.
@@ -160,17 +163,27 @@ public class RequirementController {
 						orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
 					}
 				}*/
-			    model.addObject("clientContactList", clientContactList);
+				if(clientContactList.size() == 0 && null != requirement.getSpocId()){
+				OrgSpoc clientContactOrgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+				StringBuilder clientContactWithOwner = new StringBuilder();
+				if(null != clientContactOrgSpoc.getClientUser().getLastName() && !"".contentEquals(clientContactOrgSpoc.getClientUser().getLastName())){
+				    clientContactWithOwner.append(clientContactOrgSpoc.getClientUser().getFirstName()).append(clientContactOrgSpoc.getClientUser().getLastName()).append("(").append(clientContactOrgSpoc.getVendorUser().getFirstName()).append(")");
+				}else{
+					clientContactWithOwner.append(clientContactOrgSpoc.getClientUser().getFirstName()).append("(").append(clientContactOrgSpoc.getVendorUser().getFirstName()).append(")");
+				}
+				model.addObject("clientContactWithOwner", clientContactWithOwner);
+			   }
+				model.addObject("clientContactList", clientContactList);
 			}
 		    
 		    
 		    //for requirement approvaers
-			List<RequirementApproverHierarchy> requirementApproverHierarchyList =	requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementId));
+			List<RequirementApproverHierarchy> requirementApproverHierarchyList =	requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
 			String approverMode = "noApprovers";
 			Long sequentialApprover1 = null;
 			Long sequentialApprover2 = null;
 			String parallelApproverIds = null ;
-			Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
+			Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
 			if(null != maxLevel && maxLevel >1){
 				approverMode = "Sequential";
 				if(null != requirementApproverHierarchyList && !requirementApproverHierarchyList.isEmpty()){
@@ -202,6 +215,10 @@ public class RequirementController {
 			model.addObject("parallelApproverIds",parallelApproverIds);
 			model.addObject("sequentialApprover1",sequentialApprover1);
 			model.addObject("sequentialApprover2",sequentialApprover2);
+			
+			}else{
+				model.setViewName("registration/persmissionDenied");
+			}
 			
 		}else{
 			requirement = new Requirement();
@@ -372,6 +389,7 @@ public class RequirementController {
 				model.addObject("msg", msg);
 				SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
 			}
+			model.addObject("requirementUUID",requirementUUID);
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}

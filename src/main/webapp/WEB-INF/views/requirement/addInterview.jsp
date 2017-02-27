@@ -325,6 +325,7 @@ function selectInterviewApplicants(){
 		
 		$("#"+maxRowNum+"endTime").timepicker({
 			'showDuration': true,
+			 'maxTime': '23:30:00',
 			'disableTextInput': true
 		}).on('changeTime', function() {
             $("#"+maxRowNum+"startTime").timepicker('option', 'maxTime', $(this).val());

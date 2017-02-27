@@ -153,6 +153,11 @@ public class User implements Serializable{
 	@Column(name = "COUNTRY")
 	private String country;
 	
+	@Transient
+	private String isPrimaryAdmin;
+
+	@Transient
+    private String tempPwd;
 	
 	@Transient
     private int assignJobCount;
@@ -373,6 +378,14 @@ public class User implements Serializable{
 		this.location = location;
 	}
 
+	public String getTempPwd() {
+		return tempPwd;
+	}
+
+	public void setTempPwd(String tempPwd) {
+		this.tempPwd = tempPwd;
+	}
+
 	public String getFullName() {
 		if(StringUtils.isNotEmpty(fullName))
 			return fullName;
@@ -466,4 +479,11 @@ public class User implements Serializable{
 		this.userUUID = userUUID;
 	}
 	
+	public String getIsPrimaryAdmin() {
+		return isPrimaryAdmin;
+	}
+
+	public void setIsPrimaryAdmin(String isPrimaryAdmin) {
+		this.isPrimaryAdmin = isPrimaryAdmin;
+	}
 }
