@@ -153,9 +153,9 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		//int lastRow = 0;
 	     Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(frequencyStartDate, frequencyEndDate);
 		 if(tabFrequency != null && !tabFrequency.isEmpty()){
-			 String billableHours = "";
-			 String nonBillableHours =  "";
-			 String grandTotalHours = "";
+			 Double billableHours = 0d;
+			 Double nonBillableHours =  0d;
+			 Double grandTotalHours = 0d;
 			 
 			for (Map.Entry<String, String> entry : tabFrequency.entrySet()) {
 				 String key = entry.getKey();
@@ -168,9 +168,15 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 				 
 				 TimesheetSubmissions ts = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(weekStartDate, weekEndDate, projectMember.getId());
 				 if(null != ts){
-				 billableHours = ts.getBillableHours();
-				 nonBillableHours = ts.getNonBillableHours();
-				 grandTotalHours = ts.getTotalHours();
+					 if(null != ts.getBillableHours()){
+						 billableHours = billableHours+(Double.parseDouble(ts.getBillableHours())*60);
+					 }
+					 if(null != ts.getNonBillableHours()){
+						 nonBillableHours = nonBillableHours+(Double.parseDouble(ts.getNonBillableHours())*60);
+					 }
+					 if(null != ts.getTotalHours()){
+						 grandTotalHours = grandTotalHours+(Double.parseDouble(ts.getTotalHours())*60);
+					 }
 				 
 				 int column = 0;
 	    		// lastRow = count;
@@ -356,7 +362,10 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			                 
 			
 						 StringBuilder fileName=new StringBuilder();
-						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getEmployee().getUser(),grandTotalHours,projectMember.getProjects().getProjectName(),submissionStatusStr,billableHours,nonBillableHours);
+						 String billable = getTotalHours(billableHours.longValue());
+						 String nonBillable = getTotalHours(nonBillableHours.longValue());
+						 String grandtotal = getTotalHours(grandTotalHours.longValue());
+						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getEmployee().getUser(),grandtotal,projectMember.getProjects().getProjectName(),submissionStatusStr,billable,nonBillable);
 						file = new File(fileName.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString());
 						FileOutputStream fos = new FileOutputStream(file);
 						try {
