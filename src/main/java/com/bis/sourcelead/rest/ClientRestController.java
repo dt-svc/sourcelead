@@ -553,7 +553,8 @@ public class ClientRestController {
 		 
 	         OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsByIdAndOwnerId(spocId,ownerId,user.getId(),spocUserId,orgLoc.getId(),type);
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
-		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
+		     //List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
+		     List<User>  userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLoc.getId(),Long.valueOf(Constants.TAB_CLIENT),ownerListOfSpoc);
 		     orgSpoc.setUserList(userList);
 		     String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editSpocMsg");
 		     if(msg != null && msg != ""){
@@ -1001,8 +1002,13 @@ public class ClientRestController {
 		List<User> userList = null;
 		if(null != email && !"".equalsIgnoreCase(email)){
 			User user = userService.findByEmail(email);
-			List<Long> ownersList= orgSpocService.getOwnerListByUserIdAndOrglocationId(user,orgLocations,type);
-			userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT),ownersList);
+			if(null != user){
+				List<Long> ownersList= orgSpocService.getOwnerListByUserIdAndOrglocationId(user,orgLocations,type);
+				userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT),ownersList);
+			}
+			else{
+				userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
+			}
 		}else{
 			userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
 		}

@@ -23,6 +23,8 @@ public interface ProjectApproverHierarchyDao {
 	public List<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId);
 	
 	public List<Long> getProjectIdsByLoginUserId(Long userId);
+	
+	public void deleteProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchyS) throws Exception;
 
 	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdForManager(Long projectId,
 			Long userId, int managerLevel)throws Exception;
@@ -44,5 +46,7 @@ public interface ProjectApproverHierarchyDao {
 	 * @throws Exception
 	 */
 	public List<ProjectApproverHierarchy> getApproverUserIdsByOrgLocationIdAndLevelAndFrequency(Long orgLocationId, String invoiceFrequency, int managerLevel)throws Exception;
+	
+	public ProjectApproverHierarchy getProjectApproverByProjectId(Long ProjectId) throws Exception;
 	
 }
