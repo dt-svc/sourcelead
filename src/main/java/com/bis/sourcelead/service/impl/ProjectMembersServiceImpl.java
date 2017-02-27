@@ -332,7 +332,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				pm.setUpdatedBy(user.getUserCode());
 				pm.setMemberHistoryList(pmhList);
 				saveProjectMember(pm);
-				//commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
 				
 				/**
 			     * This method for send Email to team member while assign employee from project dashboard
@@ -340,7 +339,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.getLevelOneProjectApproverByProjectId(projects.getId());
 				
 				if(!isNullOrEmpty(mailtoMembers) && ("YES".equals(mailtoMembers))){
-					sendEmailToTeamMembers(projects, emp, user, projectApproverHierarchy, loginOrgLocation, loginOrgCode);
+					if(user.getId() != projectApproverHierarchy.getApproverUserId().getId()){
+						sendEmailToTeamMembers(projects, emp, user, projectApproverHierarchy, loginOrgLocation, loginOrgCode);
+					}
+					
 				}
 		  }
 			return null;
@@ -574,7 +576,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	  */
 	
 	private void sendEmailToTeamMembers(Projects projects, Employees emp, User loginUser, ProjectApproverHierarchy projectApproverHierarchy, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
-	  	 User projectManager = userService.getUserById(projectApproverHierarchy.getApproverUserId().getId());
+	  	
+		User projectManager = userService.getUserById(projectApproverHierarchy.getApproverUserId().getId());
 	  	
 	  	 StringBuilder fromNameSB=new StringBuilder();
 	  	 StringBuilder loginURLSB=new StringBuilder();

@@ -91,9 +91,11 @@ function editCandidate(candidateId){
          			 		designationOtherType = '';  
          			 	 }
          			 	
-         			 	var summary = '';
+         			 	var summary = "";
          			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
          			 		summary = json.summary;            			 		
+         			 	}else{
+         			 		summary ="NO DATA";
          			 	}
 							var result ='';
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
@@ -668,7 +670,12 @@ function candidateProfile(candidateId){
             		 }
             		 else{ 
 							var result ="";
-							
+							var summary= "";
+							if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
+								summary = json.summary;
+							}else{
+								summary = "NO DATA";
+							}
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
 							if(json.status == 0){
 								result = result + '<div class="project_tabs_inn_head"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> ';
@@ -679,7 +686,7 @@ function candidateProfile(candidateId){
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
-							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
+							result = result +'	    <textarea placeholder="Enter description" readonly>'+summary+'</textarea>';
 							
 							
 							result = result +'		  <div class="tab-content">                                                                                                                   ';
