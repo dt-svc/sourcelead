@@ -289,7 +289,7 @@ function addEducation(candidateId) {
 	result = result  +'	                     <div class="col-md-4" positionRelative>';
 	result = result  +'	                     <select class="chosen-select"  name="gradeType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
-	result = result  +'	                       <option value="Percentage">%</option>';
+	result = result  +'	                       <option value="Percentage">Percentage</option>';
 	result = result  +'	                       <option value="CGPA">CGPA</option>';
 	result = result  +'	                       <option value="GRADE">GRADE</option>';
 	result = result  +'	                      </select>';
