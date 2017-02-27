@@ -53,7 +53,7 @@ function clientContacts(orgRelationID,clientLocationId){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID, 
+	    	url : sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Client", 
 	        success: function(data) {
 	        	
 	        var json = JSON.parse(data);
@@ -129,13 +129,19 @@ function clientContacts(orgRelationID,clientLocationId){
 	                result = result + '	     <td><div><span title='+opt.ownerName+'>'+opt.ownerName+'</span></div></td>';
 	                
 	                result = result + ' <td><div>';
-					result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+clientLocationId+');">';
-					result = result + ' <option value="Active"  '+selected1+'>Active</option>';
-					result = result + ' <option value="In-Active"    '+selected2+'>In-Active</option>';
-					result = result + ' <option value="New" '+selected3+'>New</option>';
-					result = result + ' <option value="Negotiation" '+selected4+'>Negotiation</option>';
-					result = result + ' <option value="Contracted" '+selected5+'>Contracted</option>';
-					result = result + ' </select>';
+	                
+	                if(opt.invitationStatus == 'Rejected'){
+	        			result = result + '<span>'+opt.spocStatus+'</span>';
+	        		}else{
+	        			result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+clientLocationId+');">';
+						result = result + ' <option value="Active"  '+selected1+'>Active</option>';
+						result = result + ' <option value="In-Active"    '+selected2+'>In-Active</option>';
+						result = result + ' <option value="New" '+selected3+'>New</option>';
+						result = result + ' <option value="Negotiation" '+selected4+'>Negotiation</option>';
+						result = result + ' <option value="Contracted" '+selected5+'>Contracted</option>';
+						result = result + ' </select>';
+	        		}
+					
 					result = result + ' </div></td>';
 	                
 	                result = result +'<td data-title="Invitation Status"><div>';
@@ -487,9 +493,6 @@ function addContact(orgRelationID,clientLocationId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	 $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   });	
 	 
 	 var config = {
 			  '.chosen-select'           : {},

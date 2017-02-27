@@ -2,7 +2,6 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 
@@ -27,4 +26,6 @@ public interface TeamDao {
     public List<Long> getTeamIdsListByOrgLocationID(Long orgLocationId) throws Exception;
 	
 	public List<Long> getUserAssignedTeamIdsListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
+	public Team findByTeamName(String name,Long orgLocationId) throws Exception;
 }

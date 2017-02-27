@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao;
 
+import java.util.List;
+
 import com.bis.sourcelead.entity.ReferContacts;
 
 public interface ReferContactsDao {
@@ -10,4 +12,5 @@ public interface ReferContactsDao {
 	
 	ReferContacts getReferContactsByEmails(Long userId,String toEmail) throws Exception;
 
+	List<ReferContacts> getReferContactsListByUserIdAndOrglocationId(Long userId,Long orgLocationId) throws Exception;
 }

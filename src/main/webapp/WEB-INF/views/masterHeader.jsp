@@ -12,7 +12,6 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css" type="text/css" >
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/font-awesome.min.css">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
@@ -30,7 +29,7 @@
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
 </head>
-<script src="resources/js/jquery-1.11.1.min.js"></script>
+<!-- <script src="resources/js/jquery-1.11.1.min.js"></script> -->
 <script src="resources/js/chosen.jquery.min.js"></script>
 <script src="resources/js/jquery-ui.js"></script>
 <script src="resources/js/jquery-fun.js"></script>
@@ -288,7 +287,7 @@ width: 11.5%;
             	<li id="settingArea"><a href="#" title="Settings" class="settings"><i class="fa fa-cog fa-spin fa-fw"></i></a>
             	<div class="setting-area">
             	<ul class="list-unstyled">
-            	<li><a href="<c:url value="/referList" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Refer List</a></li>
+            	<li><a href="<c:url value="/referRequirementList" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Refer List</a></li>
             	</ul>
             	</div>
             	</li>

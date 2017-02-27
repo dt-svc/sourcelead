@@ -2,7 +2,9 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.User;
 
 public interface OrgSpocDao {
 
@@ -14,7 +16,7 @@ public interface OrgSpocDao {
 	 * @author Prasad Salina 
 	 * To get all the spocs
 	 */
-    List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId, List<Long> userIds,Long orgLocationId) throws Exception;
+    List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId, List<Long> userIds,Long orgLocationId,String type) throws Exception;
     
     
     List<OrgSpoc> getAllActiveSpocsByOrgRelationId(Long orgRelationId, Long userId, List<Long> userIds,Long orgLocationId) throws Exception;
@@ -44,14 +46,22 @@ public interface OrgSpocDao {
 
 	List<Long> getOwnerIdbySpocId(Long spocUserId, Long ownerId);
 	
-	List<Long> getOwnerUserIdsbySpocEmailAndOrgRelationId(String email, Long orgRelationId) throws Exception;
+	List<Long> getOwnerUserIdsbySpocEmailAndOrgRelationId(String email, Long orgRelationId,String type) throws Exception;
 	
 	/**To get Spoc user
 	 * @author Prasad Salina
 	 * @param spocUserId
 	 * @return
 	 */
-	OrgSpoc getSpocUserByUserId(Long spocUserId) throws Exception;
+	OrgSpoc getSpocByClientOrVendorUserId(Long spocUserId) throws Exception;
+	
+	/**
+	 * @author Prasad Salina
+	 * @param spocUUID
+	 * @return
+	 * @throws Exception
+	 */
+	OrgSpoc getSpocBySpocUUID(String spocUUID) throws Exception;
 	
 	/**To get Spoc user Contact List for requirement
 	 * @author David Raju
@@ -72,6 +82,8 @@ public interface OrgSpocDao {
 	
 	List<OrgSpoc> getAllClientContactsListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 	
+	Integer getAllClientContactsCountForCampaignByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
 	OrgSpoc getSpocListByResponderLocationId(Long initiatingPartyOrgLocationId,Long responderLocationId,String respondingOrgType) throws Exception;
 	
 	List<OrgSpoc> getOrgSpocByOrgRelationId(Long orgRelationId) throws Exception;
@@ -79,5 +91,8 @@ public interface OrgSpocDao {
 	Integer getAllVendorContactsCountbyOrgLocationId(Long orgId,String type,Long userId) throws Exception;
 
 	List<OrgSpoc> getOrgSpocByUserIdAndOrgLocationCode(Long userId, Long orgLocationId) throws Exception;
+
+
+	List<Long> getOwnerListByUserIdAndOrglocationId(User user, OrgLocations orgLocations, String type);
 	
 }

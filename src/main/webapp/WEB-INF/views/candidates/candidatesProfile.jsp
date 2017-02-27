@@ -160,9 +160,9 @@ function editCandidate(candidateId){
 							// If Candidate Type equals Consultant email field should be Disable mode
 							
 							result = result + '<div class="clearfix mb10">';
-							result = result + '<div class="col-md-6">';
+							result = result + '<div class="col-md-6" id="emailDiv">';
 							if(json.candidateType == "Candidate"){
-								result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" >';
+								result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
 							}
 							
 							if(json.candidateType == "Consultant"){
@@ -214,7 +214,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
-							result = result + '<option value="">Select</option>';
+							result = result + '<option value="">--Select Notice Period--</option>';
 							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
 							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
 							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
@@ -231,6 +231,7 @@ function editCandidate(candidateId){
                             result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
 							result = result + '<select class="form-control" id="designationType" name="designationType" field-name="Designation Type" onchange="updateDesignationType(this);">';
+							result = result + '<option value="">--Select Employment Type--</option>';
 							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
 							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
 							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
@@ -305,10 +306,10 @@ function editCandidate(candidateId){
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.rateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
-							result = result + '<option  '+(json.rateType == "Biweekly" ? "selected" : '') +'>Bi-weekly</option>';
+							result = result + '<option  '+(json.rateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
 							result = result + '<option  '+(json.rateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
 							result = result + '<option  '+(json.rateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
-							result = result + '<option  '+(json.rateType == "BiMonthly" ? "selected" : '') +'>Bi-Monthly</option>';
+							result = result + '<option  '+(json.rateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
 							result = result + '<option '+(json.rateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
 							result = result + ' </select>';
 							result = result + '</div>';
@@ -342,7 +343,7 @@ function editCandidate(candidateId){
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							if(json.experienceYears == "25+"){
 							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
-							result = result + '<option  disabled>Select Months</option>';
+							result = result + '<option  value="">Select Months</option>';
 							
 							<c:forEach var="i" begin="0" end="11" >
 							 	result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
@@ -352,7 +353,7 @@ function editCandidate(candidateId){
 							result = result + '</select>';
 							}else{
 								result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
-								result = result + '<option  disabled>Select Months</option>';
+								result = result + '<option  value="">Select Months</option>';
 								
 								<c:forEach var="i" begin="0" end="11" >
 								 result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
@@ -462,7 +463,7 @@ function getAllCandidateCountries(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('html #candidateCountry').empty();
-        	$('html #candidateCountry').append('<option value="">---select---</option>');
+        	$('html #candidateCountry').append('<option value="">---select country---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == countryName){
             		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -507,7 +508,7 @@ var countryName = $("html #candidateCountry").val();
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('html #candidateState').empty();
-	        	$('html #candidateState').append('<option value="">---select---</option>');
+	        	$('html #candidateState').append('<option value="">---select state---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
 	            		$('html #candidateState').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -526,10 +527,10 @@ var countryName = $("html #candidateCountry").val();
 	    });
 	}else{
 		$('html #candidateState').empty();
-    	$('html #candidateState').append('<option value="">---select---</option>');
+    	$('html #candidateState').append('<option value="">---select state---</option>');
     	$('html #candidateState').trigger("chosen:updated");
     	$('html #candidateCity').empty();
-    	$('html #candidateCity').append('<option value="">---select---</option>');
+    	$('html #candidateCity').append('<option value="">---select city---</option>');
         $('html #candidateCity').trigger("chosen:updated");
 	}
 }
@@ -555,7 +556,7 @@ function getCandidateCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('html #candidateCity').empty();
-	        	$('html #candidateCity').append('<option value="">---select---</option>');
+	        	$('html #candidateCity').append('<option value="">---select city---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
 	            		$('html #candidateCity').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -571,7 +572,7 @@ function getCandidateCities(){
 	    });
 	}else{
 		$('html #candidateCity').empty();
-    	$('html #candidateCity').append('<option value="">---select---</option>');
+    	$('html #candidateCity').append('<option value="">---select city---</option>');
     	$('html #candidateCity').trigger("chosen:updated");
 	}
 }
@@ -1532,3 +1533,36 @@ function updateDesignationType(){
 }
 </script>
 
+
+<!-- Candidate Email validation script starts here -->
+
+<script type="text/javascript">
+ function validateCandidateEmail() {
+	 var email = $('#email').val(); 
+	 $('#emailDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(email != null && email != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		 
+						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+						  $("#update_candidate").attr("disabled", "disabled");
+						  $("#update_candidate").addClass('button').val('Processing..');
+		        	}
+		        	else{
+		        		
+		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#update_candidate" ).addClass('button').val('Save');
+                         $("#update_candidate").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     
+ 
+ <!-- Candidate Email validation script ends here -->

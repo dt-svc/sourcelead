@@ -80,31 +80,41 @@ public class CandidateSkillsDumpFile {
 				 ResultSet rs1 = stmt1.executeQuery(sql1);
 				
 				while(rs1.next()){
+					
 					 Long  candidateId = rs1.getLong("ID");
-					 Long  orgLocationsId = rs1.getLong("ORG_LOCATION_ID");
-					 
 					 Statement stmt2 = null;
-					 String sql2 = "SELECT * FROM sourcelead.CANDIDATE_SKILLS cs where cs.ORG_LOCATION_ID = "+orgLocationsId+" and cs.CANDIDATE_ID = "+candidateId+" ";
-					 conn = dataSource.getConnection();
-					 stmt2 = conn.createStatement();
+					 String sql2 = "SELECT * FROM sourcelead.CANDIDATE_SKILLS cs where cs.CANDIDATE_ID = "+candidateId+" ";
+					 
+					 
+					 Connection	 conn1 = dataSource.getConnection();
+					 stmt2 = conn1.createStatement();
 					 ResultSet rs2 = stmt2.executeQuery(sql2);
 					 ArrayList<String> skillstoBeAdded = new ArrayList<String>();
 					while(rs2.next()){
 						skillstoBeAdded.add(rs2.getString("NAME"));
 					}
+					
 						StringBuilder skillBuffer =  new StringBuilder();
+						int count = 1;
 						for(String skill :skillstoBeAdded){
-							skillBuffer.append(skill);
+							if(count>1)
+								skillBuffer.append(",");
+							    skillBuffer.append(skill);
+							    count++;
+							
 						}
-					
-					
-					 String query = "update sourcelead.CANDIDATE set SKILLS_NAME = ? where ID = ? ";
+						
+					 String query = "update sourcelead.CANDIDATE can set can.SKILLS_NAME = ? where can.ID = ? ";
 				     java.sql.PreparedStatement pstmt = conn.prepareStatement(query); // create a statement
+				     
 				      pstmt.setString(1, skillBuffer.toString()); // set input parameter 1
 				      pstmt.setLong(2, candidateId); // set input parameter 2
+				    
 				      pstmt.executeUpdate(); 
-				      
+				      stmt2.close();
+				      conn1.close();
 				}
+				
 			
 		}catch(Exception e){
 			e.printStackTrace();

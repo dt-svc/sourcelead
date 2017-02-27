@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_SPOC','UUID','VARCHAR(250) NULL');

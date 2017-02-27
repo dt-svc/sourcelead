@@ -27,8 +27,6 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.StatesService;
-import com.bis.sourcelead.service.TeamService;
-import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -51,14 +49,9 @@ public class CandidateController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
-	@Autowired
-	private UserService userService;
 	
 	@Autowired
 	private RolesService roleService;
-	
-	@Autowired
-	private TeamService teamService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -161,6 +154,8 @@ public class CandidateController {
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(null != countries){
 			   model.addObject("loginCountryName", countries.getName());
+			   model.addObject("currency", countries.getCurrency());
+			   
 			}
 	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 	        model.addObject("statesList", statesList);

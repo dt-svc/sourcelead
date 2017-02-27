@@ -88,6 +88,7 @@ public class SecurityConfig  {
         	http
     		.authorizeRequests()                                                                
     			.antMatchers("/login").permitAll() 
+    			.antMatchers("/Inlogin").permitAll() 
     			.antMatchers("/register").permitAll() 
     			.antMatchers("/registerAsProfessional").permitAll() 
     			.antMatchers("/registerAsIndividualRecruiter").permitAll() 

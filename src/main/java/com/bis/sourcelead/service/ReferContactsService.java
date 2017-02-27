@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import java.util.List;
+
 import com.bis.sourcelead.entity.ReferContacts;
 
 public interface ReferContactsService {
@@ -8,5 +10,8 @@ public interface ReferContactsService {
 	
 	ReferContacts getReferContactsByUUID(String contactUUID) throws Exception;
 	
+	List<ReferContacts> getReferContactsListByUserIdAndOrglocationId(Long userId,Long orgLocationId) throws Exception;
+
 	ReferContacts getReferContactsByEmails(Long userId,String toEmail) throws Exception;
+
 }

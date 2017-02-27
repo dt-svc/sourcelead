@@ -109,11 +109,6 @@ public class SubmissionApproverHierarchyServiceTest {
 		logger.info("updateSubmissionStatus added successfully");
 	}
 	@Test
-	public void updateApprovalStatusForApprover() throws Exception{
-		submissionApproverHierarchyService.updateApprovalStatusForApprover(20l, 1l, new Date(), "ACTIVE","Rejected Reason");
-		logger.info("updateApprovalStatusForApprover added successfully");
-	}
-	@Test
 	public void isThereAnyApproverChangesStatusForTheSubmission() throws Exception{
 		SubmissionApproverHierarchy isThereAnyApprover = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForTheSubmission(1l, "APPROVED");
 		logger.info("isThereAnyApproverChangesStatusForTheSubmission added successfully"+isThereAnyApprover);

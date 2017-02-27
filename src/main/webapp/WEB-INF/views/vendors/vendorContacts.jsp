@@ -63,7 +63,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID, 
+	    	url : sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor", 
 	        success: function(data) {
 	        	
 	        	var json = JSON.parse(data);
@@ -140,13 +140,18 @@ function vendorContacts(orgRelationID,clientLocationId){
 				                result = result + '	     <td><div><span title="'+opt.ownerName+'">'+opt.ownerName+'</span></div></td>';
 				                
 				                result = result + ' <td><div>';
-								result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+vendorLocationId+');">';
-								result = result + ' <option '+selected1+'>Active</option>';
-								result = result + ' <option '+selected2+'>In-Active</option>';
-								result = result + ' <option '+selected3+'>New</option>';
-								result = result + ' <option '+selected4+'>Negotiation</option>';
-								result = result + ' <option '+selected5+'>Contracted</option>';
-								result = result + ' </select>';
+				                
+				                if(opt.invitationStatus == 'Rejected'){
+				        			result = result + '<span>'+opt.spocStatus+'</span>';
+				        		}else{
+									result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+vendorLocationId+');">';
+									result = result + ' <option '+selected1+'>Active</option>';
+									result = result + ' <option '+selected2+'>In-Active</option>';
+									result = result + ' <option '+selected3+'>New</option>';
+									result = result + ' <option '+selected4+'>Negotiation</option>';
+									result = result + ' <option '+selected5+'>Contracted</option>';
+									result = result + ' </select>';
+				        		}
 								result = result + ' </div></td>';
 				                
 				                result = result +'<td data-title="Invitation Status"><div>';

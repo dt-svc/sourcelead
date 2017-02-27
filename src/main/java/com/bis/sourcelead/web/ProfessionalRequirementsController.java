@@ -254,7 +254,16 @@ public class ProfessionalRequirementsController {
 			
 		}
 	 
-	 
+		
+	 @RequestMapping(value = "/referRequirementList")
+	 public ModelAndView referRequirementList(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		model.setViewName("professional/referRequiremnetList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+		}
+			 
 	 @RequestMapping(value = "/validateReferedEmail",  method = RequestMethod.GET)
 	   public @ResponseBody String validateReferedEmail(@RequestParam(value="email", required=false) String email,
 	   		@RequestParam(value="requirementId", required=false) Long requirementId,

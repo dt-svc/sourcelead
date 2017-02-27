@@ -100,25 +100,7 @@ public class TimesheetSubmissionsRestController {
 		String output = timesheetSubmissionsService.dynamicTimesheet(user, navigation, startDate, memberId, projectMemberUserId, employeeId,orgLoc.getId());
 		return output;
 	}
-	
-	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
-	@RequestMapping(value = "/saveSubmissionApprovalStatus", method = RequestMethod.POST)
-    public  String saveSubmissionApprovalStatus(HttpServletRequest request,
-									    		@RequestParam(value="employeeId", required=false) Long employeeId,
-												@RequestParam(value="startDate", required=false) String startDate,
-												@RequestParam(value="endDate", required=false) String endDate,
-												@RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
-									             
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-		Date sDate  =  Constants.DMY.parse(startDate);
-        submissionApproverHierarchyService.updateApprovalStatusForApprover(employeeId, user.getId(), sDate, approvalStatus, rejectedReason);
-        
-        sendEmailToEmployeeTimesheetApprovalStatus(employeeId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
-        
-        return "success";
-    }
+
 	
 	/*@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/downloadDocument", method = RequestMethod.GET)

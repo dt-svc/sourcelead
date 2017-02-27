@@ -584,11 +584,11 @@ public class UserRestController {
 			  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 			  		  String pattern = "yyyy-MM-dd";
 		    	      SimpleDateFormat format = new SimpleDateFormat(pattern);
-		    	      if(jsonObj.has("Re-StartDate")){
+		    	      if(jsonObj.has("Re-StartDate") && !isNullOrEmpty(jsonObj.getString("Re-StartDate"))){
 		    	    	  Date startDate = format.parse(jsonObj.getString("Re-StartDate"));
 						  pmh.setProjectAssignedDate(startDate);
 		    	      }
-		    	      if(jsonObj.has("Re-EndDate")){
+		    	      if(jsonObj.has("Re-EndDate") && !isNullOrEmpty(jsonObj.getString("Re-EndDate"))){
 		    	    	  Date endDate = format.parse(jsonObj.getString("Re-EndDate"));
 						  pmh.setProjectTerminationDate(endDate);
 		    	      }
