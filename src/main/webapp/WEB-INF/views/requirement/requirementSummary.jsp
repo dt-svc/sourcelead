@@ -4295,12 +4295,12 @@ function customizeScore(requirementId){
 			    	customizeSkills = requirmentSkills.split(",");
 			        for (var i = 0; i < customizeSkills.length; i++) { 
 			        	 var customSkill = customizeSkills[i];
-			        	 result = result +'	<option selected value='+customSkill+'>'+customSkill+'</option> ';
+			        	 result = result +'	<option selected value=\''+customSkill+'\'>'+customSkill+'</option> ';
 			        }
 		    	}
 		         for (var i = 0; i < dbskills.length; i++) { 
 		        	 var skill1 = dbskills[i];
-		        	 result = result +'	<option  value='+skill1+'>'+skill1+'</option> ';
+		        	 result = result +'	<option  value=\''+skill1+'\'>'+skill1+'</option> ';
 		        } 
 		        result = result +'		                    </select> ';
 		        result = result +'		                  </div>   ';
@@ -4771,7 +4771,6 @@ function updateCutomize(requirementId){
         	var frm = $('#updateCustomize_form').serializeFormJSON();
     		var con = JSON.stringify(frm);
     		con = con.replace(/[{}]/g, "");
-    		
     		//It will escape all the special characters
     		var jsonData = encodeURIComponent(con);
     		 $.ajax({
