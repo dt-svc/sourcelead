@@ -553,7 +553,8 @@ public class ClientRestController {
 		 
 	         OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsByIdAndOwnerId(spocId,ownerId,user.getId(),spocUserId,orgLoc.getId(),type);
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
-		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
+		     //List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
+		     List<User>  userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLoc.getId(),Long.valueOf(Constants.TAB_CLIENT),ownerListOfSpoc);
 		     orgSpoc.setUserList(userList);
 		     String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editSpocMsg");
 		     if(msg != null && msg != ""){
