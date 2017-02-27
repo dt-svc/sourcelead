@@ -277,7 +277,7 @@ public class Constants {
 	public static String UPDATE_PASSWORD = "Update Password";
 	public static String MAIL_PROJECT_MANAGER = "Mail To Project Manager";
 	
-
+	public static String REJECTMAILFROMCLIENT_TO_VENDOR = "RejectMailFromClient_To_Vendor";
 
 	public static String CONTACTS = "CONTACTS";
 	public static String VENDORSTYPE = "VENDORS";
@@ -501,4 +501,4 @@ public class Constants {
     public static String VENDORS_IMPORT_TEMPLATE_XLS = "vendors_import_template.xls";
     public static String VENDORS_IMPORT_TEMPLATE_XLSX = "vendors_import_template.xlsx";
    
-}
+}	

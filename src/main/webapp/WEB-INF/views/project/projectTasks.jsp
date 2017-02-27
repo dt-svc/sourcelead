@@ -5,6 +5,17 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<style type="text/css">
+
+.taskdesp .form-control {
+height: auto !important;
+}
+.project_tabs_inn_table.project_tabs_inn_table_a table tr td:last-child
+{
+width: auto !important;
+}
+</style>
+
 <script type="text/javascript">
 function taskNameValidation(){
 	var projectId  = $("#projectId").val();
@@ -111,10 +122,7 @@ function taskNameValidation(){
 <script>
 	function projectTask(projectId, status) {
 		var result = "";
-		
 		$("#tasksLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-
-		
 		var sourceleadUrl = '${sourceleadUrl}';
 		var status = status;
 		$.ajax({
@@ -145,6 +153,7 @@ function taskNameValidation(){
 						result = result + '<th>Task name</th>';
 						result = result + '<th>Billable Type</th>';
 						result = result + '<th>Task description</th>';
+						result = result + '<th>Actin</th>';
 						result = result + '</tr>';
 						result = result + '</thead>';
 						result = result + '<tbody>';
@@ -152,19 +161,17 @@ function taskNameValidation(){
 							var opt = json[i];
 							result = result + '<tr>';
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
-							result = result+ '<td><div id="taskNameDiv'+ opt.Id+ '"><input type="text" onBlur="inlineEditForProjectsTaskName('+ opt.Id+ ',\'taskName\');" data-validation="required validate_length length2-250" id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '" title="'+ opt.taskName+ '"  class="project_inline_field"></div><div style="display:none">'+ opt.taskName+' </div></td>';
-							result = result	+ '<td><div class="select-field"><select class="form-control" id="billableType'+opt.Id+'" name="billableType" onChange="updateTakBillableType(\''+opt.Id+'\');">';
-							result = result  +' <option '+(opt.billableType == "Billable" ? "selected" : '') +'>Billable</option>';
-				            result = result  +'	<option '+(opt.billableType == "Non-Billable" ? "selected" : '') +'>Non-Billable</option>';
-							result = result + ' </select>';
-							result = result + ' </div></td>';
-							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" title="'+ opt.description+ '" class="project_inline_field"></div><div style="display:none">'+ opt.description+' </div></td>';
+							result = result+ '<td><div><span title="'+ opt.taskName+ '" >'+ opt.taskName+ '</span></div></td>';
+							result = result	+ '<td><div><span>'+ opt.billableType+ '</span></div></td>';
+							result = result	+ '<td><div><span title="'+ opt.description+ '">'+ opt.description+ '</span></div></td>';
+							result = result	+ '<td><div><span><i class="glyphicon glyphicon-edit" onclick="eidtTasks('+projectId+',\''+status+'\',\''+opt.taskName+'\',\''+opt.billableType+'\',\''+opt.description+'\',\''+opt.Id+'\');"></i></span></div></td>';
 							'</sec:authorize>'; 
 							
 							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
 							result = result+ '<td><div><span title="'+ opt.taskName+ '" >'+ opt.taskName+ '</span></div></td>';
 							result = result	+ '<td><div><span>'+ opt.billableType+ '</span></div></td>';
 							result = result	+ '<td><div><span title="'+ opt.description+ '">'+ opt.description+ '</span></div></td>';
+							result = result	+ '<td><div><span><i class="glyphicon glyphicon-edit"></i></span></div></td>';
 							'</sec:authorize>'; 
 							result = result + '</tr>';
 
@@ -197,19 +204,6 @@ function taskNameValidation(){
 	}
 </script>
 
-<script>
-function updateTakBillableType(taskId){
-    var billableType = $('#billableType'+taskId).val();
-	var sourceleadUrl = '${sourceleadUrl}';
-	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/updateTakBillableType?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId+"&billableType="+billableType,	    	   
-	    success: function(data) {
-	    	//projectTask();
-	    }
-   });
-}
-</script>
 
 <script type="text/javascript">
 	function flushTasks() {
@@ -255,6 +249,24 @@ function updateTakBillableType(taskId){
 		onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
 </div>
 <!-- =============================== AddTask Divs  ============================ -->
+<div class="vendor_wrap_mask"></div>
+<div id="editTaskId"></div>
+	
+	<script> 	
+// Edit pop
+<script type="text/javascript">
+$(document).ready(function() {
+    $(".glyphicon-edit").click(function(){
+		$(".settPop").slideDown(200);
+		$(".vendor_wrap_mask").fadeIn(200);
+	});
+	$(".settPop i, .btn-default").click(function(){
+		$(".settPop").slideUp(200);
+		$(".vendor_wrap_mask").fadeOut(200);
+	});
+});		
+	
+</script> 
 <!-- Add Task Script start -->
 <script type="text/javascript">
 	function addTasks() {
@@ -366,53 +378,6 @@ function updateTakBillableType(taskId){
 </script>
 <!-- Add Task Script Ends -->
 
-
-<script>
-	function inlineEditForProjectsTasks(taskId, localFieldName) {
-		var fieldName = localFieldName;
-		var fieldValue = $("#" + localFieldName + "" + taskId).val();
-		var sourceleadUrl = '${sourceleadUrl}';
-		$.ajax({
-					type : "POST",
-					url : sourceleadUrl
-							+ "/updateProjectTaskById?${_csrf.parameterName}=${_csrf.token}&taskId="
-							+ taskId + "&fieldName=" + fieldName
-							+ "&fieldValue=" + fieldValue,
-					success : function(data) {
-
-					}
-				});
-	}
-</script>
-
-<script>
-	function inlineEditForProjectsTaskName(taskId, localFieldName) {
-		var fieldName = localFieldName;
-		var fieldValue = $("#" + localFieldName + "" + taskId).val();
-		var sourceleadUrl = '${sourceleadUrl}';
-		$('#taskNameDiv'+ taskId).find('p.jquery_form_error_message').remove();
-		if(fieldName != null && fieldName != "" && fieldName != "undefined" && fieldName == "taskName"){
-			if (fieldValue.trim().match(/^\S*$/) == '' || fieldValue == null || fieldValue == "" || fieldValue == "undefined") {
-					$("#" + localFieldName + "" + taskId).after("<p class='jquery_form_error_message'>Task Name is Required</span>");
-			}else if(fieldValue.length > 100){
-			   $("#" + localFieldName + "" + taskId).after( "<p class='jquery_form_error_message'>The values Entered must be between2-100 characters</span>");
-			}else{
-				$.ajax({
-					type : "POST",
-					url : sourceleadUrl
-							+ "/updateProjectTaskById?${_csrf.parameterName}=${_csrf.token}&taskId="
-							+ taskId + "&fieldName=" + fieldName
-							+ "&fieldValue=" + fieldValue,
-					success : function(data) {
-
-					}
-				});
-			}
-		}
-	}
-</script>
-
-
 <!-- this script is for Save Tasks functionality at Projects screen -->
 <script type="text/javascript">
 	function saveTasks() {
@@ -444,9 +409,114 @@ function taskPagination(){
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
+    	"autoWidth": false,
     	"oLanguage": {
      		"sSearch": ""
      	}
     } );
+}
+</script>
+<script>
+function eidtTasks(projectId,status,taskName,billableType,description,taskId){
+	 var result = "";
+	result = result + '	<div class="settPop">';
+	result = result + '<form id="editTask_form" name="editTask_form">';
+	result = result + '	<h3>Edit Task<i class="fa fa-times" onclick="editCancel();"></i></h3>  ';
+	result = result + '	<div class="settPopInn"> ';
+	result = result + '		<div class="form-group col-md-6"> ';
+	result = result + '		  <label class="col-md-12" for="Project Id">Task Name <span class="text-danger">*</span></label> ';
+	result = result + '		  <div class="col-md-12" id="editTaskNamesDIV"> ';
+	result = result + '			<input type="text" class="form-control" name="taskName" id="editTaskName" value="'+taskName+'" onkeyup="validateTaskName('+projectId+','+taskId+');" data-validation="required validate_Space validate_length length2-100" field-name="Task Name"> ';
+	result = result + '		   </div>';
+	result = result + '		</div>  ';
+	result = result + '		<div class="form-group col-md-6">   ';
+	result = result + '		  <label class="col-md-12" for="Project Id">Billable Type</label> ';
+	result = result + '		  <div class="col-md-12"> ';
+	result = result	+ '         <select class="form-control" id="billableType" name="billableType">';
+	result = result  +' 			<option '+(billableType == "Billable" ? "selected" : '') +'>Billable</option>';
+    result = result  +'				<option '+(billableType == "Non-Billable" ? "selected" : '') +'>Non-Billable</option>';
+	result = result + ' 		</select>';
+	result = result + '		</div>  ';
+	result = result + '		</div> ';
+	result = result + '		<div class="form-group col-md-12">  ';
+	result = result + '		  <label class="col-md-12" for="Project Id">Task description</label> ';
+	result = result + '		  <div class="col-md-12 taskdesp">   ';
+	result = result + '			<textarea class="form-control" name="description" id="description" value="'+description+'" colspan="5">'+description+'</textarea>   ';
+	result = result + '			<span class="hidden">Enter Project Id</span> </div>  ';
+	result = result + '		</div>   ';
+	result = result + '		<div class="col-md-12 mt5 clearfix"> ';
+	result = result + '		<div class="pull-right">  ';
+	result = result + '		  <input type="button" value="Save" class="btn btn-primary" onclick="saveUpdateTask('+taskId+','+projectId+',\''+status+'\');">';
+	result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="editCancel();">';
+	result = result + '		</div>';
+	result = result + '		</div>';
+	result = result + '		<div class="clearfix"></div>   ';
+	result = result + '	</div>  ';
+	result = result + '</form>';
+	result = result + '	</div>';
+    $("#editTaskId").empty();
+    $("#editTaskId").append(result);
+    
+	$(".settPop").slideDown(200);
+	$(".vendor_wrap_mask").fadeIn(200);
+}
+
+</script>
+<script>
+function saveUpdateTask(taskId,projectId,status){
+	if ($('#editTask_form').validate(false, validationSettings)) {
+		var frm = $('#editTask_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		//It will escape all the special characters
+		var jsonData = encodeURIComponent(con);
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl+ "/updateEditProjectTask?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&taskId="+taskId,
+			success : function(result) {
+				editCancel();
+				$("#tab-3").show();
+				projectTask(projectId,status);
+				
+			},
+		});
+		return true;
+	}else {
+		return false;
+	}
+	alert("ello");
+}
+$('body').on('blur', '#editTask_form', function() {
+	$("#editTask_form").showHelpOnFocus();
+	$("#editTask_form").validateOnBlur(false, validationSettings);
+});
+</script>
+<script>
+function validateTaskName(projectId,taskId){
+	var TaskName = document.getElementById("editTaskName").value.trim();
+	var sourceleadUrl = '${sourceleadUrl}';
+	$('#editTaskNamesDIV').find('p.jquery_form_error_message').remove();
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+ "/taskNameValidation?${_csrf.parameterName}=${_csrf.token}&TaskName="+TaskName+"&ProjectId="+projectId+"&taskId="+taskId,
+		success : function(data) {
+			 if (data == true) {
+				$("input#editTaskName").after("<p class='jquery_form_error_message'>"+ TaskName+ " is Already Existed</span>");
+				document.getElementById("editTaskName").setAttribute('record-exist', 'yes');
+				document.getElementById("editTaskName").setAttribute('record-exist-errorMsg',TaskName+ ' is Already Existed');
+				$('input#taskName').removeAttr( "record-exist record-exist-errormessage");
+			} else {
+				$('input#editTaskName').removeAttr("record-exist record-exist-errormsg");
+			} 
+		},
+	});
+}
+</script>
+
+<script>
+function editCancel(){
+	$(".settPop").slideUp(200);
+	$(".vendor_wrap_mask").fadeOut(200);
 }
 </script>

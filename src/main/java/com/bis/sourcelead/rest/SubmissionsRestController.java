@@ -504,6 +504,7 @@ public class SubmissionsRestController {
 		requirementSubmission.setUpdatedBy(user.getUserCode());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		requirementSubmissionService.sendRejectionMailToVendorContact(user,reason,submissionId,orgLocations);
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
 				requirementSubmissionHistory);
 
