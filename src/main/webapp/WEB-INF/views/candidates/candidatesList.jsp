@@ -200,10 +200,10 @@ else{
 		            	if(opt.country != null && opt.country != "" && opt.country != 'undefined'){
 		            		location = opt.country;
 		            		if(opt.state != null && opt.state != "" && opt.state != 'undefined'){
-		            			location = location+", "+opt.state;
+		            			location = opt.state+", "+location;
 			            	}
 		            		if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
-		            			location = location+", "+opt.city;
+		            			location = opt.city+", "+location;
 			            	}
 		            	}
 		            	

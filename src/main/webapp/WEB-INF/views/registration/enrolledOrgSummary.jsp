@@ -54,6 +54,7 @@ z-index: 9999999999 !important;
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		    <!-- Tab for Profile setting-area -->
 		  <div class="accountsettings-tab org-settings-area">
+		  <div id="choicepopUp"></div>
 		  
 		  <ul class="nav nav-tabs">
 			<li class="active"><a data-toggle="tab" href="#details" onclick="flushUser(); removeAddUserPopUp();">Details</a></li>
@@ -623,6 +624,7 @@ function getUserList(){
                 		 result = result +'<th>Phone</th>';
                 		 result = result +'<th>Role</th>';
                 		 result = result +'<th>Status</th>';
+                		 result = result +'<th>Action</th>';
 	                     result = result +"</tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -631,6 +633,14 @@ function getUserList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 var mobilePhone = '';
+	                    	 var checked = '';
+	                    	 var name = '';
+	                    	 
+                    		if(opt.isPrimaryAdmin == 'Y'){
+    							checked = "checked"+" "+"value = 'Y'"+" "+"disabled = 'disabled'";
+    						}else{
+    							checked = "value = 'N'";
+    						}
 	                    	 
 	                    	 
 	                    	 if(null != opt.mobilePhone){
@@ -640,14 +650,14 @@ function getUserList(){
 	                    	 }
 	                    	 
 	                    	 if(opt.lastName && opt.lastName != '' && opt.lastName != 'undefined'){
-	                    		 lastName=opt.lastName;
+	                    		 name = opt.firstName +" "+ opt.lastName;
 	                    	 }
 	                    	 else{
-	                    		 lastName=" ";
+	                    		 name = opt.firstName;
 	                    	 }
 	                    	 
 	                    	 result = result +'<tr>';
-	                    	 result = result +'<td><span title='+opt.firstName+' '+lastName+'>'+opt.firstName+' '+lastName+'</span></td>';
+	                    	 result = result +'<td><span title='+name+'>'+name+'</span></td>';
 	                    	 result = result +'<td><span title='+opt.email+'>'+opt.email+'</span></td>';
 	                    	 result = result +'<td><span title='+mobilePhone+'>'+mobilePhone+'</span></td>';
 	                    	 result = result +'<td>'+opt.role+'</td>';
@@ -659,6 +669,20 @@ function getUserList(){
 				 			    }else if(opt.userState == 'INACTIVE'){
 				 			    	result = result +'<td>In-active</td>';
 				 			    } 
+	                    	 
+	                    	 if(opt.userState == 'ACTIVE' && opt.role == 'Admin'){
+		                    	 result = result +'<td>'
+			                    	 result = result +'<div class="col-md-7 orgrole-switch">';
+			                    	 result = result +'<label class="switch">';
+			                    	 result = result +'<input type="checkbox" onclick="checkUser('+opt.id+',\''+name+'\')"  name="check'+opt.id+'"  id="check'+opt.id+'" '+checked+'  >';
+			                    	 result = result +'<div class="slider round"></div>';
+			                    	 result = result +'</label>';
+			                    	 result = result +'</div>';
+		                    	
+		                         result = result +'</td>'; 
+	                    	 }else{
+	                    		 result = result +'<td>-----</td>';
+	                    	 }
 	                    	 
 	                    	 result = result +'</tr>';
 	                    	
@@ -685,6 +709,64 @@ function getUserList(){
        }); 
   } 
 </script>
+
+
+<script>
+function checkUser(userId,name){
+	var checked = document.getElementById("check"+userId).checked
+	if(checked == true){
+		alertMessage("Do you want to make "+name+" as admin?",userId);
+	}
+}
+</script>
+
+<script type="text/javascript">
+function cancel(userId){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	document.getElementById("check"+userId).checked = false;
+}
+</script>
+
+<script type="text/javascript">
+function alertMessage(message,userId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='makeAsPrimaryAdmin("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+userId+");'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script>
+function makeAsPrimaryAdmin(userId){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	
+	var orgLocationId = '${registeredOrgLocationId}';
+	var orgId = '${orgId}';
+	
+	$("#loading").attr('style','position:absolute; width:100%; height:450px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(userId != null && userId != "" && orgLocationId != null && orgLocationId != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/changePrimaryAdmin?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId, 
+		        success: function(result) {
+		        	location.replace(sourceleadUrl+"/enrolledOrgSummary?orgId="+orgId);
+		        },
+		    });
+	 }
+	
+}
+</script>
+
 
 
 <script type="text/javascript">
