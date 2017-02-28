@@ -367,6 +367,49 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public User updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(Long projectMemberId,
+			Date startDate, Date endDate,String reason,User loginUser, String type, String isSuperUser) {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = null;
+		if(startDate != null){
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		
+		java.sql.Date sqlEndDate = null;
+		if(endDate != null){
+			sqlEndDate = new java.sql.Date(endDate.getTime());
+		}
+		
+		Query submissionApproverHierarchyListQuery= session.createQuery("from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user where pm.id = :projectMemberId and  (ts.startDate between :startDate and :endDate OR ts.startDate = :startDate)");
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list();
+	    if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
+	    	for(SubmissionApproverHierarchy sah :submissionApproverHierarchyList){
+	    		if(null != type && "notify".equalsIgnoreCase(type)){
+	    			sah.setReopenReason(reason);
+	    			sah.setReopenedUser(loginUser);
+	    		}else if(null != type && "reject".equalsIgnoreCase(type)){
+	    			sah.setReopenRejectedReason(reason);
+	    		}else{
+	    			sah.setSubmissionStatus(Submission_Status.DRAFT);
+	    			sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
+	    			sah.setReopenRejectedReason(null);
+	    		}
+	    		try {
+	    			 session.saveOrUpdate(sah);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	    	}
+	    	return submissionApproverHierarchyList.get(0).getReopenedUser();
+	    }else{
+	    	return null;
+	    }
+		
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId,Long approverUserId, Date startDate, Date endDate, String status,String rejectedReason) throws Exception {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();

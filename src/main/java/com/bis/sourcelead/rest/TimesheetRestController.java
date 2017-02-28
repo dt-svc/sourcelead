@@ -550,6 +550,8 @@ public class TimesheetRestController {
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
 	        	timesheetEntriesDiv.append("<b class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b>");
+	        	
+	        	timesheetEntriesDiv.append("<div id='reopenTimeSheetId'>&nbsp;&nbsp;<a  href='#' onClick='reOpenMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Re-Open</a></div>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
 	        	timesheetEntriesDiv.append("<b class='proj_closed "+pullRightClass+"'>").append(submissionStatus).append("</b>");
@@ -1782,6 +1784,36 @@ public class TimesheetRestController {
 
 		}  
 		
+		@RequestMapping(value = "/notifyReopenTimeSheet", method = RequestMethod.POST)
+		public @ResponseBody void notifyReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+				@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
+				@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception {
+				
+			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			    
+			    String isSuperUser = Constants.NO;
+			    if(null != orgLoc.getUser() && null != orgLoc.getUser().getId() && orgLoc.getUser().getId().longValue() == loginUser.getId().longValue()){
+			    	isSuperUser = Constants.YES;
+			    }
+			    
+				DateFormat format = Constants.DF_DMY;
+				if(StringUtils.isNotEmpty(timesheetFrequency)){
+				 	 String[] frequency = timesheetFrequency.split("To");
+				 	 String weekStartDate = frequency[0].trim();
+				  	 String weekEndDate = frequency[1].trim();
+				  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
+					 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
+				  	submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,loginUser,"notify",isSuperUser);
+				
+				    //send mail & notification logic
+				  	if(isSuperUser.equalsIgnoreCase(Constants.NO)){
+				  		submissionApproverHierarchyService.sendReopenTimeSheetMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency);
+				  	}
+				  	
+				}
+			
+		}
 		
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)

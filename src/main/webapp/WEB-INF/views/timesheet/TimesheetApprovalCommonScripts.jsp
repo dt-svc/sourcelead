@@ -65,6 +65,7 @@ margin-top: 3px;
 }
 </style>
 <div id='rejectedPopup'></div>
+<div id='reOpenPopup'></div>
 <div class="side_mask"><div class="proj_close"></div></div>	
 <div class="time_appr_side_wrap">
 	<div class="time_appr_side_wrap_inn">
@@ -1325,7 +1326,74 @@ function pagination(){
 }
 </script>
 
+<script type="text/javascript">
+function reOpenMyTimesheet(projectMemberId,timesheetFrequency){ 
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Re-open message here</p>";
+	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reOpenReasonDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='notifyReopenTimeSheet("+projectMemberId+",\""+timesheetFrequency+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"	</div>";
+	$("#reOpenPopup").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	
+	/*   $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	      type : "POST",
+     	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency,		
+	      success :function(result) {
+	    	  $("#loadTime").removeAttr("style"); 
+	    	  timesheetDivByFrequency();
+	    	  $("html").trigger('click');
+	    	  maskme();
+	      }
+   });  */
+}
+</script>
 
+<script>
+function notifyReopenTimeSheet(projectMemberId,timesheetFrequency){alert(timesheetFrequency);
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = document.getElementById("reOpenReason").value;
+	if(reason.match(/^[^\s-](.*)*$/) != null){
+		$("#reOpenReasonDiv").empty();
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/notifyReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&reason="+reason,	    	   
+		    success: function(data) {
+		    	$("#reOpenPopup").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
+   			 	
+   			    $("#reopenTimeSheetId").empty();
+   			    $("#reopenTimeSheetId").append("<font color='blue'>Request sent</font>");
+   			 	
+   			    timesheetDivByFrequency();
+	    	    $("html").trigger('click');
+	    	    maskme();
+		    }
+	   });
+	}else{
+		if(reason){
+			$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
+	}
+	  
+}
+</script>
+
+<script>
+function cancelReOpen(){
+$("#reOpenPopup").empty();
+$(".project_inn_mask").fadeOut(200);
+}
+</script>
 <script>
 function exportTimeSheetToPdfOrExcel(exportType){
 		var sourceleadUrl = '${sourceleadUrl}';
