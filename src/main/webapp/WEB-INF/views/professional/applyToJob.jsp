@@ -19,16 +19,16 @@ background-color: #fff !important;
 
 
 <script>
-function applyToJob(requirementId){
+function applyToJob(requirementId,referId){
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
-	getRequirementSubmissionTemaplate(requirementId);
+	getRequirementSubmissionTemaplate(requirementId,referId);
 }
 </script>
 
 <script>
-function getRequirementSubmissionTemaplate(requirementId){
+function getRequirementSubmissionTemaplate(requirementId,referId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var candidateId = '${candidateId}';
 	 generateOrgSubmissionForm(sourceleadUrl,requirementId) 
@@ -39,6 +39,8 @@ function getRequirementSubmissionTemaplate(requirementId){
 	result = result + '<div class="form-horizontal clearfix select-field">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="candidateId" name="candidateId" value='+candidateId+'>';
+	if(referId != null && referId != '' && referId != 'undefined')
+	result = result + '<input type="hidden" id="referId" name="referId" value='+referId+'>';
 	
 	result = result + '<div class="row">';
 	
@@ -438,7 +440,15 @@ $('body').on('submit', '#applyToJob_form', function(e){
  	        dataType : 'json',
  	    	url : sourceleadUrl+"/applyToJobFromCrowdSourcing?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
-	        	location.replace(sourceleadUrl+"/professionalRequirements"); 
+	        	$("#loading").removeAttr("style");
+	        	
+	        	$(".new_side_wrap").removeClass("new_side_wrap_active");
+	    		$(".side_mask").fadeOut(200);
+	    		$("body").css('overflow-y', 'auto');
+	    		
+	        	$("#requirementType").val("AppliedJobs");
+	        	requirementsList(0);
+	        	
 	        	
 	        },
 	    }); 

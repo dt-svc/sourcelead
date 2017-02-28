@@ -225,7 +225,7 @@ public class CrowdSourcingRequirementsRestController {
 	    }else{
 	    	
 	    	 if(referJobType.equalsIgnoreCase("ReferredToMe")){
-    			 List<RequirementRefer> referedToRequirementList = requirementReferService.getReferedToMeRequirementsByUserId(user.getId(), offset,Constants.MAX_RESULTS_TEN);
+    			 List<RequirementRefer> referedToRequirementList = requirementReferService.getReferedToMeRequirementsByUserId(user.getId(), offset,Constants.MAX_RESULTS_TEN,jobTitleSearch,jobLocationSearch,postedOn);
     			 if(null != referedToRequirementList && referedToRequirementList.size() > 0){
     				 for(RequirementRefer refer : referedToRequirementList){
     					 RequirementIndex requirementIndex = new RequirementIndex();

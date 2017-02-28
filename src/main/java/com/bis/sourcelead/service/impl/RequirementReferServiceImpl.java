@@ -92,6 +92,12 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			requirementRefer.setRequirementId(requirement);
 		}
 		
+		if(jsonObj.has("referId") && !isNullOrEmpty(jsonObj.getString("referId"))){
+			RequirementRefer parentRefer = new RequirementRefer();
+			parentRefer.setId(Long.valueOf(jsonObj.getString("referId")));
+			requirementRefer.setReferId(parentRefer);
+		}
+		
 		requirementRefer.setOrgLocationId(orgLocations);
 		requirementRefer.setCreatedDate(new Date());
 		requirementRefer.setUpdatedDate(new Date());
@@ -218,8 +224,13 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 	}
 
 	@Override
-	public List<RequirementRefer> getReferedToMeRequirementsByUserId(Long userId,Integer offset,Integer maxResults) throws Exception {
-		return requirementReferDao.getReferedToMeRequirementsByUserId(userId,offset,maxResults);
+	public List<RequirementRefer> getReferedToMeRequirementsByUserId(Long userId,Integer offset,Integer maxResults,String jobTitle,String location,String postedOn) throws Exception {
+		return requirementReferDao.getReferedToMeRequirementsByUserId(userId,offset,maxResults,jobTitle,location,postedOn);
+	}
+
+	@Override
+	public RequirementRefer getRequirementReferById(Long referId) throws Exception {
+		return requirementReferDao.getRequirementReferById(referId);
 	}
 
 }

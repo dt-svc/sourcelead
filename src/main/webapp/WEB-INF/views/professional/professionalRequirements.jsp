@@ -640,7 +640,7 @@ function requirementsList(offset){
 				 				result = result +'<div class="openPostBtns">';
 				 				
 				 				if((requirementType == "OpenJobs")|| (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
-				 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
+				 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Apply</a>';
 				 				}
 				 				
 				 				if(requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'Y'){
@@ -649,12 +649,21 @@ function requirementsList(offset){
 				 				
 				 				
 				 				if(requirementType == "CrowdSourcingJobs"){
-				 					result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+','+requirements.referId+')" href="javascript:void(0)">Refer</a>';
-				 					result = result +'<div class="referWrap" id="refer'+requirements.requirementId+'">';
-					 				result = result +'<div class="referWrapInn">';
-					 				result = result +'<div id="refertoJobDiv'+requirements.requirementId+'"></div>';  
-					 				result = result +'</div>';
-					 				result = result +'</div>';
+				 					if(referJobType == '' || referJobType == null || referJobType == 'undefined' || referJobType != 'ReferredToMe'){
+					 					result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+','+requirements.referId+')" href="javascript:void(0)">Refer</a>';
+					 					result = result +'<div class="referWrap" id="refer'+requirements.requirementId+'">';
+						 				result = result +'<div class="referWrapInn">';
+						 				result = result +'<div id="refertoJobDiv'+requirements.requirementId+'"></div>';  
+						 				result = result +'</div>';
+						 				result = result +'</div>';
+				 					}else if(referJobType == 'ReferredToMe'){
+				 						result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+','+requirements.referId+')" href="javascript:void(0)">Refer</a>';
+					 					result = result +'<div class="referWrap" id="refer'+requirements.referId+'">';
+						 				result = result +'<div class="referWrapInn">';
+						 				result = result +'<div id="refertoJobDiv'+requirements.referId+'"></div>';  
+						 				result = result +'</div>';
+						 				result = result +'</div>';
+				 					}
 				 				}
 				 				
 				 				result = result +'</div>';
@@ -950,7 +959,7 @@ $('body').on('blur', '#professional_requirement_search_form', function() {
 
 <script>
 function referToJob(requirementId,referId){
-	   appendReferToJob(requirementId); 
+	   appendReferToJob(requirementId,referId); 
 	   removeReferPopUp();
 	    
 	   var result = ''
@@ -989,29 +998,46 @@ function referToJob(requirementId,referId){
 		result = result +'<div class="col-md-12 mt5 clearfix">';            
 		result = result +'<div class="pull-right">';
 		result = result +'<input type="submit" value="Refer" id="submit_refer"  class="btn btn-primary">';
-		result = result +'<input type="button" value="Cancel" onclick="cancelReferPopUp('+requirementId+')" class="btn btn-default ml10 canBtn">';
+		result = result +'<input type="button" value="Cancel" onclick="cancelReferPopUp('+requirementId+','+referId+')" class="btn btn-default ml10 canBtn">';
 		result = result +'</div>';    
 		result = result +'</div>'; 
 		result = result +'<div class="clearfix"></div>'; 
 		result = result + '</form>';
 		
-		$("#refertoJobDiv"+requirementId+"").empty(); 
-	    $("#refertoJobDiv"+requirementId+"").append(result); 
+		if(referId == null || referId == '' || referId =='undefined'){
+			$("#refertoJobDiv"+requirementId+"").empty(); 
+		    $("#refertoJobDiv"+requirementId+"").append(result); 
+		}else{
+			$("#refertoJobDiv"+referId+"").empty(); 
+		    $("#refertoJobDiv"+referId+"").append(result); 
+		}
+		
 }
 </script>
 
 
 <script>	
-function appendReferToJob(requirementId){
+function appendReferToJob(requirementId,referId){
+	if(referId == null || referId == '' || referId =='undefined'){
 		$("#refer"+requirementId+"").toggleClass("referWrapActive");
+	}else{
+		$("#refer"+referId+"").toggleClass("referWrapActive");
+	}
+		
 		
 }
 </script> 
 
 <script>
-function cancelReferPopUp(requirementId){
+function cancelReferPopUp(requirementId,referId){
 	$("#refer"+requirementId+"").removeClass("referWrapActive");
 	$("#refertoJobDiv"+requirementId+"").empty(); 
+	
+	if(referId != null && referId != '' && referId !='undefined'){
+		$("#refer"+referId+"").removeClass("referWrapActive");
+		$("#refertoJobDiv"+referId+"").empty(); 
+	}
+	
 	
 }
 </script>
@@ -1019,9 +1045,16 @@ function cancelReferPopUp(requirementId){
  <script type="text/javascript">
 		function removeReferPopUp(){
 			var referRequirementId = document.getElementById('referRequirementId'); 
+			var referId = document.getElementById('referId');
+			
 			if(referRequirementId != null) {
 				$("#refertoJobDiv"+referRequirementId.value+"").empty(); 
 				$("#refer"+referRequirementId.value+"").removeClass("referWrapActive"); 
+			} 
+			
+			if(referId != null) {
+				$("#refertoJobDiv"+referId.value+"").empty(); 
+				$("#refer"+referId.value+"").removeClass("referWrapActive"); 
 			} 
 			
 		 }

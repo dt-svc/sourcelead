@@ -331,6 +331,8 @@ public class Constants {
 	public static String OFFERMADE = "OFFERMADE";
 	public static String CLIENT_OFFERMADE = "CLIENT_OFFERMADE";
 	
+	public static String REFER_JOB_APPLIED = "Applied";
+	
 	
 	public static String REQUIREMENT_STATUS = "Draft";
 	
